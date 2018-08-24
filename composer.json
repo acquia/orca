@@ -1,0 +1,14 @@
+{
+    "name": "acquia/orca",
+    "description": "An internal tool for testing all of Acquia's product modules together in the context of a realistic, functioning, best practices Drupal build",
+    "license": "proprietary",
+    "authors": [
+        {
+            "name": "Acquia Engineering",
+            "homepage": "https://www.acquia.com",
+            "role": "Maintainer"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {}
+}
