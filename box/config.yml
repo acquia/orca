@@ -1,0 +1,36 @@
+vagrant_box: beet/box
+
+vagrant_hostname: local.orca.com
+vagrant_machine_name: orca
+vagrant_ip: 192.168.12.179
+
+vagrant_synced_folders:
+- local_path: ../
+  destination: /var/www/orcaverse
+  type: nfs
+  create: true
+
+drupal_build_composer_project: false
+
+drupal_install_site: false
+
+drupal_core_path: "/var/www/orcaverse"
+
+configure_drush_aliases: false
+
+apache_vhosts:
+- servername: "{{ drupal_domain }}"
+  serveralias: "www.{{ drupal_domain }}"
+  documentroot: "{{ drupal_core_path }}/build/docroot"
+  extra_parameters: "{{ apache_vhost_php_fpm_parameters }}"
+
+installed_extras: []
+
+php_packages_extra:
+- "php{{ php_version }}-bz2"
+- "php{{ php_version }}-imagick"
+- imagemagick
+
+php_xdebug_version: 2.5.0
+php_xdebug_remote_port: "9000"
+php_memory_limit: "512M"

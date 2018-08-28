@@ -1,0 +1,59 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+        "This file is @generated automatically"
+    ],
+    "content-hash": "7c82d95702d24c2806e5bdc06dac9917",
+    "packages": [],
+    "packages-dev": [
+        {
+            "name": "geerlingguy/drupal-vm",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/geerlingguy/drupal-vm.git",
+                "reference": "779d183d81de78f21e394a061ee48811defa81c7"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/geerlingguy/drupal-vm/zipball/779d183d81de78f21e394a061ee48811defa81c7",
+                "reference": "779d183d81de78f21e394a061ee48811defa81c7",
+                "shasum": ""
+            },
+            "type": "vm",
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Oskar Schöldström",
+                    "homepage": "http://oxy.fi"
+                },
+                {
+                    "name": "Jeff Geerling",
+                    "homepage": "https://www.jeffgeerling.com"
+                }
+            ],
+            "description": "A VM for local Drupal development, built with Vagrant + Ansible",
+            "homepage": "https://www.drupalvm.com",
+            "keywords": [
+                "drupal",
+                "vagrant",
+                "virtual machine",
+                "vm"
+            ],
+            "time": "2018-08-23T18:53:10+00:00"
+        }
+    ],
+    "aliases": [],
+    "minimum-stability": "dev",
+    "stability-flags": {
+        "geerlingguy/drupal-vm": 20
+    },
+    "prefer-stable": false,
+    "prefer-lowest": false,
+    "platform": [],
+    "platform-dev": []
+}

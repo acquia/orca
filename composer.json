@@ -9,6 +9,8 @@
             "role": "Maintainer"
         }
     ],
-    "minimum-stability": "dev",
-    "require": {}
+    "require-dev": {
+        "geerlingguy/drupal-vm": "dev-master"
+    },
+    "minimum-stability": "dev"
 }
