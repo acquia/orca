@@ -10,11 +10,11 @@
         }
     ],
     "require": {
-        "php": "^5.6 || ^7.0"
+        "php": "^5.6 || ^7.0",
+        "composer/composer": "^1.8@dev",
+        "consolidation/robo": "~1"
     },
     "require-dev": {
-        "composer/composer": "^1.8@dev",
-        "consolidation/robo": "~1",
         "geerlingguy/drupal-vm": "dev-master"
     },
     "config": {
