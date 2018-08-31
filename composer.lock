@@ -526,12 +526,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/consolidation/Robo.git",
-                "reference": "e56c333b068091c404092d50782dae64a771f441"
+                "reference": "351f61de78a4a4197dc53883e45fe5d493f314d8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/consolidation/Robo/zipball/e56c333b068091c404092d50782dae64a771f441",
-                "reference": "e56c333b068091c404092d50782dae64a771f441",
+                "url": "https://api.github.com/repos/consolidation/Robo/zipball/351f61de78a4a4197dc53883e45fe5d493f314d8",
+                "reference": "351f61de78a4a4197dc53883e45fe5d493f314d8",
                 "shasum": ""
             },
             "require": {
@@ -599,7 +599,7 @@
                 }
             ],
             "description": "Modern task runner",
-            "time": "2018-08-25T18:12:26+00:00"
+            "time": "2018-08-30T19:43:51+00:00"
         },
         {
             "name": "consolidation/self-update",
