@@ -1,0 +1,31 @@
+#!/usr/bin/env php
+<?php
+
+namespace AcquiaOrca\Robo\Plugin\Commands;
+
+use Robo\Runner;
+
+$class_loader = require get_class_loader_path();
+
+$command_classes = [
+  BuildCommand::class,
+  DestroyCommand::class,
+];
+$runner = new Runner($command_classes);
+$runner->setClassLoader($class_loader);
+$status_code = $runner->execute($_SERVER['argv'], 'ORCA', 'v0.0.1');
+
+exit($status_code);
+
+function get_class_loader_path() {
+  $possible_autoloader_paths = [
+    __DIR__ . '/../vendor/autoload.php',
+    __DIR__ . '/../../../autoload.php',
+  ];
+  foreach ($possible_autoloader_paths as $path) {
+    if (file_exists($path)) {
+      return $path;
+    }
+  }
+  die("Could not find autoloader. Run 'composer install'.");
+}

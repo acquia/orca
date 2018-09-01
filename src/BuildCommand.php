@@ -1,21 +1,22 @@
 <?php
 
+namespace AcquiaOrca\Robo\Plugin\Commands;
+
 use Composer\Config\JsonConfigSource;
 use Composer\Json\JsonFile;
 use Robo\ResultData;
-use Robo\Tasks;
 
-// @todo This shouldn't be necessary, but the build command explodes without it.
-require './vendor/autoload.php';
-
-class RoboFile extends Tasks {
-
-  private $buildDir = '../build';
+/**
+ * Provides the "build" command.
+ */
+class BuildCommand extends CommandBase {
 
   /**
-   * Performs an ORCA build.
+   * Performs a build
+   *
+   * @command build
    */
-  public function orcaBuild() {
+  public function execute() {
     try {
       $this->collectionBuilder()
         ->addTask($this->createBltProject())
@@ -29,13 +30,6 @@ class RoboFile extends Tasks {
   }
 
   /**
-   * Destroys the ORCA build.
-   */
-  public function orcaDestroy() {
-    return $this->_deleteDir($this->buildDir);
-  }
-
-  /**
    * Creates a BLT project.
    *
    * @return \Robo\Contract\TaskInterface
@@ -43,7 +37,7 @@ class RoboFile extends Tasks {
   private function createBltProject() {
     return $this->taskComposerCreateProject()
       ->source('acquia/blt-project')
-      ->target($this->buildDir)
+      ->target(self::BUILD_DIR)
       ->interactive(FALSE);
   }
 
@@ -54,7 +48,7 @@ class RoboFile extends Tasks {
    */
   private function addComposerConfig() {
     return function () {
-      $file = new JsonFile("{$this->buildDir}/composer.json");
+      $file = new JsonFile(self::BUILD_DIR . '/composer.json');
       $json = new JsonConfigSource($file);
       $json->addRepository('acquia/example', [
         'type' => 'path',
@@ -74,7 +68,7 @@ class RoboFile extends Tasks {
   private function addModuleUnderTest() {
     return $this->taskComposerRequire()
       ->dependency('acquia/example')
-      ->workingDir($this->buildDir);
+      ->workingDir(self::BUILD_DIR);
   }
 
 }

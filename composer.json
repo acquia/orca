@@ -20,5 +20,13 @@
     "config": {
         "sort-packages": true
     },
-    "minimum-stability": "dev"
+    "autoload": {
+        "psr-4": {
+            "AcquiaOrca\\Robo\\Plugin\\Commands\\": "src/"
+        }
+    },
+    "minimum-stability": "dev",
+    "bin": [
+        "bin/orca"
+    ]
 }
