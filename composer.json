@@ -11,11 +11,11 @@
     ],
     "require": {
         "php": "^5.6 || ^7.0",
-        "composer/composer": "^1.8@dev",
+        "composer/composer": "^1.7",
         "consolidation/robo": "~1"
     },
     "require-dev": {
-        "geerlingguy/drupal-vm": "dev-master"
+        "geerlingguy/drupal-vm": "^4.9"
     },
     "config": {
         "sort-packages": true
@@ -26,6 +26,7 @@
         }
     },
     "minimum-stability": "dev",
+    "prefer-stable": true,
     "bin": [
         "bin/orca"
     ]
