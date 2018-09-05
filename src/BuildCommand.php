@@ -41,7 +41,10 @@ class BuildCommand extends CommandBase {
     return $this->taskComposerCreateProject()
       ->source('acquia/blt-project')
       ->target(self::BUILD_DIR)
-      ->interactive(FALSE);
+      ->interactive(FALSE)
+      // Delaying installation to a subsequent step (i.e., addModuleUnderTest())
+      // can save some 30% on processing time without changing the outcome.
+      ->noInstall();
   }
 
   /**
