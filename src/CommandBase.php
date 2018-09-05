@@ -15,14 +15,28 @@ use Symfony\Component\Process\ExecutableFinder;
 abstract class CommandBase extends Tasks {
 
   /**
-   * The build directory relative to the repo root of the module under test.
+   * The options passed to the command.
+   *
+   * @var array
    */
-  const BUILD_DIR = '../build';
+  protected $commandOptions;
 
   /**
+   * @param array $opts
+   *
    * @return \Robo\ResultData
    */
-  abstract public function execute();
+  abstract public function execute($opts = []);
+
+  /**
+   * Gets the build directory.
+   *
+   * @return string
+   */
+  protected function getBuildDir() {
+    assert(!empty($this->commandOptions['build-directory']), 'Build directory option not set. Check execute().');
+    return $this->commandOptions['build-directory'];
+  }
 
   /**
    * {@inheritdoc}

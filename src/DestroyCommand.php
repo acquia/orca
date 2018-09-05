@@ -15,9 +15,14 @@ class DestroyCommand extends CommandBase {
    * Destroys the build
    *
    * @command destroy
+   *
+   * @param array $opts
+   *
+   * @return \Robo\Result
    */
-  public function execute() {
-    return $this->_deleteDir(self::BUILD_DIR);
+  public function execute($opts = ['build-directory|d' => '../build']) {
+    $this->commandOptions = $opts;
+    return $this->_deleteDir($this->getBuildDir());
   }
 
 }

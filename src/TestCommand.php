@@ -10,16 +10,18 @@ use Robo\ResultData;
 class TestCommand extends CommandBase {
 
   /**
-   * The path to the PHPUnit configuration file.
-   */
-  const PHPUNIT_CONFIG_FILE = self::BUILD_DIR . '/docroot/core/phpunit.xml.dist';
-
-  /**
    * Performs tests
    *
    * @command test
+   * @option build-directory The path to the build directory, absolute or
+   *   relative to the current working directory.
+   *
+   * @param array $opts
+   *
+   * @return \Robo\ResultData
    */
-  public function execute() {
+  public function execute($opts = ['build-directory|d' => '../build']) {
+    $this->commandOptions = $opts;
     try {
       $this->collectionBuilder()
         ->addCode($this->ensureBuild())
@@ -39,22 +41,30 @@ class TestCommand extends CommandBase {
    */
   private function ensureBuild() {
     return function () {
-      if (!file_exists(self::PHPUNIT_CONFIG_FILE)) {
+      if (!file_exists($this->getPhpUnitConfigFile())) {
         throw new \Exception('The build is not ready. Run `orca build` first.');
       }
     };
   }
 
   /**
+   * Gets the path to the PHPUnit configuration file.
+   *
+   * @return string
+   */
+  private function getPhpUnitConfigFile() {
+    return $this->getBuildDir() . '/docroot/core/phpunit.xml.dist';
+  }
+
+  /**
    * Runs PHPUnit tests.
    *
    * @return \Robo\Contract\TaskInterface
-   * @throws \Robo\Exception\TaskException
    */
   private function runPhpUnitTests() {
     return $this->taskPhpUnit()
-      ->configFile(self::PHPUNIT_CONFIG_FILE)
-      ->file(self::BUILD_DIR . '/docroot/modules/contrib/example/src');
+      ->configFile($this->getPhpUnitConfigFile())
+      ->file($this->getBuildDir() . '/docroot/modules/contrib/example/src');
   }
 
 }

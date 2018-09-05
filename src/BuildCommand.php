@@ -17,8 +17,13 @@ class BuildCommand extends CommandBase {
    * Performs a build
    *
    * @command build
+   *
+   * @param array $opts
+   *
+   * @return \Robo\ResultData
    */
-  public function execute() {
+  public function execute($opts = ['build-directory|d' => '../build']) {
+    $this->commandOptions = $opts;
     try {
       $this->collectionBuilder()
         ->addTask($this->createBltProject())
@@ -40,7 +45,7 @@ class BuildCommand extends CommandBase {
   private function createBltProject() {
     return $this->taskComposerCreateProject()
       ->source('acquia/blt-project')
-      ->target(self::BUILD_DIR)
+      ->target($this->getBuildDir())
       ->interactive(FALSE)
       // Delaying installation to a subsequent step (i.e., addModuleUnderTest())
       // can save some 30% on processing time without changing the outcome.
@@ -54,7 +59,7 @@ class BuildCommand extends CommandBase {
    */
   private function addComposerConfig() {
     return function () {
-      $file = new JsonFile(self::BUILD_DIR . '/composer.json');
+      $file = new JsonFile($this->getBuildDir() . '/composer.json');
       $json = new JsonConfigSource($file);
       $json->addRepository('acquia/example', [
         'type' => 'path',
@@ -75,7 +80,7 @@ class BuildCommand extends CommandBase {
   private function addModuleUnderTest() {
     return $this->taskComposerRequire()
       ->dependency('acquia/example')
-      ->workingDir(self::BUILD_DIR);
+      ->workingDir($this->getBuildDir());
   }
 
 }
