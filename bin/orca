@@ -10,6 +10,7 @@ $class_loader = require get_class_loader_path();
 $command_classes = [
   BuildCommand::class,
   DestroyCommand::class,
+  TestCommand::class,
 ];
 $runner = new Runner($command_classes);
 $runner->setClassLoader($class_loader);
@@ -27,5 +28,5 @@ function get_class_loader_path() {
       return $path;
     }
   }
-  die("Could not find autoloader. Run 'composer install'.");
+  die("Could not find autoloader. Run 'composer install' first.");
 }
