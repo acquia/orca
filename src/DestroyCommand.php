@@ -2,10 +2,6 @@
 
 namespace AcquiaOrca\Robo\Plugin\Commands;
 
-use Composer\Config\JsonConfigSource;
-use Composer\Json\JsonFile;
-use Robo\ResultData;
-
 /**
  * Provides the "destroy" command.
  */
