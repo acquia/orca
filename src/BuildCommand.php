@@ -4,7 +4,9 @@ namespace AcquiaOrca\Robo\Plugin\Commands;
 
 use Composer\Config\JsonConfigSource;
 use Composer\Json\JsonFile;
+use Robo\Exception\TaskException;
 use Robo\ResultData;
+use Symfony\Component\Process\ExecutableFinder;
 
 /**
  * Provides the "build" command.
@@ -33,6 +35,7 @@ class BuildCommand extends CommandBase {
    * Creates a BLT project.
    *
    * @return \Robo\Contract\TaskInterface
+   * @throws \Robo\Exception\TaskException
    */
   private function createBltProject() {
     return $this->taskComposerCreateProject()
@@ -64,6 +67,7 @@ class BuildCommand extends CommandBase {
    * Adds the module under test to the build.
    *
    * @return \Robo\Contract\TaskInterface
+   * @throws \Robo\Exception\TaskException
    */
   private function addModuleUnderTest() {
     return $this->taskComposerRequire()
