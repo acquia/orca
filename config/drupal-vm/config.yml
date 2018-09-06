@@ -6,7 +6,7 @@ vagrant_ip: 192.168.12.179
 
 vagrant_synced_folders:
 - local_path: ../
-  destination: /var/www/orcaverse
+  destination: /var/www/orca
   type: nfs
   create: true
 
@@ -14,7 +14,7 @@ drupal_build_composer_project: false
 
 drupal_install_site: false
 
-drupal_core_path: "/var/www/orcaverse"
+drupal_core_path: "/var/www/orca"
 
 configure_drush_aliases: false
 
