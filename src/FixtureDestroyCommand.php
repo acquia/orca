@@ -15,6 +15,7 @@ class FixtureDestroyCommand extends CommandBase {
    * Deletes the entire Drupal site build directory.
    *
    * @command fixture:destroy
+   * @aliases destroy
    *
    * @return \Robo\ResultData
    */

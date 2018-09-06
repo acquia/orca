@@ -13,6 +13,7 @@ class TestsRunCommand extends CommandBase {
    * Runs automated tests.
    *
    * @command tests:run
+   * @aliases test
    *
    * @return \Robo\ResultData
    */

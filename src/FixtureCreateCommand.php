@@ -20,6 +20,7 @@ class FixtureCreateCommand extends CommandBase {
    * using Composer.
    *
    * @command fixture:create
+   * @aliases build
    *
    * @return \Robo\ResultData
    */
