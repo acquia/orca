@@ -16,17 +16,14 @@ class FixtureDestroyCommand extends CommandBase {
    *
    * @command fixture:destroy
    *
-   * @param array $opts
-   *
    * @return \Robo\ResultData
    */
-  public function execute($opts = ['build-directory|d' => '../build']) {
-    $this->commandOptions = $opts;
-    $confirm = $this->confirm(sprintf('Are you sure you want to destroy the test fixture at %s?', $this->getBuildDir()));
+  public function execute($opts = []) {
+    $confirm = $this->confirm('Are you sure you want to destroy the test fixture?');
     if (!$confirm && !$opts['no-interaction']) {
       return Result::cancelled();
     }
-    return $this->_deleteDir($this->getBuildDir());
+    return $this->_deleteDir(self::BUILD_DIR);
   }
 
 }

@@ -21,12 +21,9 @@ class FixtureCreateCommand extends CommandBase {
    *
    * @command fixture:create
    *
-   * @param array $opts
-   *
    * @return \Robo\ResultData
    */
-  public function execute($opts = ['build-directory|d' => '../build']) {
-    $this->commandOptions = $opts;
+  public function execute() {
     try {
       $this->collectionBuilder()
         ->addTask($this->createBltProject())
@@ -48,7 +45,7 @@ class FixtureCreateCommand extends CommandBase {
   private function createBltProject() {
     return $this->taskComposerCreateProject()
       ->source('acquia/blt-project')
-      ->target($this->getBuildDir())
+      ->target(self::BUILD_DIR)
       ->interactive(FALSE)
       // Delaying installation to a subsequent step (i.e., addModuleUnderTest())
       // can save some 30% on processing time without changing the outcome.
@@ -62,7 +59,7 @@ class FixtureCreateCommand extends CommandBase {
    */
   private function addComposerConfig() {
     return function () {
-      $file = new JsonFile($this->getBuildDir() . '/composer.json');
+      $file = new JsonFile(self::BUILD_DIR . '/composer.json');
       $json = new JsonConfigSource($file);
       $json->addRepository('acquia/example', [
         'type' => 'path',
@@ -83,7 +80,7 @@ class FixtureCreateCommand extends CommandBase {
   private function addModuleUnderTest() {
     return $this->taskComposerRequire()
       ->dependency('acquia/example')
-      ->workingDir($this->getBuildDir());
+      ->workingDir(self::BUILD_DIR);
   }
 
 }

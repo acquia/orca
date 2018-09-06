@@ -13,15 +13,10 @@ class TestsRunCommand extends CommandBase {
    * Runs automated tests.
    *
    * @command tests:run
-   * @option build-directory The path to the build directory, absolute or
-   *   relative to the current working directory.
-   *
-   * @param array $opts
    *
    * @return \Robo\ResultData
    */
-  public function execute($opts = ['build-directory|d' => '../build']) {
-    $this->commandOptions = $opts;
+  public function execute() {
     try {
       $this->collectionBuilder()
         ->addCode($this->ensureFixture())
@@ -53,7 +48,7 @@ class TestsRunCommand extends CommandBase {
    * @return string
    */
   private function getPhpUnitConfigFile() {
-    return $this->getBuildDir() . '/docroot/core/phpunit.xml.dist';
+    return self::BUILD_DIR . '/docroot/core/phpunit.xml.dist';
   }
 
   /**
@@ -64,7 +59,7 @@ class TestsRunCommand extends CommandBase {
   private function runPhpUnitTests() {
     return $this->taskPhpUnit()
       ->configFile($this->getPhpUnitConfigFile())
-      ->file($this->getBuildDir() . '/docroot/modules/contrib/example/src');
+      ->file(self::BUILD_DIR . '/docroot/modules/contrib/example/src');
   }
 
 }
