@@ -9,14 +9,17 @@ use Robo\ResultData;
 use Symfony\Component\Process\ExecutableFinder;
 
 /**
- * Provides the "build" command.
+ * Provides the "fixture:create" command.
  */
-class BuildCommand extends CommandBase {
+class FixtureCreateCommand extends CommandBase {
 
   /**
-   * Performs a build
+   * Creates the base test fixture.
    *
-   * @command build
+   * Creates a BLT-based Drupal site build and includes the module under test
+   * using Composer.
+   *
+   * @command fixture:create
    *
    * @param array $opts
    *
@@ -33,7 +36,7 @@ class BuildCommand extends CommandBase {
     } catch (\Exception $e) {
       return new ResultData(ResultData::EXITCODE_ERROR, $e->getMessage());
     }
-    return new ResultData(ResultData::EXITCODE_OK, 'Build complete.');
+    return new ResultData(ResultData::EXITCODE_OK, 'Fixture created.');
   }
 
   /**

@@ -3,16 +3,14 @@
 
 namespace AcquiaOrca\Robo\Plugin\Commands;
 
-use Robo\Runner;
-
 $class_loader = require get_class_loader_path();
 
 $command_classes = [
-  BuildCommand::class,
-  DestroyCommand::class,
-  TestCommand::class,
+  FixtureCreateCommand::class,
+  FixtureDestroyCommand::class,
+  TestsRunCommand::class,
 ];
-$runner = new Runner($command_classes);
+$runner = new \Robo\Runner($command_classes);
 $runner->setClassLoader($class_loader);
 $status_code = $runner->execute($_SERVER['argv'], 'ORCA', 'v0.0.1');
 

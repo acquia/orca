@@ -5,14 +5,14 @@ namespace AcquiaOrca\Robo\Plugin\Commands;
 use Robo\ResultData;
 
 /**
- * Provides the "test" command.
+ * Provides the "tests:run" command.
  */
-class TestCommand extends CommandBase {
+class TestsRunCommand extends CommandBase {
 
   /**
-   * Performs tests
+   * Runs automated tests.
    *
-   * @command test
+   * @command tests:run
    * @option build-directory The path to the build directory, absolute or
    *   relative to the current working directory.
    *
@@ -24,7 +24,7 @@ class TestCommand extends CommandBase {
     $this->commandOptions = $opts;
     try {
       $this->collectionBuilder()
-        ->addCode($this->ensureBuild())
+        ->addCode($this->ensureFixture())
         // @todo Run Behat.
         ->addTask($this->runPhpUnitTests())
         ->run();
@@ -35,14 +35,14 @@ class TestCommand extends CommandBase {
   }
 
   /**
-   * Ensures the build is ready for testing.
+   * Ensures the fixture is ready for testing.
    *
    * @return \Closure
    */
-  private function ensureBuild() {
+  private function ensureFixture() {
     return function () {
       if (!file_exists($this->getPhpUnitConfigFile())) {
-        throw new \Exception('The build is not ready. Run `orca build` first.');
+        throw new \Exception('The fixture is not ready. Run `orca fixture:create` first.');
       }
     };
   }

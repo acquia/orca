@@ -5,14 +5,16 @@ namespace AcquiaOrca\Robo\Plugin\Commands;
 use Robo\Result;
 
 /**
- * Provides the "destroy" command.
+ * Provides the "fixture:destroy" command.
  */
-class DestroyCommand extends CommandBase {
+class FixtureDestroyCommand extends CommandBase {
 
   /**
-   * Destroys the build
+   * Destroys the test fixture.
    *
-   * @command destroy
+   * Deletes the entire Drupal site build directory.
+   *
+   * @command fixture:destroy
    *
    * @param array $opts
    *
@@ -20,7 +22,7 @@ class DestroyCommand extends CommandBase {
    */
   public function execute($opts = ['build-directory|d' => '../build']) {
     $this->commandOptions = $opts;
-    $confirm = $this->confirm(sprintf('Are you sure you want to destroy the build at %s?', $this->getBuildDir()));
+    $confirm = $this->confirm(sprintf('Are you sure you want to destroy the test fixture at %s?', $this->getBuildDir()));
     if (!$confirm && !$opts['no-interaction']) {
       return Result::cancelled();
     }
