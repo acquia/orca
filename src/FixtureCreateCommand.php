@@ -34,7 +34,7 @@ class FixtureCreateCommand extends CommandBase {
     } catch (\Exception $e) {
       return new ResultData(ResultData::EXITCODE_ERROR, $e->getMessage());
     }
-    return new ResultData(ResultData::EXITCODE_OK, 'Fixture created.');
+    return new ResultData(ResultData::EXITCODE_OK);
   }
 
   /**
@@ -48,8 +48,8 @@ class FixtureCreateCommand extends CommandBase {
       ->source('acquia/blt-project')
       ->target(self::BUILD_DIR)
       ->interactive(FALSE)
-      // Delaying installation to a subsequent step (i.e., addModuleUnderTest())
-      // can save some 30% on processing time without changing the outcome.
+      // Delaying installation to a subsequent step can cut processing time by
+      // as much as 30 seconds without changing the outcome.
       ->noInstall();
   }
 
