@@ -16,7 +16,8 @@
         "phpunit/phpunit": "^4.8.35 || ^6.1"
     },
     "require-dev": {
-        "geerlingguy/drupal-vm": "^4.9"
+        "geerlingguy/drupal-vm": "^4.9",
+        "squizlabs/php_codesniffer": "^3.3"
     },
     "config": {
         "sort-packages": true
@@ -30,5 +31,9 @@
     "prefer-stable": true,
     "bin": [
         "bin/orca"
-    ]
+    ],
+    "scripts": {
+        "phpcbf": "./vendor/bin/phpcbf --standard=PSR2 src",
+        "phpcs": "./vendor/bin/phpcs --report-width=120 --standard=PSR2 src"
+    }
 }
