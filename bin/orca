@@ -8,6 +8,7 @@ $class_loader = require get_class_loader_path();
 $command_classes = [
   FixtureCreateCommand::class,
   FixtureDestroyCommand::class,
+  FixtureResetCommand::class,
   TestsRunCommand::class,
 ];
 $runner = new \Robo\Runner($command_classes);

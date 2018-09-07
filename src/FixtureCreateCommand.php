@@ -4,9 +4,7 @@ namespace AcquiaOrca\Robo\Plugin\Commands;
 
 use Composer\Config\JsonConfigSource;
 use Composer\Json\JsonFile;
-use Robo\Exception\TaskException;
 use Robo\ResultData;
-use Symfony\Component\Process\ExecutableFinder;
 
 /**
  * Provides the "fixture:create" command.
@@ -26,7 +24,7 @@ class FixtureCreateCommand extends CommandBase {
    */
   public function execute() {
     try {
-      $this->collectionBuilder()
+      $result = $this->collectionBuilder()
         ->addTask($this->createBltProject())
         ->addCode($this->addComposerConfig())
         ->addTask($this->addModuleUnderTest())
@@ -34,7 +32,7 @@ class FixtureCreateCommand extends CommandBase {
     } catch (\Exception $e) {
       return new ResultData(ResultData::EXITCODE_ERROR, $e->getMessage());
     }
-    return new ResultData(ResultData::EXITCODE_OK);
+    return $result;
   }
 
   /**

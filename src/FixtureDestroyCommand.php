@@ -24,6 +24,7 @@ class FixtureDestroyCommand extends CommandBase {
     if (!$confirm && !$opts['no-interaction']) {
       return Result::cancelled();
     }
+
     return $this->_deleteDir(self::BUILD_DIR);
   }
 

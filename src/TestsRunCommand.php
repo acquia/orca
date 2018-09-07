@@ -2,8 +2,6 @@
 
 namespace AcquiaOrca\Robo\Plugin\Commands;
 
-use Robo\ResultData;
-
 /**
  * Provides the "tests:run" command.
  */
@@ -18,16 +16,11 @@ class TestsRunCommand extends CommandBase {
    * @return \Robo\ResultData
    */
   public function execute() {
-    try {
-      $this->collectionBuilder()
-        ->addCode($this->ensureFixture())
-        // @todo Run Behat.
-        ->addTask($this->runPhpUnitTests())
-        ->run();
-    } catch (\Exception $e) {
-      return new ResultData(ResultData::EXITCODE_ERROR, $e->getMessage());
-    }
-    return new ResultData(ResultData::EXITCODE_OK, 'Testing complete.');
+    return $this->collectionBuilder()
+      ->addCode($this->ensureFixture())
+      // @todo Run Behat.
+      ->addTask($this->runPhpUnitTests())
+      ->run();
   }
 
   /**
