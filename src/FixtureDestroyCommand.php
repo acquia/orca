@@ -27,6 +27,8 @@ class FixtureDestroyCommand extends CommandBase
             return Result::cancelled();
         }
 
-        return $this->_deleteDir(self::BUILD_DIR);
+        return $this->collectionBuilder()
+          ->addTask($this->taskDrushStack()->drush('sql-drop'))
+          ->addTask($this->taskDeleteDir(self::BUILD_DIR));
     }
 }

@@ -15,8 +15,8 @@ class FixtureCreateCommand extends CommandBase
     /**
      * Creates the base test fixture.
      *
-     * Creates a BLT-based Drupal site build and includes the module under test
-     * using Composer.
+     * Creates a BLT-based Drupal site build, includes the module under test
+     * using Composer, installs Drupal, and commits any code changes.
      *
      * @command fixture:create
      * @aliases build
@@ -30,6 +30,8 @@ class FixtureCreateCommand extends CommandBase
               ->addTask($this->createBltProject())
               ->addCode($this->addComposerConfig())
               ->addTask($this->addModuleUnderTest())
+              ->addTask($this->installDrupal())
+              ->addTask($this->commitCodeChanges())
               ->run();
         } catch (\Exception $e) {
             return new ResultData(ResultData::EXITCODE_ERROR, $e->getMessage());
@@ -85,5 +87,18 @@ class FixtureCreateCommand extends CommandBase
         return $this->taskComposerRequire()
           ->dependency('acquia/example')
           ->workingDir(self::BUILD_DIR);
+    }
+
+    private function commitCodeChanges()
+    {
+        return $this->collectionBuilder()
+          ->addTaskList([
+            $this->taskGitStack()
+              ->add('.')
+              ->dir(self::BUILD_DIR),
+            $this->taskGitStack()
+              ->commit('Installed Drupal.')
+              ->dir(self::BUILD_DIR),
+          ]);
     }
 }

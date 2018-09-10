@@ -13,7 +13,8 @@ class FixtureResetCommand extends CommandBase
     /**
      * Resets the test fixture to its base state.
      *
-     * Restores the last committed state of the build directory from Git.
+     * Restores the last committed state of the build directory from Git and
+     * reinstalls Drupal.
      *
      * @command fixture:reset
      * @aliases reset
@@ -32,6 +33,7 @@ class FixtureResetCommand extends CommandBase
         return $this->collectionBuilder()
           ->addTask($git->exec('reset --hard'))
           ->addTask($git->exec('clean -fd'))
+          ->addTask($this->installDrupal())
           ->run();
     }
 }

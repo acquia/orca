@@ -2,6 +2,8 @@
 
 namespace AcquiaOrca\Robo\Plugin\Commands;
 
+use Boedah\Robo\Task\Drush\DrushStack;
+use Boedah\Robo\Task\Drush\loadTasks as DrushTasks;
 use Robo\Exception\TaskException;
 use Robo\Tasks;
 use Symfony\Component\Process\ExecutableFinder;
@@ -15,22 +17,27 @@ use Symfony\Component\Process\ExecutableFinder;
 abstract class CommandBase extends Tasks
 {
 
+    use DrushTasks;
+
     /**
      * The relative path to the build directory.
      */
     const BUILD_DIR = '../build';
 
     /**
-     * The options passed to the command.
-     *
-     * @var array
-     */
-    protected $commandOptions;
-
-    /**
      * @return \Robo\ResultData
      */
     abstract public function execute();
+
+    /**
+     * Installs Drupal.
+     *
+     * @return \Robo\Task\Base\Exec
+     */
+    protected function installDrupal()
+    {
+        return $this->taskExec(CommandBase::BUILD_DIR . '/vendor/bin/blt drupal:install -n');
+    }
 
     /**
      * {@inheritdoc}
@@ -123,7 +130,7 @@ abstract class CommandBase extends Tasks
     }
 
     /**
-     * Handles the Composer path argument, defaulting to global the install.
+     * Handles the Composer path argument, defaulting to the global install.
      *
      * @param string $path_to_composer
      *
@@ -133,6 +140,19 @@ abstract class CommandBase extends Tasks
     private function handleComposerPathArg($path_to_composer)
     {
         return $path_to_composer ?: $this->getPathToGlobalComposer();
+    }
+
+    /**
+     * @param string $pathToDrush
+     *
+     * @return \Boedah\Robo\Task\Drush\DrushStack
+     */
+    protected function taskDrushStack($pathToDrush = null)
+    {
+        $pathToDrush = $pathToDrush ?: self::BUILD_DIR . '/vendor/bin/drush';
+        /** @var \Boedah\Robo\Task\Drush\DrushStack $task */
+        $task = $this->task(DrushStack::class, $pathToDrush);
+        return $task->drupalRootDirectory(realpath(self::BUILD_DIR . '/docroot'));
     }
 
     /**
