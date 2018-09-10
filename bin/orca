@@ -1,9 +1,24 @@
 #!/usr/bin/env php
 <?php
 
+/**
+ * @file
+ * ORCA command line executable.
+ */
+
 namespace AcquiaOrca\Robo\Plugin\Commands;
 
-$class_loader = require get_class_loader_path();
+use Robo\Runner;
+
+if (file_exists(__DIR__ . '/../vendor/autoload.php')) {
+  $class_loader = require __DIR__ . '/../vendor/autoload.php';
+}
+elseif (file_exists(__DIR__ . '/../../../autoload.php')) {
+  $class_loader = require __DIR__ . '/../../../autoload.php';
+}
+else {
+  die("Could not find autoloader. Run 'composer install' first.\n");
+}
 
 $command_classes = [
   FixtureCreateCommand::class,
@@ -11,22 +26,8 @@ $command_classes = [
   FixtureResetCommand::class,
   TestsRunCommand::class,
 ];
-$runner = new \Robo\Runner($command_classes);
+$runner = new Runner($command_classes);
 $runner->setClassLoader($class_loader);
 $status_code = $runner->execute($_SERVER['argv'], 'ORCA', 'v0.0.1');
 
 exit($status_code);
-
-function get_class_loader_path()
-{
-    $possible_autoloader_paths = [
-      __DIR__ . '/../vendor/autoload.php',
-      __DIR__ . '/../../../autoload.php',
-    ];
-    foreach ($possible_autoloader_paths as $path) {
-        if (file_exists($path)) {
-            return $path;
-        }
-    }
-    die("Could not find autoloader. Run 'composer install' first.");
-}

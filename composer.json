@@ -35,7 +35,7 @@
         "bin/orca"
     ],
     "scripts": {
-        "phpcbf": "./vendor/bin/phpcbf --standard=PSR2 src",
-        "phpcs": "./vendor/bin/phpcs --report-width=120 --standard=PSR2 src"
+        "phpcbf": "phpcbf",
+        "phpcs": "phpcs"
     }
 }

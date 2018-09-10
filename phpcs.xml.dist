@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<ruleset name="blt">
+  <description>Coding standards for ORCA.</description>
+
+  <arg name="colors"/>
+
+  <rule ref="Drupal">
+    <exclude name="Drupal.Commenting.FunctionComment.MissingReturnComment"/>
+  </rule>
+
+  <file>bin/orca</file>
+  <file>src</file>
+</ruleset>
