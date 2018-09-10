@@ -92,14 +92,12 @@ class FixtureCreateCommand extends CommandBase {
    */
   private function commitCodeChanges() {
     return $this->collectionBuilder()
-      ->addTaskList([
+      ->addTask(
         $this->taskGitStack()
+          ->dir(self::BUILD_DIR)
           ->add('.')
-          ->dir(self::BUILD_DIR),
-        $this->taskGitStack()
           ->commit('Installed Drupal.')
-          ->dir(self::BUILD_DIR),
-      ]);
+      );
   }
 
 }
