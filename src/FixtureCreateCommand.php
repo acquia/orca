@@ -27,7 +27,7 @@ class FixtureCreateCommand extends CommandBase {
       $result = $this->collectionBuilder()
         ->addTask($this->createBltProject())
         ->addCode($this->addComposerConfig())
-        ->addTask($this->addModuleUnderTest())
+        ->addTask($this->addAcquiaProductModules())
         ->addTask($this->installDrupal())
         ->addTask($this->commitCodeChanges())
         ->run();
@@ -49,10 +49,7 @@ class FixtureCreateCommand extends CommandBase {
     return $this->taskComposerCreateProject()
       ->source('acquia/blt-project')
       ->target(self::BUILD_DIR)
-      ->interactive(FALSE)
-      // Delaying installation to a subsequent step can cut processing time by
-      // as much as 30 seconds without changing the outcome.
-      ->noInstall();
+      ->interactive(FALSE);
   }
 
   /**
@@ -81,9 +78,17 @@ class FixtureCreateCommand extends CommandBase {
    *
    * @throws \Robo\Exception\TaskException
    */
-  private function addModuleUnderTest() {
+  private function addAcquiaProductModules() {
     return $this->taskComposerRequire()
-      ->dependency('acquia/example')
+      ->dependency([
+        'acquia/acsf-tools',
+        'acquia/example',
+        'drupal/acquia_commercemanager',
+        'drupal/acquia_contenthub',
+        'drupal/acquia_lift',
+        'drupal/acsf',
+        'drupal/media_acquiadam',
+      ])
       ->workingDir(self::BUILD_DIR);
   }
 
@@ -95,6 +100,7 @@ class FixtureCreateCommand extends CommandBase {
       ->addTask(
         $this->taskGitStack()
           ->dir(self::BUILD_DIR)
+          ->silent(TRUE)
           ->add('.')
           ->commit('Installed Drupal.')
       );

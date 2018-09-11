@@ -33,4 +33,4 @@ php_packages_extra:
 
 php_xdebug_version: 2.5.0
 php_xdebug_remote_port: "9000"
-php_memory_limit: "512M"
+php_memory_limit: "1024M"
