@@ -57,6 +57,7 @@ class FixtureCreateCommand extends CommandBase {
           ->silent(TRUE)
           ->add('.')
           ->commit('Installed Drupal.')
+          ->exec('branch -f ' . self::BASE_FIXTURE_BRANCH)
       );
   }
 

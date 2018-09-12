@@ -29,7 +29,7 @@ class FixtureResetCommand extends CommandBase {
     $git = $this->taskGitStack()
       ->dir(self::BUILD_DIR);
     return $this->collectionBuilder()
-      ->addTask($git->exec('reset --hard'))
+      ->addTask($git->exec('reset --hard ' . self::BASE_FIXTURE_BRANCH))
       ->addTask($git->exec('clean -fd'))
       ->addTask($this->installDrupal())
       ->run();

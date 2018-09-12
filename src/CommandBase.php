@@ -15,6 +15,11 @@ abstract class CommandBase extends Tasks {
   const BUILD_DIR = '../build';
 
   /**
+   * The base fixture Git branch.
+   */
+  const BASE_FIXTURE_BRANCH = 'base-fixture';
+
+  /**
    * Executes the command.
    *
    * @return \Robo\ResultData
