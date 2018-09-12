@@ -11,8 +11,6 @@
     ],
     "require": {
         "php": "^5.6 || ^7.0",
-        "boedah/robo-drush": "^3.1",
-        "composer/composer": "^1.7",
         "consolidation/robo": "~1",
         "phpunit/phpunit": "^4.8.35 || ^6.1"
     },

@@ -12,7 +12,7 @@ class FixtureDestroyCommand extends CommandBase {
   /**
    * Destroys the test fixture.
    *
-   * Drops the Drupal database and deletes the entire site build directory.
+   * Deletes the entire site build directory.
    *
    * @command fixture:destroy
    * @aliases destroy
@@ -25,9 +25,7 @@ class FixtureDestroyCommand extends CommandBase {
       return Result::cancelled();
     }
 
-    return $this->collectionBuilder()
-      ->addTask($this->taskDrushStack()->drush('sql-drop'))
-      ->addTask($this->taskDeleteDir(self::BUILD_DIR));
+    return $this->_deleteDir(self::BUILD_DIR);
   }
 
 }
