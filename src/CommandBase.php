@@ -32,7 +32,25 @@ abstract class CommandBase extends Tasks {
    * @return \Robo\Task\Base\Exec
    */
   protected function installDrupal() {
-    return $this->taskExec(self::BUILD_DIR . '/vendor/bin/blt drupal:install -n');
+    return $this->taskBlt('drupal:install -n');
+  }
+
+  /**
+   * Returns a BLT task.
+   *
+   * @param string $command
+   *   The command string to execute, including options and arguments.
+   *
+   * @return \Robo\Task\Base\Exec
+   */
+<<<<<<< Updated upstream
+  protected function taskBlt($command) {
+    return $this->taskExec(self::BUILD_DIR . "/vendor/bin/blt {$command}");
+=======
+  protected function taskBltExec($command) {
+    return $this->taskExec(self::BUILD_DIR . "/vendor/bin/blt {$command}")
+      ->dir(self::BUILD_DIR);
+>>>>>>> Stashed changes
   }
 
 }
