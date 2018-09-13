@@ -9,5 +9,6 @@
   </rule>
 
   <file>bin/orca</file>
+  <file>config</file>
   <file>src</file>
 </ruleset>
