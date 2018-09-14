@@ -45,8 +45,8 @@ class TestsRunCommand extends CommandBase {
    */
   private function runPhpUnitTests() {
     return $this->taskPhpUnit()
-      ->configFile(self::PHPUNIT_CONFIG_FILE)
-      ->file(self::BUILD_DIR . '/docroot/modules/contrib/example/src');
+      ->configFile(realpath(self::PHPUNIT_CONFIG_FILE))
+      ->file(realpath(self::BUILD_DIR . '/docroot/modules/contrib/acquia'));
   }
 
 }
