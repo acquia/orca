@@ -10,15 +10,25 @@
 // @codingStandardsIgnoreStart
 return [
   "acquia/acsf-tools", // https://github.com/acquia/acsf-tools
-  "drupal/acquia_commercemanager", // https://www.drupal.org/project/acquia_commercemanager
-  "drupal/acquia_connector", // https://www.drupal.org/project/acquia_connector
+
+  // @todo Unable to install modules: module 'acm' is missing its dependency
+  //   module pcb.
+  //  "drupal/acquia_commercemanager", // https://www.drupal.org/project/acquia_commercemanager
+
+  // @todo Unable to install modules: module 'acquia_search' is missing its
+  //   dependency module search_api_solr.
+  //  "drupal/acquia_connector", // https://www.drupal.org/project/acquia_connector
+
   "drupal/acquia_contenthub:~1.0", // https://www.drupal.org/project/acquia_contenthub
   "drupal/acquia_lift", // https://www.drupal.org/project/acquia_lift
   "drupal/acquia_purge", // https://www.drupal.org/project/acquia_purge
-  "drupal/acsf", // https://www.drupal.org/project/acsf
-  // @todo Can't install Lightning modules yet:
-  //
-  // Your requirements could not be resolved to an installable set of packages.
+
+  // @todo Unable to install modules: module 'acsf_sso' is missing its
+  //   dependency module samlauth.
+  //  "drupal/acsf", // https://www.drupal.org/project/acsf
+
+  // @todo Your requirements could not be resolved to an installable set of
+  //   packages.
   //
   //  Problem 1
   //    - Installation request for drupal/core (locked at 8.5.7, required as 8.5.*) -> satisfiable by drupal/core[8.5.7].
@@ -32,6 +42,9 @@ return [
   //  "drupal/lightning_layout", // https://www.drupal.org/project/lightning_layout
   //  "drupal/lightning_media", // https://www.drupal.org/project/lightning_media
   //  "drupal/lightning_workflow", // https://www.drupal.org/project/lightning_workflow
-  "drupal/media_acquiadam", // https://www.drupal.org/project/media_acquiadam
+
+  // @todo Unable to install modules: module 'media_acquiadam_report' is missing
+  //   its dependency module entity_usage.
+  //  "drupal/media_acquiadam", // https://www.drupal.org/project/media_acquiadam
 ];
 // @codingStandardsIgnoreEnd

@@ -3,6 +3,7 @@
 namespace AcquiaOrca\Robo\Plugin\Commands;
 
 use Robo\ResultData;
+use Symfony\Component\Finder\Finder;
 
 /**
  * Provides the "fixture:create" command.
@@ -23,11 +24,14 @@ class FixtureCreateCommand extends CommandBase {
   public function execute() {
     try {
       $result = $this->collectionBuilder()
-        ->addTask($this->createBltProject())
-        ->addTask($this->addAcquiaProductModules())
-        ->addTask($this->commitCodeChanges('Added Acquia product modules.'))
-        ->addTask($this->installDrupal())
-        ->addTask($this->commitCodeChanges('Installed Drupal.', self::BASE_FIXTURE_BRANCH))
+        ->addTaskList([
+          $this->createBltProject(),
+          $this->addAcquiaProductModules(),
+          $this->commitCodeChanges('Added Acquia product modules.'),
+          $this->installDrupal(),
+          $this->commitCodeChanges('Installed Drupal.', self::BASE_FIXTURE_BRANCH),
+        ])
+        ->addCode($this->installAcquiaProductModules())
         ->run();
     }
     catch (\Exception $e) {
@@ -114,7 +118,7 @@ class FixtureCreateCommand extends CommandBase {
    *   An indexed array of package strings, excluding constraints, e.g.,
    *   "drupal/example:^1.0".
    */
-  protected function getAcquiaProductModulePackageNames() {
+  private function getAcquiaProductModulePackageNames() {
     $names = [];
     foreach ($this->getAcquiaProductModulePackageStrings() as $package_string) {
       $names[] = explode(':', $package_string)[0];
@@ -150,6 +154,42 @@ class FixtureCreateCommand extends CommandBase {
       $names[] = explode('/', $package_name)[1];
     }
     return $names;
+  }
+
+  /**
+   * Installs all Acquia product modules.
+   *
+   * @return \Closure
+   */
+  private function installAcquiaProductModules() {
+    return function () {
+      $module_list = $this->getAcquiaProductModuleList();
+      return $this->taskDrushExec("pm-enable -y {$module_list}")
+        ->run();
+    };
+  }
+
+  /**
+   * Gets a space-separated list of Acquia product module machine names.
+   *
+   * Excludes test modules.
+   *
+   * @return string
+   */
+  private function getAcquiaProductModuleList() {
+    $files = Finder::create()
+      ->files()
+      ->in(self::BUILD_DIR . '/docroot/modules/contrib/acquia')
+      ->notPath('@/tests/@')
+      ->name('/.*.info.yml$/')
+      ->notContains('/package:\\s*Testing/i')
+      ->notContains('/hidden:\\s*TRUE/i');
+    $modules = [];
+    /** @var \SplFileObject $file */
+    foreach ($files as $file) {
+      $modules[] = basename($file->getFilename(), '.info.yml');
+    }
+    return implode(' ', $modules);
   }
 
 }
