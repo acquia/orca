@@ -1,0 +1,14 @@
+language: php
+dist: trusty
+
+php: 7.2
+
+before_install:
+  - phpenv config-rm xdebug.ini
+  - composer validate --ansi
+
+install: composer install
+
+before_script: mysql -e "CREATE DATABASE drupal; GRANT ALL ON drupal.* TO 'drupal'@'localhost' identified by 'drupal';"
+
+script: ./bin/orca fixture:create
