@@ -13,3 +13,5 @@ install: composer install
 before_script: ./bin/orca fixture:create
 
 script: ./bin/orca tests:run
+
+after_script: ./bin/orca fixture:destroy -n

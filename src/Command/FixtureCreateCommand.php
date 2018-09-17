@@ -30,7 +30,6 @@ class FixtureCreateCommand extends CommandBase {
         $this->createBltProject(),
         $this->addAcquiaProductModules(),
         $this->commitCodeChanges('Added Acquia product modules.'),
-        $this->createDatabase(),
         $this->installDrupal(),
         $this->commitCodeChanges('Installed Drupal.', self::BASE_FIXTURE_BRANCH),
         $this->installAcquiaProductModules(),
@@ -152,15 +151,6 @@ class FixtureCreateCommand extends CommandBase {
       $task->exec("branch -f {$backup_branch}");
     }
     return $task;
-  }
-
-  /**
-   * Creates the Drupal database.
-   *
-   * @return \Robo\Task\Base\Exec
-   */
-  private function createDatabase() {
-    return $this->taskExec('mysql -uroot -e "CREATE DATABASE IF NOT EXISTS drupal; GRANT ALL ON drupal.* TO \'drupal\'@\'localhost\' identified by \'drupal\';"');
   }
 
   /**

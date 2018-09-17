@@ -23,12 +23,16 @@ abstract class CommandBase extends Tasks {
   abstract public function execute();
 
   /**
-   * Installs Drupal.
+   * Returns a Drupal installation task.
    *
    * @return \Robo\Collection\CollectionBuilder
    */
   protected function installDrupal() {
-    return $this->taskBltExec('drupal:install -n');
+    return $this->collectionBuilder()
+      ->addTaskList([
+        $this->taskMysqlExec("CREATE DATABASE IF NOT EXISTS drupal; GRANT ALL ON drupal.* TO 'drupal'@'localhost' identified by 'drupal';"),
+        $this->taskBltExec('drupal:install -n'),
+      ]);
   }
 
   /**
@@ -41,6 +45,15 @@ abstract class CommandBase extends Tasks {
    */
   protected function taskBltExec($command) {
     return $this->taskScriptExec('vendor/bin/blt', $command);
+  }
+
+  /**
+   * Returns a MySQL task.
+   *
+   * @return \Robo\Task\Base\Exec
+   */
+  protected function taskMysqlExec($command) {
+    return $this->taskExec(sprintf('mysql -uroot -e "%s"', $command));
   }
 
   /**

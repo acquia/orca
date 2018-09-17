@@ -17,7 +17,7 @@ class FixtureDestroyCommand extends CommandBase {
    * @command fixture:destroy
    * @aliases destroy
    *
-   * @return \Robo\Result|int
+   * @return \Robo\Collection\CollectionBuilder|int
    */
   public function execute($opts = []) {
     $confirm = $this->confirm('Are you sure you want to destroy the test fixture?');
@@ -25,7 +25,13 @@ class FixtureDestroyCommand extends CommandBase {
       return Result::EXITCODE_USER_CANCEL;
     }
 
-    return $this->_deleteDir($this->buildPath());
+    return $this->collectionBuilder()
+      ->addTaskList([
+        $this->taskMysqlExec('DROP DATABASE IF EXISTS drupal;'),
+        $this->taskExec('chmod -R u+w .')
+          ->dir($this->buildPath()),
+        $this->taskDeleteDir($this->buildPath()),
+      ]);
   }
 
 }
