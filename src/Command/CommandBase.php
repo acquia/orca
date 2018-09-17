@@ -18,7 +18,7 @@ abstract class CommandBase extends Tasks {
   /**
    * Executes the command.
    *
-   * @return \Robo\ResultData
+   * @return \Robo\Result|int
    */
   abstract public function execute();
 
@@ -60,7 +60,7 @@ abstract class CommandBase extends Tasks {
         $path = $this->buildPath($path);
 
         if (!file_exists($path)) {
-          throw new FixtureNotReadyException($this->io());
+          throw new FixtureNotReadyException();
         }
 
         return $this->taskExec("${path} {$command}")

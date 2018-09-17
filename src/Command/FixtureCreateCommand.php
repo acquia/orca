@@ -2,7 +2,6 @@
 
 namespace AcquiaOrca\Robo\Plugin\Commands;
 
-use Robo\ResultData;
 use Symfony\Component\Finder\Finder;
 
 /**
@@ -22,23 +21,21 @@ class FixtureCreateCommand extends CommandBase {
    * @return \Robo\ResultData
    */
   public function execute() {
-    try {
-      $result = $this->collectionBuilder()
-        ->addTaskList([
-          $this->createBltProject(),
-          $this->addAcquiaProductModules(),
-          $this->commitCodeChanges('Added Acquia product modules.'),
-          $this->createDatabase(),
-          $this->installDrupal(),
-          $this->commitCodeChanges('Installed Drupal.', self::BASE_FIXTURE_BRANCH),
-          $this->installAcquiaProductModules(),
-        ])
-        ->run();
+    if (file_exists($this->buildPath())) {
+      throw new \RuntimeException('The build directory already exists. Run `orca fixture:destroy` to remove it.');
     }
-    catch (\Exception $e) {
-      return new ResultData(ResultData::EXITCODE_ERROR, $e->getMessage());
-    }
-    return $result;
+
+    return $this->collectionBuilder()
+      ->addTaskList([
+        $this->createBltProject(),
+        $this->addAcquiaProductModules(),
+        $this->commitCodeChanges('Added Acquia product modules.'),
+        $this->createDatabase(),
+        $this->installDrupal(),
+        $this->commitCodeChanges('Installed Drupal.', self::BASE_FIXTURE_BRANCH),
+        $this->installAcquiaProductModules(),
+      ])
+      ->run();
   }
 
   /**

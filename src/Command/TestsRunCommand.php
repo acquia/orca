@@ -2,6 +2,8 @@
 
 namespace AcquiaOrca\Robo\Plugin\Commands;
 
+use AcquiaOrca\Exception\FixtureNotReadyException;
+
 /**
  * Provides the "tests:run" command.
  */
@@ -13,36 +15,13 @@ class TestsRunCommand extends CommandBase {
    * @command tests:run
    * @aliases test
    *
-   * @return \Robo\ResultData
+   * @return \Robo\Result|int
    */
   public function execute() {
     return $this->collectionBuilder()
-      ->addCode($this->ensureFixture())
       // @todo Run Behat.
       ->addTask($this->runPhpUnitTests())
       ->run();
-  }
-
-  /**
-   * Ensures the fixture is ready for testing.
-   *
-   * @return \Closure
-   */
-  private function ensureFixture() {
-    return function () {
-      if (!file_exists($this->phpunitConfigFile())) {
-        throw new \Exception('The fixture is not ready. Run `orca fixture:create` first.');
-      }
-    };
-  }
-
-  /**
-   * Returns the path to the PHPUnit configuration file.
-   *
-   * @return string
-   */
-  private function phpunitConfigFile() {
-    return $this->buildPath('docroot/core/phpunit.xml.dist');
   }
 
   /**
@@ -51,8 +30,13 @@ class TestsRunCommand extends CommandBase {
    * @return \Robo\Contract\TaskInterface
    */
   private function runPhpUnitTests() {
+    $phpunit_config_file = $this->buildPath('docroot/core/phpunit.xml.dist');
+    if (!file_exists($phpunit_config_file)) {
+      throw new FixtureNotReadyException();
+    }
+
     return $this->taskPhpUnit()
-      ->configFile($this->phpunitConfigFile())
+      ->configFile($phpunit_config_file)
       ->file($this->buildPath('docroot/modules/contrib/acquia'));
   }
 

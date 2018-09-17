@@ -17,12 +17,12 @@ class FixtureDestroyCommand extends CommandBase {
    * @command fixture:destroy
    * @aliases destroy
    *
-   * @return \Robo\ResultData
+   * @return \Robo\Result|int
    */
   public function execute($opts = []) {
     $confirm = $this->confirm('Are you sure you want to destroy the test fixture?');
     if (!$confirm && !$opts['no-interaction']) {
-      return Result::cancelled();
+      return Result::EXITCODE_USER_CANCEL;
     }
 
     return $this->_deleteDir($this->buildPath());

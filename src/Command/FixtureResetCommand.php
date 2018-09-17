@@ -2,6 +2,7 @@
 
 namespace AcquiaOrca\Robo\Plugin\Commands;
 
+use AcquiaOrca\Exception\FixtureNotReadyException;
 use Robo\Result;
 
 /**
@@ -18,12 +19,16 @@ class FixtureResetCommand extends CommandBase {
    * @command fixture:reset
    * @aliases reset
    *
-   * @return \Robo\ResultData
+   * @return \Robo\Result|int
    */
   public function execute($opts = []) {
+    if (!file_exists($this->buildPath())) {
+      throw new FixtureNotReadyException();
+    }
+
     $confirm = $this->confirm('Are you sure you want to reset the test fixture?');
     if (!$confirm && !$opts['no-interaction']) {
-      return Result::cancelled();
+      return Result::EXITCODE_USER_CANCEL;
     }
 
     $git = $this->taskGitStack()
