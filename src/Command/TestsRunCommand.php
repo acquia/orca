@@ -27,7 +27,9 @@ class TestsRunCommand extends CommandBase {
   /**
    * Runs PHPUnit tests.
    *
-   * @return \Robo\Contract\TaskInterface
+   * @return \Robo\Task\Testing\PHPUnit
+   *
+   * @throws \AcquiaOrca\Exception\FixtureNotReadyException
    */
   private function runPhpUnitTests() {
     $phpunit_config_file = $this->buildPath('docroot/core/phpunit.xml.dist');

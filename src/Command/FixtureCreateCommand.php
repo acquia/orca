@@ -19,6 +19,8 @@ class FixtureCreateCommand extends CommandBase {
    * @aliases build
    *
    * @return \Robo\ResultData
+   *
+   * @throws \RuntimeException
    */
   public function execute() {
     if (file_exists($this->buildPath())) {
@@ -40,7 +42,7 @@ class FixtureCreateCommand extends CommandBase {
   /**
    * Creates a BLT project.
    *
-   * @return \Robo\Contract\TaskInterface
+   * @return \Robo\Task\Composer\CreateProject
    */
   private function createBltProject() {
     return $this->taskComposerCreateProject()
@@ -52,7 +54,7 @@ class FixtureCreateCommand extends CommandBase {
   /**
    * Adds Acquia product modules to the codebase.
    *
-   * @return \Robo\Contract\TaskInterface
+   * @return \Robo\Collection\CollectionBuilder
    */
   private function addAcquiaProductModules() {
     return $this->collectionBuilder()

@@ -20,6 +20,8 @@ class FixtureResetCommand extends CommandBase {
    * @aliases reset
    *
    * @return \Robo\Result|int
+   *
+   * @throws \AcquiaOrca\Exception\FixtureNotReadyException
    */
   public function execute($opts = []) {
     if (!file_exists($this->buildPath())) {

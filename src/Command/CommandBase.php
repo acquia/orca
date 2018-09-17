@@ -66,6 +66,8 @@ abstract class CommandBase extends Tasks {
    *   The command string to execute, including options and arguments.
    *
    * @return \Robo\Collection\CollectionBuilder
+   *
+   * @throws \AcquiaOrca\Exception\FixtureNotReadyException
    */
   protected function taskScriptExec($path, $command) {
     return $this->collectionBuilder()
