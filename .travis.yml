@@ -9,4 +9,6 @@ before_install:
 
 install: composer install
 
-script: ./bin/orca fixture:create
+before_script: ./bin/orca fixture:create
+
+script: ./bin/orca tests:run
