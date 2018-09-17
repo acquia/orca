@@ -19,8 +19,12 @@ return [
   //   dependency module search_api_solr.
   //  "drupal/acquia_connector", // https://www.drupal.org/project/acquia_connector
 
-  "drupal/acquia_contenthub:~1.0", // https://www.drupal.org/project/acquia_contenthub
-  "drupal/acquia_lift", // https://www.drupal.org/project/acquia_lift
+  // @todo Add support for Unish tests.
+  //  "drupal/acquia_contenthub:~1.0", // https://www.drupal.org/project/acquia_contenthub
+
+  // @todo Add support for functional tests.
+  //  "drupal/acquia_lift", // https://www.drupal.org/project/acquia_lift
+
   "drupal/acquia_purge", // https://www.drupal.org/project/acquia_purge
 
   // @todo Unable to install modules: module 'acsf_sso' is missing its
