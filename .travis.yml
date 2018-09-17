@@ -9,6 +9,4 @@ before_install:
 
 install: composer install
 
-before_script: mysql -e "CREATE DATABASE drupal; GRANT ALL ON drupal.* TO 'drupal'@'localhost' identified by 'drupal';"
-
 script: ./bin/orca fixture:create

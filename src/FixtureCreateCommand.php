@@ -28,6 +28,7 @@ class FixtureCreateCommand extends CommandBase {
           $this->createBltProject(),
           $this->addAcquiaProductModules(),
           $this->commitCodeChanges('Added Acquia product modules.'),
+          $this->createDatabase(),
           $this->installDrupal(),
           $this->commitCodeChanges('Installed Drupal.', self::BASE_FIXTURE_BRANCH),
         ])
@@ -50,29 +51,6 @@ class FixtureCreateCommand extends CommandBase {
       ->source('acquia/blt-project')
       ->target(self::BUILD_DIR)
       ->interactive(FALSE);
-  }
-
-  /**
-   * Commits code changes made to the build directory.
-   *
-   * @param string $message
-   *   The commit message to use.
-   * @param string|false $backup_branch
-   *   The name of a branch to point at the commit for backup or FALSE to skip
-   *   creating one.
-   *
-   * @return \Robo\Task\Vcs\GitStack
-   */
-  private function commitCodeChanges($message, $backup_branch = FALSE) {
-    $task = $this->taskGitStack()
-      ->dir(self::BUILD_DIR)
-      ->silent(TRUE)
-      ->add('.')
-      ->commit($message, '--allow-empty');
-    if ($backup_branch) {
-      $task->exec("branch -f {$backup_branch}");
-    }
-    return $task;
   }
 
   /**
@@ -154,6 +132,38 @@ class FixtureCreateCommand extends CommandBase {
       $names[] = explode('/', $package_name)[1];
     }
     return $names;
+  }
+
+  /**
+   * Commits code changes made to the build directory.
+   *
+   * @param string $message
+   *   The commit message to use.
+   * @param string|false $backup_branch
+   *   The name of a branch to point at the commit for backup or FALSE to skip
+   *   creating one.
+   *
+   * @return \Robo\Task\Vcs\GitStack
+   */
+  private function commitCodeChanges($message, $backup_branch = FALSE) {
+    $task = $this->taskGitStack()
+      ->dir(self::BUILD_DIR)
+      ->silent(TRUE)
+      ->add('.')
+      ->commit($message, '--allow-empty');
+    if ($backup_branch) {
+      $task->exec("branch -f {$backup_branch}");
+    }
+    return $task;
+  }
+
+  /**
+   * Creates the Drupal database.
+   *
+   * @return \Robo\Task\Base\Exec
+   */
+  private function createDatabase() {
+    return $this->taskExec('mysql -uroot -e "CREATE DATABASE IF NOT EXISTS drupal; GRANT ALL ON drupal.* TO \'drupal\'@\'localhost\' identified by \'drupal\';"');
   }
 
   /**
