@@ -31,8 +31,8 @@ class FixtureCreateCommand extends CommandBase {
           $this->createDatabase(),
           $this->installDrupal(),
           $this->commitCodeChanges('Installed Drupal.', self::BASE_FIXTURE_BRANCH),
+          $this->installAcquiaProductModules(),
         ])
-        ->addCode($this->installAcquiaProductModules())
         ->run();
     }
     catch (\Exception $e) {
@@ -49,7 +49,7 @@ class FixtureCreateCommand extends CommandBase {
   private function createBltProject() {
     return $this->taskComposerCreateProject()
       ->source('acquia/blt-project')
-      ->target(self::BUILD_DIR)
+      ->target($this->buildPath())
       ->interactive(FALSE);
   }
 
@@ -63,7 +63,7 @@ class FixtureCreateCommand extends CommandBase {
       ->addCode($this->configureComposer())
       ->addTask($this->taskComposerRequire()
         ->dependency($this->getAcquiaProductModulePackageStrings())
-        ->dir(self::BUILD_DIR))
+        ->dir($this->buildPath()))
       ->addTask($this->removeDuplicateModules());
   }
 
@@ -74,7 +74,7 @@ class FixtureCreateCommand extends CommandBase {
    */
   private function configureComposer() {
     return function () {
-      $composer_file = self::BUILD_DIR . '/composer.json';
+      $composer_file = $this->buildPath('composer.json');
       $config = json_decode(file_get_contents($composer_file));
       // Installer paths seem to be applied in the order specified, so our
       // overrides need to be added to the beginning in order to take effect.
@@ -116,7 +116,7 @@ class FixtureCreateCommand extends CommandBase {
   private function removeDuplicateModules() {
     $dirs = [];
     foreach ($this->getAcquiaProductModuleNames() as $name) {
-      $dirs[] = self::BUILD_DIR . "/docroot/modules/contrib/{$name}";
+      $dirs[] = $this->buildPath("docroot/modules/contrib/{$name}");
     }
     return $this->taskDeleteDir($dirs);
   }
@@ -147,7 +147,7 @@ class FixtureCreateCommand extends CommandBase {
    */
   private function commitCodeChanges($message, $backup_branch = FALSE) {
     $task = $this->taskGitStack()
-      ->dir(self::BUILD_DIR)
+      ->dir($this->buildPath())
       ->silent(TRUE)
       ->add('.')
       ->commit($message, '--allow-empty');
@@ -169,14 +169,15 @@ class FixtureCreateCommand extends CommandBase {
   /**
    * Installs all Acquia product modules.
    *
-   * @return \Closure
+   * @return \Robo\Collection\CollectionBuilder
    */
   private function installAcquiaProductModules() {
-    return function () {
-      $module_list = $this->getAcquiaProductModuleList();
-      return $this->taskDrushExec("pm-enable -y {$module_list}")
-        ->run();
-    };
+    return $this->collectionBuilder()
+      ->addCode(function () {
+        $module_list = $this->getAcquiaProductModuleList();
+        return $this->taskDrushExec("pm-enable -y {$module_list}")
+          ->run();
+      });
   }
 
   /**
@@ -189,7 +190,7 @@ class FixtureCreateCommand extends CommandBase {
   private function getAcquiaProductModuleList() {
     $files = Finder::create()
       ->files()
-      ->in(self::BUILD_DIR . '/docroot/modules/contrib/acquia')
+      ->in($this->buildPath('docroot/modules/contrib/acquia'))
       ->notPath('@/tests/@')
       ->name('/.*.info.yml$/')
       ->notContains('/package:\\s*Testing/i')

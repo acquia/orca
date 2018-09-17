@@ -25,7 +25,8 @@
     },
     "autoload": {
         "psr-4": {
-            "AcquiaOrca\\Robo\\Plugin\\Commands\\": "src/"
+            "AcquiaOrca\\Exception\\": "src/Exception",
+            "AcquiaOrca\\Robo\\Plugin\\Commands\\": "src/Command"
         }
     },
     "minimum-stability": "dev",

@@ -7,8 +7,6 @@ namespace AcquiaOrca\Robo\Plugin\Commands;
  */
 class TestsRunCommand extends CommandBase {
 
-  const PHPUNIT_CONFIG_FILE = self::BUILD_DIR . '/docroot/core/phpunit.xml.dist';
-
   /**
    * Runs automated tests.
    *
@@ -32,10 +30,19 @@ class TestsRunCommand extends CommandBase {
    */
   private function ensureFixture() {
     return function () {
-      if (!file_exists(self::PHPUNIT_CONFIG_FILE)) {
+      if (!file_exists($this->phpunitConfigFile())) {
         throw new \Exception('The fixture is not ready. Run `orca fixture:create` first.');
       }
     };
+  }
+
+  /**
+   * Returns the path to the PHPUnit configuration file.
+   *
+   * @return string
+   */
+  private function phpunitConfigFile() {
+    return $this->buildPath('docroot/core/phpunit.xml.dist');
   }
 
   /**
@@ -45,8 +52,8 @@ class TestsRunCommand extends CommandBase {
    */
   private function runPhpUnitTests() {
     return $this->taskPhpUnit()
-      ->configFile(realpath(self::PHPUNIT_CONFIG_FILE))
-      ->file(realpath(self::BUILD_DIR . '/docroot/modules/contrib/acquia'));
+      ->configFile($this->phpunitConfigFile())
+      ->file($this->buildPath('docroot/modules/contrib/acquia'));
   }
 
 }

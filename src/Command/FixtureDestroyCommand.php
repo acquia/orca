@@ -25,7 +25,7 @@ class FixtureDestroyCommand extends CommandBase {
       return Result::cancelled();
     }
 
-    return $this->_deleteDir(self::BUILD_DIR);
+    return $this->_deleteDir($this->buildPath());
   }
 
 }
