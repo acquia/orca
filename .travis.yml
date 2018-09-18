@@ -4,9 +4,9 @@ dist: trusty
 php: 7.2
 
 before_install:
-  - phpenv config-rm xdebug.ini
-  - composer validate --ansi
-  - composer global require hirak/prestissimo
+- phpenv config-rm xdebug.ini
+- composer validate --ansi
+- composer global require hirak/prestissimo
 
 install: composer install
 
