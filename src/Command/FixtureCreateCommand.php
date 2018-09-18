@@ -2,6 +2,7 @@
 
 namespace AcquiaOrca\Robo\Plugin\Commands;
 
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Finder\Finder;
 
 /**
@@ -10,22 +11,42 @@ use Symfony\Component\Finder\Finder;
 class FixtureCreateCommand extends CommandBase {
 
   /**
+   * The fixture's Composer configuration (composer.json).
+   *
+   * @var \stdClass
+   */
+  private $composerConfig;
+
+  /**
+   * The SUT package name, e.g., drupal/example.
+   *
+   * @var string|null
+   */
+  private $sut = NULL;
+
+  /**
    * Creates the base test fixture.
    *
    * Creates a BLT-based Drupal site build, includes the module under test
    * using Composer, installs Drupal, and commits any code changes.
    *
    * @command fixture:create
+   * @option sut The system under test (SUT) in the form of its package name,
+   *   e.g., drupal/example.
    * @aliases build
+   * @usage fixture:create --sut=drupal/example
+   *   Create the fixture for testing drupal/example.
    *
    * @return \Robo\ResultData
    *
    * @throws \RuntimeException
    */
-  public function execute() {
+  public function execute($opts = ['sut' => InputOption::VALUE_REQUIRED]) {
     if (file_exists($this->buildPath())) {
       throw new \RuntimeException('The build directory already exists. Run `orca fixture:destroy` to remove it.');
     }
+
+    $this->sut = $opts['sut'];
 
     return $this->collectionBuilder()
       ->addTaskList([
@@ -60,7 +81,7 @@ class FixtureCreateCommand extends CommandBase {
     return $this->collectionBuilder()
       ->addCode($this->configureComposer())
       ->addTask($this->taskComposerRequire()
-        ->dependency($this->getAcquiaProductModulePackageStrings())
+        ->dependency($this->getDependencies())
         ->dir($this->buildPath()))
       ->addTask($this->removeDuplicateModules());
   }
@@ -72,19 +93,89 @@ class FixtureCreateCommand extends CommandBase {
    */
   private function configureComposer() {
     return function () {
-      $composer_file = $this->buildPath('composer.json');
-      $config = json_decode(file_get_contents($composer_file));
-      // Installer paths seem to be applied in the order specified, so our
-      // overrides need to be added to the beginning in order to take effect.
-      // Drush commands, which we don't WANT to override, need to come yet
-      // earlier.
-      $config->extra->{'installer-paths'} = (object) array_merge(
-        ['drush/Commands/{$name}' => (array) $config->extra->{'installer-paths'}->{'drush/Commands/{$name}'}],
-        ['docroot/modules/contrib/acquia/{$name}' => $this->getAcquiaProductModulePackageNames()],
-        (array) $config->extra->{'installer-paths'}
-      );
-      file_put_contents($composer_file, json_encode($config, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT));
+      $this->loadComposerJson();
+      $this->addInstallerPaths();
+      if ($this->sut) {
+        $this->addSutRepository();
+      }
+      $this->saveComposerJson();
     };
+  }
+
+  /**
+   * Loads the fixture's composer.json data.
+   */
+  private function loadComposerJson() {
+    $json = file_get_contents($this->composerJson());
+    $this->composerConfig = json_decode($json);
+  }
+
+  /**
+   * Returns the path to the fixture's composer.json file.
+   *
+   * @return string
+   */
+  private function composerJson() {
+    return $this->buildPath('composer.json');
+  }
+
+  /**
+   * Adds installer-paths configuration to group product modules together.
+   */
+  private function addInstallerPaths() {
+    // Installer paths seem to be applied in the order specified, so our
+    // overrides need to be added to the beginning in order to take effect.
+    // Drush commands, which we don't WANT to override, need to come yet
+    // earlier.
+    $this->composerConfig->extra->{'installer-paths'} = (object) array_merge(
+      ['drush/Commands/{$name}' => (array) $this->composerConfig->extra->{'installer-paths'}->{'drush/Commands/{$name}'}],
+      ['docroot/modules/contrib/acquia/{$name}' => $this->getAcquiaProductModulePackageNames()],
+      (array) $this->composerConfig->extra->{'installer-paths'}
+    );
+  }
+
+  /**
+   * Adds a Composer repository for the system under test.
+   */
+  private function addSutRepository() {
+    $repo_name = str_replace('_', '-', explode('/', $this->sut)[1]);
+    // Avoid PHP warnings by creating the "repositories" value if absent.
+    $this->composerConfig->repositories = $this->composerConfig->repositories ?: new \stdClass();
+    $this->composerConfig->repositories->{$this->sut} = (object) [
+      'type' => 'path',
+      'url' => "../{$repo_name}",
+      'options' => [
+        'symlink' => TRUE,
+      ],
+    ];
+  }
+
+  /**
+   * Saves the fixture's composer.json data.
+   */
+  private function saveComposerJson() {
+    $data = json_encode($this->composerConfig, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
+    file_put_contents($this->composerJson(), $data);
+  }
+
+  /**
+   * Gets the list of Composer dependency strings.
+   *
+   * @return string[]
+   */
+  private function getDependencies() {
+    $dependencies = $this->getAcquiaProductModulePackageStrings();
+
+    // Replace the version constraint on the SUT to allow for symlinking.
+    if ($this->sut) {
+      foreach ($dependencies as $key => $dependency) {
+        if (strpos($dependency, $this->sut) === 0) {
+          $dependencies[$key] = $this->sut;
+        }
+      }
+    }
+
+    return $dependencies;
   }
 
   /**
