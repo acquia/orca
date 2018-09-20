@@ -19,8 +19,10 @@ class TestsRunCommand extends CommandBase {
    */
   public function execute() {
     return $this->collectionBuilder()
-      // @todo Run Behat.
-      ->addTask($this->runPhpUnitTests())
+      ->addTaskList([
+        $this->runPhpUnit(),
+        $this->runBehat(),
+      ])
       ->run();
   }
 
@@ -31,7 +33,7 @@ class TestsRunCommand extends CommandBase {
    *
    * @throws \AcquiaOrca\Exception\FixtureNotReadyException
    */
-  private function runPhpUnitTests() {
+  private function runPhpUnit() {
     $phpunit_config_file = $this->buildPath('docroot/core/phpunit.xml.dist');
     if (!file_exists($phpunit_config_file)) {
       throw new FixtureNotReadyException();
@@ -40,6 +42,15 @@ class TestsRunCommand extends CommandBase {
     return $this->taskPhpUnit()
       ->configFile($phpunit_config_file)
       ->file($this->buildPath('docroot/modules/contrib/acquia'));
+  }
+
+  /**
+   * Executes Behat stories.
+   *
+   * @return \Robo\Task\Testing\Behat
+   */
+  private function runBehat() {
+    return $this->taskBehat();
   }
 
 }
