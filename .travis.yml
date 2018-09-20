@@ -10,8 +10,9 @@ before_install:
 
 install: composer install
 
-before_script: ./bin/orca fixture:create
+before_script: composer phpcs
 
-script: ./bin/orca tests:run
-
-after_script: ./bin/orca fixture:destroy -n
+script:
+- ./bin/orca fixture:create
+- ./bin/orca tests:run
+- ./bin/orca fixture:destroy -n
