@@ -20,7 +20,8 @@ class TestsRunCommand extends CommandBase {
   public function execute() {
     return $this->collectionBuilder()
       ->addTaskList([
-        $this->runPhpUnit(),
+        // @todo Re-add PHPUnit.
+        // $this->runPhpUnit(),
         $this->runBehat(),
       ])
       ->run();
