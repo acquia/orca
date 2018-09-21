@@ -23,6 +23,17 @@ abstract class CommandBase extends Tasks {
   abstract public function execute();
 
   /**
+   * Asserts that the test fixture is ready.
+   *
+   * @throws \AcquiaOrca\Exception\FixtureNotReadyException
+   */
+  protected function assertFixtureIsReady() {
+    if (!file_exists($this->buildPath('docroot/modules/contrib/acquia'))) {
+      throw new FixtureNotReadyException();
+    }
+  }
+
+  /**
    * Returns a Drupal installation task.
    *
    * @return \Robo\Collection\CollectionBuilder

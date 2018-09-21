@@ -2,7 +2,7 @@
 
 namespace AcquiaOrca\Robo\Plugin\Commands;
 
-use AcquiaOrca\Exception\FixtureNotReadyException;
+use Symfony\Component\Finder\Finder;
 
 /**
  * Provides the "tests:run" command.
@@ -18,6 +18,8 @@ class TestsRunCommand extends CommandBase {
    * @return \Robo\Result|int
    */
   public function execute() {
+    $this->assertFixtureIsReady();
+
     return $this->collectionBuilder()
       ->addTaskList([
         // @todo Re-add PHPUnit.
@@ -35,23 +37,39 @@ class TestsRunCommand extends CommandBase {
    * @throws \AcquiaOrca\Exception\FixtureNotReadyException
    */
   private function runPhpUnit() {
-    $phpunit_config_file = $this->buildPath('docroot/core/phpunit.xml.dist');
-    if (!file_exists($phpunit_config_file)) {
-      throw new FixtureNotReadyException();
-    }
-
     return $this->taskPhpUnit()
-      ->configFile($phpunit_config_file)
+      ->configFile($this->buildPath('docroot/core/phpunit.xml.dist'))
       ->file($this->buildPath('docroot/modules/contrib/acquia'));
   }
 
   /**
    * Executes Behat stories.
    *
-   * @return \Robo\Task\Testing\Behat
+   * @return \Robo\Collection\CollectionBuilder
    */
   private function runBehat() {
-    return $this->taskBehat();
+    $tasks = [];
+    /** @var \SplFileObject $file */
+    foreach ($this->getBehatConfigFiles() as $file) {
+      $tasks[] = $this->taskBehat()
+        ->dir($file->getPath())
+        ->config($file->getPathname());
+    }
+    return $this->collectionBuilder()
+      ->addTaskList($tasks);
+  }
+
+  /**
+   * Finds all Behat config files in the Acquia product module directories.
+   *
+   * @return \Symfony\Component\Finder\Finder
+   */
+  private function getBehatConfigFiles() {
+    return Finder::create()
+      ->files()
+      ->followLinks()
+      ->in($this->buildPath('docroot/modules/contrib/acquia'))
+      ->name('behat.yml');
   }
 
 }

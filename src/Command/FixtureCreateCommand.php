@@ -270,6 +270,7 @@ class FixtureCreateCommand extends CommandBase {
   private function getAcquiaProductModuleList() {
     $files = Finder::create()
       ->files()
+      ->followLinks()
       ->in($this->buildPath('docroot/modules/contrib/acquia'))
       ->notPath('@/tests/@')
       ->name('/.*.info.yml$/')
