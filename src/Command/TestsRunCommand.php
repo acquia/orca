@@ -85,7 +85,7 @@ class TestsRunCommand extends CommandBase {
     return Finder::create()
       ->files()
       ->followLinks()
-      ->in($this->buildPath('docroot/modules/contrib/acquia'))
+      ->in($this->buildPath(self::ACQUIA_PRODUCT_MODULES_DIR))
       ->notPath('vendor')
       ->name($filename);
   }

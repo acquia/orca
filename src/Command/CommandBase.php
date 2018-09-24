@@ -11,6 +11,13 @@ use Robo\Tasks;
 abstract class CommandBase extends Tasks {
 
   /**
+   * The directory that all Acquia product modules are grouped under.
+   *
+   * Relative to the build path.
+   */
+  const ACQUIA_PRODUCT_MODULES_DIR = 'docroot/modules/contrib/acquia';
+
+  /**
    * The base fixture Git branch.
    */
   const BASE_FIXTURE_BRANCH = 'base-fixture';
@@ -28,7 +35,7 @@ abstract class CommandBase extends Tasks {
    * @throws \Acquia\Orca\Exception\FixtureNotReadyException
    */
   protected function assertFixtureIsReady() {
-    if (!file_exists($this->buildPath('docroot/modules/contrib/acquia'))) {
+    if (!file_exists($this->buildPath(self::ACQUIA_PRODUCT_MODULES_DIR))) {
       throw new FixtureNotReadyException();
     }
   }

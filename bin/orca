@@ -9,6 +9,8 @@
 use Consolidation\AnnotatedCommand\CommandFileDiscovery;
 use Robo\Runner;
 
+const ORCA_VERSION = 'v0.0.1';
+
 if (file_exists(__DIR__ . '/../vendor/autoload.php')) {
   $class_loader = require __DIR__ . '/../vendor/autoload.php';
 }
@@ -24,6 +26,6 @@ $discovery->setSearchPattern('*Command.php');
 $command_classes = $discovery->discover(__DIR__ . '/../src/Command', 'Acquia\Orca\Robo\Plugin\Commands');
 $runner = new Runner($command_classes);
 $runner->setClassLoader($class_loader);
-$status_code = $runner->execute($_SERVER['argv'], 'ORCA', 'v0.0.1');
+$status_code = $runner->execute($_SERVER['argv'], 'ORCA', ORCA_VERSION);
 
 exit($status_code);

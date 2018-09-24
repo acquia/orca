@@ -271,7 +271,7 @@ class FixtureCreateCommand extends CommandBase {
     $files = Finder::create()
       ->files()
       ->followLinks()
-      ->in($this->buildPath('docroot/modules/contrib/acquia'))
+      ->in($this->buildPath(self::ACQUIA_PRODUCT_MODULES_DIR))
       ->notPath('@/tests/@')
       ->name('/.*.info.yml$/')
       ->notContains('/package:\\s*Testing/i')
