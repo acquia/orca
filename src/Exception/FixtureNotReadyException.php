@@ -1,6 +1,6 @@
 <?php
 
-namespace AcquiaOrca\Exception;
+namespace Acquia\Orca\Exception;
 
 /**
  * Exception thrown if the ORCA fixture is not ready.

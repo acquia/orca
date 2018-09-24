@@ -1,8 +1,8 @@
 <?php
 
-namespace AcquiaOrca\Robo\Plugin\Commands;
+namespace Acquia\Orca\Robo\Plugin\Commands;
 
-use AcquiaOrca\Exception\FixtureNotReadyException;
+use Acquia\Orca\Exception\FixtureNotReadyException;
 use Robo\Tasks;
 
 /**
@@ -25,7 +25,7 @@ abstract class CommandBase extends Tasks {
   /**
    * Asserts that the test fixture is ready.
    *
-   * @throws \AcquiaOrca\Exception\FixtureNotReadyException
+   * @throws \Acquia\Orca\Exception\FixtureNotReadyException
    */
   protected function assertFixtureIsReady() {
     if (!file_exists($this->buildPath('docroot/modules/contrib/acquia'))) {
@@ -78,7 +78,7 @@ abstract class CommandBase extends Tasks {
    *
    * @return \Robo\Collection\CollectionBuilder
    *
-   * @throws \AcquiaOrca\Exception\FixtureNotReadyException
+   * @throws \Acquia\Orca\Exception\FixtureNotReadyException
    */
   protected function taskScriptExec($path, $command) {
     return $this->collectionBuilder()

@@ -1,6 +1,6 @@
 <?php
 
-namespace AcquiaOrca\Robo\Plugin\Commands;
+namespace Acquia\Orca\Robo\Plugin\Commands;
 
 use Symfony\Component\Finder\Finder;
 
@@ -17,7 +17,7 @@ class TestsRunCommand extends CommandBase {
    *
    * @return \Robo\Result|int
    *
-   * @throws \AcquiaOrca\Exception\FixtureNotReadyException
+   * @throws \Acquia\Orca\Exception\FixtureNotReadyException
    */
   public function execute() {
     $this->assertFixtureIsReady();

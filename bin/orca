@@ -6,8 +6,7 @@
  * ORCA command line executable.
  */
 
-namespace AcquiaOrca\Robo\Plugin\Commands;
-
+use Consolidation\AnnotatedCommand\CommandFileDiscovery;
 use Robo\Runner;
 
 if (file_exists(__DIR__ . '/../vendor/autoload.php')) {
@@ -20,12 +19,9 @@ else {
   die("Could not find autoloader. Run 'composer install' first.\n");
 }
 
-$command_classes = [
-  FixtureCreateCommand::class,
-  FixtureDestroyCommand::class,
-  FixtureResetCommand::class,
-  TestsRunCommand::class,
-];
+$discovery = new CommandFileDiscovery();
+$discovery->setSearchPattern('*Command.php');
+$command_classes = $discovery->discover(__DIR__ . '/../src/Command', 'Acquia\Orca\Robo\Plugin\Commands');
 $runner = new Runner($command_classes);
 $runner->setClassLoader($class_loader);
 $status_code = $runner->execute($_SERVER['argv'], 'ORCA', 'v0.0.1');

@@ -1,8 +1,8 @@
 <?php
 
-namespace AcquiaOrca\Robo\Plugin\Commands;
+namespace Acquia\Orca\Robo\Plugin\Commands;
 
-use AcquiaOrca\Exception\FixtureNotReadyException;
+use Acquia\Orca\Exception\FixtureNotReadyException;
 use Robo\Result;
 
 /**
@@ -21,7 +21,7 @@ class FixtureResetCommand extends CommandBase {
    *
    * @return \Robo\Result|int
    *
-   * @throws \AcquiaOrca\Exception\FixtureNotReadyException
+   * @throws \Acquia\Orca\Exception\FixtureNotReadyException
    */
   public function execute($opts = []) {
     if (!file_exists($this->buildPath())) {

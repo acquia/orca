@@ -1,6 +1,6 @@
 <?php
 
-namespace AcquiaOrca\Robo\Plugin\Commands;
+namespace Acquia\Orca\Robo\Plugin\Commands;
 
 use Robo\Result;
 
