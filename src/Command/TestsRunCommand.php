@@ -16,14 +16,15 @@ class TestsRunCommand extends CommandBase {
    * @aliases test
    *
    * @return \Robo\Result|int
+   *
+   * @throws \AcquiaOrca\Exception\FixtureNotReadyException
    */
   public function execute() {
     $this->assertFixtureIsReady();
 
     return $this->collectionBuilder()
       ->addTaskList([
-        // @todo Re-add PHPUnit.
-        // $this->runPhpUnit(),
+        $this->runPhpUnit(),
         $this->runBehat(),
       ])
       ->run();
@@ -32,14 +33,10 @@ class TestsRunCommand extends CommandBase {
   /**
    * Runs PHPUnit tests.
    *
-   * @return \Robo\Task\Testing\PHPUnit
-   *
-   * @throws \AcquiaOrca\Exception\FixtureNotReadyException
+   * @return \Robo\Collection\CollectionBuilder
    */
   private function runPhpUnit() {
-    return $this->taskPhpUnit()
-      ->configFile($this->buildPath('docroot/core/phpunit.xml.dist'))
-      ->file($this->buildPath('docroot/modules/contrib/acquia'));
+    return $this->runFramework('taskPhpUnit', 'phpunit.xml.dist', 'configFile');
   }
 
   /**
@@ -48,28 +45,49 @@ class TestsRunCommand extends CommandBase {
    * @return \Robo\Collection\CollectionBuilder
    */
   private function runBehat() {
+    return $this->runFramework('taskBehat', 'behat.yml', 'config');
+  }
+
+  /**
+   * Runs a test framework.
+   *
+   * @param string $runner_method
+   *   The method name for getting a Robo task for the test framework.
+   * @param string $config_filename
+   *   The name pattern of the framework config files.
+   * @param string $config_file_method
+   *   The method name to call with the config filename.
+   *
+   * @return \Robo\Collection\CollectionBuilder
+   */
+  private function runFramework($runner_method, $config_filename, $config_file_method) {
     $tasks = [];
     /** @var \SplFileObject $file */
-    foreach ($this->getBehatConfigFiles() as $file) {
-      $tasks[] = $this->taskBehat()
-        ->dir($file->getPath())
-        ->config($file->getPathname());
+    foreach ($this->getConfigFiles($config_filename) as $file) {
+      /** @var \Robo\Contract\TaskInterface|\Robo\Task\Testing\Behat|\Robo\Task\Testing\PHPUnit $runner */
+      $runner = call_user_func_array([$this, $runner_method], []);
+      $tasks[] = $runner->dir($file->getPath())
+        ->{$config_file_method}($file->getPathname());
     }
     return $this->collectionBuilder()
       ->addTaskList($tasks);
   }
 
   /**
-   * Finds all Behat config files in the Acquia product module directories.
+   * Finds all files with a given name in the Acquia product module directories.
+   *
+   * @param string $filename
+   *   The name pattern of the config files to find.
    *
    * @return \Symfony\Component\Finder\Finder
    */
-  private function getBehatConfigFiles() {
+  private function getConfigFiles($filename) {
     return Finder::create()
       ->files()
       ->followLinks()
       ->in($this->buildPath('docroot/modules/contrib/acquia'))
-      ->name('behat.yml');
+      ->notPath('vendor')
+      ->name($filename);
   }
 
 }
