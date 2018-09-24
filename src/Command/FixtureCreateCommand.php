@@ -2,8 +2,8 @@
 
 namespace Acquia\Orca\Robo\Plugin\Commands;
 
+use Acquia\Orca\ProductModuleDataManager;
 use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Finder\Finder;
 
 /**
  * Provides the "fixture:create" command.
@@ -48,9 +48,15 @@ class FixtureCreateCommand extends CommandBase {
 
     $this->sut = $opts['sut'];
 
+    $valid_values = ProductModuleDataManager::packageNames();
+    if ($this->sut && !in_array($this->sut, $valid_values)) {
+      throw new \RuntimeException(sprintf("Invalid value for sut option: \"%s\". Acceptable values are\n  - %s", $this->sut, implode("\n  - ", $valid_values)));
+    }
+
     return $this->collectionBuilder()
       ->addTaskList([
         $this->createBltProject(),
+        $this->createCodeBranch('initial'),
         $this->addAcquiaProductModules(),
         $this->commitCodeChanges('Added Acquia product modules.'),
         $this->installDrupal(),
@@ -129,7 +135,7 @@ class FixtureCreateCommand extends CommandBase {
     // earlier.
     $this->composerConfig->extra->{'installer-paths'} = (object) array_merge(
       ['drush/Commands/{$name}' => (array) $this->composerConfig->extra->{'installer-paths'}->{'drush/Commands/{$name}'}],
-      ['docroot/modules/contrib/acquia/{$name}' => $this->getAcquiaProductModulePackageNames()],
+      ['docroot/modules/contrib/acquia/{$name}' => ProductModuleDataManager::packageNames()],
       (array) $this->composerConfig->extra->{'installer-paths'}
     );
   }
@@ -164,33 +170,14 @@ class FixtureCreateCommand extends CommandBase {
    * @return string[]
    */
   private function getDependencies() {
-    $dependencies = $this->getAcquiaProductModulePackageStrings();
+    $dependencies = ProductModuleDataManager::packageStrings();
 
     // Replace the version constraint on the SUT to allow for symlinking.
     if ($this->sut) {
-      foreach ($dependencies as $key => $dependency) {
-        if (strpos($dependency, $this->sut) === 0) {
-          $dependencies[$key] = $this->sut;
-        }
-      }
+      $dependencies[$this->sut] = "{$this->sut}:*";
     }
 
-    return $dependencies;
-  }
-
-  /**
-   * Gets the list of Acquia product module Composer package names.
-   *
-   * @return string[]
-   *   An indexed array of package strings, excluding constraints, e.g.,
-   *   "drupal/example:^1.0".
-   */
-  private function getAcquiaProductModulePackageNames() {
-    $names = [];
-    foreach ($this->getAcquiaProductModulePackageStrings() as $package_string) {
-      $names[] = explode(':', $package_string)[0];
-    }
-    return $names;
+    return array_values($dependencies);
   }
 
   /**
@@ -204,23 +191,10 @@ class FixtureCreateCommand extends CommandBase {
    */
   private function removeDuplicateModules() {
     $dirs = [];
-    foreach ($this->getAcquiaProductModuleNames() as $name) {
+    foreach (ProductModuleDataManager::packageNames() as $name) {
       $dirs[] = $this->buildPath("docroot/modules/contrib/{$name}");
     }
     return $this->taskDeleteDir($dirs);
-  }
-
-  /**
-   * Gets the list of Acquia product module machine names.
-   *
-   * @return string[]
-   */
-  private function getAcquiaProductModuleNames() {
-    $names = [];
-    foreach ($this->getAcquiaProductModulePackageNames() as $package_name) {
-      $names[] = explode('/', $package_name)[1];
-    }
-    return $names;
   }
 
   /**
@@ -247,41 +221,27 @@ class FixtureCreateCommand extends CommandBase {
   }
 
   /**
+   * Creates a code branch.
+   *
+   * @param string $name
+   *   A name for the branch.
+   *
+   * @return \Robo\Task\Vcs\GitStack
+   */
+  private function createCodeBranch($name) {
+    return $this->taskGitStack()
+      ->dir($this->buildPath())
+      ->exec("branch -f {$name}");
+  }
+
+  /**
    * Installs all Acquia product modules.
    *
    * @return \Robo\Collection\CollectionBuilder
    */
   private function installAcquiaProductModules() {
-    return $this->collectionBuilder()
-      ->addCode(function () {
-        $module_list = $this->getAcquiaProductModuleList();
-        return $this->taskDrushExec("pm-enable -y {$module_list}")
-          ->run();
-      });
-  }
-
-  /**
-   * Gets a space-separated list of Acquia product module machine names.
-   *
-   * Excludes test modules.
-   *
-   * @return string
-   */
-  private function getAcquiaProductModuleList() {
-    $files = Finder::create()
-      ->files()
-      ->followLinks()
-      ->in($this->buildPath(self::ACQUIA_PRODUCT_MODULES_DIR))
-      ->notPath('@/tests/@')
-      ->name('/.*.info.yml$/')
-      ->notContains('/package:\\s*Testing/i')
-      ->notContains('/hidden:\\s*TRUE/i');
-    $modules = [];
-    /** @var \SplFileObject $file */
-    foreach ($files as $file) {
-      $modules[] = basename($file->getFilename(), '.info.yml');
-    }
-    return implode(' ', $modules);
+    $module_list = implode(' ', ProductModuleDataManager::moduleNames());
+    return $this->taskDrushExec("pm-enable -y {$module_list}");
   }
 
 }

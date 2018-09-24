@@ -130,15 +130,4 @@ abstract class CommandBase extends Tasks {
     return $this->taskScriptExec('vendor/bin/drush', $command);
   }
 
-  /**
-   * Gets the list of Acquia product module Composer package strings.
-   *
-   * @return string[]
-   *   An indexed array of package strings, including constraints, e.g.,
-   *   "drupal/example:^1.0".
-   */
-  protected function getAcquiaProductModulePackageStrings() {
-    return require __DIR__ . '/../../config/product-modules.inc.php';
-  }
-
 }
