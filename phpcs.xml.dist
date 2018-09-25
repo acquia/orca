@@ -8,6 +8,7 @@
     <exclude name="Drupal.Commenting.FunctionComment.MissingReturnComment"/>
     <exclude name="Drupal.Commenting.InlineComment.InvalidEndChar"/>
     <exclude name="Drupal.Commenting.InlineComment.SpacingAfter"/>
+    <exclude name="Drupal.Files.LineLength.TooLong"/>
   </rule>
 
   <file>bin/orca</file>

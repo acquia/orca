@@ -16,5 +16,5 @@ before_script: composer phpcs
 script:
   - ./bin/orca fixture:create
   - ./bin/orca tests:run
-  - ./bin/orca fixture:reset -n
+  - ./bin/orca fixture:reset -n --all
   - ./bin/orca fixture:destroy -n

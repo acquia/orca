@@ -37,20 +37,7 @@ abstract class CommandBase extends Tasks {
   }
 
   /**
-   * Returns a Drupal installation task.
-   *
-   * @return \Robo\Collection\CollectionBuilder
-   */
-  protected function installDrupal() {
-    return $this->collectionBuilder()
-      ->addTaskList([
-        $this->taskMysqlExec("CREATE DATABASE IF NOT EXISTS drupal; GRANT ALL ON drupal.* TO 'drupal'@'localhost' identified by 'drupal';"),
-        $this->taskBltExec('drupal:install -n'),
-      ]);
-  }
-
-  /**
-   * Returns a BLT task.
+   * Executes a BLT command.
    *
    * @param string $command
    *   The command string to execute, including options and arguments.
@@ -62,7 +49,54 @@ abstract class CommandBase extends Tasks {
   }
 
   /**
-   * Returns a MySQL task.
+   * Creates the Drupal database and grants appropriate privileges.
+   *
+   * @return \Robo\Task\Base\Exec
+   */
+  protected function taskCreateDrupalDatabaseAndGrantPrivileges() {
+    return $this->taskMysqlExec(
+      "CREATE DATABASE IF NOT EXISTS drupal;
+      GRANT ALL ON drupal.* TO 'drupal'@'localhost' identified by 'drupal';"
+    );
+  }
+
+  /**
+   * Drops the Drupal database.
+   *
+   * @return \Robo\Task\Base\Exec
+   */
+  protected function taskDropDrupalDatabase() {
+    return $this->taskMysqlExec('DROP DATABASE IF EXISTS drupal;');
+  }
+
+  /**
+   * Empties the Drupal database.
+   *
+   * @return \Robo\Collection\CollectionBuilder
+   */
+  protected function taskEmptyDrupalDatabase() {
+    return $this->collectionBuilder()
+      ->addTaskList([
+        $this->taskDropDrupalDatabase(),
+        $this->taskCreateDrupalDatabaseAndGrantPrivileges(),
+      ]);
+  }
+
+  /**
+   * Returns a Drupal installation task.
+   *
+   * @return \Robo\Collection\CollectionBuilder
+   */
+  protected function taskInstallDrupal() {
+    return $this->collectionBuilder()
+      ->addTaskList([
+        $this->taskCreateDrupalDatabaseAndGrantPrivileges(),
+        $this->taskBltExec('drupal:install -n'),
+      ]);
+  }
+
+  /**
+   * Executes a MySQL command.
    *
    * @return \Robo\Task\Base\Exec
    */
@@ -71,7 +105,7 @@ abstract class CommandBase extends Tasks {
   }
 
   /**
-   * Returns a script task.
+   * Executes a script command.
    *
    * @param string $path
    *   The path to the script relative to the build directory (no leading slash
@@ -113,7 +147,7 @@ abstract class CommandBase extends Tasks {
   }
 
   /**
-   * Returns a Drush stack task.
+   * Executes a Drush command.
    *
    * @param string $command
    *   The command string to execute, including options and arguments.
@@ -122,6 +156,19 @@ abstract class CommandBase extends Tasks {
    */
   protected function taskDrushExec($command) {
     return $this->taskScriptExec('vendor/bin/drush', $command);
+  }
+
+  /**
+   * Fixes file permissions on the build directory.
+   *
+   * Makes writable files the Drupal installer makes read-only, to prevent
+   * permission denied errors.
+   *
+   * @return \Robo\Task\Base\Exec
+   */
+  protected function taskFixFilePermissions() {
+    return $this->taskExec('chmod -R u+w .')
+      ->dir($this->buildPath('docroot/sites/default'));
   }
 
 }

@@ -27,9 +27,8 @@ class FixtureDestroyCommand extends CommandBase {
 
     return $this->collectionBuilder()
       ->addTaskList([
-        $this->taskMysqlExec('DROP DATABASE IF EXISTS drupal;'),
-        $this->taskExec('chmod -R u+w .')
-          ->dir($this->buildPath()),
+        $this->taskDropDrupalDatabase(),
+        $this->taskFixFilePermissions(),
         $this->taskDeleteDir($this->buildPath()),
       ]);
   }
