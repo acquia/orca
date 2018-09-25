@@ -19,17 +19,15 @@ class FixtureResetCommand extends CommandBase {
    * @command fixture:reset
    * @aliases reset
    *
-   * @return \Robo\Result|int
-   *
-   * @throws \Acquia\Orca\Exception\FixtureNotReadyException
+   * @return \Robo\ResultData|int
    */
-  public function execute($opts = []) {
+  public function execute(array $options = []) {
     if (!file_exists($this->buildPath())) {
       throw new FixtureNotReadyException();
     }
 
     $confirm = $this->confirm('Are you sure you want to reset the test fixture?');
-    if (!$confirm && !$opts['no-interaction']) {
+    if (!$confirm && !$options['no-interaction']) {
       return Result::EXITCODE_USER_CANCEL;
     }
 

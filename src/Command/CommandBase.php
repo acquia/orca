@@ -24,15 +24,11 @@ abstract class CommandBase extends Tasks {
 
   /**
    * Executes the command.
-   *
-   * @return \Robo\Result|int
    */
   abstract public function execute();
 
   /**
    * Asserts that the test fixture is ready.
-   *
-   * @throws \Acquia\Orca\Exception\FixtureNotReadyException
    */
   protected function assertFixtureIsReady() {
     if (!file_exists($this->buildPath(self::ACQUIA_PRODUCT_MODULES_DIR))) {
@@ -84,8 +80,6 @@ abstract class CommandBase extends Tasks {
    *   The command string to execute, including options and arguments.
    *
    * @return \Robo\Collection\CollectionBuilder
-   *
-   * @throws \Acquia\Orca\Exception\FixtureNotReadyException
    */
   protected function taskScriptExec($path, $command) {
     return $this->collectionBuilder()

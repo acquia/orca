@@ -15,9 +15,7 @@ class TestsRunCommand extends CommandBase {
    * @command tests:run
    * @aliases test
    *
-   * @return \Robo\Result|int
-   *
-   * @throws \Acquia\Orca\Exception\FixtureNotReadyException
+   * @return \Robo\ResultData|int
    */
   public function execute() {
     $this->assertFixtureIsReady();

@@ -19,9 +19,9 @@ class FixtureDestroyCommand extends CommandBase {
    *
    * @return \Robo\Collection\CollectionBuilder|int
    */
-  public function execute($opts = []) {
+  public function execute(array $options = []) {
     $confirm = $this->confirm('Are you sure you want to destroy the test fixture?');
-    if (!$confirm && !$opts['no-interaction']) {
+    if (!$confirm && !$options['no-interaction']) {
       return Result::EXITCODE_USER_CANCEL;
     }
 

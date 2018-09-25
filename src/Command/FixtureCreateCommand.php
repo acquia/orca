@@ -38,15 +38,13 @@ class FixtureCreateCommand extends CommandBase {
    *   Create the fixture for testing drupal/example.
    *
    * @return \Robo\ResultData
-   *
-   * @throws \RuntimeException
    */
-  public function execute($opts = ['sut' => InputOption::VALUE_REQUIRED]) {
+  public function execute(array $options = ['sut' => InputOption::VALUE_REQUIRED]) {
     if (file_exists($this->buildPath())) {
       throw new \RuntimeException('The build directory already exists. Run `orca fixture:destroy` to remove it.');
     }
 
-    $this->sut = $opts['sut'];
+    $this->sut = $options['sut'];
 
     $valid_values = ProductModuleDataManager::packageNames();
     if ($this->sut && !in_array($this->sut, $valid_values)) {
