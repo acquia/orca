@@ -37,7 +37,7 @@ class FixtureCreateCommand extends CommandBase {
    * @usage fixture:create --sut=drupal/example
    *   Create the fixture for testing drupal/example.
    *
-   * @return \Robo\ResultData
+   * @return \Robo\Collection\CollectionBuilder
    */
   public function execute(array $options = ['sut' => InputOption::VALUE_REQUIRED]) {
     if (file_exists($this->buildPath())) {
@@ -60,8 +60,7 @@ class FixtureCreateCommand extends CommandBase {
         $this->taskInstallDrupal(),
         $this->commitCodeChanges('Installed Drupal.', self::BASE_FIXTURE_BRANCH),
         $this->installAcquiaProductModules(),
-      ])
-      ->run();
+      ]);
   }
 
   /**

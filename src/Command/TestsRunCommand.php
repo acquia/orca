@@ -15,7 +15,7 @@ class TestsRunCommand extends CommandBase {
    * @command tests:run
    * @aliases test
    *
-   * @return \Robo\ResultData|int
+   * @return \Robo\Collection\CollectionBuilder
    */
   public function execute() {
     $this->assertFixtureIsReady();
@@ -24,8 +24,7 @@ class TestsRunCommand extends CommandBase {
       ->addTaskList([
         $this->runPhpUnit(),
         $this->runBehat(),
-      ])
-      ->run();
+      ]);
   }
 
   /**
