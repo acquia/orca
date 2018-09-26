@@ -1,0 +1,27 @@
+# Example Travis CI configuration for a drupal/example package.
+
+language: php
+dist: trusty
+
+php: 7.2
+
+before_install:
+  - phpenv config-rm xdebug.ini
+  - yes | pecl install mcrypt-snapshot
+  - composer validate --ansi
+  - composer global require hirak/prestissimo
+
+install: composer install
+
+script:
+
+  # Run isolated tests (in the absence of other Acquia product modules).
+  - ./bin/orca fixture:create --sut=drupal/example
+  - ./bin/orca tests:run
+
+  # Tear down the test fixture.
+  - ./bin/orca fixture:destroy -n
+
+  # Run integrated tests (in the presence of other Acquia product modules).
+  - ./bin/orca fixture:create --sut=drupal/example --sut-only
+  - ./bin/orca tests:run
