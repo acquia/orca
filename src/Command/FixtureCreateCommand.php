@@ -20,31 +20,44 @@ class FixtureCreateCommand extends CommandBase {
   /**
    * The SUT package name, e.g., drupal/example.
    *
-   * @var string|null
+   * @var string|false
    */
-  private $sut = NULL;
+  private $sut = FALSE;
+
+  /**
+   * Whether or not the build is SUT-only.
+   *
+   * @var bool
+   */
+  private $sutOnly = FALSE;
 
   /**
    * Creates the base test fixture.
    *
-   * Creates a BLT-based Drupal site build, includes the module under test
-   * using Composer, installs Drupal, and commits any code changes.
+   * Creates a BLT-based Drupal site build, includes the system under test using Composer, optionally includes all other Acquia product modules, installs Drupal, and commits any code changes.
    *
    * @command fixture:create
+   * @option sut-only Add only the system under test (SUT). Omit all other
+   *   non-required Acquia product modules.
    * @option sut The system under test (SUT) in the form of its package name,
    *   e.g., drupal/example.
    * @aliases build
    * @usage fixture:create --sut=drupal/example
-   *   Create the fixture for testing drupal/example.
+   *   Create the fixture for testing drupal/example in the presence of all other
+   *   Acquia product modules.
+   * @usage fixture:create --sut=drupal/example --sut-only
+   *   Create the fixture for testing drupal/example in the absence of any other
+   *   non-required Acquia product modules.
    *
    * @return \Robo\Collection\CollectionBuilder
    */
-  public function execute(array $options = ['sut' => InputOption::VALUE_REQUIRED]) {
-    if (file_exists($this->buildPath())) {
-      throw new \RuntimeException('The build directory already exists. Run `orca fixture:destroy` to remove it.');
-    }
-
+  public function execute(array $options = ['sut|s' => InputOption::VALUE_REQUIRED, 'sut-only|i' => FALSE]) {
     $this->sut = $options['sut'];
+    $this->sutOnly = $options['sut-only'];
+
+    if ($this->sutOnly && empty($this->sut)) {
+      throw new \RuntimeException('An sut option value must be provided for an SUT-only build.');
+    }
 
     $valid_values = ProductModuleDataManager::packageNames();
     if ($this->sut && !in_array($this->sut, $valid_values)) {
@@ -69,6 +82,10 @@ class FixtureCreateCommand extends CommandBase {
    * @return \Robo\Task\Composer\CreateProject
    */
   private function createBltProject() {
+    if (file_exists($this->buildPath())) {
+      throw new \RuntimeException('The build directory already exists. Run `orca fixture:destroy` to remove it.');
+    }
+
     return $this->taskComposerCreateProject()
       ->source('acquia/blt-project')
       ->target($this->buildPath())
@@ -167,11 +184,17 @@ class FixtureCreateCommand extends CommandBase {
    * @return string[]
    */
   private function getDependencies() {
+    $sut_package_string = "{$this->sut}:*";
+
+    if ($this->sutOnly) {
+      return [$sut_package_string];
+    }
+
     $dependencies = ProductModuleDataManager::packageStrings();
 
     // Replace the version constraint on the SUT to allow for symlinking.
     if ($this->sut) {
-      $dependencies[$this->sut] = "{$this->sut}:*";
+      $dependencies[$this->sut] = $sut_package_string;
     }
 
     return array_values($dependencies);
@@ -188,7 +211,7 @@ class FixtureCreateCommand extends CommandBase {
    */
   private function removeDuplicateModules() {
     $dirs = [];
-    foreach (ProductModuleDataManager::packageNames() as $name) {
+    foreach (ProductModuleDataManager::projectNames($this->sut) as $name) {
       $dirs[] = $this->buildPath("docroot/modules/contrib/{$name}");
     }
     return $this->taskDeleteDir($dirs);
@@ -234,10 +257,15 @@ class FixtureCreateCommand extends CommandBase {
   /**
    * Installs all Acquia product modules.
    *
-   * @return \Robo\Collection\CollectionBuilder
+   * @return \Acquia\Orca\Task\NullTask|\Robo\Collection\CollectionBuilder
    */
   private function installAcquiaProductModules() {
-    $module_list = implode(' ', ProductModuleDataManager::moduleNames());
+    $module_list = implode(' ', ProductModuleDataManager::moduleNames($this->sut));
+
+    if (!$module_list) {
+      return $this->taskNull();
+    }
+
     return $this->taskDrushExec("pm-enable -y {$module_list}");
   }
 

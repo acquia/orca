@@ -18,3 +18,4 @@ script:
   - ./bin/orca tests:run
   - ./bin/orca fixture:reset -n --all
   - ./bin/orca fixture:destroy -n
+  - ./bin/orca fixture:create --sut=drupal/acquia_purge --sut-only

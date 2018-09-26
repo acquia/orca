@@ -108,18 +108,25 @@ class ProductModuleDataManager {
   ];
 
   /**
-   * Returns an array of Drupal module names.
+   * Returns an array of Drupal module names, optionally limited by package.
+   *
+   * @param string|false $package
+   *   A package name to limit to, or FALSE for all.
    *
    * @return string[]
    */
-  public static function moduleNames() {
+  public static function moduleNames($package = FALSE) {
     $modules = [];
     foreach (self::$data as $package_name => $data) {
+      if ($package && $package !== $package_name) {
+        continue;
+      }
+
       if (!empty($data['module'])) {
-        $modules[$data['module']] = $data['module'];
+        $modules[] = $data['module'];
         if (!empty($data['submodules'])) {
           foreach ($data['submodules'] as $submodule) {
-            $modules[$submodule] = $submodule;
+            $modules[] = $submodule;
           }
         }
       }
@@ -143,17 +150,36 @@ class ProductModuleDataManager {
    */
   public static function packageStrings() {
     $packages = [];
-    foreach (self::$data as $package_name => $data) {
-      if (!empty($data['version'])) {
-        $packages[$package_name] = "{$package_name}:{$data['version']}";
-        if (!empty($data['submodules'])) {
-          foreach ($data['submodules'] as $submodule) {
-            $packages["drupal/{$submodule}"] = "drupal/{$submodule}:{$data['version']}";
+    foreach (self::$data as $package_name => $datum) {
+      if (!empty($datum['version'])) {
+        $packages[$package_name] = "{$package_name}:{$datum['version']}";
+        if (!empty($datum['submodules'])) {
+          foreach ($datum['submodules'] as $submodule) {
+            $packages["drupal/{$submodule}"] = "drupal/{$submodule}:{$datum['version']}";
           }
         }
       }
     }
     return $packages;
+  }
+
+  /**
+   * Returns an array of Composer project names.
+   *
+   * That is, the part of the package strings after the forward slash (/).
+   *
+   * @param string|false $package
+   *   A package name to limit to, or FALSE for all.
+   *
+   * @return string[]
+   */
+  public static function projectNames($package = FALSE) {
+    $names = [];
+    $data = ($package) ? [$package => []] : self::$data;
+    foreach ($data as $package_name => $datum) {
+      $names[] = substr($package_name, strpos($package_name, '/') + 1);
+    }
+    return $names;
   }
 
 }

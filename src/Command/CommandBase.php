@@ -3,6 +3,7 @@
 namespace Acquia\Orca\Robo\Plugin\Commands;
 
 use Acquia\Orca\Exception\FixtureNotReadyException;
+use Acquia\Orca\Task\NullTask;
 use Robo\Tasks;
 
 /**
@@ -102,6 +103,17 @@ abstract class CommandBase extends Tasks {
    */
   protected function taskMysqlExec($command) {
     return $this->taskExec(sprintf('mysql -uroot -e "%s"', $command));
+  }
+
+  /**
+   * Returns a task that does nothing.
+   *
+   * @return \Acquia\Orca\Task\NullTask
+   */
+  protected function taskNull() {
+    /** @var \Acquia\Orca\Task\NullTask $task */
+    $task = $this->task(NullTask::class);
+    return $task;
   }
 
   /**
