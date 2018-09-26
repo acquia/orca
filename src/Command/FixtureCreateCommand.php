@@ -160,7 +160,9 @@ class FixtureCreateCommand extends CommandBase {
   private function addSutRepository() {
     $repo_name = str_replace('_', '-', explode('/', $this->sut)[1]);
     // Avoid PHP warnings by creating the "repositories" value if absent.
-    $this->composerConfig->repositories = $this->composerConfig->repositories ?: new \stdClass();
+    if (!property_exists($this->composerConfig, 'repositories') || !is_object($this->composerConfig->repositories)) {
+      $this->composerConfig->repositories = new \stdClass();
+    }
     $this->composerConfig->repositories->{$this->sut} = (object) [
       'type' => 'path',
       'url' => "../{$repo_name}",
