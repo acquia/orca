@@ -13,9 +13,4 @@ install: composer install
 
 before_script: composer phpcs
 
-script:
-  - ./bin/orca fixture:create
-  - ./bin/orca tests:run
-  - ./bin/orca fixture:reset -n --empty-database
-  - ./bin/orca fixture:destroy -n
-  - ./bin/orca fixture:create --sut=drupal/acquia_purge --sut-only
+script: ./bin/self-test

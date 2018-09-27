@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+
+# ORCA self test script.
+
+trap times EXIT
+
+# Locally perform the important steps from before_install, install, and
+# before_script in .travis.yml.
+if [ -z "${TRAVIS}" ]; then
+  composer validate --ansi
+  composer install
+  composer phpcs
+fi
+
+if [ -d "../build" ]; then
+  ./bin/orca fixture:destroy -n
+fi
+
+./bin/orca fixture:create
+./bin/orca tests:run
+./bin/orca fixture:reset -n --empty-database
+./bin/orca fixture:destroy -n
+./bin/orca fixture:create --sut=drupal/acquia_purge --sut-only
