@@ -27,8 +27,8 @@ class FixtureDestroyCommand extends CommandBase {
 
     return $this->collectionBuilder()
       ->addTaskList([
-        $this->taskDropDrupalDatabase(),
-        $this->taskFixFilePermissions(),
+        $this->dropDrupalDatabase(),
+        $this->fixFilePermissions(),
         $this->taskDeleteDir($this->buildPath()),
       ]);
   }

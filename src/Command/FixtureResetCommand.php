@@ -60,10 +60,10 @@ class FixtureResetCommand extends CommandBase {
     // Reinstalling Drupal already drops all tables in the database, so there's
     // never a reason to do so here AND reinstall Drupal.
     if ($options['all'] || $options['reinstall-drupal']) {
-      $this->collection->addTask($this->taskInstallDrupal());
+      $this->collection->addTask($this->installDrupal());
     }
     elseif ($options['empty-database']) {
-      $this->collection->addTask($this->taskEmptyDrupalDatabase());
+      $this->collection->addTask($this->emptyDrupalDatabase());
     }
 
     return $this->collection;
@@ -78,7 +78,7 @@ class FixtureResetCommand extends CommandBase {
     $this->collection
       ->addTaskList([
         $git->exec(sprintf('branch backup-%s', date('Y-m-d-Gis'))),
-        $this->taskFixFilePermissions(),
+        $this->fixFilePermissions(),
         $git->exec(sprintf('reset --hard %s', self::BASE_FIXTURE_BRANCH)),
         $git->exec('clean -fd'),
       ]);

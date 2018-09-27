@@ -3,13 +3,15 @@
 namespace Acquia\Orca\Robo\Plugin\Commands;
 
 use Acquia\Orca\Exception\FixtureNotReadyException;
-use Acquia\Orca\Task\NullTask;
+use Acquia\Orca\Task\TaskLoaderTrait;
 use Robo\Tasks;
 
 /**
  * Provides a base Robo command implementation.
  */
 abstract class CommandBase extends Tasks {
+
+  use TaskLoaderTrait;
 
   /**
    * The directory that all Acquia product modules are grouped under.
@@ -38,111 +40,6 @@ abstract class CommandBase extends Tasks {
   }
 
   /**
-   * Executes a BLT command.
-   *
-   * @param string $command
-   *   The command string to execute, including options and arguments.
-   *
-   * @return \Robo\Collection\CollectionBuilder
-   */
-  protected function taskBltExec($command) {
-    return $this->taskScriptExec('vendor/bin/blt', $command);
-  }
-
-  /**
-   * Creates the Drupal database and grants appropriate privileges.
-   *
-   * @return \Robo\Task\Base\Exec
-   */
-  protected function taskCreateDrupalDatabaseAndGrantPrivileges() {
-    return $this->taskMysqlExec(
-      "CREATE DATABASE IF NOT EXISTS drupal;
-      GRANT ALL ON drupal.* TO 'drupal'@'localhost' identified by 'drupal';"
-    );
-  }
-
-  /**
-   * Drops the Drupal database.
-   *
-   * @return \Robo\Task\Base\Exec
-   */
-  protected function taskDropDrupalDatabase() {
-    return $this->taskMysqlExec('DROP DATABASE IF EXISTS drupal;');
-  }
-
-  /**
-   * Empties the Drupal database.
-   *
-   * @return \Robo\Collection\CollectionBuilder
-   */
-  protected function taskEmptyDrupalDatabase() {
-    return $this->collectionBuilder()
-      ->addTaskList([
-        $this->taskDropDrupalDatabase(),
-        $this->taskCreateDrupalDatabaseAndGrantPrivileges(),
-      ]);
-  }
-
-  /**
-   * Returns a Drupal installation task.
-   *
-   * @return \Robo\Collection\CollectionBuilder
-   */
-  protected function taskInstallDrupal() {
-    return $this->collectionBuilder()
-      ->addTaskList([
-        $this->taskCreateDrupalDatabaseAndGrantPrivileges(),
-        $this->taskBltExec('drupal:install -n'),
-      ]);
-  }
-
-  /**
-   * Executes a MySQL command.
-   *
-   * @return \Robo\Task\Base\Exec
-   */
-  protected function taskMysqlExec($command) {
-    return $this->taskExec(sprintf('mysql -uroot -e "%s"', $command));
-  }
-
-  /**
-   * Returns a task that does nothing.
-   *
-   * @return \Acquia\Orca\Task\NullTask
-   */
-  protected function taskNull() {
-    /** @var \Acquia\Orca\Task\NullTask $task */
-    $task = $this->task(NullTask::class);
-    return $task;
-  }
-
-  /**
-   * Executes a script command.
-   *
-   * @param string $path
-   *   The path to the script relative to the build directory (no leading slash
-   *   (/)).
-   * @param string $command
-   *   The command string to execute, including options and arguments.
-   *
-   * @return \Robo\Collection\CollectionBuilder
-   */
-  protected function taskScriptExec($path, $command) {
-    return $this->collectionBuilder()
-      ->addCode(function () use ($path, $command) {
-        $path = $this->buildPath($path);
-
-        if (!file_exists($path)) {
-          throw new FixtureNotReadyException();
-        }
-
-        return $this->taskExec("${path} {$command}")
-          ->dir($this->buildPath())
-          ->run();
-      });
-  }
-
-  /**
    * Gets the build path with an optional sub-path appended.
    *
    * @param string $sub_path
@@ -159,15 +56,37 @@ abstract class CommandBase extends Tasks {
   }
 
   /**
-   * Executes a Drush command.
+   * Creates the Drupal database and grants appropriate privileges.
    *
-   * @param string $command
-   *   The command string to execute, including options and arguments.
+   * @return \Robo\Task\Base\Exec
+   */
+  protected function createDrupalDatabaseAndGrantPrivileges() {
+    return $this->taskMysqlExec(
+      "CREATE DATABASE IF NOT EXISTS drupal;
+      GRANT ALL ON drupal.* TO 'drupal'@'localhost' identified by 'drupal';"
+    );
+  }
+
+  /**
+   * Drops the Drupal database.
+   *
+   * @return \Robo\Task\Base\Exec
+   */
+  protected function dropDrupalDatabase() {
+    return $this->taskMysqlExec('DROP DATABASE IF EXISTS drupal;');
+  }
+
+  /**
+   * Empties the Drupal database.
    *
    * @return \Robo\Collection\CollectionBuilder
    */
-  protected function taskDrushExec($command) {
-    return $this->taskScriptExec('vendor/bin/drush', $command);
+  protected function emptyDrupalDatabase() {
+    return $this->collectionBuilder()
+      ->addTaskList([
+        $this->dropDrupalDatabase(),
+        $this->createDrupalDatabaseAndGrantPrivileges(),
+      ]);
   }
 
   /**
@@ -178,9 +97,22 @@ abstract class CommandBase extends Tasks {
    *
    * @return \Robo\Task\Base\Exec
    */
-  protected function taskFixFilePermissions() {
+  protected function fixFilePermissions() {
     return $this->taskExec('chmod -R u+w .')
       ->dir($this->buildPath('docroot/sites/default'));
+  }
+
+  /**
+   * Returns a Drupal installation task.
+   *
+   * @return \Robo\Collection\CollectionBuilder
+   */
+  protected function installDrupal() {
+    return $this->collectionBuilder()
+      ->addTaskList([
+        $this->createDrupalDatabaseAndGrantPrivileges(),
+        $this->taskBltExec('drupal:install -n'),
+      ]);
   }
 
 }

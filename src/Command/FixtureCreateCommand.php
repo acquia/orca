@@ -70,7 +70,7 @@ class FixtureCreateCommand extends CommandBase {
         $this->createCodeBranch('initial'),
         $this->addAcquiaProductModules(),
         $this->commitCodeChanges('Added Acquia product modules.'),
-        $this->taskInstallDrupal(),
+        $this->installDrupal(),
         $this->commitCodeChanges('Installed Drupal.', self::BASE_FIXTURE_BRANCH),
         $this->installAcquiaProductModules(),
       ]);
