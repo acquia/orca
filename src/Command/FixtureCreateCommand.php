@@ -90,7 +90,9 @@ class FixtureCreateCommand extends CommandBase {
     }
 
     return $this->taskComposerCreateProject()
-      ->source('acquia/blt-project')
+      // @todo Remove the dev branch when composer-merge-plugin removal work has
+      //   been merged into from BLT.
+      ->source('acquia/blt-project:dev-remove-merge-plugin')
       ->target($this->buildPath())
       ->interactive(FALSE);
   }
