@@ -51,7 +51,10 @@ class FixtureCreateCommand extends CommandBase {
    *
    * @return \Robo\Collection\CollectionBuilder
    */
-  public function execute(array $options = ['sut|s' => InputOption::VALUE_REQUIRED, 'sut-only|i' => FALSE]) {
+  public function execute(array $options = [
+    'sut|s' => InputOption::VALUE_REQUIRED,
+    'sut-only|i' => FALSE,
+  ]) {
     $this->sut = $options['sut'];
     $this->sutOnly = $options['sut-only'];
 
