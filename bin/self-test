@@ -12,11 +12,7 @@ if [ -z "${TRAVIS}" ]; then
   composer phpcs
 fi
 
-if [ -d "../build" ]; then
-  ./bin/orca fixture:destroy -n
-fi
-
-./bin/orca fixture:create
+./bin/orca fixture:create --force
 ./bin/orca tests:run
 ./bin/orca fixture:reset -n --empty-database
 ./bin/orca fixture:destroy -n

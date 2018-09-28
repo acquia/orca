@@ -25,12 +25,7 @@ class FixtureDestroyCommand extends CommandBase {
       return Result::EXITCODE_USER_CANCEL;
     }
 
-    return $this->collectionBuilder()
-      ->addTaskList([
-        $this->dropDrupalDatabase(),
-        $this->fixFilePermissions(),
-        $this->taskDeleteDir($this->buildPath()),
-      ]);
+    return $this->destroyFixture();
   }
 
 }

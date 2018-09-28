@@ -2,6 +2,7 @@
 
 namespace Acquia\Orca\Robo\Plugin\Commands;
 
+use Acquia\Orca\Exception\UserCancelException;
 use Acquia\Orca\ProductModuleDataManager;
 use Symfony\Component\Console\Input\InputOption;
 
@@ -16,6 +17,13 @@ class FixtureCreateCommand extends CommandBase {
    * @var \stdClass
    */
   private $composerConfig;
+
+  /**
+   * Whether or not the --force command option was specified.
+   *
+   * @var bool
+   */
+  private $force = FALSE;
 
   /**
    * The SUT package name, e.g., drupal/example.
@@ -41,6 +49,8 @@ class FixtureCreateCommand extends CommandBase {
    *   non-required Acquia product modules.
    * @option sut The system under test (SUT) in the form of its package name,
    *   e.g., drupal/example.
+   * @option force Destroy a pre-existing fixture first, if present. See
+   *   fixture:destroy.
    * @aliases build
    * @usage fixture:create --sut=drupal/example
    *   Create the fixture for testing drupal/example in the presence of all other
@@ -49,12 +59,17 @@ class FixtureCreateCommand extends CommandBase {
    *   Create the fixture for testing drupal/example in the absence of any other
    *   non-required Acquia product modules.
    *
-   * @return \Robo\Collection\CollectionBuilder
+   * @return \Robo\Collection\CollectionBuilder|int
    */
   public function execute(array $options = [
     'sut|s' => InputOption::VALUE_REQUIRED,
     'sut-only|i' => FALSE,
+    // @todo A one-character option shortcut of -f for --force seems obvious,
+    //   but for some reason, robo doesn't respect it. Other characters work.
+    //   It's probably a bug, but it didn't seem worth reporting at the time.
+    'force' => FALSE,
   ]) {
+    $this->force = $options['force'];
     $this->sut = $options['sut'];
     $this->sutOnly = $options['sut-only'];
 
@@ -67,16 +82,21 @@ class FixtureCreateCommand extends CommandBase {
       throw new \RuntimeException(sprintf("Invalid value for sut option: \"%s\". Acceptable values are\n  - %s", $this->sut, implode("\n  - ", $valid_values)));
     }
 
-    return $this->collectionBuilder()
-      ->addTaskList([
-        $this->createBltProject(),
-        $this->createCodeBranch('initial'),
-        $this->addAcquiaProductModules(),
-        $this->commitCodeChanges('Added Acquia product modules.'),
-        $this->installDrupal(),
-        $this->commitCodeChanges('Installed Drupal.', self::BASE_FIXTURE_BRANCH),
-        $this->installAcquiaProductModules(),
-      ]);
+    try {
+      return $this->collectionBuilder()
+        ->addTaskList([
+          $this->createBltProject(),
+          $this->createCodeBranch('initial'),
+          $this->addAcquiaProductModules(),
+          $this->commitCodeChanges('Added Acquia product modules.'),
+          $this->installDrupal(),
+          $this->commitCodeChanges('Installed Drupal.', self::BASE_FIXTURE_BRANCH),
+          $this->installAcquiaProductModules(),
+        ]);
+    }
+    catch (UserCancelException $e) {
+      return $e->getCode();
+    }
   }
 
   /**
@@ -85,16 +105,24 @@ class FixtureCreateCommand extends CommandBase {
    * @return \Robo\Task\Composer\CreateProject
    */
   private function createBltProject() {
+    $collection = $this->collectionBuilder();
+
     if (file_exists($this->buildPath())) {
-      throw new \RuntimeException('The build directory already exists. Run `orca fixture:destroy` to remove it.');
+      if ($this->force) {
+        $collection->addTask($this->destroyFixture());
+      }
+      else {
+        $this->io()->error('The fixture already exists. Use the --force option to destroy it and proceed anyway.');
+        throw new UserCancelException();
+      }
     }
 
-    return $this->taskComposerCreateProject()
+    return $collection->addTask($this->taskComposerCreateProject()
       // @todo Remove the dev branch when composer-merge-plugin removal work has
       //   been merged into from BLT.
       ->source('acquia/blt-project:dev-remove-merge-plugin')
       ->target($this->buildPath())
-      ->interactive(FALSE);
+      ->interactive(FALSE));
   }
 
   /**

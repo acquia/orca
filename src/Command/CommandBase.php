@@ -68,6 +68,20 @@ abstract class CommandBase extends Tasks {
   }
 
   /**
+   * Destroys the test fixture.
+   *
+   * @return \Robo\Collection\CollectionBuilder
+   */
+  protected function destroyFixture() {
+    return $this->collectionBuilder()
+      ->addTaskList([
+        $this->dropDrupalDatabase(),
+        $this->fixFilePermissions(),
+        $this->taskDeleteDir($this->buildPath()),
+      ]);
+  }
+
+  /**
    * Drops the Drupal database.
    *
    * @return \Robo\Task\Base\Exec
