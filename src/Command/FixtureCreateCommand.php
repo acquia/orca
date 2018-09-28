@@ -166,13 +166,21 @@ class FixtureCreateCommand extends CommandBase {
     if (!property_exists($this->composerConfig, 'repositories') || !is_object($this->composerConfig->repositories)) {
       $this->composerConfig->repositories = new \stdClass();
     }
-    $this->composerConfig->repositories->{$this->sut} = (object) [
-      'type' => 'path',
-      'url' => "../{$repo_name}",
-      'options' => [
-        'symlink' => TRUE,
+    // Repositories take precedence in the order specified (i.e., first match
+    // found wins), so our override needs to be added to the beginning in order
+    // to take effect.
+    $this->composerConfig->repositories = (object) array_merge(
+      [
+        $this->sut => [
+          'type' => 'path',
+          'url' => "../{$repo_name}",
+          'options' => [
+            'symlink' => TRUE,
+          ],
+        ],
       ],
-    ];
+      (array) $this->composerConfig->repositories
+    );
   }
 
   /**
@@ -189,7 +197,7 @@ class FixtureCreateCommand extends CommandBase {
    * @return string[]
    */
   private function getDependencies() {
-    $sut_package_string = "{$this->sut}:*";
+    $sut_package_string = "{$this->sut}:@dev";
 
     if ($this->sutOnly) {
       return [$sut_package_string];
