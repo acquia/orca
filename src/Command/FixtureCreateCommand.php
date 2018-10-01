@@ -191,8 +191,7 @@ class FixtureCreateCommand extends CommandBase {
    * Adds a Composer repository for the system under test.
    */
   private function addSutRepository() {
-    $repo_name = str_replace('_', '-', explode('/', $this->sut)[1]);
-    // Avoid PHP warnings by creating the "repositories" value if absent.
+    // Avoid PHP warnings by creating the "repositories" property if absent.
     if (!property_exists($this->composerConfig, 'repositories') || !is_object($this->composerConfig->repositories)) {
       $this->composerConfig->repositories = new \stdClass();
     }
@@ -203,7 +202,7 @@ class FixtureCreateCommand extends CommandBase {
       [
         $this->sut => [
           'type' => 'path',
-          'url' => "../{$repo_name}",
+          'url' => sprintf('../%s', ProductModuleDataManager::dir($this->sut)),
           'options' => [
             'symlink' => TRUE,
           ],

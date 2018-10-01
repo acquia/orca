@@ -15,10 +15,12 @@ class ProductModuleDataManager {
   protected static $data = [
     'acquia/acsf-tools' => [
       'version' => '*',
+      'dir' => 'acsf-tools',
     ],
 
     'drupal/acquia_commercemanager' => [
       'version' => '*',
+      'dir' => 'commerce-manager',
       'module' => 'acm',
       'submodules' => [
         // @todo Composer reports that the below commented out submodules
@@ -41,6 +43,7 @@ class ProductModuleDataManager {
 
     'drupal/acquia_connector' => [
       'version' => '*',
+      'dir' => 'acquia-connector',
       'module' => 'acquia_connector',
       'submodules' => [
         // @todo Installing the acquia_search module in a non-Acquia hosting
@@ -52,6 +55,7 @@ class ProductModuleDataManager {
 
     'drupal/acquia_contenthub' => [
       'version' => '~1.0',
+      'dir' => 'content-hub-d8',
       'module' => 'acquia_contenthub',
       'submodules' => [
         'acquia_contenthub_diagnostic',
@@ -62,6 +66,7 @@ class ProductModuleDataManager {
 
     'drupal/acquia_lift' => [
       'version' => '*',
+      'dir' => 'acquia_lift',
       'module' => 'acquia_lift',
       'submodules' => [
         'acquia_lift_inspector',
@@ -70,11 +75,13 @@ class ProductModuleDataManager {
 
     'drupal/acquia_purge' => [
       'version' => '*',
+      'dir' => 'acquia_purge',
       'module' => 'acquia_purge',
     ],
 
     'drupal/acsf' => [
       'version' => '*',
+      'dir' => 'acsf',
       'module' => 'acsf',
       'submodules' => [
         'acsf_duplication',
@@ -84,7 +91,7 @@ class ProductModuleDataManager {
       ],
     ],
 
-    // @todo The versions of the individual Lightning modules bundles with the
+    // @todo The versions of the individual Lightning modules bundled with the
     //   profile need to be removed before these can be require'd, otherwise
     //   "Your requirements could not be resolved to an installable set of
     //   packages."
@@ -96,6 +103,7 @@ class ProductModuleDataManager {
 
     'drupal/media_acquiadam' => [
       'version' => '*',
+      'dir' => 'media_acquiadam',
       'module' => 'media_acquiadam',
       'submodules' => [
         'lightning_acquiadam',
@@ -106,6 +114,22 @@ class ProductModuleDataManager {
       ],
     ],
   ];
+
+  /**
+   * Returns the directory name for the given package.
+   *
+   * @param string $package
+   *   A package name, e.g., drupal/example.
+   *
+   * @return string
+   */
+  public static function dir($package) {
+    if (!array_key_exists($package, self::$data)) {
+      throw new \InvalidArgumentException(sprintf('No such package: "%s"', $package));
+    }
+
+    return self::$data[$package]['dir'];
+  }
 
   /**
    * Returns an array of Drupal module names, optionally limited by package.
