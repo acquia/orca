@@ -254,7 +254,10 @@ class FixtureCreateCommand extends CommandBase {
   private function removeDuplicateModules() {
     $dirs = [];
     foreach (ProductModuleDataManager::projectNames($this->sut) as $name) {
-      $dirs[] = $this->buildPath("docroot/modules/contrib/{$name}");
+      $path = $this->buildPath("docroot/modules/contrib/{$name}");
+      if (file_exists($path)) {
+        $dirs[] = $path;
+      }
     }
     return $this->taskDeleteDir($dirs);
   }
