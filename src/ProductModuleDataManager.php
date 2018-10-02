@@ -91,15 +91,61 @@ class ProductModuleDataManager {
       ],
     ],
 
-    // @todo The versions of the individual Lightning modules bundled with the
-    //   profile need to be removed before these can be require'd, otherwise
-    //   "Your requirements could not be resolved to an installable set of
-    //   packages."
-    // 'drupal/lightning_api' => ['version' => '*'],
-    // 'drupal/lightning_core' => ['version' => '*'],
-    // 'drupal/lightning_layout' => ['version' => '*'],
-    // 'drupal/lightning_media' => ['version' => '*'],
-    // 'drupal/lightning_workflow' => ['version' => '*'],
+    'drupal/lightning_api' => [
+      'version' => '*',
+      'dir' => 'lightning-api',
+      'module' => 'lightning_api',
+    ],
+
+    'drupal/lightning_core' => [
+      'version' => '*',
+      'dir' => 'lightning-core',
+      'module' => 'lightning_core',
+      'submodules' => [
+        'lightning_contact_form',
+        'lightning_page',
+        'lightning_roles',
+        'lightning_search',
+        'lightning_test',
+      ],
+    ],
+
+    'drupal/lightning_layout' => [
+      'version' => '*',
+      'dir' => 'lightning-layout',
+      'module' => 'lightning_layout',
+      'submodules' => [
+        'lightning_landing_page',
+      ],
+    ],
+
+    'drupal/lightning_media' => [
+      'version' => '*',
+      'dir' => 'lightning-media',
+      'module' => 'lightning_media',
+      'submodules' => [
+        'lightning_media_audio',
+        'lightning_media_bulk_upload',
+        'lightning_media_document',
+        'lightning_media_image',
+        'lightning_media_instagram',
+        // @todo Requiring drupal/lightning_media_slideshow results in "Your
+        // requirements could not be resolved to an installable set of
+        // packages."
+        // 'lightning_media_slideshow',
+        'lightning_media_twitter',
+        'lightning_media_video',
+      ],
+    ],
+
+    'drupal/lightning_workflow' => [
+      'version' => '*',
+      'dir' => 'lightning-workflow',
+      'module' => 'lightning_workflow',
+      'submodules' => [
+        'lightning_scheduler',
+      ],
+    ],
 
     'drupal/media_acquiadam' => [
       'version' => '*',
