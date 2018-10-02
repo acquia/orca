@@ -4,6 +4,11 @@
 
 set -e
 
+BUILD_DIR="$(cd "$(dirname "$0")/../.." && pwd)/build"
+ORCA_DIR="$(cd "$(dirname "$0")/.." && pwd)"
+
+cd ${ORCA_DIR}
+
 RED="\e[41m\e[30m"
 YELLOW="\e[43m\e[30m"
 GREEN="\e[42m\e[30m"
@@ -21,8 +26,6 @@ function fail {
 function wip_fail {
   echo -e "${YELLOW}[WIP] ${1}${RESET}" 1>&2
 }
-
-BUILD_DIR="$(cd "$(dirname "$0")/../.." && pwd)/build"
 
 # Locally perform the important steps from before_install, install, and
 # before_script in .travis.yml.
@@ -45,8 +48,8 @@ if [ -d "${SUT_DIR}" ] || [ -L "${SUT_DIR}" ]; then
   if [ -L "${SUT_DIR}" ]; then
     pass "Used path repository and symlinked SUT."
   else
-    # @todo This won't pass until the SUT contains a valid composer.json. Change
-    #   this to a hard fail once that happens.
+    # @todo This won't pass until the test SUT contains a valid composer.json.
+    #   Change this to a hard fail once that happens.
     wip_fail "Did not use path repository and symlink SUT."
   fi
 else
@@ -55,5 +58,5 @@ fi
 
 ./bin/orca tests:run
 ./bin/orca fixture:reset -n --empty-database
-./bin/orca fixture:create --force
 ./bin/orca fixture:destroy -n
+./bin/orca fixture:create
