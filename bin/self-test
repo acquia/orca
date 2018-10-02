@@ -2,7 +2,27 @@
 
 # ORCA self test script.
 
-trap times EXIT
+set -e
+
+RED="\e[41m\e[30m"
+YELLOW="\e[43m\e[30m"
+GREEN="\e[42m\e[30m"
+RESET="\e[0m"
+
+function pass {
+  echo -e "${GREEN}[PASS] ${1}${RESET}"
+}
+
+function fail {
+  echo -e "${RED}[FAIL] ${1}${RESET}" 1>&2
+  exit 1
+}
+
+function wip_fail {
+  echo -e "${YELLOW}[WIP] ${1}${RESET}" 1>&2
+}
+
+BUILD_DIR="$(cd "$(dirname "$0")/../.." && pwd)/build"
 
 # Locally perform the important steps from before_install, install, and
 # before_script in .travis.yml.
@@ -12,8 +32,28 @@ if [ -z "${TRAVIS}" ]; then
   composer phpcs
 fi
 
-./bin/orca fixture:create --force
+# Clone the Acquia Purge module into place as a test SUT.
+if [ ! -d "../acquia_purge" ]; then
+  git clone --branch 8.x-1.x https://git.drupal.org/project/acquia_purge.git ../acquia_purge
+fi
+
+./bin/orca fixture:create --sut=drupal/acquia_purge --sut-only --force
+
+SUT_DIR="${BUILD_DIR}/docroot/modules/contrib/acquia/acquia_purge"
+if [ -d "${SUT_DIR}" ] || [ -L "${SUT_DIR}" ]; then
+  pass "Placed SUT in correct location."
+  if [ -L "${SUT_DIR}" ]; then
+    pass "Used path repository and symlinked SUT."
+  else
+    # @todo This won't pass until the SUT contains a valid composer.json. Change
+    #   this to a hard fail once that happens.
+    wip_fail "Did not use path repository and symlink SUT."
+  fi
+else
+  fail "Did not place SUT in correct location."
+fi
+
 ./bin/orca tests:run
 ./bin/orca fixture:reset -n --empty-database
+./bin/orca fixture:create --force
 ./bin/orca fixture:destroy -n
-./bin/orca fixture:create --sut=drupal/acquia_purge --sut-only
