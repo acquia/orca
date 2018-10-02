@@ -11,11 +11,15 @@ use Robo\Runner;
 
 const ORCA_VERSION = 'v0.0.1';
 
-if (file_exists(__DIR__ . '/../vendor/autoload.php')) {
-  $class_loader = require __DIR__ . '/../vendor/autoload.php';
+// If invoked from a codebase that requires orca, i.e., a product module.
+if (file_exists(__DIR__ . '/../../vendor/autoload.php')) {
+  $class_loader = require __DIR__ . '/../../vendor/autoload.php';
+  chdir(dirname(__DIR__ . '/../../../'));
 }
-elseif (file_exists(__DIR__ . '/../../../autoload.php')) {
-  $class_loader = require __DIR__ . '/../../../autoload.php';
+// If invoked from a standalone orca instance, e.g., a development clone.
+elseif (file_exists(__DIR__ . '/../vendor/autoload.php')) {
+  $class_loader = require __DIR__ . '/../vendor/autoload.php';
+  chdir(dirname(__DIR__ . '/../../'));
 }
 else {
   die("Could not find autoloader. Run 'composer install' first.\n");
