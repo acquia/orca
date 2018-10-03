@@ -27,6 +27,10 @@ apache_vhosts:
 installed_extras:
   - selenium
 
+composer_global_packages:
+  - { name: hirak/prestissimo, release: '^0.3.6' }
+  - { name: localheinz/composer-normalize, release: '^0.8.0' }
+
 php_packages_extra:
   - "php{{ php_version }}-bz2"
   - "php{{ php_version }}-imagick"
