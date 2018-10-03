@@ -24,7 +24,8 @@ apache_vhosts:
     documentroot: "{{ drupal_core_path }}/build/docroot"
     extra_parameters: "{{ apache_vhost_php_fpm_parameters }}"
 
-installed_extras: []
+installed_extras:
+  - selenium
 
 php_packages_extra:
   - "php{{ php_version }}-bz2"
