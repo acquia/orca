@@ -106,7 +106,6 @@ class ProductModuleDataManager {
         'lightning_page',
         'lightning_roles',
         'lightning_search',
-        'lightning_test',
       ],
     ],
 

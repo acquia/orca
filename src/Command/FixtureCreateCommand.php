@@ -87,6 +87,7 @@ class FixtureCreateCommand extends CommandBase {
         ->addTaskList([
           $this->createBltProject(),
           $this->createCodeBranch('initial'),
+          $this->removeLightningProfile(),
           $this->addAcquiaProductModules(),
           $this->commitCodeChanges('Added Acquia product modules.'),
           $this->installDrupal(),
@@ -123,6 +124,21 @@ class FixtureCreateCommand extends CommandBase {
       ->source('acquia/blt-project:dev-remove-merge-plugin')
       ->target($this->buildPath())
       ->interactive(FALSE));
+  }
+
+  /**
+   * Removes the Lightning profile Composer requirement (acquia/lightning).
+   *
+   * The profile requirement conflicts with individual Lightning submodule
+   * requirements--namely, it prevents them from being symlinked via a local
+   * "path" repository.
+   *
+   * @return \Robo\Task\Composer\Remove
+   */
+  private function removeLightningProfile() {
+    return $this->taskComposerRemove()
+      ->dir($this->buildPath())
+      ->arg('acquia/lightning');
   }
 
   /**

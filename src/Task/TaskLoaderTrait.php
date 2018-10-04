@@ -15,18 +15,6 @@ trait TaskLoaderTrait {
   use TaskAccessor;
 
   /**
-   * Executes a BLT command.
-   *
-   * @param string $command
-   *   The command string to execute, including options and arguments.
-   *
-   * @return \Robo\Collection\CollectionBuilder
-   */
-  protected function taskBltExec($command) {
-    return $this->taskScriptExec('vendor/bin/blt', $command);
-  }
-
-  /**
    * Executes a Drush command.
    *
    * @param string $command
@@ -35,7 +23,7 @@ trait TaskLoaderTrait {
    * @return \Robo\Collection\CollectionBuilder
    */
   protected function taskDrushExec($command) {
-    return $this->taskScriptExec('vendor/bin/drush', $command);
+    return $this->taskScriptExec('vendor/bin/drush', "@self {$command}");
   }
 
   /**

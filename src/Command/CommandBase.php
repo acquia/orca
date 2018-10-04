@@ -125,7 +125,15 @@ abstract class CommandBase extends Tasks {
     return $this->collectionBuilder()
       ->addTaskList([
         $this->createDrupalDatabaseAndGrantPrivileges(),
-        $this->taskBltExec('drupal:install -n'),
+        $this->taskDrushExec(implode(' ', [
+          'site-install minimal',
+          "install_configure_form.update_status_module='array(FALSE,FALSE)'",
+          "install_configure_form.enable_update_status_module=NULL",
+          "--site-name='ORCA'",
+          '--no-interaction',
+          '-v',
+          '--ansi',
+        ])),
       ]);
   }
 
