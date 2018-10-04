@@ -18,6 +18,11 @@ class ProductModuleDataManager {
       'dir' => 'acsf-tools',
     ],
 
+    'acquia/drupal-spec-tool' => [
+      'version' => '*',
+      'dir' => 'drupal-spec-tool',
+    ],
+
     'drupal/acquia_commercemanager' => [
       'version' => '*',
       'dir' => 'commerce-manager',
