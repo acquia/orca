@@ -126,10 +126,13 @@ abstract class CommandBase extends Tasks {
       ->addTaskList([
         $this->createDrupalDatabaseAndGrantPrivileges(),
         $this->taskDrushExec(implode(' ', [
-          'site-install minimal',
-          "install_configure_form.update_status_module='array(FALSE,FALSE)'",
+          'site-install',
+          'minimal',
+          "install_configure_form.update_status_module='[FALSE,FALSE]'",
           "install_configure_form.enable_update_status_module=NULL",
-          "--site-name='ORCA'",
+          "--site-name=ORCA",
+          "--account-name=admin",
+          "--account-pass=admin",
           '--no-interaction',
           '-v',
           '--ansi',
