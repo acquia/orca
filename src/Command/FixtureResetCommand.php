@@ -21,10 +21,10 @@ class FixtureResetCommand extends CommandBase {
    * Resets the test fixture to its base state and optionally reinstalls Drupal.
    *
    * @command fixture:reset
-   * @option reset-code Reset the codebase. All uncommitted code changes will be
+   * @option code Reset the codebase. All uncommitted code changes will be
    *   lost! Committed changes will be saved to a timestamped backup branch.
-   * @option empty-database Empty the Drupal database.
-   * @option reinstall-drupal Reinstall Drupal.
+   * @option db Empty the Drupal database.
+   * @option drupal Reinstall Drupal.
    * @option all Resets the code, empties the database, and reinstalls Drupal.
    *   Takes precedence over other options.
    * @aliases reset
@@ -32,16 +32,16 @@ class FixtureResetCommand extends CommandBase {
    * @return \Robo\Collection\CollectionBuilder|int
    */
   public function execute(array $options = [
-    'reset-code|c' => FALSE,
-    'empty-database|e' => FALSE,
-    'reinstall-drupal|r' => FALSE,
+    'code|c' => FALSE,
+    'db|d' => FALSE,
+    'drupal|r' => FALSE,
     'all|a' => FALSE,
   ]) {
     if (!file_exists($this->buildPath())) {
       throw new FixtureNotReadyException();
     }
 
-    if (!$options['all'] && !$options['reset-code'] && !$options['empty-database'] && !$options['reinstall-drupal']) {
+    if (!$options['all'] && !$options['code'] && !$options['db'] && !$options['drupal']) {
       $this->say('Nothing to do. Use a command option. See `orca help fixture:reset`.');
       return Result::EXITCODE_ERROR;
     }
@@ -53,16 +53,16 @@ class FixtureResetCommand extends CommandBase {
 
     $this->collection = $this->collectionBuilder();
 
-    if ($options['all'] || $options['reset-code']) {
+    if ($options['all'] || $options['code']) {
       $this->resetAndBackupCode();
     }
 
     // Reinstalling Drupal already drops all tables in the database, so there's
     // never a reason to do so here AND reinstall Drupal.
-    if ($options['all'] || $options['reinstall-drupal']) {
+    if ($options['all'] || $options['drupal']) {
       $this->collection->addTask($this->installDrupal());
     }
-    elseif ($options['empty-database']) {
+    elseif ($options['db']) {
       $this->collection->addTask($this->emptyDrupalDatabase());
     }
 

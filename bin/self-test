@@ -57,7 +57,7 @@ else
 fi
 
 ./bin/orca tests:run
-./bin/orca fixture:reset -n --empty-database
+./bin/orca fixture:reset -n --db
 ./bin/orca fixture:destroy -n
 ./bin/orca fixture:create
 
