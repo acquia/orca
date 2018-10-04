@@ -60,3 +60,6 @@ fi
 ./bin/orca fixture:reset -n --empty-database
 ./bin/orca fixture:destroy -n
 ./bin/orca fixture:create
+
+# Print script run times locally only.
+[ -e "${TRAVIS}" ] || times
