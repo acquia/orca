@@ -219,9 +219,6 @@ class FixtureCreateCommand extends CommandBase {
         $this->sut => [
           'type' => 'path',
           'url' => sprintf('../%s', ProductModuleDataManager::dir($this->sut)),
-          'options' => [
-            'symlink' => TRUE,
-          ],
         ],
       ],
       (array) $this->composerConfig->repositories
