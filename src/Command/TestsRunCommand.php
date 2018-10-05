@@ -33,7 +33,8 @@ class TestsRunCommand extends CommandBase {
    * @return \Robo\Collection\CollectionBuilder
    */
   private function runPhpUnit() {
-    return $this->runFramework('taskPhpUnit', 'phpunit.xml.dist', 'configFile');
+    return $this->runFramework('taskPhpUnit', 'phpunit.xml.dist', 'configFile'
+    );
   }
 
   /**

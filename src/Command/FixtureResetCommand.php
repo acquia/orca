@@ -21,24 +21,30 @@ class FixtureResetCommand extends CommandBase {
    *
    * @command fixture:reset
    * @option code Reset the codebase. All uncommitted code changes will be
-   *   lost! Committed changes will be saved to a timestamped backup branch.
+   *   lost! Committed code changes will be saved to a timestamped backup
+   *   branch.
    * @option db Empty the Drupal database.
    * @option drupal Reinstall Drupal.
-   * @option all Resets the code, empties the database, and reinstalls Drupal.
-   *   Takes precedence over other options.
+   * @option all Reset the code, empty the database, and reinstall Drupal. Takes
+   *   precedence over other options.
    * @aliases reset
    *
    * @return \Robo\Collection\CollectionBuilder|int
    */
   public function execute(array $options = [
-    'code|c' => FALSE,
-    'db|d' => FALSE,
-    'drupal|r' => FALSE,
-    'all|a' => FALSE,
+    'code' => FALSE,
+    'db' => FALSE,
+    'drupal' => FALSE,
+    'all' => FALSE,
   ]) {
     $this->assert(file_exists($this->buildPath()), 'No fixture present.');
 
-    if (!$options['all'] && !$options['code'] && !$options['db'] && !$options['drupal']) {
+    if (!in_array(TRUE, [
+      $options['all'],
+      $options['code'],
+      $options['db'],
+      $options['drupal'],
+    ])) {
       $this->say('Nothing to do. Use a command option. See `orca help fixture:reset`.');
       return Result::EXITCODE_ERROR;
     }
@@ -55,7 +61,7 @@ class FixtureResetCommand extends CommandBase {
     }
 
     // Reinstalling Drupal already drops all tables in the database, so there's
-    // never a reason to do so here AND reinstall Drupal.
+    // never a reason to take both actions discretely.
     if ($options['all'] || $options['drupal']) {
       $this->collection->addTask($this->installDrupal());
     }

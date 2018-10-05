@@ -95,7 +95,7 @@ class FixtureCreateCommand extends CommandBase {
     if ($this->sut) {
       $this->sutDestBaseName = ProductModuleDataManager::moduleName($this->sut);
       $this->sutSourceBaseName = ProductModuleDataManager::dir($this->sut);
-      $this->sutDestPath = $this->buildPath("docroot/modules/contrib/acquia/{$this->sutDestBaseName}");
+      $this->sutDestPath = $this->buildPath(self::ACQUIA_PRODUCT_MODULES_DIR . "/{$this->sutDestBaseName}");
     }
     $this->sutOnly = $options['sut-only'];
 
@@ -279,7 +279,7 @@ class FixtureCreateCommand extends CommandBase {
       return [$sut_package_string];
     }
 
-    $dependencies = ProductModuleDataManager::packageStrings();
+    $dependencies = ProductModuleDataManager::packageStringPlural();
 
     // Replace the version constraint on the SUT to allow for symlinking.
     if ($this->sut) {
@@ -319,7 +319,7 @@ class FixtureCreateCommand extends CommandBase {
    */
   private function removeDuplicateModules() {
     $dirs = [];
-    foreach (ProductModuleDataManager::projectNames($this->sut) as $name) {
+    foreach (ProductModuleDataManager::projectNamePlural($this->sut) as $name) {
       $path = $this->buildPath("docroot/modules/contrib/{$name}");
       if (file_exists($path)) {
         $dirs[] = $path;

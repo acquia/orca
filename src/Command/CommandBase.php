@@ -125,7 +125,7 @@ abstract class CommandBase extends Tasks {
   /**
    * Fixes file permissions on the build directory.
    *
-   * Makes writable files the Drupal installer makes read-only, to prevent
+   * Makes writable those files the Drupal installer makes read-only, to prevent
    * permission denied errors.
    *
    * @return \Robo\Task\Base\Exec
@@ -153,7 +153,7 @@ abstract class CommandBase extends Tasks {
           "--account-name=admin",
           "--account-pass=admin",
           '--no-interaction',
-          '-v',
+          '--verbose',
           '--ansi',
         ])),
       ]);

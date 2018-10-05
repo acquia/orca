@@ -12,7 +12,7 @@ class FixtureDestroyCommand extends CommandBase {
   /**
    * Destroys the test fixture.
    *
-   * Deletes the entire site build directory.
+   * Deletes the entire site build directory and drops the Drupal database.
    *
    * @command fixture:destroy
    * @aliases destroy

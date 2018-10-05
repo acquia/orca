@@ -16,11 +16,13 @@ class ProductModuleDataManager {
     'acquia/acsf-tools' => [
       'version' => '*',
       'dir' => 'acsf-tools',
+      'module' => FALSE,
     ],
 
     'acquia/drupal-spec-tool' => [
       'version' => '*',
       'dir' => 'drupal-spec-tool',
+      'module' => FALSE,
     ],
 
     'drupal/acquia_commercemanager' => [
@@ -30,6 +32,7 @@ class ProductModuleDataManager {
       'submodules' => [
         // @todo Composer reports that the below commented out submodules
         //   require drupal/acm-acm, which of course cannot be found.
+        // @see https://backlog.acquia.com/browse/PF-1542
         // 'acm_cart',
         'acm_checkout',
         // 'acm_customer',
@@ -40,8 +43,10 @@ class ProductModuleDataManager {
         // 'acm_promotion',
         // 'acm_sku',
         // 'acm_sku_position',
-        // @todo Workaround for the fact that the acm module doesn't declare its
-        //   dependency on drupal/pcb in a composer.json file.
+        // @todo Workaround for Composer problems (probably the same as the
+        //   above) that result in "module 'acm' is missing its dependency
+        //   module pcb" when attempting to install with Drush.
+        // @see https://backlog.acquia.com/browse/PF-1542
         'pcb',
       ],
     ],
@@ -54,6 +59,7 @@ class ProductModuleDataManager {
         // @todo Installing the acquia_search module in a non-Acquia hosting
         //   environment causes a PHP fatal error: Class
         //   'Solarium\Core\Plugin\Plugin' not found.
+        // @see https://backlog.acquia.com/browse/PF-1543
         // 'acquia_search',
       ],
     ],
@@ -134,8 +140,9 @@ class ProductModuleDataManager {
         'lightning_media_image',
         'lightning_media_instagram',
         // @todo Requiring drupal/lightning_media_slideshow results in "Your
-        // requirements could not be resolved to an installable set of
-        // packages."
+        //   requirements could not be resolved to an installable set of
+        //   packages."
+        // @see https://backlog.acquia.com/browse/PF-1544
         // 'lightning_media_slideshow',
         'lightning_media_twitter',
         'lightning_media_video',
@@ -159,6 +166,7 @@ class ProductModuleDataManager {
         'lightning_acquiadam',
         // @todo Installing the media_acquiadam_example module causes a
         //   PreExistingConfigException with configuration objects it provides.
+        // @see https://backlog.acquia.com/browse/PF-1545
         // 'media_acquiadam_example',
         'media_acquiadam_report',
       ],
@@ -239,7 +247,7 @@ class ProductModuleDataManager {
    *
    * @return string[]
    */
-  public static function packageStrings() {
+  public static function packageStringPlural() {
     $packages = [];
     foreach (self::$data as $package_name => $datum) {
       if (!empty($datum['version'])) {
@@ -264,7 +272,7 @@ class ProductModuleDataManager {
    *
    * @return string[]
    */
-  public static function projectNames($package = FALSE) {
+  public static function projectNamePlural($package = FALSE) {
     $names = [];
     $data = ($package) ? [$package => []] : self::$data;
     foreach ($data as $package_name => $datum) {
