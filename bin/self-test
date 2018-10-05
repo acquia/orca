@@ -4,29 +4,6 @@
 
 set -e
 
-BUILD_DIR="$(cd "$(dirname "$0")/../.." && pwd)/build"
-ORCA_DIR="$(cd "$(dirname "$0")/.." && pwd)"
-
-cd ${ORCA_DIR}
-
-RED="\e[41m\e[30m"
-YELLOW="\e[43m\e[30m"
-GREEN="\e[42m\e[30m"
-RESET="\e[0m"
-
-function pass {
-  echo -e "${GREEN}[PASS] ${1}${RESET}"
-}
-
-function fail {
-  echo -e "${RED}[FAIL] ${1}${RESET}" 1>&2
-  exit 1
-}
-
-function wip_fail {
-  echo -e "${YELLOW}[WIP] ${1}${RESET}" 1>&2
-}
-
 # Locally perform the important steps from before_install, install, and
 # before_script in .travis.yml.
 if [ -z "${TRAVIS}" ]; then
@@ -41,21 +18,6 @@ if [ ! -d "../lightning-api" ]; then
 fi
 
 ./bin/orca fixture:create --sut=drupal/lightning_api --sut-only --force
-
-SUT_DIR="${BUILD_DIR}/docroot/modules/contrib/acquia/lightning_api"
-if [ -d "${SUT_DIR}" ] || [ -L "${SUT_DIR}" ]; then
-  pass "Placed SUT in correct location."
-  if [ -L "${SUT_DIR}" ]; then
-    pass "Used path repository and symlinked SUT."
-  else
-    # @todo This won't pass until the test SUT contains a valid composer.json.
-    #   Change this to a hard fail once that happens.
-    wip_fail "Did not use path repository and symlink SUT."
-  fi
-else
-  fail "Did not place SUT in correct location."
-fi
-
 ./bin/orca tests:run
 ./bin/orca fixture:reset -n --db
 ./bin/orca fixture:destroy -n

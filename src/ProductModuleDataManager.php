@@ -182,6 +182,23 @@ class ProductModuleDataManager {
   }
 
   /**
+   * Gets the main module name for a given package.
+   *
+   * @param string $package
+   *   A package name, e.g., drupal/example.
+   *
+   * @return string|false
+   *   A module name, if available, or FALSE if not.
+   */
+  public static function moduleName($package) {
+    if (empty(self::$data[$package]['module'])) {
+      return FALSE;
+    }
+
+    return self::$data[$package]['module'];
+  }
+
+  /**
    * Returns an array of Drupal module names, optionally limited by package.
    *
    * @param string|false $package
@@ -189,7 +206,7 @@ class ProductModuleDataManager {
    *
    * @return string[]
    */
-  public static function moduleNames($package = FALSE) {
+  public static function moduleNamePlural($package = FALSE) {
     $modules = [];
     foreach (self::$data as $package_name => $data) {
       if ($package && $package !== $package_name) {

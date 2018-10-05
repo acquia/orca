@@ -31,6 +31,25 @@ abstract class CommandBase extends Tasks {
   abstract public function execute();
 
   /**
+   * Throws an exception if a given assertion loosely evaluates to FALSE.
+   *
+   * @code
+   * $this->assert(rand() % 5, "Random error.");
+   * @endcode
+   *
+   * @param mixed $assertion
+   *   The assertion.
+   * @param string $description
+   *   An optional description that will be included in the failure message if
+   *   the assertion fails.
+   */
+  protected function assert($assertion, $description = '') {
+    if (!$assertion) {
+      throw new \RuntimeException($description);
+    }
+  }
+
+  /**
    * Asserts that the test fixture is ready.
    */
   protected function assertFixtureIsReady() {

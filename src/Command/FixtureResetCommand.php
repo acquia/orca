@@ -2,7 +2,6 @@
 
 namespace Acquia\Orca\Robo\Plugin\Commands;
 
-use Acquia\Orca\Exception\FixtureNotReadyException;
 use Robo\Result;
 
 /**
@@ -37,9 +36,7 @@ class FixtureResetCommand extends CommandBase {
     'drupal|r' => FALSE,
     'all|a' => FALSE,
   ]) {
-    if (!file_exists($this->buildPath())) {
-      throw new FixtureNotReadyException();
-    }
+    $this->assert(file_exists($this->buildPath()), 'No fixture present.');
 
     if (!$options['all'] && !$options['code'] && !$options['db'] && !$options['drupal']) {
       $this->say('Nothing to do. Use a command option. See `orca help fixture:reset`.');

@@ -33,6 +33,27 @@ class FixtureCreateCommand extends CommandBase {
   private $sut = FALSE;
 
   /**
+   * The SUT destination directory base name.
+   *
+   * @var string
+   */
+  private $sutDestBaseName = '';
+
+  /**
+   * The SUT source directory base name.
+   *
+   * @var string
+   */
+  private $sutSourceBaseName = '';
+
+  /**
+   * The SUT destination absolute path.
+   *
+   * @var string
+   */
+  private $sutDestPath = '';
+
+  /**
    * Whether or not the build is SUT-only.
    *
    * @var bool
@@ -71,10 +92,15 @@ class FixtureCreateCommand extends CommandBase {
   ]) {
     $this->force = $options['force'];
     $this->sut = $options['sut'];
+    if ($this->sut) {
+      $this->sutDestBaseName = ProductModuleDataManager::moduleName($this->sut);
+      $this->sutSourceBaseName = ProductModuleDataManager::dir($this->sut);
+      $this->sutDestPath = $this->buildPath("docroot/modules/contrib/acquia/{$this->sutDestBaseName}");
+    }
     $this->sutOnly = $options['sut-only'];
 
     if ($this->sutOnly && empty($this->sut)) {
-      throw new \RuntimeException('An sut option value must be provided for an SUT-only build.');
+      throw new \InvalidArgumentException('An sut option value must be provided for an SUT-only build.');
     }
 
     $valid_values = ProductModuleDataManager::packageNames();
@@ -93,7 +119,8 @@ class FixtureCreateCommand extends CommandBase {
           $this->installDrupal(),
           $this->commitCodeChanges('Installed Drupal.', self::BASE_FIXTURE_BRANCH),
           $this->installAcquiaProductModules(),
-        ]);
+        ])
+        ->addCode($this->selfCheck());
     }
     catch (UserCancelException $e) {
       return $e->getCode();
@@ -113,7 +140,8 @@ class FixtureCreateCommand extends CommandBase {
         $collection->addTask($this->destroyFixture());
       }
       else {
-        $this->io()->error('The fixture already exists. Use the --force option to destroy it and proceed anyway.');
+        $this->io()
+          ->error('The fixture already exists. Use the --force option to destroy it and proceed anyway.');
         throw new UserCancelException();
       }
     }
@@ -147,12 +175,18 @@ class FixtureCreateCommand extends CommandBase {
    * @return \Robo\Collection\CollectionBuilder
    */
   private function addAcquiaProductModules() {
-    return $this->collectionBuilder()
+    $collection = $this->collectionBuilder()
       ->addCode($this->configureComposer())
-      ->addTask($this->taskComposerRequire()
-        ->dependency($this->getDependencies())
-        ->dir($this->buildPath()))
-      ->addTask($this->removeDuplicateModules());
+      ->addTaskList([
+        $this->taskComposerRequire()
+          ->dependency($this->getDependencies())
+          ->dir($this->buildPath()),
+        $this->removeDuplicateModules(),
+      ]);
+    if ($this->sut) {
+      $collection->addTask($this->forceSutSymlinkInstall());
+    }
+    return $collection;
   }
 
   /**
@@ -218,7 +252,7 @@ class FixtureCreateCommand extends CommandBase {
       [
         $this->sut => [
           'type' => 'path',
-          'url' => sprintf('../%s', ProductModuleDataManager::dir($this->sut)),
+          'url' => "../{$this->sutSourceBaseName}",
         ],
       ],
       (array) $this->composerConfig->repositories
@@ -253,6 +287,25 @@ class FixtureCreateCommand extends CommandBase {
     }
 
     return array_values($dependencies);
+  }
+
+  /**
+   * Forces Composer to install the SUT from the local path repository.
+   *
+   * @return \Robo\Collection\CollectionBuilder
+   */
+  private function forceSutSymlinkInstall() {
+    return $this->collectionBuilder()
+      ->addTaskList([
+        $this->taskFilesystemStack()
+          ->remove([
+            $this->buildPath('composer.lock'),
+            $this->sutDestPath,
+          ]),
+        $this->taskComposerInstall()
+          ->noInteraction()
+          ->dir($this->buildPath()),
+      ]);
   }
 
   /**
@@ -318,13 +371,26 @@ class FixtureCreateCommand extends CommandBase {
    * @return \Acquia\Orca\Task\NullTask|\Robo\Collection\CollectionBuilder
    */
   private function installAcquiaProductModules() {
-    $module_list = implode(' ', ProductModuleDataManager::moduleNames($this->sut));
+    $module_list = implode(' ', ProductModuleDataManager::moduleNamePlural($this->sut));
 
     if (!$module_list) {
       return $this->taskNull();
     }
 
     return $this->taskDrushExec("pm-enable -y {$module_list}");
+  }
+
+  /**
+   * Verifies the results of the command.
+   */
+  private function selfCheck() {
+    return function () {
+      if ($this->sut) {
+        $this->assert(file_exists($this->sutDestPath), 'Internal error: Failed to place SUT at the correct path.');
+        $this->assert(is_link($this->sutDestPath), 'Internal error: Failed to symlink SUT via local path repository.');
+      }
+      $this->io()->note('Command fixture:create complete.');
+    };
   }
 
 }
