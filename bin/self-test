@@ -13,8 +13,8 @@ if [ -z "${TRAVIS}" ]; then
 fi
 
 # Clone the Acquia Purge module into place as a test SUT.
-if [ ! -d "../lightning-api" ]; then
-  git -C ../ clone git@github.com:acquia/lightning-api.git
+if [ ! -d "../lightning_api" ]; then
+  git -C ../ clone --branch 8.x-2.x https://git.drupal.org/project/lightning_api.git
 fi
 
 ./bin/orca fixture:create --sut=drupal/lightning_api --sut-only --force

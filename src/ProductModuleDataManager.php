@@ -98,7 +98,7 @@ class ProductModuleDataManager {
 
     'drupal/lightning_api' => [
       'version' => '*',
-      'dir' => 'lightning-api',
+      'dir' => 'lightning_api',
       'module' => 'lightning_api',
     ],
 
