@@ -26,6 +26,11 @@ abstract class CommandBase extends Tasks {
   const BASE_FIXTURE_BRANCH = 'base-fixture';
 
   /**
+   * The default Drupal database URL.
+   */
+  const DEFAULT_DB_URL = 'sqlite://localhost/sites/default/files/.ht.sqlite';
+
+  /**
    * Executes the command.
    */
   abstract public function execute();
@@ -141,6 +146,12 @@ abstract class CommandBase extends Tasks {
    * @return \Robo\Collection\CollectionBuilder
    */
   protected function installDrupal() {
+    $db_url = sprintf(
+      '%s://%s',
+      parse_url(self::DEFAULT_DB_URL, PHP_URL_SCHEME),
+      ltrim(parse_url(self::DEFAULT_DB_URL, PHP_URL_PATH), '/')
+    );
+
     return $this->collectionBuilder()
       ->addTaskList([
         $this->createDrupalDatabaseAndGrantPrivileges(),
@@ -149,7 +160,7 @@ abstract class CommandBase extends Tasks {
           'minimal',
           "install_configure_form.update_status_module='[FALSE,FALSE]'",
           'install_configure_form.enable_update_status_module=NULL',
-          '--db-url=sqlite://sites/default/files/.ht.sqlite',
+          "--db-url={$db_url}",
           '--site-name=ORCA',
           '--account-name=admin',
           '--account-pass=admin',
@@ -159,7 +170,7 @@ abstract class CommandBase extends Tasks {
         ])),
         $this->createPhpUnitConfigurationFile(),
       ])
-      ->addCode($this->configurePhpUnitDatabaseUrl('sqlite://localhost/sites/default/files/.ht.sqlite'));
+      ->addCode($this->configurePhpUnitDatabaseUrl(self::DEFAULT_DB_URL));
   }
 
   /**
@@ -178,8 +189,9 @@ abstract class CommandBase extends Tasks {
       $doc->load($path);
 
       $xpath = new \DOMXPath($doc);
-      $node = $xpath->query('//phpunit/php/env[@name="SIMPLETEST_DB"]')->item(0);
-      $node->setAttribute('value', $db_url);
+      $xpath->query('//phpunit/php/env[@name="SIMPLETEST_DB"]')
+        ->item(0)
+        ->setAttribute('value', $db_url);
       $doc->save($path);
     };
   }
