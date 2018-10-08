@@ -147,7 +147,7 @@ class ProductModuleDataManager {
     'drupal/media_acquiadam' => [
       'version' => '*',
       'dir' => 'media_acquiadam',
-      'module' => 'media_acquiadam',
+      // 'module' => 'media_acquiadam',
       'submodules' => [
         'lightning_acquiadam',
         // 'media_acquiadam_example',
