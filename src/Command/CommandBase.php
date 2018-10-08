@@ -157,7 +157,51 @@ abstract class CommandBase extends Tasks {
           '--verbose',
           '--ansi',
         ])),
-      ]);
+        $this->createPhpUnitConfigurationFile(),
+      ])
+      ->addCode($this->configurePhpUnitDatabaseUrl('sqlite://localhost/sites/default/files/.ht.sqlite'));
+  }
+
+  /**
+   * Sets the SIMPLETEST_DB environment variable in phpunit.xml.
+   *
+   * @param string $db_url
+   *   The Drupal database URL.
+   *
+   * @return \Closure
+   */
+  protected function configurePhpUnitDatabaseUrl($db_url) {
+    return function () use ($db_url) {
+      $path = $this->buildPath('docroot/core/phpunit.xml');
+
+      $doc = new \DOMDocument();
+      $doc->load($path);
+
+      $xpath = new \DOMXPath($doc);
+      $node = $xpath->query('//phpunit/php/env[@name="SIMPLETEST_DB"]')->item(0);
+      $node->setAttribute('value', $db_url);
+      $doc->save($path);
+    };
+  }
+
+  /**
+   * Creates a clean phpunit.xml configuration file.
+   *
+   * This copies Drupal core's phpunit.xml.dist to phpunit.xml.
+   *
+   * @param bool $overwrite
+   *   If TRUE, any existing phpunit.xml in the Drupal core directory will be
+   *   overwritten.
+   *
+   * @return \Robo\Task\Filesystem\FilesystemStack
+   */
+  protected function createPhpUnitConfigurationFile($overwrite = TRUE) {
+    return $this->taskFilesystemStack()
+      ->copy(
+        $this->buildPath('docroot/core/phpunit.xml.dist'),
+        $this->buildPath('docroot/core/phpunit.xml'),
+        $overwrite
+      );
   }
 
 }
