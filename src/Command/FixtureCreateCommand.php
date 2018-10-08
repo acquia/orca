@@ -371,7 +371,8 @@ class FixtureCreateCommand extends CommandBase {
    * @return \Acquia\Orca\Task\NullTask|\Robo\Collection\CollectionBuilder
    */
   private function installAcquiaProductModules() {
-    $module_list = implode(' ', ProductModuleDataManager::moduleNamePlural($this->sut));
+    $package = ($this->sutOnly) ? $this->sut : FALSE;
+    $module_list = implode(' ', ProductModuleDataManager::moduleNamePlural($package));
 
     if (!$module_list) {
       return $this->taskNull();
