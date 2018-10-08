@@ -30,9 +30,6 @@ class ProductModuleDataManager {
       'dir' => 'commerce-manager',
       'module' => 'acm',
       'submodules' => [
-        // @todo Composer reports that the below commented out submodules
-        //   require drupal/acm-acm, which of course cannot be found.
-        // @see https://backlog.acquia.com/browse/PF-1542
         // 'acm_cart',
         'acm_checkout',
         // 'acm_customer',
@@ -43,10 +40,7 @@ class ProductModuleDataManager {
         // 'acm_promotion',
         // 'acm_sku',
         // 'acm_sku_position',
-        // @todo Workaround for Composer problems (probably the same as the
-        //   above) that result in "module 'acm' is missing its dependency
-        //   module pcb" when attempting to install with Drush.
-        // @see https://backlog.acquia.com/browse/PF-1542
+        // @todo Temporary workaround.
         'pcb',
       ],
     ],
@@ -56,10 +50,6 @@ class ProductModuleDataManager {
       'dir' => 'acquia-connector',
       'module' => 'acquia_connector',
       'submodules' => [
-        // @todo Installing the acquia_search module in a non-Acquia hosting
-        //   environment causes a PHP fatal error: Class
-        //   'Solarium\Core\Plugin\Plugin' not found.
-        // @see https://backlog.acquia.com/browse/PF-1543
         // 'acquia_search',
       ],
     ],
@@ -139,10 +129,6 @@ class ProductModuleDataManager {
         'lightning_media_document',
         'lightning_media_image',
         'lightning_media_instagram',
-        // @todo Requiring drupal/lightning_media_slideshow results in "Your
-        //   requirements could not be resolved to an installable set of
-        //   packages."
-        // @see https://backlog.acquia.com/browse/PF-1544
         // 'lightning_media_slideshow',
         'lightning_media_twitter',
         'lightning_media_video',
@@ -164,9 +150,6 @@ class ProductModuleDataManager {
       'module' => 'media_acquiadam',
       'submodules' => [
         'lightning_acquiadam',
-        // @todo Installing the media_acquiadam_example module causes a
-        //   PreExistingConfigException with configuration objects it provides.
-        // @see https://backlog.acquia.com/browse/PF-1545
         // 'media_acquiadam_example',
         'media_acquiadam_report',
       ],
