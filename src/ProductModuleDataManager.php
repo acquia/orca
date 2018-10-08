@@ -129,7 +129,7 @@ class ProductModuleDataManager {
         'lightning_media_document',
         'lightning_media_image',
         'lightning_media_instagram',
-        // 'lightning_media_slideshow',
+        'lightning_media_slideshow',
         'lightning_media_twitter',
         'lightning_media_video',
       ],
