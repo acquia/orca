@@ -1,9 +1,18 @@
 {
+    "brainmaestro/composer-git-hooks": {
+        "version": "v2.5.0"
+    },
+    "dealerdirect/phpcodesniffer-composer-installer": {
+        "version": "v0.4.4"
+    },
     "doctrine/inflector": {
         "version": "v1.3.0"
     },
     "doctrine/instantiator": {
         "version": "1.1.0"
+    },
+    "drupal/coder": {
+        "version": "8.3.1"
     },
     "geerlingguy/drupal-vm": {
         "version": "4.9.1"
@@ -103,6 +112,15 @@
     },
     "sebastian/version": {
         "version": "2.0.1"
+    },
+    "squizlabs/php_codesniffer": {
+        "version": "3.0",
+        "recipe": {
+            "repo": "github.com/symfony/recipes-contrib",
+            "branch": "master",
+            "version": "3.0",
+            "ref": "0dc9cceda799fd3a08b96987e176a261028a3709"
+        }
     },
     "symfony/cache": {
         "version": "v4.1.6"

@@ -20,6 +20,9 @@
         "symfony/symfony": "*"
     },
     "require-dev": {
+        "brainmaestro/composer-git-hooks": "^2.5",
+        "dealerdirect/phpcodesniffer-composer-installer": "^0.4.4",
+        "drupal/coder": "^8.3",
         "geerlingguy/drupal-vm": "^4.9",
         "phpunit/phpunit": "^6.5",
         "symfony/dotenv": "*",
@@ -31,6 +34,13 @@
             "*": "dist"
         },
         "sort-packages": true
+    },
+    "extra": {
+        "hooks": {
+            "pre-commit": "vendor/bin/phpcs",
+            "post-install-cmd": "vendor/bin/cghooks add --ignore-lock",
+            "post-update-cmd": "vendor/bin/cghooks update"
+        }
     },
     "autoload": {
         "psr-4": {
@@ -54,6 +64,9 @@
         "auto-scripts": {
             "cache:clear": "symfony-cmd"
         },
+        "cghooks": "cghooks --ansi",
+        "phpcbf": "phpcbf",
+        "phpcs": "phpcs",
         "phpunit": "phpunit"
     }
 }
