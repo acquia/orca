@@ -10,7 +10,11 @@
         }
     ],
     "require": {
-        "php": "^7.0"
+        "php": "^7.0",
+        "symfony/flex": "^1.1"
+    },
+    "conflict": {
+        "symfony/symfony": "*"
     },
     "config": {
         "preferred-install": {
