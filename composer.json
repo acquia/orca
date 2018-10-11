@@ -11,10 +11,18 @@
     ],
     "require": {
         "php": "^7.0",
-        "symfony/flex": "^1.1"
+        "symfony/console": "*",
+        "symfony/flex": "^1.1",
+        "symfony/framework-bundle": "*",
+        "symfony/yaml": "*"
     },
     "conflict": {
         "symfony/symfony": "*"
+    },
+    "require-dev": {
+        "symfony/dotenv": "*",
+        "symfony/maker-bundle": "*",
+        "symfony/phpunit-bridge": "*"
     },
     "config": {
         "preferred-install": {
@@ -22,6 +30,28 @@
         },
         "sort-packages": true
     },
+    "autoload": {
+        "psr-4": {
+            "Acquia\\Orca\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Acquia\\Orca\\Tests\\": "tests/"
+        }
+    },
     "minimum-stability": "dev",
-    "prefer-stable": true
+    "prefer-stable": true,
+    "scripts": {
+        "post-install-cmd": [
+            "@auto-scripts"
+        ],
+        "post-update-cmd": [
+            "@auto-scripts"
+        ],
+        "auto-scripts": {
+            "cache:clear": "symfony-cmd",
+            "assets:install %PUBLIC_DIR%": "symfony-cmd"
+        }
+    }
 }
