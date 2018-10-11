@@ -21,6 +21,7 @@
     },
     "require-dev": {
         "geerlingguy/drupal-vm": "^4.9",
+        "phpunit/phpunit": "^6.5",
         "symfony/dotenv": "*",
         "symfony/maker-bundle": "*",
         "symfony/phpunit-bridge": "*"
@@ -52,6 +53,7 @@
         ],
         "auto-scripts": {
             "cache:clear": "symfony-cmd"
-        }
+        },
+        "phpunit": "phpunit"
     }
 }
