@@ -2,6 +2,9 @@
     "doctrine/inflector": {
         "version": "v1.3.0"
     },
+    "geerlingguy/drupal-vm": {
+        "version": "4.9.1"
+    },
     "nikic/php-parser": {
         "version": "v4.1.0"
     },

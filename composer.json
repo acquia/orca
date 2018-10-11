@@ -20,6 +20,7 @@
         "symfony/symfony": "*"
     },
     "require-dev": {
+        "geerlingguy/drupal-vm": "^4.9",
         "symfony/dotenv": "*",
         "symfony/maker-bundle": "*",
         "symfony/phpunit-bridge": "*"

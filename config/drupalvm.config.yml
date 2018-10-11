@@ -1,0 +1,42 @@
+vagrant_box: beet/box
+
+vagrant_hostname: local.orca.com
+vagrant_machine_name: orca
+vagrant_ip: 192.168.12.179
+
+vagrant_synced_folders:
+  - local_path: ../
+    destination: /var/www/orca
+    type: nfs
+    create: true
+
+drupal_build_composer_project: false
+
+drupal_install_site: false
+
+drupal_core_path: "/var/www/orca"
+
+configure_drush_aliases: false
+
+apache_vhosts:
+  - servername: "{{ drupal_domain }}"
+    serveralias: "www.{{ drupal_domain }}"
+    documentroot: "{{ drupal_core_path }}/orca-build/docroot"
+    extra_parameters: "{{ apache_vhost_php_fpm_parameters }}"
+
+installed_extras:
+  - selenium
+
+composer_global_packages:
+  - { name: hirak/prestissimo, release: '^0.3.6' }
+  - { name: localheinz/composer-normalize, release: '^0.8.0' }
+
+php_packages_extra:
+  - "php{{ php_version }}-bz2"
+  - "php{{ php_version }}-imagick"
+  - "php{{ php_version }}-zip"
+  - imagemagick
+
+php_xdebug_version: 2.5.0
+php_xdebug_remote_port: "9000"
+php_memory_limit: "1024M"
