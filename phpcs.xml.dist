@@ -13,7 +13,6 @@
         <exclude name="Drupal.Commenting.InlineComment.InvalidEndChar"/>
         <exclude name="Drupal.Commenting.InlineComment.SpacingAfter"/>
         <exclude name="Drupal.Files.LineLength.TooLong"/>
-        <exclude-pattern>src/Kernel.php</exclude-pattern>
     </rule>
 
     <file>bin/</file>
