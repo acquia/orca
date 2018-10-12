@@ -25,6 +25,7 @@
         "drupal/coder": "^8.3",
         "geerlingguy/drupal-vm": "^4.9",
         "phpunit/phpunit": "^6.5",
+        "sensiolabs/security-checker": "^5.0",
         "symfony/dotenv": "*",
         "symfony/maker-bundle": "*",
         "symfony/phpunit-bridge": "*"
@@ -62,7 +63,8 @@
             "@auto-scripts"
         ],
         "auto-scripts": {
-            "cache:clear": "symfony-cmd"
+            "cache:clear": "symfony-cmd",
+            "security-checker security:check": "script"
         },
         "cghooks": "cghooks --ansi",
         "phpcbf": "phpcbf",
