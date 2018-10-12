@@ -1,0 +1,15 @@
+language: php
+dist: trusty
+
+php: 7.1
+
+addons:
+  chrome: stable
+
+before_install: ./bin/travis/before_install.sh
+
+install: composer install
+
+before_script: composer phpcs
+
+script: ./bin/self-test

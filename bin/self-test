@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+
+# ORCA self test script.
+
+set -e
+
+# Locally perform the important steps from before_install, install, and
+# before_script in .travis.yml.
+if [ -z "${TRAVIS}" ]; then
+  composer validate --ansi
+  composer install
+  composer phpcs
+fi
+
+composer phpunit
+
+# Clone an example module into place as a test SUT.
+if [ ! -d "../lightning-api" ]; then
+  git -C ../ clone --branch 8.x-2.x https://git.drupal.org/project/lightning_api.git lightning-api
+fi
+
+times
