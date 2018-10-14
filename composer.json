@@ -39,7 +39,10 @@
     },
     "extra": {
         "hooks": {
-            "pre-commit": "vendor/bin/phpcs",
+            "pre-commit": [
+                "vendor/bin/phpcs",
+                "vendor/bin/phpmd bin,src text phpmd.xml.dist --ignore-violations-on-exit"
+            ],
             "post-install-cmd": "vendor/bin/cghooks add --ignore-lock",
             "post-update-cmd": "vendor/bin/cghooks update"
         }
@@ -73,7 +76,7 @@
         "cghooks": "cghooks --ansi",
         "phpcbf": "phpcbf",
         "phpcs": "phpcs",
-        "phpmd": "phpmd bin,src text cleancode,codesize,design,naming,unusedcode",
+        "phpmd": "phpmd bin,src text phpmd.xml.dist --ignore-violations-on-exit",
         "phpunit": "phpunit"
     }
 }
