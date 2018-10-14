@@ -3,7 +3,7 @@
 namespace Acquia\Orca\Command\Fixture;
 
 use Acquia\Orca\Command\StatusCodes;
-use Acquia\Orca\Fixture;
+use Acquia\Orca\Fixture\Facade;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -13,7 +13,7 @@ use Symfony\Component\Console\Question\ConfirmationQuestion;
 /**
  * Provides a command.
  *
- * @property \Acquia\Orca\Fixture $fixture
+ * @property \Acquia\Orca\Fixture\Facade $facade
  */
 class DestroyCommand extends Command {
 
@@ -22,8 +22,8 @@ class DestroyCommand extends Command {
   /**
    * {@inheritdoc}
    */
-  public function __construct(Fixture $fixture) {
-    $this->fixture = $fixture;
+  public function __construct(Facade $facade) {
+    $this->facade = $facade;
     parent::__construct(self::$defaultName);
   }
 
@@ -42,8 +42,8 @@ class DestroyCommand extends Command {
    * {@inheritdoc}
    */
   public function execute(InputInterface $input, OutputInterface $output): int {
-    if (!$this->fixture->exists()) {
-      $output->writeln("Error: No fixture exists at {$this->fixture->rootPath()}.");
+    if (!$this->facade->exists()) {
+      $output->writeln("Error: No fixture exists at {$this->facade->rootPath()}.");
       return StatusCodes::ERROR;
     }
 
@@ -57,7 +57,7 @@ class DestroyCommand extends Command {
       return StatusCodes::USER_CANCEL;
     }
 
-    $this->fixture->destroy();
+    $this->facade->getDestroyer()->destroy();
     return StatusCodes::OK;
   }
 

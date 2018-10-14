@@ -1,11 +1,12 @@
 <?php
 
-namespace Acquia\Orca;
+namespace Acquia\Orca\Fixture;
 
+use Acquia\Orca\IoTrait;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
- * Provides the test fixture.
+ * Provides access to the test fixture.
  *
  * In automated testing, a test fixture is all the things we need to have in
  * place in order to run a test and expect a particular outcome.
@@ -15,10 +16,17 @@ use Symfony\Component\Filesystem\Filesystem;
  * In the case of ORCA, that means a BLT project with Acquia product modules in
  * place and Drupal installed.
  *
- * @property \Symfony\Component\Filesystem\Filesystem filesystem
+ * @property \Symfony\Component\Filesystem\Filesystem $filesystem
  * @property string $rootPath
  */
-class Fixture {
+class Facade {
+
+  use IoTrait;
+
+  /**
+   * The base fixture Git branch.
+   */
+  const BASE_BRANCH = 'base-fixture';
 
   /**
    * Constructs an instance.
@@ -34,10 +42,21 @@ class Fixture {
   }
 
   /**
-   * Destroys the fixture.
+   * Gets a fixture creator.
+   *
+   * @return \Acquia\Orca\Fixture\Creator
    */
-  public function destroy(): void {
-    $this->filesystem->remove($this->rootPath());
+  public function getCreator(): Creator {
+    return new Creator($this, $this->filesystem, new ProductData());
+  }
+
+  /**
+   * Gets a fixture destroyer.
+   *
+   * @return \Acquia\Orca\Fixture\Destroyer
+   */
+  public function getDestroyer(): Destroyer {
+    return new Destroyer($this, $this->filesystem);
   }
 
   /**

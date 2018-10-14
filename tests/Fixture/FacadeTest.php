@@ -1,16 +1,20 @@
 <?php
 
-namespace Acquia\Orca\Tests;
+namespace Acquia\Orca\Tests\Fixture;
 
-use Acquia\Orca\Fixture;
+use Acquia\Orca\Fixture\Creator;
+use Acquia\Orca\Fixture\Destroyer;
+use Acquia\Orca\Fixture\Facade;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
+ * @covers \Acquia\Orca\Fixture\Facade
+ *
  * @property \Prophecy\Prophecy\ObjectProphecy filesystem
  * @property string $rootPath
  */
-class FixtureTest extends TestCase {
+class FacadeTest extends TestCase {
 
   protected function setUp() {
     $this->filesystem = $this->prophesize(Filesystem::class);
@@ -18,32 +22,25 @@ class FixtureTest extends TestCase {
   }
 
   public function testConstruction() {
-    $fixture = $this->createFixture();
+    $fixture = $this->createFacade();
 
-    $this->assertTrue($fixture instanceof Fixture, 'Instantiated class.');
+    $this->assertTrue($fixture instanceof Facade, 'Instantiated class.');
   }
 
-  /**
-   * @dataProvider providerDestroy
-   */
-  public function testDestroy($root_path) {
-    $this->rootPath = $root_path;
-    $this->filesystem
-      ->remove($root_path);
-    $fixture = $this->createFixture();
+  public function testCreator() {
+    $fixture = $this->createFacade();
 
-    $fixture->destroy();
+    $creator = $fixture->getCreator();
 
-    $this->filesystem
-      ->remove($root_path)
-      ->shouldHaveBeenCalledTimes(1);
+    $this->assertTrue($creator instanceof Creator, 'Instantiated class.');
   }
 
-  public function providerDestroy() {
-    return [
-      ['/var/www/orca-build', TRUE],
-      ['/tmp/test', FALSE],
-    ];
+  public function testDestroyer() {
+    $fixture = $this->createFacade();
+
+    $destroyer = $fixture->getDestroyer();
+
+    $this->assertTrue($destroyer instanceof Destroyer, 'Instantiated class.');
   }
 
   /**
@@ -54,9 +51,9 @@ class FixtureTest extends TestCase {
     $this->filesystem
       ->exists($root_path)
       ->willReturn($exists);
-    $fixture = $this->createFixture();
+    $facade = $this->createFacade();
 
-    $return = $fixture->exists();
+    $return = $facade->exists();
 
     $this->filesystem
       ->exists($root_path)
@@ -76,10 +73,10 @@ class FixtureTest extends TestCase {
    */
   public function testPathResolution($root_path, $docroot_path) {
     $this->rootPath = $root_path;
-    $fixture = $this->createFixture();
+    $facade = $this->createFacade();
 
-    $this->assertEquals($root_path, $fixture->rootPath(), 'Resolved root path.');
-    $this->assertEquals($docroot_path, $fixture->docrootPath(), 'Resolved docroot path.');
+    $this->assertEquals($root_path, $facade->rootPath(), 'Resolved root path.');
+    $this->assertEquals($docroot_path, $facade->docrootPath(), 'Resolved docroot path.');
   }
 
   public function providerPathResolution() {
@@ -89,10 +86,10 @@ class FixtureTest extends TestCase {
     ];
   }
 
-  protected function createFixture(): Fixture {
+  protected function createFacade(): Facade {
     /** @var \Symfony\Component\Filesystem\Filesystem $filesystem */
     $filesystem = $this->filesystem->reveal();
-    return new Fixture($filesystem, $this->rootPath);
+    return new Facade($filesystem, $this->rootPath);
   }
 
 }

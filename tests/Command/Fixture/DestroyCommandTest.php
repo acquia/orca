@@ -4,7 +4,7 @@ namespace Acquia\Orca\Tests\Command\Fixture;
 
 use Acquia\Orca\Command\StatusCodes;
 use Acquia\Orca\Command\Fixture\DestroyCommand;
-use Acquia\Orca\Fixture;
+use Acquia\Orca\Fixture\Facade;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
@@ -17,7 +17,7 @@ class DestroyCommandTest extends TestCase {
   private const FIXTURE_ROOT = '/var/www/orca-build';
 
   protected function setUp() {
-    $this->fixture = $this->prophesize(Fixture::class);
+    $this->fixture = $this->prophesize(Facade::class);
     $this->fixture->exists()
       ->willReturn(TRUE);
     $this->fixture->rootPath()
@@ -33,7 +33,7 @@ class DestroyCommandTest extends TestCase {
       ->shouldBeCalled()
       ->willReturn($exists);
     $this->fixture
-      ->destroy()
+      ->getDestroyer()
       ->shouldBeCalledTimes($destroy_called);
     $tester = $this->createCommandTester();
     $tester->setInputs($inputs);
@@ -57,7 +57,7 @@ class DestroyCommandTest extends TestCase {
 
   private function createCommandTester(): CommandTester {
     $application = new Application();
-    /** @var \Acquia\Orca\Fixture $fixture */
+    /** @var \Acquia\Orca\Fixture\Facade $fixture */
     $fixture = $this->fixture->reveal();
     $application->add(new DestroyCommand($fixture));
     /** @var \Acquia\Orca\Command\Fixture\DestroyCommand $command */

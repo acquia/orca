@@ -7,7 +7,7 @@ namespace Acquia\Orca\Command;
  *
  * @see https://www.freebsd.org/cgi/man.cgi?query=sysexits
  */
-class StatusCodes {
+final class StatusCodes {
 
   const OK = 0;
 
