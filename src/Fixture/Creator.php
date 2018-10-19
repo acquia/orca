@@ -170,7 +170,7 @@ class Creator {
     // earlier.
     $this->composerConfig->extra->{'installer-paths'} = (object) array_merge(
       ['drush/Commands/{$name}' => (array) $this->composerConfig->extra->{'installer-paths'}->{'drush/Commands/{$name}'}],
-      ['docroot/modules/contrib/acquia/{$name}' => $this->productData->packageNames()],
+      [Facade::PRODUCT_MODULE_INSTALL_PATH . '/{$name}' => $this->productData->packageNames()],
       (array) $this->composerConfig->extra->{'installer-paths'}
     );
   }
@@ -339,7 +339,7 @@ PHP;
       'git',
       'branch',
       '--force',
-      Facade::BASE_BRANCH,
+      Facade::BASE_FIXTURE_GIT_BRANCH,
     ], $this->facade->rootPath());
   }
 

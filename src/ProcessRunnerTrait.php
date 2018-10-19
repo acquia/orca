@@ -2,6 +2,7 @@
 
 namespace Acquia\Orca;
 
+use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Exception\RuntimeException;
 use Symfony\Component\Process\ExecutableFinder;
 use Symfony\Component\Process\Process;
@@ -52,17 +53,44 @@ trait ProcessRunnerTrait {
       $this->io()->comment(sprintf('Executing "%s"', implode(' ', $command)));
     }
 
-    $status = (new Process($command, $cwd))
-      ->setTimeout(0)->run(function () {
-        $buffer = func_get_arg(1);
-        echo $buffer;
-      });
+    $process = new Process($command, $cwd);
+    $status = $process->setTimeout(0)->run(function () {
+      $buffer = func_get_arg(1);
+      echo $buffer;
+    });
+
+    if (!$process->isSuccessful()) {
+      throw new ProcessFailedException($process);
+    }
 
     if ($this->hasIo()) {
       $this->io()->newLine();
     }
 
     return $status;
+  }
+
+  /**
+   * Runs a given vendor binary command in a process.
+   *
+   * @param array $command
+   *   An array of command parts, where the first element is a vendor binary
+   *   name.
+   * @param string|null $cwd
+   *   The working directory, or NULL to use the working dir of the current PHP
+   *   process.
+   *
+   * @return int
+   *   The exit status code.
+   */
+  public function runVendorBinProcess(array $command, ?string $cwd = NULL): int {
+    $command[0] = ORCA_PROJECT_ROOT . "/vendor/bin/{$command[0]}";
+
+    if (!file_exists($command[0])) {
+      throw new RuntimeException(sprintf('Could not find vendor binary: %s.', $command[0]));
+    }
+
+    return $this->runProcess($command, $cwd);
   }
 
   /**

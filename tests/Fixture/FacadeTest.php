@@ -5,6 +5,7 @@ namespace Acquia\Orca\Tests\Fixture;
 use Acquia\Orca\Fixture\Creator;
 use Acquia\Orca\Fixture\Destroyer;
 use Acquia\Orca\Fixture\Facade;
+use Acquia\Orca\Tests\Tester;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Filesystem;
 
@@ -27,20 +28,23 @@ class FacadeTest extends TestCase {
     $this->assertTrue($fixture instanceof Facade, 'Instantiated class.');
   }
 
-  public function testCreator() {
+  /**
+   * @dataProvider providerCollaboratorGetters
+   */
+  public function testCollaboratorGetters($getter, $class) {
     $fixture = $this->createFacade();
 
-    $creator = $fixture->getCreator();
+    $object = $fixture->{$getter}();
 
-    $this->assertTrue($creator instanceof Creator, 'Instantiated class.');
+    $this->assertTrue($object instanceof $class, 'Instantiated class.');
   }
 
-  public function testDestroyer() {
-    $fixture = $this->createFacade();
-
-    $destroyer = $fixture->getDestroyer();
-
-    $this->assertTrue($destroyer instanceof Destroyer, 'Instantiated class.');
+  public function providerCollaboratorGetters() {
+    return [
+      ['getCreator', Creator::class],
+      ['getDestroyer', Destroyer::class],
+      ['getTester', Tester::class],
+    ];
   }
 
   /**
@@ -71,18 +75,22 @@ class FacadeTest extends TestCase {
   /**
    * @dataProvider providerPathResolution
    */
-  public function testPathResolution($root_path, $docroot_path) {
+  public function testPathResolution($root_path, $docroot_path, $product_module_path) {
     $this->rootPath = $root_path;
     $facade = $this->createFacade();
+    $sub_path = '/some/sub-path';
 
     $this->assertEquals($root_path, $facade->rootPath(), 'Resolved root path.');
+    $this->assertEquals("{$root_path}/{$sub_path}", $facade->rootPath($sub_path), 'Resolved root path with sub-path.');
     $this->assertEquals($docroot_path, $facade->docrootPath(), 'Resolved docroot path.');
+    $this->assertEquals("{$docroot_path}/{$sub_path}", $facade->docrootPath($sub_path), 'Resolved docroot path with sub-path.');
+    $this->assertEquals($product_module_path, $facade->productModuleInstallPath(), 'Resolved product module path.');
   }
 
   public function providerPathResolution() {
     return [
-      ['/var/www/orca-build', '/var/www/orca-build/docroot'],
-      ['/tmp/test', '/tmp/test/docroot'],
+      ['/var/www/orca-build', '/var/www/orca-build/docroot', '/var/www/orca-build/docroot/modules/contrib/acquia'],
+      ['/tmp/test', '/tmp/test/docroot', '/tmp/test/docroot/modules/contrib/acquia'],
     ];
   }
 

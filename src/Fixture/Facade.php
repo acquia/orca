@@ -3,6 +3,7 @@
 namespace Acquia\Orca\Fixture;
 
 use Acquia\Orca\IoTrait;
+use Acquia\Orca\Tests\Tester;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
@@ -23,10 +24,9 @@ class Facade {
 
   use IoTrait;
 
-  /**
-   * The base fixture Git branch.
-   */
-  const BASE_BRANCH = 'base-fixture';
+  const BASE_FIXTURE_GIT_BRANCH = 'base-fixture';
+
+  const PRODUCT_MODULE_INSTALL_PATH = 'docroot/modules/contrib/acquia';
 
   /**
    * Constructs an instance.
@@ -60,7 +60,16 @@ class Facade {
   }
 
   /**
-   * Gets the codebase root path with an optional sub-path appended.
+   * Gets an automated tester.
+   *
+   * @return \Acquia\Orca\Tests\Tester
+   */
+  public function getTester(): Tester {
+    return new Tester($this);
+  }
+
+  /**
+   * Gets the fixture root path with an optional sub-path appended.
    *
    * @param string $sub_path
    *   (Optional) A sub-path to append.
@@ -68,11 +77,7 @@ class Facade {
    * @return string
    */
   public function docrootPath(string $sub_path = ''): string {
-    $path = $this->rootPath('docroot');
-    if ($sub_path) {
-      $path .= "/{$sub_path}";
-    }
-    return $path;
+    return $this->appendSubPath($this->rootPath('docroot'), $sub_path);
   }
 
   /**
@@ -85,7 +90,16 @@ class Facade {
   }
 
   /**
-   * Gets the codebase root path with an optional sub-path appended.
+   * Gets the fixture product module install path.
+   *
+   * @return string
+   */
+  public function productModuleInstallPath(): string {
+    return $this->rootPath(self::PRODUCT_MODULE_INSTALL_PATH);
+  }
+
+  /**
+   * Gets the fixture root path with an optional sub-path appended.
    *
    * @param string $sub_path
    *   (Optional) A sub-path to append.
@@ -93,7 +107,22 @@ class Facade {
    * @return string
    */
   public function rootPath(string $sub_path = ''): string {
-    $path = $this->rootPath;
+    return $this->appendSubPath($this->rootPath, $sub_path);
+  }
+
+  /**
+   * Appends an optional sub-path to a given path.
+   *
+   * @param string $base_path
+   *   The base path to append the sub-path to.
+   * @param string $sub_path
+   *   (Optional) The sub-path to append. If omitted, the base path will be
+   *   returned.
+   *
+   * @return string
+   */
+  private function appendSubPath(string $base_path, string $sub_path = '') {
+    $path = $base_path;
     if ($sub_path) {
       $path .= "/{$sub_path}";
     }

@@ -17,7 +17,7 @@ echo && composer phpmd
 
 # Clone an example module into place as a test SUT.
 if [ ! -d "../lightning-api" ]; then
-  git -C ../ clone --branch 8.x-2.x https://git.drupal.org/project/lightning_api.git lightning-api
+  git -C ../ clone --branch 8.x-2.x https://git.drupal.org/project/lightning_api.git --depth 1 -- lightning-api
 fi
 
 ./bin/travis/script.sh drupal/lightning_api

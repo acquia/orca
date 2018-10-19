@@ -6,8 +6,8 @@
  * ORCA command line executable.
  */
 
-use Acquia\Orca\Command\Fixture\CreateCommand;
-use Acquia\Orca\Command\Fixture\DestroyCommand;
+use Acquia\Orca\Command\Fixture;
+use Acquia\Orca\Command\Tests;
 use Acquia\Orca\Fixture\Facade;
 use Acquia\Orca\Fixture\ProductData;
 use Symfony\Component\Console\Application;
@@ -19,27 +19,28 @@ const ORCA_VERSION = 'v1.0.0-alpha1';
 
 // If invoked from a codebase that requires ORCA, i.e., a product module.
 if (file_exists(__DIR__ . '/../../../autoload.php')) {
-  $project_path = realpath(__DIR__ . '/../../../../');
+  define('ORCA_PROJECT_ROOT', realpath(__DIR__ . '/../../../../'));
 }
 // If invoked from a standalone ORCA instance, e.g., a development clone.
 elseif (file_exists(__DIR__ . '/../vendor/autoload.php')) {
-  $project_path = dirname(__DIR__ );
+  define('ORCA_PROJECT_ROOT', dirname(__DIR__ ));
 }
 else {
   die("Could not find autoloader. Run 'composer install' first.\n");
 }
 
-require "{$project_path}/vendor/autoload.php";
+require ORCA_PROJECT_ROOT . '/vendor/autoload.php';
 
-$fixture_path = dirname($project_path) . '/orca-build';
+$fixture_path = dirname(ORCA_PROJECT_ROOT) . '/orca-build';
 $filesystem = new Filesystem();
 $facade = new Facade($filesystem, $fixture_path);
 $product_data = new ProductData();
 
 $application = new Application('ORCA', ORCA_VERSION);
 $application->addCommands([
-  new DestroyCommand($facade),
-  new CreateCommand($facade, $product_data),
+  new Fixture\DestroyCommand($facade),
+  new Fixture\CreateCommand($facade, $product_data),
+  new Tests\RunCommand($facade),
 ]);
 
 $application->run();

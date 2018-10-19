@@ -11,12 +11,14 @@
     ],
     "require": {
         "php": "^7.1",
+        "ext-dom": "*",
+        "ext-json": "*",
+        "behat/behat": "^3.5",
         "symfony/console": "^4.1",
         "symfony/flex": "^1.1",
         "symfony/framework-bundle": "^4.1",
         "symfony/process": "^4.1",
-        "symfony/yaml": "^4.1",
-        "ext-json": "*"
+        "symfony/yaml": "^4.1"
     },
     "conflict": {
         "symfony/symfony": "*"
