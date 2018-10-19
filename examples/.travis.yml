@@ -1,0 +1,17 @@
+# Example Travis CI configuration for a drupal/example package.
+
+language: php
+dist: trusty
+
+php: 7.2
+
+addons:
+  chrome: stable
+
+before_install: ./vendor/acquia/orca/bin/travis/before_install.sh
+
+install: composer install
+
+before_script: ./vendor/bin/phpcs
+
+script: ./vendor/acquia/orca/bin/travis/script.sh drupal/example
