@@ -161,9 +161,6 @@
     "symfony/dependency-injection": {
         "version": "v4.1.6"
     },
-    "symfony/dotenv": {
-        "version": "v4.1.6"
-    },
     "symfony/event-dispatcher": {
         "version": "v4.1.6"
     },

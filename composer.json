@@ -31,7 +31,6 @@
         "phpmd/phpmd": "^2.6",
         "phpunit/phpunit": "^6.5",
         "sensiolabs/security-checker": "^5.0",
-        "symfony/dotenv": "*",
         "symfony/maker-bundle": "*",
         "symfony/phpunit-bridge": "*"
     },
