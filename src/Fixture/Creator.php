@@ -57,7 +57,7 @@ class Creator {
    */
   public function create(): void {
     $this->createBltProject();
-    $this->removeLightningProfile();
+    $this->removeUnneededProjects();
     $this->addAcquiaProductModules();
     $this->installDrupal();
     $this->installAcquiaProductModules();
@@ -111,18 +111,21 @@ class Creator {
   }
 
   /**
-   * Removes the Lightning profile Composer requirement (acquia/lightning).
-   *
-   * The profile requirement conflicts with individual Lightning submodule
-   * requirements--namely, it prevents them from being symlinked via a local
-   * "path" repository.
+   * Removes unneeded projects.
    */
-  private function removeLightningProfile(): void {
-    $this->io()->section('Removing Lightning profile');
+  private function removeUnneededProjects(): void {
+    $this->io()->section('Removing unneeded projects');
     $this->runExecutableProcess([
       'composer',
       'remove',
+      // The Lightning profile requirement conflicts with individual Lightning
+      // submodule requirements--namely, it prevents them from being symlinked
+      // via a local "path" repository.
       'acquia/lightning',
+      // Other Acquia projects are only conditionally required later and should
+      // in no case be included up-front.
+      'drupal/acquia_connector',
+      'drupal/acquia_purge',
       '--no-update',
     ], $this->facade->rootPath());
   }
