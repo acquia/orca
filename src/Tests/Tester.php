@@ -105,7 +105,32 @@ class Tester {
         ->appendChild($element);
     }
 
-    $doc->save($path);
+    // Create an <env> element containing a JSON array which will control how
+    // the Mink driver interacts with Chromedriver.
+    $mink_arguments = json_encode([
+      'chrome',
+      [
+        'chrome' => [
+          // Start Chrome in headless mode.
+          'switches' => ['headless', 'disable-gpu'],
+        ],
+      ],
+      'http://localhost:4444',
+    ], JSON_UNESCAPED_SLASHES);
+    $element = $doc->createElement('env');
+    $element->setAttribute('name', 'MINK_DRIVER_ARGS_WEBDRIVER');
+    $element->setAttribute('value', $mink_arguments);
+    $xpath->query('//phpunit/php')->item(0)->appendChild($element);
+
+    // When dumping the XML document tree, PHP will encode all double quotes in
+    // the JSON string to &quot;, since the XML attribute value is itself
+    // enclosed in double quotes. There's no way to change this behavior, so
+    // we must do a string replacement in order to wrap the Mink driver
+    // arguments in single quotes.
+    // @see https://stackoverflow.com/questions/5473520/php-dom-and-single-quotes#5473718
+    $search = sprintf('value="%s"', htmlentities($mink_arguments));
+    $replace = sprintf("value='%s'", $mink_arguments);
+    file_put_contents($path, str_replace($search, $replace, $doc->saveXML()));
   }
 
   /**
