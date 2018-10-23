@@ -82,12 +82,23 @@ class Tester {
     $doc->load($path);
     $xpath = new \DOMXPath($doc);
 
+    // Set Simpletest settings.
     $xpath->query('//phpunit/php/env[@name="SIMPLETEST_BASE_URL"]')
       ->item(0)
       ->setAttribute('value', sprintf('http://%s', self::WEB_ADDRESS));
     $xpath->query('//phpunit/php/env[@name="SIMPLETEST_DB"]')
       ->item(0)
       ->setAttribute('value', 'sqlite://localhost/sites/default/files/.ht.sqlite');
+
+    // Disable Symfony deprecations helper.
+    if (!$xpath->query('//phpunit/php/env[@name="SYMFONY_DEPRECATIONS_HELPER"]')->length) {
+      $element = $doc->createElement('env');
+      $element->setAttribute('name', 'SYMFONY_DEPRECATIONS_HELPER');
+      $element->setAttribute('value', 'false');
+      $xpath->query('//phpunit/php')
+        ->item(0)
+        ->appendChild($element);
+    }
 
     $doc->save($path);
   }
