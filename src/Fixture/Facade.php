@@ -18,6 +18,7 @@ use Symfony\Component\Filesystem\Filesystem;
  *
  * @property \Symfony\Component\Filesystem\Filesystem $filesystem
  * @property string $rootPath
+ * @property \Acquia\Orca\Fixture\ProductData $productData
  */
 class Facade {
 
@@ -29,9 +30,17 @@ class Facade {
 
   /**
    * Constructs an instance.
+   *
+   * @param \Symfony\Component\Filesystem\Filesystem $filesystem
+   *   The filesystem.
+   * @param \Acquia\Orca\Fixture\ProductData $product_data
+   *   The product data.
+   * @param string $root_path
+   *   The absolute path of the fixture root directory.
    */
-  public function __construct(Filesystem $filesystem, string $root_path = ORCA_FIXTURE_ROOT) {
+  public function __construct(Filesystem $filesystem, ProductData $product_data, string $root_path = ORCA_FIXTURE_ROOT) {
     $this->filesystem = $filesystem;
+    $this->productData = $product_data;
     $this->rootPath = $root_path;
   }
 
@@ -57,12 +66,15 @@ class Facade {
   }
 
   /**
-   * Gets the fixture product module install path.
+   * Gets the fixture product module install path with an optional sub-path.
+   *
+   * @param string $sub_path
+   *   (Optional) A sub-path to append.
    *
    * @return string
    */
-  public function productModuleInstallPath(): string {
-    return $this->rootPath(self::PRODUCT_MODULE_INSTALL_PATH);
+  public function productModuleInstallPath(string $sub_path = ''): string {
+    return $this->appendSubPath($this->rootPath(self::PRODUCT_MODULE_INSTALL_PATH), $sub_path);
   }
 
   /**

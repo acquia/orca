@@ -3,6 +3,7 @@
 namespace Acquia\Orca\Tests;
 
 use Acquia\Orca\Fixture\Facade;
+use Acquia\Orca\Fixture\ProductData;
 use Acquia\Orca\IoTrait;
 use Acquia\Orca\ProcessRunnerTrait;
 use Symfony\Component\Finder\Finder;
@@ -12,6 +13,7 @@ use Symfony\Component\Process\Process;
  * Runs automated tests.
  *
  * @property \Acquia\Orca\Fixture\Facade $facade
+ * @property \Acquia\Orca\Fixture\ProductData $productData
  */
 class Tester {
 
@@ -32,9 +34,12 @@ class Tester {
    *
    * @param \Acquia\Orca\Fixture\Facade $facade
    *   The fixture.
+   * @param \Acquia\Orca\Fixture\ProductData $product_data
+   *   The product data.
    */
-  public function __construct(Facade $facade) {
+  public function __construct(Facade $facade, ProductData $product_data) {
     $this->facade = $facade;
+    $this->productData = $product_data;
   }
 
   /**
@@ -69,7 +74,7 @@ class Tester {
       'phpunit',
       "--configuration={$this->facade->docrootPath('core/phpunit.xml.dist')}",
       "--bootstrap={$this->facade->docrootPath('core/tests/bootstrap.php')}",
-      $this->facade->productModuleInstallPath(),
+      $this->testsDirectory(),
     ]);
   }
 
@@ -104,6 +109,36 @@ class Tester {
   }
 
   /**
+   * Gets the directory to find tests under.
+   *
+   * @return string
+   */
+  private function testsDirectory(): string {
+    // Default to the product module install path so as to include all modules.
+    $directory = $this->facade->productModuleInstallPath();
+
+    $composer_config = $this->loadComposerJson();
+    if (!empty($composer_config['extra']['orca']['sut'])) {
+      $sut = $composer_config['extra']['orca']['sut'];
+      // Only limit the tests run for a SUT-only fixture.
+      if (!empty($composer_config['extra']['orca']['sut-only'])) {
+        $module = $this->productData->projectName($sut);
+        $directory = $this->facade->productModuleInstallPath($module);
+      }
+    }
+
+    return $directory;
+  }
+
+  /**
+   * Loads the fixture's composer.json data.
+   */
+  private function loadComposerJson(): array {
+    $json = file_get_contents($this->facade->rootPath('composer.json'));
+    return json_decode($json, TRUE);
+  }
+
+  /**
    * Runs Behat stories.
    */
   private function runBehatStories() {
@@ -125,7 +160,7 @@ class Tester {
     return Finder::create()
       ->files()
       ->followLinks()
-      ->in($this->facade->productModuleInstallPath())
+      ->in($this->testsDirectory())
       ->notPath('vendor')
       ->name('behat.yml');
   }

@@ -152,6 +152,7 @@ class Creator {
     if ($this->sut) {
       $this->addSutRepository();
     }
+    $this->addExtraData();
     $this->saveComposerJson();
   }
 
@@ -198,6 +199,16 @@ class Creator {
       ],
       (array) $this->composerConfig->repositories
     );
+  }
+
+  /**
+   * Adds data about the fixture to the "extra" property.
+   */
+  private function addExtraData() {
+    $this->composerConfig->extra->orca = (object) [
+      'sut' => $this->sut,
+      'sut-only' => $this->isSutOnly,
+    ];
   }
 
   /**

@@ -260,6 +260,20 @@ class ProductData {
   }
 
   /**
+   * Returns a Composer project name for a given package.
+   *
+   * That is, the part of the package strings after the forward slash (/).
+   *
+   * @param string $package
+   *   (Optional) A package name to limit to, or NULL for all.
+   *
+   * @return bool|string
+   */
+  public function projectName(string $package): string {
+    return substr($package, strpos($package, '/') + 1);
+  }
+
+  /**
    * Returns an array of Composer project names.
    *
    * That is, the part of the package strings after the forward slash (/).
@@ -273,7 +287,7 @@ class ProductData {
     $names = [];
     $data = ($package) ? [$package => []] : self::$data;
     foreach (array_keys($data) as $package_name) {
-      $names[] = substr($package_name, strpos($package_name, '/') + 1);
+      $names[] = $this->projectName($package_name);
     }
     return $names;
   }
