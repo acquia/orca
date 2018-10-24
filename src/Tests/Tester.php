@@ -99,7 +99,7 @@ class Tester {
     if (!$xpath->query('//phpunit/php/env[@name="SYMFONY_DEPRECATIONS_HELPER"]')->length) {
       $element = $doc->createElement('env');
       $element->setAttribute('name', 'SYMFONY_DEPRECATIONS_HELPER');
-      $element->setAttribute('value', 'false');
+      $element->setAttribute('value', 'disabled');
       $xpath->query('//phpunit/php')
         ->item(0)
         ->appendChild($element);
