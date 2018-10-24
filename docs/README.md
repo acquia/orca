@@ -8,4 +8,4 @@ ORCA (Official Representative Customer Application) is an internal tool for test
 
 ### Continuous Integration
 
-See [`examples/.travis.yml`](examples/.travis.yml) for an example Travis CI configuration.
+See [`examples/.travis.yml`](../examples/.travis.yml) for an example Travis CI configuration.
