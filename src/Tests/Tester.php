@@ -87,37 +87,42 @@ class Tester {
     $doc->load($path);
     $xpath = new \DOMXPath($doc);
 
-    $this->setSimpletestSettings($xpath);
-    $this->disableSymfonyDeprecationsHelper($doc, $xpath);
-    $xml = $this->setMinkDriverArguments($doc, $xpath);
-
-    file_put_contents($path, $xml);
+    $this->setSimpletestSettings($path, $doc, $xpath);
+    $this->disableSymfonyDeprecationsHelper($path, $doc, $xpath);
+    $this->setMinkDriverArguments($path, $doc, $xpath);
   }
 
   /**
    * Sets Simpletest settings.
    *
+   * @param string $path
+   *   The path.
+   * @param \DOMDocument $doc
+   *   The DOM document.
    * @param \DOMXPath $xpath
    *   The XPath object.
    */
-  private function setSimpletestSettings(\DOMXPath $xpath): void {
+  private function setSimpletestSettings(string $path, \DOMDocument $doc, \DOMXPath $xpath): void {
     $xpath->query('//phpunit/php/env[@name="SIMPLETEST_BASE_URL"]')
       ->item(0)
       ->setAttribute('value', sprintf('http://%s', self::WEB_ADDRESS));
     $xpath->query('//phpunit/php/env[@name="SIMPLETEST_DB"]')
       ->item(0)
       ->setAttribute('value', 'sqlite://localhost/sites/default/files/.ht.sqlite');
+    $doc->save($path);
   }
 
   /**
    * Disables the Symfony Deprecations Helper.
    *
+   * @param string $path
+   *   The path.
    * @param \DOMDocument $doc
    *   The DOM document.
    * @param \DOMXPath $xpath
    *   The XPath object.
    */
-  private function disableSymfonyDeprecationsHelper(\DOMDocument $doc, \DOMXPath $xpath): void {
+  private function disableSymfonyDeprecationsHelper(string $path, \DOMDocument $doc, \DOMXPath $xpath): void {
     if (!$xpath->query('//phpunit/php/env[@name="SYMFONY_DEPRECATIONS_HELPER"]')->length) {
       $element = $doc->createElement('env');
       $element->setAttribute('name', 'SYMFONY_DEPRECATIONS_HELPER');
@@ -125,20 +130,21 @@ class Tester {
       $xpath->query('//phpunit/php')
         ->item(0)
         ->appendChild($element);
+      $doc->save($path);
     }
   }
 
   /**
    * Sets the mink driver arguments.
    *
+   * @param string $path
+   *   The path.
    * @param \DOMDocument $doc
    *   The DOM document.
    * @param \DOMXPath $xpath
    *   The XPath object.
-   *
-   * @return string
    */
-  private function setMinkDriverArguments(\DOMDocument $doc, \DOMXPath $xpath): string {
+  private function setMinkDriverArguments(string $path, \DOMDocument $doc, \DOMXPath $xpath): void {
     // Create an <env> element containing a JSON array which will control how
     // the Mink driver interacts with Chromedriver.
     $mink_arguments = json_encode([
@@ -151,10 +157,20 @@ class Tester {
       ],
       'http://localhost:4444',
     ], JSON_UNESCAPED_SLASHES);
-    $element = $doc->createElement('env');
-    $element->setAttribute('name', 'MINK_DRIVER_ARGS_WEBDRIVER');
-    $element->setAttribute('value', $mink_arguments);
-    $xpath->query('//phpunit/php')->item(0)->appendChild($element);
+
+    $expression = '//phpunit/php/env[@name="MINK_DRIVER_ARGS_WEBDRIVER"]';
+
+    if (!$xpath->query($expression)->length) {
+      $element = $doc->createElement('env');
+      $element->setAttribute('name', 'MINK_DRIVER_ARGS_WEBDRIVER');
+      $xpath->query('//phpunit/php')
+        ->item(0)
+        ->appendChild($element);
+    }
+
+    $xpath->query($expression)
+      ->item(0)
+      ->setAttribute('value', $mink_arguments);
 
     // When dumping the XML document tree, PHP will encode all double quotes in
     // the JSON string to &quot;, since the XML attribute value is itself
@@ -164,8 +180,8 @@ class Tester {
     // @see https://stackoverflow.com/questions/5473520/php-dom-and-single-quotes#5473718
     $search = sprintf('value="%s"', htmlentities($mink_arguments));
     $replace = sprintf("value='%s'", $mink_arguments);
-    $xml = $doc->saveXML();
-    return str_replace($search, $replace, $xml);
+    $xml = str_replace($search, $replace, $doc->saveXML());
+    file_put_contents($path, $xml);
   }
 
   /**
