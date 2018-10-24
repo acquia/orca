@@ -6,12 +6,11 @@
  * ORCA command line executable.
  */
 
-use Acquia\Orca\Command\Fixture;
-use Acquia\Orca\Command\Tests;
-use Acquia\Orca\Fixture\Facade;
-use Acquia\Orca\Fixture\ProductData;
+namespace Acquia\Orca;
+
 use Symfony\Component\Console\Application;
-use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Console\Input\ArgvInput;
+use Symfony\Component\Debug\Debug;
 
 set_time_limit(0);
 
@@ -23,24 +22,32 @@ if (file_exists(__DIR__ . '/../../../autoload.php')) {
 }
 // If invoked from a standalone ORCA instance, e.g., a development clone.
 elseif (file_exists(__DIR__ . '/../vendor/autoload.php')) {
-  define('ORCA_PROJECT_ROOT', dirname(__DIR__ ));
+  define('ORCA_PROJECT_ROOT', dirname(__DIR__));
 }
 else {
   die("Could not find autoloader. Run 'composer install' first.\n");
 }
+define('ORCA_FIXTURE_ROOT', dirname(ORCA_PROJECT_ROOT) . '/orca-build');
 
 require ORCA_PROJECT_ROOT . '/vendor/autoload.php';
 
-$fixture_path = dirname(ORCA_PROJECT_ROOT) . '/orca-build';
-$filesystem = new Filesystem();
-$facade = new Facade($filesystem, $fixture_path);
-$product_data = new ProductData();
+$input = new ArgvInput();
+$env = $input->getParameterOption(['--env', '-e'], $_SERVER['APP_ENV'] ?? 'prod', TRUE);
+$debug = (bool) ($_SERVER['APP_DEBUG'] ?? ('prod' !== $env)) && !$input->hasParameterOption('--no-debug', TRUE);
 
-$application = new Application('ORCA', ORCA_VERSION);
-$application->addCommands([
-  new Fixture\DestroyCommand($facade),
-  new Fixture\CreateCommand($facade, $product_data),
-  new Tests\RunCommand($facade),
-]);
+if ($debug) {
+  umask(0000);
 
+  if (class_exists(Debug::class)) {
+    Debug::enable();
+  }
+}
+
+$kernel = new Kernel($env, $debug);
+$kernel->boot();
+
+$container = $kernel->getContainer();
+$application = $container->get(Application::class);
+$application->setName('ORCA');
+$application->setVersion(ORCA_VERSION);
 $application->run();

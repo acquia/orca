@@ -31,9 +31,6 @@ class RunCommandTest extends TestCase {
     $this->tester
       ->test()
       ->shouldBeCalledTimes(1);
-    $this->facade
-      ->getTester()
-      ->shouldBeCalledTimes(1);
     $tester = $this->createCommandTester();
 
     $this->executeCommand($tester, []);
@@ -46,11 +43,9 @@ class RunCommandTest extends TestCase {
     $application = new Application();
     /** @var \Acquia\Orca\Tests\Tester $tester */
     $tester = $this->tester->reveal();
-    $this->facade->getTester()
-      ->willReturn($tester);
     /** @var \Acquia\Orca\Fixture\Facade $facade */
     $facade = $this->facade->reveal();
-    $application->add(new RunCommand($facade));
+    $application->add(new RunCommand($facade, $tester));
     /** @var \Acquia\Orca\Command\Tests\RunCommand $command */
     $command = $application->find(RunCommand::getDefaultName());
     $this->assertInstanceOf(RunCommand::class, $command);

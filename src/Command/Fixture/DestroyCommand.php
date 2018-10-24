@@ -3,6 +3,7 @@
 namespace Acquia\Orca\Command\Fixture;
 
 use Acquia\Orca\Command\StatusCodes;
+use Acquia\Orca\Fixture\Destroyer;
 use Acquia\Orca\Fixture\Facade;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -13,6 +14,7 @@ use Symfony\Component\Console\Question\ConfirmationQuestion;
 /**
  * Provides a command.
  *
+ * @property \Acquia\Orca\Fixture\Destroyer $destroyer
  * @property \Acquia\Orca\Fixture\Facade $facade
  */
 class DestroyCommand extends Command {
@@ -22,7 +24,8 @@ class DestroyCommand extends Command {
   /**
    * {@inheritdoc}
    */
-  public function __construct(Facade $facade) {
+  public function __construct(Destroyer $destroyer, Facade $facade) {
+    $this->destroyer = $destroyer;
     $this->facade = $facade;
     parent::__construct(self::$defaultName);
   }
@@ -57,7 +60,7 @@ class DestroyCommand extends Command {
       return StatusCodes::USER_CANCEL;
     }
 
-    $this->facade->getDestroyer()->destroy();
+    $this->destroyer->destroy();
     return StatusCodes::OK;
   }
 

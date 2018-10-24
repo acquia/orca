@@ -12,10 +12,12 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
 
+define('ORCA_FIXTURE_ROOT', '/tmp/orca-fixture-root');
+
 /**
  * @property \Prophecy\Prophecy\ObjectProphecy $facade
- * @property \Prophecy\Prophecy\ObjectProphecy $fixtureCreator
- * @property \Prophecy\Prophecy\ObjectProphecy $fixtureDestroyer
+ * @property \Prophecy\Prophecy\ObjectProphecy $creator
+ * @property \Prophecy\Prophecy\ObjectProphecy $destroyer
  * @property \Prophecy\Prophecy\ObjectProphecy $productData
  */
 class CreateCommandTest extends TestCase {
@@ -25,8 +27,8 @@ class CreateCommandTest extends TestCase {
   private const INVALID_PACKAGE = 'invalid';
 
   protected function setUp() {
-    $this->fixtureCreator = $this->prophesize(Creator::class);
-    $this->fixtureDestroyer = $this->prophesize(Destroyer::class);
+    $this->creator = $this->prophesize(Creator::class);
+    $this->destroyer = $this->prophesize(Destroyer::class);
     $this->facade = $this->prophesize(Facade::class);
     $this->facade->exists()
       ->willReturn(FALSE);
@@ -47,24 +49,18 @@ class CreateCommandTest extends TestCase {
       ->exists()
       ->shouldBeCalledTimes((int) in_array('exists', $methods_called))
       ->willReturn($fixture_exists);
-    $this->facade
-      ->getDestroyer()
-      ->shouldBeCalledTimes((int) in_array('getDestroyer', $methods_called));
-    $this->fixtureDestroyer
+    $this->destroyer
       ->destroy()
-      ->shouldBeCalledTimes((int) in_array('getDestroyer', $methods_called));
-    $this->facade
-      ->getCreator()
-      ->shouldBeCalledTimes((int) in_array('getCreator', $methods_called));
-    $this->fixtureCreator
+      ->shouldBeCalledTimes((int) in_array('destroy', $methods_called));
+    $this->creator
       ->setSut(@$args['--sut'])
       ->shouldBeCalledTimes((int) in_array('setSut', $methods_called));
-    $this->fixtureCreator
+    $this->creator
       ->setSutOnly(TRUE)
       ->shouldBeCalledTimes((int) in_array('setSutOnly', $methods_called));
-    $this->fixtureCreator
+    $this->creator
       ->create()
-      ->shouldBeCalledTimes((int) in_array('getCreator', $methods_called));
+      ->shouldBeCalledTimes((int) in_array('create', $methods_called));
     $tester = $this->createCommandTester();
 
     $this->executeCommand($tester, $args);
@@ -76,30 +72,26 @@ class CreateCommandTest extends TestCase {
   public function providerCommand() {
     return [
       [TRUE, [], ['exists'], StatusCodes::ERROR, sprintf("Error: Fixture already exists at %s.\nHint: Use the \"--force\" option to destroy it and proceed.\n", self::FIXTURE_ROOT)],
-      [TRUE, ['-f' => TRUE], ['exists', 'getDestroyer', 'getCreator'], StatusCodes::OK, ''],
-      [FALSE, [], ['exists', 'getCreator'], StatusCodes::OK, ''],
+      [TRUE, ['-f' => TRUE], ['exists', 'destroy', 'create'], StatusCodes::OK, ''],
+      [FALSE, [], ['exists', 'create'], StatusCodes::OK, ''],
       [FALSE, ['--sut' => self::INVALID_PACKAGE], ['isValidPackage'], StatusCodes::ERROR, sprintf("Error: Invalid value for \"--sut\" option: \"%s\".\n", self::INVALID_PACKAGE)],
-      [FALSE, ['--sut' => self::VALID_PACKAGE], ['isValidPackage', 'exists', 'getCreator', 'setSut'], StatusCodes::OK, ''],
-      [FALSE, ['--sut' => self::VALID_PACKAGE, '-o' => TRUE], ['isValidPackage', 'exists', 'getCreator', 'setSut', 'setSutOnly'], StatusCodes::OK, ''],
-      [FALSE, ['-o' => TRUE], [], StatusCodes::ERROR, "Error: Cannot create a SUT-only fixture without a SUT.\nHint: Use the \"--sut\" option to specify the SUT.\n"],
+      [FALSE, ['--sut' => self::VALID_PACKAGE], ['isValidPackage', 'exists', 'create', 'setSut'], StatusCodes::OK, ''],
+      [FALSE, ['--sut' => self::VALID_PACKAGE, '--sut-only' => TRUE], ['isValidPackage', 'exists', 'create', 'setSut', 'setSutOnly'], StatusCodes::OK, ''],
+      [FALSE, ['--sut-only' => TRUE], [], StatusCodes::ERROR, "Error: Cannot create a SUT-only fixture without a SUT.\nHint: Use the \"--sut\" option to specify the SUT.\n"],
     ];
   }
 
   private function createCommandTester(): CommandTester {
     $application = new Application();
     /** @var \Acquia\Orca\Fixture\Creator $fixture_creator */
-    $fixture_creator = $this->fixtureCreator->reveal();
-    $this->facade->getCreator()
-      ->willReturn($fixture_creator);
+    $fixture_creator = $this->creator->reveal();
     /** @var \Acquia\Orca\Fixture\Destroyer $fixture_destroyer */
-    $fixture_destroyer = $this->fixtureDestroyer->reveal();
-    $this->facade->getDestroyer()
-      ->willReturn($fixture_destroyer);
+    $fixture_destroyer = $this->destroyer->reveal();
     /** @var \Acquia\Orca\Fixture\Facade $facade */
     $facade = $this->facade->reveal();
     /** @var \Acquia\Orca\Fixture\ProductData $product_data */
     $product_data = $this->productData->reveal();
-    $application->add(new CreateCommand($facade, $product_data));
+    $application->add(new CreateCommand($fixture_creator, $fixture_destroyer, $facade, $product_data));
     /** @var \Acquia\Orca\Command\Fixture\CreateCommand $command */
     $command = $application->find(CreateCommand::getDefaultName());
     $this->assertInstanceOf(CreateCommand::class, $command);

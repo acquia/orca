@@ -14,9 +14,12 @@
         "ext-dom": "*",
         "ext-json": "*",
         "behat/behat": "^3.5",
+        "symfony/config": "^4.1",
         "symfony/console": "^4.1",
-        "symfony/flex": "^1.1",
-        "symfony/framework-bundle": "^4.1",
+        "symfony/dependency-injection": "^4.1",
+        "symfony/filesystem": "^4.1",
+        "symfony/finder": "^4.1",
+        "symfony/http-kernel": "^4.1",
         "symfony/process": "^4.1",
         "symfony/yaml": "^4.1"
     },
@@ -31,7 +34,6 @@
         "phpmd/phpmd": "^2.6",
         "phpunit/phpunit": "^6.5",
         "sensiolabs/security-checker": "^5.0",
-        "symfony/maker-bundle": "*",
         "symfony/phpunit-bridge": "*"
     },
     "config": {
@@ -72,10 +74,9 @@
         "post-update-cmd": [
             "@auto-scripts"
         ],
-        "auto-scripts": {
-            "cache:clear": "symfony-cmd",
-            "security-checker security:check": "script"
-        },
+        "auto-scripts": [
+            "vendor/bin/security-checker security:check"
+        ],
         "cghooks": "cghooks --ansi",
         "phpcbf": "phpcbf",
         "phpcs": "phpcs",

@@ -1,22 +1,7 @@
-###> phpunit/phpunit ###
-/phpunit.xml
-###< phpunit/phpunit ###
-
-###> squizlabs/php_codesniffer ###
+/var
+/vendor
 /.phpcs-cache
+/.phpunit
+/cghooks.lock
 /phpcs.xml
-###< squizlabs/php_codesniffer ###
-
-###> symfony/framework-bundle ###
-/.env
-/public/bundles/
-/var/
-/vendor/
-###< symfony/framework-bundle ###
-
-###> symfony/phpunit-bridge ###
-.phpunit
 /phpunit.xml
-###< symfony/phpunit-bridge ###
-
-cghooks.lock

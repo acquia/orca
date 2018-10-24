@@ -3,7 +3,6 @@
 namespace Acquia\Orca\Fixture;
 
 use Acquia\Orca\IoTrait;
-use Acquia\Orca\Tests\Tester;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
@@ -30,42 +29,10 @@ class Facade {
 
   /**
    * Constructs an instance.
-   *
-   * @param \Symfony\Component\Filesystem\Filesystem $filesystem
-   *   The filesystem.
-   * @param string $root_path
-   *   The absolute path of the fixture root directory.
    */
-  public function __construct(Filesystem $filesystem, string $root_path) {
+  public function __construct(Filesystem $filesystem, string $root_path = ORCA_FIXTURE_ROOT) {
     $this->filesystem = $filesystem;
     $this->rootPath = $root_path;
-  }
-
-  /**
-   * Gets a fixture creator.
-   *
-   * @return \Acquia\Orca\Fixture\Creator
-   */
-  public function getCreator(): Creator {
-    return new Creator($this, $this->filesystem, new ProductData());
-  }
-
-  /**
-   * Gets a fixture destroyer.
-   *
-   * @return \Acquia\Orca\Fixture\Destroyer
-   */
-  public function getDestroyer(): Destroyer {
-    return new Destroyer($this, $this->filesystem);
-  }
-
-  /**
-   * Gets an automated tester.
-   *
-   * @return \Acquia\Orca\Tests\Tester
-   */
-  public function getTester(): Tester {
-    return new Tester($this);
   }
 
   /**

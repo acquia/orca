@@ -2,19 +2,18 @@
 
 namespace Acquia\Orca;
 
-use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;
 use Symfony\Component\Config\Loader\LoaderInterface;
-use Symfony\Component\Config\Resource\FileResource;
+use Symfony\Component\Console\Application;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpKernel\Kernel as BaseKernel;
-use Symfony\Component\Routing\RouteCollectionBuilder;
 
 /**
  * Manages an environment made of bundles.
  */
 class Kernel extends BaseKernel {
-
-  use MicroKernelTrait;
 
   const CONFIG_EXTS = '.{php,xml,yaml,yml}';
 
@@ -36,37 +35,47 @@ class Kernel extends BaseKernel {
    * {@inheritdoc}
    */
   public function registerBundles() {
-    $contents = require $this->getProjectDir() . '/config/bundles.php';
-    foreach ($contents as $class => $envs) {
-      if (isset($envs['all']) || isset($envs[$this->environment])) {
-        yield new $class();
+    return [];
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function registerContainerConfiguration(LoaderInterface $loader): void {
+    $loader->load(__DIR__ . '/../config/services.yml');
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  protected function build(ContainerBuilder $containerBuilder): void {
+    $containerBuilder->addCompilerPass($this->createCollectingCompilerPass());
+  }
+
+  /**
+   * Creates a collecting compiler pass.
+   */
+  private function createCollectingCompilerPass(): CompilerPassInterface {
+    return new class implements CompilerPassInterface {
+
+      /**
+       * {@inheritdoc}
+       */
+      public function process(ContainerBuilder $container_builder) {
+        $app_definition = $container_builder->findDefinition(Application::class);
+
+        foreach ($container_builder->getDefinitions() as $definition) {
+          if (!is_a($definition->getClass(), Command::class, TRUE)) {
+            continue;
+          }
+
+          $app_definition->addMethodCall('add', [
+            new Reference($definition->getClass()),
+          ]);
+        }
       }
-    }
-  }
 
-  /**
-   * {@inheritdoc}
-   */
-  protected function configureContainer(ContainerBuilder $container, LoaderInterface $loader) {
-    $container->addResource(new FileResource($this->getProjectDir() . '/config/bundles.php'));
-    $container->setParameter('container.dumper.inline_class_loader', TRUE);
-    $confDir = $this->getProjectDir() . '/config';
-
-    $loader->load($confDir . '/{packages}/*' . self::CONFIG_EXTS, 'glob');
-    $loader->load($confDir . '/{packages}/' . $this->environment . '/**/*' . self::CONFIG_EXTS, 'glob');
-    $loader->load($confDir . '/{services}' . self::CONFIG_EXTS, 'glob');
-    $loader->load($confDir . '/{services}_' . $this->environment . self::CONFIG_EXTS, 'glob');
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  protected function configureRoutes(RouteCollectionBuilder $routes) {
-    $confDir = $this->getProjectDir() . '/config';
-
-    $routes->import($confDir . '/{routes}/*' . self::CONFIG_EXTS, '/', 'glob');
-    $routes->import($confDir . '/{routes}/' . $this->environment . '/**/*' . self::CONFIG_EXTS, '/', 'glob');
-    $routes->import($confDir . '/{routes}' . self::CONFIG_EXTS, '/', 'glob');
+    };
   }
 
 }

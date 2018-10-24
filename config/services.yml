@@ -1,0 +1,16 @@
+parameters:
+
+services:
+
+  _defaults:
+    autowire: true
+    autoconfigure: true
+    public: true
+
+  Acquia\Orca\:
+    resource: '../src'
+    public: false
+
+  Symfony\Component\Console\Application:
+
+  Symfony\Component\Filesystem\Filesystem:

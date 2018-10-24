@@ -29,25 +29,6 @@ class FacadeTest extends TestCase {
   }
 
   /**
-   * @dataProvider providerCollaboratorGetters
-   */
-  public function testCollaboratorGetters($getter, $class) {
-    $fixture = $this->createFacade();
-
-    $object = $fixture->{$getter}();
-
-    $this->assertTrue($object instanceof $class, 'Instantiated class.');
-  }
-
-  public function providerCollaboratorGetters() {
-    return [
-      ['getCreator', Creator::class],
-      ['getDestroyer', Destroyer::class],
-      ['getTester', Tester::class],
-    ];
-  }
-
-  /**
    * @dataProvider providerExists
    */
   public function testExists($root_path, $exists) {
