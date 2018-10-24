@@ -87,15 +87,37 @@ class Tester {
     $doc->load($path);
     $xpath = new \DOMXPath($doc);
 
-    // Set Simpletest settings.
+    $this->setSimpletestSettings($xpath);
+    $this->disableSymfonyDeprecationsHelper($doc, $xpath);
+    $xml = $this->setMinkDriverArguments($doc, $xpath);
+
+    file_put_contents($path, $xml);
+  }
+
+  /**
+   * Sets Simpletest settings.
+   *
+   * @param \DOMXPath $xpath
+   *   The XPath object.
+   */
+  private function setSimpletestSettings(\DOMXPath $xpath): void {
     $xpath->query('//phpunit/php/env[@name="SIMPLETEST_BASE_URL"]')
       ->item(0)
       ->setAttribute('value', sprintf('http://%s', self::WEB_ADDRESS));
     $xpath->query('//phpunit/php/env[@name="SIMPLETEST_DB"]')
       ->item(0)
       ->setAttribute('value', 'sqlite://localhost/sites/default/files/.ht.sqlite');
+  }
 
-    // Disable Symfony deprecations helper.
+  /**
+   * Disables the Symfony Deprecations Helper.
+   *
+   * @param \DOMDocument $doc
+   *   The DOM document.
+   * @param \DOMXPath $xpath
+   *   The XPath object.
+   */
+  private function disableSymfonyDeprecationsHelper(\DOMDocument $doc, \DOMXPath $xpath): void {
     if (!$xpath->query('//phpunit/php/env[@name="SYMFONY_DEPRECATIONS_HELPER"]')->length) {
       $element = $doc->createElement('env');
       $element->setAttribute('name', 'SYMFONY_DEPRECATIONS_HELPER');
@@ -104,7 +126,19 @@ class Tester {
         ->item(0)
         ->appendChild($element);
     }
+  }
 
+  /**
+   * Sets the mink driver arguments.
+   *
+   * @param \DOMDocument $doc
+   *   The DOM document.
+   * @param \DOMXPath $xpath
+   *   The XPath object.
+   *
+   * @return string
+   */
+  private function setMinkDriverArguments(\DOMDocument $doc, \DOMXPath $xpath): string {
     // Create an <env> element containing a JSON array which will control how
     // the Mink driver interacts with Chromedriver.
     $mink_arguments = json_encode([
@@ -130,7 +164,8 @@ class Tester {
     // @see https://stackoverflow.com/questions/5473520/php-dom-and-single-quotes#5473718
     $search = sprintf('value="%s"', htmlentities($mink_arguments));
     $replace = sprintf("value='%s'", $mink_arguments);
-    file_put_contents($path, str_replace($search, $replace, $doc->saveXML()));
+    $xml = $doc->saveXML();
+    return str_replace($search, $replace, $xml);
   }
 
   /**
