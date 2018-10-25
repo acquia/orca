@@ -3,7 +3,7 @@
 namespace Acquia\Orca\Fixture;
 
 use Acquia\Orca\IoTrait;
-use Acquia\Orca\ProcessRunnerTrait;
+use Acquia\Orca\ProcessRunner;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
@@ -12,7 +12,8 @@ use Symfony\Component\Filesystem\Filesystem;
  * @property \stdClass $composerConfig
  * @property \Acquia\Orca\Fixture\Facade $facade
  * @property \Symfony\Component\Filesystem\Filesystem $filesystem
- * @property \Acquia\Orca\Fixture\ProductData productData
+ * @property \Acquia\Orca\ProcessRunner $processRunner
+ * @property \Acquia\Orca\Fixture\ProductData $productData
  * @property string $sutDestBaseName
  * @property string $sutDestPath
  * @property string $sutSourceBaseName
@@ -20,7 +21,6 @@ use Symfony\Component\Filesystem\Filesystem;
 class Creator {
 
   use IoTrait;
-  use ProcessRunnerTrait;
 
   /**
    * Whether or not the fixture is SUT-only.
@@ -43,12 +43,15 @@ class Creator {
    *   The fixture.
    * @param \Symfony\Component\Filesystem\Filesystem $filesystem
    *   The filesystem.
+   * @param \Acquia\Orca\ProcessRunner $process_runner
+   *   The process runner.
    * @param \Acquia\Orca\Fixture\ProductData $product_data
    *   The product data.
    */
-  public function __construct(Facade $facade, Filesystem $filesystem, ProductData $product_data) {
+  public function __construct(Facade $facade, Filesystem $filesystem, ProcessRunner $process_runner, ProductData $product_data) {
     $this->facade = $facade;
     $this->filesystem = $filesystem;
+    $this->processRunner = $process_runner;
     $this->productData = $product_data;
   }
 
@@ -97,7 +100,7 @@ class Creator {
    */
   private function createBltProject(): void {
     $this->io()->section('Creating BLT project');
-    $this->runExecutableProcess([
+    $this->processRunner->runExecutableProcess([
       'composer',
       'create-project',
       // @todo Remove the dev branch when composer-merge-plugin removal work
@@ -115,7 +118,7 @@ class Creator {
    */
   private function removeUnneededProjects(): void {
     $this->io()->section('Removing unneeded projects');
-    $this->runExecutableProcess([
+    $this->processRunner->runExecutableProcess([
       'composer',
       'remove',
       // The Lightning profile requirement conflicts with individual Lightning
@@ -215,7 +218,7 @@ class Creator {
    * Requires the dependencies via Composer.
    */
   private function requireDependencies(): void {
-    $this->runExecutableProcess(array_merge(
+    $this->processRunner->runExecutableProcess(array_merge(
       ['composer', 'require'],
       $this->getDependencies()
     ), $this->facade->rootPath());
@@ -229,7 +232,7 @@ class Creator {
       $this->facade->rootPath('composer.lock'),
       $this->sutDestPath,
     ]);
-    $this->runExecutableProcess([
+    $this->processRunner->runExecutableProcess([
       'composer',
       'install',
       '--no-interaction',
@@ -272,8 +275,8 @@ class Creator {
    */
   private function commitCodeChanges($message): void {
     $cwd = $this->facade->rootPath();
-    $this->runExecutableProcess(['git', 'add', '-A'], $cwd);
-    $this->runExecutableProcess([
+    $this->processRunner->runExecutableProcess(['git', 'add', '-A'], $cwd);
+    $this->processRunner->runExecutableProcess([
       'git',
       'commit',
       '--allow-empty',
@@ -287,7 +290,7 @@ class Creator {
   private function installDrupal(): void {
     $this->io()->section('Installing Drupal');
     $this->ensureDrupalSettings();
-    $this->runProcess([
+    $this->processRunner->runProcess([
       'vendor/bin/drush',
       'site-install',
       'minimal',
@@ -363,7 +366,7 @@ PHP;
       return;
     }
 
-    $this->runProcess(array_merge([
+    $this->processRunner->runProcess(array_merge([
       'vendor/bin/drush',
       'pm-enable',
       '-y',
@@ -375,7 +378,7 @@ PHP;
    */
   private function createBackupBranch(): void {
     $this->io()->section('Creating backup branch');
-    $this->runExecutableProcess([
+    $this->processRunner->runExecutableProcess([
       'git',
       'branch',
       '--force',

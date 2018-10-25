@@ -3,7 +3,7 @@
 namespace Acquia\Orca\Fixture;
 
 use Acquia\Orca\IoTrait;
-use Acquia\Orca\ProcessRunnerTrait;
+use Acquia\Orca\ProcessRunner;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
@@ -11,11 +11,11 @@ use Symfony\Component\Filesystem\Filesystem;
  *
  * @property \Acquia\Orca\Fixture\Facade $facade
  * @property \Symfony\Component\Filesystem\Filesystem $filesystem
+ * @property \Acquia\Orca\ProcessRunner $processRunner
  */
 class Destroyer {
 
   use IoTrait;
-  use ProcessRunnerTrait;
 
   /**
    * Constructs an instance.
@@ -24,10 +24,13 @@ class Destroyer {
    *   The fixture.
    * @param \Symfony\Component\Filesystem\Filesystem $filesystem
    *   The filesystem.
+   * @param \Acquia\Orca\ProcessRunner $process_runner
+   *   The process runner.
    */
-  public function __construct(Facade $facade, Filesystem $filesystem) {
+  public function __construct(Facade $facade, Filesystem $filesystem, ProcessRunner $process_runner) {
     $this->facade = $facade;
     $this->filesystem = $filesystem;
+    $this->processRunner = $process_runner;
   }
 
   /**
@@ -53,7 +56,7 @@ class Destroyer {
 
     // Filesystem::remove() seems like a better choice than a raw Process, but
     // for reasons unknown, it fails due to file permissions.
-    $this->runExecutableProcess([
+    $this->processRunner->runExecutableProcess([
       'chmod',
       '-R',
       'u+w',

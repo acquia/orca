@@ -12,7 +12,19 @@ use Symfony\Component\Process\Process;
  *
  * @property \Symfony\Component\Process\ExecutableFinder $executableFinder
  */
-trait ProcessRunnerTrait {
+class ProcessRunner {
+
+  use IoTrait;
+
+  /**
+   * Constructs an instance.
+   *
+   * @param \Symfony\Component\Process\ExecutableFinder $executable_finder
+   *   An executable finder.
+   */
+  public function __construct(ExecutableFinder $executable_finder) {
+    $this->executableFinder = $executable_finder;
+  }
 
   /**
    * Runs a given executable command in a process.
@@ -27,7 +39,7 @@ trait ProcessRunnerTrait {
    *   The exit status code.
    */
   public function runExecutableProcess(array $command, ?string $cwd = NULL): int {
-    $command[0] = (new ExecutableFinder())->find($command[0]);
+    $command[0] = $this->executableFinder->find($command[0]);
 
     if (is_null($command[0])) {
       throw new RuntimeException(sprintf('Could not find executable: %s.', $command[0]));

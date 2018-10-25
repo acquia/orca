@@ -14,3 +14,5 @@ services:
   Symfony\Component\Console\Application:
 
   Symfony\Component\Filesystem\Filesystem:
+
+  Symfony\Component\Process\ExecutableFinder:

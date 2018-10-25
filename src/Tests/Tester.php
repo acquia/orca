@@ -5,7 +5,7 @@ namespace Acquia\Orca\Tests;
 use Acquia\Orca\Fixture\Facade;
 use Acquia\Orca\Fixture\ProductData;
 use Acquia\Orca\IoTrait;
-use Acquia\Orca\ProcessRunnerTrait;
+use Acquia\Orca\ProcessRunner;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Process\Process;
 
@@ -13,12 +13,12 @@ use Symfony\Component\Process\Process;
  * Runs automated tests.
  *
  * @property \Acquia\Orca\Fixture\Facade $facade
+ * @property \Acquia\Orca\ProcessRunner $processRunner
  * @property \Acquia\Orca\Fixture\ProductData $productData
  */
 class Tester {
 
   use IoTrait;
-  use ProcessRunnerTrait;
 
   private const WEB_ADDRESS = '127.0.0.1:8080';
 
@@ -34,11 +34,14 @@ class Tester {
    *
    * @param \Acquia\Orca\Fixture\Facade $facade
    *   The fixture.
+   * @param \Acquia\Orca\ProcessRunner $process_runner
+   *   The process runner.
    * @param \Acquia\Orca\Fixture\ProductData $product_data
    *   The product data.
    */
-  public function __construct(Facade $facade, ProductData $product_data) {
+  public function __construct(Facade $facade, ProcessRunner $process_runner, ProductData $product_data) {
     $this->facade = $facade;
+    $this->processRunner = $process_runner;
     $this->productData = $product_data;
   }
 
@@ -70,7 +73,7 @@ class Tester {
   private function runPhpUnitTests() {
     $this->ensurePhpUnitConfig();
 
-    $this->runVendorBinProcess([
+    $this->processRunner->runVendorBinProcess([
       'phpunit',
       '--colors=always',
       "--configuration={$this->facade->docrootPath('core/phpunit.xml.dist')}",
@@ -221,7 +224,7 @@ class Tester {
   private function runBehatStories() {
     /** @var \Symfony\Component\Finder\SplFileInfo $config_file */
     foreach ($this->getBehatConfigFiles() as $config_file) {
-      $this->runVendorBinProcess([
+      $this->processRunner->runVendorBinProcess([
         'behat',
         '--colors',
         "--config={$config_file->getPathname()}",
