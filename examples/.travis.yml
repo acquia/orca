@@ -8,10 +8,13 @@ php: 7.2
 addons:
   chrome: stable
 
-before_install: ./vendor/acquia/orca/bin/travis/before_install.sh
+before_install:
+  - git clone git@github.com:acquia/orca.git ../orca
+  - composer -d../orca install
+  - ../orca/bin/travis/before_install.sh
 
 install: composer install
 
 before_script: ./vendor/bin/phpcs
 
-script: ./vendor/acquia/orca/bin/travis/script.sh drupal/example
+script: ../orca/bin/travis/script.sh drupal/example
