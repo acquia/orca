@@ -286,7 +286,7 @@ class Creator {
    */
   private function installDrupal(): void {
     $this->io()->section('Installing Drupal');
-    $this->ensureDatabaseSettings();
+    $this->ensureDrupalSettings();
     $this->runProcess([
       'vendor/bin/drush',
       'site-install',
@@ -304,11 +304,11 @@ class Creator {
   }
 
   /**
-   * Ensure that Drupal is correctly configured to use the database.
+   * Ensure that Drupal is correctly configured.
    */
-  protected function ensureDatabaseSettings() {
+  protected function ensureDrupalSettings() {
     $filename = $this->facade->docrootPath('sites/default/settings/local.settings.php');
-    $id = '# ORCA DB settings.';
+    $id = '# ORCA settings.';
 
     // Return early if the settings are already present.
     if (strpos(file_get_contents($filename), $id)) {
