@@ -320,6 +320,32 @@ class Creator {
 $databases['default']['default']['database'] = dirname(DRUPAL_ROOT) . '/docroot/sites/default/files/.ht.sqlite';
 $databases['default']['default']['driver'] = 'sqlite';
 unset($databases['default']['default']['namespace']);
+
+// Override the definition of the service container used during Drupal's
+// bootstrapping process. This is needed so that the core db-tools.php script
+// can import database dumps properly. Without this, the destination database
+// will get a cache_container table created in it before the import begins,
+// which will cause the import to fail because it will think that Drupal is
+// already installed.
+// @see \Drupal\Core\DrupalKernel::$defaultBootstrapContainerDefinition
+// @see https://www.drupal.org/project/drupal/issues/3006038
+$settings['bootstrap_container_definition'] = [
+  'parameters' => [],
+  'services' => [
+    'database' => [
+      'class' => 'Drupal\Core\Database\Connection',
+      'factory' => 'Drupal\Core\Database\Database::getConnection',
+      'arguments' => ['default'],
+    ],
+    'cache.container' => [
+      'class' => 'Drupal\Core\Cache\MemoryBackend',
+    ],
+    'cache_tags_provider.container' => [
+      'class' => 'Drupal\Core\Cache\DatabaseCacheTagsChecksum',
+      'arguments' => ['@database'],
+    ],
+  ],
+];
 PHP;
     file_put_contents($filename, $data, FILE_APPEND);
   }
