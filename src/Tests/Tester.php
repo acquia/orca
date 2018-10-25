@@ -20,7 +20,7 @@ class Tester {
   use IoTrait;
   use ProcessRunnerTrait;
 
-  private const WEB_ADDRESS = 'localhost:8000';
+  private const WEB_ADDRESS = '127.0.0.1:8080';
 
   /**
    * The web server process.
