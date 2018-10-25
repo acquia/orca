@@ -223,7 +223,7 @@ class Tester {
       $this->runVendorBinProcess([
         'behat',
         "--config={$config_file->getPathname()}",
-      ]);
+      ], $this->facade->rootPath());
     }
   }
 
