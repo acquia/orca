@@ -72,6 +72,7 @@ class Tester {
 
     $this->runVendorBinProcess([
       'phpunit',
+      '--colors=always',
       "--configuration={$this->facade->docrootPath('core/phpunit.xml.dist')}",
       "--bootstrap={$this->facade->docrootPath('core/tests/bootstrap.php')}",
       $this->testsDirectory(),
