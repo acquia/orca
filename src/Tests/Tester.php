@@ -222,8 +222,9 @@ class Tester {
     foreach ($this->getBehatConfigFiles() as $config_file) {
       $this->runVendorBinProcess([
         'behat',
+        '--dry-run',
         "--config={$config_file->getPathname()}",
-      ]);
+      ], $this->facade->rootPath());
     }
   }
 
