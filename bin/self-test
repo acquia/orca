@@ -20,8 +20,8 @@ if [ ! -d "../lightning-api" ]; then
   git -C ../ clone --branch 8.x-2.x https://git.drupal.org/project/lightning_api.git --depth 1 -- lightning-api
 fi
 
-# Manually clear the Symfony cache. (Don't use the Orca cache:clear command
-# because a stale cache could (ironically) prevent it from working.)
+# Manually clear the Symfony cache. (Don't use the cache:clear command because a
+# stale cache could (ironically) prevent it from working.)
 if [ -e var/cache/* ]; then
   rm -r var/cache/*
 fi
