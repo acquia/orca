@@ -5,6 +5,8 @@ services:
   _defaults:
     autowire: true
     autoconfigure: true
+    bind:
+      $cache_dir: '%kernel.cache_dir%'
     public: true
 
   Acquia\Orca\:
