@@ -2,8 +2,8 @@
 
 namespace Acquia\Orca\Fixture;
 
-use Acquia\Orca\IoTrait;
 use Acquia\Orca\ProcessRunner;
+use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
@@ -12,6 +12,7 @@ use Symfony\Component\Filesystem\Filesystem;
  * @property \stdClass $composerConfig
  * @property \Acquia\Orca\Fixture\Facade $facade
  * @property \Symfony\Component\Filesystem\Filesystem $filesystem
+ * @property \Symfony\Component\Console\Style\SymfonyStyle $output
  * @property \Acquia\Orca\ProcessRunner $processRunner
  * @property \Acquia\Orca\Fixture\ProductData $productData
  * @property string $sutDestBaseName
@@ -19,8 +20,6 @@ use Symfony\Component\Filesystem\Filesystem;
  * @property string $sutSourceBaseName
  */
 class Creator {
-
-  use IoTrait;
 
   /**
    * Whether or not the fixture is SUT-only.
@@ -43,14 +42,17 @@ class Creator {
    *   The fixture.
    * @param \Symfony\Component\Filesystem\Filesystem $filesystem
    *   The filesystem.
+   * @param \Symfony\Component\Console\Style\SymfonyStyle $output
+   *   The output decorator.
    * @param \Acquia\Orca\ProcessRunner $process_runner
    *   The process runner.
    * @param \Acquia\Orca\Fixture\ProductData $product_data
    *   The product data.
    */
-  public function __construct(Facade $facade, Filesystem $filesystem, ProcessRunner $process_runner, ProductData $product_data) {
+  public function __construct(Facade $facade, Filesystem $filesystem, SymfonyStyle $output, ProcessRunner $process_runner, ProductData $product_data) {
     $this->facade = $facade;
     $this->filesystem = $filesystem;
+    $this->output = $output;
     $this->processRunner = $process_runner;
     $this->productData = $product_data;
   }
@@ -99,7 +101,7 @@ class Creator {
    * Creates a BLT project.
    */
   private function createBltProject(): void {
-    $this->io()->section('Creating BLT project');
+    $this->output->section('Creating BLT project');
     $this->processRunner->runExecutableProcess([
       'composer',
       'create-project',
@@ -117,7 +119,7 @@ class Creator {
    * Removes unneeded projects.
    */
   private function removeUnneededProjects(): void {
-    $this->io()->section('Removing unneeded projects');
+    $this->output->section('Removing unneeded projects');
     $this->processRunner->runExecutableProcess([
       'composer',
       'remove',
@@ -137,7 +139,7 @@ class Creator {
    * Adds Acquia product modules to the codebase.
    */
   private function addAcquiaProductModules(): void {
-    $this->io()->section('Adding Acquia product modules');
+    $this->output->section('Adding Acquia product modules');
     $this->configureComposer();
     $this->requireDependencies();
     if ($this->sut) {
@@ -288,7 +290,7 @@ class Creator {
    * Installs Drupal.
    */
   private function installDrupal(): void {
-    $this->io()->section('Installing Drupal');
+    $this->output->section('Installing Drupal');
     $this->ensureDrupalSettings();
     $this->processRunner->runProcess([
       'vendor/bin/drush',
@@ -357,7 +359,7 @@ PHP;
    * Installs the Acquia product modules.
    */
   private function installAcquiaProductModules(): void {
-    $this->io()->section('Installing Acquia product modules');
+    $this->output->section('Installing Acquia product modules');
 
     $package = ($this->isSutOnly) ? $this->sut : NULL;
     $module_list = $this->productData->moduleNamePlural($package);
@@ -377,7 +379,7 @@ PHP;
    * Creates a backup branch for the current state of the code.
    */
   private function createBackupBranch(): void {
-    $this->io()->section('Creating backup branch');
+    $this->output->section('Creating backup branch');
     $this->processRunner->runExecutableProcess([
       'git',
       'branch',
@@ -390,7 +392,7 @@ PHP;
    * Verifies the fixture.
    */
   private function selfCheck(): void {
-    $this->io()->section('Verifying the fixture');
+    $this->output->section('Verifying the fixture');
     $errors = [];
 
     if ($this->sut) {
@@ -403,11 +405,11 @@ PHP;
     }
 
     if ($errors) {
-      $this->io()->error($errors);
+      $this->output->error($errors);
       return;
     }
 
-    $this->io()->success('Fixture created');
+    $this->output->success('Fixture created');
   }
 
 }

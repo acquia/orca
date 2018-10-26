@@ -2,7 +2,6 @@
 
 namespace Acquia\Orca\Fixture;
 
-use Acquia\Orca\IoTrait;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
@@ -21,8 +20,6 @@ use Symfony\Component\Filesystem\Filesystem;
  * @property \Acquia\Orca\Fixture\ProductData $productData
  */
 class Facade {
-
-  use IoTrait;
 
   const BASE_FIXTURE_GIT_BRANCH = 'base-fixture';
 

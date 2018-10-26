@@ -13,6 +13,15 @@ services:
 
   Symfony\Component\Console\Application:
 
+  Symfony\Component\Console\Input\ArgvInput:
+
+  Symfony\Component\Console\Output\ConsoleOutput:
+
+  Symfony\Component\Console\Style\SymfonyStyle:
+    arguments:
+    - '@Symfony\Component\Console\Input\ArgvInput'
+    - '@Symfony\Component\Console\Output\ConsoleOutput'
+
   Symfony\Component\Filesystem\Filesystem:
 
   Symfony\Component\Process\ExecutableFinder:

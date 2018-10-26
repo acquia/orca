@@ -4,7 +4,6 @@ namespace Acquia\Orca\Tests;
 
 use Acquia\Orca\Fixture\Facade;
 use Acquia\Orca\Fixture\ProductData;
-use Acquia\Orca\IoTrait;
 use Acquia\Orca\ProcessRunner;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Process\Process;
@@ -17,8 +16,6 @@ use Symfony\Component\Process\Process;
  * @property \Acquia\Orca\Fixture\ProductData $productData
  */
 class Tester {
-
-  use IoTrait;
 
   private const WEB_ADDRESS = '127.0.0.1:8080';
 

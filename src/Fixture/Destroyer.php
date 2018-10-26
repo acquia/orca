@@ -2,8 +2,8 @@
 
 namespace Acquia\Orca\Fixture;
 
-use Acquia\Orca\IoTrait;
 use Acquia\Orca\ProcessRunner;
+use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
@@ -11,11 +11,10 @@ use Symfony\Component\Filesystem\Filesystem;
  *
  * @property \Acquia\Orca\Fixture\Facade $facade
  * @property \Symfony\Component\Filesystem\Filesystem $filesystem
+ * @property \Symfony\Component\Console\Style\SymfonyStyle $output
  * @property \Acquia\Orca\ProcessRunner $processRunner
  */
 class Destroyer {
-
-  use IoTrait;
 
   /**
    * Constructs an instance.
@@ -24,12 +23,15 @@ class Destroyer {
    *   The fixture.
    * @param \Symfony\Component\Filesystem\Filesystem $filesystem
    *   The filesystem.
+   * @param \Symfony\Component\Console\Style\SymfonyStyle $output
+   *   The output decorator.
    * @param \Acquia\Orca\ProcessRunner $process_runner
    *   The process runner.
    */
-  public function __construct(Facade $facade, Filesystem $filesystem, ProcessRunner $process_runner) {
+  public function __construct(Facade $facade, Filesystem $filesystem, SymfonyStyle $output, ProcessRunner $process_runner) {
     $this->facade = $facade;
     $this->filesystem = $filesystem;
+    $this->output = $output;
     $this->processRunner = $process_runner;
   }
 
@@ -37,10 +39,10 @@ class Destroyer {
    * Destroys the fixture.
    */
   public function destroy(): void {
-    $this->io()->section('Destroying fixture');
+    $this->output->section('Destroying fixture');
     $this->prepareFilesForDeletion();
     $this->deleteFixtureDirectory();
-    $this->io()->success('Fixture destroyed');
+    $this->output->success('Fixture destroyed');
   }
 
   /**
@@ -69,7 +71,7 @@ class Destroyer {
    */
   private function deleteFixtureDirectory(): void {
     $root_path = $this->facade->rootPath();
-    $this->io()->comment(sprintf('Removing %s', $root_path));
+    $this->output->comment(sprintf('Removing %s', $root_path));
     $this->filesystem->remove($root_path);
   }
 

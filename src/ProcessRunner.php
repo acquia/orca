@@ -2,6 +2,7 @@
 
 namespace Acquia\Orca;
 
+use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Exception\RuntimeException;
 use Symfony\Component\Process\ExecutableFinder;
@@ -11,19 +12,21 @@ use Symfony\Component\Process\Process;
  * Runs processes.
  *
  * @property \Symfony\Component\Process\ExecutableFinder $executableFinder
+ * @property \Symfony\Component\Console\Style\SymfonyStyle $output
  */
 class ProcessRunner {
-
-  use IoTrait;
 
   /**
    * Constructs an instance.
    *
    * @param \Symfony\Component\Process\ExecutableFinder $executable_finder
    *   An executable finder.
+   * @param \Symfony\Component\Console\Style\SymfonyStyle $output
+   *   The output decorator.
    */
-  public function __construct(ExecutableFinder $executable_finder) {
+  public function __construct(ExecutableFinder $executable_finder, SymfonyStyle $output) {
     $this->executableFinder = $executable_finder;
+    $this->output = $output;
   }
 
   /**
@@ -61,9 +64,7 @@ class ProcessRunner {
    *   The exit status code.
    */
   public function runProcess(array $command, ?string $cwd = NULL): int {
-    if ($this->hasIo()) {
-      $this->io()->comment(sprintf('Executing "%s"', implode(' ', $command)));
-    }
+    $this->output->comment(sprintf('Executing "%s"', implode(' ', $command)));
 
     $process = new Process($command, $cwd);
     $status = $process->setTimeout(0)->run(function () {
@@ -75,9 +76,7 @@ class ProcessRunner {
       throw new ProcessFailedException($process);
     }
 
-    if ($this->hasIo()) {
-      $this->io()->newLine();
-    }
+    $this->output->newLine();
 
     return $status;
   }
@@ -103,15 +102,6 @@ class ProcessRunner {
     }
 
     return $this->runProcess($command, $cwd);
-  }
-
-  /**
-   * Determines whether or not the current object has IO.
-   *
-   * @return bool
-   */
-  private function hasIo(): bool {
-    return method_exists($this, 'io');
   }
 
 }
