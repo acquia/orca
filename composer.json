@@ -14,6 +14,8 @@
         "ext-dom": "*",
         "ext-json": "*",
         "behat/behat": "^3.5",
+        "jakub-onderka/php-console-highlighter": "^0.4.0",
+        "jakub-onderka/php-parallel-lint": "^1.0",
         "symfony/config": "^4.1",
         "symfony/console": "^4.1",
         "symfony/dependency-injection": "^4.1",
@@ -45,6 +47,8 @@
     "extra": {
         "hooks": {
             "pre-commit": [
+                "set -e",
+                "vendor/bin/parallel-lint --exclude vendor --no-progress .",
                 "vendor/bin/phpcs",
                 "vendor/bin/phpmd bin,src text phpmd.xml.dist --ignore-violations-on-exit"
             ],
@@ -80,6 +84,7 @@
         "cghooks": "cghooks --ansi",
         "phpcbf": "phpcbf",
         "phpcs": "phpcs",
+        "phplint": "parallel-lint --exclude vendor --ignore-fails .",
         "phpmd": "phpmd bin,src text phpmd.xml.dist --ignore-violations-on-exit",
         "phpunit": "phpunit"
     }
