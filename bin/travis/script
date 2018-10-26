@@ -24,4 +24,4 @@ run ${BIN_DIR}/orca fixture:destroy -f
 
 # Run isolated tests (in the absence of other Acquia product modules).
 run ${BIN_DIR}/orca fixture:create --sut=$1 --sut-only
-#run ${BIN_DIR}/orca tests:run
+run ${BIN_DIR}/orca tests:run
