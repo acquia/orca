@@ -6,7 +6,7 @@ php: 7.1
 addons:
   chrome: stable
 
-before_install: ./bin/travis/before_install.sh
+before_install: ./bin/travis/before_install
 
 install: composer install
 

@@ -11,10 +11,10 @@ addons:
 before_install:
   - git clone git@github.com:acquia/orca.git ../orca
   - composer -d../orca install
-  - ../orca/bin/travis/before_install.sh
+  - ../orca/bin/travis/before_install
 
 install: composer install
 
 before_script: ./vendor/bin/phpcs
 
-script: ../orca/bin/travis/script.sh drupal/example
+script: ../orca/bin/travis/script drupal/example

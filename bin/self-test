@@ -26,6 +26,6 @@ if [ -e var/cache/* ]; then
   rm -r var/cache/*
 fi
 
-./bin/travis/script.sh drupal/lightning_api
+./bin/travis/script drupal/lightning_api
 
 echo && times
