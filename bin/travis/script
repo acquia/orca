@@ -15,6 +15,9 @@ function run {
   eval "$@"
 }
 
+# Validate composer.json.
+composer validate --ansi
+
 # Lint PHP.
 run ${ORCA_ROOT}/vendor/bin/parallel-lint \
   -e inc,install,module,php,profile,test,theme \
@@ -27,9 +30,6 @@ run ${ORCA_ROOT}/vendor/bin/parallel-lint \
 run ${ORCA_ROOT}/bin/orca fixture:create -f --sut=$1
 #run ${ORCA_ROOT}/bin/orca tests:run
 
-# Tear down the test fixture.
-run ${ORCA_ROOT}/bin/orca fixture:destroy -f
-
 # Run isolated tests (in the absence of other Acquia product modules).
-run ${ORCA_ROOT}/bin/orca fixture:create --sut=$1 --sut-only
+run ${ORCA_ROOT}/bin/orca fixture:create -f --sut=$1 --sut-only
 run ${ORCA_ROOT}/bin/orca tests:run

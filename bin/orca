@@ -12,24 +12,15 @@ use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Debug\Debug;
 
+if (!file_exists(__DIR__ . '/../vendor/autoload.php')) {
+  die("Could not find autoloader. Run 'composer install' first.\n");
+}
+require __DIR__ . '/../vendor/autoload.php';
+
 set_time_limit(0);
 
 const ORCA_VERSION = 'v1.0.0-alpha1';
-
-// If invoked from a codebase that requires ORCA, i.e., a product module.
-if (file_exists(__DIR__ . '/../../../autoload.php')) {
-  $project_dir = realpath(__DIR__ . '/../../../../');
-}
-// If invoked from a standalone ORCA instance, e.g., a development clone.
-elseif (file_exists(__DIR__ . '/../vendor/autoload.php')) {
-  $project_dir = dirname(__DIR__);
-}
-else {
-  die("Could not find autoloader. Run 'composer install' first.\n");
-}
-define('ORCA_FIXTURE_ROOT', dirname($project_dir) . '/orca-build');
-
-require "{$project_dir}/vendor/autoload.php";
+define('ORCA_FIXTURE_ROOT', dirname(__DIR__) . '/../orca-build');
 
 $input = new ArgvInput();
 $env = $input->getParameterOption(['--env', '-e'], $_SERVER['APP_ENV'] ?? 'prod', TRUE);
@@ -45,7 +36,6 @@ if ($debug) {
 
 $kernel = new Kernel($env, $debug);
 $kernel->boot();
-
 $container = $kernel->getContainer();
 $application = $container->get(Application::class);
 $application->setName('ORCA');

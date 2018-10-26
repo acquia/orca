@@ -4,14 +4,9 @@
 
 set -e
 
-# Locally perform the important steps from before_install, install, and
-# before_script in .travis.yml.
-if [ -z "${TRAVIS}" ]; then
-  composer validate --ansi
-  composer install
-  composer phpcs
-fi
+composer install
 
+echo && composer phpcs
 echo && composer phpunit
 echo && composer phpmd
 

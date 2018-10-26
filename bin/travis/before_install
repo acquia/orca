@@ -1,6 +1,14 @@
 #!/usr/bin/env bash
 
+# Disable Xdebug.
 phpenv config-rm xdebug.ini
+
+# Install platform dependencies.
 yes | pecl install mcrypt-snapshot
-composer validate --ansi
+
+# Install prestissimo for faster Composer installations.
 composer global require hirak/prestissimo
+
+# Install ORCA.
+ORCA_ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
+composer -d${ORCA_ROOT} install

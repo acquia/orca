@@ -3,18 +3,13 @@
 language: php
 dist: trusty
 
-php: 7.2
+php: 7.1
 
 addons:
   chrome: stable
 
 before_install:
   - git clone git@github.com:acquia/orca.git ../orca
-  - composer -d../orca install
   - ../orca/bin/travis/before_install
-
-install: composer install
-
-before_script: ./vendor/bin/phpcs
 
 script: ../orca/bin/travis/script drupal/example
