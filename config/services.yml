@@ -19,8 +19,8 @@ services:
 
   Symfony\Component\Console\Style\SymfonyStyle:
     arguments:
-    - '@Symfony\Component\Console\Input\ArgvInput'
-    - '@Symfony\Component\Console\Output\ConsoleOutput'
+      $input: '@Symfony\Component\Console\Input\ArgvInput'
+      $output: '@Symfony\Component\Console\Output\ConsoleOutput'
 
   Symfony\Component\Filesystem\Filesystem:
 
