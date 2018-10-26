@@ -7,6 +7,7 @@ services:
     autoconfigure: true
     bind:
       $cache_dir: '%kernel.cache_dir%'
+      $project_dir: '%kernel.project_dir%'
     public: true
 
   Acquia\Orca\:

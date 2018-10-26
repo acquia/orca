@@ -13,6 +13,7 @@ use Symfony\Component\Process\Process;
  *
  * @property \Symfony\Component\Process\ExecutableFinder $executableFinder
  * @property \Symfony\Component\Console\Style\SymfonyStyle $output
+ * @property string $projectDir
  */
 class ProcessRunner {
 
@@ -23,10 +24,13 @@ class ProcessRunner {
    *   An executable finder.
    * @param \Symfony\Component\Console\Style\SymfonyStyle $output
    *   The output decorator.
+   * @param string $project_dir
+   *   The ORCA project directory.
    */
-  public function __construct(ExecutableFinder $executable_finder, SymfonyStyle $output) {
+  public function __construct(ExecutableFinder $executable_finder, SymfonyStyle $output, string $project_dir) {
     $this->executableFinder = $executable_finder;
     $this->output = $output;
+    $this->projectDir = $project_dir;
   }
 
   /**
@@ -95,7 +99,7 @@ class ProcessRunner {
    *   The exit status code.
    */
   public function runVendorBinProcess(array $command, ?string $cwd = NULL): int {
-    $command[0] = ORCA_PROJECT_ROOT . "/vendor/bin/{$command[0]}";
+    $command[0] = "{$this->projectDir}/vendor/bin/{$command[0]}";
 
     if (!file_exists($command[0])) {
       throw new RuntimeException(sprintf('Could not find vendor binary: %s.', $command[0]));
