@@ -11,6 +11,7 @@ services:
 
   Acquia\Orca\:
     resource: '../src'
+    exclude: '../src/Kernel.php'
     public: false
 
   Symfony\Component\Console\Application:
