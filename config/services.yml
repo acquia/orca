@@ -1,31 +1,30 @@
-parameters:
-
+---
 services:
 
   _defaults:
-    autowire: true
     autoconfigure: true
+    autowire: true
     bind:
-      $cache_dir: '%kernel.cache_dir%'
-      $project_dir: '%kernel.project_dir%'
+      $cache_dir: "%kernel.cache_dir%"
+      $project_dir: "%kernel.project_dir%"
     public: true
 
   Acquia\Orca\:
-    resource: '../src'
-    exclude: '../src/Kernel.php'
+    exclude: ../src/Kernel.php
     public: false
+    resource: ../src
 
-  Symfony\Component\Console\Application:
+  Symfony\Component\Console\Application: ~
 
-  Symfony\Component\Console\Input\ArgvInput:
+  Symfony\Component\Console\Input\ArgvInput: ~
 
-  Symfony\Component\Console\Output\ConsoleOutput:
+  Symfony\Component\Console\Output\ConsoleOutput: ~
 
   Symfony\Component\Console\Style\SymfonyStyle:
     arguments:
-      $input: '@Symfony\Component\Console\Input\ArgvInput'
-      $output: '@Symfony\Component\Console\Output\ConsoleOutput'
+      $input: "@Symfony\\Component\\Console\\Input\\ArgvInput"
+      $output: "@Symfony\\Component\\Console\\Output\\ConsoleOutput"
 
-  Symfony\Component\Filesystem\Filesystem:
+  Symfony\Component\Filesystem\Filesystem: ~
 
-  Symfony\Component\Process\ExecutableFinder:
+  Symfony\Component\Process\ExecutableFinder: ~
