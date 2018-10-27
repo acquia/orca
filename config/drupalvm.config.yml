@@ -1,3 +1,4 @@
+---
 vagrant_box: beet/box
 
 vagrant_hostname: local.orca.com
