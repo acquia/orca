@@ -68,7 +68,7 @@ class ProcessRunner {
    *   The exit status code.
    */
   public function runProcess(array $command, ?string $cwd = NULL): int {
-    $this->output->comment(sprintf('Executing "%s"', implode(' ', $command)));
+    $this->output->writeln(sprintf('> %s', implode(' ', $command)));
 
     $process = new Process($command, $cwd);
     $status = $process->setTimeout(0)->run(function () {

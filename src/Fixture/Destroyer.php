@@ -71,7 +71,7 @@ class Destroyer {
    */
   private function deleteFixtureDirectory(): void {
     $root_path = $this->facade->rootPath();
-    $this->output->comment(sprintf('Removing %s', $root_path));
+    $this->output->comment("Removing {$root_path}");
     $this->filesystem->remove($root_path);
   }
 
