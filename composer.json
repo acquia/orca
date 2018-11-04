@@ -16,6 +16,7 @@
         "behat/behat": "^3.5",
         "jakub-onderka/php-console-highlighter": "^0.4.0",
         "jakub-onderka/php-parallel-lint": "^1.0",
+        "phpcompatibility/php-compatibility": "^9.0",
         "phpunit/phpunit": "^6.5",
         "symfony/config": "^4.1",
         "symfony/console": "^4.1",
