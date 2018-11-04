@@ -9,6 +9,7 @@
   <arg name="cache" value=".phpcs-cache"/>
   <arg name="colors"/>
   <arg name="extensions" value="php"/>
+  <arg name="parallel" value="10"/>
 
   <rule ref="Drupal">
     <exclude name="Drupal.Commenting.FunctionComment.MissingReturnComment"/>
@@ -22,5 +23,7 @@
 
   <file>bin/</file>
   <file>src/</file>
+
+  <exclude-pattern>*/vendor/*</exclude-pattern>
 
 </ruleset>
