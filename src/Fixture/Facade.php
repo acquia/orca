@@ -32,13 +32,13 @@ class Facade {
    *   The filesystem.
    * @param \Acquia\Orca\Fixture\ProductData $product_data
    *   The product data.
-   * @param string $root_path
+   * @param string $fixture_dir
    *   The absolute path of the fixture root directory.
    */
-  public function __construct(Filesystem $filesystem, ProductData $product_data, string $root_path = ORCA_FIXTURE_ROOT) {
+  public function __construct(Filesystem $filesystem, ProductData $product_data, string $fixture_dir) {
     $this->filesystem = $filesystem;
     $this->productData = $product_data;
-    $this->rootPath = $root_path;
+    $this->rootPath = $fixture_dir;
   }
 
   /**

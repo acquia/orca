@@ -6,6 +6,7 @@ services:
     autowire: true
     bind:
       $cache_dir: "%kernel.cache_dir%"
+      $fixture_dir: "%app.fixture_dir%"
       $project_dir: "%kernel.project_dir%"
     public: true
 

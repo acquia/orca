@@ -48,8 +48,10 @@ class Kernel extends BaseKernel {
   /**
    * {@inheritdoc}
    */
-  protected function build(ContainerBuilder $containerBuilder): void {
-    $containerBuilder->addCompilerPass($this->createCollectingCompilerPass());
+  protected function build(ContainerBuilder $container_builder): void {
+    $container_builder->addCompilerPass($this->createCollectingCompilerPass());
+    $fixture_dir = dirname($this->getProjectDir()) . '/orca-build';
+    $container_builder->setParameter('app.fixture_dir', $fixture_dir);
   }
 
   /**

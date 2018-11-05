@@ -14,6 +14,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  *
  * @property \Acquia\Orca\Fixture\Facade $facade
  * @property \Acquia\Orca\Tests\Tester $tester
+ * @property string $fixtureDir
  */
 class RunCommand extends Command {
 
@@ -22,8 +23,9 @@ class RunCommand extends Command {
   /**
    * {@inheritdoc}
    */
-  public function __construct(Facade $facade, Tester $tester) {
+  public function __construct(Facade $facade, Tester $tester, string $fixture_dir) {
     $this->facade = $facade;
+    $this->fixtureDir = $fixture_dir;
     $this->tester = $tester;
     parent::__construct(self::$defaultName);
   }

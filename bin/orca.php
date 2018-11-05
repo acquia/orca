@@ -19,7 +19,6 @@ require __DIR__ . '/../vendor/autoload.php';
 set_time_limit(0);
 
 const ORCA_VERSION = 'v1.0.0-alpha1';
-define('ORCA_FIXTURE_ROOT', dirname(__DIR__) . '/../orca-build');
 
 $input = new ArgvInput();
 $env = $input->getParameterOption(['--env', '-e'], $_SERVER['APP_ENV'] ?? 'prod', TRUE);

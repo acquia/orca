@@ -22,7 +22,7 @@ class FacadeTest extends TestCase {
   protected function setUp() {
     $this->filesystem = $this->prophesize(Filesystem::class);
     $this->productData = $this->prophesize(ProductData::class);
-    $this->rootPath = '/var/www/orca/orca-build';
+    $this->rootPath = '/var/www/orca-build';
   }
 
   public function testConstruction() {
