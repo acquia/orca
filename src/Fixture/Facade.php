@@ -21,9 +21,11 @@ use Symfony\Component\Filesystem\Filesystem;
  */
 class Facade {
 
-  const BASE_FIXTURE_GIT_BRANCH = 'base-fixture';
+  public const BASE_FIXTURE_GIT_BRANCH = 'base-fixture';
 
-  const PRODUCT_MODULE_INSTALL_PATH = 'docroot/modules/contrib/acquia';
+  public const PRODUCT_MODULE_INSTALL_PATH = 'docroot/modules/contrib/acquia';
+
+  public const WEB_ADDRESS = '127.0.0.1:8080';
 
   /**
    * Constructs an instance.
@@ -103,6 +105,36 @@ class Facade {
       $path .= "/{$sub_path}";
     }
     return $path;
+  }
+
+  /**
+   * Gets the directory to find tests under.
+   *
+   * @return string
+   */
+  public function testsDirectory(): string {
+    // Default to the product module install path so as to include all modules.
+    $directory = $this->productModuleInstallPath();
+
+    $composer_config = $this->loadComposerJson();
+    if (!empty($composer_config['extra']['orca']['sut'])) {
+      $sut = $composer_config['extra']['orca']['sut'];
+      // Only limit the tests run for a SUT-only fixture.
+      if (!empty($composer_config['extra']['orca']['sut-only'])) {
+        $module = $this->productData->projectName($sut);
+        $directory = $this->productModuleInstallPath($module);
+      }
+    }
+
+    return $directory;
+  }
+
+  /**
+   * Loads the fixture's composer.json data.
+   */
+  private function loadComposerJson(): array {
+    $json = file_get_contents($this->rootPath('composer.json'));
+    return json_decode($json, TRUE);
   }
 
 }

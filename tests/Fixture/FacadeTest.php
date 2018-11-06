@@ -6,7 +6,7 @@ use Acquia\Orca\Fixture\Creator;
 use Acquia\Orca\Fixture\Destroyer;
 use Acquia\Orca\Fixture\Facade;
 use Acquia\Orca\Fixture\ProductData;
-use Acquia\Orca\Tests\Tester;
+use Acquia\Orca\Tests\TestRunner;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Filesystem;
 

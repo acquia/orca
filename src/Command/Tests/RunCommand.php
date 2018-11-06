@@ -4,7 +4,7 @@ namespace Acquia\Orca\Command\Tests;
 
 use Acquia\Orca\Command\StatusCodes;
 use Acquia\Orca\Fixture\Facade;
-use Acquia\Orca\Tests\Tester;
+use Acquia\Orca\Tests\TestRunner;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -13,7 +13,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  * Provides a command.
  *
  * @property \Acquia\Orca\Fixture\Facade $facade
- * @property \Acquia\Orca\Tests\Tester $tester
+ * @property \Acquia\Orca\Tests\TestRunner $testRunner
  * @property string $fixtureDir
  */
 class RunCommand extends Command {
@@ -23,10 +23,10 @@ class RunCommand extends Command {
   /**
    * {@inheritdoc}
    */
-  public function __construct(Facade $facade, Tester $tester, string $fixture_dir) {
+  public function __construct(Facade $facade, TestRunner $test_runner, string $fixture_dir) {
     $this->facade = $facade;
     $this->fixtureDir = $fixture_dir;
-    $this->tester = $tester;
+    $this->testRunner = $test_runner;
     parent::__construct(self::$defaultName);
   }
 
@@ -50,8 +50,7 @@ class RunCommand extends Command {
       ]);
       return StatusCodes::ERROR;
     }
-    $this->tester->test();
-    return StatusCodes::OK;
+    return $this->testRunner->run();
   }
 
 }
