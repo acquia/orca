@@ -30,11 +30,11 @@ class DestroyCommandTest extends TestCase {
   /**
    * @dataProvider providerCommand
    */
-  public function testCommand($exists, $args, $inputs, $destroy_called, $status_code, $display) {
+  public function testCommand($fixture_exists, $args, $inputs, $destroy_called, $status_code, $display) {
     $this->fixture
       ->exists()
       ->shouldBeCalled()
-      ->willReturn($exists);
+      ->willReturn($fixture_exists);
     $this->destroyer
       ->destroy()
       ->shouldBeCalledTimes($destroy_called);

@@ -43,6 +43,13 @@ class RunCommand extends Command {
    * {@inheritdoc}
    */
   public function execute(InputInterface $input, OutputInterface $output): int {
+    if (!$this->facade->exists()) {
+      $output->writeln([
+        "Error: No fixture exists at {$this->facade->rootPath()}.",
+        'Hint: Use the "fixture:create" command to create one.',
+      ]);
+      return StatusCodes::ERROR;
+    }
     $this->tester->test();
     return StatusCodes::OK;
   }

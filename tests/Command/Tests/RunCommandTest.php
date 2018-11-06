@@ -27,16 +27,30 @@ class RunCommandTest extends TestCase {
       ->willReturn(self::FIXTURE_ROOT);
   }
 
-  public function testCommand() {
+  /**
+   * @dataProvider providerCommand
+   */
+  public function testCommand($fixture_exists, $test_called, $status_code, $display) {
+    $this->facade
+      ->exists()
+      ->shouldBeCalledTimes(1)
+      ->willReturn($fixture_exists);
     $this->tester
       ->test()
-      ->shouldBeCalledTimes(1);
+      ->shouldBeCalledTimes($test_called);
     $tester = $this->createCommandTester();
 
     $this->executeCommand($tester, []);
 
-    $this->assertEquals('', $tester->getDisplay(), 'Displayed correct output.');
-    $this->assertEquals(StatusCodes::OK, $tester->getStatusCode(), 'Returned correct status code.');
+    $this->assertEquals($display, $tester->getDisplay(), 'Displayed correct output.');
+    $this->assertEquals($status_code, $tester->getStatusCode(), 'Returned correct status code.');
+  }
+
+  public function providerCommand() {
+    return [
+      [TRUE, 1, StatusCodes::OK, ''],
+      [FALSE, 0, StatusCodes::ERROR, sprintf("Error: No fixture exists at %s.\nHint: Use the \"fixture:create\" command to create one.\n", self::FIXTURE_ROOT)],
+    ];
   }
 
   private function createCommandTester(): CommandTester {
