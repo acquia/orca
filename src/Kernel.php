@@ -42,7 +42,7 @@ class Kernel extends BaseKernel {
    * {@inheritdoc}
    */
   public function registerContainerConfiguration(LoaderInterface $loader): void {
-    $loader->load(__DIR__ . '/../config/services.yml');
+    $loader->load($this->getProjectDir() . '/config/services.yml');
   }
 
   /**
