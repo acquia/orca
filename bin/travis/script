@@ -15,8 +15,10 @@ function run {
   eval "$@"
 }
 
-# Validate composer.json.
-composer validate --ansi
+# Validate composer.json files.
+for FILE in $(find . -name composer.json -not -path "./vendor/*"); do
+  run composer validate --ansi ${FILE}
+done
 
 # Lint PHP.
 run ${ORCA_ROOT}/vendor/bin/parallel-lint \
