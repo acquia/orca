@@ -18,12 +18,15 @@ services:
 
   Symfony\Component\Console\Input\ArgvInput: ~
 
+  Symfony\Component\Console\Input\InputInterface:
+    alias: Symfony\Component\Console\Input\ArgvInput
+
   Symfony\Component\Console\Output\ConsoleOutput: ~
 
+  Symfony\Component\Console\Output\OutputInterface:
+    alias: Symfony\Component\Console\Output\ConsoleOutput
+
   Symfony\Component\Console\Style\SymfonyStyle:
-    arguments:
-      $input: "@Symfony\\Component\\Console\\Input\\ArgvInput"
-      $output: "@Symfony\\Component\\Console\\Output\\ConsoleOutput"
 
   Symfony\Component\Filesystem\Filesystem: ~
 
