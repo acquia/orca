@@ -6,7 +6,7 @@ ORCA (Official Representative Customer Application) is an internal tool for test
 
 ## Design
 
-ORCA's guiding design principle is to use products as a customer would. It creates a [BLT](https://blt.readthedocs.io/) project and installs modules with Composer, using their latest recommended major versions. It performs no manual setup tasks that are more properly accomplished with Composer or Drupal install hooks, and it respects no documentation that is not clearly called out on a module's official (drupal.org) project page.
+ORCA's guiding design principle is to use products as a customer would. It creates a [BLT](https://blt.readthedocs.io/) project and installs modules with Composer, using their latest recommended major versions. It performs no manual setup or configuration.
 
 ## Usage
 
