@@ -1,6 +1,6 @@
 <?php
 
-namespace Acquia\Orca\Tests;
+namespace Acquia\Orca\Tasks;
 
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Process\Exception\ProcessFailedException;
@@ -8,7 +8,7 @@ use Symfony\Component\Process\Exception\ProcessFailedException;
 /**
  * Runs Behat stories.
  */
-class Behat extends TestBase {
+class BehatTask extends TaskBase {
 
   /**
    * {@inheritdoc}
@@ -25,7 +25,7 @@ class Behat extends TestBase {
       }
     }
     catch (ProcessFailedException $e) {
-      throw new TestFailureException();
+      throw new TaskFailureException();
     }
   }
 

@@ -1,11 +1,13 @@
 <?php
 
-namespace Acquia\Orca\Tests;
+namespace Acquia\Orca;
 
 use Acquia\Orca\Command\StatusCodes;
 use Acquia\Orca\Fixture\Facade;
 use Acquia\Orca\Fixture\ProductData;
-use Acquia\Orca\ProcessRunner;
+use Acquia\Orca\Tasks\BehatTask;
+use Acquia\Orca\Tasks\PhpUnitTask;
+use Acquia\Orca\Tasks\TaskFailureException;
 use Symfony\Component\Process\Process;
 
 /**
@@ -20,7 +22,7 @@ class TestRunner {
   /**
    * The tests to perform.
    *
-   * @var \Acquia\Orca\Tests\TestInterface[]
+   * @var \Acquia\Orca\Tasks\TaskInterface[]
    */
   private $tests = [];
 
@@ -34,18 +36,18 @@ class TestRunner {
   /**
    * Constructs an instance.
    *
-   * @param \Acquia\Orca\Tests\Behat $behat
+   * @param \Acquia\Orca\Tasks\BehatTask $behat
    *   A Behat test.
    * @param \Acquia\Orca\Fixture\Facade $facade
    *   The fixture.
-   * @param \Acquia\Orca\Tests\PhpUnit $phpunit
+   * @param \Acquia\Orca\Tasks\PhpUnitTask $phpunit
    *   A PHPUnit test.
    * @param \Acquia\Orca\ProcessRunner $process_runner
    *   The process runner.
    * @param \Acquia\Orca\Fixture\ProductData $product_data
    *   The product data.
    */
-  public function __construct(Behat $behat, Facade $facade, PhpUnit $phpunit, ProcessRunner $process_runner, ProductData $product_data) {
+  public function __construct(BehatTask $behat, Facade $facade, PhpUnitTask $phpunit, ProcessRunner $process_runner, ProductData $product_data) {
     $this->facade = $facade;
     $this->processRunner = $process_runner;
     $this->productData = $product_data;
@@ -63,7 +65,7 @@ class TestRunner {
         $test->execute();
       }
     }
-    catch (TestFailureException $e) {
+    catch (TaskFailureException $e) {
       $status = StatusCodes::ERROR;
     }
     finally {

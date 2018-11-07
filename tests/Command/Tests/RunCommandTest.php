@@ -5,7 +5,7 @@ namespace Acquia\Orca\Tests\Command\Tests;
 use Acquia\Orca\Command\StatusCodes;
 use Acquia\Orca\Command\Tests\RunCommand;
 use Acquia\Orca\Fixture\Facade;
-use Acquia\Orca\Tests\TestRunner;
+use Acquia\Orca\TestRunner;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
@@ -19,7 +19,7 @@ class RunCommandTest extends TestCase {
   private const FIXTURE_ROOT = '/var/www/orca-build';
 
   protected function setUp() {
-    $this->testRunner = $this->prophesize(TestRunner::class);
+    $this->testRunner = $this->prophesize(\Acquia\Orca\TestRunner::class);
     $this->facade = $this->prophesize(Facade::class);
     $this->facade->exists()
       ->willReturn(FALSE);
@@ -57,7 +57,7 @@ class RunCommandTest extends TestCase {
 
   private function createCommandTester(): CommandTester {
     $application = new Application();
-    /** @var \Acquia\Orca\Tests\TestRunner $test_runner */
+    /** @var \Acquia\Orca\TestRunner $test_runner */
     $test_runner = $this->testRunner->reveal();
     /** @var \Acquia\Orca\Fixture\Facade $facade */
     $facade = $this->facade->reveal();

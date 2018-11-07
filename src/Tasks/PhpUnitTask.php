@@ -1,6 +1,6 @@
 <?php
 
-namespace Acquia\Orca\Tests;
+namespace Acquia\Orca\Tasks;
 
 use Acquia\Orca\Fixture\Facade;
 use Symfony\Component\Process\Exception\ProcessFailedException;
@@ -8,7 +8,7 @@ use Symfony\Component\Process\Exception\ProcessFailedException;
 /**
  * Runs PHPUnit tests.
  */
-class PhpUnit extends TestBase {
+class PhpUnitTask extends TaskBase {
 
   /**
    * {@inheritdoc}
@@ -128,7 +128,7 @@ class PhpUnit extends TestBase {
   /**
    * Runs PHPUnit.
    *
-   * @throws \Acquia\Orca\Tests\TestFailureException
+   * @throws \Acquia\Orca\Tasks\TaskFailureException
    */
   protected function runPhpUnit(): void {
     try {
@@ -142,7 +142,7 @@ class PhpUnit extends TestBase {
       ]);
     }
     catch (ProcessFailedException $e) {
-      throw new TestFailureException();
+      throw new TaskFailureException();
     }
   }
 

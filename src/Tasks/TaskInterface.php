@@ -1,16 +1,16 @@
 <?php
 
-namespace Acquia\Orca\Tests;
+namespace Acquia\Orca\Tasks;
 
 /**
  * Provides an interface for defining an automated test.
  */
-interface TestInterface {
+interface TaskInterface {
 
   /**
    * Executes the test.
    *
-   * @throws \Acquia\Orca\Tests\TestFailureException
+   * @throws \Acquia\Orca\Tasks\TaskFailureException
    */
   public function execute(): void;
 

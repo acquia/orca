@@ -1,17 +1,17 @@
 <?php
 
-namespace Acquia\Orca\Tests;
+namespace Acquia\Orca\Tasks;
 
 use Acquia\Orca\Fixture\Facade;
 use Acquia\Orca\ProcessRunner;
 
 /**
- * Provides a base test implementation.
+ * Provides a base task implementation.
  *
  * @property \Acquia\Orca\Fixture\Facade $facade
  * @property \Acquia\Orca\ProcessRunner $processRunner
  */
-abstract class TestBase implements TestInterface {
+abstract class TaskBase implements TaskInterface {
 
   /**
    * Constructs an instance.

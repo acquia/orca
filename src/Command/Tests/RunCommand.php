@@ -4,7 +4,7 @@ namespace Acquia\Orca\Command\Tests;
 
 use Acquia\Orca\Command\StatusCodes;
 use Acquia\Orca\Fixture\Facade;
-use Acquia\Orca\Tests\TestRunner;
+use Acquia\Orca\TestRunner;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -13,7 +13,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  * Provides a command.
  *
  * @property \Acquia\Orca\Fixture\Facade $facade
- * @property \Acquia\Orca\Tests\TestRunner $testRunner
+ * @property \Acquia\Orca\TestRunner $testRunner
  * @property string $fixtureDir
  */
 class RunCommand extends Command {
