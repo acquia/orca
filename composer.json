@@ -14,6 +14,8 @@
         "ext-dom": "*",
         "ext-json": "*",
         "behat/behat": "^3.5",
+        "dealerdirect/phpcodesniffer-composer-installer": "^0.4.4",
+        "drupal/coder": "^8.3",
         "jakub-onderka/php-console-highlighter": "^0.4.0",
         "jakub-onderka/php-parallel-lint": "^1.0",
         "phpcompatibility/php-compatibility": "^9.0",
@@ -32,8 +34,6 @@
     },
     "require-dev": {
         "brainmaestro/composer-git-hooks": "^2.5",
-        "dealerdirect/phpcodesniffer-composer-installer": "^0.4.4",
-        "drupal/coder": "^8.3",
         "geerlingguy/drupal-vm": "^4.9",
         "phpmd/phpmd": "^2.6",
         "sensiolabs/security-checker": "^5.0"

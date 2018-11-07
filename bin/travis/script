@@ -28,6 +28,16 @@ run ${ORCA_ROOT}/vendor/bin/parallel-lint \
   --blame \
   ./
 
+# Check PHP version compatibility.
+run ${ORCA_ROOT}/vendor/bin/phpcs \
+  -p \
+  --colors \
+  --config-set testVersion 7.1- \
+  --standard=PHPCompatibility \
+  --parallel=10 \
+  --extensions=inc,install,module,php,profile,test,theme \
+  ./
+
 # Run integrated tests (in the presence of other Acquia product modules).
 run ${ORCA_ROOT}/bin/orca fixture:create -f --sut=$1
 #run ${ORCA_ROOT}/bin/orca tests:run
