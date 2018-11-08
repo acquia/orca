@@ -39,9 +39,9 @@ run ${ORCA_ROOT}/vendor/bin/phpcs \
   ./
 
 # Run integrated tests (in the presence of other Acquia product modules).
-run ${ORCA_ROOT}/bin/orca fixture:create -f --sut=$1
+run ${ORCA_ROOT}/bin/orca fixture:init -f --sut=$1
 #run ${ORCA_ROOT}/bin/orca tests:run
 
 # Run isolated tests (in the absence of other Acquia product modules).
-run ${ORCA_ROOT}/bin/orca fixture:create -f --sut=$1 --sut-only
+run ${ORCA_ROOT}/bin/orca fixture:init -f --sut=$1 --sut-only
 run ${ORCA_ROOT}/bin/orca tests:run

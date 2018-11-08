@@ -20,9 +20,9 @@ use Symfony\Component\Console\Output\OutputInterface;
  * @property \Acquia\Orca\Fixture\Facade $facade
  * @property \Acquia\Orca\Fixture\ProductData $productData
  */
-class CreateCommand extends Command {
+class InitCommand extends Command {
 
-  protected static $defaultName = 'fixture:create';
+  protected static $defaultName = 'fixture:init';
 
   /**
    * {@inheritdoc}
@@ -40,7 +40,7 @@ class CreateCommand extends Command {
    */
   protected function configure() {
     $this
-      ->setAliases(['create'])
+      ->setAliases(['init'])
       ->setDescription('Creates the test fixture')
       ->setHelp('Creates a BLT-based Drupal site build, includes the system under test using Composer, optionally includes all other Acquia product modules, and installs Drupal.')
       ->addOption('sut', NULL, InputOption::VALUE_REQUIRED, 'The system under test (SUT) in the form of its package name, e.g., "drupal/example"')

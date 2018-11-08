@@ -46,7 +46,7 @@ class RunCommand extends Command {
     if (!$this->facade->exists()) {
       $output->writeln([
         "Error: No fixture exists at {$this->facade->rootPath()}.",
-        'Hint: Use the "fixture:create" command to create one.',
+        'Hint: Use the "fixture:init" command to create one.',
       ]);
       return StatusCodes::ERROR;
     }

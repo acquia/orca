@@ -51,7 +51,7 @@ class RunCommandTest extends TestCase {
     return [
       [TRUE, 1, StatusCodes::OK, ''],
       [TRUE, 1, StatusCodes::ERROR, ''],
-      [FALSE, 0, StatusCodes::ERROR, sprintf("Error: No fixture exists at %s.\nHint: Use the \"fixture:create\" command to create one.\n", self::FIXTURE_ROOT)],
+      [FALSE, 0, StatusCodes::ERROR, sprintf("Error: No fixture exists at %s.\nHint: Use the \"fixture:init\" command to create one.\n", self::FIXTURE_ROOT)],
     ];
   }
 

@@ -3,7 +3,7 @@
 namespace Acquia\Orca\Tests\Command\Fixture;
 
 use Acquia\Orca\Command\StatusCodes;
-use Acquia\Orca\Command\Fixture\CreateCommand;
+use Acquia\Orca\Command\Fixture\InitCommand;
 use Acquia\Orca\Fixture\Destroyer;
 use Acquia\Orca\Fixture\Facade;
 use Acquia\Orca\Fixture\Creator;
@@ -20,7 +20,7 @@ define('ORCA_FIXTURE_ROOT', '/tmp/orca-fixture-root');
  * @property \Prophecy\Prophecy\ObjectProphecy $destroyer
  * @property \Prophecy\Prophecy\ObjectProphecy $productData
  */
-class CreateCommandTest extends TestCase {
+class InitCommandTest extends TestCase {
 
   private const FIXTURE_ROOT = '/var/www/orca-build';
   private const VALID_PACKAGE = 'drupal/lightning_api';
@@ -91,15 +91,15 @@ class CreateCommandTest extends TestCase {
     $facade = $this->facade->reveal();
     /** @var \Acquia\Orca\Fixture\ProductData $product_data */
     $product_data = $this->productData->reveal();
-    $application->add(new CreateCommand($fixture_creator, $fixture_destroyer, $facade, $product_data));
-    /** @var \Acquia\Orca\Command\Fixture\CreateCommand $command */
-    $command = $application->find(CreateCommand::getDefaultName());
-    $this->assertInstanceOf(CreateCommand::class, $command);
+    $application->add(new InitCommand($fixture_creator, $fixture_destroyer, $facade, $product_data));
+    /** @var \Acquia\Orca\Command\Fixture\InitCommand $command */
+    $command = $application->find(InitCommand::getDefaultName());
+    $this->assertInstanceOf(InitCommand::class, $command);
     return new CommandTester($command);
   }
 
   private function executeCommand(CommandTester $tester, array $args = []) {
-    $args = array_merge(['command' => CreateCommand::getDefaultName()], $args);
+    $args = array_merge(['command' => InitCommand::getDefaultName()], $args);
     $tester->execute($args);
   }
 
