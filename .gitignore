@@ -1,6 +1,5 @@
 /var
 /vendor
-/.phpcs-cache
 /.phpunit
 /cghooks.lock
 /phpcs.xml
