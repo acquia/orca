@@ -3,23 +3,23 @@
 namespace Acquia\Orca\Tests\Command\Fixture;
 
 use Acquia\Orca\Command\StatusCodes;
-use Acquia\Orca\Command\Fixture\DestroyCommand;
-use Acquia\Orca\Fixture\Destroyer;
+use Acquia\Orca\Command\Fixture\RmCommand;
+use Acquia\Orca\Fixture\Remover;
 use Acquia\Orca\Fixture\Facade;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
 
 /**
- * @property \Prophecy\Prophecy\ObjectProphecy $destroyer
  * @property \Prophecy\Prophecy\ObjectProphecy $fixture
+ * @property \Prophecy\Prophecy\ObjectProphecy $remover
  */
-class DestroyCommandTest extends TestCase {
+class RmCommandTest extends TestCase {
 
   private const FIXTURE_ROOT = '/var/www/orca-build';
 
   protected function setUp() {
-    $this->destroyer = $this->prophesize(Destroyer::class);
+    $this->remover = $this->prophesize(Remover::class);
     $this->fixture = $this->prophesize(Facade::class);
     $this->fixture->exists()
       ->willReturn(TRUE);
@@ -30,14 +30,14 @@ class DestroyCommandTest extends TestCase {
   /**
    * @dataProvider providerCommand
    */
-  public function testCommand($fixture_exists, $args, $inputs, $destroy_called, $status_code, $display) {
+  public function testCommand($fixture_exists, $args, $inputs, $remove_called, $status_code, $display) {
     $this->fixture
       ->exists()
       ->shouldBeCalled()
       ->willReturn($fixture_exists);
-    $this->destroyer
-      ->destroy()
-      ->shouldBeCalledTimes($destroy_called);
+    $this->remover
+      ->remove()
+      ->shouldBeCalledTimes($remove_called);
     $tester = $this->createCommandTester();
     $tester->setInputs($inputs);
 
@@ -50,8 +50,8 @@ class DestroyCommandTest extends TestCase {
   public function providerCommand() {
     return [
       [FALSE, [], [], 0, StatusCodes::ERROR, sprintf("Error: No fixture exists at %s.\n", self::FIXTURE_ROOT)],
-      [TRUE, [], ['n'], 0, StatusCodes::USER_CANCEL, 'Are you sure you want to destroy the test fixture? '],
-      [TRUE, [], ['y'], 1, StatusCodes::OK, 'Are you sure you want to destroy the test fixture? '],
+      [TRUE, [], ['n'], 0, StatusCodes::USER_CANCEL, 'Are you sure you want to remove the test fixture? '],
+      [TRUE, [], ['y'], 1, StatusCodes::OK, 'Are you sure you want to remove the test fixture? '],
       [TRUE, ['-n' => TRUE], [], 0, StatusCodes::USER_CANCEL, ''],
       [TRUE, ['-f' => TRUE], [], 1, StatusCodes::OK, ''],
       [TRUE, ['-f' => TRUE, '-n' => TRUE], [], 1, StatusCodes::OK, ''],
@@ -60,19 +60,19 @@ class DestroyCommandTest extends TestCase {
 
   private function createCommandTester(): CommandTester {
     $application = new Application();
-    /** @var \Acquia\Orca\Fixture\Destroyer $destroyer */
-    $destroyer = $this->destroyer->reveal();
+    /** @var \Acquia\Orca\Fixture\Remover $remover */
+    $remover = $this->remover->reveal();
     /** @var \Acquia\Orca\Fixture\Facade $fixture */
     $fixture = $this->fixture->reveal();
-    $application->add(new DestroyCommand($destroyer, $fixture));
-    /** @var \Acquia\Orca\Command\Fixture\DestroyCommand $command */
-    $command = $application->find(DestroyCommand::getDefaultName());
-    $this->assertInstanceOf(DestroyCommand::class, $command);
+    $application->add(new RmCommand($fixture, $remover));
+    /** @var \Acquia\Orca\Command\Fixture\RmCommand $command */
+    $command = $application->find(RmCommand::getDefaultName());
+    $this->assertInstanceOf(RmCommand::class, $command);
     return new CommandTester($command);
   }
 
   private function executeCommand(CommandTester $tester, array $args = []) {
-    $args = array_merge(['command' => DestroyCommand::getDefaultName()], $args);
+    $args = array_merge(['command' => RmCommand::getDefaultName()], $args);
     $tester->execute($args);
   }
 

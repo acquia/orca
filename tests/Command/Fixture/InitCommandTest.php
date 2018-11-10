@@ -4,7 +4,7 @@ namespace Acquia\Orca\Tests\Command\Fixture;
 
 use Acquia\Orca\Command\StatusCodes;
 use Acquia\Orca\Command\Fixture\InitCommand;
-use Acquia\Orca\Fixture\Destroyer;
+use Acquia\Orca\Fixture\Remover;
 use Acquia\Orca\Fixture\Facade;
 use Acquia\Orca\Fixture\Creator;
 use Acquia\Orca\Fixture\ProductData;
@@ -17,8 +17,8 @@ define('ORCA_FIXTURE_ROOT', '/tmp/orca-fixture-root');
 /**
  * @property \Prophecy\Prophecy\ObjectProphecy $facade
  * @property \Prophecy\Prophecy\ObjectProphecy $creator
- * @property \Prophecy\Prophecy\ObjectProphecy $destroyer
  * @property \Prophecy\Prophecy\ObjectProphecy $productData
+ * @property \Prophecy\Prophecy\ObjectProphecy $remover
  */
 class InitCommandTest extends TestCase {
 
@@ -28,7 +28,7 @@ class InitCommandTest extends TestCase {
 
   protected function setUp() {
     $this->creator = $this->prophesize(Creator::class);
-    $this->destroyer = $this->prophesize(Destroyer::class);
+    $this->remover = $this->prophesize(Remover::class);
     $this->facade = $this->prophesize(Facade::class);
     $this->facade->exists()
       ->willReturn(FALSE);
@@ -49,9 +49,9 @@ class InitCommandTest extends TestCase {
       ->exists()
       ->shouldBeCalledTimes((int) in_array('exists', $methods_called))
       ->willReturn($fixture_exists);
-    $this->destroyer
-      ->destroy()
-      ->shouldBeCalledTimes((int) in_array('destroy', $methods_called));
+    $this->remover
+      ->remove()
+      ->shouldBeCalledTimes((int) in_array('remove', $methods_called));
     $this->creator
       ->setSut(@$args['--sut'])
       ->shouldBeCalledTimes((int) in_array('setSut', $methods_called));
@@ -71,8 +71,8 @@ class InitCommandTest extends TestCase {
 
   public function providerCommand() {
     return [
-      [TRUE, [], ['exists'], StatusCodes::ERROR, sprintf("Error: Fixture already exists at %s.\nHint: Use the \"--force\" option to destroy it and proceed.\n", self::FIXTURE_ROOT)],
-      [TRUE, ['-f' => TRUE], ['exists', 'destroy', 'create'], StatusCodes::OK, ''],
+      [TRUE, [], ['exists'], StatusCodes::ERROR, sprintf("Error: Fixture already exists at %s.\nHint: Use the \"--force\" option to remove it and proceed.\n", self::FIXTURE_ROOT)],
+      [TRUE, ['-f' => TRUE], ['exists', 'remove', 'create'], StatusCodes::OK, ''],
       [FALSE, [], ['exists', 'create'], StatusCodes::OK, ''],
       [FALSE, ['--sut' => self::INVALID_PACKAGE], ['isValidPackage'], StatusCodes::ERROR, sprintf("Error: Invalid value for \"--sut\" option: \"%s\".\n", self::INVALID_PACKAGE)],
       [FALSE, ['--sut' => self::VALID_PACKAGE], ['isValidPackage', 'exists', 'create', 'setSut'], StatusCodes::OK, ''],
@@ -85,13 +85,13 @@ class InitCommandTest extends TestCase {
     $application = new Application();
     /** @var \Acquia\Orca\Fixture\Creator $fixture_creator */
     $fixture_creator = $this->creator->reveal();
-    /** @var \Acquia\Orca\Fixture\Destroyer $fixture_destroyer */
-    $fixture_destroyer = $this->destroyer->reveal();
+    /** @var \Acquia\Orca\Fixture\Remover $fixture_remover */
+    $fixture_remover = $this->remover->reveal();
     /** @var \Acquia\Orca\Fixture\Facade $facade */
     $facade = $this->facade->reveal();
     /** @var \Acquia\Orca\Fixture\ProductData $product_data */
     $product_data = $this->productData->reveal();
-    $application->add(new InitCommand($fixture_creator, $fixture_destroyer, $facade, $product_data));
+    $application->add(new InitCommand($fixture_creator, $facade, $product_data, $fixture_remover));
     /** @var \Acquia\Orca\Command\Fixture\InitCommand $command */
     $command = $application->find(InitCommand::getDefaultName());
     $this->assertInstanceOf(InitCommand::class, $command);

@@ -7,14 +7,14 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
- * Destroys the fixture.
+ * Removes the fixture.
  *
  * @property \Acquia\Orca\Fixture\Facade $facade
  * @property \Symfony\Component\Filesystem\Filesystem $filesystem
  * @property \Symfony\Component\Console\Style\SymfonyStyle $output
  * @property \Acquia\Orca\ProcessRunner $processRunner
  */
-class Destroyer {
+class Remover {
 
   /**
    * Constructs an instance.
@@ -36,13 +36,13 @@ class Destroyer {
   }
 
   /**
-   * Destroys the fixture.
+   * Removes the fixture.
    */
-  public function destroy(): void {
-    $this->output->section('Destroying fixture');
+  public function remove(): void {
+    $this->output->section('Removing fixture');
     $this->prepareFilesForDeletion();
     $this->deleteFixtureDirectory();
-    $this->output->success('Fixture destroyed');
+    $this->output->success('Fixture removed');
   }
 
   /**

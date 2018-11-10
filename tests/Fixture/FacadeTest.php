@@ -3,7 +3,7 @@
 namespace Acquia\Orca\Tests\Fixture;
 
 use Acquia\Orca\Fixture\Creator;
-use Acquia\Orca\Fixture\Destroyer;
+use Acquia\Orca\Fixture\Remover;
 use Acquia\Orca\Fixture\Facade;
 use Acquia\Orca\Fixture\ProductData;
 use Acquia\Orca\TestRunner;

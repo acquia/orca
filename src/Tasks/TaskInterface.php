@@ -3,7 +3,7 @@
 namespace Acquia\Orca\Tasks;
 
 /**
- * Provides an interface for defining an automated test.
+ * Provides an interface for defining a task.
  */
 interface TaskInterface {
 

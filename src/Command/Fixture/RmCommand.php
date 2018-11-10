@@ -3,7 +3,7 @@
 namespace Acquia\Orca\Command\Fixture;
 
 use Acquia\Orca\Command\StatusCodes;
-use Acquia\Orca\Fixture\Destroyer;
+use Acquia\Orca\Fixture\Remover;
 use Acquia\Orca\Fixture\Facade;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -14,19 +14,19 @@ use Symfony\Component\Console\Question\ConfirmationQuestion;
 /**
  * Provides a command.
  *
- * @property \Acquia\Orca\Fixture\Destroyer $destroyer
  * @property \Acquia\Orca\Fixture\Facade $facade
+ * @property \Acquia\Orca\Fixture\Remover $remover
  */
-class DestroyCommand extends Command {
+class RmCommand extends Command {
 
-  protected static $defaultName = 'fixture:destroy';
+  protected static $defaultName = 'fixture:rm';
 
   /**
    * {@inheritdoc}
    */
-  public function __construct(Destroyer $destroyer, Facade $facade) {
-    $this->destroyer = $destroyer;
+  public function __construct(Facade $facade, Remover $remover) {
     $this->facade = $facade;
+    $this->remover = $remover;
     parent::__construct(self::$defaultName);
   }
 
@@ -35,10 +35,10 @@ class DestroyCommand extends Command {
    */
   protected function configure() {
     $this
-      ->setAliases(['destroy'])
-      ->setDescription('Destroys the test fixture')
-      ->setHelp('Deletes the entire site build directory and Drupal database.')
-      ->addOption('force', 'f', InputOption::VALUE_NONE, 'Destroy without confirmation');
+      ->setAliases(['rm'])
+      ->setDescription('Removes the test fixture')
+      ->setHelp('Removes the entire site build directory and Drupal database.')
+      ->addOption('force', 'f', InputOption::VALUE_NONE, 'Remove without confirmation');
   }
 
   /**
@@ -52,7 +52,7 @@ class DestroyCommand extends Command {
 
     /** @var \Symfony\Component\Console\Helper\QuestionHelper $helper */
     $helper = $this->getHelper('question');
-    $question = new ConfirmationQuestion('Are you sure you want to destroy the test fixture? ');
+    $question = new ConfirmationQuestion('Are you sure you want to remove the test fixture? ');
     if (
       !$input->getOption('force')
       && ($input->getOption('no-interaction') || !$helper->ask($input, $output, $question))
@@ -60,7 +60,7 @@ class DestroyCommand extends Command {
       return StatusCodes::USER_CANCEL;
     }
 
-    $this->destroyer->destroy();
+    $this->remover->remove();
     return StatusCodes::OK;
   }
 
