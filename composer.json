@@ -34,7 +34,6 @@
     },
     "require-dev": {
         "brainmaestro/composer-git-hooks": "^2.5",
-        "geerlingguy/drupal-vm": "^4.9",
         "phpmd/phpmd": "^2.6",
         "sensiolabs/security-checker": "^5.0"
     },
