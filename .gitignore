@@ -1,5 +1,6 @@
-/var
+/var/*
 /vendor
+!/**/.gitkeep
 /.phpunit
 /cghooks.lock
 /phpcs.xml
