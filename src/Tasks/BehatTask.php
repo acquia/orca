@@ -2,7 +2,6 @@
 
 namespace Acquia\Orca\Tasks;
 
-use Symfony\Component\Finder\Finder;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 
 /**
@@ -35,7 +34,7 @@ class BehatTask extends TaskBase {
    * @return \Symfony\Component\Finder\Finder
    */
   private function getBehatConfigFiles() {
-    return Finder::create()
+    return $this->finder
       ->files()
       ->followLinks()
       ->in($this->facade->testsDirectory())

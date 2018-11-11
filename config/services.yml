@@ -30,4 +30,6 @@ services:
 
   Symfony\Component\Filesystem\Filesystem: ~
 
+  Symfony\Component\Finder\Finder: ~
+
   Symfony\Component\Process\ExecutableFinder: ~
