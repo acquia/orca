@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "8de8b5318805f2aec9a0bfa3de3c38ea",
+    "content-hash": "596b60e3aec29898854c7b9b022bb4ba",
     "packages": [
         {
             "name": "behat/behat",
@@ -3150,6 +3150,56 @@
                 "tls"
             ],
             "time": "2018-08-08T08:57:40+00:00"
+        },
+        {
+            "name": "neronmoon/scriptsdev",
+            "version": "v0.1.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/neronmoon/scriptsdev.git",
+                "reference": "4286d2009e9918ce7874a61c43640b1f1eae63d4"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/neronmoon/scriptsdev/zipball/4286d2009e9918ce7874a61c43640b1f1eae63d4",
+                "reference": "4286d2009e9918ce7874a61c43640b1f1eae63d4",
+                "shasum": ""
+            },
+            "require": {
+                "composer-plugin-api": "^1.0"
+            },
+            "require-dev": {
+                "composer/composer": "~1.0@dev"
+            },
+            "type": "composer-plugin",
+            "extra": {
+                "class": "ScriptsDev\\Plugin"
+            },
+            "autoload": {
+                "psr-4": {
+                    "ScriptsDev\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Vitaliy Krasnoperov",
+                    "email": "alistar.neron@gmail.com"
+                }
+            ],
+            "description": "Scripts-dev behaviour for Composer",
+            "homepage": "https://github.com/neronmoon/scriptsdev",
+            "keywords": [
+                "commands",
+                "commands execution",
+                "composer",
+                "dev",
+                "scripts"
+            ],
+            "time": "2018-09-04T13:40:15+00:00"
         },
         {
             "name": "pdepend/pdepend",

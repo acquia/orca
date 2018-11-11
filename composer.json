@@ -34,6 +34,7 @@
     },
     "require-dev": {
         "brainmaestro/composer-git-hooks": "^2.5",
+        "neronmoon/scriptsdev": "^0.1.3",
         "phpmd/phpmd": "^2.6",
         "sensiolabs/security-checker": "^5.0"
     },
@@ -53,6 +54,17 @@
             ],
             "post-install-cmd": "vendor/bin/cghooks add --ignore-lock",
             "post-update-cmd": "vendor/bin/cghooks update"
+        },
+        "scripts-dev": {
+            "post-install-cmd": [
+                "@auto-scripts"
+            ],
+            "post-update-cmd": [
+                "@auto-scripts"
+            ],
+            "auto-scripts": [
+                "vendor/bin/security-checker security:check"
+            ]
         }
     },
     "autoload": {
@@ -71,15 +83,6 @@
         "bin/orca"
     ],
     "scripts": {
-        "post-install-cmd": [
-            "@auto-scripts"
-        ],
-        "post-update-cmd": [
-            "@auto-scripts"
-        ],
-        "auto-scripts": [
-            "vendor/bin/security-checker security:check"
-        ],
         "cghooks": "cghooks --ansi",
         "phpcbf": "phpcbf",
         "phpcs": "phpcs",
