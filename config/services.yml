@@ -33,3 +33,5 @@ services:
   Symfony\Component\Finder\Finder: ~
 
   Symfony\Component\Process\ExecutableFinder: ~
+
+  Symfony\Component\Yaml\Parser: ~

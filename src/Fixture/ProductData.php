@@ -2,7 +2,7 @@
 
 namespace Acquia\Orca\Fixture;
 
-use Symfony\Component\Yaml\Yaml;
+use Symfony\Component\Yaml\Parser;
 
 /**
  * Provides access to Acquia product module data.
@@ -19,12 +19,13 @@ class ProductData {
   /**
    * Constructs an instance.
    *
+   * @param \Symfony\Component\Yaml\Parser $parser
+   *   The YAML parser.
    * @param string $project_dir
    *   The ORCA project directory.
    */
-  public function __construct(string $project_dir) {
-    $yaml = file_get_contents("{$project_dir}/config/projects.yml");
-    $this->data = Yaml::parse($yaml);
+  public function __construct(Parser $parser, string $project_dir) {
+    $this->data = $parser->parseFile("{$project_dir}/config/projects.yml");
   }
 
   /**
