@@ -11,4 +11,4 @@ composer global require hirak/prestissimo
 
 # Install ORCA.
 ORCA_ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
-composer -d${ORCA_ROOT} install
+composer --no-dev -d${ORCA_ROOT} install
