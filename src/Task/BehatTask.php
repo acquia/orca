@@ -20,6 +20,7 @@ class BehatTask extends TaskBase {
           'behat',
           '--colors',
           "--config={$config_file->getPathname()}",
+          "--suite=orca_public",
         ], $this->fixture->rootPath());
       }
     }
