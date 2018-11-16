@@ -6,7 +6,7 @@ use Acquia\Orca\Command\StatusCodes;
 use Acquia\Orca\Command\Tests\RunCommand;
 use Acquia\Orca\Fixture\Fixture;
 use Acquia\Orca\TestRunner;
-use PHPUnit\Framework\TestCase;
+use Acquia\Orca\Tests\Command\CommandTestBase;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
 
@@ -14,7 +14,7 @@ use Symfony\Component\Console\Tester\CommandTester;
  * @property \Prophecy\Prophecy\ObjectProphecy $fixture
  * @property \Prophecy\Prophecy\ObjectProphecy $testRunner
  */
-class RunCommandTest extends TestCase {
+class RunCommandTest extends CommandTestBase {
 
   private const FIXTURE_ROOT = '/var/www/orca-build';
 
@@ -41,7 +41,7 @@ class RunCommandTest extends TestCase {
       ->willReturn($status_code);
     $tester = $this->createCommandTester();
 
-    $this->executeCommand($tester, []);
+    $this->executeCommand($tester, RunCommand::getDefaultName(), []);
 
     $this->assertEquals($display, $tester->getDisplay(), 'Displayed correct output.');
     $this->assertEquals($status_code, $tester->getStatusCode(), 'Returned correct status code.');
@@ -66,11 +66,6 @@ class RunCommandTest extends TestCase {
     $command = $application->find(RunCommand::getDefaultName());
     $this->assertInstanceOf(RunCommand::class, $command);
     return new CommandTester($command);
-  }
-
-  private function executeCommand(CommandTester $tester, array $args = []) {
-    $args = array_merge(['command' => RunCommand::getDefaultName()], $args);
-    $tester->execute($args);
   }
 
 }

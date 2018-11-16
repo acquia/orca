@@ -8,7 +8,7 @@ use Acquia\Orca\Fixture\Remover;
 use Acquia\Orca\Fixture\Fixture;
 use Acquia\Orca\Fixture\Creator;
 use Acquia\Orca\Fixture\ProductData;
-use PHPUnit\Framework\TestCase;
+use Acquia\Orca\Tests\Command\CommandTestBase;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
 
@@ -18,7 +18,7 @@ use Symfony\Component\Console\Tester\CommandTester;
  * @property \Prophecy\Prophecy\ObjectProphecy $productData
  * @property \Prophecy\Prophecy\ObjectProphecy $remover
  */
-class InitCommandTest extends TestCase {
+class InitCommandTest extends CommandTestBase {
 
   private const FIXTURE_ROOT = '/var/www/orca-build';
   private const VALID_PACKAGE = 'drupal/lightning_api';
@@ -61,7 +61,7 @@ class InitCommandTest extends TestCase {
       ->shouldBeCalledTimes((int) in_array('create', $methods_called));
     $tester = $this->createCommandTester();
 
-    $this->executeCommand($tester, $args);
+    $this->executeCommand($tester, InitCommand::getDefaultName(), $args);
 
     $this->assertEquals($display, $tester->getDisplay(), 'Displayed correct output.');
     $this->assertEquals($status_code, $tester->getStatusCode(), 'Returned correct status code.');
@@ -94,11 +94,6 @@ class InitCommandTest extends TestCase {
     $command = $application->find(InitCommand::getDefaultName());
     $this->assertInstanceOf(InitCommand::class, $command);
     return new CommandTester($command);
-  }
-
-  private function executeCommand(CommandTester $tester, array $args = []) {
-    $args = array_merge(['command' => InitCommand::getDefaultName()], $args);
-    $tester->execute($args);
   }
 
 }
