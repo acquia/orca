@@ -19,7 +19,7 @@ class RunCommandTest extends TestCase {
   private const FIXTURE_ROOT = '/var/www/orca-build';
 
   protected function setUp() {
-    $this->testRunner = $this->prophesize(\Acquia\Orca\TestRunner::class);
+    $this->testRunner = $this->prophesize(TestRunner::class);
     $this->fixture = $this->prophesize(Fixture::class);
     $this->fixture->exists()
       ->willReturn(FALSE);
