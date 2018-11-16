@@ -51,6 +51,8 @@ class TestRunner {
 
   /**
    * Runs automated tests.
+   *
+   * @return int
    */
   public function run(): int {
     try {

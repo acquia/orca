@@ -22,7 +22,12 @@ class RmCommand extends Command {
   protected static $defaultName = 'fixture:rm';
 
   /**
-   * {@inheritdoc}
+   * Constructs an instance.
+   *
+   * @param \Acquia\Orca\Fixture\Fixture $fixture
+   *   The fixture.
+   * @param \Acquia\Orca\Fixture\Remover $remover
+   *   The fixture remover.
    */
   public function __construct(Fixture $fixture, Remover $remover) {
     $this->fixture = $fixture;

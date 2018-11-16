@@ -25,7 +25,16 @@ class InitCommand extends Command {
   protected static $defaultName = 'fixture:init';
 
   /**
-   * {@inheritdoc}
+   * Constructs an instance.
+   *
+   * @param \Acquia\Orca\Fixture\Creator $creator
+   *   The fixture creator.
+   * @param \Acquia\Orca\Fixture\Fixture $fixture
+   *   The fixture.
+   * @param \Acquia\Orca\Fixture\ProductData $product_data
+   *   The product data.
+   * @param \Acquia\Orca\Fixture\Remover $remover
+   *   The fixture remover.
    */
   public function __construct(Creator $creator, Fixture $fixture, ProductData $product_data, Remover $remover) {
     $this->creator = $creator;

@@ -20,7 +20,12 @@ class RunCommand extends Command {
   protected static $defaultName = 'tests:run';
 
   /**
-   * {@inheritdoc}
+   * Constructs an instance.
+   *
+   * @param \Acquia\Orca\Fixture\Fixture $fixture
+   *   The fixture.
+   * @param \Acquia\Orca\TestRunner $test_runner
+   *   The test runner.
    */
   public function __construct(Fixture $fixture, TestRunner $test_runner) {
     $this->fixture = $fixture;
