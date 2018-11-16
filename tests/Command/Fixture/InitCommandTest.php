@@ -12,8 +12,6 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
 
-define('ORCA_FIXTURE_ROOT', '/tmp/orca-fixture-root');
-
 /**
  * @property \Prophecy\Prophecy\ObjectProphecy $creator
  * @property \Prophecy\Prophecy\ObjectProphecy $fixture
