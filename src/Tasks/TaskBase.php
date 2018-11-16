@@ -16,6 +16,13 @@ use Symfony\Component\Finder\Finder;
 abstract class TaskBase implements TaskInterface {
 
   /**
+   * A filesystem path.
+   *
+   * @var string
+   */
+  private $path;
+
+  /**
    * Constructs an instance.
    *
    * @param \Symfony\Component\Finder\Finder $finder
@@ -29,6 +36,26 @@ abstract class TaskBase implements TaskInterface {
     $this->fixture = $fixture;
     $this->finder = $finder;
     $this->processRunner = $process_runner;
+  }
+
+  /**
+   * Gets the path.
+   *
+   * @return string
+   */
+  public function getPath(): string {
+    if (!$this->path) {
+      throw new \LogicException('Path not set.');
+    }
+    return $this->path;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function setPath(string $path): TaskInterface {
+    $this->path = $path;
+    return $this;
   }
 
 }

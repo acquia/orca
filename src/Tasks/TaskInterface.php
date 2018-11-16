@@ -14,4 +14,14 @@ interface TaskInterface {
    */
   public function execute(): void;
 
+  /**
+   * Sets the path.
+   *
+   * @param string $path
+   *   A filesystem path.
+   *
+   * @return self
+   */
+  public function setPath(string $path): TaskInterface;
+
 }

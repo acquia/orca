@@ -15,11 +15,6 @@ function run {
   eval "$@"
 }
 
-# Validate composer.json files.
-for FILE in $(find . -name composer.json -not -path "./vendor/*"); do
-  run composer validate --ansi ${FILE}
-done
-
 # Lint PHP.
 run ${ORCA_ROOT}/vendor/bin/parallel-lint \
   -e inc,install,module,php,profile,test,theme \
@@ -37,6 +32,9 @@ run ${ORCA_ROOT}/vendor/bin/phpcs \
   --parallel=10 \
   --extensions=inc,install,module,php,profile,test,theme \
   ./
+
+# Perform static code analysis.
+run ${ORCA_ROOT}/bin/orca static-analysis:run ./
 
 # Run integrated tests (in the presence of other Acquia product modules).
 run ${ORCA_ROOT}/bin/orca fixture:init -f --sut=$1
