@@ -61,7 +61,7 @@ class RunCommandTest extends TestCase {
     $test_runner = $this->testRunner->reveal();
     /** @var \Acquia\Orca\Fixture\Fixture $fixture */
     $fixture = $this->fixture->reveal();
-    $application->add(new RunCommand($fixture, $test_runner, '/var/www/orca-build'));
+    $application->add(new RunCommand($fixture, $test_runner));
     /** @var \Acquia\Orca\Command\Tests\RunCommand $command */
     $command = $application->find(RunCommand::getDefaultName());
     $this->assertInstanceOf(RunCommand::class, $command);
