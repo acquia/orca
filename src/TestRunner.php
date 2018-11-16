@@ -4,7 +4,6 @@ namespace Acquia\Orca;
 
 use Acquia\Orca\Command\StatusCodes;
 use Acquia\Orca\Fixture\Fixture;
-use Acquia\Orca\Fixture\ProductData;
 use Acquia\Orca\Tasks\BehatTask;
 use Acquia\Orca\Tasks\PhpUnitTask;
 use Acquia\Orca\Tasks\TaskFailureException;
@@ -15,7 +14,6 @@ use Symfony\Component\Process\Process;
  *
  * @property \Acquia\Orca\Fixture\Fixture $fixture
  * @property \Acquia\Orca\ProcessRunner $processRunner
- * @property \Acquia\Orca\Fixture\ProductData $productData
  */
 class TestRunner {
 
@@ -44,13 +42,10 @@ class TestRunner {
    *   A PHPUnit test.
    * @param \Acquia\Orca\ProcessRunner $process_runner
    *   The process runner.
-   * @param \Acquia\Orca\Fixture\ProductData $product_data
-   *   The product data.
    */
-  public function __construct(BehatTask $behat, Fixture $fixture, PhpUnitTask $phpunit, ProcessRunner $process_runner, ProductData $product_data) {
+  public function __construct(BehatTask $behat, Fixture $fixture, PhpUnitTask $phpunit, ProcessRunner $process_runner) {
     $this->fixture = $fixture;
     $this->processRunner = $process_runner;
-    $this->productData = $product_data;
     $this->tests = [$phpunit, $behat];
   }
 
