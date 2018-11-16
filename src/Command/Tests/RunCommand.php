@@ -3,7 +3,7 @@
 namespace Acquia\Orca\Command\Tests;
 
 use Acquia\Orca\Command\StatusCodes;
-use Acquia\Orca\Fixture\Facade;
+use Acquia\Orca\Fixture\Fixture;
 use Acquia\Orca\TestRunner;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -12,7 +12,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 /**
  * Provides a command.
  *
- * @property \Acquia\Orca\Fixture\Facade $facade
+ * @property \Acquia\Orca\Fixture\Fixture $fixture
  * @property \Acquia\Orca\TestRunner $testRunner
  * @property string $fixtureDir
  */
@@ -23,8 +23,8 @@ class RunCommand extends Command {
   /**
    * {@inheritdoc}
    */
-  public function __construct(Facade $facade, TestRunner $test_runner, string $fixture_dir) {
-    $this->facade = $facade;
+  public function __construct(Fixture $fixture, TestRunner $test_runner, string $fixture_dir) {
+    $this->fixture = $fixture;
     $this->fixtureDir = $fixture_dir;
     $this->testRunner = $test_runner;
     parent::__construct(self::$defaultName);
@@ -43,9 +43,9 @@ class RunCommand extends Command {
    * {@inheritdoc}
    */
   public function execute(InputInterface $input, OutputInterface $output): int {
-    if (!$this->facade->exists()) {
+    if (!$this->fixture->exists()) {
       $output->writeln([
-        "Error: No fixture exists at {$this->facade->rootPath()}.",
+        "Error: No fixture exists at {$this->fixture->rootPath()}.",
         'Hint: Use the "fixture:init" command to create one.',
       ]);
       return StatusCodes::ERROR;

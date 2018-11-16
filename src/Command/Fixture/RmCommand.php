@@ -4,7 +4,7 @@ namespace Acquia\Orca\Command\Fixture;
 
 use Acquia\Orca\Command\StatusCodes;
 use Acquia\Orca\Fixture\Remover;
-use Acquia\Orca\Fixture\Facade;
+use Acquia\Orca\Fixture\Fixture;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -14,7 +14,7 @@ use Symfony\Component\Console\Question\ConfirmationQuestion;
 /**
  * Provides a command.
  *
- * @property \Acquia\Orca\Fixture\Facade $facade
+ * @property \Acquia\Orca\Fixture\Fixture $fixture
  * @property \Acquia\Orca\Fixture\Remover $remover
  */
 class RmCommand extends Command {
@@ -24,8 +24,8 @@ class RmCommand extends Command {
   /**
    * {@inheritdoc}
    */
-  public function __construct(Facade $facade, Remover $remover) {
-    $this->facade = $facade;
+  public function __construct(Fixture $fixture, Remover $remover) {
+    $this->fixture = $fixture;
     $this->remover = $remover;
     parent::__construct(self::$defaultName);
   }
@@ -45,8 +45,8 @@ class RmCommand extends Command {
    * {@inheritdoc}
    */
   public function execute(InputInterface $input, OutputInterface $output): int {
-    if (!$this->facade->exists()) {
-      $output->writeln("Error: No fixture exists at {$this->facade->rootPath()}.");
+    if (!$this->fixture->exists()) {
+      $output->writeln("Error: No fixture exists at {$this->fixture->rootPath()}.");
       return StatusCodes::ERROR;
     }
 

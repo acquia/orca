@@ -20,7 +20,7 @@ class BehatTask extends TaskBase {
           'behat',
           '--colors',
           "--config={$config_file->getPathname()}",
-        ], $this->facade->rootPath());
+        ], $this->fixture->rootPath());
       }
     }
     catch (ProcessFailedException $e) {
@@ -37,7 +37,7 @@ class BehatTask extends TaskBase {
     return $this->finder
       ->files()
       ->followLinks()
-      ->in($this->facade->testsDirectory())
+      ->in($this->fixture->testsDirectory())
       ->notPath('vendor')
       ->name('behat.yml');
   }

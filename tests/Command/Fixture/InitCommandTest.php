@@ -5,7 +5,7 @@ namespace Acquia\Orca\Tests\Command\Fixture;
 use Acquia\Orca\Command\StatusCodes;
 use Acquia\Orca\Command\Fixture\InitCommand;
 use Acquia\Orca\Fixture\Remover;
-use Acquia\Orca\Fixture\Facade;
+use Acquia\Orca\Fixture\Fixture;
 use Acquia\Orca\Fixture\Creator;
 use Acquia\Orca\Fixture\ProductData;
 use PHPUnit\Framework\TestCase;
@@ -15,8 +15,8 @@ use Symfony\Component\Console\Tester\CommandTester;
 define('ORCA_FIXTURE_ROOT', '/tmp/orca-fixture-root');
 
 /**
- * @property \Prophecy\Prophecy\ObjectProphecy $facade
  * @property \Prophecy\Prophecy\ObjectProphecy $creator
+ * @property \Prophecy\Prophecy\ObjectProphecy $fixture
  * @property \Prophecy\Prophecy\ObjectProphecy $productData
  * @property \Prophecy\Prophecy\ObjectProphecy $remover
  */
@@ -29,10 +29,10 @@ class InitCommandTest extends TestCase {
   protected function setUp() {
     $this->creator = $this->prophesize(Creator::class);
     $this->remover = $this->prophesize(Remover::class);
-    $this->facade = $this->prophesize(Facade::class);
-    $this->facade->exists()
+    $this->fixture = $this->prophesize(Fixture::class);
+    $this->fixture->exists()
       ->willReturn(FALSE);
-    $this->facade->rootPath()
+    $this->fixture->rootPath()
       ->willReturn(self::FIXTURE_ROOT);
     $this->productData = $this->prophesize(ProductData::class);
   }
@@ -45,7 +45,7 @@ class InitCommandTest extends TestCase {
       ->isValidPackage(@$args['--sut'])
       ->shouldBeCalledTimes((int) in_array('isValidPackage', $methods_called))
       ->willReturn(@$args['--sut'] === self::VALID_PACKAGE);
-    $this->facade
+    $this->fixture
       ->exists()
       ->shouldBeCalledTimes((int) in_array('exists', $methods_called))
       ->willReturn($fixture_exists);
@@ -87,11 +87,11 @@ class InitCommandTest extends TestCase {
     $fixture_creator = $this->creator->reveal();
     /** @var \Acquia\Orca\Fixture\Remover $fixture_remover */
     $fixture_remover = $this->remover->reveal();
-    /** @var \Acquia\Orca\Fixture\Facade $facade */
-    $facade = $this->facade->reveal();
+    /** @var \Acquia\Orca\Fixture\Fixture $fixture */
+    $fixture = $this->fixture->reveal();
     /** @var \Acquia\Orca\Fixture\ProductData $product_data */
     $product_data = $this->productData->reveal();
-    $application->add(new InitCommand($fixture_creator, $facade, $product_data, $fixture_remover));
+    $application->add(new InitCommand($fixture_creator, $fixture, $product_data, $fixture_remover));
     /** @var \Acquia\Orca\Command\Fixture\InitCommand $command */
     $command = $application->find(InitCommand::getDefaultName());
     $this->assertInstanceOf(InitCommand::class, $command);

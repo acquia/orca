@@ -4,14 +4,14 @@ namespace Acquia\Orca\Tests\Command\Tests;
 
 use Acquia\Orca\Command\StatusCodes;
 use Acquia\Orca\Command\Tests\RunCommand;
-use Acquia\Orca\Fixture\Facade;
+use Acquia\Orca\Fixture\Fixture;
 use Acquia\Orca\TestRunner;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
 
 /**
- * @property \Prophecy\Prophecy\ObjectProphecy $facade
+ * @property \Prophecy\Prophecy\ObjectProphecy $fixture
  * @property \Prophecy\Prophecy\ObjectProphecy $testRunner
  */
 class RunCommandTest extends TestCase {
@@ -20,10 +20,10 @@ class RunCommandTest extends TestCase {
 
   protected function setUp() {
     $this->testRunner = $this->prophesize(\Acquia\Orca\TestRunner::class);
-    $this->facade = $this->prophesize(Facade::class);
-    $this->facade->exists()
+    $this->fixture = $this->prophesize(Fixture::class);
+    $this->fixture->exists()
       ->willReturn(FALSE);
-    $this->facade->rootPath()
+    $this->fixture->rootPath()
       ->willReturn(self::FIXTURE_ROOT);
   }
 
@@ -31,7 +31,7 @@ class RunCommandTest extends TestCase {
    * @dataProvider providerCommand
    */
   public function testCommand($fixture_exists, $test_called, $status_code, $display) {
-    $this->facade
+    $this->fixture
       ->exists()
       ->shouldBeCalledTimes(1)
       ->willReturn($fixture_exists);
@@ -59,9 +59,9 @@ class RunCommandTest extends TestCase {
     $application = new Application();
     /** @var \Acquia\Orca\TestRunner $test_runner */
     $test_runner = $this->testRunner->reveal();
-    /** @var \Acquia\Orca\Fixture\Facade $facade */
-    $facade = $this->facade->reveal();
-    $application->add(new RunCommand($facade, $test_runner, '/var/www/orca-build'));
+    /** @var \Acquia\Orca\Fixture\Fixture $fixture */
+    $fixture = $this->fixture->reveal();
+    $application->add(new RunCommand($fixture, $test_runner, '/var/www/orca-build'));
     /** @var \Acquia\Orca\Command\Tests\RunCommand $command */
     $command = $application->find(RunCommand::getDefaultName());
     $this->assertInstanceOf(RunCommand::class, $command);

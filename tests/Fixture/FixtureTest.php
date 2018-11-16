@@ -4,20 +4,20 @@ namespace Acquia\Orca\Tests\Fixture;
 
 use Acquia\Orca\Fixture\Creator;
 use Acquia\Orca\Fixture\Remover;
-use Acquia\Orca\Fixture\Facade;
+use Acquia\Orca\Fixture\Fixture;
 use Acquia\Orca\Fixture\ProductData;
 use Acquia\Orca\TestRunner;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
- * @covers \Acquia\Orca\Fixture\Facade
+ * @covers \Acquia\Orca\Fixture\Fixture
  *
  * @property \Prophecy\Prophecy\ObjectProphecy $filesystem
  * @property \Prophecy\Prophecy\ObjectProphecy $productData
  * @property string $rootPath
  */
-class FacadeTest extends TestCase {
+class FixtureTest extends TestCase {
 
   protected function setUp() {
     $this->filesystem = $this->prophesize(Filesystem::class);
@@ -26,9 +26,9 @@ class FacadeTest extends TestCase {
   }
 
   public function testConstruction() {
-    $fixture = $this->createFacade();
+    $fixture = $this->createFixture();
 
-    $this->assertTrue($fixture instanceof Facade, 'Instantiated class.');
+    $this->assertTrue($fixture instanceof Fixture, 'Instantiated class.');
   }
 
   /**
@@ -39,9 +39,9 @@ class FacadeTest extends TestCase {
     $this->filesystem
       ->exists($root_path)
       ->willReturn($exists);
-    $facade = $this->createFacade();
+    $fixture = $this->createFixture();
 
-    $return = $facade->exists();
+    $return = $fixture->exists();
 
     $this->filesystem
       ->exists($root_path)
@@ -61,15 +61,15 @@ class FacadeTest extends TestCase {
    */
   public function testPathResolution($root_path, $docroot_path, $product_module_path) {
     $this->rootPath = $root_path;
-    $facade = $this->createFacade();
+    $fixture = $this->createFixture();
     $sub_path = '/some/sub-path';
 
-    $this->assertEquals($root_path, $facade->rootPath(), 'Resolved root path.');
-    $this->assertEquals("{$root_path}/{$sub_path}", $facade->rootPath($sub_path), 'Resolved root path with sub-path.');
-    $this->assertEquals($docroot_path, $facade->docrootPath(), 'Resolved docroot path.');
-    $this->assertEquals("{$docroot_path}/{$sub_path}", $facade->docrootPath($sub_path), 'Resolved docroot path with sub-path.');
-    $this->assertEquals($product_module_path, $facade->productModuleInstallPath(), 'Resolved product module path.');
-    $this->assertEquals("{$product_module_path}/{$sub_path}", $facade->productModuleInstallPath($sub_path), 'Resolved docroot path with sub-path.');
+    $this->assertEquals($root_path, $fixture->rootPath(), 'Resolved root path.');
+    $this->assertEquals("{$root_path}/{$sub_path}", $fixture->rootPath($sub_path), 'Resolved root path with sub-path.');
+    $this->assertEquals($docroot_path, $fixture->docrootPath(), 'Resolved docroot path.');
+    $this->assertEquals("{$docroot_path}/{$sub_path}", $fixture->docrootPath($sub_path), 'Resolved docroot path with sub-path.');
+    $this->assertEquals($product_module_path, $fixture->productModuleInstallPath(), 'Resolved product module path.');
+    $this->assertEquals("{$product_module_path}/{$sub_path}", $fixture->productModuleInstallPath($sub_path), 'Resolved docroot path with sub-path.');
   }
 
   public function providerPathResolution() {
@@ -79,12 +79,12 @@ class FacadeTest extends TestCase {
     ];
   }
 
-  protected function createFacade(): Facade {
+  protected function createFixture(): Fixture {
     /** @var \Symfony\Component\Filesystem\Filesystem $filesystem */
     $filesystem = $this->filesystem->reveal();
     /** @var \Acquia\Orca\Fixture\ProductData $product_data */
     $product_data = $this->productData->reveal();
-    return new Facade($filesystem, $product_data, $this->rootPath);
+    return new Fixture($filesystem, $product_data, $this->rootPath);
   }
 
 }

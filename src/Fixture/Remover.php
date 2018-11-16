@@ -9,8 +9,8 @@ use Symfony\Component\Filesystem\Filesystem;
 /**
  * Removes the fixture.
  *
- * @property \Acquia\Orca\Fixture\Facade $facade
  * @property \Symfony\Component\Filesystem\Filesystem $filesystem
+ * @property \Acquia\Orca\Fixture\Fixture $fixture
  * @property \Symfony\Component\Console\Style\SymfonyStyle $output
  * @property \Acquia\Orca\ProcessRunner $processRunner
  */
@@ -19,17 +19,17 @@ class Remover {
   /**
    * Constructs an instance.
    *
-   * @param \Acquia\Orca\Fixture\Facade $facade
-   *   The fixture.
    * @param \Symfony\Component\Filesystem\Filesystem $filesystem
    *   The filesystem.
+   * @param \Acquia\Orca\Fixture\Fixture $fixture
+   *   The fixture.
    * @param \Symfony\Component\Console\Style\SymfonyStyle $output
    *   The output decorator.
    * @param \Acquia\Orca\ProcessRunner $process_runner
    *   The process runner.
    */
-  public function __construct(Facade $facade, Filesystem $filesystem, SymfonyStyle $output, ProcessRunner $process_runner) {
-    $this->facade = $facade;
+  public function __construct(Filesystem $filesystem, Fixture $fixture, SymfonyStyle $output, ProcessRunner $process_runner) {
+    $this->fixture = $fixture;
     $this->filesystem = $filesystem;
     $this->output = $output;
     $this->processRunner = $process_runner;
@@ -51,7 +51,7 @@ class Remover {
    * Write permissions on some files are removed by the Drupal installer.
    */
   private function prepareFilesForDeletion(): void {
-    $path = $this->facade->docrootPath('sites/default');
+    $path = $this->fixture->docrootPath('sites/default');
     if (!$this->filesystem->exists($path)) {
       return;
     }
@@ -70,7 +70,7 @@ class Remover {
    * Deletes the entire fixture directory.
    */
   private function deleteFixtureDirectory(): void {
-    $root_path = $this->facade->rootPath();
+    $root_path = $this->fixture->rootPath();
     $this->output->comment("Removing {$root_path}");
     $this->filesystem->remove($root_path);
   }

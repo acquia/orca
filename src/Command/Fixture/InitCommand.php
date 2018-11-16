@@ -5,7 +5,7 @@ namespace Acquia\Orca\Command\Fixture;
 use Acquia\Orca\Command\StatusCodes;
 use Acquia\Orca\Fixture\Creator;
 use Acquia\Orca\Fixture\Remover;
-use Acquia\Orca\Fixture\Facade;
+use Acquia\Orca\Fixture\Fixture;
 use Acquia\Orca\Fixture\ProductData;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -16,7 +16,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  * Provides a command.
  *
  * @property \Acquia\Orca\Fixture\Creator $creator
- * @property \Acquia\Orca\Fixture\Facade $facade
+ * @property \Acquia\Orca\Fixture\Fixture $fixture
  * @property \Acquia\Orca\Fixture\ProductData $productData
  * @property \Acquia\Orca\Fixture\Remover $remover
  */
@@ -27,9 +27,9 @@ class InitCommand extends Command {
   /**
    * {@inheritdoc}
    */
-  public function __construct(Creator $creator, Facade $facade, ProductData $product_data, Remover $remover) {
+  public function __construct(Creator $creator, Fixture $fixture, ProductData $product_data, Remover $remover) {
     $this->creator = $creator;
-    $this->facade = $facade;
+    $this->fixture = $fixture;
     $this->productData = $product_data;
     $this->remover = $remover;
     parent::__construct(self::$defaultName);
@@ -68,10 +68,10 @@ class InitCommand extends Command {
       return StatusCodes::ERROR;
     }
 
-    if ($this->facade->exists()) {
+    if ($this->fixture->exists()) {
       if (!$input->getOption('force')) {
         $output->writeln([
-          "Error: Fixture already exists at {$this->facade->rootPath()}.",
+          "Error: Fixture already exists at {$this->fixture->rootPath()}.",
           'Hint: Use the "--force" option to remove it and proceed.',
         ]);
         return StatusCodes::ERROR;

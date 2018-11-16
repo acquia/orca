@@ -10,8 +10,8 @@ use Symfony\Component\Filesystem\Filesystem;
  * Creates a fixture.
  *
  * @property \stdClass $composerConfig
- * @property \Acquia\Orca\Fixture\Facade $facade
  * @property \Symfony\Component\Filesystem\Filesystem $filesystem
+ * @property \Acquia\Orca\Fixture\Fixture $fixture
  * @property \Symfony\Component\Console\Style\SymfonyStyle $output
  * @property \Acquia\Orca\ProcessRunner $processRunner
  * @property \Acquia\Orca\Fixture\ProductData $productData
@@ -38,10 +38,10 @@ class Creator {
   /**
    * Constructs an instance.
    *
-   * @param \Acquia\Orca\Fixture\Facade $facade
-   *   The fixture.
    * @param \Symfony\Component\Filesystem\Filesystem $filesystem
    *   The filesystem.
+   * @param \Acquia\Orca\Fixture\Fixture $fixture
+   *   The fixture.
    * @param \Symfony\Component\Console\Style\SymfonyStyle $output
    *   The output decorator.
    * @param \Acquia\Orca\ProcessRunner $process_runner
@@ -49,8 +49,8 @@ class Creator {
    * @param \Acquia\Orca\Fixture\ProductData $product_data
    *   The product data.
    */
-  public function __construct(Facade $facade, Filesystem $filesystem, SymfonyStyle $output, ProcessRunner $process_runner, ProductData $product_data) {
-    $this->facade = $facade;
+  public function __construct(Filesystem $filesystem, Fixture $fixture, SymfonyStyle $output, ProcessRunner $process_runner, ProductData $product_data) {
+    $this->fixture = $fixture;
     $this->filesystem = $filesystem;
     $this->output = $output;
     $this->processRunner = $process_runner;
@@ -81,7 +81,7 @@ class Creator {
     $this->sut = $sut;
     $this->sutDestBaseName = $this->productData->moduleName($this->sut);
     $this->sutSourceBaseName = $this->productData->dir($this->sut);
-    $this->sutDestPath = $this->facade->docrootPath("/modules/contrib/acquia/{$this->sutDestBaseName}");
+    $this->sutDestPath = $this->fixture->docrootPath("/modules/contrib/acquia/{$this->sutDestBaseName}");
   }
 
   /**
@@ -108,7 +108,7 @@ class Creator {
       // @todo Remove the dev branch when composer-merge-plugin removal work
       //   has been merged into BLT.
       'acquia/blt-project:dev-remove-merge-plugin',
-      $this->facade->rootPath(),
+      $this->fixture->rootPath(),
       '--no-interaction',
       '--no-install',
       '--no-scripts',
@@ -132,7 +132,7 @@ class Creator {
       'drupal/acquia_connector',
       'drupal/acquia_purge',
       '--no-update',
-    ], $this->facade->rootPath());
+    ], $this->fixture->rootPath());
   }
 
   /**
@@ -165,7 +165,7 @@ class Creator {
    * Loads the fixture's composer.json data.
    */
   private function loadComposerJson(): void {
-    $json = file_get_contents($this->facade->rootPath('composer.json'));
+    $json = file_get_contents($this->fixture->rootPath('composer.json'));
     $this->composerConfig = json_decode($json);
   }
 
@@ -179,7 +179,7 @@ class Creator {
     // earlier.
     $this->composerConfig->extra->{'installer-paths'} = (object) array_merge(
       ['drush/Commands/{$name}' => (array) $this->composerConfig->extra->{'installer-paths'}->{'drush/Commands/{$name}'}],
-      [Facade::PRODUCT_MODULE_INSTALL_PATH . '/{$name}' => $this->productData->packageNames()],
+      [Fixture::PRODUCT_MODULE_INSTALL_PATH . '/{$name}' => $this->productData->packageNames()],
       (array) $this->composerConfig->extra->{'installer-paths'}
     );
   }
@@ -223,7 +223,7 @@ class Creator {
     $this->processRunner->runExecutableProcess(array_merge(
       ['composer', 'require'],
       $this->getDependencies()
-    ), $this->facade->rootPath());
+    ), $this->fixture->rootPath());
   }
 
   /**
@@ -231,14 +231,14 @@ class Creator {
    */
   private function forceSutSymlinkInstall(): void {
     $this->filesystem->remove([
-      $this->facade->rootPath('composer.lock'),
+      $this->fixture->rootPath('composer.lock'),
       $this->sutDestPath,
     ]);
     $this->processRunner->runExecutableProcess([
       'composer',
       'install',
       '--no-interaction',
-    ], $this->facade->rootPath());
+    ], $this->fixture->rootPath());
   }
 
   /**
@@ -266,7 +266,7 @@ class Creator {
    */
   private function saveComposerJson(): void {
     $data = json_encode($this->composerConfig, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
-    file_put_contents($this->facade->rootPath('composer.json'), $data);
+    file_put_contents($this->fixture->rootPath('composer.json'), $data);
   }
 
   /**
@@ -276,7 +276,7 @@ class Creator {
    *   The commit message to use.
    */
   private function commitCodeChanges($message): void {
-    $cwd = $this->facade->rootPath();
+    $cwd = $this->fixture->rootPath();
     $this->processRunner->runExecutableProcess(['git', 'add', '-A'], $cwd);
     $this->processRunner->runExecutableProcess([
       'git',
@@ -304,7 +304,7 @@ class Creator {
       '--no-interaction',
       '--verbose',
       '--ansi',
-    ], $this->facade->rootPath());
+    ], $this->fixture->rootPath());
     $this->commitCodeChanges('Installed Drupal.');
   }
 
@@ -312,7 +312,7 @@ class Creator {
    * Ensure that Drupal is correctly configured.
    */
   protected function ensureDrupalSettings() {
-    $filename = $this->facade->docrootPath('sites/default/settings/local.settings.php');
+    $filename = $this->fixture->docrootPath('sites/default/settings/local.settings.php');
     $id = '# ORCA settings.';
 
     // Return early if the settings are already present.
@@ -372,7 +372,7 @@ PHP;
       'vendor/bin/drush',
       'pm-enable',
       '-y',
-    ], $module_list), $this->facade->rootPath());
+    ], $module_list), $this->fixture->rootPath());
   }
 
   /**
@@ -384,8 +384,8 @@ PHP;
       'git',
       'branch',
       '--force',
-      Facade::BASE_FIXTURE_GIT_BRANCH,
-    ], $this->facade->rootPath());
+      Fixture::BASE_FIXTURE_GIT_BRANCH,
+    ], $this->fixture->rootPath());
   }
 
   /**

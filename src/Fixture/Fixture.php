@@ -19,7 +19,7 @@ use Symfony\Component\Filesystem\Filesystem;
  * @property string $rootPath
  * @property \Acquia\Orca\Fixture\ProductData $productData
  */
-class Facade {
+class Fixture {
 
   public const BASE_FIXTURE_GIT_BRANCH = 'base-fixture';
 

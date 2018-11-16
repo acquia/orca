@@ -5,7 +5,7 @@ namespace Acquia\Orca\Tests\Command\Fixture;
 use Acquia\Orca\Command\StatusCodes;
 use Acquia\Orca\Command\Fixture\RmCommand;
 use Acquia\Orca\Fixture\Remover;
-use Acquia\Orca\Fixture\Facade;
+use Acquia\Orca\Fixture\Fixture;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
@@ -20,7 +20,7 @@ class RmCommandTest extends TestCase {
 
   protected function setUp() {
     $this->remover = $this->prophesize(Remover::class);
-    $this->fixture = $this->prophesize(Facade::class);
+    $this->fixture = $this->prophesize(Fixture::class);
     $this->fixture->exists()
       ->willReturn(TRUE);
     $this->fixture->rootPath()
@@ -62,7 +62,7 @@ class RmCommandTest extends TestCase {
     $application = new Application();
     /** @var \Acquia\Orca\Fixture\Remover $remover */
     $remover = $this->remover->reveal();
-    /** @var \Acquia\Orca\Fixture\Facade $fixture */
+    /** @var \Acquia\Orca\Fixture\Fixture $fixture */
     $fixture = $this->fixture->reveal();
     $application->add(new RmCommand($fixture, $remover));
     /** @var \Acquia\Orca\Command\Fixture\RmCommand $command */

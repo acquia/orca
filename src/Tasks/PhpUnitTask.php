@@ -2,7 +2,7 @@
 
 namespace Acquia\Orca\Tasks;
 
-use Acquia\Orca\Fixture\Facade;
+use Acquia\Orca\Fixture\Fixture;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 
 /**
@@ -22,7 +22,7 @@ class PhpUnitTask extends TaskBase {
    * Ensures that PHPUnit is properly configured.
    */
   private function ensurePhpUnitConfig() {
-    $path = $this->facade->docrootPath('core/phpunit.xml.dist');
+    $path = $this->fixture->docrootPath('core/phpunit.xml.dist');
     $doc = new \DOMDocument();
     $doc->load($path);
     $xpath = new \DOMXPath($doc);
@@ -45,7 +45,7 @@ class PhpUnitTask extends TaskBase {
   private function setSimpletestSettings(string $path, \DOMDocument $doc, \DOMXPath $xpath): void {
     $xpath->query('//phpunit/php/env[@name="SIMPLETEST_BASE_URL"]')
       ->item(0)
-      ->setAttribute('value', sprintf('http://%s', Facade::WEB_ADDRESS));
+      ->setAttribute('value', sprintf('http://%s', Fixture::WEB_ADDRESS));
     $xpath->query('//phpunit/php/env[@name="SIMPLETEST_DB"]')
       ->item(0)
       ->setAttribute('value', 'sqlite://localhost/sites/default/files/.ht.sqlite');
@@ -136,9 +136,9 @@ class PhpUnitTask extends TaskBase {
         'phpunit',
         '--colors=always',
         '--stop-on-failure',
-        "--configuration={$this->facade->docrootPath('core/phpunit.xml.dist')}",
-        "--bootstrap={$this->facade->docrootPath('core/tests/bootstrap.php')}",
-        $this->facade->testsDirectory(),
+        "--configuration={$this->fixture->docrootPath('core/phpunit.xml.dist')}",
+        "--bootstrap={$this->fixture->docrootPath('core/tests/bootstrap.php')}",
+        $this->fixture->testsDirectory(),
       ]);
     }
     catch (ProcessFailedException $e) {

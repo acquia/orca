@@ -3,7 +3,7 @@
 namespace Acquia\Orca;
 
 use Acquia\Orca\Command\StatusCodes;
-use Acquia\Orca\Fixture\Facade;
+use Acquia\Orca\Fixture\Fixture;
 use Acquia\Orca\Fixture\ProductData;
 use Acquia\Orca\Tasks\BehatTask;
 use Acquia\Orca\Tasks\PhpUnitTask;
@@ -13,7 +13,7 @@ use Symfony\Component\Process\Process;
 /**
  * Runs automated tests.
  *
- * @property \Acquia\Orca\Fixture\Facade $facade
+ * @property \Acquia\Orca\Fixture\Fixture $fixture
  * @property \Acquia\Orca\ProcessRunner $processRunner
  * @property \Acquia\Orca\Fixture\ProductData $productData
  */
@@ -38,7 +38,7 @@ class TestRunner {
    *
    * @param \Acquia\Orca\Tasks\BehatTask $behat
    *   A Behat test.
-   * @param \Acquia\Orca\Fixture\Facade $facade
+   * @param \Acquia\Orca\Fixture\Fixture $fixture
    *   The fixture.
    * @param \Acquia\Orca\Tasks\PhpUnitTask $phpunit
    *   A PHPUnit test.
@@ -47,8 +47,8 @@ class TestRunner {
    * @param \Acquia\Orca\Fixture\ProductData $product_data
    *   The product data.
    */
-  public function __construct(BehatTask $behat, Facade $facade, PhpUnitTask $phpunit, ProcessRunner $process_runner, ProductData $product_data) {
-    $this->facade = $facade;
+  public function __construct(BehatTask $behat, Fixture $fixture, PhpUnitTask $phpunit, ProcessRunner $process_runner, ProductData $product_data) {
+    $this->fixture = $fixture;
     $this->processRunner = $process_runner;
     $this->productData = $product_data;
     $this->tests = [$phpunit, $behat];
@@ -81,8 +81,8 @@ class TestRunner {
     $this->webServerProcess = new Process([
       'php',
       '-S',
-      Facade::WEB_ADDRESS,
-    ], $this->facade->docrootPath());
+      Fixture::WEB_ADDRESS,
+    ], $this->fixture->docrootPath());
     $this->webServerProcess->start();
   }
 
