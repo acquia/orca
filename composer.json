@@ -1,6 +1,6 @@
 {
     "name": "acquia/orca",
-    "description": "An internal tool for testing all of Acquia's product modules together in the context of a realistic, functioning, best practices Drupal build",
+    "description": "A tool for testing all of Acquia's product modules together in the context of a realistic, functioning, best practices Drupal build",
     "license": "GPL-2.0-or-later",
     "authors": [
         {

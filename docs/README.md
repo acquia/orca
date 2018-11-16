@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/acquia/orca.svg?branch=master)](https://travis-ci.org/acquia/orca)
 
-ORCA (Official Representative Customer Application) is an internal tool for testing Acquia product modules. It ensures their cross compatibility and correct functioning by installing all of them together into a realistic, functioning, best practices Drupal build and running automated tests on them.
+ORCA (Official Representative Customer Application) is a tool for testing Acquia product modules. It ensures their cross compatibility and correct functioning by installing all of them together into a realistic, functioning, best practices Drupal build and running automated tests on them.
 
 ## Design
 
