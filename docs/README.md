@@ -24,4 +24,22 @@ ORCA's guiding design principle is to use products as a customer would. It creat
 
 ### Continuous Integration
 
-See [`examples/.travis.yml`](../examples/.travis.yml) for an example Travis CI configuration.
+ORCA's primary use case is in a continuous integration (CI) workflow, running against pull requests and commits. See [`examples/.travis.yml`](../examples/.travis.yml) for an example Travis CI configuration.
+
+### Local Development
+
+ORCA can also be run locally. It requires PHP and Composer (it uses SQLite so as to avoid a MySQL requirement on the host) and expects to be installed in a directory adjacent to the module under test, e.g.:
+
+```
+.
+└── Projects
+    ├── example_module
+    └── orca
+```
+
+Follow these steps to set it up:
+
+1. Choose a directory to contain your module(s), e.g., `~/Projects`.
+1. Clone ORCA and your module(s) into the directory.
+1. Run `composer --no-dev install` within the `orca` clone.
+1. Invoke the ORCA console application from the terminal: `./bin/orca`. Use the `--help` option to learn more about the various commands or see how they're used in [`bin/travis/script`](../bin/travis/script).
