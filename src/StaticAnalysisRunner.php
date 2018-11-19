@@ -4,6 +4,7 @@ namespace Acquia\Orca;
 
 use Acquia\Orca\Command\StatusCodes;
 use Acquia\Orca\Tasks\ComposerValidateTask;
+use Acquia\Orca\Tasks\PhpLintTask;
 use Acquia\Orca\Tasks\TaskFailureException;
 
 /**
@@ -23,9 +24,14 @@ class StaticAnalysisRunner {
    *
    * @param \Acquia\Orca\Tasks\ComposerValidateTask $composer_validate
    *   The Composer validate task.
+   * @param \Acquia\Orca\Tasks\PhpLintTask $php_lint
+   *   The PHP lint task.
    */
-  public function __construct(ComposerValidateTask $composer_validate) {
-    $this->tasks = [$composer_validate];
+  public function __construct(ComposerValidateTask $composer_validate, PhpLintTask $php_lint) {
+    $this->tasks = [
+      $composer_validate,
+      $php_lint,
+    ];
   }
 
   /**

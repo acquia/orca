@@ -15,14 +15,6 @@ function run {
   eval "$@"
 }
 
-# Lint PHP.
-run ${ORCA_ROOT}/vendor/bin/parallel-lint \
-  -e inc,install,module,php,profile,test,theme \
-  --exclude vendor \
-  --colors \
-  --blame \
-  ./
-
 # Check PHP version compatibility.
 run ${ORCA_ROOT}/vendor/bin/phpcs \
   -p \
