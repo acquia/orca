@@ -3,10 +3,10 @@
 namespace Acquia\Orca;
 
 use Acquia\Orca\Command\StatusCodes;
-use Acquia\Orca\Tasks\ComposerValidateTask;
-use Acquia\Orca\Tasks\PhpCompatibilitySniffTask;
-use Acquia\Orca\Tasks\PhpLintTask;
-use Acquia\Orca\Tasks\TaskFailureException;
+use Acquia\Orca\Task\ComposerValidateTask;
+use Acquia\Orca\Task\PhpCompatibilitySniffTask;
+use Acquia\Orca\Task\PhpLintTask;
+use Acquia\Orca\Task\TaskFailureException;
 
 /**
  * Runs static analysis tools.
@@ -16,18 +16,18 @@ class StaticAnalysisRunner {
   /**
    * The tasks to execute.
    *
-   * @var \Acquia\Orca\Tasks\TaskInterface[]
+   * @var \Acquia\Orca\Task\TaskInterface[]
    */
   private $tasks = [];
 
   /**
    * Constructs an instance.
    *
-   * @param \Acquia\Orca\Tasks\ComposerValidateTask $composer_validate
+   * @param \Acquia\Orca\Task\ComposerValidateTask $composer_validate
    *   The Composer validate task.
-   * @param \Acquia\Orca\Tasks\PhpCompatibilitySniffTask $php_compatibility
+   * @param \Acquia\Orca\Task\PhpCompatibilitySniffTask $php_compatibility
    *   The PHP compatibility sniff task.
-   * @param \Acquia\Orca\Tasks\PhpLintTask $php_lint
+   * @param \Acquia\Orca\Task\PhpLintTask $php_lint
    *   The PHP lint task.
    */
   public function __construct(ComposerValidateTask $composer_validate, PhpCompatibilitySniffTask $php_compatibility, PhpLintTask $php_lint) {

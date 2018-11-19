@@ -1,6 +1,6 @@
 <?php
 
-namespace Acquia\Orca\Tasks;
+namespace Acquia\Orca\Task;
 
 use Acquia\Orca\Fixture\Fixture;
 use Symfony\Component\Process\Exception\ProcessFailedException;
@@ -128,7 +128,7 @@ class PhpUnitTask extends TaskBase {
   /**
    * Runs PHPUnit.
    *
-   * @throws \Acquia\Orca\Tasks\TaskFailureException
+   * @throws \Acquia\Orca\Task\TaskFailureException
    */
   protected function runPhpUnit(): void {
     try {

@@ -4,9 +4,9 @@ namespace Acquia\Orca;
 
 use Acquia\Orca\Command\StatusCodes;
 use Acquia\Orca\Fixture\Fixture;
-use Acquia\Orca\Tasks\BehatTask;
-use Acquia\Orca\Tasks\PhpUnitTask;
-use Acquia\Orca\Tasks\TaskFailureException;
+use Acquia\Orca\Task\BehatTask;
+use Acquia\Orca\Task\PhpUnitTask;
+use Acquia\Orca\Task\TaskFailureException;
 use Symfony\Component\Process\Process;
 
 /**
@@ -20,7 +20,7 @@ class TestRunner {
   /**
    * The tests to perform.
    *
-   * @var \Acquia\Orca\Tasks\TaskInterface[]
+   * @var \Acquia\Orca\Task\TaskInterface[]
    */
   private $tests = [];
 
@@ -34,11 +34,11 @@ class TestRunner {
   /**
    * Constructs an instance.
    *
-   * @param \Acquia\Orca\Tasks\BehatTask $behat
+   * @param \Acquia\Orca\Task\BehatTask $behat
    *   A Behat test.
    * @param \Acquia\Orca\Fixture\Fixture $fixture
    *   The fixture.
-   * @param \Acquia\Orca\Tasks\PhpUnitTask $phpunit
+   * @param \Acquia\Orca\Task\PhpUnitTask $phpunit
    *   A PHPUnit test.
    * @param \Acquia\Orca\ProcessRunner $process_runner
    *   The process runner.

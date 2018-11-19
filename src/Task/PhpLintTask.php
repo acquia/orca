@@ -1,6 +1,6 @@
 <?php
 
-namespace Acquia\Orca\Tasks;
+namespace Acquia\Orca\Task;
 
 use Symfony\Component\Process\Exception\ProcessFailedException;
 
