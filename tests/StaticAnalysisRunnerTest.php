@@ -4,34 +4,40 @@ namespace Acquia\Orca\Tests;
 
 use Acquia\Orca\Command\StatusCodes;
 use Acquia\Orca\Tasks\ComposerValidateTask;
+use Acquia\Orca\Tasks\PhpCompatibilitySniffTask;
 use Acquia\Orca\Tasks\PhpLintTask;
+use Acquia\Orca\Tasks\TaskInterface;
 use PHPUnit\Framework\TestCase;
 use Acquia\Orca\StaticAnalysisRunner;
 
 class StaticAnalysisRunnerTest extends TestCase {
 
-  public function testRunner() {
-    $path = 'var/www/example';
-    $composer_validate = $this->prophesize(ComposerValidateTask::class);
-    $composer_validate->setPath($path)
-      ->shouldBeCalledTimes(1)
-      ->willReturn($composer_validate);
-    $composer_validate->execute()->shouldBeCalledTimes(1);
-    /** @var \Acquia\Orca\Tasks\ComposerValidateTask $composer_validate */
-    $composer_validate = $composer_validate->reveal();
-    $php_lint = $this->prophesize(PhpLintTask::class);
-    $php_lint->setPath($path)
-      ->shouldBeCalled(1)
-      ->willReturn($php_lint);
-    $php_lint->execute()->shouldBeCalledTimes(1);
-    /** @var \Acquia\Orca\Tasks\PhpLintTask $php_lint */
-    $php_lint = $php_lint->reveal();
+  private const PATH = 'var/www/example';
 
-    $runner = new StaticAnalysisRunner($composer_validate, $php_lint);
-    $status_code = $runner->run($path);
+  public function testRunner() {
+    /** @var \Acquia\Orca\Tasks\ComposerValidateTask $composer_validate */
+    $composer_validate = $this->setTaskExpectations(ComposerValidateTask::class);
+    /** @var \Acquia\Orca\Tasks\PhpLintTask $php_lint */
+    $php_lint = $this->setTaskExpectations(PhpLintTask::class);
+    /** @var \Acquia\Orca\Tasks\PhpCompatibilitySniffTask $php_compatibility */
+    $php_compatibility = $this->setTaskExpectations(PhpCompatibilitySniffTask::class);
+
+    $runner = new StaticAnalysisRunner($composer_validate, $php_compatibility, $php_lint);
+    $status_code = $runner->run(self::PATH);
 
     $this->assertInstanceOf(StaticAnalysisRunner::class, $runner);
     $this->assertEquals(StatusCodes::OK, $status_code);
+  }
+
+  protected function setTaskExpectations($class): TaskInterface {
+    $task = $this->prophesize($class);
+    $task->setPath(self::PATH)
+      ->shouldBeCalledTimes(1)
+      ->willReturn($task);
+    $task->execute()->shouldBeCalledTimes(1);
+    /** @var \Acquia\Orca\Tasks\TaskInterface $task */
+    $task = $task->reveal();
+    return $task;
   }
 
 }

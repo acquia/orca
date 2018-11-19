@@ -15,16 +15,6 @@ function run {
   eval "$@"
 }
 
-# Check PHP version compatibility.
-run ${ORCA_ROOT}/vendor/bin/phpcs \
-  -p \
-  --colors \
-  --config-set testVersion 7.1- \
-  --standard=PHPCompatibility \
-  --parallel=10 \
-  --extensions=inc,install,module,php,profile,test,theme \
-  ./
-
 # Perform static code analysis.
 run ${ORCA_ROOT}/bin/orca static-analysis:run ./
 
