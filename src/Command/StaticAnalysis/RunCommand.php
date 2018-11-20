@@ -3,7 +3,10 @@
 namespace Acquia\Orca\Command\StaticAnalysis;
 
 use Acquia\Orca\Command\StatusCodes;
-use Acquia\Orca\StaticAnalysisRunner;
+use Acquia\Orca\Task\ComposerValidateTask;
+use Acquia\Orca\Task\PhpCompatibilitySniffTask;
+use Acquia\Orca\Task\PhpLintTask;
+use Acquia\Orca\Task\TaskRunner;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -14,7 +17,7 @@ use Symfony\Component\Filesystem\Filesystem;
  * Provides a command.
  *
  * @property \Symfony\Component\Filesystem\Filesystem $filesystem
- * @property \Acquia\Orca\StaticAnalysisRunner $staticAnalysisRunner
+ * @property \Acquia\Orca\Task\TaskRunner $taskRunner
  */
 class RunCommand extends Command {
 
@@ -23,14 +26,23 @@ class RunCommand extends Command {
   /**
    * Constructs an instance.
    *
+   * @param \Acquia\Orca\Task\ComposerValidateTask $composer_validate
+   *   The Composer validate task.
    * @param \Symfony\Component\Filesystem\Filesystem $filesystem
    *   The filesystem.
-   * @param \Acquia\Orca\StaticAnalysisRunner $static_analysis_runner
-   *   The static analysis tools runner.
+   * @param \Acquia\Orca\Task\PhpCompatibilitySniffTask $php_compatibility
+   *   The PHP compatibility sniff task.
+   * @param \Acquia\Orca\Task\PhpLintTask $php_lint
+   *   The PHP lint task.
+   * @param \Acquia\Orca\Task\TaskRunner $task_runner
+   *   The task runner.
    */
-  public function __construct(Filesystem $filesystem, StaticAnalysisRunner $static_analysis_runner) {
+  public function __construct(ComposerValidateTask $composer_validate, Filesystem $filesystem, PhpCompatibilitySniffTask $php_compatibility, PhpLintTask $php_lint, TaskRunner $task_runner) {
     $this->filesystem = $filesystem;
-    $this->staticAnalysisRunner = $static_analysis_runner;
+    $this->taskRunner = $task_runner
+      ->addTask($composer_validate)
+      ->addTask($php_compatibility)
+      ->addTask($php_lint);
     parent::__construct(self::$defaultName);
   }
 
@@ -53,7 +65,9 @@ class RunCommand extends Command {
       $output->writeln(sprintf('Error: No such path: %s.', $path));
       return StatusCodes::ERROR;
     }
-    return $this->staticAnalysisRunner->run($path);
+    return $this->taskRunner
+      ->setPath($path)
+      ->run();
   }
 
 }
