@@ -64,6 +64,7 @@ class Creator {
     $this->createBltProject();
     $this->removeUnneededProjects();
     $this->addAcquiaProductModules();
+    $this->requireTestingDependencies();
     $this->installDrupal();
     $this->installAcquiaProductModules();
     $this->createBackupBranch();
@@ -143,7 +144,6 @@ class Creator {
     $this->output->section('Adding Acquia product modules');
     $this->configureComposer();
     $this->requireDependencies();
-    $this->requireTestingDependencies();
     if ($this->sut) {
       $this->forceSutSymlinkInstall();
     }
