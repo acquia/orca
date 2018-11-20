@@ -24,6 +24,13 @@ class TaskRunner {
   private $tasks = [];
 
   /**
+   * Resets the task list on clone.
+   */
+  public function __clone() {
+    $this->tasks = [];
+  }
+
+  /**
    * Adds a task to be run.
    *
    * @param \Acquia\Orca\Task\TaskInterface $task

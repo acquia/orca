@@ -4,7 +4,10 @@ namespace Acquia\Orca\Command\Tests;
 
 use Acquia\Orca\Command\StatusCodes;
 use Acquia\Orca\Fixture\Fixture;
-use Acquia\Orca\TestRunner;
+use Acquia\Orca\Task\BehatTask;
+use Acquia\Orca\Task\PhpUnitTask;
+use Acquia\Orca\Task\TaskRunner;
+use Acquia\Orca\WebServer;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -13,7 +16,8 @@ use Symfony\Component\Console\Output\OutputInterface;
  * Provides a command.
  *
  * @property \Acquia\Orca\Fixture\Fixture $fixture
- * @property \Acquia\Orca\TestRunner $testRunner
+ * @property \Acquia\Orca\Task\TaskRunner $taskRunner
+ * @property \Acquia\Orca\WebServer $webServer
  */
 class RunCommand extends Command {
 
@@ -22,14 +26,23 @@ class RunCommand extends Command {
   /**
    * Constructs an instance.
    *
+   * @param \Acquia\Orca\Task\BehatTask $behat
+   *   The Behat task.
    * @param \Acquia\Orca\Fixture\Fixture $fixture
    *   The fixture.
-   * @param \Acquia\Orca\TestRunner $test_runner
-   *   The test runner.
+   * @param \Acquia\Orca\Task\PhpUnitTask $phpunit
+   *   The PHPUnit task.
+   * @param \Acquia\Orca\Task\TaskRunner $task_runner
+   *   The task runner.
+   * @param \Acquia\Orca\WebServer $web_server
+   *   The web server.
    */
-  public function __construct(Fixture $fixture, TestRunner $test_runner) {
+  public function __construct(BehatTask $behat, Fixture $fixture, PhpUnitTask $phpunit, TaskRunner $task_runner, WebServer $web_server) {
     $this->fixture = $fixture;
-    $this->testRunner = $test_runner;
+    $this->taskRunner = (clone($task_runner))
+      ->addTask($phpunit)
+      ->addTask($behat);
+    $this->webServer = $web_server;
     parent::__construct(self::$defaultName);
   }
 
@@ -53,7 +66,14 @@ class RunCommand extends Command {
       ]);
       return StatusCodes::ERROR;
     }
-    return $this->testRunner->run();
+
+    $this->webServer->start();
+    $status_code = $this->taskRunner
+      ->setPath($this->fixture->testsDirectory())
+      ->run();
+    $this->webServer->stop();
+
+    return $status_code;
   }
 
 }

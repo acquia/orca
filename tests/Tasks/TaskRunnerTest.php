@@ -32,6 +32,8 @@ class TaskRunnerTest extends TestCase {
       ->addTask($php_lint)
       ->setPath(self::PATH);
     $status_code = $runner->run();
+    // Make sure tasks are reset on clone.
+    (clone($runner))->run();
 
     $this->assertInstanceOf(TaskRunner::class, $runner, 'Successfully instantiated class.');
     $this->assertEquals(StatusCodes::OK, $status_code, 'Returned a "success" status code.');
