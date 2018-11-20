@@ -236,6 +236,7 @@ class Creator {
       ['composer', 'require', '--dev'],
       $this->getTestingDependencies()
     ), $this->fixture->rootPath());
+    $this->commitCodeChanges('Added testing dependencies.');
   }
 
   /**
