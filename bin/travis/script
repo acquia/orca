@@ -2,7 +2,7 @@
 
 set -e
 
-if [ -z "$1" ]; then
+if [[ -z "$1" ]]; then
   echo "Missing required SUT argument, e.g.:"
   echo "$0 drupal/example"
   exit 127
