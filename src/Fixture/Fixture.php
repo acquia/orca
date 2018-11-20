@@ -16,7 +16,6 @@ use Symfony\Component\Filesystem\Filesystem;
  * place and Drupal installed.
  *
  * @property \Symfony\Component\Filesystem\Filesystem $filesystem
- * @property string $rootPath
  * @property \Acquia\Orca\Fixture\ProductData $productData
  */
 class Fixture {
@@ -26,6 +25,13 @@ class Fixture {
   public const PRODUCT_MODULE_INSTALL_PATH = 'docroot/modules/contrib/acquia';
 
   public const WEB_ADDRESS = '127.0.0.1:8080';
+
+  /**
+   * The root path.
+   *
+   * @var string
+   */
+  private $rootPath = '';
 
   /**
    * Constructs an instance.
