@@ -143,6 +143,7 @@ class Creator {
     $this->output->section('Adding Acquia product modules');
     $this->configureComposer();
     $this->requireDependencies();
+    $this->requireTestingDependencies();
     if ($this->sut) {
       $this->forceSutSymlinkInstall();
     }
@@ -228,6 +229,16 @@ class Creator {
   }
 
   /**
+   * Requires testing dependencies via Composer.
+   */
+  private function requireTestingDependencies(): void {
+    $this->processRunner->runExecutableProcess(array_merge(
+      ['composer', 'require', '--dev'],
+      $this->getTestingDependencies()
+    ), $this->fixture->rootPath());
+  }
+
+  /**
    * Forces Composer to install the SUT from the local path repository.
    */
   private function forceSutSymlinkInstall(): void {
@@ -259,11 +270,20 @@ class Creator {
       $dependencies[$this->sut] = $sut_package_string;
     }
 
+    return array_values($dependencies);
+  }
+
+  /**
+   * Gets the list of Composer testing dependency strings.
+   *
+   * @return string[]
+   */
+  private function getTestingDependencies(): array {
     // Add drupal-test-traits so that PHPUnit tests can be run against an
     // installed Drupal site.
-    $dependencies['weitzman/drupal-test-traits'] = 'weitzman/drupal-test-traits:dev-master';
-
-    return array_values($dependencies);
+    return [
+      'weitzman/drupal-test-traits:dev-master',
+    ];
   }
 
   /**
