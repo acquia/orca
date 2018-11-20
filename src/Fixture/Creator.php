@@ -259,6 +259,10 @@ class Creator {
       $dependencies[$this->sut] = $sut_package_string;
     }
 
+    // Add drupal-test-traits so that PHPUnit tests can be run against an
+    // installed Drupal site.
+    $dependencies['weitzman/drupal-test-traits'] = 'dev-master';
+
     return array_values($dependencies);
   }
 
