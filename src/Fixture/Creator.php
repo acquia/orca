@@ -281,8 +281,11 @@ class Creator {
     $this->processRunner->runExecutableProcess([
       'git',
       'commit',
+      '-m',
+      $message,
+      '--author',
+      'ORCA <no-reply@acquia.com>',
       '--allow-empty',
-      "-m '{$message}'",
     ], $cwd);
   }
 
