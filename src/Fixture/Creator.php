@@ -261,7 +261,7 @@ class Creator {
 
     // Add drupal-test-traits so that PHPUnit tests can be run against an
     // installed Drupal site.
-    $dependencies['weitzman/drupal-test-traits'] = 'dev-master';
+    $dependencies['weitzman/drupal-test-traits'] = 'weitzman/drupal-test-traits:dev-master';
 
     return array_values($dependencies);
   }
