@@ -24,4 +24,13 @@ interface TaskInterface {
    */
   public function setPath(string $path): TaskInterface;
 
+  /**
+   * Returns a status message describing the task being performed.
+   *
+   * E.g., "Performing task".
+   *
+   * @return string
+   */
+  public function statusMessage(): string;
+
 }

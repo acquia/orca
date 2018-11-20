@@ -12,6 +12,13 @@ class PhpLintTask extends TaskBase {
   /**
    * {@inheritdoc}
    */
+  public function statusMessage(): string {
+    return 'Linting PHP files';
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function execute(): void {
     try {
       $this->processRunner->runVendorBinProcess([

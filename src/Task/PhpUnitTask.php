@@ -13,6 +13,13 @@ class PhpUnitTask extends TaskBase {
   /**
    * {@inheritdoc}
    */
+  public function statusMessage(): string {
+    return 'Running PHPUnit tests';
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function execute(): void {
     $this->ensurePhpUnitConfig();
     $this->runPhpUnit();

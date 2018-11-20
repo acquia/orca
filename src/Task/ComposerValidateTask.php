@@ -12,6 +12,13 @@ class ComposerValidateTask extends TaskBase {
   /**
    * {@inheritdoc}
    */
+  public function statusMessage(): string {
+    return 'Validating composer.json files';
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function execute(): void {
     try {
       /** @var \Symfony\Component\Finder\SplFileInfo $composer_json */

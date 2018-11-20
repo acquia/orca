@@ -10,6 +10,7 @@ use Acquia\Orca\Task\PhpLintTask;
 use Acquia\Orca\Task\TaskInterface;
 use Acquia\Orca\Task\TaskRunner;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
  * @property \Prophecy\Prophecy\ObjectProphecy $composerValidateTask
@@ -20,13 +21,20 @@ class TaskRunnerTest extends TestCase {
 
   private const PATH = 'var/www/example';
 
+  private const STATUS_MESSAGE = 'Printing status message';
+
   public function testTaskRunner() {
+    $output = $this->prophesize(SymfonyStyle::class);
+    $output->section(self::STATUS_MESSAGE)
+      ->shouldBeCalledTimes(2);
+    /** @var \Symfony\Component\Console\Style\SymfonyStyle $output */
+    $output = $output->reveal();
     /** @var \Acquia\Orca\Task\BehatTask $behat */
     $behat = $this->setTaskExpectations(BehatTask::class);
     /** @var \Acquia\Orca\Task\PhpLintTask $php_lint */
     $php_lint = $this->setTaskExpectations(PhpLintTask::class);
 
-    $runner = new TaskRunner();
+    $runner = new TaskRunner($output);
     $runner->setPath('foobar')
       ->addTask($behat)
       ->addTask($php_lint)
@@ -41,6 +49,9 @@ class TaskRunnerTest extends TestCase {
 
   protected function setTaskExpectations($class): TaskInterface {
     $task = $this->prophesize($class);
+    $task->statusMessage()
+      ->shouldBeCalledTimes(1)
+      ->willReturn(self::STATUS_MESSAGE);
     $task->setPath(self::PATH)
       ->shouldBeCalledTimes(1)
       ->willReturn($task);

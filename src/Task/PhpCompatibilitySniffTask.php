@@ -14,6 +14,13 @@ class PhpCompatibilitySniffTask extends TaskBase {
   /**
    * {@inheritdoc}
    */
+  public function statusMessage(): string {
+    return 'Sniffing for PHP version compatibility';
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function execute(): void {
     try {
       $this->processRunner->runVendorBinProcess([

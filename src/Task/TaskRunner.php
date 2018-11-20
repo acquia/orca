@@ -3,9 +3,12 @@
 namespace Acquia\Orca\Task;
 
 use Acquia\Orca\Command\StatusCodes;
+use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
  * Runs tasks.
+ *
+ * @property \Symfony\Component\Console\Style\SymfonyStyle $output
  */
 class TaskRunner {
 
@@ -22,6 +25,16 @@ class TaskRunner {
    * @var \Acquia\Orca\Task\TaskInterface[]
    */
   private $tasks = [];
+
+  /**
+   * Constructs an instance.
+   *
+   * @param \Symfony\Component\Console\Style\SymfonyStyle $output
+   *   The output decorator.
+   */
+  public function __construct(SymfonyStyle $output) {
+    $this->output = $output;
+  }
 
   /**
    * Resets the task list on clone.
@@ -52,6 +65,7 @@ class TaskRunner {
     try {
       $status = StatusCodes::OK;
       foreach ($this->tasks as $task) {
+        $this->output->section($task->statusMessage());
         $task->setPath($this->path)->execute();
       }
     }

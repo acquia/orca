@@ -12,6 +12,13 @@ class BehatTask extends TaskBase {
   /**
    * {@inheritdoc}
    */
+  public function statusMessage(): string {
+    return 'Running Behat stories';
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function execute(): void {
     try {
       /** @var \Symfony\Component\Finder\SplFileInfo $config_file */
