@@ -8,7 +8,6 @@ use Acquia\Orca\Fixture\Fixture;
 use Acquia\Orca\Task\BehatTask;
 use Acquia\Orca\Task\PhpUnitTask;
 use Acquia\Orca\Task\TaskRunner;
-use Acquia\Orca\TestRunner;
 use Acquia\Orca\Tests\Command\CommandTestBase;
 use Acquia\Orca\WebServer;
 use Symfony\Component\Console\Application;

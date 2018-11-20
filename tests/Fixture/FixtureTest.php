@@ -2,11 +2,8 @@
 
 namespace Acquia\Orca\Tests\Fixture;
 
-use Acquia\Orca\Fixture\Creator;
-use Acquia\Orca\Fixture\Remover;
 use Acquia\Orca\Fixture\Fixture;
 use Acquia\Orca\Fixture\ProductData;
-use Acquia\Orca\TestRunner;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Filesystem;
 
