@@ -71,9 +71,14 @@ class PhpUnitTask extends TaskBase {
    *   The XPath object.
    */
   private function enableDrupalTestTraits(string $path, \DOMDocument $doc, \DOMXPath $xpath): void {
+    // The bootstrap script is located in ORCA's vendor directory, not the
+    // fixture's, since ORCA controls the available test frameworks and
+    // infrastructure.
+    $bootstrap = __DIR__ . '/../../vendor/weitzman/drupal-test-traits/src/bootstrap.php';
+
     $xpath->query('//phpunit')
       ->item(0)
-      ->setAttribute('bootstrap', '../../vendor/weitzman/drupal-test-traits/src/bootstrap.php');
+      ->setAttribute('bootstrap', $bootstrap);
 
     if (!$xpath->query('//phpunit/php/env[@name="DTT_BASE_URL"]')->length) {
       $element = $doc->createElement('env');
@@ -174,7 +179,7 @@ class PhpUnitTask extends TaskBase {
         "--configuration={$this->fixture->docrootPath('core/phpunit.xml.dist')}",
         "--group=orca_public",
         $this->fixture->testsDirectory(),
-      ]);
+      ], $this->fixture->rootPath());
     }
     catch (ProcessFailedException $e) {
       throw new TaskFailureException();

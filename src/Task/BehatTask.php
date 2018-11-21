@@ -28,7 +28,7 @@ class BehatTask extends TaskBase {
           '--colors',
           "--config={$config_file->getPathname()}",
           "--tags=orca_public",
-        ]);
+        ], $this->fixture->rootPath());
       }
     }
     catch (ProcessFailedException $e) {
