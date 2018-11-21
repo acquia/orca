@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "337fd9acf2b291095e12a08f5283f28f",
+    "content-hash": "eac7f9b3a36ecbabfa76a74dfdf30c43",
     "packages": [
         {
             "name": "behat/behat",
@@ -376,6 +376,44 @@
                 "standards"
             ],
             "time": "2018-09-21T14:22:49+00:00"
+        },
+        {
+            "name": "enm1989/chromedriver",
+            "version": "2.43",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ENM1989/chromedriver.git",
+                "reference": "2a6ad85a480ea305f1c080cc87d710c0141f5cb6"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ENM1989/chromedriver/zipball/2a6ad85a480ea305f1c080cc87d710c0141f5cb6",
+                "reference": "2a6ad85a480ea305f1c080cc87d710c0141f5cb6",
+                "shasum": ""
+            },
+            "bin": [
+                "bin/chromedriver"
+            ],
+            "type": "library",
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "Nico Müller",
+                    "email": "nico.mueller.1989@googlemail.com"
+                }
+            ],
+            "description": "Composer distribution of Chromedriver. Adds a executable to your composer bin directory.",
+            "homepage": "https://github.com/ENM1989/chromedriver",
+            "keywords": [
+                "Chromedriver",
+                "chrome",
+                "selenium",
+                "webdriver"
+            ],
+            "time": "2018-11-01T21:22:44+00:00"
         },
         {
             "name": "jakub-onderka/php-console-color",
