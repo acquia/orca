@@ -3,12 +3,33 @@
 namespace Acquia\Orca\Task;
 
 use Acquia\Orca\Fixture\Fixture;
+use Acquia\Orca\ProcessRunner;
+use Symfony\Component\Finder\Finder;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 
 /**
  * Runs PHPUnit tests.
+ *
+ * @property string $projectDir
  */
 class PhpUnitTask extends TaskBase {
+
+  /**
+   * Constructs an instance.
+   *
+   * @param \Symfony\Component\Finder\Finder $finder
+   *   The finder.
+   * @param \Acquia\Orca\Fixture\Fixture $fixture
+   *   The fixture.
+   * @param string $project_dir
+   *   The ORCA project directory.
+   * @param \Acquia\Orca\ProcessRunner $process_runner
+   *   The process runner.
+   */
+  public function __construct(Finder $finder, Fixture $fixture, string $project_dir, ProcessRunner $process_runner) {
+    parent::__construct($finder, $fixture, $process_runner);
+    $this->projectDir = $project_dir;
+  }
 
   /**
    * {@inheritdoc}
@@ -71,9 +92,12 @@ class PhpUnitTask extends TaskBase {
    *   The XPath object.
    */
   private function enableDrupalTestTraits(string $path, \DOMDocument $doc, \DOMXPath $xpath): void {
+    // The bootstrap script is located in ORCA's vendor directory, not the
+    // fixture's, since ORCA controls the available test frameworks and
+    // infrastructure.
     $xpath->query('//phpunit')
       ->item(0)
-      ->setAttribute('bootstrap', '../../vendor/weitzman/drupal-test-traits/src/bootstrap.php');
+      ->setAttribute('bootstrap', "{$this->projectDir}/vendor/weitzman/drupal-test-traits/src/bootstrap.php");
 
     if (!$xpath->query('//phpunit/php/env[@name="DTT_BASE_URL"]')->length) {
       $element = $doc->createElement('env');
@@ -172,10 +196,9 @@ class PhpUnitTask extends TaskBase {
         '--colors=always',
         '--stop-on-failure',
         "--configuration={$this->fixture->docrootPath('core/phpunit.xml.dist')}",
-        "--bootstrap={$this->fixture->docrootPath('core/tests/bootstrap.php')}",
         "--group=orca_public",
         $this->fixture->testsDirectory(),
-      ]);
+      ], $this->fixture->rootPath());
     }
     catch (ProcessFailedException $e) {
       throw new TaskFailureException();

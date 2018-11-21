@@ -63,7 +63,7 @@ class Creator {
   public function create(): void {
     $this->createBltProject();
     $this->removeUnneededProjects();
-    $this->addAcquiaProductModuleAndTestingDependencies();
+    $this->addAcquiaProductModules();
     $this->installDrupal();
     $this->installAcquiaProductModules();
     $this->createBackupBranch();
@@ -139,7 +139,7 @@ class Creator {
   /**
    * Adds Acquia product modules to the codebase.
    */
-  private function addAcquiaProductModuleAndTestingDependencies(): void {
+  private function addAcquiaProductModules(): void {
     $this->output->section('Adding Acquia product modules');
     $this->configureComposer();
     $this->requireDependencies();
@@ -223,8 +223,7 @@ class Creator {
   private function requireDependencies(): void {
     $this->processRunner->runExecutableProcess(array_merge(
       ['composer', 'require'],
-      $this->getAcquiaProductModuleDependencies(),
-      $this->getTestingDependencies()
+      $this->getAcquiaProductModuleDependencies()
     ), $this->fixture->rootPath());
   }
 
@@ -261,17 +260,6 @@ class Creator {
     }
 
     return array_values($dependencies);
-  }
-
-  /**
-   * Gets the list of testing dependencies.
-   *
-   * @return string[]
-   */
-  private function getTestingDependencies(): array {
-    return [
-      'weitzman/drupal-test-traits:dev-master',
-    ];
   }
 
   /**
