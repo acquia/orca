@@ -63,8 +63,7 @@ class Creator {
   public function create(): void {
     $this->createBltProject();
     $this->removeUnneededProjects();
-    $this->addAcquiaProductModules();
-    $this->requireTestingDependencies();
+    $this->addAcquiaProductModuleAndTestingDependencies();
     $this->installDrupal();
     $this->installAcquiaProductModules();
     $this->createBackupBranch();
@@ -140,7 +139,7 @@ class Creator {
   /**
    * Adds Acquia product modules to the codebase.
    */
-  private function addAcquiaProductModules(): void {
+  private function addAcquiaProductModuleAndTestingDependencies(): void {
     $this->output->section('Adding Acquia product modules');
     $this->configureComposer();
     $this->requireDependencies();
@@ -224,19 +223,9 @@ class Creator {
   private function requireDependencies(): void {
     $this->processRunner->runExecutableProcess(array_merge(
       ['composer', 'require'],
-      $this->getDependencies()
-    ), $this->fixture->rootPath());
-  }
-
-  /**
-   * Requires testing dependencies via Composer.
-   */
-  private function requireTestingDependencies(): void {
-    $this->processRunner->runExecutableProcess(array_merge(
-      ['composer', 'require', '--dev'],
+      $this->getAcquiaProductModuleDependencies(),
       $this->getTestingDependencies()
     ), $this->fixture->rootPath());
-    $this->commitCodeChanges('Added testing dependencies.');
   }
 
   /**
@@ -255,11 +244,11 @@ class Creator {
   }
 
   /**
-   * Gets the list of Composer dependency strings.
+   * Gets the list of Composer dependency strings for Acquia product modules.
    *
    * @return string[]
    */
-  private function getDependencies(): array {
+  private function getAcquiaProductModuleDependencies(): array {
     $sut_package_string = "{$this->sut}:@dev";
     if ($this->isSutOnly) {
       return [$sut_package_string];
@@ -275,13 +264,11 @@ class Creator {
   }
 
   /**
-   * Gets the list of Composer testing dependency strings.
+   * Gets the list of testing dependencies.
    *
    * @return string[]
    */
   private function getTestingDependencies(): array {
-    // Add drupal-test-traits so that PHPUnit tests can be run against an
-    // installed Drupal site.
     return [
       'weitzman/drupal-test-traits:dev-master',
     ];

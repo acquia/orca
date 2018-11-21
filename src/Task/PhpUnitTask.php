@@ -41,6 +41,26 @@ class PhpUnitTask extends TaskBase {
   }
 
   /**
+   * Sets Simpletest settings.
+   *
+   * @param string $path
+   *   The path.
+   * @param \DOMDocument $doc
+   *   The DOM document.
+   * @param \DOMXPath $xpath
+   *   The XPath object.
+   */
+  private function setSimpletestSettings(string $path, \DOMDocument $doc, \DOMXPath $xpath): void {
+    $xpath->query('//phpunit/php/env[@name="SIMPLETEST_BASE_URL"]')
+      ->item(0)
+      ->setAttribute('value', sprintf('http://%s', Fixture::WEB_ADDRESS));
+    $xpath->query('//phpunit/php/env[@name="SIMPLETEST_DB"]')
+      ->item(0)
+      ->setAttribute('value', 'sqlite://localhost/sites/default/files/.ht.sqlite');
+    $doc->save($path);
+  }
+
+  /**
    * Sets PHPUnit environment variables so that Drupal Test Traits can work.
    *
    * @param string $path
@@ -64,26 +84,6 @@ class PhpUnitTask extends TaskBase {
         ->appendChild($element);
     }
 
-    $doc->save($path);
-  }
-
-  /**
-   * Sets Simpletest settings.
-   *
-   * @param string $path
-   *   The path.
-   * @param \DOMDocument $doc
-   *   The DOM document.
-   * @param \DOMXPath $xpath
-   *   The XPath object.
-   */
-  private function setSimpletestSettings(string $path, \DOMDocument $doc, \DOMXPath $xpath): void {
-    $xpath->query('//phpunit/php/env[@name="SIMPLETEST_BASE_URL"]')
-      ->item(0)
-      ->setAttribute('value', sprintf('http://%s', Fixture::WEB_ADDRESS));
-    $xpath->query('//phpunit/php/env[@name="SIMPLETEST_DB"]')
-      ->item(0)
-      ->setAttribute('value', 'sqlite://localhost/sites/default/files/.ht.sqlite');
     $doc->save($path);
   }
 
