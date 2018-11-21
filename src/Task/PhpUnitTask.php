@@ -35,6 +35,7 @@ class PhpUnitTask extends TaskBase {
     $xpath = new \DOMXPath($doc);
 
     $this->setSimpletestSettings($path, $doc, $xpath);
+    $this->enableDrupalTestTraits($path, $doc, $xpath);
     $this->disableSymfonyDeprecationsHelper($path, $doc, $xpath);
     $this->setMinkDriverArguments($path, $doc, $xpath);
   }
@@ -56,6 +57,33 @@ class PhpUnitTask extends TaskBase {
     $xpath->query('//phpunit/php/env[@name="SIMPLETEST_DB"]')
       ->item(0)
       ->setAttribute('value', 'sqlite://localhost/sites/default/files/.ht.sqlite');
+    $doc->save($path);
+  }
+
+  /**
+   * Sets PHPUnit environment variables so that Drupal Test Traits can work.
+   *
+   * @param string $path
+   *   The path.
+   * @param \DOMDocument $doc
+   *   The DOM document.
+   * @param \DOMXPath $xpath
+   *   The XPath object.
+   */
+  private function enableDrupalTestTraits(string $path, \DOMDocument $doc, \DOMXPath $xpath): void {
+    $xpath->query('//phpunit')
+      ->item(0)
+      ->setAttribute('bootstrap', '../../vendor/weitzman/drupal-test-traits/src/bootstrap.php');
+
+    if (!$xpath->query('//phpunit/php/env[@name="DTT_BASE_URL"]')->length) {
+      $element = $doc->createElement('env');
+      $element->setAttribute('name', 'DTT_BASE_URL');
+      $element->setAttribute('value', sprintf('http://%s', Fixture::WEB_ADDRESS));
+      $xpath->query('//phpunit/php')
+        ->item(0)
+        ->appendChild($element);
+    }
+
     $doc->save($path);
   }
 
