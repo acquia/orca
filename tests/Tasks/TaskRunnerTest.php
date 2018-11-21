@@ -4,8 +4,6 @@ namespace Acquia\Orca\Tests\Tasks;
 
 use Acquia\Orca\Command\StatusCodes;
 use Acquia\Orca\Task\BehatTask;
-use Acquia\Orca\Task\ComposerValidateTask;
-use Acquia\Orca\Task\PhpCompatibilitySniffTask;
 use Acquia\Orca\Task\PhpLintTask;
 use Acquia\Orca\Task\TaskInterface;
 use Acquia\Orca\Task\TaskRunner;

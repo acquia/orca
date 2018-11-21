@@ -94,6 +94,7 @@ class Creator {
    * phpcs:disable Drupal.Commenting.FunctionComment.IncorrectTypeHint
    */
   public function setSutOnly(?bool $is_sut_only = NULL): void {
+    // phpcs:enable
     $this->isSutOnly = (bool) $is_sut_only;
   }
 
