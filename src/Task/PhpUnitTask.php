@@ -172,7 +172,6 @@ class PhpUnitTask extends TaskBase {
         '--colors=always',
         '--stop-on-failure',
         "--configuration={$this->fixture->docrootPath('core/phpunit.xml.dist')}",
-        "--bootstrap={$this->fixture->docrootPath('core/tests/bootstrap.php')}",
         "--group=orca_public",
         $this->fixture->testsDirectory(),
       ]);
