@@ -12,6 +12,7 @@ use Symfony\Component\Finder\Finder;
  * @property \Symfony\Component\Finder\Finder $finder
  * @property \Acquia\Orca\Fixture\Fixture $fixture
  * @property \Acquia\Orca\ProcessRunner $processRunner
+ * @property string $projectDir
  */
 abstract class TaskBase implements TaskInterface {
 
@@ -31,11 +32,14 @@ abstract class TaskBase implements TaskInterface {
    *   The fixture.
    * @param \Acquia\Orca\ProcessRunner $process_runner
    *   The process runner.
+   * @param string $project_dir
+   *   The ORCA project directory.
    */
-  public function __construct(Finder $finder, Fixture $fixture, ProcessRunner $process_runner) {
+  public function __construct(Finder $finder, Fixture $fixture, ProcessRunner $process_runner, string $project_dir) {
     $this->fixture = $fixture;
     $this->finder = clone($finder);
     $this->processRunner = $process_runner;
+    $this->projectDir = $project_dir;
   }
 
   /**

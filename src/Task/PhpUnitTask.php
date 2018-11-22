@@ -3,33 +3,12 @@
 namespace Acquia\Orca\Task;
 
 use Acquia\Orca\Fixture\Fixture;
-use Acquia\Orca\ProcessRunner;
-use Symfony\Component\Finder\Finder;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 
 /**
  * Runs PHPUnit tests.
- *
- * @property string $projectDir
  */
 class PhpUnitTask extends TaskBase {
-
-  /**
-   * Constructs an instance.
-   *
-   * @param \Symfony\Component\Finder\Finder $finder
-   *   The finder.
-   * @param \Acquia\Orca\Fixture\Fixture $fixture
-   *   The fixture.
-   * @param string $project_dir
-   *   The ORCA project directory.
-   * @param \Acquia\Orca\ProcessRunner $process_runner
-   *   The process runner.
-   */
-  public function __construct(Finder $finder, Fixture $fixture, string $project_dir, ProcessRunner $process_runner) {
-    parent::__construct($finder, $fixture, $process_runner);
-    $this->projectDir = $project_dir;
-  }
 
   /**
    * {@inheritdoc}
