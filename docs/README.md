@@ -12,13 +12,11 @@ ORCA's guiding design principle is to use products as a customer would. It creat
 
 | What does it do? | What is the value? |
 | --- | --- |
-| Validate `composer.json` files | Ensures valid and complete Composer configurations |
-| Lint PHP | Ensures valid PHP syntax |
-| Sniff for PHP version incompatibilities | Ensures compatibility with all supported versions of PHP |
-| Add all product modules to a BLT project via Composer | Ensures that all product modules can be added to the same codebase via Composer. (Prevents dependency conflicts.) |
-| Install all product modules and submodules | Ensures that there are no install time conflicts between product modules |
-| Run all product module automated tests (Behat and PHPUnit) | Ensures that there are no functional conflicts between product modules and prevents regressions |
-| Add only the product module under test to a BLT project via Composer, install with submodules, and run automated tests | Ensures that there are no undeclared dependencies on other product modules
+| Add all product modules to a BLT project via Composer, install them and their submodules, and run their automated tests. | Ensures that all product modules can be added to the same codebase via Composer. (Prevents dependency conflicts.) Ensures that there are no install time conflicts between product modules. Ensures that there are no functional conflicts between product modules and prevents regressions. |
+| Add only the product module under test to a BLT project via Composer, install it and its submodules, and run its automated tests. | Ensures that there are no undeclared dependencies on other product modules. |
+| Lint PHP. | Ensures valid PHP syntax. (Prevents PHP warnings and errors.) |
+| Sniff for PHP version incompatibilities. | Ensures compatibility with all supported versions of PHP. |
+| Validate `composer.json` files. | Ensures valid and complete Composer configurations. |
 
 ## Usage
 
