@@ -92,7 +92,7 @@ class InitCommandTest extends CommandTestBase {
     $application->add(new InitCommand($fixture_creator, $fixture, $product_data, $fixture_remover));
     /** @var \Acquia\Orca\Command\Fixture\InitCommand $command */
     $command = $application->find(InitCommand::getDefaultName());
-    $this->assertInstanceOf(InitCommand::class, $command);
+    $this->assertInstanceOf(InitCommand::class, $command, 'Successfully instantiated class.');
     return new CommandTester($command);
   }
 

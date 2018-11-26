@@ -67,7 +67,7 @@ class RmCommandTest extends CommandTestBase {
     $application->add(new RmCommand($fixture, $remover));
     /** @var \Acquia\Orca\Command\Fixture\RmCommand $command */
     $command = $application->find(RmCommand::getDefaultName());
-    $this->assertInstanceOf(RmCommand::class, $command);
+    $this->assertInstanceOf(RmCommand::class, $command, 'Successfully instantiated class.');
     return new CommandTester($command);
   }
 
