@@ -13,10 +13,10 @@ use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
 
 /**
- * @property \Prophecy\Prophecy\ObjectProphecy $creator
- * @property \Prophecy\Prophecy\ObjectProphecy $fixture
- * @property \Prophecy\Prophecy\ObjectProphecy $productData
- * @property \Prophecy\Prophecy\ObjectProphecy $remover
+ * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Fixture\Creator $creator
+ * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Fixture\Fixture $fixture
+ * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Fixture\ProductData $productData
+ * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Fixture\Remover $remover
  */
 class InitCommandTest extends CommandTestBase {
 

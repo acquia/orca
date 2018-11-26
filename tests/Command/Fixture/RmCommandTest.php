@@ -11,8 +11,8 @@ use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
 
 /**
- * @property \Prophecy\Prophecy\ObjectProphecy $fixture
- * @property \Prophecy\Prophecy\ObjectProphecy $remover
+ * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Fixture\Fixture $fixture
+ * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Fixture\Remover $remover
  */
 class RmCommandTest extends CommandTestBase {
 

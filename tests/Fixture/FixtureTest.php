@@ -10,8 +10,8 @@ use Symfony\Component\Filesystem\Filesystem;
 /**
  * @covers \Acquia\Orca\Fixture\Fixture
  *
- * @property \Prophecy\Prophecy\ObjectProphecy $filesystem
- * @property \Prophecy\Prophecy\ObjectProphecy $productData
+ * @property \Prophecy\Prophecy\ObjectProphecy|\Symfony\Component\Filesystem\Filesystem $filesystem
+ * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Fixture\ProductData $productData
  * @property string $rootPath
  */
 class FixtureTest extends TestCase {

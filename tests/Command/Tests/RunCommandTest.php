@@ -14,11 +14,11 @@ use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
 
 /**
- * @property \Prophecy\Prophecy\ObjectProphecy $behat
- * @property \Prophecy\Prophecy\ObjectProphecy $fixture
- * @property \Prophecy\Prophecy\ObjectProphecy $phpunit
- * @property \Prophecy\Prophecy\ObjectProphecy $taskRunner
- * @property \Prophecy\Prophecy\ObjectProphecy $webServer
+ * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Task\BehatTask $behat
+ * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Fixture\Fixture $fixture
+ * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Task\PhpUnitTask $phpunit
+ * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Task\TaskRunner $taskRunner
+ * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\WebServer $webServer
  */
 class RunCommandTest extends CommandTestBase {
 
