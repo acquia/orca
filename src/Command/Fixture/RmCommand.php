@@ -57,7 +57,7 @@ class RmCommand extends Command {
 
     /** @var \Symfony\Component\Console\Helper\QuestionHelper $helper */
     $helper = $this->getHelper('question');
-    $question = new ConfirmationQuestion('Are you sure you want to remove the test fixture? ');
+    $question = new ConfirmationQuestion(sprintf('Are you sure you want to remove the test fixture at %s? ', $this->fixture->rootPath()));
     if (
       !$input->getOption('force')
       && ($input->getOption('no-interaction') || !$helper->ask($input, $output, $question))

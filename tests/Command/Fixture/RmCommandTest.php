@@ -50,8 +50,8 @@ class RmCommandTest extends CommandTestBase {
   public function providerCommand() {
     return [
       [FALSE, [], [], 0, StatusCodes::ERROR, sprintf("Error: No fixture exists at %s.\n", self::FIXTURE_ROOT)],
-      [TRUE, [], ['n'], 0, StatusCodes::USER_CANCEL, 'Are you sure you want to remove the test fixture? '],
-      [TRUE, [], ['y'], 1, StatusCodes::OK, 'Are you sure you want to remove the test fixture? '],
+      [TRUE, [], ['n'], 0, StatusCodes::USER_CANCEL, 'Are you sure you want to remove the test fixture at /var/www/orca-build? '],
+      [TRUE, [], ['y'], 1, StatusCodes::OK, 'Are you sure you want to remove the test fixture at /var/www/orca-build? '],
       [TRUE, ['-n' => TRUE], [], 0, StatusCodes::USER_CANCEL, ''],
       [TRUE, ['-f' => TRUE], [], 1, StatusCodes::OK, ''],
       [TRUE, ['-f' => TRUE, '-n' => TRUE], [], 1, StatusCodes::OK, ''],
