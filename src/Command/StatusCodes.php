@@ -9,10 +9,10 @@ namespace Acquia\Orca\Command;
  */
 final class StatusCodes {
 
-  const OK = 0;
+  public const OK = 0;
 
-  const ERROR = 1;
+  public const ERROR = 1;
 
-  const USER_CANCEL = 75;
+  public const USER_CANCEL = 75;
 
 }
