@@ -21,7 +21,7 @@ class Kernel extends BaseKernel {
    * {@inheritdoc}
    */
   public function getCacheDir() {
-    return $this->getProjectDir() . '/var/cache/' . $this->environment;
+    return $this->getProjectDir() . '/var/cache';
   }
 
   /**
