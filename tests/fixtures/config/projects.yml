@@ -1,0 +1,6 @@
+---
+drupal/example:
+  version: "*"
+  dir: example
+  module: example
+  submodules: []

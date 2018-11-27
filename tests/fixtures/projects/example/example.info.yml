@@ -1,0 +1,5 @@
+name: Example
+type: module
+description: Provides an example module for testing purposes.
+package: Other
+core: 8.x

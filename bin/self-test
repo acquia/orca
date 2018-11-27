@@ -4,20 +4,22 @@
 
 set -e
 
+cd "$(dirname "$0")/.."
+
 composer install
 
 echo && composer phpcs
 echo && composer phpunit
 echo && composer phpmd
 
-# Clone an example module into place as a test SUT.
-if [[ ! -d "../lightning-api" ]]; then
-  git -C ../ clone --branch 8.x-2.x https://git.drupal.org/project/lightning_api.git --depth 1 lightning-api
+# Symlink an example project into place as a test SUT.
+if [[ ! -d "../example" ]]; then
+  ln -s orca/tests/fixtures/projects/example ../
 fi
 
 # Avoid testing locally with a stale cache.
 ./bin/orca cache:clear
 
-./bin/travis/script drupal/lightning_api
+ORCA_SELF_TEST=true ./bin/travis/script drupal/example
 
 echo && times
