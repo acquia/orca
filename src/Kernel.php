@@ -51,7 +51,6 @@ class Kernel extends BaseKernel {
   protected function build(ContainerBuilder $container_builder): void {
     $container_builder->addCompilerPass($this->createCollectingCompilerPass());
     $container_builder->setParameter('app.fixture_dir', $this->getFixtureDir());
-    $container_builder->setParameter('app.projects_config', $this->getProjectsConfig());
   }
 
   /**
@@ -87,20 +86,6 @@ class Kernel extends BaseKernel {
    */
   protected function getFixtureDir(): string {
     return dirname($this->getProjectDir()) . '/orca-build';
-  }
-
-  /**
-   * Gets the path to the projects configuration.
-   *
-   * @return string
-   */
-  private function getProjectsConfig(): string {
-    $path = $this->getProjectDir();
-    if (getenv('ORCA_SELF_TEST')) {
-      $path .= '/tests/fixtures';
-    }
-    $path .= '/config/projects.yml';
-    return $path;
   }
 
 }

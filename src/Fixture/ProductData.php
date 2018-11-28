@@ -24,7 +24,7 @@ class ProductData {
    * @param string $projects_config
    *   The path to the projects configuration file.
    */
-  public function __construct(Parser $parser, string $projects_config) {
+  public function __construct(Parser $parser, $projects_config) {
     $this->data = $parser->parseFile($projects_config);
   }
 

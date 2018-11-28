@@ -1,4 +1,7 @@
 ---
+parameters:
+  env(ORCA_PROJECTS_CONFIG): "config/projects.yml"
+
 services:
 
   _defaults:
@@ -7,7 +10,7 @@ services:
     bind:
       $fixture_dir: "%app.fixture_dir%"
       $project_dir: "%kernel.project_dir%"
-      $projects_config: "%app.projects_config%"
+      $projects_config: "%env(ORCA_PROJECTS_CONFIG)%"
     public: true
 
   Acquia\Orca\:

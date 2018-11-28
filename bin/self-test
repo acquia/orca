@@ -20,6 +20,7 @@ fi
 # Avoid testing locally with a stale cache.
 ./bin/orca cache:clear
 
-ORCA_SELF_TEST=true ./bin/travis/script drupal/example
+ORCA_PROJECTS_CONFIG="tests/fixtures/config/projects.yml" \
+  ./bin/travis/script drupal/example
 
 echo && times
