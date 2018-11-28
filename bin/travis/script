@@ -8,12 +8,12 @@ if [[ -z "$1" ]]; then
   exit 127
 fi
 
-ORCA_ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
-
 function run {
   echo "> $@"
   eval "$@"
 }
+
+ORCA_ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 
 # Perform static code analysis.
 run ${ORCA_ROOT}/bin/orca static-analysis:run ./
