@@ -12,15 +12,17 @@ echo && composer phpcs
 echo && composer phpunit
 echo && composer phpmd
 
-# Symlink an example project into place as a test SUT.
-if [[ ! -d "../example" ]]; then
-  ln -s orca/tests/fixtures/projects/example ../
-fi
+# Copy an example project into place as a test SUT.
+[[ -d "../example" ]] && rm -r ../example
+cp -R tests/fixtures/projects/example ../
 
 # Avoid testing locally with a stale cache.
 ./bin/orca cache:clear
 
+# Execute tests from the SUT directory as a SUT would.
+cd ../example
+
 ORCA_PROJECTS_CONFIG="tests/fixtures/config/projects.yml" \
-  ./bin/travis/script drupal/example
+  ../orca/bin/travis/script drupal/example
 
 echo && times

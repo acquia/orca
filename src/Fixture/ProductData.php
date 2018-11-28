@@ -22,10 +22,13 @@ class ProductData {
    * @param \Symfony\Component\Yaml\Parser $parser
    *   The YAML parser.
    * @param string $projects_config
-   *   The path to the projects configuration file.
+   *   The path to the projects configuration file relative to the ORCA project
+   *   directory.
+   * @param string $project_dir
+   *   The ORCA project directory.
    */
-  public function __construct(Parser $parser, $projects_config) {
-    $this->data = $parser->parseFile($projects_config);
+  public function __construct(Parser $parser, string $projects_config, string $project_dir) {
+    $this->data = $parser->parseFile("{$project_dir}/{$projects_config}");
   }
 
   /**
