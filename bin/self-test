@@ -13,8 +13,8 @@ echo && composer phpunit
 echo && composer phpmd
 
 # Copy an example project into place as a test SUT.
-[[ -d "../example" ]] && rm -r ../example
-cp -R tests/fixtures/projects/example ../
+rm -rf ../example
+cp -R example ../
 
 # Avoid testing locally with a stale cache.
 ./bin/orca cache:clear
@@ -22,7 +22,7 @@ cp -R tests/fixtures/projects/example ../
 # Execute tests from the SUT directory as a SUT would.
 cd ../example
 
-ORCA_PROJECTS_CONFIG="tests/fixtures/config/projects.yml" \
+ORCA_PROJECTS_CONFIG="tests/Fixture/projects.yml" \
   ../orca/bin/travis/script drupal/example
 
 echo && times

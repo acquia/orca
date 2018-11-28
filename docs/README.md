@@ -22,7 +22,7 @@ ORCA's guiding design principle is to use products as a customer would. It creat
 
 ### Continuous integration
 
-ORCA's primary use case is in a continuous integration (CI) workflow, running against pull requests and commits. See [`examples/.travis.yml`](../examples/.travis.yml) for an example Travis CI configuration.
+ORCA's primary use case is in a continuous integration (CI) workflow, running against pull requests and commits. See [`examples/.travis.yml`](../example/.travis.yml) for an example Travis CI configuration.
 
 ### Local development
 
