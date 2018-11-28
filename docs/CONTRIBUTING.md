@@ -1,4 +1,4 @@
-## Contributing to ORCA
+# Contributing to ORCA
 
 - [Fork this repo](https://help.github.com/articles/fork-a-repo/) to your own user
 - Set your fork as origin, and this repo as upstream. From inside the `orca` folder:
