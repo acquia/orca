@@ -122,13 +122,12 @@ class Creator {
     $this->processRunner->runVendorBinProcess([
       'composer',
       'create-project',
-      // @todo Remove the dev branch when composer-merge-plugin removal work
-      //   has been merged into BLT.
-      'acquia/blt-project:dev-remove-merge-plugin',
-      $this->fixture->rootPath(),
       '--no-interaction',
       '--no-install',
       '--no-scripts',
+      // @todo Remove the dev branch as soon as BLT 10.x has a working release.
+      'acquia/blt-project:dev-orca-do-not-delete',
+      $this->fixture->rootPath(),
     ]);
   }
 
