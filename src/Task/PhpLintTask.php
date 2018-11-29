@@ -21,7 +21,7 @@ class PhpLintTask extends TaskBase {
    */
   public function execute(): void {
     try {
-      $this->processRunner->runVendorBinProcess([
+      $process = $this->processRunner->createOrcaVendorBinProcess([
         'parallel-lint',
         '-e',
         'inc,install,module,php,profile,test,theme',
@@ -31,6 +31,7 @@ class PhpLintTask extends TaskBase {
         '--blame',
         $this->getPath(),
       ]);
+      $this->processRunner->run($process);
     }
     catch (ProcessFailedException $e) {
       throw new TaskFailureException();

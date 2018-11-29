@@ -119,7 +119,7 @@ class Creator {
    */
   private function createBltProject(): void {
     $this->output->section('Creating BLT project');
-    $this->processRunner->runVendorBinProcess([
+    $process = $this->processRunner->createOrcaVendorBinProcess([
       'composer',
       'create-project',
       '--no-interaction',
@@ -129,6 +129,7 @@ class Creator {
       'acquia/blt-project:dev-orca-do-not-delete',
       $this->fixture->rootPath(),
     ]);
+    $this->processRunner->run($process);
   }
 
   /**
@@ -136,7 +137,7 @@ class Creator {
    */
   private function removeUnneededProjects(): void {
     $this->output->section('Removing unneeded projects');
-    $this->processRunner->runVendorBinProcess([
+    $process = $this->processRunner->createOrcaVendorBinProcess([
       'composer',
       'remove',
       // The Lightning profile requirement conflicts with individual Lightning
@@ -148,7 +149,8 @@ class Creator {
       'drupal/acquia_connector',
       'drupal/acquia_purge',
       '--no-update',
-    ], $this->fixture->rootPath());
+    ]);
+    $this->processRunner->run($process, $this->fixture->rootPath());
   }
 
   /**
@@ -232,10 +234,11 @@ class Creator {
    * Requires the dependencies via Composer.
    */
   private function requireDependencies(): void {
-    $this->processRunner->runVendorBinProcess(array_merge(
+    $process = $this->processRunner->createOrcaVendorBinProcess(array_merge(
       ['composer', 'require'],
       $this->getAcquiaProductModuleDependencies()
-    ), $this->fixture->rootPath());
+    ));
+    $this->processRunner->run($process, $this->fixture->rootPath());
   }
 
   /**
@@ -246,11 +249,12 @@ class Creator {
       $this->fixture->rootPath('composer.lock'),
       $this->sutDestPath,
     ]);
-    $this->processRunner->runVendorBinProcess([
+    $process = $this->processRunner->createOrcaVendorBinProcess([
       'composer',
       'install',
       '--no-interaction',
-    ], $this->fixture->rootPath());
+    ]);
+    $this->processRunner->run($process, $this->fixture->rootPath());
   }
 
   /**
@@ -281,8 +285,13 @@ class Creator {
    */
   private function commitCodeChanges($message): void {
     $cwd = $this->fixture->rootPath();
-    $this->processRunner->runExecutableProcess(['git', 'add', '-A'], $cwd);
-    $this->processRunner->runExecutableProcess([
+    $process = $this->processRunner->createExecutableProcess([
+      'git',
+      'add',
+      '-A',
+    ]);
+    $this->processRunner->run($process, $cwd);
+    $process = $this->processRunner->createExecutableProcess([
       'git',
       'commit',
       '-m',
@@ -290,7 +299,8 @@ class Creator {
       '--author',
       'ORCA <no-reply@acquia.com>',
       '--allow-empty',
-    ], $cwd);
+    ]);
+    $this->processRunner->run($process, $cwd);
   }
 
   /**
@@ -299,8 +309,8 @@ class Creator {
   private function installDrupal(): void {
     $this->output->section('Installing Drupal');
     $this->ensureDrupalSettings();
-    $this->processRunner->runProcess([
-      'vendor/bin/drush',
+    $process = $this->processRunner->createFixtureVendorBinProcess([
+      'drush',
       'site-install',
       'minimal',
       "install_configure_form.update_status_module='[FALSE,FALSE]'",
@@ -311,7 +321,8 @@ class Creator {
       '--no-interaction',
       '--verbose',
       '--ansi',
-    ], $this->fixture->rootPath());
+    ]);
+    $this->processRunner->run($process, $this->fixture->rootPath());
     $this->commitCodeChanges('Installed Drupal.');
   }
 
@@ -375,11 +386,12 @@ PHP;
       return;
     }
 
-    $this->processRunner->runProcess(array_merge([
-      'vendor/bin/drush',
+    $process = $this->processRunner->createFixtureVendorBinProcess(array_merge([
+      'drush',
       'pm-enable',
       '-y',
-    ], $module_list), $this->fixture->rootPath());
+    ], $module_list));
+    $this->processRunner->run($process, $this->fixture->rootPath());
   }
 
   /**
@@ -387,12 +399,13 @@ PHP;
    */
   private function createBackupBranch(): void {
     $this->output->section('Creating backup branch');
-    $this->processRunner->runExecutableProcess([
+    $process = $this->processRunner->createExecutableProcess([
       'git',
       'branch',
       '--force',
       Fixture::BASE_FIXTURE_GIT_BRANCH,
-    ], $this->fixture->rootPath());
+    ]);
+    $this->processRunner->run($process, $this->fixture->rootPath());
   }
 
   /**

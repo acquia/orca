@@ -58,12 +58,13 @@ class Remover {
 
     // Filesystem::remove() seems like a better choice than a raw Process, but
     // for reasons unknown, it fails due to file permissions.
-    $this->processRunner->runExecutableProcess([
+    $process = $this->processRunner->createExecutableProcess([
       'chmod',
       '-R',
       'u+w',
       '.',
-    ], $path);
+    ]);
+    $this->processRunner->run($process, $path);
   }
 
   /**

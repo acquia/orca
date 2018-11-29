@@ -170,14 +170,15 @@ class PhpUnitTask extends TaskBase {
    */
   protected function runPhpUnit(): void {
     try {
-      $this->processRunner->runVendorBinProcess([
+      $process = $this->processRunner->createOrcaVendorBinProcess([
         'phpunit',
         '--colors=always',
         '--stop-on-failure',
         "--configuration={$this->fixture->docrootPath('core/phpunit.xml.dist')}",
         "--group=orca_public",
         $this->fixture->testsDirectory(),
-      ], $this->fixture->rootPath());
+      ]);
+      $this->processRunner->run($process, $this->fixture->rootPath());
     }
     catch (ProcessFailedException $e) {
       throw new TaskFailureException();
