@@ -15,7 +15,7 @@
         "ext-json": "*",
         "behat/behat": "^3.5",
         "composer/composer": "^1.7",
-        "dealerdirect/phpcodesniffer-composer-installer": "^0.4.4",
+        "dealerdirect/phpcodesniffer-composer-installer": "^0.5",
         "drupal/coder": "^8.3",
         "enm1989/chromedriver": "^2.43",
         "jakub-onderka/php-console-highlighter": "^0.4.0",
