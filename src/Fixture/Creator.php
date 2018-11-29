@@ -79,7 +79,6 @@ class Creator {
    */
   public function create(): void {
     $this->createBltProject();
-    $this->removeUnneededProjects();
     $this->addAcquiaProductModules();
     $this->installDrupal();
     $this->installAcquiaProductModules();
@@ -123,35 +122,14 @@ class Creator {
     $process = $this->processRunner->createOrcaVendorBinProcess([
       'composer',
       'create-project',
+      '--stability=dev',
       '--no-interaction',
       '--no-install',
       '--no-scripts',
-      // @todo Remove the dev branch as soon as BLT 10.x has a working release.
-      'acquia/blt-project:dev-orca-do-not-delete',
+      'acquia/blt-project',
       $this->fixture->rootPath(),
     ]);
     $this->processRunner->run($process);
-  }
-
-  /**
-   * Removes unneeded projects.
-   */
-  private function removeUnneededProjects(): void {
-    $this->output->section('Removing unneeded projects');
-    $process = $this->processRunner->createOrcaVendorBinProcess([
-      'composer',
-      'remove',
-      // The Lightning profile requirement conflicts with individual Lightning
-      // submodule requirements--namely, it prevents them from being symlinked
-      // via a local "path" repository.
-      'acquia/lightning',
-      // Other Acquia projects are only conditionally required later and should
-      // in no case be included up-front.
-      'drupal/acquia_connector',
-      'drupal/acquia_purge',
-      '--no-update',
-    ]);
-    $this->processRunner->run($process, $this->fixture->rootPath());
   }
 
   /**
