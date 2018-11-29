@@ -9,6 +9,7 @@ use Symfony\Component\Process\Process;
  * Provides a fixture.
  *
  * @property \Acquia\Orca\Fixture\Fixture $fixture
+ * @property \Acquia\Orca\ProcessRunner $processRunner
  */
 class WebServer {
 
@@ -24,20 +25,24 @@ class WebServer {
    *
    * @param \Acquia\Orca\Fixture\Fixture $fixture
    *   The fixture.
+   * @param \Acquia\Orca\ProcessRunner $process_runner
+   *   The process runner.
    */
-  public function __construct(Fixture $fixture) {
+  public function __construct(Fixture $fixture, ProcessRunner $process_runner) {
     $this->fixture = $fixture;
+    $this->processRunner = $process_runner;
   }
 
   /**
    * Starts the web server.
    */
   public function start() {
-    $this->process = new Process([
-      'php',
-      '-S',
+    $this->process = $this->processRunner->createFixtureVendorBinProcess([
+      'drush',
+      'runserver',
       Fixture::WEB_ADDRESS,
-    ], $this->fixture->docrootPath());
+    ]);
+    $this->process->setWorkingDirectory($this->fixture->docrootPath());
     $this->process->start();
   }
 
