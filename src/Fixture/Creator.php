@@ -3,6 +3,8 @@
 namespace Acquia\Orca\Fixture;
 
 use Acquia\Orca\ProcessRunner;
+use Composer\Config\JsonConfigSource;
+use Composer\Json\JsonFile;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Filesystem\Filesystem;
 
@@ -34,6 +36,20 @@ class Creator {
    * @var string|null
    */
   private $sut;
+
+  /**
+   * The fixture's composer.json data before adding Acquia product modules.
+   *
+   * @var array
+   */
+  private $originalJsonConfigData = [];
+
+  /**
+   * The Composer API for the fixture's composer.json.
+   *
+   * @var \Composer\Config\JsonConfigSource|null
+   */
+  private $jsonConfigSource;
 
   /**
    * Constructs an instance.
@@ -103,7 +119,7 @@ class Creator {
    */
   private function createBltProject(): void {
     $this->output->section('Creating BLT project');
-    $this->processRunner->runExecutableProcess([
+    $this->processRunner->runVendorBinProcess([
       'composer',
       'create-project',
       // @todo Remove the dev branch when composer-merge-plugin removal work
@@ -121,7 +137,7 @@ class Creator {
    */
   private function removeUnneededProjects(): void {
     $this->output->section('Removing unneeded projects');
-    $this->processRunner->runExecutableProcess([
+    $this->processRunner->runVendorBinProcess([
       'composer',
       'remove',
       // The Lightning profile requirement conflicts with individual Lightning
@@ -159,15 +175,15 @@ class Creator {
       $this->addSutRepository();
     }
     $this->addExtraData();
-    $this->saveComposerJson();
   }
 
   /**
    * Loads the fixture's composer.json data.
    */
   private function loadComposerJson(): void {
-    $json = file_get_contents($this->fixture->rootPath('composer.json'));
-    $this->composerConfig = json_decode($json);
+    $json_file = new JsonFile($this->fixture->rootPath('composer.json'));
+    $this->originalJsonConfigData = $json_file->read();
+    $this->jsonConfigSource = new JsonConfigSource($json_file);
   }
 
   /**
@@ -178,50 +194,46 @@ class Creator {
     // overrides need to be added to the beginning in order to take effect.
     // Drush commands, which we don't WANT to override, need to come yet
     // earlier.
-    $this->composerConfig->extra->{'installer-paths'} = (object) array_merge(
-      ['drush/Commands/{$name}' => (array) $this->composerConfig->extra->{'installer-paths'}->{'drush/Commands/{$name}'}],
-      [Fixture::PRODUCT_MODULE_INSTALL_PATH . '/{$name}' => $this->productData->packageNames()],
-      (array) $this->composerConfig->extra->{'installer-paths'}
-    );
+    $this->jsonConfigSource->removeProperty('extra.installer-paths');
+    $this->jsonConfigSource->addProperty('extra.installer-paths.drush/Commands/{$name}', ['type:drupal-drush']);
+    $this->jsonConfigSource->addProperty('extra.installer-paths.' . Fixture::PRODUCT_MODULE_INSTALL_PATH . '/{$name}', $this->productData->packageNames());
+    foreach ($this->originalJsonConfigData['extra']['installer-paths'] as $key => $value) {
+      $this->jsonConfigSource->addProperty("extra.installer-paths.{$key}", $value);
+    }
   }
 
   /**
    * Adds a Composer repository for the system under test.
    */
   private function addSutRepository(): void {
-    // Avoid PHP warnings by creating the "repositories" property if absent.
-    if (!property_exists($this->composerConfig, 'repositories') || !is_object($this->composerConfig->repositories)) {
-      $this->composerConfig->repositories = new \stdClass();
-    }
     // Repositories take precedence in the order specified (i.e., first match
     // found wins), so our override needs to be added to the beginning in order
     // to take effect.
-    $this->composerConfig->repositories = (object) array_merge(
-      [
-        $this->sut => [
-          'type' => 'path',
-          'url' => "../{$this->sutSourceBaseName}",
-        ],
-      ],
-      (array) $this->composerConfig->repositories
-    );
+    $this->jsonConfigSource->removeProperty('repositories');
+    $this->jsonConfigSource->addRepository($this->sut, [
+      'type' => 'path',
+      'url' => "../{$this->sutSourceBaseName}",
+    ]);
+    foreach ($this->originalJsonConfigData['repositories'] as $key => $value) {
+      $this->jsonConfigSource->addRepository($key, $value);
+    }
   }
 
   /**
    * Adds data about the fixture to the "extra" property.
    */
   private function addExtraData() {
-    $this->composerConfig->extra->orca = (object) [
+    $this->jsonConfigSource->addProperty('extra.orca', [
       'sut' => $this->sut,
       'sut-only' => $this->isSutOnly,
-    ];
+    ]);
   }
 
   /**
    * Requires the dependencies via Composer.
    */
   private function requireDependencies(): void {
-    $this->processRunner->runExecutableProcess(array_merge(
+    $this->processRunner->runVendorBinProcess(array_merge(
       ['composer', 'require'],
       $this->getAcquiaProductModuleDependencies()
     ), $this->fixture->rootPath());
@@ -235,7 +247,7 @@ class Creator {
       $this->fixture->rootPath('composer.lock'),
       $this->sutDestPath,
     ]);
-    $this->processRunner->runExecutableProcess([
+    $this->processRunner->runVendorBinProcess([
       'composer',
       'install',
       '--no-interaction',
@@ -260,14 +272,6 @@ class Creator {
     }
 
     return array_values($dependencies);
-  }
-
-  /**
-   * Saves the fixture's composer.json data.
-   */
-  private function saveComposerJson(): void {
-    $data = json_encode($this->composerConfig, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
-    file_put_contents($this->fixture->rootPath('composer.json'), $data);
   }
 
   /**
