@@ -1,6 +1,7 @@
 ---
 parameters:
   env(ORCA_PROJECTS_CONFIG): "config/projects.yml"
+  env(ORCA_FIXTURE_DIR): "%app.fixture_dir%"
 
 services:
 
@@ -8,7 +9,7 @@ services:
     autoconfigure: true
     autowire: true
     bind:
-      $fixture_dir: "%app.fixture_dir%"
+      $fixture_dir: "%env(ORCA_FIXTURE_DIR)%"
       $project_dir: "%kernel.project_dir%"
       $projects_config: "%env(ORCA_PROJECTS_CONFIG)%"
     public: true

@@ -12,17 +12,18 @@ echo && composer phpcs
 echo && composer phpunit
 echo && composer phpmd
 
+# Avoid testing locally with a stale cache.
+./bin/orca cache:clear
+
 # Copy an example project into place as a test SUT.
 rm -rf ../example
 cp -R example ../
 
-# Avoid testing locally with a stale cache.
-./bin/orca cache:clear
-
 # Execute tests from the SUT directory as a SUT would.
 cd ../example
 
-ORCA_PROJECTS_CONFIG="tests/Fixture/projects.yml" \
+ORCA_FIXTURE_DIR="$(cd .. && pwd)/orca-build-$(date +%Y%m%d_%HH%mm%SS)" \
+  ORCA_PROJECTS_CONFIG="tests/Fixture/projects.yml" \
   ../orca/bin/travis/script drupal/example
 
 echo && times
