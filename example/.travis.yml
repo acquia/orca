@@ -1,4 +1,3 @@
-# Example Travis CI configuration for a drupal/example package.
 ---
 language: php
 dist: trusty
