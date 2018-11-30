@@ -12,17 +12,17 @@ ORCA's guiding design principle is to use products as a customer would. It creat
 
 | What does it do? | What is the value? |
 | --- | --- |
-| Add all product modules to a BLT project via Composer, install them and their submodules, and run their automated tests. | Ensures that all product modules can be added to the same codebase via Composer (prevents dependency conflicts), that there are no install time conflicts between product modules, that there are no functional conflicts between product modules, and prevents regressions. |
-| Add only the product module under test to a BLT project via Composer, install it and its submodules, and run its automated tests. | Ensures that the product module under test has no undeclared dependencies on other product modules and functions correctly on its own. |
-| Lint PHP. | Ensures valid PHP syntax. (Prevents PHP warnings and errors.) |
-| Sniff for PHP version incompatibilities. | Ensures compatibility with all supported versions of PHP. |
-| Validate `composer.json` files. | Ensures valid and complete Composer configurations. |
+| Adds all product modules to a BLT project via Composer, installs them and their submodules, and runs their automated tests. | Ensures that all product modules can be added to the same codebase via Composer (prevents dependency conflicts), that there are no install time or functional conflicts between them, and that they have no undocumented dependencies, and prevents regressions. |
+| Adds only the product module under test to a BLT project via Composer, installs it and its submodules, and runs its automated tests. | Ensures that the product module under test has no undeclared dependencies on other product modules and functions correctly on its own. |
+| Lints PHP. | Ensures valid PHP syntax. (Prevents PHP warnings and errors.) |
+| Sniffs for PHP version incompatibilities. | Ensures compatibility with all supported versions of PHP. |
+| Validates `composer.json` files. | Ensures valid and complete Composer configurations and prevents unexpected behavior when installing modules via Composer. |
 
 ## Usage
 
 ### Continuous integration
 
-ORCA's primary use case is in a continuous integration (CI) workflow, running against pull requests and commits. See [`examples/.travis.yml`](../example/.travis.yml) for an example Travis CI configuration.
+ORCA's primary use case is in a continuous integration (CI) workflow, running against pull requests and commits. See [`example/.travis.yml`](../example/.travis.yml) for an example Travis CI configuration.
 
 ### Local development
 
