@@ -1,10 +1,10 @@
 <?php
 
-namespace Acquia\Orca\Tests;
+namespace Acquia\Orca\Tests\Fixture;
 
 use Acquia\Orca\Fixture\Fixture;
 use Acquia\Orca\ProcessRunner;
-use Acquia\Orca\WebServer;
+use Acquia\Orca\Fixture\WebServer;
 use PHPUnit\Framework\TestCase;
 
 class WebServerTest extends TestCase {

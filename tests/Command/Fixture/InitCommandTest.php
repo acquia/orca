@@ -20,10 +20,6 @@ use Symfony\Component\Console\Tester\CommandTester;
  */
 class InitCommandTest extends CommandTestBase {
 
-  private const FIXTURE_ROOT = '/var/www/orca-build';
-  private const VALID_PACKAGE = 'drupal/lightning_api';
-  private const INVALID_PACKAGE = 'invalid';
-
   protected function setUp() {
     $this->creator = $this->prophesize(Creator::class);
     $this->remover = $this->prophesize(Remover::class);

@@ -7,6 +7,14 @@ use Symfony\Component\Console\Tester\CommandTester;
 
 class CommandTestBase extends TestCase {
 
+  protected const FIXTURE_ROOT = '/var/www/orca-build';
+
+  protected const FIXTURE_DOCROOT = '/var/www/orca-build/www';
+
+  protected const VALID_PACKAGE = 'drupal/lightning_api';
+
+  protected const INVALID_PACKAGE = 'invalid';
+
   /**
    * Executes a given command with the command tester.
    *

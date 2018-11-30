@@ -9,7 +9,7 @@ use Acquia\Orca\Task\BehatTask;
 use Acquia\Orca\Task\PhpUnitTask;
 use Acquia\Orca\Task\TaskRunner;
 use Acquia\Orca\Tests\Command\CommandTestBase;
-use Acquia\Orca\WebServer;
+use Acquia\Orca\Fixture\WebServer;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
 
@@ -18,11 +18,9 @@ use Symfony\Component\Console\Tester\CommandTester;
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Fixture\Fixture $fixture
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Task\PhpUnitTask $phpunit
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Task\TaskRunner $taskRunner
- * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\WebServer $webServer
+ * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Fixture\WebServer $webServer
  */
 class RunCommandTest extends CommandTestBase {
-
-  private const FIXTURE_ROOT = '/var/www/orca-build';
 
   private const TESTS_DIR = '/var/www/orca-build/docroot/modules/contrib/acquia';
 
@@ -96,7 +94,7 @@ class RunCommandTest extends CommandTestBase {
     $phpunit = $this->phpunit->reveal();
     /** @var \Acquia\Orca\Task\TaskRunner $task_runner */
     $task_runner = $this->taskRunner->reveal();
-    /** @var \Acquia\Orca\WebServer $web_server */
+    /** @var \Acquia\Orca\Fixture\WebServer $web_server */
     $web_server = $this->webServer->reveal();
     $application->add(new RunCommand($behat, $fixture, $phpunit, $task_runner, $web_server));
     /** @var \Acquia\Orca\Command\Tests\RunCommand $command */

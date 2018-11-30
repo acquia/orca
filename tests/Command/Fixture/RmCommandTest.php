@@ -16,8 +16,6 @@ use Symfony\Component\Console\Tester\CommandTester;
  */
 class RmCommandTest extends CommandTestBase {
 
-  private const FIXTURE_ROOT = '/var/www/orca-build';
-
   protected function setUp() {
     $this->remover = $this->prophesize(Remover::class);
     $this->fixture = $this->prophesize(Fixture::class);

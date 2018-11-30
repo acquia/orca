@@ -1,8 +1,8 @@
 <?php
 
-namespace Acquia\Orca;
+namespace Acquia\Orca\Fixture;
 
-use Acquia\Orca\Fixture\Fixture;
+use Acquia\Orca\ProcessRunner;
 use Symfony\Component\Process\Process;
 
 /**
