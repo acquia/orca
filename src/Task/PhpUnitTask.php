@@ -130,7 +130,13 @@ class PhpUnitTask extends TaskBase {
       [
         'chrome' => [
           // Start Chrome in headless mode.
-          'switches' => ['headless', 'disable-gpu'],
+          'switches' => [
+            'headless',
+            'disable-gpu',
+            'no-sandbox',
+            'disable-dev-shm-usage',
+            'disable-extensions',
+          ],
         ],
       ],
       'http://localhost:4444',
