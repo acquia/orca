@@ -40,7 +40,7 @@ class RunServerCommand extends Command {
   protected function configure() {
     $this
       ->setAliases(['serve'])
-      ->setDescription('Runs the web server');
+      ->setDescription('Runs the web server for development');
   }
 
   /**

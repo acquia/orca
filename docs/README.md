@@ -40,7 +40,7 @@ Follow these steps to set it up:
 1. Choose a directory to contain your module(s), e.g., `~/Projects`.
 1. Clone ORCA and your module(s) into the directory.
 1. Run `composer install --no-dev` within the `orca` clone.
-1. Invoke the ORCA console application from the terminal: `./bin/orca`. Use the `--help` option to learn more about the various commands or see how they're used in [`bin/travis/script`](../bin/travis/script).
+1. Invoke the ORCA console application from the terminal: `./bin/orca`. Use the `--help` option to learn more about the various commands or see how they're used in [`bin/travis/script`](../bin/travis/script). Use the `fixture:run-server` command to run the web server for development.
 
 ## Additional resources
 
