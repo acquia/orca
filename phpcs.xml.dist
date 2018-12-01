@@ -25,6 +25,7 @@
     <exclude-pattern>tests/*</exclude-pattern>
   </rule>
   <rule ref="Drupal.Commenting.DocComment.MissingShort">
+    <exclude-pattern>example/features/*</exclude-pattern>
     <exclude-pattern>tests/*</exclude-pattern>
   </rule>
   <rule ref="Drupal.Commenting.FunctionComment.Missing">
@@ -35,6 +36,7 @@
   <rule ref="PHPCompatibility"/>
 
   <file>bin/</file>
+  <file>example/</file>
   <file>src/</file>
   <file>tests/</file>
 
