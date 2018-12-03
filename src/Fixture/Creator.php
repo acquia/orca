@@ -2,6 +2,7 @@
 
 namespace Acquia\Orca\Fixture;
 
+use Acquia\Orca\Exception\OrcaException;
 use Acquia\Orca\ProcessRunner;
 use Composer\Config\JsonConfigSource;
 use Composer\Json\JsonFile;
@@ -410,6 +411,8 @@ PHP;
 
   /**
    * Verifies the fixture.
+   *
+   * @throws \Acquia\Orca\Exception\OrcaException
    */
   private function selfCheck(): void {
     $this->output->section('Verifying the fixture');
@@ -426,7 +429,7 @@ PHP;
 
     if ($errors) {
       $this->output->error($errors);
-      return;
+      throw new OrcaException();
     }
 
     $this->output->success('Fixture created');

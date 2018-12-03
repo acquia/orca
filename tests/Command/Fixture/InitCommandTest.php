@@ -4,6 +4,7 @@ namespace Acquia\Orca\Tests\Command\Fixture;
 
 use Acquia\Orca\Command\StatusCodes;
 use Acquia\Orca\Command\Fixture\InitCommand;
+use Acquia\Orca\Exception\OrcaException;
 use Acquia\Orca\Fixture\Remover;
 use Acquia\Orca\Fixture\Fixture;
 use Acquia\Orca\Fixture\Creator;
@@ -34,7 +35,7 @@ class InitCommandTest extends CommandTestBase {
   /**
    * @dataProvider providerCommand
    */
-  public function testCommand($fixture_exists, $args, $methods_called, $status_code, $display) {
+  public function testCommand($fixture_exists, $args, $methods_called, $exception, $status_code, $display) {
     $this->productData
       ->isValidPackage(@$args['--sut'])
       ->shouldBeCalledTimes((int) in_array('isValidPackage', $methods_called))
@@ -55,6 +56,11 @@ class InitCommandTest extends CommandTestBase {
     $this->creator
       ->create()
       ->shouldBeCalledTimes((int) in_array('create', $methods_called));
+    if ($exception) {
+      $this->creator
+        ->create()
+        ->willThrow(OrcaException::class);
+    }
     $tester = $this->createCommandTester();
 
     $this->executeCommand($tester, InitCommand::getDefaultName(), $args);
@@ -65,13 +71,14 @@ class InitCommandTest extends CommandTestBase {
 
   public function providerCommand() {
     return [
-      [TRUE, [], ['exists'], StatusCodes::ERROR, sprintf("Error: Fixture already exists at %s.\nHint: Use the \"--force\" option to remove it and proceed.\n", self::FIXTURE_ROOT)],
-      [TRUE, ['-f' => TRUE], ['exists', 'remove', 'create'], StatusCodes::OK, ''],
-      [FALSE, [], ['exists', 'create'], StatusCodes::OK, ''],
-      [FALSE, ['--sut' => self::INVALID_PACKAGE], ['isValidPackage'], StatusCodes::ERROR, sprintf("Error: Invalid value for \"--sut\" option: \"%s\".\n", self::INVALID_PACKAGE)],
-      [FALSE, ['--sut' => self::VALID_PACKAGE], ['isValidPackage', 'exists', 'create', 'setSut'], StatusCodes::OK, ''],
-      [FALSE, ['--sut' => self::VALID_PACKAGE, '--sut-only' => TRUE], ['isValidPackage', 'exists', 'create', 'setSut', 'setSutOnly'], StatusCodes::OK, ''],
-      [FALSE, ['--sut-only' => TRUE], [], StatusCodes::ERROR, "Error: Cannot create a SUT-only fixture without a SUT.\nHint: Use the \"--sut\" option to specify the SUT.\n"],
+      [TRUE, [], ['exists'], 0, StatusCodes::ERROR, sprintf("Error: Fixture already exists at %s.\nHint: Use the \"--force\" option to remove it and proceed.\n", self::FIXTURE_ROOT)],
+      [TRUE, ['-f' => TRUE], ['exists', 'remove', 'create'], 0, StatusCodes::OK, ''],
+      [FALSE, [], ['exists', 'create'], 0, StatusCodes::OK, ''],
+      [FALSE, ['--sut' => self::INVALID_PACKAGE], ['isValidPackage'], 0, StatusCodes::ERROR, sprintf("Error: Invalid value for \"--sut\" option: \"%s\".\n", self::INVALID_PACKAGE)],
+      [FALSE, ['--sut' => self::VALID_PACKAGE], ['isValidPackage', 'exists', 'create', 'setSut'], 0, StatusCodes::OK, ''],
+      [FALSE, ['--sut' => self::VALID_PACKAGE, '--sut-only' => TRUE], ['isValidPackage', 'exists', 'create', 'setSut', 'setSutOnly'], 0, StatusCodes::OK, ''],
+      [FALSE, [], ['exists', 'create'], 1, StatusCodes::ERROR, ''],
+      [FALSE, ['--sut-only' => TRUE], [], 0, StatusCodes::ERROR, "Error: Cannot create a SUT-only fixture without a SUT.\nHint: Use the \"--sut\" option to specify the SUT.\n"],
     ];
   }
 

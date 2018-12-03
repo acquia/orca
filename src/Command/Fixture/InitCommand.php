@@ -3,6 +3,7 @@
 namespace Acquia\Orca\Command\Fixture;
 
 use Acquia\Orca\Command\StatusCodes;
+use Acquia\Orca\Exception\OrcaException;
 use Acquia\Orca\Fixture\Creator;
 use Acquia\Orca\Fixture\Remover;
 use Acquia\Orca\Fixture\Fixture;
@@ -97,7 +98,12 @@ class InitCommand extends Command {
       $this->creator->setSutOnly(TRUE);
     }
 
-    $this->creator->create();
+    try {
+      $this->creator->create();
+    }
+    catch (OrcaException $e) {
+      return StatusCodes::ERROR;
+    }
 
     return StatusCodes::OK;
   }
