@@ -1,6 +1,6 @@
 <?php
 
-namespace Acquia\Orca\Task;
+namespace Acquia\Orca\Exception;
 
 /**
  * A task failure exception.

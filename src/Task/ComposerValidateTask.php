@@ -2,6 +2,7 @@
 
 namespace Acquia\Orca\Task;
 
+use Acquia\Orca\Exception\TaskFailureException;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 
 /**

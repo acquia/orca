@@ -10,7 +10,7 @@ interface TaskInterface {
   /**
    * Executes the test.
    *
-   * @throws \Acquia\Orca\Task\TaskFailureException
+   * @throws \Acquia\Orca\Exception\TaskFailureException
    */
   public function execute(): void;
 

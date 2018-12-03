@@ -3,6 +3,7 @@
 namespace Acquia\Orca\Task;
 
 use Acquia\Orca\Command\StatusCodes;
+use Acquia\Orca\Exception\TaskFailureException;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
