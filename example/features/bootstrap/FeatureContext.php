@@ -10,19 +10,19 @@ use Behat\Behat\Context\Context;
 class FeatureContext implements Context {
 
   /**
-   * @Given /^I add (\d+) to (\d+)$/
+   * @Given /^I add (\d+) and (\d+)$/
    *
-   * @param int $addend
-   *   The addend.
    * @param int $augend
    *   The augend.
+   * @param int $addend
+   *   The addend.
    */
-  public function iAddTwoNumber(int $addend, int $augend) {
+  public function iAddTwoNumbers(int $augend, int $addend) {
     $this->sum = $augend + $addend;
   }
 
   /**
-   * @Then /^I get the sum (\d+)$/
+   * @Then /^I get (\d+)$/
    *
    * @param int $sum
    *   The sum.

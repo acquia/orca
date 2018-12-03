@@ -5,5 +5,5 @@ Feature: Example
 
   @orca_public
   Scenario: Running a simple Behat test
-    Given I add 2 to 2
-    Then I get the sum 4
+    Given I add 2 and 2
+    Then I get 4
