@@ -65,16 +65,7 @@ class InitCommand extends Command {
     $sut = $input->getOption('sut');
     $sut_only = $input->getOption('sut-only');
 
-    if ($sut_only && !$sut) {
-      $output->writeln([
-        'Error: Cannot create a SUT-only fixture without a SUT.',
-        'Hint: Use the "--sut" option to specify the SUT.',
-      ]);
-      return StatusCodes::ERROR;
-    }
-
-    if ($sut && !$this->productData->isValidPackage($sut)) {
-      $output->writeln(sprintf('Error: Invalid value for "--sut" option: "%s".', $sut));
+    if (!$this->isValidInput($sut, $sut_only, $output)) {
       return StatusCodes::ERROR;
     }
 
@@ -90,13 +81,8 @@ class InitCommand extends Command {
       $this->remover->remove();
     }
 
-    if ($sut) {
-      $this->creator->setSut($sut);
-    }
-
-    if ($sut_only) {
-      $this->creator->setSutOnly(TRUE);
-    }
+    $this->setSut($sut);
+    $this->setSutOnly($sut_only);
 
     try {
       $this->creator->create();
@@ -106,6 +92,59 @@ class InitCommand extends Command {
     }
 
     return StatusCodes::OK;
+  }
+
+  /**
+   * Determines whether the command input is valid.
+   *
+   * @param string|string[]|bool|null $sut
+   *   The "sut" option value.
+   * @param string|string[]|bool|null $sut_only
+   *   The "sut-only" option value.
+   * @param \Symfony\Component\Console\Output\OutputInterface $output
+   *   The output decorator.
+   *
+   * @return bool
+   */
+  private function isValidInput($sut, $sut_only, OutputInterface $output): bool {
+    if ($sut_only && !$sut) {
+      $output->writeln([
+        'Error: Cannot create a SUT-only fixture without a SUT.',
+        'Hint: Use the "--sut" option to specify the SUT.',
+      ]);
+      return FALSE;
+    }
+
+    if ($sut && !$this->productData->isValidPackage($sut)) {
+      $output->writeln(sprintf('Error: Invalid value for "--sut" option: "%s".', $sut));
+      return FALSE;
+    }
+
+    return TRUE;
+  }
+
+  /**
+   * Sets the SUT.
+   *
+   * @param string|string[]|bool|null $sut
+   *   The SUT.
+   */
+  private function setSut($sut): void {
+    if ($sut) {
+      $this->creator->setSut($sut);
+    }
+  }
+
+  /**
+   * Sets the SUT-only flag.
+   *
+   * @param string|string[]|bool|null $sut_only
+   *   The SUT-only flag.
+   */
+  private function setSutOnly($sut_only): void {
+    if ($sut_only) {
+      $this->creator->setSutOnly(TRUE);
+    }
   }
 
 }
