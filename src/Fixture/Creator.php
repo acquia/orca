@@ -8,21 +8,33 @@ use Composer\Config\JsonConfigSource;
 use Composer\Json\JsonFile;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Finder\Finder;
 
 /**
  * Creates a fixture.
- *
- * @property \stdClass $composerConfig
- * @property \Symfony\Component\Filesystem\Filesystem $filesystem
- * @property \Acquia\Orca\Fixture\Fixture $fixture
- * @property \Symfony\Component\Console\Style\SymfonyStyle $output
- * @property \Acquia\Orca\ProcessRunner $processRunner
- * @property \Acquia\Orca\Fixture\ProductData $productData
- * @property string $sutDestBaseName
- * @property string $sutDestPath
- * @property string $sutSourceBaseName
  */
 class Creator {
+
+  /**
+   * The filesystem.
+   *
+   * @var \Symfony\Component\Filesystem\Filesystem
+   */
+  private $filesystem;
+
+  /**
+   * The finder.
+   *
+   * @var \Symfony\Component\Finder\Finder
+   */
+  private $finder;
+
+  /**
+   * The fixture.
+   *
+   * @var \Acquia\Orca\Fixture\Fixture
+   */
+  private $fixture;
 
   /**
    * Whether or not the fixture is SUT-only.
@@ -32,20 +44,6 @@ class Creator {
   private $isSutOnly = FALSE;
 
   /**
-   * The SUT package name, e.g., drupal/example.
-   *
-   * @var string|null
-   */
-  private $sut;
-
-  /**
-   * The fixture's composer.json data before adding Acquia product modules.
-   *
-   * @var array
-   */
-  private $originalJsonConfigData = [];
-
-  /**
    * The Composer API for the fixture's composer.json.
    *
    * @var \Composer\Config\JsonConfigSource|null
@@ -53,38 +51,97 @@ class Creator {
   private $jsonConfigSource;
 
   /**
+   * A backup of the fixture's composer.json data before making changes.
+   *
+   * @var array
+   */
+  private $jsonConfigDataBackup = [];
+
+  /**
+   * The output decorator.
+   *
+   * @var \Symfony\Component\Console\Style\SymfonyStyle
+   */
+  private $output;
+
+  /**
+   * The process runner.
+   *
+   * @var \Acquia\Orca\ProcessRunner
+   */
+  private $processRunner;
+
+  /**
+   * The project manager.
+   *
+   * @var \Acquia\Orca\Fixture\ProjectManager
+   */
+  private $projectManager;
+
+  /**
+   * The submodule manager.
+   *
+   * @var \Acquia\Orca\Fixture\SubmoduleManager
+   */
+  private $submoduleManager;
+
+  /**
+   * The SUT package name, e.g., drupal/example.
+   *
+   * @var \Acquia\Orca\Fixture\Project|null
+   */
+  private $sut;
+
+  /**
    * Constructs an instance.
    *
    * @param \Symfony\Component\Filesystem\Filesystem $filesystem
    *   The filesystem.
+   * @param \Symfony\Component\Finder\Finder $finder
+   *   The finder.
    * @param \Acquia\Orca\Fixture\Fixture $fixture
    *   The fixture.
    * @param \Symfony\Component\Console\Style\SymfonyStyle $output
    *   The output decorator.
    * @param \Acquia\Orca\ProcessRunner $process_runner
    *   The process runner.
-   * @param \Acquia\Orca\Fixture\ProductData $product_data
-   *   The product data.
+   * @param \Acquia\Orca\Fixture\ProjectManager $project_manager
+   *   The project manager.
+   * @param \Acquia\Orca\Fixture\SubmoduleManager $submodule_manager
+   *   The submodule manager.
    */
-  public function __construct(Filesystem $filesystem, Fixture $fixture, SymfonyStyle $output, ProcessRunner $process_runner, ProductData $product_data) {
-    $this->fixture = $fixture;
+  public function __construct(
+    Filesystem $filesystem,
+    Finder $finder,
+    Fixture $fixture,
+    SymfonyStyle $output,
+    ProcessRunner $process_runner,
+    ProjectManager $project_manager,
+    SubmoduleManager $submodule_manager
+  ) {
     $this->filesystem = $filesystem;
+    $this->finder = $finder;
+    $this->fixture = $fixture;
     $this->output = $output;
     $this->processRunner = $process_runner;
-    $this->productData = $product_data;
+    $this->projectManager = $project_manager;
+    $this->submoduleManager = $submodule_manager;
   }
 
   /**
    * Creates the fixture.
+   *
+   * @throws \Acquia\Orca\Exception\OrcaException
+   *   If the SUT isn't properly installed.
    */
   public function create(): void {
     $this->createBltProject();
     $this->removeUnneededProjects();
-    $this->addAcquiaProductModules();
+    $this->addAcquiaProjects();
     $this->installDrupal();
-    $this->installAcquiaProductModules();
+    $this->installAcquiaModules();
     $this->createBackupBranch();
-    $this->selfCheck();
+    $this->output->success('Fixture created');
   }
 
   /**
@@ -95,24 +152,17 @@ class Creator {
    *   e.g., "drupal/example", or NULL to unset the SUT.
    */
   public function setSut(?string $sut = NULL): void {
-    $this->sut = $sut;
-    $this->sutDestBaseName = $this->productData->moduleName($this->sut);
-    $this->sutSourceBaseName = $this->productData->dir($this->sut);
-    $this->sutDestPath = $this->fixture->docrootPath("/modules/contrib/acquia/{$this->sutDestBaseName}");
+    $this->sut = $this->projectManager->get($sut);
   }
 
   /**
    * Sets the fixture to SUT-only or not.
    *
    * @param bool $is_sut_only
-   *   (Optional) Whether or not to set the fixture to SUT-only. Defaults to
-   *   TRUE.
-   *
-   * phpcs:disable Drupal.Commenting.FunctionComment.IncorrectTypeHint
+   *   Whether or not to set the fixture to SUT-only.
    */
-  public function setSutOnly(?bool $is_sut_only = NULL): void {
-    // phpcs:enable
-    $this->isSutOnly = (bool) $is_sut_only;
+  public function setSutOnly(bool $is_sut_only): void {
+    $this->isSutOnly = $is_sut_only;
   }
 
   /**
@@ -131,6 +181,22 @@ class Creator {
       $this->fixture->rootPath(),
     ]);
     $this->processRunner->run($process);
+
+    // Prevent errors later because "Source directory docroot/core has
+    // uncommitted changes" after "Removing package drupal/core so that it can
+    // be re-installed and re-patched".
+    // @see https://drupal.stackexchange.com/questions/273859
+    $this->loadComposerJson();
+    $this->jsonConfigSource->addConfigSetting('discard-changes', TRUE);
+  }
+
+  /**
+   * Loads the fixture's composer.json data.
+   */
+  private function loadComposerJson(): void {
+    $json_file = new JsonFile($this->fixture->rootPath('composer.json'));
+    $this->jsonConfigDataBackup = $json_file->read();
+    $this->jsonConfigSource = new JsonConfigSource($json_file);
   }
 
   /**
@@ -155,68 +221,83 @@ class Creator {
   }
 
   /**
-   * Adds Acquia product modules to the codebase.
+   * Adds Acquia projects to the codebase.
+   *
+   * @throws \Acquia\Orca\Exception\OrcaException
+   *   If the SUT isn't properly installed.
    */
-  private function addAcquiaProductModules(): void {
-    $this->output->section('Adding Acquia product modules');
-    $this->configureComposer();
-    $this->requireDependencies();
-    if ($this->sut) {
-      $this->forceSutSymlinkInstall();
-    }
-    $this->commitCodeChanges('Added Acquia product modules.');
+  private function addAcquiaProjects(): void {
+    $this->output->section('Adding Acquia projects');
+    $this->addTopLevelAcquiaPackages();
+    $this->addSutSubmodules();
+    $this->addComposerExtraData();
+    $this->commitCodeChanges('Added Acquia projects.');
   }
 
   /**
-   * Configures Composer to place Acquia modules in a special directory.
+   * Adds the top-level Acquia packages to composer.json.
+   *
+   * @throws \Acquia\Orca\Exception\OrcaException
+   *   If the SUT isn't properly installed.
    */
-  private function configureComposer(): void {
+  private function addTopLevelAcquiaPackages(): void {
+    $this->configureComposerForTopLevelAcquiaPackages();
+    $this->composerRequireTopLevelAcquiaPackages();
+    if ($this->sut) {
+      $this->forceSutSymlinkInstall();
+      $this->verifySut();
+    }
+  }
+
+  /**
+   * Configures Composer to find and place Acquia projects.
+   */
+  private function configureComposerForTopLevelAcquiaPackages(): void {
     $this->loadComposerJson();
-    $this->addInstallerPaths();
+    $this->addInstallerPathsForAcquiaModules();
     if ($this->sut) {
       $this->addSutRepository();
     }
-    $this->addExtraData();
   }
 
   /**
-   * Loads the fixture's composer.json data.
+   * Adds installer-paths configuration to group modules together.
    */
-  private function loadComposerJson(): void {
-    $json_file = new JsonFile($this->fixture->rootPath('composer.json'));
-    $this->originalJsonConfigData = $json_file->read();
-    $this->jsonConfigSource = new JsonConfigSource($json_file);
-  }
-
-  /**
-   * Adds installer-paths configuration to group product modules together.
-   */
-  private function addInstallerPaths(): void {
-    // Installer paths seem to be applied in the order specified, so our
-    // overrides need to be added to the beginning in order to take effect.
-    // Drush commands, which we don't WANT to override, need to come yet
-    // earlier.
+  private function addInstallerPathsForAcquiaModules(): void {
+    // Installer paths seem to be applied in the order specified, so overrides
+    // need to be added to the beginning in order to take effect. Begin by
+    // removing the original installer paths.
     $this->jsonConfigSource->removeProperty('extra.installer-paths');
-    $this->jsonConfigSource->addProperty('extra.installer-paths.drush/Commands/{$name}', ['type:drupal-drush']);
-    $this->jsonConfigSource->addProperty('extra.installer-paths.' . Fixture::PRODUCT_MODULE_INSTALL_PATH . '/{$name}', $this->productData->packageNames());
-    foreach ($this->originalJsonConfigData['extra']['installer-paths'] as $key => $value) {
+
+    // Add new installer paths.
+    $module_packages = array_keys($this->projectManager->getMultiple('drupal-module', 'getPackageName'));
+    $this->jsonConfigSource->addProperty('extra.installer-paths.docroot/modules/contrib/acquia/{$name}', $module_packages);
+
+    // Append original installer paths.
+    foreach ($this->jsonConfigDataBackup['extra']['installer-paths'] as $key => $value) {
       $this->jsonConfigSource->addProperty("extra.installer-paths.{$key}", $value);
     }
   }
 
   /**
    * Adds a Composer repository for the system under test.
+   *
+   * Repositories take precedence in the order specified (i.e., first match
+   * found wins), so our override needs to be added to the beginning in order
+   * to take effect.
    */
   private function addSutRepository(): void {
-    // Repositories take precedence in the order specified (i.e., first match
-    // found wins), so our override needs to be added to the beginning in order
-    // to take effect.
+    // Remove original repositories.
     $this->jsonConfigSource->removeProperty('repositories');
-    $this->jsonConfigSource->addRepository($this->sut, [
+
+    // Add new repository.
+    $this->jsonConfigSource->addRepository($this->sut->getPackageName(), [
       'type' => 'path',
-      'url' => "../{$this->sutSourceBaseName}",
+      'url' => $this->sut->getRepositoryUrl(),
     ]);
-    foreach ($this->originalJsonConfigData['repositories'] as $key => $value) {
+
+    // Append original repositories.
+    foreach ($this->jsonConfigDataBackup['repositories'] as $key => $value) {
       $this->jsonConfigSource->addRepository($key, $value);
     }
   }
@@ -224,19 +305,19 @@ class Creator {
   /**
    * Adds data about the fixture to the "extra" property.
    */
-  private function addExtraData() {
+  private function addComposerExtraData(): void {
     $this->jsonConfigSource->addProperty('extra.orca', [
-      'sut' => $this->sut,
+      'sut' => ($this->sut) ? $this->sut->getPackageName() : NULL,
       'sut-only' => $this->isSutOnly,
     ]);
   }
 
   /**
-   * Requires the dependencies via Composer.
+   * Requires the top-level Acquia packages via Composer.
    */
-  private function requireDependencies(): void {
+  private function composerRequireTopLevelAcquiaPackages(): void {
     $process = $this->processRunner->createOrcaVendorBinProcess(array_merge(
-      ['composer', 'require'],
+      ['composer', 'require', '-n'],
       $this->getAcquiaProductModuleDependencies()
     ));
     $this->processRunner->run($process, $this->fixture->rootPath());
@@ -248,7 +329,7 @@ class Creator {
   private function forceSutSymlinkInstall(): void {
     $this->filesystem->remove([
       $this->fixture->rootPath('composer.lock'),
-      $this->sutDestPath,
+      $this->fixture->rootPath($this->sut->getInstallPathRelative()),
     ]);
     $process = $this->processRunner->createOrcaVendorBinProcess([
       'composer',
@@ -259,23 +340,136 @@ class Creator {
   }
 
   /**
+   * Verifies that the SUT was correctly placed.
+   *
+   * @throws \Acquia\Orca\Exception\OrcaException
+   */
+  private function verifySut(): void {
+    $error = FALSE;
+
+    $sut_install_path = $this->fixture->rootPath($this->sut->getInstallPathRelative());
+    if (!file_exists($sut_install_path)) {
+      $error = 'Failed to place SUT at correct path.';
+    }
+    elseif (!is_link($sut_install_path)) {
+      $error = 'Failed to symlink SUT via local path repository.';
+    }
+
+    if ($error) {
+      $this->output->error($error);
+      throw new OrcaException();
+    }
+  }
+
+  /**
    * Gets the list of Composer dependency strings for Acquia product modules.
    *
    * @return string[]
    */
   private function getAcquiaProductModuleDependencies(): array {
-    $sut_package_string = "{$this->sut}:@dev";
+    $dependencies = $this->projectManager->getMultiple(NULL, 'getPackageString');
+
+    if (!$this->sut) {
+      return array_values($dependencies);
+    }
+
+    $sut_package_string = "{$this->sut->getPackageName()}:@dev";
+
     if ($this->isSutOnly) {
       return [$sut_package_string];
     }
-    $dependencies = $this->productData->packageStringPlural();
 
     // Replace the version constraint on the SUT to allow for symlinking.
-    if ($this->sut) {
-      $dependencies[$this->sut] = $sut_package_string;
-    }
+    $dependencies[$this->sut->getPackageName()] = $sut_package_string;
 
     return array_values($dependencies);
+  }
+
+  /**
+   * Adds submodules of the SUT to composer.json.
+   */
+  private function addSutSubmodules(): void {
+    if (!$this->sut || !$this->submoduleManager->getAll()) {
+      return;
+    }
+    $this->configureComposerForSutSubmodules();
+    $this->composerRequireSutSubmodules();
+  }
+
+  /**
+   * Configures Composer to find and place submodules of the SUT.
+   */
+  private function configureComposerForSutSubmodules(): void {
+    $this->loadComposerJson();
+    $this->addSutSubmoduleRepositories();
+    $this->addInstallerPathsForSutSubmodules();
+  }
+
+  /**
+   * Adds Composer repositories for submodules of the SUT.
+   *
+   * Repositories take precedence in the order specified (i.e., first match
+   * found wins), so our override needs to be added to the beginning in order
+   * to take effect.
+   */
+  private function addSutSubmoduleRepositories(): void {
+    // Remove original repositories.
+    $this->jsonConfigSource->removeProperty('repositories');
+
+    // Add new repositories.
+    foreach ($this->submoduleManager->getAll() as $project) {
+      $this->jsonConfigSource->addRepository($project->getPackageName(), [
+        'type' => 'path',
+        'url' => $project->getRepositoryUrl(),
+      ]);
+    }
+
+    // Append original repositories.
+    foreach ($this->jsonConfigDataBackup['repositories'] as $key => $value) {
+      $this->jsonConfigSource->addRepository($key, $value);
+    }
+  }
+
+  /**
+   * Adds installer-paths for submodules of the SUT.
+   */
+  private function addInstallerPathsForSutSubmodules(): void {
+    // Installer paths seem to be applied in the order specified, so overrides
+    // need to be added to the beginning in order to take effect. Begin by
+    // removing the original installer paths.
+    $this->jsonConfigSource->removeProperty('extra.installer-paths');
+
+    // Add new installer paths.
+    $package_names = array_keys($this->submoduleManager->getByParent($this->sut));
+    // Submodules are implicitly installed with their parent modules, and
+    // Composer won't allow them to be placed in the same location via their
+    // separate packages to be placed in the same location. Neither will it
+    // allow them to be "installed" outside the repository, in the system temp
+    // directory or /dev/null, for example. In the absence of a better option,
+    // the private files directory provides a convenient destination that Git is
+    // already configured to ignore.
+    $path = 'extra.installer-paths.files-private/{$name}';
+    $this->jsonConfigSource->addProperty($path, $package_names);
+
+    // Append original installer paths.
+    foreach ($this->jsonConfigDataBackup['extra']['installer-paths'] as $key => $value) {
+      $this->jsonConfigSource->addProperty("extra.installer-paths.{$key}", $value);
+    }
+  }
+
+  /**
+   * Requires the Acquia submodules via Composer.
+   */
+  private function composerRequireSutSubmodules(): void {
+    $packages = [];
+    foreach (array_keys($this->submoduleManager->getByParent($this->sut)) as $package_name) {
+      $packages[] = "{$package_name}:@dev";
+    }
+    $process = $this->processRunner->createOrcaVendorBinProcess(array_merge(
+      ['composer', 'require', '-n'],
+      $packages
+    ));
+    $this->processRunner->run($process, $this->fixture->rootPath());
   }
 
   /**
@@ -330,7 +524,7 @@ class Creator {
   /**
    * Ensure that Drupal is correctly configured.
    */
-  protected function ensureDrupalSettings() {
+  protected function ensureDrupalSettings(): void {
     $filename = $this->fixture->docrootPath('sites/default/settings/local.settings.php');
     $id = '# ORCA settings.';
 
@@ -375,24 +569,42 @@ PHP;
   }
 
   /**
-   * Installs the Acquia product modules.
+   * Installs the Acquia modules.
    */
-  private function installAcquiaProductModules(): void {
-    $this->output->section('Installing Acquia product modules');
-
-    $package = ($this->isSutOnly) ? $this->sut : NULL;
-    $module_list = $this->productData->moduleNamePlural($package);
-
-    if (!$module_list) {
+  private function installAcquiaModules(): void {
+    if ($this->isSutOnly && ($this->sut->getType() !== 'drupal-module')) {
       return;
     }
 
+    $this->output->section('Installing Acquia product modules');
+    $module_list = $this->getAcquiaModuleList();
     $process = $this->processRunner->createFixtureVendorBinProcess(array_merge([
       'drush',
       'pm-enable',
       '-y',
     ], $module_list));
     $this->processRunner->run($process, $this->fixture->rootPath());
+  }
+
+  /**
+   * Gets the list of Acquia modules to install.
+   *
+   * @return string[]
+   */
+  private function getAcquiaModuleList(): array {
+    if ($this->isSutOnly) {
+      $module_list = [$this->sut->getProjectName()];
+      foreach ($this->submoduleManager->getByParent($this->sut) as $submodule) {
+        $module_list[] = $submodule->getProjectName();
+      }
+      return $module_list;
+    }
+
+    $module_list = array_values($this->projectManager->getMultiple('drupal-module', 'getProjectName'));
+    foreach ($this->submoduleManager->getAll() as $submodule) {
+      $module_list[] = $submodule->getProjectName();
+    }
+    return $module_list;
   }
 
   /**
@@ -407,32 +619,6 @@ PHP;
       Fixture::BASE_FIXTURE_GIT_BRANCH,
     ]);
     $this->processRunner->run($process, $this->fixture->rootPath());
-  }
-
-  /**
-   * Verifies the fixture.
-   *
-   * @throws \Acquia\Orca\Exception\OrcaException
-   */
-  private function selfCheck(): void {
-    $this->output->section('Verifying the fixture');
-    $errors = [];
-
-    if ($this->sut) {
-      if (!file_exists($this->sutDestPath)) {
-        $errors[] = 'Failed to place SUT at the correct path.';
-      }
-      elseif (!is_link($this->sutDestPath)) {
-        $errors[] = 'Failed to symlink SUT via local path repository.';
-      }
-    }
-
-    if ($errors) {
-      $this->output->error($errors);
-      throw new OrcaException();
-    }
-
-    $this->output->success('Fixture created');
   }
 
 }

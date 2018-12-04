@@ -3,7 +3,7 @@
 namespace Acquia\Orca\Tests\Fixture;
 
 use Acquia\Orca\Fixture\Fixture;
-use Acquia\Orca\Fixture\ProductData;
+use Acquia\Orca\Fixture\ProjectManager;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Filesystem;
 
@@ -11,14 +11,14 @@ use Symfony\Component\Filesystem\Filesystem;
  * @covers \Acquia\Orca\Fixture\Fixture
  *
  * @property \Prophecy\Prophecy\ObjectProphecy|\Symfony\Component\Filesystem\Filesystem $filesystem
- * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Fixture\ProductData $productData
+ * @property \Prophecy\Prophecy\ObjectProphecy $projectManager
  * @property string $rootPath
  */
 class FixtureTest extends TestCase {
 
   protected function setUp() {
     $this->filesystem = $this->prophesize(Filesystem::class);
-    $this->productData = $this->prophesize(ProductData::class);
+    $this->projectManager = $this->prophesize(ProjectManager::class);
     $this->rootPath = '/var/www/orca-build';
   }
 
@@ -56,7 +56,7 @@ class FixtureTest extends TestCase {
   /**
    * @dataProvider providerPathResolution
    */
-  public function testPathResolution($root_path, $docroot_path, $product_module_path) {
+  public function testPathResolution($root_path, $docroot_path) {
     $this->rootPath = $root_path;
     $fixture = $this->createFixture();
     $sub_path = '/some/sub-path';
@@ -65,23 +65,21 @@ class FixtureTest extends TestCase {
     $this->assertEquals("{$root_path}/{$sub_path}", $fixture->rootPath($sub_path), 'Resolved root path with sub-path.');
     $this->assertEquals($docroot_path, $fixture->docrootPath(), 'Resolved docroot path.');
     $this->assertEquals("{$docroot_path}/{$sub_path}", $fixture->docrootPath($sub_path), 'Resolved docroot path with sub-path.');
-    $this->assertEquals($product_module_path, $fixture->productModuleInstallPath(), 'Resolved product module path.');
-    $this->assertEquals("{$product_module_path}/{$sub_path}", $fixture->productModuleInstallPath($sub_path), 'Resolved docroot path with sub-path.');
   }
 
   public function providerPathResolution() {
     return [
-      ['/var/www/orca-build', '/var/www/orca-build/docroot', '/var/www/orca-build/docroot/modules/contrib/acquia'],
-      ['/tmp/test', '/tmp/test/docroot', '/tmp/test/docroot/modules/contrib/acquia'],
+      ['/var/www/orca-build', '/var/www/orca-build/docroot'],
+      ['/tmp/test', '/tmp/test/docroot'],
     ];
   }
 
   protected function createFixture(): Fixture {
     /** @var \Symfony\Component\Filesystem\Filesystem $filesystem */
     $filesystem = $this->filesystem->reveal();
-    /** @var \Acquia\Orca\Fixture\ProductData $product_data */
-    $product_data = $this->productData->reveal();
-    return new Fixture($filesystem, $product_data, $this->rootPath);
+    /** @var \Acquia\Orca\Fixture\ProjectManager $project_manager */
+    $project_manager = $this->projectManager->reveal();
+    return new Fixture($filesystem, $this->rootPath, $project_manager);
   }
 
 }

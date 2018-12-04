@@ -1,0 +1,5 @@
+name: "Example Submodule #2"
+type: module
+description: "Example submodule #2."
+package: Other
+core: 8.x

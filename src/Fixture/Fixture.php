@@ -16,13 +16,11 @@ use Symfony\Component\Filesystem\Filesystem;
  * place and Drupal installed.
  *
  * @property \Symfony\Component\Filesystem\Filesystem $filesystem
- * @property \Acquia\Orca\Fixture\ProductData $productData
+ * @property \Acquia\Orca\Fixture\ProjectManager $projectManager
  */
 class Fixture {
 
   public const BASE_FIXTURE_GIT_BRANCH = 'base-fixture';
-
-  public const PRODUCT_MODULE_INSTALL_PATH = 'docroot/modules/contrib/acquia';
 
   public const WEB_ADDRESS = '127.0.0.1:8080';
 
@@ -38,14 +36,14 @@ class Fixture {
    *
    * @param \Symfony\Component\Filesystem\Filesystem $filesystem
    *   The filesystem.
-   * @param \Acquia\Orca\Fixture\ProductData $product_data
-   *   The product data.
    * @param string $fixture_dir
    *   The absolute path of the fixture root directory.
+   * @param \Acquia\Orca\Fixture\ProjectManager $project_manager
+   *   The project manager.
    */
-  public function __construct(Filesystem $filesystem, ProductData $product_data, string $fixture_dir) {
+  public function __construct(Filesystem $filesystem, string $fixture_dir, ProjectManager $project_manager) {
     $this->filesystem = $filesystem;
-    $this->productData = $product_data;
+    $this->projectManager = $project_manager;
     $this->rootPath = $fixture_dir;
   }
 
@@ -68,18 +66,6 @@ class Fixture {
    */
   public function exists(): bool {
     return $this->filesystem->exists($this->rootPath());
-  }
-
-  /**
-   * Gets the fixture product module install path with an optional sub-path.
-   *
-   * @param string $sub_path
-   *   (Optional) A sub-path to append.
-   *
-   * @return string
-   */
-  public function productModuleInstallPath(string $sub_path = ''): string {
-    return $this->appendSubPath($this->rootPath(self::PRODUCT_MODULE_INSTALL_PATH), $sub_path);
   }
 
   /**
@@ -120,15 +106,14 @@ class Fixture {
    */
   public function testsDirectory(): string {
     // Default to the product module install path so as to include all modules.
-    $directory = $this->productModuleInstallPath();
+    $directory = $this->rootPath('docroot/modules/contrib/acquia');
 
     $composer_config = $this->loadComposerJson();
     if (!empty($composer_config['extra']['orca']['sut'])) {
-      $sut = $composer_config['extra']['orca']['sut'];
+      $sut = $this->projectManager->get($composer_config['extra']['orca']['sut']);
       // Only limit the tests run for a SUT-only fixture.
       if (!empty($composer_config['extra']['orca']['sut-only'])) {
-        $module = $this->productData->projectName($sut);
-        $directory = $this->productModuleInstallPath($module);
+        return $this->rootPath($sut->getInstallPathRelative());
       }
     }
 

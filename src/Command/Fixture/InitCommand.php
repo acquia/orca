@@ -5,9 +5,9 @@ namespace Acquia\Orca\Command\Fixture;
 use Acquia\Orca\Command\StatusCodes;
 use Acquia\Orca\Exception\OrcaException;
 use Acquia\Orca\Fixture\Creator;
+use Acquia\Orca\Fixture\ProjectManager;
 use Acquia\Orca\Fixture\Remover;
 use Acquia\Orca\Fixture\Fixture;
-use Acquia\Orca\Fixture\ProductData;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -18,7 +18,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  *
  * @property \Acquia\Orca\Fixture\Creator $creator
  * @property \Acquia\Orca\Fixture\Fixture $fixture
- * @property \Acquia\Orca\Fixture\ProductData $productData
+ * @property \Acquia\Orca\Fixture\ProjectManager $projectManager
  * @property \Acquia\Orca\Fixture\Remover $remover
  */
 class InitCommand extends Command {
@@ -32,15 +32,15 @@ class InitCommand extends Command {
    *   The fixture creator.
    * @param \Acquia\Orca\Fixture\Fixture $fixture
    *   The fixture.
-   * @param \Acquia\Orca\Fixture\ProductData $product_data
-   *   The product data.
+   * @param \Acquia\Orca\Fixture\ProjectManager $project_manager
+   *   The project manager.
    * @param \Acquia\Orca\Fixture\Remover $remover
    *   The fixture remover.
    */
-  public function __construct(Creator $creator, Fixture $fixture, ProductData $product_data, Remover $remover) {
+  public function __construct(Creator $creator, Fixture $fixture, ProjectManager $project_manager, Remover $remover) {
     $this->creator = $creator;
     $this->fixture = $fixture;
-    $this->productData = $product_data;
+    $this->projectManager = $project_manager;
     $this->remover = $remover;
     parent::__construct(self::$defaultName);
   }
@@ -115,7 +115,7 @@ class InitCommand extends Command {
       return FALSE;
     }
 
-    if ($sut && !$this->productData->isValidPackage($sut)) {
+    if ($sut && !$this->projectManager->exists($sut)) {
       $output->writeln(sprintf('Error: Invalid value for "--sut" option: "%s".', $sut));
       return FALSE;
     }

@@ -1,0 +1,8 @@
+{
+    "name": "drupal/example_submodule_1",
+    "type": "drupal-module",
+    "description": "Example submodule #1.",
+    "license": "GPL-2.0-or-later",
+    "require": {},
+    "minimum-stability": "dev"
+}
