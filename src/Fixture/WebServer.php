@@ -41,9 +41,12 @@ class WebServer {
       'drush',
       'runserver',
       Fixture::WEB_ADDRESS,
-    ]);
-    $this->process->setWorkingDirectory($this->fixture->docrootPath());
-    $this->process->start();
+    ])
+      ->setWorkingDirectory($this->fixture->docrootPath())
+      ->start();
+    // Give the process a chance to bootstrap before releasing the thread to
+    // code that will depend on it.
+    sleep(3);
   }
 
   /**

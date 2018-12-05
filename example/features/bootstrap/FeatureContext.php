@@ -1,37 +1,31 @@
 <?php
 
 use Behat\Behat\Context\Context;
+use GuzzleHttp\Client;
 
 /**
  * Defines application features from the specific context.
  *
- * @property int $sum
+ * @property mixed|\Psr\Http\Message\ResponseInterface $response
  */
 class FeatureContext implements Context {
 
   /**
-   * @Given /^I add (\d+) and (\d+)$/
-   *
-   * @param int $augend
-   *   The augend.
-   * @param int $addend
-   *   The addend.
+   * @Given /^I visit the homepage$/
    */
-  public function iAddTwoNumbers(int $augend, int $addend) {
-    $this->sum = $augend + $addend;
+  public function iVisitTheHomePage() {
+    $this->response = (new Client())
+      ->request('GET', 'http://127.0.0.1:8080');
   }
 
   /**
-   * @Then /^I get (\d+)$/
-   *
-   * @param int $sum
-   *   The sum.
+   * @Then /^I get an HTTP (\d+) status code$/
    *
    * @throws \Exception
    */
-  public function iGetTheSum(int $sum) {
-    if ($this->sum !== $sum) {
-      throw new \Exception();
+  public function iGetAnHttpStatusCode($status_code) {
+    if ($this->response->getStatusCode() != $status_code) {
+      throw new \Exception(sprintf('Got an HTTP %d status code.', $this->response->getStatusCode()));
     }
   }
 

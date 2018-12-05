@@ -4,6 +4,6 @@ Feature: Example
   I need to be able to exercise it in an example Behat feature.
 
   @orca_public
-  Scenario: Running a simple Behat test
-    Given I add 2 and 2
-    Then I get 4
+  Scenario: Visiting the home page
+    Given I visit the homepage
+    Then I get an HTTP 200 status code

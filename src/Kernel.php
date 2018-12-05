@@ -85,7 +85,7 @@ class Kernel extends BaseKernel {
    * @return string
    */
   protected function getFixtureDir(): string {
-    return dirname($this->getProjectDir()) . '/orca-build';
+    return realpath("{$this->getProjectDir()}/..") . '/orca-build';
   }
 
 }
