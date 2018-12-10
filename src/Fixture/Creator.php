@@ -79,6 +79,7 @@ class Creator {
    */
   public function create(): void {
     $this->createBltProject();
+    $this->removeUnneededProjects();
     $this->addAcquiaProductModules();
     $this->installDrupal();
     $this->installAcquiaProductModules();
@@ -130,6 +131,27 @@ class Creator {
       $this->fixture->rootPath(),
     ]);
     $this->processRunner->run($process);
+  }
+
+  /**
+   * Removes unneeded projects.
+   */
+  private function removeUnneededProjects(): void {
+    $this->output->section('Removing unneeded projects');
+    $process = $this->processRunner->createOrcaVendorBinProcess([
+      'composer',
+      'remove',
+      '--no-update',
+      // The Lightning profile requirement conflicts with individual Lightning
+      // submodule requirements--namely, it prevents them from being symlinked
+      // via a local "path" repository.
+      'acquia/lightning',
+      // Other Acquia projects are only conditionally required later and should
+      // in no case be included up-front.
+      'drupal/acquia_connector',
+      'drupal/acquia_purge',
+    ]);
+    $this->processRunner->run($process, $this->fixture->rootPath());
   }
 
   /**
