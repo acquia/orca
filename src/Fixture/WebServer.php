@@ -43,6 +43,8 @@ class WebServer {
       Fixture::WEB_ADDRESS,
     ])
       ->setWorkingDirectory($this->fixture->docrootPath())
+      ->setTimeout(NULL)
+      ->setIdleTimeout(NULL)
       ->start();
     // Give the process a chance to bootstrap before releasing the thread to
     // code that will depend on it.
