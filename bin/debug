@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+
+# ORCA debug script.
+
+set -e
+
+cd "$(dirname "$0")/.."
+
+# Avoid testing locally with a stale cache.
+./bin/orca cache:clear
+
+# Clone an example project into place as a test SUT.
+if [[ ! -d "../lightning-api" ]]; then
+  git -C ../ clone --branch 8.x-2.x https://git.drupal.org/project/lightning_api.git --depth 1 lightning-api
+fi
+
+# Execute tests from the SUT directory as a SUT would.
+cd ../lightning-api
+
+../orca/bin/orca fixture:init -f --sut=drupal/lightning_api
+
+echo && times
