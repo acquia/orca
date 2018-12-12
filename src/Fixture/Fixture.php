@@ -14,15 +14,26 @@ use Symfony\Component\Filesystem\Filesystem;
  *
  * In the case of ORCA, that means a BLT project with Acquia product modules in
  * place and Drupal installed.
- *
- * @property \Symfony\Component\Filesystem\Filesystem $filesystem
- * @property \Acquia\Orca\Fixture\ProjectManager $projectManager
  */
 class Fixture {
 
   public const BASE_FIXTURE_GIT_BRANCH = 'base-fixture';
 
   public const WEB_ADDRESS = '127.0.0.1:8080';
+
+  /**
+   * The filesystem.
+   *
+   * @var \Symfony\Component\Filesystem\Filesystem
+   */
+  private $filesystem;
+
+  /**
+   * The project manager.
+   *
+   * @var \Acquia\Orca\Fixture\ProjectManager
+   */
+  private $projectManager;
 
   /**
    * The root path.

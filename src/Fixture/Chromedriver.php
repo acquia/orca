@@ -7,11 +7,15 @@ use Symfony\Component\Process\Process;
 
 /**
  * Provides Chromedriver.
- *
- * @property \Acquia\Orca\Fixture\Fixture $fixture
- * @property \Acquia\Orca\ProcessRunner $processRunner
  */
 class Chromedriver {
+
+  /**
+   * The fixture.
+   *
+   * @var \Acquia\Orca\Fixture\Fixture
+   */
+  private $fixture;
 
   /**
    * The chromedriver process.
@@ -19,6 +23,13 @@ class Chromedriver {
    * @var \Symfony\Component\Process\Process
    */
   private $process;
+
+  /**
+   * The process runner.
+   *
+   * @var \Acquia\Orca\ProcessRunner
+   */
+  private $processRunner;
 
   /**
    * Constructs an instance.

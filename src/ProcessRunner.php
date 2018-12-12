@@ -11,13 +11,36 @@ use Symfony\Component\Process\Process;
 
 /**
  * Runs processes.
- *
- * @property \Symfony\Component\Process\ExecutableFinder $executableFinder
- * @property \Acquia\Orca\Fixture\Fixture $fixture
- * @property \Symfony\Component\Console\Style\SymfonyStyle $output
- * @property string $projectDir
  */
 class ProcessRunner {
+
+  /**
+   * The executable finder.
+   *
+   * @var \Symfony\Component\Process\ExecutableFinder
+   */
+  private $executableFinder;
+
+  /**
+   * The fixture.
+   *
+   * @var \Acquia\Orca\Fixture\Fixture
+   */
+  private $fixture;
+
+  /**
+   * The output decorator.
+   *
+   * @var \Symfony\Component\Console\Style\SymfonyStyle
+   */
+  private $output;
+
+  /**
+   * The ORCA project directory.
+   *
+   * @var string
+   */
+  private $projectDir;
 
   /**
    * Constructs an instance.

@@ -15,15 +15,43 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Provides a command.
- *
- * @property \Acquia\Orca\Fixture\Chromedriver $chromedriver
- * @property \Acquia\Orca\Fixture\Fixture $fixture
- * @property \Acquia\Orca\Task\TaskRunner $taskRunner
- * @property \Acquia\Orca\Fixture\WebServer $webServer
  */
 class RunCommand extends Command {
 
+  /**
+   * The default command name.
+   *
+   * @var string
+   */
   protected static $defaultName = 'tests:run';
+
+  /**
+   * The Chromedriver.
+   *
+   * @var \Acquia\Orca\Fixture\Chromedriver
+   */
+  private $chromedriver;
+
+  /**
+   * The fixture.
+   *
+   * @var \Acquia\Orca\Fixture\Fixture
+   */
+  private $fixture;
+
+  /**
+   * The task runner.
+   *
+   * @var \Acquia\Orca\Task\TaskRunner
+   */
+  private $taskRunner;
+
+  /**
+   * The web server.
+   *
+   * @var \Acquia\Orca\Fixture\WebServer
+   */
+  private $webServer;
 
   /**
    * Constructs an instance.

@@ -15,15 +15,43 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Provides a command.
- *
- * @property \Acquia\Orca\Fixture\Fixture $fixture
- * @property \Acquia\Orca\Fixture\FixtureCreator $fixtureCreator
- * @property \Acquia\Orca\Fixture\FixtureRemover $fixtureRemover
- * @property \Acquia\Orca\Fixture\ProjectManager $projectManager
  */
 class InitCommand extends Command {
 
+  /**
+   * The default command name.
+   *
+   * @var string
+   */
   protected static $defaultName = 'fixture:init';
+
+  /**
+   * The fixture.
+   *
+   * @var \Acquia\Orca\Fixture\Fixture
+   */
+  private $fixture;
+
+  /**
+   * The fixture creator.
+   *
+   * @var \Acquia\Orca\Fixture\FixtureCreator
+   */
+  private $fixtureCreator;
+
+  /**
+   * The fixture remover.
+   *
+   * @var \Acquia\Orca\Fixture\FixtureRemover
+   */
+  private $fixtureRemover;
+
+  /**
+   * The project manager.
+   *
+   * @var \Acquia\Orca\Fixture\ProjectManager
+   */
+  private $projectManager;
 
   /**
    * Constructs an instance.

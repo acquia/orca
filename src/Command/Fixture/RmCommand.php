@@ -13,13 +13,29 @@ use Symfony\Component\Console\Question\ConfirmationQuestion;
 
 /**
  * Provides a command.
- *
- * @property \Acquia\Orca\Fixture\Fixture $fixture
- * @property \Acquia\Orca\Fixture\FixtureRemover $fixtureRemover
  */
 class RmCommand extends Command {
 
+  /**
+   * The default command name.
+   *
+   * @var string
+   */
   protected static $defaultName = 'fixture:rm';
+
+  /**
+   * The fixture.
+   *
+   * @var \Acquia\Orca\Fixture\Fixture
+   */
+  private $fixture;
+
+  /**
+   * The fixture remover.
+   *
+   * @var \Acquia\Orca\Fixture\FixtureRemover
+   */
+  private $fixtureRemover;
 
   /**
    * Constructs an instance.

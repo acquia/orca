@@ -8,13 +8,36 @@ use Symfony\Component\Filesystem\Filesystem;
 
 /**
  * Removes the fixture.
- *
- * @property \Symfony\Component\Filesystem\Filesystem $filesystem
- * @property \Acquia\Orca\Fixture\Fixture $fixture
- * @property \Symfony\Component\Console\Style\SymfonyStyle $output
- * @property \Acquia\Orca\ProcessRunner $processRunner
  */
 class FixtureRemover {
+
+  /**
+   * The filesystem.
+   *
+   * @var \Symfony\Component\Filesystem\Filesystem
+   */
+  private $filesystem;
+
+  /**
+   * The fixture.
+   *
+   * @var \Acquia\Orca\Fixture\Fixture
+   */
+  private $fixture;
+
+  /**
+   * The output decorator.
+   *
+   * @var \Symfony\Component\Console\Style\SymfonyStyle
+   */
+  private $output;
+
+  /**
+   * The process runner.
+   *
+   * @var \Acquia\Orca\ProcessRunner
+   */
+  private $processRunner;
 
   /**
    * Constructs an instance.

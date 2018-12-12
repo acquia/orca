@@ -12,13 +12,29 @@ use Symfony\Component\Console\Question\Question;
 
 /**
  * Provides a command.
- *
- * @property \Acquia\Orca\Fixture\Fixture $fixture
- * @property \Acquia\Orca\Fixture\WebServer $webServer
  */
 class RunServerCommand extends Command {
 
+  /**
+   * The default command name.
+   *
+   * @var string
+   */
   protected static $defaultName = 'fixture:run-server';
+
+  /**
+   * The fixture.
+   *
+   * @var \Acquia\Orca\Fixture\Fixture
+   */
+  private $fixture;
+
+  /**
+   * The web server.
+   *
+   * @var \Acquia\Orca\Fixture\WebServer
+   */
+  private $webServer;
 
   /**
    * Constructs an instance.

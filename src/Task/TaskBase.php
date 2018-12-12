@@ -8,20 +8,43 @@ use Symfony\Component\Finder\Finder;
 
 /**
  * Provides a base task implementation.
- *
- * @property \Symfony\Component\Finder\Finder $finder
- * @property \Acquia\Orca\Fixture\Fixture $fixture
- * @property \Acquia\Orca\ProcessRunner $processRunner
- * @property string $projectDir
  */
 abstract class TaskBase implements TaskInterface {
+
+  /**
+   * The finder.
+   *
+   * @var \Symfony\Component\Finder\Finder
+   */
+  protected $finder;
+
+  /**
+   * The fixture.
+   *
+   * @var \Acquia\Orca\Fixture\Fixture
+   */
+  protected $fixture;
 
   /**
    * A filesystem path.
    *
    * @var string
    */
-  private $path;
+  protected $path;
+
+  /**
+   * The process runner.
+   *
+   * @var \Acquia\Orca\ProcessRunner
+   */
+  protected $processRunner;
+
+  /**
+   * The ORCA project directory.
+   *
+   * @var string
+   */
+  protected $projectDir;
 
   /**
    * Constructs an instance.

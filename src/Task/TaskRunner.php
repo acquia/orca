@@ -8,10 +8,15 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
  * Runs tasks.
- *
- * @property \Symfony\Component\Console\Style\SymfonyStyle $output
  */
 class TaskRunner {
+
+  /**
+   * The output decorator.
+   *
+   * @var \Symfony\Component\Console\Style\SymfonyStyle
+   */
+  private $output;
 
   /**
    * A path to pass to the tasks.

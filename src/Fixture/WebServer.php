@@ -7,11 +7,15 @@ use Symfony\Component\Process\Process;
 
 /**
  * Provides a web server.
- *
- * @property \Acquia\Orca\Fixture\Fixture $fixture
- * @property \Acquia\Orca\ProcessRunner $processRunner
  */
 class WebServer {
+
+  /**
+   * The fixture.
+   *
+   * @var \Acquia\Orca\Fixture\Fixture
+   */
+  private $fixture;
 
   /**
    * The web server process.
@@ -19,6 +23,13 @@ class WebServer {
    * @var \Symfony\Component\Process\Process
    */
   private $process;
+
+  /**
+   * The process runner.
+   *
+   * @var \Acquia\Orca\ProcessRunner
+   */
+  private $processRunner;
 
   /**
    * Constructs an instance.

@@ -15,12 +15,28 @@ use Symfony\Component\Filesystem\Filesystem;
 
 /**
  * Provides a command.
- *
- * @property \Symfony\Component\Filesystem\Filesystem $filesystem
- * @property \Acquia\Orca\Task\TaskRunner $taskRunner
  */
 class RunCommand extends Command {
 
+  /**
+   * The filesystem.
+   *
+   * @var \Symfony\Component\Filesystem\Filesystem
+   */
+  private $filesystem;
+
+  /**
+   * The task runner.
+   *
+   * @var \Acquia\Orca\Task\TaskRunner
+   */
+  private $taskRunner;
+
+  /**
+   * The default command name.
+   *
+   * @var string
+   */
   protected static $defaultName = 'static-analysis:run';
 
   /**
