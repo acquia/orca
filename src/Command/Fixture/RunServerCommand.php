@@ -58,7 +58,7 @@ class RunServerCommand extends Command {
     $output->writeln([
       'Web server started.',
       sprintf('Listening on http://%s.', Fixture::WEB_ADDRESS),
-      sprintf('Document root is %s.', $this->fixture->docrootPath()),
+      sprintf('Document root is %s.', $this->fixture->rootPath('docroot')),
       'Press ENTER to quit.',
     ]);
     $this->webServer->start();

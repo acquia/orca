@@ -525,7 +525,7 @@ class FixtureCreator {
    * Ensure that Drupal is correctly configured.
    */
   protected function ensureDrupalSettings(): void {
-    $filename = $this->fixture->docrootPath('sites/default/settings/local.settings.php');
+    $filename = $this->fixture->rootPath('docroot/sites/default/settings/local.settings.php');
     $id = '# ORCA settings.';
 
     // Return early if the settings are already present.

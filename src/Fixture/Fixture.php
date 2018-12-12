@@ -48,18 +48,6 @@ class Fixture {
   }
 
   /**
-   * Gets the fixture root path with an optional sub-path appended.
-   *
-   * @param string $sub_path
-   *   (Optional) A sub-path to append.
-   *
-   * @return string
-   */
-  public function docrootPath(string $sub_path = ''): string {
-    return $this->appendSubPath($this->rootPath('docroot'), $sub_path);
-  }
-
-  /**
    * Determines whether or not the fixture already exists.
    *
    * @return bool
@@ -77,22 +65,7 @@ class Fixture {
    * @return string
    */
   public function rootPath(string $sub_path = ''): string {
-    return $this->appendSubPath($this->rootPath, $sub_path);
-  }
-
-  /**
-   * Appends an optional sub-path to a given path.
-   *
-   * @param string $base_path
-   *   The base path to append the sub-path to.
-   * @param string $sub_path
-   *   (Optional) The sub-path to append. If omitted, the base path will be
-   *   returned.
-   *
-   * @return string
-   */
-  private function appendSubPath(string $base_path, string $sub_path = '') {
-    $path = $base_path;
+    $path = $this->rootPath;
     if ($sub_path) {
       $path .= "/{$sub_path}";
     }

@@ -30,7 +30,7 @@ class PhpUnitTask extends TaskBase {
    * Ensures that PHPUnit is properly configured.
    */
   private function ensurePhpUnitConfig() {
-    $path = $this->fixture->docrootPath('core/phpunit.xml.dist');
+    $path = $this->fixture->rootPath('docroot/core/phpunit.xml.dist');
     $doc = new \DOMDocument();
     $doc->load($path);
     $xpath = new \DOMXPath($doc);
@@ -181,7 +181,7 @@ class PhpUnitTask extends TaskBase {
         'phpunit',
         '--colors=always',
         '--stop-on-failure',
-        "--configuration={$this->fixture->docrootPath('core/phpunit.xml.dist')}",
+        "--configuration={$this->fixture->rootPath('docroot/core/phpunit.xml.dist')}",
         "--group=orca_public",
         $this->fixture->testsDirectory(),
       ]);

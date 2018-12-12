@@ -42,7 +42,7 @@ class WebServer {
       'runserver',
       Fixture::WEB_ADDRESS,
     ])
-      ->setWorkingDirectory($this->fixture->docrootPath())
+      ->setWorkingDirectory($this->fixture->rootPath('docroot'))
       ->setTimeout(NULL)
       ->setIdleTimeout(NULL);
     $this->process->start();

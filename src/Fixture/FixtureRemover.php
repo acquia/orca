@@ -51,7 +51,7 @@ class FixtureRemover {
    * Write permissions on some files are removed by the Drupal installer.
    */
   private function prepareFilesForDeletion(): void {
-    $path = $this->fixture->docrootPath('sites/default');
+    $path = $this->fixture->rootPath('docroot/sites/default');
     if (!$this->filesystem->exists($path)) {
       return;
     }

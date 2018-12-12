@@ -56,21 +56,19 @@ class FixtureTest extends TestCase {
   /**
    * @dataProvider providerPathResolution
    */
-  public function testPathResolution($root_path, $docroot_path) {
+  public function testPathResolution($root_path) {
     $this->rootPath = $root_path;
     $fixture = $this->createFixture();
     $sub_path = '/some/sub-path';
 
     $this->assertEquals($root_path, $fixture->rootPath(), 'Resolved root path.');
     $this->assertEquals("{$root_path}/{$sub_path}", $fixture->rootPath($sub_path), 'Resolved root path with sub-path.');
-    $this->assertEquals($docroot_path, $fixture->docrootPath(), 'Resolved docroot path.');
-    $this->assertEquals("{$docroot_path}/{$sub_path}", $fixture->docrootPath($sub_path), 'Resolved docroot path with sub-path.');
   }
 
   public function providerPathResolution() {
     return [
-      ['/var/www/orca-build', '/var/www/orca-build/docroot'],
-      ['/tmp/test', '/tmp/test/docroot'],
+      ['/var/www/orca-build'],
+      ['/tmp/test'],
     ];
   }
 

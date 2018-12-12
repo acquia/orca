@@ -20,7 +20,7 @@ class RunServerCommandTest extends CommandTestBase {
     $this->fixture = $this->prophesize(Fixture::class);
     $this->fixture->rootPath()
       ->willReturn(self::FIXTURE_ROOT);
-    $this->fixture->docrootPath()
+    $this->fixture->rootPath('docroot')
       ->willReturn(self::FIXTURE_DOCROOT);
     $this->webServer = $this->prophesize(WebServer::class);
   }
