@@ -5,14 +5,14 @@ namespace Acquia\Orca\Tests\Command\Fixture;
 use Acquia\Orca\Command\Fixture\RunServerCommand;
 use Acquia\Orca\Command\StatusCodes;
 use Acquia\Orca\Fixture\Fixture;
-use Acquia\Orca\Fixture\WebServer;
+use Acquia\Orca\Server\WebServer;
 use Acquia\Orca\Tests\Command\CommandTestBase;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
 
 /**
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Fixture\Fixture $fixture
- * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Fixture\WebServer $webServer
+ * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Server\WebServer $webServer
  */
 class RunServerCommandTest extends CommandTestBase {
 
@@ -59,7 +59,7 @@ class RunServerCommandTest extends CommandTestBase {
     $application = new Application();
     /** @var \Acquia\Orca\Fixture\Fixture $fixture */
     $fixture = $this->fixture->reveal();
-    /** @var \Acquia\Orca\Fixture\WebServer $web_server */
+    /** @var \Acquia\Orca\Server\WebServer $web_server */
     $web_server = $this->webServer->reveal();
     $application->add(new RunServerCommand($fixture, $web_server));
     /** @var \Acquia\Orca\Command\Fixture\InitCommand $command */

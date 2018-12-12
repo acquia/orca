@@ -2,13 +2,14 @@
 
 namespace Acquia\Orca\Command\Tests;
 
+use Acquia\Orca\Clock;
 use Acquia\Orca\Command\StatusCodes;
-use Acquia\Orca\Fixture\Chromedriver;
+use Acquia\Orca\Server\ChromeDriverServer;
 use Acquia\Orca\Fixture\Fixture;
 use Acquia\Orca\Task\BehatTask;
 use Acquia\Orca\Task\PhpUnitTask;
 use Acquia\Orca\Task\TaskRunner;
-use Acquia\Orca\Fixture\WebServer;
+use Acquia\Orca\Server\WebServer;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -26,11 +27,11 @@ class RunCommand extends Command {
   protected static $defaultName = 'tests:run';
 
   /**
-   * The Chromedriver.
+   * The clock.
    *
-   * @var \Acquia\Orca\Fixture\Chromedriver
+   * @var \Acquia\Orca\Clock
    */
-  private $chromedriver;
+  private $clock;
 
   /**
    * The fixture.
@@ -40,6 +41,13 @@ class RunCommand extends Command {
   private $fixture;
 
   /**
+   * The servers to run before tests.
+   *
+   * @var \Acquia\Orca\Server\ServerInterface[]
+   */
+  private $servers;
+
+  /**
    * The task runner.
    *
    * @var \Acquia\Orca\Task\TaskRunner
@@ -47,35 +55,33 @@ class RunCommand extends Command {
   private $taskRunner;
 
   /**
-   * The web server.
-   *
-   * @var \Acquia\Orca\Fixture\WebServer
-   */
-  private $webServer;
-
-  /**
    * Constructs an instance.
    *
    * @param \Acquia\Orca\Task\BehatTask $behat
    *   The Behat task.
-   * @param \Acquia\Orca\Fixture\Chromedriver $chromedriver
-   *   The Chromedriver.
+   * @param \Acquia\Orca\Server\ChromeDriverServer $chrome_driver_server
+   *   The ChromeDriver server.
+   * @param \Acquia\Orca\Clock $clock
+   *   The clock.
    * @param \Acquia\Orca\Fixture\Fixture $fixture
    *   The fixture.
    * @param \Acquia\Orca\Task\PhpUnitTask $phpunit
    *   The PHPUnit task.
    * @param \Acquia\Orca\Task\TaskRunner $task_runner
    *   The task runner.
-   * @param \Acquia\Orca\Fixture\WebServer $web_server
+   * @param \Acquia\Orca\Server\WebServer $web_server
    *   The web server.
    */
-  public function __construct(BehatTask $behat, Chromedriver $chromedriver, Fixture $fixture, PhpUnitTask $phpunit, TaskRunner $task_runner, WebServer $web_server) {
+  public function __construct(BehatTask $behat, ChromeDriverServer $chrome_driver_server, Clock $clock, Fixture $fixture, PhpUnitTask $phpunit, TaskRunner $task_runner, WebServer $web_server) {
+    $this->clock = $clock;
     $this->fixture = $fixture;
+    $this->servers = [
+      $web_server,
+      $chrome_driver_server,
+    ];
     $this->taskRunner = (clone($task_runner))
       ->addTask($phpunit)
       ->addTask($behat);
-    $this->webServer = $web_server;
-    $this->chromedriver = $chromedriver;
     parent::__construct(self::$defaultName);
   }
 
@@ -100,17 +106,46 @@ class RunCommand extends Command {
       return StatusCodes::ERROR;
     }
 
-    $this->webServer->start();
-    $this->chromedriver->start();
-
-    $status_code = $this->taskRunner
-      ->setPath($this->fixture->testsDirectory())
-      ->run();
-
-    $this->chromedriver->stop();
-    $this->webServer->stop();
+    $this->startServers();
+    $status_code = $this->runTests();
+    $this->stopServers();
 
     return $status_code;
+  }
+
+  /**
+   * Starts servers.
+   */
+  protected function startServers(): void {
+    foreach ($this->servers as $server) {
+      $server->start();
+    }
+    // Give the servers a chance to bootstrap before releasing the thread to
+    // tasks that will depend on them.
+    $this->clock->sleep(3);
+  }
+
+  /**
+   * Runs tests.
+   *
+   * @return int
+   *   A status code.
+   *
+   * @see \Acquia\Orca\Command\StatusCodes
+   */
+  protected function runTests(): int {
+    return $this->taskRunner
+      ->setPath($this->fixture->testsDirectory())
+      ->run();
+  }
+
+  /**
+   * Stops servers.
+   */
+  protected function stopServers(): void {
+    foreach ($this->servers as $server) {
+      $server->stop();
+    }
   }
 
 }

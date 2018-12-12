@@ -4,7 +4,7 @@ namespace Acquia\Orca\Command\Fixture;
 
 use Acquia\Orca\Command\StatusCodes;
 use Acquia\Orca\Fixture\Fixture;
-use Acquia\Orca\Fixture\WebServer;
+use Acquia\Orca\Server\WebServer;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -32,7 +32,7 @@ class RunServerCommand extends Command {
   /**
    * The web server.
    *
-   * @var \Acquia\Orca\Fixture\WebServer
+   * @var \Acquia\Orca\Server\WebServer
    */
   private $webServer;
 
@@ -41,7 +41,7 @@ class RunServerCommand extends Command {
    *
    * @param \Acquia\Orca\Fixture\Fixture $fixture
    *   The fixture.
-   * @param \Acquia\Orca\Fixture\WebServer $web_server
+   * @param \Acquia\Orca\Server\WebServer $web_server
    *   The web server.
    */
   public function __construct(Fixture $fixture, WebServer $web_server) {

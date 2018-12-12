@@ -2,25 +2,27 @@
 
 namespace Acquia\Orca\Tests\Command\Tests;
 
+use Acquia\Orca\Clock;
 use Acquia\Orca\Command\StatusCodes;
 use Acquia\Orca\Command\Tests\RunCommand;
-use Acquia\Orca\Fixture\Chromedriver;
+use Acquia\Orca\Server\ChromeDriverServer;
 use Acquia\Orca\Fixture\Fixture;
 use Acquia\Orca\Task\BehatTask;
 use Acquia\Orca\Task\PhpUnitTask;
 use Acquia\Orca\Task\TaskRunner;
 use Acquia\Orca\Tests\Command\CommandTestBase;
-use Acquia\Orca\Fixture\WebServer;
+use Acquia\Orca\Server\WebServer;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
 
 /**
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Task\BehatTask $behat
- * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Fixture\Chromedriver $chromedriver
+ * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Server\ChromeDriverServer $chromedriver
+ * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Clock $clock
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Fixture\Fixture $fixture
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Task\PhpUnitTask $phpunit
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Task\TaskRunner $taskRunner
- * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Fixture\WebServer $webServer
+ * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Server\WebServer $webServer
  */
 class RunCommandTest extends CommandTestBase {
 
@@ -28,7 +30,8 @@ class RunCommandTest extends CommandTestBase {
 
   protected function setUp() {
     $this->behat = $this->prophesize(BehatTask::class);
-    $this->chromedriver = $this->prophesize(Chromedriver::class);
+    $this->chromedriver = $this->prophesize(ChromeDriverServer::class);
+    $this->clock = $this->prophesize(Clock::class);
     $this->fixture = $this->prophesize(Fixture::class);
     $this->fixture->exists()
       ->willReturn(FALSE);
@@ -91,17 +94,19 @@ class RunCommandTest extends CommandTestBase {
     $application = new Application();
     /** @var \Acquia\Orca\Task\BehatTask $behat */
     $behat = $this->behat->reveal();
-    /** @var \Acquia\Orca\Fixture\Chromedriver $chromedriver */
+    /** @var \Acquia\Orca\Server\ChromeDriverServer $chromedriver */
     $chromedriver = $this->chromedriver->reveal();
+    /** @var \Acquia\Orca\Clock $clock */
+    $clock = $this->clock->reveal();
     /** @var \Acquia\Orca\Fixture\Fixture $fixture */
     $fixture = $this->fixture->reveal();
     /** @var \Acquia\Orca\Task\PhpUnitTask $phpunit */
     $phpunit = $this->phpunit->reveal();
     /** @var \Acquia\Orca\Task\TaskRunner $task_runner */
     $task_runner = $this->taskRunner->reveal();
-    /** @var \Acquia\Orca\Fixture\WebServer $web_server */
+    /** @var \Acquia\Orca\Server\WebServer $web_server */
     $web_server = $this->webServer->reveal();
-    $application->add(new RunCommand($behat, $chromedriver, $fixture, $phpunit, $task_runner, $web_server));
+    $application->add(new RunCommand($behat, $chromedriver, $clock, $fixture, $phpunit, $task_runner, $web_server));
     /** @var \Acquia\Orca\Command\Tests\RunCommand $command */
     $command = $application->find(RunCommand::getDefaultName());
     $this->assertInstanceOf(RunCommand::class, $command, 'Successfully instantiated class.');

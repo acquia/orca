@@ -3,7 +3,7 @@
 namespace Acquia\Orca\Task;
 
 /**
- * Provides an interface for defining a task.
+ * Provides an interface for defining tasks.
  */
 interface TaskInterface {
 
