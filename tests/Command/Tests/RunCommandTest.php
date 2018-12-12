@@ -4,6 +4,7 @@ namespace Acquia\Orca\Tests\Command\Tests;
 
 use Acquia\Orca\Command\StatusCodes;
 use Acquia\Orca\Command\Tests\RunCommand;
+use Acquia\Orca\Fixture\Chromedriver;
 use Acquia\Orca\Fixture\Fixture;
 use Acquia\Orca\Task\BehatTask;
 use Acquia\Orca\Task\PhpUnitTask;
@@ -15,6 +16,7 @@ use Symfony\Component\Console\Tester\CommandTester;
 
 /**
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Task\BehatTask $behat
+ * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Fixture\Chromedriver $chromedriver
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Fixture\Fixture $fixture
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Task\PhpUnitTask $phpunit
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Task\TaskRunner $taskRunner
@@ -26,6 +28,7 @@ class RunCommandTest extends CommandTestBase {
 
   protected function setUp() {
     $this->behat = $this->prophesize(BehatTask::class);
+    $this->chromedriver = $this->prophesize(Chromedriver::class);
     $this->fixture = $this->prophesize(Fixture::class);
     $this->fixture->exists()
       ->willReturn(FALSE);
@@ -88,6 +91,8 @@ class RunCommandTest extends CommandTestBase {
     $application = new Application();
     /** @var \Acquia\Orca\Task\BehatTask $behat */
     $behat = $this->behat->reveal();
+    /** @var \Acquia\Orca\Fixture\Chromedriver $chromedriver */
+    $chromedriver = $this->chromedriver->reveal();
     /** @var \Acquia\Orca\Fixture\Fixture $fixture */
     $fixture = $this->fixture->reveal();
     /** @var \Acquia\Orca\Task\PhpUnitTask $phpunit */
@@ -96,7 +101,7 @@ class RunCommandTest extends CommandTestBase {
     $task_runner = $this->taskRunner->reveal();
     /** @var \Acquia\Orca\Fixture\WebServer $web_server */
     $web_server = $this->webServer->reveal();
-    $application->add(new RunCommand($behat, $fixture, $phpunit, $task_runner, $web_server));
+    $application->add(new RunCommand($behat, $chromedriver, $fixture, $phpunit, $task_runner, $web_server));
     /** @var \Acquia\Orca\Command\Tests\RunCommand $command */
     $command = $application->find(RunCommand::getDefaultName());
     $this->assertInstanceOf(RunCommand::class, $command, 'Successfully instantiated class.');
