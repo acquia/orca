@@ -42,8 +42,8 @@ class Chromedriver {
       '--port=4444',
     ])
       ->setTimeout(NULL)
-      ->setIdleTimeout(NULL)
-      ->start();
+      ->setIdleTimeout(NULL);
+    $this->process->start();
     // Give the process a chance to bootstrap before releasing the thread to
     // code that will depend on it.
     sleep(3);
