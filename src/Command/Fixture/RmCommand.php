@@ -3,7 +3,7 @@
 namespace Acquia\Orca\Command\Fixture;
 
 use Acquia\Orca\Command\StatusCodes;
-use Acquia\Orca\Fixture\Remover;
+use Acquia\Orca\Fixture\FixtureRemover;
 use Acquia\Orca\Fixture\Fixture;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -15,7 +15,7 @@ use Symfony\Component\Console\Question\ConfirmationQuestion;
  * Provides a command.
  *
  * @property \Acquia\Orca\Fixture\Fixture $fixture
- * @property \Acquia\Orca\Fixture\Remover $remover
+ * @property \Acquia\Orca\Fixture\FixtureRemover $fixtureRemover
  */
 class RmCommand extends Command {
 
@@ -26,12 +26,12 @@ class RmCommand extends Command {
    *
    * @param \Acquia\Orca\Fixture\Fixture $fixture
    *   The fixture.
-   * @param \Acquia\Orca\Fixture\Remover $remover
+   * @param \Acquia\Orca\Fixture\FixtureRemover $fixture_remover
    *   The fixture remover.
    */
-  public function __construct(Fixture $fixture, Remover $remover) {
+  public function __construct(Fixture $fixture, FixtureRemover $fixture_remover) {
     $this->fixture = $fixture;
-    $this->remover = $remover;
+    $this->fixtureRemover = $fixture_remover;
     parent::__construct(self::$defaultName);
   }
 
@@ -65,7 +65,7 @@ class RmCommand extends Command {
       return StatusCodes::USER_CANCEL;
     }
 
-    $this->remover->remove();
+    $this->fixtureRemover->remove();
     return StatusCodes::OK;
   }
 

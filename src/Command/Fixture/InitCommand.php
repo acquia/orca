@@ -4,9 +4,9 @@ namespace Acquia\Orca\Command\Fixture;
 
 use Acquia\Orca\Command\StatusCodes;
 use Acquia\Orca\Exception\OrcaException;
-use Acquia\Orca\Fixture\Creator;
+use Acquia\Orca\Fixture\FixtureCreator;
 use Acquia\Orca\Fixture\ProjectManager;
-use Acquia\Orca\Fixture\Remover;
+use Acquia\Orca\Fixture\FixtureRemover;
 use Acquia\Orca\Fixture\Fixture;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -16,10 +16,10 @@ use Symfony\Component\Console\Output\OutputInterface;
 /**
  * Provides a command.
  *
- * @property \Acquia\Orca\Fixture\Creator $creator
  * @property \Acquia\Orca\Fixture\Fixture $fixture
+ * @property \Acquia\Orca\Fixture\FixtureCreator $fixtureCreator
+ * @property \Acquia\Orca\Fixture\FixtureRemover $fixtureRemover
  * @property \Acquia\Orca\Fixture\ProjectManager $projectManager
- * @property \Acquia\Orca\Fixture\Remover $remover
  */
 class InitCommand extends Command {
 
@@ -28,20 +28,20 @@ class InitCommand extends Command {
   /**
    * Constructs an instance.
    *
-   * @param \Acquia\Orca\Fixture\Creator $creator
-   *   The fixture creator.
    * @param \Acquia\Orca\Fixture\Fixture $fixture
    *   The fixture.
+   * @param \Acquia\Orca\Fixture\FixtureCreator $fixture_creator
+   *   The fixture creator.
+   * @param \Acquia\Orca\Fixture\FixtureRemover $fixture_remover
+   *   The fixture remover.
    * @param \Acquia\Orca\Fixture\ProjectManager $project_manager
    *   The project manager.
-   * @param \Acquia\Orca\Fixture\Remover $remover
-   *   The fixture remover.
    */
-  public function __construct(Creator $creator, Fixture $fixture, ProjectManager $project_manager, Remover $remover) {
-    $this->creator = $creator;
+  public function __construct(Fixture $fixture, FixtureCreator $fixture_creator, FixtureRemover $fixture_remover, ProjectManager $project_manager) {
+    $this->fixtureCreator = $fixture_creator;
     $this->fixture = $fixture;
     $this->projectManager = $project_manager;
-    $this->remover = $remover;
+    $this->fixtureRemover = $fixture_remover;
     parent::__construct(self::$defaultName);
   }
 
@@ -78,14 +78,14 @@ class InitCommand extends Command {
         return StatusCodes::ERROR;
       }
 
-      $this->remover->remove();
+      $this->fixtureRemover->remove();
     }
 
     $this->setSut($sut);
     $this->setSutOnly($sut_only);
 
     try {
-      $this->creator->create();
+      $this->fixtureCreator->create();
     }
     catch (OrcaException $e) {
       return StatusCodes::ERROR;
@@ -131,7 +131,7 @@ class InitCommand extends Command {
    */
   private function setSut($sut): void {
     if ($sut) {
-      $this->creator->setSut($sut);
+      $this->fixtureCreator->setSut($sut);
     }
   }
 
@@ -143,7 +143,7 @@ class InitCommand extends Command {
    */
   private function setSutOnly($sut_only): void {
     if ($sut_only) {
-      $this->creator->setSutOnly(TRUE);
+      $this->fixtureCreator->setSutOnly(TRUE);
     }
   }
 

@@ -4,7 +4,7 @@ namespace Acquia\Orca\Tests\Command\Fixture;
 
 use Acquia\Orca\Command\StatusCodes;
 use Acquia\Orca\Command\Fixture\RmCommand;
-use Acquia\Orca\Fixture\Remover;
+use Acquia\Orca\Fixture\FixtureRemover;
 use Acquia\Orca\Fixture\Fixture;
 use Acquia\Orca\Tests\Command\CommandTestBase;
 use Symfony\Component\Console\Application;
@@ -12,12 +12,12 @@ use Symfony\Component\Console\Tester\CommandTester;
 
 /**
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Fixture\Fixture $fixture
- * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Fixture\Remover $remover
+ * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Fixture\FixtureRemover $fixtureRemover
  */
 class RmCommandTest extends CommandTestBase {
 
   protected function setUp() {
-    $this->remover = $this->prophesize(Remover::class);
+    $this->fixtureRemover = $this->prophesize(FixtureRemover::class);
     $this->fixture = $this->prophesize(Fixture::class);
     $this->fixture->exists()
       ->willReturn(TRUE);
@@ -33,7 +33,7 @@ class RmCommandTest extends CommandTestBase {
       ->exists()
       ->shouldBeCalled()
       ->willReturn($fixture_exists);
-    $this->remover
+    $this->fixtureRemover
       ->remove()
       ->shouldBeCalledTimes($remove_called);
     $tester = $this->createCommandTester();
@@ -58,11 +58,11 @@ class RmCommandTest extends CommandTestBase {
 
   private function createCommandTester(): CommandTester {
     $application = new Application();
-    /** @var \Acquia\Orca\Fixture\Remover $remover */
-    $remover = $this->remover->reveal();
+    /** @var \Acquia\Orca\Fixture\FixtureRemover $fixture_remover */
+    $fixture_remover = $this->fixtureRemover->reveal();
     /** @var \Acquia\Orca\Fixture\Fixture $fixture */
     $fixture = $this->fixture->reveal();
-    $application->add(new RmCommand($fixture, $remover));
+    $application->add(new RmCommand($fixture, $fixture_remover));
     /** @var \Acquia\Orca\Command\Fixture\RmCommand $command */
     $command = $application->find(RmCommand::getDefaultName());
     $this->assertInstanceOf(RmCommand::class, $command, 'Successfully instantiated class.');

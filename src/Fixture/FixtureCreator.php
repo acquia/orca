@@ -13,7 +13,7 @@ use Symfony\Component\Finder\Finder;
 /**
  * Creates a fixture.
  */
-class Creator {
+class FixtureCreator {
 
   /**
    * The filesystem.

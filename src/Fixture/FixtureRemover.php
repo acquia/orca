@@ -14,7 +14,7 @@ use Symfony\Component\Filesystem\Filesystem;
  * @property \Symfony\Component\Console\Style\SymfonyStyle $output
  * @property \Acquia\Orca\ProcessRunner $processRunner
  */
-class Remover {
+class FixtureRemover {
 
   /**
    * Constructs an instance.
