@@ -3,6 +3,7 @@
 namespace Acquia\Orca\Command\Tests;
 
 use Acquia\Orca\Command\StatusCodes;
+use Acquia\Orca\Fixture\Chromedriver;
 use Acquia\Orca\Fixture\Fixture;
 use Acquia\Orca\Task\BehatTask;
 use Acquia\Orca\Task\PhpUnitTask;
@@ -18,6 +19,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  * @property \Acquia\Orca\Fixture\Fixture $fixture
  * @property \Acquia\Orca\Task\TaskRunner $taskRunner
  * @property \Acquia\Orca\Fixture\WebServer $webServer
+ * @property \Acquia\Orca\Fixture\Chromedriver $chromedriver
  */
 class RunCommand extends Command {
 
@@ -36,13 +38,16 @@ class RunCommand extends Command {
    *   The task runner.
    * @param \Acquia\Orca\Fixture\WebServer $web_server
    *   The web server.
+   * @param \Acquia\Orca\Fixture\Chromedriver $chromedriver
+   *   The chromedriver wrapper.
    */
-  public function __construct(BehatTask $behat, Fixture $fixture, PhpUnitTask $phpunit, TaskRunner $task_runner, WebServer $web_server) {
+  public function __construct(BehatTask $behat, Fixture $fixture, PhpUnitTask $phpunit, TaskRunner $task_runner, WebServer $web_server, Chromedriver $chromedriver) {
     $this->fixture = $fixture;
     $this->taskRunner = (clone($task_runner))
       ->addTask($phpunit)
       ->addTask($behat);
     $this->webServer = $web_server;
+    $this->chromedriver = $chromedriver;
     parent::__construct(self::$defaultName);
   }
 
@@ -68,9 +73,11 @@ class RunCommand extends Command {
     }
 
     $this->webServer->start();
+    $this->chromedriver->start();
     $status_code = $this->taskRunner
       ->setPath($this->fixture->testsDirectory())
       ->run();
+    $this->chromedriver->stop();
     $this->webServer->stop();
 
     return $status_code;
