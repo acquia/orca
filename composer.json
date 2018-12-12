@@ -17,9 +17,9 @@
         "composer/composer": "^1.7",
         "dealerdirect/phpcodesniffer-composer-installer": "^0.5",
         "drupal/coder": "^8.3",
-        "enm1989/chromedriver": "^2.43",
         "jakub-onderka/php-console-highlighter": "^0.4.0",
         "jakub-onderka/php-parallel-lint": "^1.0",
+        "lbaey/chromedriver": "^1.1",
         "phpcompatibility/php-compatibility": "^9.0",
         "phpunit/phpunit": "^6.5",
         "symfony/config": "^4.1",
@@ -58,6 +58,10 @@
             ],
             "post-install-cmd": "vendor/bin/cghooks add --ignore-lock",
             "post-update-cmd": "vendor/bin/cghooks update"
+        },
+        "lbaey/chromedriver": {
+            "bypass-select": true,
+            "chromedriver-version": "2.45"
         },
         "scripts-dev": {
             "post-install-cmd": [

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "9a73006d2c2ae5abe9379199fe7df682",
+    "content-hash": "96b2ebea95724757de3961689ad85e68",
     "packages": [
         {
             "name": "behat/behat",
@@ -848,44 +848,6 @@
             "time": "2018-09-21T14:22:49+00:00"
         },
         {
-            "name": "enm1989/chromedriver",
-            "version": "2.43",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/ENM1989/chromedriver.git",
-                "reference": "2a6ad85a480ea305f1c080cc87d710c0141f5cb6"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/ENM1989/chromedriver/zipball/2a6ad85a480ea305f1c080cc87d710c0141f5cb6",
-                "reference": "2a6ad85a480ea305f1c080cc87d710c0141f5cb6",
-                "shasum": ""
-            },
-            "bin": [
-                "bin/chromedriver"
-            ],
-            "type": "library",
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "Apache-2.0"
-            ],
-            "authors": [
-                {
-                    "name": "Nico Müller",
-                    "email": "nico.mueller.1989@googlemail.com"
-                }
-            ],
-            "description": "Composer distribution of Chromedriver. Adds a executable to your composer bin directory.",
-            "homepage": "https://github.com/ENM1989/chromedriver",
-            "keywords": [
-                "Chromedriver",
-                "chrome",
-                "selenium",
-                "webdriver"
-            ],
-            "time": "2018-11-01T21:22:44+00:00"
-        },
-        {
             "name": "fabpot/goutte",
             "version": "v3.2.3",
             "source": {
@@ -1322,6 +1284,58 @@
                 "schema"
             ],
             "time": "2018-02-14T22:26:30+00:00"
+        },
+        {
+            "name": "lbaey/chromedriver",
+            "version": "1.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/lbaey/chromedriver.git",
+                "reference": "0cbc21c0d8dbd90354f79e567cf1a3ab7f7bff81"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/lbaey/chromedriver/zipball/0cbc21c0d8dbd90354f79e567cf1a3ab7f7bff81",
+                "reference": "0cbc21c0d8dbd90354f79e567cf1a3ab7f7bff81",
+                "shasum": ""
+            },
+            "require": {
+                "composer-plugin-api": "^1",
+                "ext-zip": "*",
+                "php": ">=7.0"
+            },
+            "type": "composer-plugin",
+            "extra": {
+                "class": "Lbaey\\Composer\\ChromeDriverPlugin"
+            },
+            "autoload": {
+                "psr-0": {
+                    "Lbaey": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Laurent Baey",
+                    "email": "laurent.baey@gmail.com"
+                }
+            ],
+            "description": "Utility for installing Chromedriver, whatever platform you are on, for use with Behat",
+            "homepage": "https://github.com/lbaey",
+            "keywords": [
+                "Behat",
+                "Browser Testing",
+                "Chromedriver",
+                "MAC",
+                "linux",
+                "osx",
+                "selenium",
+                "windows"
+            ],
+            "time": "2017-10-12T08:33:15+00:00"
         },
         {
             "name": "myclabs/deep-copy",
