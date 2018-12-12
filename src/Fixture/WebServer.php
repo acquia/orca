@@ -6,7 +6,7 @@ use Acquia\Orca\ProcessRunner;
 use Symfony\Component\Process\Process;
 
 /**
- * Provides a fixture.
+ * Provides a web server.
  *
  * @property \Acquia\Orca\Fixture\Fixture $fixture
  * @property \Acquia\Orca\ProcessRunner $processRunner
