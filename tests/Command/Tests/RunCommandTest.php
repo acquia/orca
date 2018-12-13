@@ -63,6 +63,9 @@ class RunCommandTest extends CommandTestBase {
     $this->webServer
       ->start()
       ->shouldBeCalledTimes($run_called);
+    $this->chromedriver
+      ->start()
+      ->shouldBeCalledTimes($run_called);
     $this->taskRunner
       ->setPath(self::TESTS_DIR)
       ->shouldBeCalledTimes($run_called)
@@ -72,6 +75,9 @@ class RunCommandTest extends CommandTestBase {
       ->shouldBeCalledTimes($run_called)
       ->willReturn($status_code);
     $this->webServer
+      ->stop()
+      ->shouldBeCalledTimes($run_called);
+    $this->chromedriver
       ->stop()
       ->shouldBeCalledTimes($run_called);
     $tester = $this->createCommandTester();
