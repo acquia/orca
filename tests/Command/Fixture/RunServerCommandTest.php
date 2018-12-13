@@ -18,9 +18,9 @@ class RunServerCommandTest extends CommandTestBase {
 
   protected function setUp() {
     $this->fixture = $this->prophesize(Fixture::class);
-    $this->fixture->rootPath()
+    $this->fixture->getPath()
       ->willReturn(self::FIXTURE_ROOT);
-    $this->fixture->rootPath('docroot')
+    $this->fixture->getPath('docroot')
       ->willReturn(self::FIXTURE_DOCROOT);
     $this->webServer = $this->prophesize(WebServer::class);
   }

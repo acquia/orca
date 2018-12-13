@@ -110,15 +110,7 @@ class FixtureCreator {
    * @param \Acquia\Orca\Fixture\SubmoduleManager $submodule_manager
    *   The submodule manager.
    */
-  public function __construct(
-    Filesystem $filesystem,
-    Finder $finder,
-    Fixture $fixture,
-    SymfonyStyle $output,
-    ProcessRunner $process_runner,
-    ProjectManager $project_manager,
-    SubmoduleManager $submodule_manager
-  ) {
+  public function __construct(Filesystem $filesystem, Finder $finder, Fixture $fixture, SymfonyStyle $output, ProcessRunner $process_runner, ProjectManager $project_manager, SubmoduleManager $submodule_manager) {
     $this->filesystem = $filesystem;
     $this->finder = $finder;
     $this->fixture = $fixture;
@@ -178,7 +170,7 @@ class FixtureCreator {
       '--no-install',
       '--no-scripts',
       'acquia/blt-project',
-      $this->fixture->rootPath(),
+      $this->fixture->getPath(),
     ]);
     $this->processRunner->run($process);
 
@@ -194,7 +186,7 @@ class FixtureCreator {
    * Loads the fixture's composer.json data.
    */
   private function loadComposerJson(): void {
-    $json_file = new JsonFile($this->fixture->rootPath('composer.json'));
+    $json_file = new JsonFile($this->fixture->getPath('composer.json'));
     $this->jsonConfigDataBackup = $json_file->read();
     $this->jsonConfigSource = new JsonConfigSource($json_file);
   }
@@ -217,7 +209,7 @@ class FixtureCreator {
       'drupal/acquia_connector',
       'drupal/acquia_purge',
     ]);
-    $this->processRunner->run($process, $this->fixture->rootPath());
+    $this->processRunner->run($process, $this->fixture->getPath());
   }
 
   /**
@@ -270,8 +262,9 @@ class FixtureCreator {
     $this->jsonConfigSource->removeProperty('extra.installer-paths');
 
     // Add new installer paths.
+    $installer_path = sprintf('extra.installer-paths.%s/{$name}', Fixture::ACQUIA_MODULE_PATH);
     $module_packages = array_keys($this->projectManager->getMultiple('drupal-module', 'getPackageName'));
-    $this->jsonConfigSource->addProperty('extra.installer-paths.docroot/modules/contrib/acquia/{$name}', $module_packages);
+    $this->jsonConfigSource->addProperty($installer_path, $module_packages);
 
     // Append original installer paths.
     foreach ($this->jsonConfigDataBackup['extra']['installer-paths'] as $key => $value) {
@@ -320,7 +313,7 @@ class FixtureCreator {
       ['composer', 'require', '-n'],
       $this->getAcquiaProductModuleDependencies()
     ));
-    $this->processRunner->run($process, $this->fixture->rootPath());
+    $this->processRunner->run($process, $this->fixture->getPath());
   }
 
   /**
@@ -328,15 +321,15 @@ class FixtureCreator {
    */
   private function forceSutSymlinkInstall(): void {
     $this->filesystem->remove([
-      $this->fixture->rootPath('composer.lock'),
-      $this->fixture->rootPath($this->sut->getInstallPathRelative()),
+      $this->fixture->getPath('composer.lock'),
+      $this->fixture->getPath($this->sut->getInstallPathRelative()),
     ]);
     $process = $this->processRunner->createOrcaVendorBinProcess([
       'composer',
       'install',
       '--no-interaction',
     ]);
-    $this->processRunner->run($process, $this->fixture->rootPath());
+    $this->processRunner->run($process, $this->fixture->getPath());
   }
 
   /**
@@ -347,7 +340,7 @@ class FixtureCreator {
   private function verifySut(): void {
     $error = FALSE;
 
-    $sut_install_path = $this->fixture->rootPath($this->sut->getInstallPathRelative());
+    $sut_install_path = $this->fixture->getPath($this->sut->getInstallPathRelative());
     if (!file_exists($sut_install_path)) {
       $error = 'Failed to place SUT at correct path.';
     }
@@ -469,7 +462,7 @@ class FixtureCreator {
       ['composer', 'require', '-n'],
       $packages
     ));
-    $this->processRunner->run($process, $this->fixture->rootPath());
+    $this->processRunner->run($process, $this->fixture->getPath());
   }
 
   /**
@@ -479,7 +472,7 @@ class FixtureCreator {
    *   The commit message to use.
    */
   private function commitCodeChanges($message): void {
-    $cwd = $this->fixture->rootPath();
+    $cwd = $this->fixture->getPath();
     $process = $this->processRunner->createExecutableProcess([
       'git',
       'add',
@@ -517,7 +510,7 @@ class FixtureCreator {
       '--verbose',
       '--ansi',
     ]);
-    $this->processRunner->run($process, $this->fixture->rootPath());
+    $this->processRunner->run($process, $this->fixture->getPath());
     $this->commitCodeChanges('Installed Drupal.');
   }
 
@@ -525,7 +518,7 @@ class FixtureCreator {
    * Ensure that Drupal is correctly configured.
    */
   protected function ensureDrupalSettings(): void {
-    $filename = $this->fixture->rootPath('docroot/sites/default/settings/local.settings.php');
+    $filename = $this->fixture->getPath('docroot/sites/default/settings/local.settings.php');
     $id = '# ORCA settings.';
 
     // Return early if the settings are already present.
@@ -583,7 +576,7 @@ PHP;
       'pm-enable',
       '-y',
     ], $module_list));
-    $this->processRunner->run($process, $this->fixture->rootPath());
+    $this->processRunner->run($process, $this->fixture->getPath());
   }
 
   /**
@@ -618,7 +611,7 @@ PHP;
       '--force',
       Fixture::BASE_FIXTURE_GIT_BRANCH,
     ]);
-    $this->processRunner->run($process, $this->fixture->rootPath());
+    $this->processRunner->run($process, $this->fixture->getPath());
   }
 
 }

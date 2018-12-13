@@ -21,7 +21,7 @@ class RmCommandTest extends CommandTestBase {
     $this->fixture = $this->prophesize(Fixture::class);
     $this->fixture->exists()
       ->willReturn(TRUE);
-    $this->fixture->rootPath()
+    $this->fixture->getPath()
       ->willReturn(self::FIXTURE_ROOT);
   }
 

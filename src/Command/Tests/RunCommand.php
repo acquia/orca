@@ -100,7 +100,7 @@ class RunCommand extends Command {
   public function execute(InputInterface $input, OutputInterface $output): int {
     if (!$this->fixture->exists()) {
       $output->writeln([
-        "Error: No fixture exists at {$this->fixture->rootPath()}.",
+        "Error: No fixture exists at {$this->fixture->getPath()}.",
         'Hint: Use the "fixture:init" command to create one.',
       ]);
       return StatusCodes::ERROR;
@@ -135,7 +135,7 @@ class RunCommand extends Command {
    */
   protected function runTests(): int {
     return $this->taskRunner
-      ->setPath($this->fixture->testsDirectory())
+      ->setPath($this->fixture->getTestsPath())
       ->run();
   }
 

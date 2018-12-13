@@ -65,7 +65,7 @@ class RunServerCommand extends Command {
   protected function execute(InputInterface $input, OutputInterface $output): int {
     if (!$this->fixture->exists()) {
       $output->writeln([
-        "Error: No fixture exists at {$this->fixture->rootPath()}.",
+        "Error: No fixture exists at {$this->fixture->getPath()}.",
         'Hint: Use the "fixture:init" command to create one.',
       ]);
       return StatusCodes::ERROR;
@@ -74,7 +74,7 @@ class RunServerCommand extends Command {
     $output->writeln([
       'Web server started.',
       sprintf('Listening on http://%s.', Fixture::WEB_ADDRESS),
-      sprintf('Document root is %s.', $this->fixture->rootPath('docroot')),
+      sprintf('Document root is %s.', $this->fixture->getPath('docroot')),
       'Press ENTER to quit.',
     ]);
     $this->webServer->start();

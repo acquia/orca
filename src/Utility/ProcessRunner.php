@@ -124,7 +124,7 @@ class ProcessRunner {
    *   The created process.
    */
   public function createFixtureVendorBinProcess(array $command): Process {
-    $command[0] = $this->fixture->rootPath("vendor/bin/{$command[0]}");
+    $command[0] = $this->fixture->getPath("vendor/bin/{$command[0]}");
     return $this->createVendorBinProcess($command);
   }
 

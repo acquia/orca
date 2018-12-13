@@ -2,8 +2,7 @@
 
 namespace Acquia\Orca\Fixture;
 
-use Composer\Json\JsonFile;
-use Seld\JsonLint\ParsingException;
+use Acquia\Orca\Utility\ConfigLoader;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
 
@@ -11,6 +10,13 @@ use Symfony\Component\Finder\Finder;
  * Provide access to Acquia product submodules physically in the fixture.
  */
 class SubmoduleManager {
+
+  /**
+   * The config loader.
+   *
+   * @var \Acquia\Orca\Utility\ConfigLoader
+   */
+  private $configLoader;
 
   /**
    * The filesystem.
@@ -50,6 +56,8 @@ class SubmoduleManager {
   /**
    * Constructs an instance.
    *
+   * @param \Acquia\Orca\Utility\ConfigLoader $config_loader
+   *   The config loader.
    * @param \Symfony\Component\Filesystem\Filesystem $filesystem
    *   The filesystem.
    * @param \Symfony\Component\Finder\Finder $finder
@@ -59,7 +67,8 @@ class SubmoduleManager {
    * @param \Acquia\Orca\Fixture\ProjectManager $project_manager
    *   The project manager.
    */
-  public function __construct(Filesystem $filesystem, Finder $finder, Fixture $fixture, ProjectManager $project_manager) {
+  public function __construct(ConfigLoader $config_loader, Filesystem $filesystem, Finder $finder, Fixture $fixture, ProjectManager $project_manager) {
+    $this->configLoader = $config_loader;
     $this->filesystem = $filesystem;
     $this->finder = $finder;
     $this->fixture = $fixture;
@@ -89,7 +98,7 @@ class SubmoduleManager {
    * @return \Acquia\Orca\Fixture\Project[]
    */
   public function getByParent(Project $project): array {
-    $paths = [$this->fixture->rootPath($project->getInstallPathRelative())];
+    $paths = [$this->fixture->getPath($project->getInstallPathRelative())];
     return $this->getInPaths($paths);
   }
 
@@ -104,16 +113,15 @@ class SubmoduleManager {
   public function getInPaths(array $paths): array {
     $submodules = [];
     foreach ($this->findSubmoduleComposerJsonFiles($paths) as $file) {
-      $json_file = new JsonFile($file);
-      $data = $json_file->read();
-      $install_path = str_replace("{$this->fixture->rootPath()}/", '', $file->getPath());
+      $config = $this->configLoader->load($file->getPathname());
+      $install_path = str_replace("{$this->fixture->getPath()}/", '', $file->getPath());
       $project_data = [
-        'name' => $data['name'],
+        'name' => $config->get('name'),
         'install_path' => $install_path,
         'url' => $file->getPath(),
         'version' => '@dev',
       ];
-      $submodules[$data['name']] = new Project($project_data);
+      $submodules[$config->get('name')] = new Project($project_data);
     }
     return $submodules;
   }
@@ -127,7 +135,7 @@ class SubmoduleManager {
     $paths = [];
     foreach ($this->topLevelProjects as $project) {
       $path = $this->fixture
-        ->rootPath($project->getInstallPathRelative());
+        ->getPath($project->getInstallPathRelative());
       if ($this->filesystem->exists($path)) {
         $paths[] = $path;
       }
@@ -167,28 +175,22 @@ class SubmoduleManager {
    * @return bool
    */
   private function isSubmoduleComposerJson(\SplFileInfo $file): bool {
-    try {
-      $data = (new JsonFile($file))->read();
-    }
-    // Ignore invalid composer.json files.
-    catch (ParsingException $e) {
-      return FALSE;
-    }
+    $config = $this->configLoader->load($file->getPathname());
 
-    list($vendor_name, $package_name) = explode('/', $data['name']);
+    list($vendor_name, $package_name) = explode('/', $config->get('name'));
 
     // Ignore top level projects.
-    if (in_array($data['name'], array_keys($this->topLevelProjects))) {
+    if (in_array($config->get('name'), array_keys($this->topLevelProjects))) {
       return FALSE;
     }
 
     // Ignore everything but Drupal modules.
-    if (empty($data['type']) || $data['type'] !== 'drupal-module') {
+    if ($config->get('type') !== 'drupal-module') {
       return FALSE;
     }
 
     // Ignore modules that explicitly opt out of installation.
-    if (isset($data['extra']['orca']['install']) && $data['extra']['orca']['install'] === FALSE) {
+    if ($config->get('extra.orca.install', TRUE) === FALSE) {
       return FALSE;
     }
 

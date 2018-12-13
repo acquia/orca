@@ -15,7 +15,7 @@ class WebServer extends ServerBase {
    */
   protected function createProcess(): Process {
     $docroot = $this->getFixture()
-      ->rootPath('docroot');
+      ->getPath('docroot');
     return $this->getProcessRunner()
       ->createFixtureVendorBinProcess([
         'drush',

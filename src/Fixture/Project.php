@@ -102,7 +102,7 @@ class Project {
         return "docroot/libraries/{$this->getProjectName()}";
 
       case 'drupal-module':
-        return "docroot/modules/contrib/acquia/{$this->getProjectName()}";
+        return sprintf("%s/{$this->getProjectName()}", Fixture::ACQUIA_MODULE_PATH);
 
       case 'drupal-profile':
         return "docroot/profiles/contrib/acquia/{$this->getProjectName()}";

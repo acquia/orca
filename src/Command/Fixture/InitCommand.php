@@ -100,7 +100,7 @@ class InitCommand extends Command {
     if ($this->fixture->exists()) {
       if (!$input->getOption('force')) {
         $output->writeln([
-          "Error: Fixture already exists at {$this->fixture->rootPath()}.",
+          "Error: Fixture already exists at {$this->fixture->getPath()}.",
           'Hint: Use the "--force" option to remove it and proceed.',
         ]);
         return StatusCodes::ERROR;

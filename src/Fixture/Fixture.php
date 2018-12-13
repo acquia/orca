@@ -2,6 +2,7 @@
 
 namespace Acquia\Orca\Fixture;
 
+use Acquia\Orca\Utility\ConfigLoader;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
@@ -17,9 +18,18 @@ use Symfony\Component\Filesystem\Filesystem;
  */
 class Fixture {
 
+  public const ACQUIA_MODULE_PATH = 'docroot/modules/contrib/acquia';
+
   public const BASE_FIXTURE_GIT_BRANCH = 'base-fixture';
 
   public const WEB_ADDRESS = '127.0.0.1:8080';
+
+  /**
+   * The config wrapper.
+   *
+   * @var \Acquia\Orca\Utility\ConfigLoader
+   */
+  private $configLoader;
 
   /**
    * The filesystem.
@@ -40,11 +50,13 @@ class Fixture {
    *
    * @var string
    */
-  private $rootPath = '';
+  private $rootPath;
 
   /**
    * Constructs an instance.
    *
+   * @param \Acquia\Orca\Utility\ConfigLoader $configLoader
+   *   The config wrapper.
    * @param \Symfony\Component\Filesystem\Filesystem $filesystem
    *   The filesystem.
    * @param string $fixture_dir
@@ -52,7 +64,8 @@ class Fixture {
    * @param \Acquia\Orca\Fixture\ProjectManager $project_manager
    *   The project manager.
    */
-  public function __construct(Filesystem $filesystem, string $fixture_dir, ProjectManager $project_manager) {
+  public function __construct(ConfigLoader $configLoader, Filesystem $filesystem, string $fixture_dir, ProjectManager $project_manager) {
+    $this->configLoader = $configLoader;
     $this->filesystem = $filesystem;
     $this->projectManager = $project_manager;
     $this->rootPath = $fixture_dir;
@@ -64,7 +77,7 @@ class Fixture {
    * @return bool
    */
   public function exists(): bool {
-    return $this->filesystem->exists($this->rootPath());
+    return $this->filesystem->exists($this->getPath());
   }
 
   /**
@@ -75,7 +88,7 @@ class Fixture {
    *
    * @return string
    */
-  public function rootPath(string $sub_path = ''): string {
+  public function getPath(string $sub_path = ''): string {
     $path = $this->rootPath;
     if ($sub_path) {
       $path .= "/{$sub_path}";
@@ -86,30 +99,26 @@ class Fixture {
   /**
    * Gets the directory to find tests under.
    *
+   * An integrated test (standard fixture) runs tests found in all Acquia
+   * modules. An isolated test (SUT-only fixture) runs only those found in the
+   * SUT.
+   *
    * @return string
    */
-  public function testsDirectory(): string {
-    // Default to the product module install path so as to include all modules.
-    $directory = $this->rootPath('docroot/modules/contrib/acquia');
+  public function getTestsPath(): string {
+    $path = $this->getPath(self::ACQUIA_MODULE_PATH);
 
-    $composer_config = $this->loadComposerJson();
-    if (!empty($composer_config['extra']['orca']['sut'])) {
-      $sut = $this->projectManager->get($composer_config['extra']['orca']['sut']);
-      // Only limit the tests run for a SUT-only fixture.
-      if (!empty($composer_config['extra']['orca']['sut-only'])) {
-        return $this->rootPath($sut->getInstallPathRelative());
-      }
+    $config = $this->configLoader
+      ->load($this->getPath('composer.json'));
+    $sut_name = $config->get('extra.orca.sut');
+    $is_sut_only = $config->get('extra.orca.sut-only');
+
+    if (!$sut_name || !$is_sut_only) {
+      return $path;
     }
 
-    return $directory;
-  }
-
-  /**
-   * Loads the fixture's composer.json data.
-   */
-  private function loadComposerJson(): array {
-    $json = file_get_contents($this->rootPath('composer.json'));
-    return json_decode($json, TRUE);
+    $sut = $this->projectManager->get($sut_name);
+    return $this->getPath($sut->getInstallPathRelative());
   }
 
 }

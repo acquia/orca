@@ -30,7 +30,7 @@ class BehatTask extends TaskBase {
           "--config={$config_file->getPathname()}",
           "--tags=orca_public",
         ]);
-        $this->processRunner->run($process, $this->fixture->rootPath());
+        $this->processRunner->run($process, $this->fixture->getPath());
       }
     }
     catch (ProcessFailedException $e) {
@@ -47,7 +47,7 @@ class BehatTask extends TaskBase {
     return $this->finder
       ->files()
       ->followLinks()
-      ->in($this->fixture->testsDirectory())
+      ->in($this->fixture->getTestsPath())
       ->notPath('vendor')
       ->name('behat.yml');
   }

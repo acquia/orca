@@ -35,9 +35,9 @@ class RunCommandTest extends CommandTestBase {
     $this->fixture = $this->prophesize(Fixture::class);
     $this->fixture->exists()
       ->willReturn(FALSE);
-    $this->fixture->rootPath()
+    $this->fixture->getPath()
       ->willReturn(self::FIXTURE_ROOT);
-    $this->fixture->testsDirectory()
+    $this->fixture->getTestsPath()
       ->willReturn(self::TESTS_DIR);
     $this->phpunit = $this->prophesize(PhpUnitTask::class);
     $this->taskRunner = $this->prophesize(TaskRunner::class);

@@ -27,7 +27,7 @@ class InitCommandTest extends CommandTestBase {
     $this->fixture = $this->prophesize(Fixture::class);
     $this->fixture->exists()
       ->willReturn(FALSE);
-    $this->fixture->rootPath()
+    $this->fixture->getPath()
       ->willReturn(self::FIXTURE_ROOT);
     $this->projectManager = $this->prophesize(ProjectManager::class);
   }

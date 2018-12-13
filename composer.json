@@ -17,6 +17,7 @@
         "composer/composer": "^1.7",
         "dealerdirect/phpcodesniffer-composer-installer": "^0.5",
         "drupal/coder": "^8.3",
+        "hassankhan/config": "^2.0",
         "jakub-onderka/php-console-highlighter": "^0.4.0",
         "jakub-onderka/php-parallel-lint": "^1.0",
         "lbaey/chromedriver": "^1.1",

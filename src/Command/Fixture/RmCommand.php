@@ -67,13 +67,13 @@ class RmCommand extends Command {
    */
   public function execute(InputInterface $input, OutputInterface $output): int {
     if (!$this->fixture->exists()) {
-      $output->writeln("Error: No fixture exists at {$this->fixture->rootPath()}.");
+      $output->writeln("Error: No fixture exists at {$this->fixture->getPath()}.");
       return StatusCodes::ERROR;
     }
 
     /** @var \Symfony\Component\Console\Helper\QuestionHelper $helper */
     $helper = $this->getHelper('question');
-    $question = new ConfirmationQuestion(sprintf('Are you sure you want to remove the test fixture at %s? ', $this->fixture->rootPath()));
+    $question = new ConfirmationQuestion(sprintf('Are you sure you want to remove the test fixture at %s? ', $this->fixture->getPath()));
     if (
       !$input->getOption('force')
       && ($input->getOption('no-interaction') || !$helper->ask($input, $output, $question))
