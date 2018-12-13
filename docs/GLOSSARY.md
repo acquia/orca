@@ -36,7 +36,7 @@ A [test fixture](#test-fixture) that includes and installs the system under test
 
 | so͞ot | System Under Test: in automated testing, the software that is being tested for correct operation. In ORCA, that means an Acquia product module.
 
-### SUT-only fixture
+## SUT-only fixture
 
 A [test fixture](#test-fixture) that includes and installs the system under test ([SUT](#sut)) and omits all other non-required Acquia product modules. See also [isolated test](#isolated-test).
 
