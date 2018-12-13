@@ -15,8 +15,6 @@ use Symfony\Component\HttpKernel\Kernel as BaseKernel;
  */
 class Kernel extends BaseKernel {
 
-  const CONFIG_EXTS = '.{php,xml,yaml,yml}';
-
   /**
    * {@inheritdoc}
    */
