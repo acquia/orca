@@ -2,7 +2,7 @@
 
 namespace Acquia\Orca\Fixture;
 
-use Acquia\Orca\ProcessRunner;
+use Acquia\Orca\Utility\ProcessRunner;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Filesystem\Filesystem;
 
@@ -35,7 +35,7 @@ class FixtureRemover {
   /**
    * The process runner.
    *
-   * @var \Acquia\Orca\ProcessRunner
+   * @var \Acquia\Orca\Utility\ProcessRunner
    */
   private $processRunner;
 
@@ -48,7 +48,7 @@ class FixtureRemover {
    *   The fixture.
    * @param \Symfony\Component\Console\Style\SymfonyStyle $output
    *   The output decorator.
-   * @param \Acquia\Orca\ProcessRunner $process_runner
+   * @param \Acquia\Orca\Utility\ProcessRunner $process_runner
    *   The process runner.
    */
   public function __construct(Filesystem $filesystem, Fixture $fixture, SymfonyStyle $output, ProcessRunner $process_runner) {

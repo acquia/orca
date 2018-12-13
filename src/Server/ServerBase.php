@@ -3,7 +3,7 @@
 namespace Acquia\Orca\Server;
 
 use Acquia\Orca\Fixture\Fixture;
-use Acquia\Orca\ProcessRunner;
+use Acquia\Orca\Utility\ProcessRunner;
 use Symfony\Component\Process\Process;
 
 /**
@@ -28,7 +28,7 @@ abstract class ServerBase implements ServerInterface {
   /**
    * The process runner.
    *
-   * @var \Acquia\Orca\ProcessRunner
+   * @var \Acquia\Orca\Utility\ProcessRunner
    */
   private $processRunner;
 
@@ -37,7 +37,7 @@ abstract class ServerBase implements ServerInterface {
    *
    * @param \Acquia\Orca\Fixture\Fixture $fixture
    *   The fixture.
-   * @param \Acquia\Orca\ProcessRunner $process_runner
+   * @param \Acquia\Orca\Utility\ProcessRunner $process_runner
    *   The process runner.
    */
   public function __construct(Fixture $fixture, ProcessRunner $process_runner) {
@@ -81,7 +81,7 @@ abstract class ServerBase implements ServerInterface {
   /**
    * Gets the process runner.
    *
-   * @return \Acquia\Orca\ProcessRunner
+   * @return \Acquia\Orca\Utility\ProcessRunner
    */
   protected function getProcessRunner(): ProcessRunner {
     return $this->processRunner;

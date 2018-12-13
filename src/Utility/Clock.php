@@ -1,6 +1,6 @@
 <?php
 
-namespace Acquia\Orca;
+namespace Acquia\Orca\Utility;
 
 /**
  * Provides time related functions.

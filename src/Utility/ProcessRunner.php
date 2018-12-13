@@ -1,6 +1,6 @@
 <?php
 
-namespace Acquia\Orca;
+namespace Acquia\Orca\Utility;
 
 use Acquia\Orca\Fixture\Fixture;
 use Symfony\Component\Console\Style\SymfonyStyle;

@@ -2,7 +2,7 @@
 
 namespace Acquia\Orca\Tests\Command\Tests;
 
-use Acquia\Orca\Clock;
+use Acquia\Orca\Utility\Clock;
 use Acquia\Orca\Command\StatusCodes;
 use Acquia\Orca\Command\Tests\RunCommand;
 use Acquia\Orca\Server\ChromeDriverServer;
@@ -18,7 +18,7 @@ use Symfony\Component\Console\Tester\CommandTester;
 /**
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Task\BehatTask $behat
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Server\ChromeDriverServer $chromedriver
- * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Clock $clock
+ * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Utility\Clock $clock
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Fixture\Fixture $fixture
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Task\PhpUnitTask $phpunit
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Task\TaskRunner $taskRunner
@@ -96,7 +96,7 @@ class RunCommandTest extends CommandTestBase {
     $behat = $this->behat->reveal();
     /** @var \Acquia\Orca\Server\ChromeDriverServer $chromedriver */
     $chromedriver = $this->chromedriver->reveal();
-    /** @var \Acquia\Orca\Clock $clock */
+    /** @var \Acquia\Orca\Utility\Clock $clock */
     $clock = $this->clock->reveal();
     /** @var \Acquia\Orca\Fixture\Fixture $fixture */
     $fixture = $this->fixture->reveal();

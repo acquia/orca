@@ -3,7 +3,7 @@
 namespace Acquia\Orca\Tests\Tasks;
 
 use Acquia\Orca\Fixture\Fixture;
-use Acquia\Orca\ProcessRunner;
+use Acquia\Orca\Utility\ProcessRunner;
 use Acquia\Orca\Task\BehatTask;
 use Acquia\Orca\Task\ComposerValidateTask;
 use Acquia\Orca\Task\PhpCompatibilitySniffTask;
@@ -22,7 +22,7 @@ class TasksTest extends TestCase {
     $finder = $this->prophesize(Finder::class)->reveal();
     /** @var \Acquia\Orca\Fixture\Fixture $fixture */
     $fixture = $this->prophesize(Fixture::class)->reveal();
-    /** @var \Acquia\Orca\ProcessRunner $process_runner */
+    /** @var \Acquia\Orca\Utility\ProcessRunner $process_runner */
     $process_runner = $this->prophesize(ProcessRunner::class)->reveal();
     $project_dir = '/var/www/orca';
 

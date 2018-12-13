@@ -3,7 +3,7 @@
 namespace Acquia\Orca\Fixture;
 
 use Acquia\Orca\Exception\OrcaException;
-use Acquia\Orca\ProcessRunner;
+use Acquia\Orca\Utility\ProcessRunner;
 use Composer\Config\JsonConfigSource;
 use Composer\Json\JsonFile;
 use Symfony\Component\Console\Style\SymfonyStyle;
@@ -67,7 +67,7 @@ class FixtureCreator {
   /**
    * The process runner.
    *
-   * @var \Acquia\Orca\ProcessRunner
+   * @var \Acquia\Orca\Utility\ProcessRunner
    */
   private $processRunner;
 
@@ -103,7 +103,7 @@ class FixtureCreator {
    *   The fixture.
    * @param \Symfony\Component\Console\Style\SymfonyStyle $output
    *   The output decorator.
-   * @param \Acquia\Orca\ProcessRunner $process_runner
+   * @param \Acquia\Orca\Utility\ProcessRunner $process_runner
    *   The process runner.
    * @param \Acquia\Orca\Fixture\ProjectManager $project_manager
    *   The project manager.

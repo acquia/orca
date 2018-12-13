@@ -2,7 +2,7 @@
 
 namespace Acquia\Orca\Command\Tests;
 
-use Acquia\Orca\Clock;
+use Acquia\Orca\Utility\Clock;
 use Acquia\Orca\Command\StatusCodes;
 use Acquia\Orca\Server\ChromeDriverServer;
 use Acquia\Orca\Fixture\Fixture;
@@ -29,7 +29,7 @@ class RunCommand extends Command {
   /**
    * The clock.
    *
-   * @var \Acquia\Orca\Clock
+   * @var \Acquia\Orca\Utility\Clock
    */
   private $clock;
 
@@ -61,7 +61,7 @@ class RunCommand extends Command {
    *   The Behat task.
    * @param \Acquia\Orca\Server\ChromeDriverServer $chrome_driver_server
    *   The ChromeDriver server.
-   * @param \Acquia\Orca\Clock $clock
+   * @param \Acquia\Orca\Utility\Clock $clock
    *   The clock.
    * @param \Acquia\Orca\Fixture\Fixture $fixture
    *   The fixture.
