@@ -181,8 +181,9 @@ class PhpUnitTask extends TaskBase {
         'phpunit',
         '--colors=always',
         '--stop-on-failure',
+        '--debug',
         "--configuration={$this->fixture->getPath('docroot/core/phpunit.xml.dist')}",
-        "--group=orca_public",
+        '--group=orca_public',
         $this->fixture->getTestsPath(),
       ]);
       $this->processRunner->run($process, $this->fixture->getPath());
