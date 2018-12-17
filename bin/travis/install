@@ -6,8 +6,9 @@ phpenv config-rm xdebug.ini
 # Install platform dependencies.
 yes | pecl install mcrypt-snapshot
 
-# Install prestissimo for faster Composer installations.
+# Install Composer optimizations for faster builds.
 composer global require hirak/prestissimo
+composer global require zaporylie/composer-drupal-optimizations
 
 # Install ORCA.
 ORCA_ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
