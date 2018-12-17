@@ -8,9 +8,12 @@ cd "$(dirname "$0")/.."
 
 composer install
 
-echo && composer phpcs
-echo && composer phpunit
-echo && composer phpmd
+ORCA_FIXTURE=${ORCA_FIXTURE:=any}
+if [[ ${ORCA_FIXTURE} == @(any|none) ]]; then
+  echo && composer phpcs
+  echo && composer phpmd
+  echo && composer phpunit
+fi
 
 # Avoid testing locally with a stale cache.
 ./bin/orca cache:clear

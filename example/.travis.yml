@@ -7,8 +7,17 @@ php: 7.1
 addons:
   chrome: stable
 
-before_install: git clone --depth 1 git@github.com:acquia/orca.git ../orca
+matrix:
+  include:
+    - name: "Static analysis"
+      env: ORCA_FIXTURE=none
+    - name: "Isolated test"
+      env: ORCA_FIXTURE=sut-only
+    - name: "Integrated test"
+      env: ORCA_FIXTURE=standard
+
+before_install: "git clone --depth 1 git@github.com:acquia/orca.git ../orca"
 
 install: ../orca/bin/travis/install
 
-script: ../orca/bin/travis/script drupal/example
+script: "../orca/bin/travis/script drupal/example"

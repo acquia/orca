@@ -7,8 +7,25 @@ php: 7.1
 addons:
   chrome: stable
 
-install: ./bin/travis/install
+git:
+  depth: 1
+  quiet: true
 
-before_script: composer phpcs
+branches:
+  only:
+    - master
+    - develop
+    - wip
+
+matrix:
+  include:
+    - name: "Static analysis and unit tests"
+      env: ORCA_FIXTURE=none
+    - name: "Isolated test"
+      env: ORCA_FIXTURE=sut-only
+    - name: "Integrated test"
+      env: ORCA_FIXTURE=standard
+
+install: ./bin/travis/install
 
 script: ./bin/self-test
