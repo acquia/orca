@@ -25,7 +25,7 @@ class Fixture {
   public const WEB_ADDRESS = '127.0.0.1:8080';
 
   /**
-   * The config wrapper.
+   * The config loader.
    *
    * @var \Acquia\Orca\Utility\ConfigLoader
    */
@@ -56,7 +56,7 @@ class Fixture {
    * Constructs an instance.
    *
    * @param \Acquia\Orca\Utility\ConfigLoader $configLoader
-   *   The config wrapper.
+   *   The config loader.
    * @param \Symfony\Component\Filesystem\Filesystem $filesystem
    *   The filesystem.
    * @param string $fixture_dir
