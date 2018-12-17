@@ -338,18 +338,22 @@ class FixtureCreator {
    * @throws \Acquia\Orca\Exception\OrcaException
    */
   private function verifySut(): void {
-    $error = FALSE;
-
     $sut_install_path = $this->fixture->getPath($this->sut->getInstallPathRelative());
     if (!file_exists($sut_install_path)) {
-      $error = 'Failed to place SUT at correct path.';
+      $this->output->error('Failed to place SUT at correct path.');
+      throw new OrcaException();
     }
     elseif (!is_link($sut_install_path)) {
-      $error = 'Failed to symlink SUT via local path repository.';
-    }
+      $this->output->error('Failed to symlink SUT via local path repository.');
 
-    if ($error) {
-      $this->output->error($error);
+      // Display debugging information.
+      $process = $this->processRunner->createOrcaVendorBinProcess([
+        'composer',
+        'why-not',
+        "{$this->sut->getPackageName()}:@dev",
+      ]);
+      $this->processRunner->run($process, $this->fixture->getPath());
+
       throw new OrcaException();
     }
   }
