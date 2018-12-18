@@ -94,8 +94,8 @@
     ],
     "scripts": {
         "cghooks": "cghooks --ansi",
-        "phpcbf": "phpcbf || true",
-        "phpcs": "phpcs || true",
+        "phpcbf": "phpcbf",
+        "phpcs": "phpcs",
         "phplint": "parallel-lint --exclude vendor --ignore-fails .",
         "phpmd": "phpmd bin,src text phpmd.xml.dist --ignore-violations-on-exit",
         "phpunit": "phpunit"
