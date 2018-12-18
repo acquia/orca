@@ -169,13 +169,30 @@ class FixtureCreator {
 
     if ($this->sut) {
       $sut_repo = $this->fixture->getPath($this->sut->getRepositoryUrl());
+
       if (!is_dir($sut_repo)) {
-        $this->output->error(sprintf('SUT repository absent from expected location: %s', $sut_repo));
+        $this->output->error(sprintf('SUT is absent from expected location: %s', $sut_repo));
         throw new OrcaException();
       }
-    }
+      $this->output->comment(sprintf('SUT is present at expected location: %s', $sut_repo));
 
-    $this->output->comment('Preconditions satisfied');
+      $composer_json = new JsonFile("{$sut_repo}/composer.json");
+      if (!$composer_json->exists()) {
+        $this->output->error(sprintf('SUT is missing root composer.json', $sut_repo));
+        throw new OrcaException();
+      }
+      $this->output->comment('SUT contains root composer.json');
+
+      $data = $composer_json->read();
+
+      $actual_name = isset($data['name']) ? $data['name'] : NULL;
+      $expected_name = $this->sut->getPackageName();
+      if ($actual_name !== $expected_name) {
+        $this->output->error(sprintf("SUT composer.json's 'name' value %s does not match expected %s", var_export($actual_name, TRUE), var_export($expected_name, TRUE)));
+        throw new OrcaException();
+      }
+      $this->output->comment(sprintf("SUT composer.json's 'name' value matches expected %s", var_export($expected_name, TRUE)));
+    }
   }
 
   /**
@@ -381,7 +398,7 @@ class FixtureCreator {
       $this->processRunner->run($process);
       $process = $this->processRunner->createExecutableProcess([
         'cat',
-        $this->fixture->getPath("{$this->sut->getInstallPathRelative()}/composer.json"),
+        $this->fixture->getPath("{$this->sut->getRepositoryUrl()}/composer.json"),
       ]);
       $this->processRunner->run($process);
 
