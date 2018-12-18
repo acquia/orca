@@ -62,19 +62,22 @@ class FixtureTest extends TestCase {
   /**
    * @dataProvider providerGetPath
    */
-  public function testGetPath($root_path) {
+  public function testGetPath($root_path, $sub_path, $expected) {
     $this->rootPath = $root_path;
     $fixture = $this->createFixture();
-    $sub_path = '/some/sub-path';
 
-    $this->assertEquals($root_path, $fixture->getPath(), 'Resolved root path.');
-    $this->assertEquals("{$root_path}/{$sub_path}", $fixture->getPath($sub_path), 'Resolved root path with sub-path.');
+    $this->assertEquals($expected, $fixture->getPath($sub_path), 'Resolved path.');
   }
 
   public function providerGetPath() {
     return [
-      ['/var/www/orca-build'],
-      ['/tmp/test'],
+      ['/var/www/orca-build', NULL, '/var/www/orca-build'],
+      ['/var/www/orca-build', 'lorem/ipsum/dolor/sit/amet', '/var/www/orca-build/lorem/ipsum/dolor/sit/amet'],
+      ['/tmp/test', 'lorem-ipsum', '/tmp/test/lorem-ipsum'],
+      ['/1/2/3/4/5', '../../../3/4/../4/5/6', '/1/2/3/4/5/6'],
+      ['/1/2/../2/3', NULL, '/1/2/3'],
+      ['/lorem/ipsum', 'dolor/sit/amet/', '/lorem/ipsum/dolor/sit/amet'],
+      ['///lorem///ipsum///', NULL, '/lorem/ipsum'],
     ];
   }
 
