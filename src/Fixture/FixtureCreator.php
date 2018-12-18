@@ -379,6 +379,11 @@ class FixtureCreator {
         $this->fixture->getPath('composer.json'),
       ]);
       $this->processRunner->run($process);
+      $process = $this->processRunner->createExecutableProcess([
+        'cat',
+        $this->fixture->getPath($this->sut->getInstallPathRelative()),
+      ]);
+      $this->processRunner->run($process);
 
       throw new OrcaException();
     }
