@@ -347,6 +347,12 @@ class FixtureCreator {
       $this->output->error('Failed to symlink SUT via local path repository.');
 
       // Display debugging information.
+      $process = $this->processRunner->createExecutableProcess([
+        'ls',
+        '-al',
+        $sut_install_path,
+      ]);
+      $this->processRunner->run($process, $this->fixture->getPath());
       $process = $this->processRunner->createOrcaVendorBinProcess([
         'composer',
         'why-not',
