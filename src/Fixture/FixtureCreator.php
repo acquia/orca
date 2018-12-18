@@ -381,7 +381,7 @@ class FixtureCreator {
       $this->processRunner->run($process);
       $process = $this->processRunner->createExecutableProcess([
         'cat',
-        $this->fixture->getPath($this->sut->getInstallPathRelative()),
+        $this->fixture->getPath("{$this->sut->getInstallPathRelative()}/composer.json"),
       ]);
       $this->processRunner->run($process);
 
