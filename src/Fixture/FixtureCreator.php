@@ -127,6 +127,7 @@ class FixtureCreator {
    *   If the SUT isn't properly installed.
    */
   public function create(): void {
+    $this->ensurePreconditions();
     $this->createBltProject();
     $this->removeUnneededProjects();
     $this->addAcquiaProjects();
@@ -155,6 +156,26 @@ class FixtureCreator {
    */
   public function setSutOnly(bool $is_sut_only): void {
     $this->isSutOnly = $is_sut_only;
+  }
+
+  /**
+   * Ensures that the preconditions for creating the fixture are satisfied.
+   *
+   * @throws \Acquia\Orca\Exception\OrcaException
+   *   If the preconditions are not met.
+   */
+  private function ensurePreconditions() {
+    $this->output->section('Checking preconditions');
+
+    if ($this->sut) {
+      $sut_repo = $this->fixture->getPath($this->sut->getRepositoryUrl());
+      if (!is_dir($sut_repo)) {
+        $this->output->error(sprintf('SUT repository absent from expected location: %s', $sut_repo));
+        throw new OrcaException();
+      }
+    }
+
+    $this->output->comment('Preconditions satisfied');
   }
 
   /**
@@ -347,18 +368,17 @@ class FixtureCreator {
       $this->output->error('Failed to symlink SUT via local path repository.');
 
       // Display debugging information.
-      $process = $this->processRunner->createExecutableProcess([
-        'ls',
-        '-al',
-        $sut_install_path,
-      ]);
-      $this->processRunner->run($process, $this->fixture->getPath());
       $process = $this->processRunner->createOrcaVendorBinProcess([
         'composer',
         'why-not',
         "{$this->sut->getPackageName()}:@dev",
       ]);
       $this->processRunner->run($process, $this->fixture->getPath());
+      $process = $this->processRunner->createExecutableProcess([
+        'cat',
+        $this->fixture->getPath('composer.json'),
+      ]);
+      $this->processRunner->run($process);
 
       throw new OrcaException();
     }
