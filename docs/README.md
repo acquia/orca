@@ -26,13 +26,14 @@ ORCA's primary use case is in a continuous integration (CI) workflow, running ag
 
 ### Local development
 
-ORCA can also be run locally. It requires PHP and Composer (it uses SQLite so as to avoid a MySQL requirement on the host) and expects to be installed in a directory adjacent to the module under test, e.g.:
+ORCA can also be run locally. It requires PHP and Composer (it uses SQLite so as to avoid a MySQL requirement on the host). It expects to be installed in a directory adjacent to the module under test, where it will create its test fixtures as well:
 
 ```
 .
 └── Projects
-    ├── example_module
-    └── orca
+    ├── example_module  # The system under test (SUT)
+    ├── orca            # ORCA itself
+    └── orca-build      # The test fixture, or build
 ```
 
 Follow these steps to set it up:
