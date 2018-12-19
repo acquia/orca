@@ -13,6 +13,7 @@
         "php": "^7.1",
         "ext-dom": "*",
         "ext-json": "*",
+        "ext-sqlite3": "*",
         "behat/behat": "^3.5",
         "composer/composer": "^1.7",
         "dealerdirect/phpcodesniffer-composer-installer": "^0.5",

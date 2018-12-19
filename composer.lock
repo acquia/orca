@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "24e09755b7a0ccb45119a0401feb34d5",
+    "content-hash": "f9bc6a25df3f48fe10757f4d65da1a0b",
     "packages": [
         {
             "name": "behat/behat",
@@ -4891,7 +4891,8 @@
     "platform": {
         "php": "^7.1",
         "ext-dom": "*",
-        "ext-json": "*"
+        "ext-json": "*",
+        "ext-sqlite3": "*"
     },
     "platform-dev": []
 }
