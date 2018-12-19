@@ -348,7 +348,7 @@ class FixtureCreator {
    */
   private function composerRequireTopLevelAcquiaPackages(): void {
     $process = $this->processRunner->createOrcaVendorBinProcess(array_merge(
-      ['composer', 'require', '-n'],
+      ['composer', 'require', '--no-interaction'],
       $this->getAcquiaProductModuleDependencies()
     ));
     $this->processRunner->run($process, $this->fixture->getPath());
@@ -511,7 +511,7 @@ class FixtureCreator {
       $packages[] = "{$package_name}:@dev";
     }
     $process = $this->processRunner->createOrcaVendorBinProcess(array_merge(
-      ['composer', 'require', '-n'],
+      ['composer', 'require', '--no-interaction'],
       $packages
     ));
     $this->processRunner->run($process, $this->fixture->getPath());
@@ -536,8 +536,7 @@ class FixtureCreator {
       'commit',
       '-m',
       $message,
-      '--author',
-      'ORCA <no-reply@acquia.com>',
+      '--author="ORCA <no-reply@acquia.com>"',
       '--allow-empty',
     ]);
     $this->processRunner->run($process, $cwd);
@@ -626,7 +625,7 @@ PHP;
     $process = $this->processRunner->createFixtureVendorBinProcess(array_merge([
       'drush',
       'pm-enable',
-      '-y',
+      '--yes',
     ], $module_list));
     $this->processRunner->run($process, $this->fixture->getPath());
   }
