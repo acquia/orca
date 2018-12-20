@@ -11,10 +11,10 @@
 #-
 #  name: drupal/acquia_connector
 #  url: ../acquia-connector
--
-  name: drupal/acquia_contenthub
-  url: ../content-hub-d8
-  version: ~1.0
+#-
+#  name: drupal/acquia_contenthub
+#  url: ../content-hub-d8
+#  version: ~1.0
 #-
 #  name: drupal/acquia_lift
 -
