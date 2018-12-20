@@ -1,14 +1,14 @@
 <?php
 
-namespace Acquia\Orca\Tests\Tasks;
+namespace Acquia\Orca\Tests\Task;
 
 use Acquia\Orca\Fixture\Fixture;
 use Acquia\Orca\Utility\ProcessRunner;
-use Acquia\Orca\Task\BehatTask;
+use Acquia\Orca\Task\TestFramework\BehatTask;
 use Acquia\Orca\Task\ComposerValidateTask;
 use Acquia\Orca\Task\PhpCompatibilitySniffTask;
 use Acquia\Orca\Task\PhpLintTask;
-use Acquia\Orca\Task\PhpUnitTask;
+use Acquia\Orca\Task\TestFramework\PhpUnitTask;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Finder\Finder;
 

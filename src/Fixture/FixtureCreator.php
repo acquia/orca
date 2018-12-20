@@ -4,6 +4,7 @@ namespace Acquia\Orca\Fixture;
 
 use Acquia\Orca\Exception\OrcaException;
 use Acquia\Orca\Utility\ProcessRunner;
+use Acquia\Orca\Utility\SutSettingsTrait;
 use Composer\Config\JsonConfigSource;
 use Composer\Json\JsonFile;
 use Symfony\Component\Console\Style\SymfonyStyle;
@@ -14,6 +15,8 @@ use Symfony\Component\Finder\Finder;
  * Creates a fixture.
  */
 class FixtureCreator {
+
+  use SutSettingsTrait;
 
   /**
    * The filesystem.
@@ -35,13 +38,6 @@ class FixtureCreator {
    * @var \Acquia\Orca\Fixture\Fixture
    */
   private $fixture;
-
-  /**
-   * Whether or not the fixture is SUT-only.
-   *
-   * @var bool
-   */
-  private $isSutOnly = FALSE;
 
   /**
    * The Composer API for the fixture's composer.json.
@@ -86,13 +82,6 @@ class FixtureCreator {
   private $submoduleManager;
 
   /**
-   * The SUT package name, e.g., drupal/example.
-   *
-   * @var \Acquia\Orca\Fixture\Project|null
-   */
-  private $sut;
-
-  /**
    * Constructs an instance.
    *
    * @param \Symfony\Component\Filesystem\Filesystem $filesystem
@@ -135,27 +124,6 @@ class FixtureCreator {
     $this->installAcquiaModules();
     $this->createBackupBranch();
     $this->output->success('Fixture created');
-  }
-
-  /**
-   * Sets the system under test (SUT).
-   *
-   * @param string|null $sut
-   *   (Optional) The system under test (SUT) in the form of its package name,
-   *   e.g., "drupal/example", or NULL to unset the SUT.
-   */
-  public function setSut(?string $sut = NULL): void {
-    $this->sut = $this->projectManager->get($sut);
-  }
-
-  /**
-   * Sets the fixture to SUT-only or not.
-   *
-   * @param bool $is_sut_only
-   *   Whether or not to set the fixture to SUT-only.
-   */
-  public function setSutOnly(bool $is_sut_only): void {
-    $this->isSutOnly = $is_sut_only;
   }
 
   /**
@@ -284,29 +252,8 @@ class FixtureCreator {
    */
   private function configureComposerForTopLevelAcquiaPackages(): void {
     $this->loadComposerJson();
-    $this->addInstallerPathsForAcquiaModules();
     if ($this->sut) {
       $this->addSutRepository();
-    }
-  }
-
-  /**
-   * Adds installer-paths configuration to group modules together.
-   */
-  private function addInstallerPathsForAcquiaModules(): void {
-    // Installer paths seem to be applied in the order specified, so overrides
-    // need to be added to the beginning in order to take effect. Begin by
-    // removing the original installer paths.
-    $this->jsonConfigSource->removeProperty('extra.installer-paths');
-
-    // Add new installer paths.
-    $installer_path = sprintf('extra.installer-paths.%s/{$name}', Fixture::ACQUIA_MODULE_PATH);
-    $module_packages = array_keys($this->projectManager->getMultiple('drupal-module', 'getPackageName'));
-    $this->jsonConfigSource->addProperty($installer_path, $module_packages);
-
-    // Append original installer paths.
-    foreach ($this->jsonConfigDataBackup['extra']['installer-paths'] as $key => $value) {
-      $this->jsonConfigSource->addProperty("extra.installer-paths.{$key}", $value);
     }
   }
 
@@ -360,7 +307,7 @@ class FixtureCreator {
   private function forceSutSymlinkInstall(): void {
     $this->filesystem->remove([
       $this->fixture->getPath('composer.lock'),
-      $this->fixture->getPath($this->sut->getInstallPathRelative()),
+      $this->sut->getInstallPathAbsolute(),
     ]);
     $process = $this->processRunner->createOrcaVendorBinProcess([
       'composer',
@@ -376,7 +323,7 @@ class FixtureCreator {
    * @throws \Acquia\Orca\Exception\OrcaException
    */
   private function verifySut(): void {
-    $sut_install_path = $this->fixture->getPath($this->sut->getInstallPathRelative());
+    $sut_install_path = $this->sut->getInstallPathAbsolute();
     if (!file_exists($sut_install_path)) {
       $this->output->error('Failed to place SUT at correct path.');
       throw new OrcaException();

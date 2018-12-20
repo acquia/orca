@@ -1,14 +1,18 @@
 <?php
 
-namespace Acquia\Orca\Task;
+namespace Acquia\Orca\Task\TestFramework;
 
 use Acquia\Orca\Exception\TaskFailureException;
+use Acquia\Orca\Task\TaskBase;
+use Acquia\Orca\Utility\SutSettingsTrait;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 
 /**
  * Runs Behat stories.
  */
-class BehatTask extends TaskBase {
+class BehatTask extends TaskBase implements TestFrameworkInterface {
+
+  use SutSettingsTrait;
 
   /**
    * {@inheritdoc}
@@ -28,7 +32,7 @@ class BehatTask extends TaskBase {
           'behat',
           '--colors',
           "--config={$config_file->getPathname()}",
-          "--tags=orca_public",
+          "--tags={$this->getTags()}",
         ]);
         $this->processRunner->run($process, $this->fixture->getPath());
       }
@@ -47,9 +51,22 @@ class BehatTask extends TaskBase {
     return $this->finder
       ->files()
       ->followLinks()
-      ->in($this->fixture->getTestsPath())
+      ->in($this->getPath())
       ->notPath('vendor')
       ->name('behat.yml');
+  }
+
+  /**
+   * Gets the string of tags to pass to Behat.
+   *
+   * @return string
+   */
+  private function getTags(): string {
+    $tags = ['~@orca_ignore'];
+    if ($this->isSutOnly) {
+      $tags[] = '@orca_public';
+    }
+    return implode(',', $tags);
   }
 
 }

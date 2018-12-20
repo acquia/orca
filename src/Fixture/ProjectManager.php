@@ -19,6 +19,8 @@ class ProjectManager {
   /**
    * Constructs an instance.
    *
+   * @param \Acquia\Orca\Fixture\Fixture $fixture
+   *   The fixture.
    * @param \Symfony\Component\Yaml\Parser $parser
    *   The YAML parser.
    * @param string $projects_config
@@ -27,10 +29,10 @@ class ProjectManager {
    * @param string $project_dir
    *   The ORCA project directory.
    */
-  public function __construct(Parser $parser, string $projects_config, string $project_dir) {
+  public function __construct(Fixture $fixture, Parser $parser, string $projects_config, string $project_dir) {
     $data = $parser->parseFile("{$project_dir}/{$projects_config}");
     foreach ($data as $datum) {
-      $project = new Project($datum);
+      $project = new Project($fixture, $datum);
       $this->projects[$project->getPackageName()] = $project;
     }
   }

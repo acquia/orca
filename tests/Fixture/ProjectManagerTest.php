@@ -2,6 +2,7 @@
 
 namespace Acquia\Orca\Tests\Fixture;
 
+use Acquia\Orca\Fixture\Fixture;
 use Acquia\Orca\Fixture\Project;
 use Acquia\Orca\Fixture\ProjectManager;
 use PHPUnit\Framework\TestCase;
@@ -10,9 +11,10 @@ use Symfony\Component\Yaml\Parser;
 /**
  * @covers \Acquia\Orca\Fixture\ProjectManager
  *
+ * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Fixture\Fixture $fixture
  * @property \Prophecy\Prophecy\ObjectProphecy|\Symfony\Component\Yaml\Parser $parser
  */
-class ProjectManagerTestTest extends TestCase {
+class ProjectManagerTest extends TestCase {
 
   private const PROJECTS_DATA = [
     ['name' => 'drupal/module1'],
@@ -61,6 +63,7 @@ class ProjectManagerTestTest extends TestCase {
   private $projectsConfig = 'config/projects.yml';
 
   protected function setUp() {
+    $this->fixture = $this->prophesize(Fixture::class);
     $this->parser = $this->prophesize(Parser::class);
     $this->parser
       ->parseFile('/var/www/orca/config/projects.yml')
@@ -118,9 +121,11 @@ class ProjectManagerTestTest extends TestCase {
    * @return \Acquia\Orca\Fixture\ProjectManager
    */
   private function createProjectManager(): ProjectManager {
+    /** @var \Acquia\Orca\Fixture\Fixture $fixture */
+    $fixture = $this->fixture->reveal();
     /** @var \Symfony\Component\Yaml\Parser $parser */
     $parser = $this->parser->reveal();
-    $object = new ProjectManager($parser, $this->projectsConfig, $this->projectDir);
+    $object = new ProjectManager($fixture, $parser, $this->projectsConfig, $this->projectDir);
     $this->assertInstanceOf(ProjectManager::class, $object, 'Instantiated class.');
     return $object;
   }

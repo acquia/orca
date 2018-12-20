@@ -2,19 +2,25 @@
 
 namespace Acquia\Orca\Tests\Fixture;
 
+use Acquia\Orca\Fixture\Fixture;
 use Acquia\Orca\Fixture\Project;
 use PHPUnit\Framework\TestCase;
 
 /**
+ * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Fixture\Fixture $fixture
  * @covers \Acquia\Orca\Fixture\Project
  */
 class ProjectTest extends TestCase {
+
+  public function setUp() {
+    $this->fixture = $this->prophesize(Fixture::class);
+  }
 
   /**
    * @dataProvider providerProject
    */
   public function testProject($data, $package_name, $project_name, $repository_url, $type, $version, $package_string, $install_path) {
-    $project = new Project($data);
+    $project = $this->createProject($data);
 
     $this->assertInstanceOf(Project::class, $project, 'Instantiated class.');
     $this->assertEquals($package_name, $project->getPackageName(), 'Set/got package name.');
@@ -54,7 +60,7 @@ class ProjectTest extends TestCase {
         'drupal-module',
         '*',
         'drupal/example_module:*',
-        'docroot/modules/contrib/acquia/example_module',
+        'docroot/modules/contrib/example_module',
       ],
     ];
   }
@@ -66,34 +72,7 @@ class ProjectTest extends TestCase {
     $this->expectException(\InvalidArgumentException::class);
     $this->expectExceptionMessage($message);
 
-    new Project($data);
-  }
-
-  /**
-   * @dataProvider providerInstallPathCalculation
-   */
-  public function testInstallPathCalculation($type, $install_path) {
-    $data = [
-      'name' => 'drupal/example',
-      'type' => $type,
-    ];
-
-    $project = new Project($data);
-
-    $this->assertEquals($install_path, $project->getInstallPathRelative());
-  }
-
-  public function providerInstallPathCalculation() {
-    return [
-      ['drupal-module', 'docroot/modules/contrib/acquia/example'],
-      ['drupal-drush', 'drush/Commands/example'],
-      ['drupal-theme', 'docroot/themes/contrib/acquia/example'],
-      ['drupal-profile', 'docroot/profiles/contrib/acquia/example'],
-      ['drupal-library', 'docroot/libraries/example'],
-      ['bower-asset', 'docroot/libraries/example'],
-      ['npm-asset', 'docroot/libraries/example'],
-      ['something-nonstandard', 'vendor/drupal/example'],
-    ];
+    $this->createProject($data);
   }
 
   public function providerConstructionError() {
@@ -104,6 +83,44 @@ class ProjectTest extends TestCase {
       [['name' => []], "Invalid value for \"name\" property: array (\n)"],
       [['name' => 'incomplete'], 'Invalid value for "name" property: \'incomplete\''],
     ];
+  }
+
+  /**
+   * @dataProvider providerInstallPathCalculation
+   */
+  public function testInstallPathCalculation($type, $relative_install_path) {
+    $absolute_install_path = "/var/www/{$relative_install_path}";
+    $this->fixture
+      ->getPath($relative_install_path)
+      ->willReturn($absolute_install_path);
+    $data = [
+      'name' => 'drupal/example',
+      'type' => $type,
+    ];
+
+    $project = $this->createProject($data);
+
+    $this->assertEquals($relative_install_path, $project->getInstallPathRelative());
+    $this->assertEquals($absolute_install_path, $project->getInstallPathAbsolute());
+  }
+
+  public function providerInstallPathCalculation() {
+    return [
+      ['drupal-module', 'docroot/modules/contrib/example'],
+      ['drupal-drush', 'drush/Commands/example'],
+      ['drupal-theme', 'docroot/themes/contrib/example'],
+      ['drupal-profile', 'docroot/profiles/contrib/example'],
+      ['drupal-library', 'docroot/libraries/example'],
+      ['bower-asset', 'docroot/libraries/example'],
+      ['npm-asset', 'docroot/libraries/example'],
+      ['something-nonstandard', 'vendor/drupal/example'],
+    ];
+  }
+
+  protected function createProject($data): Project {
+    /** @var \Acquia\Orca\Fixture\Fixture $fixture */
+    $fixture = $this->fixture->reveal();
+    return new Project($fixture, $data);
   }
 
 }

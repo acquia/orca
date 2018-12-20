@@ -98,7 +98,7 @@ class SubmoduleManager {
    * @return \Acquia\Orca\Fixture\Project[]
    */
   public function getByParent(Project $project): array {
-    $paths = [$this->fixture->getPath($project->getInstallPathRelative())];
+    $paths = [$project->getInstallPathAbsolute()];
     return $this->getInPaths($paths);
   }
 
@@ -121,7 +121,7 @@ class SubmoduleManager {
         'url' => $file->getPath(),
         'version' => '@dev',
       ];
-      $submodules[$config->get('name')] = new Project($project_data);
+      $submodules[$config->get('name')] = new Project($this->fixture, $project_data);
     }
     return $submodules;
   }
@@ -134,8 +134,7 @@ class SubmoduleManager {
   private function getAllProjectInstallPaths(): array {
     $paths = [];
     foreach ($this->topLevelProjects as $project) {
-      $path = $this->fixture
-        ->getPath($project->getInstallPathRelative());
+      $path = $project->getInstallPathAbsolute();
       if ($this->filesystem->exists($path)) {
         $paths[] = $path;
       }

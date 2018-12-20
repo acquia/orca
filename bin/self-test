@@ -2,6 +2,7 @@
 
 # ORCA self test script.
 
+shopt -s extglob
 set -e
 
 cd "$(dirname "$0")/.."

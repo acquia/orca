@@ -1,15 +1,19 @@
 <?php
 
-namespace Acquia\Orca\Task;
+namespace Acquia\Orca\Task\TestFramework;
 
 use Acquia\Orca\Exception\TaskFailureException;
 use Acquia\Orca\Fixture\Fixture;
+use Acquia\Orca\Task\TaskBase;
+use Acquia\Orca\Utility\SutSettingsTrait;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 
 /**
  * Runs PHPUnit tests.
  */
 class PhpUnitTask extends TaskBase {
+
+  use SutSettingsTrait;
 
   /**
    * {@inheritdoc}
@@ -177,15 +181,19 @@ class PhpUnitTask extends TaskBase {
    */
   protected function runPhpUnit(): void {
     try {
-      $process = $this->processRunner->createOrcaVendorBinProcess([
+      $command = [
         'phpunit',
         '--colors=always',
         '--stop-on-failure',
         '--debug',
         "--configuration={$this->fixture->getPath('docroot/core/phpunit.xml.dist')}",
-        '--group=orca_public',
-        $this->fixture->getTestsPath(),
-      ]);
+        '--exclude-group=orca_ignore',
+      ];
+      if ($this->isSutOnly) {
+        $command[] = '--group=orca_public';
+      }
+      $command[] = $this->getPath();
+      $process = $this->processRunner->createOrcaVendorBinProcess($command);
       $this->processRunner->run($process, $this->fixture->getPath());
     }
     catch (ProcessFailedException $e) {

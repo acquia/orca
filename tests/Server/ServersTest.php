@@ -21,7 +21,7 @@ class ServersTest extends TestCase {
 
     $object = new $class($fixture, $process_runner);
 
-    $this->assertInstanceOf($class, $object, 'Successfully instantiated class.');
+    $this->assertInstanceOf($class, $object, 'Instantiated class.');
   }
 
   public function providerConstruction() {

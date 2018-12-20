@@ -6,4 +6,10 @@ Feature: Example
   @orca_public
   Scenario: Visiting the home page
     Given I visit the homepage
-    Then I get an HTTP 200 status code
+    Then I should get an HTTP 200 status code
+
+  @orca_ignore
+  Scenario: Ignoring a scenario
+    Given I tag a scenario @orca_ignore
+    When I run ORCA tests
+    Then the tagged scenario should not be run

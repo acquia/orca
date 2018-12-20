@@ -91,7 +91,7 @@ class RunCommandTest extends CommandTestBase {
     $application->add(new RunCommand($composer_validate, $filesystem, $php_compatibility_sniff, $php_lint, $task_runner));
     /** @var \Acquia\Orca\Command\Tests\RunCommand $command */
     $command = $application->find(RunCommand::getDefaultName());
-    $this->assertInstanceOf(RunCommand::class, $command, 'Successfully instantiated class.');
+    $this->assertInstanceOf(RunCommand::class, $command, 'Instantiated class.');
     return new CommandTester($command);
   }
 

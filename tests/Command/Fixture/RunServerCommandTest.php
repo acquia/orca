@@ -64,7 +64,7 @@ class RunServerCommandTest extends CommandTestBase {
     $application->add(new RunServerCommand($fixture, $web_server));
     /** @var \Acquia\Orca\Command\Fixture\InitCommand $command */
     $command = $application->find(RunServerCommand::getDefaultName());
-    $this->assertInstanceOf(RunServerCommand::class, $command, 'Successfully instantiated class.');
+    $this->assertInstanceOf(RunServerCommand::class, $command, 'Instantiated class.');
     return new CommandTester($command);
   }
 

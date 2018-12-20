@@ -11,6 +11,13 @@ use GuzzleHttp\Client;
 class FeatureContext implements Context {
 
   /**
+   * @Given /^I tag a scenario @orca_ignore$/
+   * @When /^I run ORCA tests/
+   */
+  public function dummyStep() {
+  }
+
+  /**
    * @Given /^I visit the homepage$/
    */
   public function iVisitTheHomePage() {
@@ -19,14 +26,21 @@ class FeatureContext implements Context {
   }
 
   /**
-   * @Then /^I get an HTTP (\d+) status code$/
+   * @Then /^I should get an HTTP (\d+) status code$/
    *
    * @throws \Exception
    */
-  public function iGetAnHttpStatusCode($status_code) {
+  public function iShouldGetAnHttpStatusCode($status_code) {
     if ($this->response->getStatusCode() != $status_code) {
       throw new \Exception(sprintf('Got an HTTP %d status code.', $this->response->getStatusCode()));
     }
+  }
+
+  /**
+   * @Then /^the tagged scenario should not be run$/
+   */
+  public function theTaggedScenarioShouldNotBeRun() {
+    throw new \Exception('An ignored scenario was run');
   }
 
 }

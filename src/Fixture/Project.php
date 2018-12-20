@@ -15,6 +15,13 @@ class Project {
   private $data;
 
   /**
+   * The fixture.
+   *
+   * @var \Acquia\Orca\Fixture\Fixture
+   */
+  private $fixture;
+
+  /**
    * The path the project installs at relative to the fixture root.
    *
    * @var string
@@ -69,10 +76,13 @@ class Project {
   /**
    * Constructs an instance.
    *
+   * @param \Acquia\Orca\Fixture\Fixture $fixture
+   *   The fixture.
    * @param array $data
    *   An array of project data.
    */
-  public function __construct(array $data) {
+  public function __construct(Fixture $fixture, array $data) {
+    $this->fixture = $fixture;
     $this->data = $data;
     $this->initializePackageName();
     $this->initializeProjectName();
@@ -80,6 +90,15 @@ class Project {
     $this->initializeInstallPath();
     $this->initializeType();
     $this->initializeVersion();
+  }
+
+  /**
+   * Gets the absolute path the project installs at.
+   *
+   * @return string
+   */
+  public function getInstallPathAbsolute(): string {
+    return $this->fixture->getPath($this->getInstallPathRelative());
   }
 
   /**
@@ -102,13 +121,13 @@ class Project {
         return "docroot/libraries/{$this->getProjectName()}";
 
       case 'drupal-module':
-        return sprintf("%s/{$this->getProjectName()}", Fixture::ACQUIA_MODULE_PATH);
+        return "docroot/modules/contrib/{$this->getProjectName()}";
 
       case 'drupal-profile':
-        return "docroot/profiles/contrib/acquia/{$this->getProjectName()}";
+        return "docroot/profiles/contrib/{$this->getProjectName()}";
 
       case 'drupal-theme':
-        return "docroot/themes/contrib/acquia/{$this->getProjectName()}";
+        return "docroot/themes/contrib/{$this->getProjectName()}";
 
       default:
         return "vendor/{$this->getPackageName()}";

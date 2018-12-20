@@ -7,18 +7,8 @@ use Symfony\Component\Filesystem\Filesystem;
 
 /**
  * Provides access to the test fixture.
- *
- * In automated testing, a test fixture is all the things we need to have in
- * place in order to run a test and expect a particular outcome.
- *
- * @see http://xunitpatterns.com/test%20fixture%20-%20xUnit.html
- *
- * In the case of ORCA, that means a BLT project with Acquia product modules in
- * place and Drupal installed.
  */
 class Fixture {
-
-  public const ACQUIA_MODULE_PATH = 'docroot/modules/contrib/acquia';
 
   public const BASE_FIXTURE_GIT_BRANCH = 'base-fixture';
 
@@ -39,13 +29,6 @@ class Fixture {
   private $filesystem;
 
   /**
-   * The project manager.
-   *
-   * @var \Acquia\Orca\Fixture\ProjectManager
-   */
-  private $projectManager;
-
-  /**
    * The root path.
    *
    * @var string
@@ -61,13 +44,10 @@ class Fixture {
    *   The filesystem.
    * @param string $fixture_dir
    *   The absolute path of the fixture root directory.
-   * @param \Acquia\Orca\Fixture\ProjectManager $project_manager
-   *   The project manager.
    */
-  public function __construct(ConfigLoader $configLoader, Filesystem $filesystem, string $fixture_dir, ProjectManager $project_manager) {
+  public function __construct(ConfigLoader $configLoader, Filesystem $filesystem, string $fixture_dir) {
     $this->configLoader = $configLoader;
     $this->filesystem = $filesystem;
-    $this->projectManager = $project_manager;
     $this->rootPath = $fixture_dir;
   }
 
@@ -106,31 +86,6 @@ class Fixture {
     $path = rtrim($path, '/');
 
     return $path;
-  }
-
-  /**
-   * Gets the directory to find tests under.
-   *
-   * An integrated test (standard fixture) runs tests found in all Acquia
-   * modules. An isolated test (SUT-only fixture) runs only those found in the
-   * SUT.
-   *
-   * @return string
-   */
-  public function getTestsPath(): string {
-    $path = $this->getPath(self::ACQUIA_MODULE_PATH);
-
-    $config = $this->configLoader
-      ->load($this->getPath('composer.json'));
-    $sut_name = $config->get('extra.orca.sut');
-    $is_sut_only = $config->get('extra.orca.sut-only');
-
-    if (!$sut_name || !$is_sut_only) {
-      return $path;
-    }
-
-    $sut = $this->projectManager->get($sut_name);
-    return $this->getPath($sut->getInstallPathRelative());
   }
 
 }

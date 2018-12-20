@@ -2,16 +2,14 @@
 
 namespace Acquia\Orca\Command\Tests;
 
-use Acquia\Orca\Utility\Clock;
+use Acquia\Orca\Exception\OrcaException;
+use Acquia\Orca\Fixture\ProjectManager;
+use Acquia\Orca\Task\TestFramework\TestRunner;
 use Acquia\Orca\Command\StatusCodes;
-use Acquia\Orca\Server\ChromeDriverServer;
 use Acquia\Orca\Fixture\Fixture;
-use Acquia\Orca\Task\BehatTask;
-use Acquia\Orca\Task\PhpUnitTask;
-use Acquia\Orca\Task\TaskRunner;
-use Acquia\Orca\Server\WebServer;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
@@ -27,13 +25,6 @@ class RunCommand extends Command {
   protected static $defaultName = 'tests:run';
 
   /**
-   * The clock.
-   *
-   * @var \Acquia\Orca\Utility\Clock
-   */
-  private $clock;
-
-  /**
    * The fixture.
    *
    * @var \Acquia\Orca\Fixture\Fixture
@@ -41,47 +32,33 @@ class RunCommand extends Command {
   private $fixture;
 
   /**
-   * The servers to run before tests.
+   * The project manager.
    *
-   * @var \Acquia\Orca\Server\ServerInterface[]
+   * @var \Acquia\Orca\Fixture\ProjectManager
    */
-  private $servers;
+  private $projectManager;
 
   /**
-   * The task runner.
+   * The test runner.
    *
-   * @var \Acquia\Orca\Task\TaskRunner
+   * @var \Acquia\Orca\Task\TestFramework\TestRunner
    */
-  private $taskRunner;
+  private $testRunner;
 
   /**
    * Constructs an instance.
    *
-   * @param \Acquia\Orca\Task\BehatTask $behat
-   *   The Behat task.
-   * @param \Acquia\Orca\Server\ChromeDriverServer $chrome_driver_server
-   *   The ChromeDriver server.
-   * @param \Acquia\Orca\Utility\Clock $clock
-   *   The clock.
    * @param \Acquia\Orca\Fixture\Fixture $fixture
    *   The fixture.
-   * @param \Acquia\Orca\Task\PhpUnitTask $phpunit
-   *   The PHPUnit task.
-   * @param \Acquia\Orca\Task\TaskRunner $task_runner
-   *   The task runner.
-   * @param \Acquia\Orca\Server\WebServer $web_server
-   *   The web server.
+   * @param \Acquia\Orca\Fixture\ProjectManager $project_manager
+   *   The project manager.
+   * @param \Acquia\Orca\Task\TestFramework\TestRunner $test_runner
+   *   The test runner.
    */
-  public function __construct(BehatTask $behat, ChromeDriverServer $chrome_driver_server, Clock $clock, Fixture $fixture, PhpUnitTask $phpunit, TaskRunner $task_runner, WebServer $web_server) {
-    $this->clock = $clock;
+  public function __construct(Fixture $fixture, ProjectManager $project_manager, TestRunner $test_runner) {
     $this->fixture = $fixture;
-    $this->servers = [
-      $web_server,
-      $chrome_driver_server,
-    ];
-    $this->taskRunner = (clone($task_runner))
-      ->addTask($phpunit)
-      ->addTask($behat);
+    $this->projectManager = $project_manager;
+    $this->testRunner = $test_runner;
     parent::__construct(self::$defaultName);
   }
 
@@ -91,13 +68,22 @@ class RunCommand extends Command {
   protected function configure() {
     $this
       ->setAliases(['test'])
-      ->setDescription('Runs automated tests');
+      ->setDescription('Runs automated tests')
+      ->addOption('sut', NULL, InputOption::VALUE_REQUIRED, 'The system under test (SUT) in the form of its package name, e.g., "drupal/example"')
+      ->addOption('sut-only', NULL, InputOption::VALUE_NONE, 'Run tests from only the system under test (SUT). Omit tests from all other Acquia product modules');
   }
 
   /**
    * {@inheritdoc}
    */
   public function execute(InputInterface $input, OutputInterface $output): int {
+    $sut = $input->getOption('sut');
+    $sut_only = $input->getOption('sut-only');
+
+    if (!$this->isValidInput($sut, $sut_only, $output)) {
+      return StatusCodes::ERROR;
+    }
+
     if (!$this->fixture->exists()) {
       $output->writeln([
         "Error: No fixture exists at {$this->fixture->getPath()}.",
@@ -106,45 +92,69 @@ class RunCommand extends Command {
       return StatusCodes::ERROR;
     }
 
-    $this->startServers();
-    $status_code = $this->runTests();
-    $this->stopServers();
+    $this->setSut($sut);
+    $this->setSutOnly($sut_only);
 
-    return $status_code;
-  }
-
-  /**
-   * Starts servers.
-   */
-  protected function startServers(): void {
-    foreach ($this->servers as $server) {
-      $server->start();
+    try {
+      $this->testRunner->run();
     }
-    // Give the servers a chance to bootstrap before releasing the thread to
-    // tasks that will depend on them.
-    $this->clock->sleep(3);
+    catch (OrcaException $e) {
+      return StatusCodes::ERROR;
+    }
+
+    return StatusCodes::OK;
   }
 
   /**
-   * Runs tests.
+   * Determines whether the command input is valid.
    *
-   * @return int
-   *   A status code.
+   * @param string|string[]|bool|null $sut
+   *   The "sut" option value.
+   * @param string|string[]|bool|null $sut_only
+   *   The "sut-only" option value.
+   * @param \Symfony\Component\Console\Output\OutputInterface $output
+   *   The output decorator.
    *
-   * @see \Acquia\Orca\Command\StatusCodes
+   * @return bool
    */
-  protected function runTests(): int {
-    return $this->taskRunner
-      ->setPath($this->fixture->getTestsPath())
-      ->run();
+  private function isValidInput($sut, $sut_only, OutputInterface $output): bool {
+    if ($sut_only && !$sut) {
+      $output->writeln([
+        'Error: Cannot run SUT-only tests without a SUT.',
+        'Hint: Use the "--sut" option to specify the SUT.',
+      ]);
+      return FALSE;
+    }
+
+    if ($sut && !$this->projectManager->exists($sut)) {
+      $output->writeln(sprintf('Error: Invalid value for "--sut" option: "%s".', $sut));
+      return FALSE;
+    }
+
+    return TRUE;
   }
 
   /**
-   * Stops servers.
+   * Sets the SUT.
+   *
+   * @param string|string[]|bool|null $sut
+   *   The SUT.
    */
-  protected function stopServers(): void {
-    foreach ($this->servers as $server) {
-      $server->stop();
+  private function setSut($sut): void {
+    if ($sut) {
+      $this->testRunner->setSut($sut);
+    }
+  }
+
+  /**
+   * Sets the SUT-only flag.
+   *
+   * @param string|string[]|bool|null $sut_only
+   *   The SUT-only flag.
+   */
+  private function setSutOnly($sut_only): void {
+    if ($sut_only) {
+      $this->testRunner->setSutOnly(TRUE);
     }
   }
 

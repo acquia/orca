@@ -1,9 +1,9 @@
 <?php
 
-namespace Acquia\Orca\Tests\Tasks;
+namespace Acquia\Orca\Tests\Task\TestFramework;
 
 use Acquia\Orca\Command\StatusCodes;
-use Acquia\Orca\Task\BehatTask;
+use Acquia\Orca\Task\TestFramework\BehatTask;
 use Acquia\Orca\Task\PhpLintTask;
 use Acquia\Orca\Task\TaskInterface;
 use Acquia\Orca\Task\TaskRunner;
@@ -27,7 +27,7 @@ class TaskRunnerTest extends TestCase {
       ->shouldBeCalledTimes(2);
     /** @var \Symfony\Component\Console\Style\SymfonyStyle $output */
     $output = $output->reveal();
-    /** @var \Acquia\Orca\Task\BehatTask $behat */
+    /** @var \Acquia\Orca\Task\TestFramework\BehatTask $behat */
     $behat = $this->setTaskExpectations(BehatTask::class);
     /** @var \Acquia\Orca\Task\PhpLintTask $php_lint */
     $php_lint = $this->setTaskExpectations(PhpLintTask::class);
@@ -41,7 +41,7 @@ class TaskRunnerTest extends TestCase {
     // Make sure tasks are reset on clone.
     (clone($runner))->run();
 
-    $this->assertInstanceOf(TaskRunner::class, $runner, 'Successfully instantiated class.');
+    $this->assertInstanceOf(TaskRunner::class, $runner, 'Instantiated class.');
     $this->assertEquals(StatusCodes::OK, $status_code, 'Returned a "success" status code.');
   }
 
