@@ -19,8 +19,8 @@
 #  name: drupal/acquia_lift
 -
   name: drupal/acquia_purge
--
-  name: drupal/acsf
+#-
+#  name: drupal/acsf
 -
   name: drupal/cog
   type: drupal-theme
