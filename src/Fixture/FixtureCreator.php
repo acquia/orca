@@ -475,14 +475,13 @@ class FixtureCreator {
     $process = $this->processRunner->createExecutableProcess([
       'git',
       'add',
-      '-A',
+      '--all',
     ]);
     $this->processRunner->run($process, $cwd);
     $process = $this->processRunner->createExecutableProcess([
       'git',
       'commit',
-      '-m',
-      $message,
+      sprintf('--message="%s"', $message),
       '--author="ORCA <no-reply@acquia.com>"',
       '--allow-empty',
     ]);
