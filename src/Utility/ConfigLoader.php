@@ -19,6 +19,9 @@ class ConfigLoader {
    *   A filename or an array of filenames of configuration files.
    *
    * @return \Noodlehaus\Config
+   *
+   * @throws \Exception
+   *   In case of loading or parsing errors.
    */
   public function load($values): Config {
     return new Config($values);

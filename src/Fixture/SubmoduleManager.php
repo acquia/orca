@@ -174,9 +174,19 @@ class SubmoduleManager {
    * @return bool
    */
   private function isSubmoduleComposerJson(\SplFileInfo $file): bool {
-    $config = $this->configLoader->load($file->getPathname());
+    // Ignore files that don't exist. (It is unknown why the Finder search
+    // returns non-existent files to begin with, but it does.)
+    if (!$this->filesystem->exists($file->getPathname())) {
+      return FALSE;
+    }
 
-    list($vendor_name, $package_name) = explode('/', $config->get('name'));
+    try {
+      $config = $this->configLoader->load($file->getPathname());
+      list($vendor_name, $package_name) = explode('/', $config->get('name'));
+    }
+    catch (\Exception $e) {
+      return FALSE;
+    }
 
     // Ignore top level projects.
     if (in_array($config->get('name'), array_keys($this->topLevelProjects))) {
