@@ -7,7 +7,7 @@ use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
 
 /**
- * Provide access to Acquia product submodules physically in the fixture.
+ * Provide access to Acquia Drupal submodules physically in the fixture.
  */
 class SubmoduleManager {
 
@@ -143,7 +143,7 @@ class SubmoduleManager {
   }
 
   /**
-   * Finds all Acquia product submodule composer.json files.
+   * Finds all Acquia Drupal submodule composer.json files.
    *
    * @param string[] $paths
    *   An array of paths to recursively search for submodules.

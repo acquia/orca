@@ -20,13 +20,13 @@ ORCA_FIXTURE=${ORCA_FIXTURE:=any}
 ## Perform static code analysis.
 [[ ${ORCA_FIXTURE} == @(any|none) ]] && run ${ORCA_ROOT}/bin/orca static-analysis:run ./
 
-# Run isolated tests (in the absence of other Acquia product modules).
+# Run isolated tests (in the absence of other Acquia packages).
 if [[ ${ORCA_FIXTURE} == @(any|sut-only) ]]; then
   run ${ORCA_ROOT}/bin/orca fixture:init -f --sut=$1 --sut-only
   run ${ORCA_ROOT}/bin/orca tests:run --sut=$1 --sut-only
 fi
 
-# Run integrated tests (in the presence of other Acquia product modules).
+# Run integrated tests (in the presence of other Acquia packages).
 if [[ ${ORCA_FIXTURE} == @(any|standard) ]]; then
   run ${ORCA_ROOT}/bin/orca fixture:init -f --sut=$1
   #run ${ORCA_ROOT}/bin/orca tests:run --sut=$1
