@@ -113,7 +113,12 @@ class SubmoduleManager {
   public function getInPaths(array $paths): array {
     $submodules = [];
     foreach ($this->findSubmoduleComposerJsonFiles($paths) as $file) {
-      $config = $this->configLoader->load($file->getPathname());
+      try {
+        $config = $this->configLoader->load($file->getPathname());
+      }
+      catch (\Exception $e) {
+        continue;
+      }
       $install_path = str_replace("{$this->fixture->getPath()}/", '', $file->getPath());
       $package_data = [
         'name' => $config->get('name'),
