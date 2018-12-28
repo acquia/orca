@@ -40,7 +40,7 @@ A test of the [SUT](#sut) in the absence of other non-required product modules (
 
 ## Non-SUT tests
 
-Automated tests provided by Acquia projects other than the [SUT](#sut).
+Automated tests provided by Acquia packages other than the [SUT](#sut).
 
 ## ORCA
 

@@ -40,16 +40,16 @@ class SubmoduleManager {
   private $fixture;
 
   /**
-   * The top-level Acquia projects.
+   * The top-level Acquia packages.
    *
-   * @var \Acquia\Orca\Fixture\Project[]
+   * @var \Acquia\Orca\Fixture\Package[]
    */
-  private $topLevelProjects;
+  private $topLevelPackages;
 
   /**
    * The submodules found in the fixture.
    *
-   * @var \Acquia\Orca\Fixture\Project[]
+   * @var \Acquia\Orca\Fixture\Package[]
    */
   private $submodules = [];
 
@@ -64,27 +64,27 @@ class SubmoduleManager {
    *   The finder.
    * @param \Acquia\Orca\Fixture\Fixture $fixture
    *   The fixture.
-   * @param \Acquia\Orca\Fixture\ProjectManager $project_manager
-   *   The project manager.
+   * @param \Acquia\Orca\Fixture\PackageManager $package_manager
+   *   The package manager.
    */
-  public function __construct(ConfigLoader $config_loader, Filesystem $filesystem, Finder $finder, Fixture $fixture, ProjectManager $project_manager) {
+  public function __construct(ConfigLoader $config_loader, Filesystem $filesystem, Finder $finder, Fixture $fixture, PackageManager $package_manager) {
     $this->configLoader = $config_loader;
     $this->filesystem = $filesystem;
     $this->finder = $finder;
     $this->fixture = $fixture;
-    $this->topLevelProjects = $project_manager->getMultiple();
+    $this->topLevelPackages = $package_manager->getMultiple();
   }
 
   /**
    * Gets an array of all Acquia submodules.
    *
-   * @return \Acquia\Orca\Fixture\Project[]
+   * @return \Acquia\Orca\Fixture\Package[]
    */
   public function getAll(): array {
     if ($this->submodules) {
       return $this->submodules;
     }
-    $paths = $this->getAllProjectInstallPaths();
+    $paths = $this->getAllPackageInstallPaths();
     $this->submodules = $this->getInPaths($paths);
     return $this->submodules;
   }
@@ -92,13 +92,13 @@ class SubmoduleManager {
   /**
    * Gets an array of submodules of a given parent.
    *
-   * @param \Acquia\Orca\Fixture\Project $project
-   *   The project to search for submodules.
+   * @param \Acquia\Orca\Fixture\Package $package
+   *   The package to search for submodules.
    *
-   * @return \Acquia\Orca\Fixture\Project[]
+   * @return \Acquia\Orca\Fixture\Package[]
    */
-  public function getByParent(Project $project): array {
-    $paths = [$project->getInstallPathAbsolute()];
+  public function getByParent(Package $package): array {
+    $paths = [$package->getInstallPathAbsolute()];
     return $this->getInPaths($paths);
   }
 
@@ -108,33 +108,33 @@ class SubmoduleManager {
    * @param string[] $paths
    *   The paths to search for submodules.
    *
-   * @return \Acquia\Orca\Fixture\Project[]
+   * @return \Acquia\Orca\Fixture\Package[]
    */
   public function getInPaths(array $paths): array {
     $submodules = [];
     foreach ($this->findSubmoduleComposerJsonFiles($paths) as $file) {
       $config = $this->configLoader->load($file->getPathname());
       $install_path = str_replace("{$this->fixture->getPath()}/", '', $file->getPath());
-      $project_data = [
+      $package_data = [
         'name' => $config->get('name'),
         'install_path' => $install_path,
         'url' => $file->getPath(),
         'version' => '@dev',
       ];
-      $submodules[$config->get('name')] = new Project($this->fixture, $project_data);
+      $submodules[$config->get('name')] = new Package($this->fixture, $package_data);
     }
     return $submodules;
   }
 
   /**
-   * Gets an array of project install paths.
+   * Gets an array of package install paths.
    *
    * @return array
    */
-  private function getAllProjectInstallPaths(): array {
+  private function getAllPackageInstallPaths(): array {
     $paths = [];
-    foreach ($this->topLevelProjects as $project) {
-      $path = $project->getInstallPathAbsolute();
+    foreach ($this->topLevelPackages as $package) {
+      $path = $package->getInstallPathAbsolute();
       if ($this->filesystem->exists($path)) {
         $paths[] = $path;
       }
@@ -188,8 +188,8 @@ class SubmoduleManager {
       return FALSE;
     }
 
-    // Ignore top level projects.
-    if (in_array($config->get('name'), array_keys($this->topLevelProjects))) {
+    // Ignore top level packages.
+    if (in_array($config->get('name'), array_keys($this->topLevelPackages))) {
       return FALSE;
     }
 

@@ -5,7 +5,7 @@ namespace Acquia\Orca\Command\Fixture;
 use Acquia\Orca\Command\StatusCodes;
 use Acquia\Orca\Exception\OrcaException;
 use Acquia\Orca\Fixture\FixtureCreator;
-use Acquia\Orca\Fixture\ProjectManager;
+use Acquia\Orca\Fixture\PackageManager;
 use Acquia\Orca\Fixture\FixtureRemover;
 use Acquia\Orca\Fixture\Fixture;
 use Symfony\Component\Console\Command\Command;
@@ -47,11 +47,11 @@ class InitCommand extends Command {
   private $fixtureRemover;
 
   /**
-   * The project manager.
+   * The package manager.
    *
-   * @var \Acquia\Orca\Fixture\ProjectManager
+   * @var \Acquia\Orca\Fixture\PackageManager
    */
-  private $projectManager;
+  private $packageManager;
 
   /**
    * Constructs an instance.
@@ -62,13 +62,13 @@ class InitCommand extends Command {
    *   The fixture creator.
    * @param \Acquia\Orca\Fixture\FixtureRemover $fixture_remover
    *   The fixture remover.
-   * @param \Acquia\Orca\Fixture\ProjectManager $project_manager
-   *   The project manager.
+   * @param \Acquia\Orca\Fixture\PackageManager $package_manager
+   *   The package manager.
    */
-  public function __construct(Fixture $fixture, FixtureCreator $fixture_creator, FixtureRemover $fixture_remover, ProjectManager $project_manager) {
+  public function __construct(Fixture $fixture, FixtureCreator $fixture_creator, FixtureRemover $fixture_remover, PackageManager $package_manager) {
     $this->fixtureCreator = $fixture_creator;
     $this->fixture = $fixture;
-    $this->projectManager = $project_manager;
+    $this->packageManager = $package_manager;
     $this->fixtureRemover = $fixture_remover;
     parent::__construct(self::$defaultName);
   }
@@ -143,7 +143,7 @@ class InitCommand extends Command {
       return FALSE;
     }
 
-    if ($sut && !$this->projectManager->exists($sut)) {
+    if ($sut && !$this->packageManager->exists($sut)) {
       $output->writeln(sprintf('Error: Invalid value for "--sut" option: "%s".', $sut));
       return FALSE;
     }

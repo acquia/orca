@@ -5,7 +5,7 @@ namespace Acquia\Orca\Tests\Command\Fixture;
 use Acquia\Orca\Command\StatusCodes;
 use Acquia\Orca\Command\Fixture\InitCommand;
 use Acquia\Orca\Exception\OrcaException;
-use Acquia\Orca\Fixture\ProjectManager;
+use Acquia\Orca\Fixture\PackageManager;
 use Acquia\Orca\Fixture\FixtureRemover;
 use Acquia\Orca\Fixture\Fixture;
 use Acquia\Orca\Fixture\FixtureCreator;
@@ -17,7 +17,7 @@ use Symfony\Component\Console\Tester\CommandTester;
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Fixture\Fixture $fixture
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Fixture\FixtureCreator $fixtureCreator
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Fixture\FixtureRemover $fixtureRemover
- * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Fixture\ProjectManager $projectManager
+ * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Fixture\PackageManager $packageManager
  */
 class InitCommandTest extends CommandTestBase {
 
@@ -29,16 +29,16 @@ class InitCommandTest extends CommandTestBase {
       ->willReturn(FALSE);
     $this->fixture->getPath()
       ->willReturn(self::FIXTURE_ROOT);
-    $this->projectManager = $this->prophesize(ProjectManager::class);
+    $this->packageManager = $this->prophesize(PackageManager::class);
   }
 
   /**
    * @dataProvider providerCommand
    */
   public function testCommand($fixture_exists, $args, $methods_called, $exception, $status_code, $display) {
-    $this->projectManager
+    $this->packageManager
       ->exists(@$args['--sut'])
-      ->shouldBeCalledTimes((int) in_array('ProjectManager::exists', $methods_called))
+      ->shouldBeCalledTimes((int) in_array('PackageManager::exists', $methods_called))
       ->willReturn(@$args['--sut'] === self::VALID_PACKAGE);
     $this->fixture
       ->exists()
@@ -74,9 +74,9 @@ class InitCommandTest extends CommandTestBase {
       [TRUE, [], ['Fixture::exists'], 0, StatusCodes::ERROR, sprintf("Error: Fixture already exists at %s.\nHint: Use the \"--force\" option to remove it and proceed.\n", self::FIXTURE_ROOT)],
       [TRUE, ['-f' => TRUE], ['Fixture::exists', 'remove', 'create'], 0, StatusCodes::OK, ''],
       [FALSE, [], ['Fixture::exists', 'create'], 0, StatusCodes::OK, ''],
-      [FALSE, ['--sut' => self::INVALID_PACKAGE], ['ProjectManager::exists'], 0, StatusCodes::ERROR, sprintf("Error: Invalid value for \"--sut\" option: \"%s\".\n", self::INVALID_PACKAGE)],
-      [FALSE, ['--sut' => self::VALID_PACKAGE], ['ProjectManager::exists', 'Fixture::exists', 'create', 'setSut'], 0, StatusCodes::OK, ''],
-      [FALSE, ['--sut' => self::VALID_PACKAGE, '--sut-only' => TRUE], ['ProjectManager::exists', 'Fixture::exists', 'create', 'setSut', 'setSutOnly'], 0, StatusCodes::OK, ''],
+      [FALSE, ['--sut' => self::INVALID_PACKAGE], ['PackageManager::exists'], 0, StatusCodes::ERROR, sprintf("Error: Invalid value for \"--sut\" option: \"%s\".\n", self::INVALID_PACKAGE)],
+      [FALSE, ['--sut' => self::VALID_PACKAGE], ['PackageManager::exists', 'Fixture::exists', 'create', 'setSut'], 0, StatusCodes::OK, ''],
+      [FALSE, ['--sut' => self::VALID_PACKAGE, '--sut-only' => TRUE], ['PackageManager::exists', 'Fixture::exists', 'create', 'setSut', 'setSutOnly'], 0, StatusCodes::OK, ''],
       [FALSE, [], ['Fixture::exists', 'create'], 1, StatusCodes::ERROR, ''],
       [FALSE, ['--sut-only' => TRUE], [], 0, StatusCodes::ERROR, "Error: Cannot create a SUT-only fixture without a SUT.\nHint: Use the \"--sut\" option to specify the SUT.\n"],
     ];
@@ -90,9 +90,9 @@ class InitCommandTest extends CommandTestBase {
     $fixture_remover = $this->fixtureRemover->reveal();
     /** @var \Acquia\Orca\Fixture\Fixture $fixture */
     $fixture = $this->fixture->reveal();
-    /** @var \Acquia\Orca\Fixture\ProjectManager $project_manager */
-    $project_manager = $this->projectManager->reveal();
-    $application->add(new InitCommand($fixture, $fixture_creator, $fixture_remover, $project_manager));
+    /** @var \Acquia\Orca\Fixture\PackageManager $package_manager */
+    $package_manager = $this->packageManager->reveal();
+    $application->add(new InitCommand($fixture, $fixture_creator, $fixture_remover, $package_manager));
     /** @var \Acquia\Orca\Command\Fixture\InitCommand $command */
     $command = $application->find(InitCommand::getDefaultName());
     $this->assertInstanceOf(InitCommand::class, $command, 'Instantiated class.');

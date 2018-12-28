@@ -3,12 +3,12 @@
 namespace Acquia\Orca\Fixture;
 
 /**
- * Provides access to a project's details.
+ * Provides access to a package's details.
  */
-class Project {
+class Package {
 
   /**
-   * The raw project data supplied to the constructor.
+   * The raw package data supplied to the constructor.
    *
    * @var array
    */
@@ -22,7 +22,7 @@ class Project {
   private $fixture;
 
   /**
-   * The path the project installs at relative to the fixture root.
+   * The path the package installs at relative to the fixture root.
    *
    * @var string
    */
@@ -79,7 +79,7 @@ class Project {
    * @param \Acquia\Orca\Fixture\Fixture $fixture
    *   The fixture.
    * @param array $data
-   *   An array of project data.
+   *   An array of package data.
    */
   public function __construct(Fixture $fixture, array $data) {
     $this->fixture = $fixture;
@@ -93,7 +93,7 @@ class Project {
   }
 
   /**
-   * Gets the absolute path the project installs at.
+   * Gets the absolute path the package installs at.
    *
    * @return string
    */
@@ -102,7 +102,7 @@ class Project {
   }
 
   /**
-   * Gets the path the project installs at relative to the fixture root.
+   * Gets the path the package installs at relative to the fixture root.
    *
    * @return string
    */
@@ -135,14 +135,14 @@ class Project {
   }
 
   /**
-   * Sets the path the project installs at relative to the fixture root.
+   * Sets the path the package installs at relative to the fixture root.
    *
    * @param string $install_path
    *   The install path relative to the fixture root.
    *
    * @return self
    */
-  public function setInstallPathRelative(string $install_path): Project {
+  public function setInstallPathRelative(string $install_path): Package {
     $this->installPath = $install_path;
     return $this;
   }
@@ -165,7 +165,7 @@ class Project {
    *
    * @return self
    */
-  public function setRepositoryUrl(string $url): Project {
+  public function setRepositoryUrl(string $url): Package {
     $this->repositoryUrl = $url;
     return $this;
   }
@@ -187,7 +187,7 @@ class Project {
    *
    * @return self
    */
-  public function setType(string $type): Project {
+  public function setType(string $type): Package {
     $this->type = $type;
     return $this;
   }
@@ -211,7 +211,7 @@ class Project {
    *
    * @return self
    */
-  public function setPackageName(string $name): Project {
+  public function setPackageName(string $name): Package {
     $this->packageName = $name;
     return $this;
   }
@@ -247,7 +247,7 @@ class Project {
    *
    * @return self
    */
-  public function setProjectName(string $name): Project {
+  public function setProjectName(string $name): Package {
     $this->projectName = $name;
     return $this;
   }
@@ -271,7 +271,7 @@ class Project {
    *
    * @return self
    */
-  public function setVersion(string $version): Project {
+  public function setVersion(string $version): Package {
     $this->version = $version;
     return $this;
   }
@@ -300,10 +300,10 @@ class Project {
   }
 
   /**
-   * Initializes the directory base name.
+   * Initializes the repository URL.
    *
-   * I.e., the directory name (not path) of the project as determined by its
-   * Git repository name.
+   * I.e., the URL (path) of the package relative to the ORCA project directory
+   * as determined by its Git repository name.
    */
   private function initializeRepositoryUrl(): void {
     $this->setRepositoryUrl("../{$this->getProjectName()}");

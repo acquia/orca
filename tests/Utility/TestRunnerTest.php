@@ -2,7 +2,7 @@
 
 namespace Acquia\Orca\Tests\Utility;
 
-use Acquia\Orca\Fixture\ProjectManager;
+use Acquia\Orca\Fixture\PackageManager;
 use Acquia\Orca\Server\ServerStack;
 use Acquia\Orca\Task\TestFramework\BehatTask;
 use Acquia\Orca\Task\TestFramework\PhpUnitTask;
@@ -19,7 +19,7 @@ use Symfony\Component\Finder\Finder;
  * @property \Prophecy\Prophecy\ObjectProphecy|\Symfony\Component\Console\Style\SymfonyStyle $output
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Task\TestFramework\PhpUnitTask $phpunit
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Utility\ProcessRunner $processRunner
- * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Fixture\ProjectManager $projectManager
+ * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Fixture\PackageManager $packageManager
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Server\ServerStack $serverStack
  */
 class TestRunnerTest extends TestCase {
@@ -30,8 +30,8 @@ class TestRunnerTest extends TestCase {
     $this->output = $this->prophesize(SymfonyStyle::class);
     $this->phpunit = $this->prophesize(PhpUnitTask::class);
     $this->processRunner = $this->prophesize(ProcessRunner::class);
-    $this->projectManager = $this->prophesize(ProjectManager::class);
-    $this->projectManager
+    $this->packageManager = $this->prophesize(PackageManager::class);
+    $this->packageManager
       ->getMultiple()
       ->willReturn([]);
     $this->serverStack = $this->prophesize(ServerStack::class);
@@ -62,11 +62,11 @@ class TestRunnerTest extends TestCase {
     $phpunit = $this->phpunit->reveal();
     /** @var \Acquia\Orca\Utility\ProcessRunner $process_runner */
     $process_runner = $this->processRunner->reveal();
-    /** @var \Acquia\Orca\Fixture\ProjectManager $project_manager */
-    $project_manager = $this->projectManager->reveal();
+    /** @var \Acquia\Orca\Fixture\PackageManager $package_manager */
+    $package_manager = $this->packageManager->reveal();
     /** @var \Acquia\Orca\Server\ServerStack $server_stack */
     $server_stack = $this->serverStack->reveal();
-    return new TestRunner($behat, $finder, $output, $phpunit, $process_runner, $project_manager, $server_stack);
+    return new TestRunner($behat, $finder, $output, $phpunit, $process_runner, $package_manager, $server_stack);
   }
 
 }

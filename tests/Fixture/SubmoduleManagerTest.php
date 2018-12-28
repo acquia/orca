@@ -3,7 +3,7 @@
 namespace Acquia\Orca\Tests\Fixture;
 
 use Acquia\Orca\Fixture\Fixture;
-use Acquia\Orca\Fixture\ProjectManager;
+use Acquia\Orca\Fixture\PackageManager;
 use Acquia\Orca\Fixture\SubmoduleManager;
 use Acquia\Orca\Utility\ConfigLoader;
 use PHPUnit\Framework\TestCase;
@@ -13,7 +13,7 @@ use Symfony\Component\Finder\Finder;
 /**
  * @property \Prophecy\Prophecy\ObjectProphecy|\Symfony\Component\Finder\Finder $finder
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Fixture\Fixture $fixture
- * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Fixture\ProjectManager $projectManager
+ * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Fixture\PackageManager $packageManager
  * @property \Prophecy\Prophecy\ObjectProphecy|\Symfony\Component\Filesystem\Filesystem $filesystem
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Utility\ConfigLoader $configLoader
  */
@@ -24,8 +24,8 @@ class SubmoduleManagerTest extends TestCase {
     $this->filesystem = $this->prophesize(Filesystem::class);
     $this->finder = $this->prophesize(Finder::class);
     $this->fixture = $this->prophesize(Fixture::class);
-    $this->projectManager = $this->prophesize(ProjectManager::class);
-    $this->projectManager
+    $this->packageManager = $this->prophesize(PackageManager::class);
+    $this->packageManager
       ->getMultiple()
       ->willReturn([]);
   }
@@ -39,9 +39,9 @@ class SubmoduleManagerTest extends TestCase {
     $finder = $this->finder->reveal();
     /** @var \Acquia\Orca\Fixture\Fixture $fixture */
     $fixture = $this->fixture->reveal();
-    /** @var \Acquia\Orca\Fixture\ProjectManager $project_manager */
-    $project_manager = $this->projectManager->reveal();
-    $object = new SubmoduleManager($config_loader, $filesystem, $finder, $fixture, $project_manager);
+    /** @var \Acquia\Orca\Fixture\PackageManager $package_manager */
+    $package_manager = $this->packageManager->reveal();
+    $object = new SubmoduleManager($config_loader, $filesystem, $finder, $fixture, $package_manager);
 
     $this->assertInstanceOf(SubmoduleManager::class, $object, 'Instantiated class.');
   }

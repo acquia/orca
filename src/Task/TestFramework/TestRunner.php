@@ -2,7 +2,7 @@
 
 namespace Acquia\Orca\Task\TestFramework;
 
-use Acquia\Orca\Fixture\ProjectManager;
+use Acquia\Orca\Fixture\PackageManager;
 use Acquia\Orca\Server\ServerStack;
 use Acquia\Orca\Utility\ProcessRunner;
 use Acquia\Orca\Utility\SutSettingsTrait;
@@ -52,11 +52,11 @@ class TestRunner {
   private $processRunner;
 
   /**
-   * The project manager.
+   * The package manager.
    *
-   * @var \Acquia\Orca\Fixture\ProjectManager
+   * @var \Acquia\Orca\Fixture\PackageManager
    */
-  private $projectManager;
+  private $packageManager;
 
   /**
    * The server stack.
@@ -78,18 +78,18 @@ class TestRunner {
    *   The PHPUnit task.
    * @param \Acquia\Orca\Utility\ProcessRunner $process_runner
    *   The process runner.
-   * @param \Acquia\Orca\Fixture\ProjectManager $project_manager
-   *   The project manager.
+   * @param \Acquia\Orca\Fixture\PackageManager $package_manager
+   *   The package manager.
    * @param \Acquia\Orca\Server\ServerStack $server_stack
    *   The server stack.
    */
-  public function __construct(BehatTask $behat, Finder $finder, SymfonyStyle $output, PhpUnitTask $phpunit, ProcessRunner $process_runner, ProjectManager $project_manager, ServerStack $server_stack) {
+  public function __construct(BehatTask $behat, Finder $finder, SymfonyStyle $output, PhpUnitTask $phpunit, ProcessRunner $process_runner, PackageManager $package_manager, ServerStack $server_stack) {
     $this->behat = $behat;
     $this->finder = $finder;
     $this->output = $output;
     $this->phpunit = $phpunit;
     $this->processRunner = $process_runner;
-    $this->projectManager = $project_manager;
+    $this->packageManager = $package_manager;
     $this->serverStack = $server_stack;
   }
 
@@ -132,20 +132,20 @@ class TestRunner {
   }
 
   /**
-   * Runs tests for projects other than the system under test (SUT).
+   * Runs tests for packages other than the system under test (SUT).
    *
    * @throws \Acquia\Orca\Exception\TaskFailureException
    */
   private function runNonSutTests(): void {
     $message = ($this->sut) ? 'Running public non-SUT tests' : 'Running all public tests';
     $this->output->title($message);
-    foreach ($this->projectManager->getMultiple() as $project) {
-      if ($this->sut && $project->getPackageName() === $this->sut->getPackageName()) {
+    foreach ($this->packageManager->getMultiple() as $package) {
+      if ($this->sut && $package->getPackageName() === $this->sut->getPackageName()) {
         continue;
       }
       foreach ($this->getTestFrameworks() as $task) {
-        $this->output->section("{$task->statusMessage()} for {$project->getPackageName()}");
-        $task->setPath($project->getInstallPathAbsolute());
+        $this->output->section("{$task->statusMessage()} for {$package->getPackageName()}");
+        $task->setPath($package->getInstallPathAbsolute());
         $task->execute();
       }
     }

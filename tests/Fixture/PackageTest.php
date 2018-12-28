@@ -3,36 +3,36 @@
 namespace Acquia\Orca\Tests\Fixture;
 
 use Acquia\Orca\Fixture\Fixture;
-use Acquia\Orca\Fixture\Project;
+use Acquia\Orca\Fixture\Package;
 use PHPUnit\Framework\TestCase;
 
 /**
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Fixture\Fixture $fixture
- * @covers \Acquia\Orca\Fixture\Project
+ * @covers \Acquia\Orca\Fixture\Package
  */
-class ProjectTest extends TestCase {
+class PackageTest extends TestCase {
 
   public function setUp() {
     $this->fixture = $this->prophesize(Fixture::class);
   }
 
   /**
-   * @dataProvider providerProject
+   * @dataProvider providerPackage
    */
-  public function testProject($data, $package_name, $project_name, $repository_url, $type, $version, $package_string, $install_path) {
-    $project = $this->createProject($data);
+  public function testPackage($data, $package_name, $project_name, $repository_url, $type, $version, $package_string, $install_path) {
+    $package = $this->createPackage($data);
 
-    $this->assertInstanceOf(Project::class, $project, 'Instantiated class.');
-    $this->assertEquals($package_name, $project->getPackageName(), 'Set/got package name.');
-    $this->assertEquals($project_name, $project->getProjectName(), 'Set/got project name.');
-    $this->assertEquals($repository_url, $project->getRepositoryUrl(), 'Set/got repository URL.');
-    $this->assertEquals($type, $project->getType(), 'Set/got type.');
-    $this->assertEquals($version, $project->getVersion(), 'Set/got version.');
-    $this->assertEquals($package_string, $project->getPackageString(), 'Got dependency string.');
-    $this->assertEquals($install_path, $project->getInstallPathRelative(), 'Got relative install path.');
+    $this->assertInstanceOf(Package::class, $package, 'Instantiated class.');
+    $this->assertEquals($package_name, $package->getPackageName(), 'Set/got package name.');
+    $this->assertEquals($project_name, $package->getProjectName(), 'Set/got project name.');
+    $this->assertEquals($repository_url, $package->getRepositoryUrl(), 'Set/got repository URL.');
+    $this->assertEquals($type, $package->getType(), 'Set/got type.');
+    $this->assertEquals($version, $package->getVersion(), 'Set/got version.');
+    $this->assertEquals($package_string, $package->getPackageString(), 'Got dependency string.');
+    $this->assertEquals($install_path, $package->getInstallPathRelative(), 'Got relative install path.');
   }
 
-  public function providerProject() {
+  public function providerPackage() {
     return [
       'Full specification' => [
         [
@@ -72,7 +72,7 @@ class ProjectTest extends TestCase {
     $this->expectException(\InvalidArgumentException::class);
     $this->expectExceptionMessage($message);
 
-    $this->createProject($data);
+    $this->createPackage($data);
   }
 
   public function providerConstructionError() {
@@ -98,10 +98,10 @@ class ProjectTest extends TestCase {
       'type' => $type,
     ];
 
-    $project = $this->createProject($data);
+    $package = $this->createPackage($data);
 
-    $this->assertEquals($relative_install_path, $project->getInstallPathRelative());
-    $this->assertEquals($absolute_install_path, $project->getInstallPathAbsolute());
+    $this->assertEquals($relative_install_path, $package->getInstallPathRelative());
+    $this->assertEquals($absolute_install_path, $package->getInstallPathAbsolute());
   }
 
   public function providerInstallPathCalculation() {
@@ -117,10 +117,10 @@ class ProjectTest extends TestCase {
     ];
   }
 
-  protected function createProject($data): Project {
+  protected function createPackage($data): Package {
     /** @var \Acquia\Orca\Fixture\Fixture $fixture */
     $fixture = $this->fixture->reveal();
-    return new Project($fixture, $data);
+    return new Package($fixture, $data);
   }
 
 }

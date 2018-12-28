@@ -2,7 +2,7 @@
 
 namespace Acquia\Orca\Utility;
 
-use Acquia\Orca\Fixture\ProjectManager;
+use Acquia\Orca\Fixture\PackageManager;
 
 /**
  * Provides an interface for managing SUT-related settings.
@@ -17,16 +17,16 @@ trait SutSettingsTrait {
   private $isSutOnly = FALSE;
 
   /**
-   * The project manager.
+   * The package manager.
    *
-   * @var \Acquia\Orca\Fixture\ProjectManager|null
+   * @var \Acquia\Orca\Fixture\PackageManager|null
    */
-  private $projectManager;
+  private $packageManager;
 
   /**
    * The SUT.
    *
-   * @var \Acquia\Orca\Fixture\Project|null
+   * @var \Acquia\Orca\Fixture\Package|null
    */
   private $sut;
 
@@ -38,10 +38,10 @@ trait SutSettingsTrait {
    *   e.g., "drupal/example", or NULL to unset the SUT.
    */
   public function setSut(?string $package_name = NULL): void {
-    if (!$this->projectManager) {
-      throw new \LogicException(sprintf('%s requires a usable %s.', self::class, ProjectManager::class));
+    if (!$this->packageManager) {
+      throw new \LogicException(sprintf('%s requires a usable %s.', self::class, PackageManager::class));
     }
-    $this->sut = $this->projectManager->get($package_name);
+    $this->sut = $this->packageManager->get($package_name);
   }
 
   /**

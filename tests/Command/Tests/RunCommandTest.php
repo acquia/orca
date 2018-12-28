@@ -3,7 +3,7 @@
 namespace Acquia\Orca\Tests\Command\Tests;
 
 use Acquia\Orca\Exception\OrcaException;
-use Acquia\Orca\Fixture\ProjectManager;
+use Acquia\Orca\Fixture\PackageManager;
 use Acquia\Orca\Task\TestFramework\TestRunner;
 use Acquia\Orca\Command\StatusCodes;
 use Acquia\Orca\Command\Tests\RunCommand;
@@ -18,7 +18,7 @@ use Symfony\Component\Console\Tester\CommandTester;
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Utility\Clock $clock
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Fixture\Fixture $fixture
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Task\TestFramework\PhpUnitTask $phpunit
- * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Fixture\ProjectManager $projectManager
+ * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Fixture\PackageManager $packageManager
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Task\TaskRunner $taskRunner
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Task\TestFramework\TestRunner $testRunner
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Server\WebServer $webServer
@@ -31,7 +31,7 @@ class RunCommandTest extends CommandTestBase {
       ->willReturn(FALSE);
     $this->fixture->getPath()
       ->willReturn(self::FIXTURE_ROOT);
-    $this->projectManager = $this->prophesize(ProjectManager::class);
+    $this->packageManager = $this->prophesize(PackageManager::class);
     $this->testRunner = $this->prophesize(TestRunner::class);
   }
 
@@ -39,9 +39,9 @@ class RunCommandTest extends CommandTestBase {
    * @dataProvider providerCommand
    */
   public function testCommand($fixture_exists, $args, $methods_called, $exception, $status_code, $display) {
-    $this->projectManager
+    $this->packageManager
       ->exists(@$args['--sut'])
-      ->shouldBeCalledTimes((int) in_array('ProjectManager::exists', $methods_called))
+      ->shouldBeCalledTimes((int) in_array('PackageManager::exists', $methods_called))
       ->willReturn(@$args['--sut'] === self::VALID_PACKAGE);
     $this->fixture
       ->exists()
@@ -73,9 +73,9 @@ class RunCommandTest extends CommandTestBase {
     return [
       [FALSE, [], ['Fixture::exists'], 0, StatusCodes::ERROR, sprintf("Error: No fixture exists at %s.\nHint: Use the \"fixture:init\" command to create one.\n", self::FIXTURE_ROOT)],
       [TRUE, [], ['Fixture::exists', 'run'], 0, StatusCodes::OK, ''],
-      [TRUE, ['--sut' => self::INVALID_PACKAGE], ['ProjectManager::exists'], 0, StatusCodes::ERROR, sprintf("Error: Invalid value for \"--sut\" option: \"%s\".\n", self::INVALID_PACKAGE)],
-      [TRUE, ['--sut' => self::VALID_PACKAGE], ['ProjectManager::exists', 'Fixture::exists', 'run', 'setSut'], 0, StatusCodes::OK, ''],
-      [TRUE, ['--sut' => self::VALID_PACKAGE, '--sut-only' => TRUE], ['ProjectManager::exists', 'Fixture::exists', 'run', 'setSut', 'setSutOnly'], 0, StatusCodes::OK, ''],
+      [TRUE, ['--sut' => self::INVALID_PACKAGE], ['PackageManager::exists'], 0, StatusCodes::ERROR, sprintf("Error: Invalid value for \"--sut\" option: \"%s\".\n", self::INVALID_PACKAGE)],
+      [TRUE, ['--sut' => self::VALID_PACKAGE], ['PackageManager::exists', 'Fixture::exists', 'run', 'setSut'], 0, StatusCodes::OK, ''],
+      [TRUE, ['--sut' => self::VALID_PACKAGE, '--sut-only' => TRUE], ['PackageManager::exists', 'Fixture::exists', 'run', 'setSut', 'setSutOnly'], 0, StatusCodes::OK, ''],
       [TRUE, [], ['Fixture::exists', 'run'], 1, StatusCodes::ERROR, ''],
       [TRUE, ['--sut-only' => TRUE], [], 0, StatusCodes::ERROR, "Error: Cannot run SUT-only tests without a SUT.\nHint: Use the \"--sut\" option to specify the SUT.\n"],
     ];
@@ -85,11 +85,11 @@ class RunCommandTest extends CommandTestBase {
     $application = new Application();
     /** @var \Acquia\Orca\Fixture\Fixture $fixture */
     $fixture = $this->fixture->reveal();
-    /** @var \Acquia\Orca\Fixture\ProjectManager $project_manager */
-    $project_manager = $this->projectManager->reveal();
+    /** @var \Acquia\Orca\Fixture\PackageManager $package_manager */
+    $package_manager = $this->packageManager->reveal();
     /** @var \Acquia\Orca\Task\TestFramework\TestRunner $test_runner */
     $test_runner = $this->testRunner->reveal();
-    $application->add(new RunCommand($fixture, $project_manager, $test_runner));
+    $application->add(new RunCommand($fixture, $package_manager, $test_runner));
     /** @var \Acquia\Orca\Command\Tests\RunCommand $command */
     $command = $application->find(RunCommand::getDefaultName());
     $this->assertInstanceOf(RunCommand::class, $command, 'Instantiated class.');

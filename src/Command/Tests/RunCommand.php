@@ -3,7 +3,7 @@
 namespace Acquia\Orca\Command\Tests;
 
 use Acquia\Orca\Exception\OrcaException;
-use Acquia\Orca\Fixture\ProjectManager;
+use Acquia\Orca\Fixture\PackageManager;
 use Acquia\Orca\Task\TestFramework\TestRunner;
 use Acquia\Orca\Command\StatusCodes;
 use Acquia\Orca\Fixture\Fixture;
@@ -32,11 +32,11 @@ class RunCommand extends Command {
   private $fixture;
 
   /**
-   * The project manager.
+   * The package manager.
    *
-   * @var \Acquia\Orca\Fixture\ProjectManager
+   * @var \Acquia\Orca\Fixture\PackageManager
    */
-  private $projectManager;
+  private $packageManager;
 
   /**
    * The test runner.
@@ -50,14 +50,14 @@ class RunCommand extends Command {
    *
    * @param \Acquia\Orca\Fixture\Fixture $fixture
    *   The fixture.
-   * @param \Acquia\Orca\Fixture\ProjectManager $project_manager
-   *   The project manager.
+   * @param \Acquia\Orca\Fixture\PackageManager $package_manager
+   *   The package manager.
    * @param \Acquia\Orca\Task\TestFramework\TestRunner $test_runner
    *   The test runner.
    */
-  public function __construct(Fixture $fixture, ProjectManager $project_manager, TestRunner $test_runner) {
+  public function __construct(Fixture $fixture, PackageManager $package_manager, TestRunner $test_runner) {
     $this->fixture = $fixture;
-    $this->projectManager = $project_manager;
+    $this->packageManager = $package_manager;
     $this->testRunner = $test_runner;
     parent::__construct(self::$defaultName);
   }
@@ -126,7 +126,7 @@ class RunCommand extends Command {
       return FALSE;
     }
 
-    if ($sut && !$this->projectManager->exists($sut)) {
+    if ($sut && !$this->packageManager->exists($sut)) {
       $output->writeln(sprintf('Error: Invalid value for "--sut" option: "%s".', $sut));
       return FALSE;
     }

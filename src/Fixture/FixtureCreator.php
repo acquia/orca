@@ -68,11 +68,11 @@ class FixtureCreator {
   private $processRunner;
 
   /**
-   * The project manager.
+   * The package manager.
    *
-   * @var \Acquia\Orca\Fixture\ProjectManager
+   * @var \Acquia\Orca\Fixture\PackageManager
    */
-  private $projectManager;
+  private $packageManager;
 
   /**
    * The submodule manager.
@@ -94,18 +94,18 @@ class FixtureCreator {
    *   The output decorator.
    * @param \Acquia\Orca\Utility\ProcessRunner $process_runner
    *   The process runner.
-   * @param \Acquia\Orca\Fixture\ProjectManager $project_manager
-   *   The project manager.
+   * @param \Acquia\Orca\Fixture\PackageManager $package_manager
+   *   The package manager.
    * @param \Acquia\Orca\Fixture\SubmoduleManager $submodule_manager
    *   The submodule manager.
    */
-  public function __construct(Filesystem $filesystem, Finder $finder, Fixture $fixture, SymfonyStyle $output, ProcessRunner $process_runner, ProjectManager $project_manager, SubmoduleManager $submodule_manager) {
+  public function __construct(Filesystem $filesystem, Finder $finder, Fixture $fixture, SymfonyStyle $output, ProcessRunner $process_runner, PackageManager $package_manager, SubmoduleManager $submodule_manager) {
     $this->filesystem = $filesystem;
     $this->finder = $finder;
     $this->fixture = $fixture;
     $this->output = $output;
     $this->processRunner = $process_runner;
-    $this->projectManager = $project_manager;
+    $this->packageManager = $package_manager;
     $this->submoduleManager = $submodule_manager;
   }
 
@@ -118,8 +118,8 @@ class FixtureCreator {
   public function create(): void {
     $this->ensurePreconditions();
     $this->createBltProject();
-    $this->removeUnneededProjects();
-    $this->addAcquiaProjects();
+    $this->removeUnneededPackages();
+    $this->addAcquiaPackages();
     $this->installDrupal();
     $this->installAcquiaModules();
     $this->createBackupBranch();
@@ -198,10 +198,10 @@ class FixtureCreator {
   }
 
   /**
-   * Removes unneeded projects.
+   * Removes unneeded packages.
    */
-  private function removeUnneededProjects(): void {
-    $this->output->section('Removing unneeded projects');
+  private function removeUnneededPackages(): void {
+    $this->output->section('Removing unneeded packages');
     $process = $this->processRunner->createOrcaVendorBinProcess([
       'composer',
       'remove',
@@ -210,7 +210,7 @@ class FixtureCreator {
       // submodule requirements--namely, it prevents them from being symlinked
       // via a local "path" repository.
       'acquia/lightning',
-      // Other Acquia projects are only conditionally required later and should
+      // Other Acquia packages are only conditionally required later and should
       // in no case be included up-front.
       'drupal/acquia_connector',
       'drupal/acquia_purge',
@@ -219,17 +219,17 @@ class FixtureCreator {
   }
 
   /**
-   * Adds Acquia projects to the codebase.
+   * Adds Acquia packages to the codebase.
    *
    * @throws \Acquia\Orca\Exception\OrcaException
    *   If the SUT isn't properly installed.
    */
-  private function addAcquiaProjects(): void {
-    $this->output->section('Adding Acquia projects');
+  private function addAcquiaPackages(): void {
+    $this->output->section('Adding Acquia packages');
     $this->addTopLevelAcquiaPackages();
     $this->addSutSubmodules();
     $this->addComposerExtraData();
-    $this->commitCodeChanges('Added Acquia projects.');
+    $this->commitCodeChanges('Added Acquia packages.');
   }
 
   /**
@@ -248,7 +248,7 @@ class FixtureCreator {
   }
 
   /**
-   * Configures Composer to find and place Acquia projects.
+   * Configures Composer to find and place Acquia packages.
    */
   private function configureComposerForTopLevelAcquiaPackages(): void {
     $this->loadComposerJson();
@@ -359,7 +359,7 @@ class FixtureCreator {
    * @return string[]
    */
   private function getAcquiaProductModuleDependencies(): array {
-    $dependencies = $this->projectManager->getMultiple(NULL, 'getPackageString');
+    $dependencies = $this->packageManager->getMultiple(NULL, 'getPackageString');
 
     if (!$this->sut) {
       return array_values($dependencies);
@@ -409,10 +409,10 @@ class FixtureCreator {
     $this->jsonConfigSource->removeProperty('repositories');
 
     // Add new repositories.
-    foreach ($this->submoduleManager->getAll() as $project) {
-      $this->jsonConfigSource->addRepository($project->getPackageName(), [
+    foreach ($this->submoduleManager->getAll() as $package) {
+      $this->jsonConfigSource->addRepository($package->getPackageName(), [
         'type' => 'path',
-        'url' => $project->getRepositoryUrl(),
+        'url' => $package->getRepositoryUrl(),
       ]);
     }
 
@@ -590,7 +590,7 @@ PHP;
       return $module_list;
     }
 
-    $module_list = array_values($this->projectManager->getMultiple('drupal-module', 'getProjectName'));
+    $module_list = array_values($this->packageManager->getMultiple('drupal-module', 'getProjectName'));
     foreach ($this->submoduleManager->getAll() as $submodule) {
       $module_list[] = $submodule->getProjectName();
     }
