@@ -7,6 +7,11 @@ php: 7.1
 addons:
   chrome: stable
 
+cache:
+  directories:
+    - "$HOME/.composer/cache"
+    - "$HOME/.drush/cache"
+
 matrix:
   include:
     - name: "Static analysis"
@@ -16,8 +21,8 @@ matrix:
     - name: "Integrated test"
       env: ORCA_FIXTURE=standard
 
-before_install: "git clone --depth 1 git@github.com:acquia/orca.git ../orca"
-
-install: ../orca/bin/travis/install
+install:
+  - "git clone --depth 1 git@github.com:acquia/orca.git ../orca"
+  - ../orca/bin/travis/install
 
 script: "../orca/bin/travis/script drupal/example"
