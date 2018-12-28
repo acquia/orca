@@ -38,9 +38,15 @@ trait SutSettingsTrait {
    *   e.g., "drupal/example", or NULL to unset the SUT.
    */
   public function setSut(?string $package_name = NULL): void {
+    if (!$package_name) {
+      $this->sut = NULL;
+      return;
+    }
+
     if (!$this->packageManager) {
       throw new \LogicException(sprintf('%s requires a usable %s.', self::class, PackageManager::class));
     }
+
     $this->sut = $this->packageManager->get($package_name);
   }
 

@@ -19,6 +19,13 @@ class FixtureCreator {
   use SutSettingsTrait;
 
   /**
+   * The Acquia module installer.
+   *
+   * @var \Acquia\Orca\Fixture\AcquiaModuleInstaller
+   */
+  private $acquiaModuleInstaller;
+
+  /**
    * The filesystem.
    *
    * @var \Symfony\Component\Filesystem\Filesystem
@@ -84,6 +91,8 @@ class FixtureCreator {
   /**
    * Constructs an instance.
    *
+   * @param \Acquia\Orca\Fixture\AcquiaModuleInstaller $acquia_module_installer
+   *   The Acquia module installer.
    * @param \Symfony\Component\Filesystem\Filesystem $filesystem
    *   The filesystem.
    * @param \Symfony\Component\Finder\Finder $finder
@@ -99,7 +108,8 @@ class FixtureCreator {
    * @param \Acquia\Orca\Fixture\SubmoduleManager $submodule_manager
    *   The submodule manager.
    */
-  public function __construct(Filesystem $filesystem, Finder $finder, Fixture $fixture, SymfonyStyle $output, ProcessRunner $process_runner, PackageManager $package_manager, SubmoduleManager $submodule_manager) {
+  public function __construct(AcquiaModuleInstaller $acquia_module_installer, Filesystem $filesystem, Finder $finder, Fixture $fixture, SymfonyStyle $output, ProcessRunner $process_runner, PackageManager $package_manager, SubmoduleManager $submodule_manager) {
+    $this->acquiaModuleInstaller = $acquia_module_installer;
     $this->filesystem = $filesystem;
     $this->finder = $finder;
     $this->fixture = $fixture;
@@ -114,6 +124,8 @@ class FixtureCreator {
    *
    * @throws \Acquia\Orca\Exception\OrcaException
    *   If the SUT isn't properly installed.
+   * @throws \Exception
+   *   In case of errors.
    */
   public function create(): void {
     $this->ensurePreconditions();
@@ -559,42 +571,12 @@ PHP;
   }
 
   /**
-   * Installs the Acquia modules.
+   * Installs the Acquia Drupal modules.
+   *
+   * @throws \Exception
    */
   private function installAcquiaModules(): void {
-    if ($this->isSutOnly && ($this->sut->getType() !== 'drupal-module')) {
-      return;
-    }
-
-    $this->output->section('Installing Acquia modules');
-    $module_list = $this->getAcquiaModuleList();
-    $process = $this->processRunner->createFixtureVendorBinProcess(array_merge([
-      'drush',
-      'pm-enable',
-      '--yes',
-    ], $module_list));
-    $this->processRunner->run($process, $this->fixture->getPath());
-  }
-
-  /**
-   * Gets the list of Acquia modules to install.
-   *
-   * @return string[]
-   */
-  private function getAcquiaModuleList(): array {
-    if ($this->isSutOnly) {
-      $module_list = [$this->sut->getProjectName()];
-      foreach ($this->submoduleManager->getByParent($this->sut) as $submodule) {
-        $module_list[] = $submodule->getProjectName();
-      }
-      return $module_list;
-    }
-
-    $module_list = array_values($this->packageManager->getMultiple('drupal-module', 'getProjectName'));
-    foreach ($this->submoduleManager->getAll() as $submodule) {
-      $module_list[] = $submodule->getProjectName();
-    }
-    return $module_list;
+    $this->acquiaModuleInstaller->install();
   }
 
   /**
