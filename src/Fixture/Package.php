@@ -79,7 +79,23 @@ class Package {
    * @param \Acquia\Orca\Fixture\Fixture $fixture
    *   The fixture.
    * @param array $data
-   *   An array of package data.
+   *   An array of package data that may contain the following key-value pairs:
+   *   - "name": (required) The package name, corresponding to the "name"
+   *     property in its composer.json file, e.g., "drupal/example".
+   *   - "type": (optional) The package type, corresponding to the "type"
+   *     property in its composer.json file. Defaults to "drupal-module".
+   *   - "install_path": (optional) The path the package gets installed at
+   *     relative to the fixture root, e.g., docroot/modules/contrib/example.
+   *     Used for Drupal submodules. Defaults by "type" to match the
+   *     "installer-paths" patterns specified by BLT.
+   *   - "url": (optional) The path, absolute or relative to the fixture root,
+   *     of a local clone of the package. Used for the "url" property of the
+   *     Composer path repository used to symlink the system under test (SUT)
+   *     into place. Defaults to a directory adjacent to the fixture root named
+   *     the Composer project name, e.g., "../example" for a "drupal/example"
+   *     project.
+   *   - "version": (optional) The package version to require via Composer.
+   *     Defaults to "*".
    */
   public function __construct(Fixture $fixture, array $data) {
     $this->fixture = $fixture;
