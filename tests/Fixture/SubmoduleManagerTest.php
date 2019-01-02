@@ -25,9 +25,6 @@ class SubmoduleManagerTest extends TestCase {
     $this->finder = $this->prophesize(Finder::class);
     $this->fixture = $this->prophesize(Fixture::class);
     $this->packageManager = $this->prophesize(PackageManager::class);
-    $this->packageManager
-      ->getMultiple()
-      ->willReturn([]);
   }
 
   public function testConstruction() {
@@ -39,6 +36,9 @@ class SubmoduleManagerTest extends TestCase {
     $finder = $this->finder->reveal();
     /** @var \Acquia\Orca\Fixture\Fixture $fixture */
     $fixture = $this->fixture->reveal();
+    $this->packageManager
+      ->getMultiple('drupal-module')
+      ->willReturn([]);
     /** @var \Acquia\Orca\Fixture\PackageManager $package_manager */
     $package_manager = $this->packageManager->reveal();
     $object = new SubmoduleManager($config_loader, $filesystem, $finder, $fixture, $package_manager);

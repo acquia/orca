@@ -40,11 +40,11 @@ class SubmoduleManager {
   private $fixture;
 
   /**
-   * The top-level Acquia packages.
+   * The top-level Acquia modules.
    *
    * @var \Acquia\Orca\Fixture\Package[]
    */
-  private $topLevelPackages;
+  private $topLevelModules;
 
   /**
    * The submodules found in the fixture.
@@ -72,7 +72,7 @@ class SubmoduleManager {
     $this->filesystem = $filesystem;
     $this->finder = $finder;
     $this->fixture = $fixture;
-    $this->topLevelPackages = $package_manager->getMultiple();
+    $this->topLevelModules = $package_manager->getMultiple('drupal-module');
   }
 
   /**
@@ -84,7 +84,7 @@ class SubmoduleManager {
     if ($this->submodules) {
       return $this->submodules;
     }
-    $paths = $this->getAllPackageInstallPaths();
+    $paths = $this->getTopLevelModuleInstallPaths();
     $this->submodules = $this->getInPaths($paths);
     return $this->submodules;
   }
@@ -132,13 +132,13 @@ class SubmoduleManager {
   }
 
   /**
-   * Gets an array of package install paths.
+   * Gets an array of top level module install paths.
    *
    * @return array
    */
-  private function getAllPackageInstallPaths(): array {
+  private function getTopLevelModuleInstallPaths(): array {
     $paths = [];
-    foreach ($this->topLevelPackages as $package) {
+    foreach ($this->topLevelModules as $package) {
       $path = $package->getInstallPathAbsolute();
       if ($this->filesystem->exists($path)) {
         $paths[] = $path;
@@ -193,8 +193,8 @@ class SubmoduleManager {
       return FALSE;
     }
 
-    // Ignore top level packages.
-    if (in_array($config->get('name'), array_keys($this->topLevelPackages))) {
+    // Ignore top level modules.
+    if (in_array($config->get('name'), array_keys($this->topLevelModules))) {
       return FALSE;
     }
 
