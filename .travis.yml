@@ -13,7 +13,6 @@ cache:
     - "$HOME/.drush/cache"
 
 git:
-  depth: 1
   quiet: true
 
 branches:
