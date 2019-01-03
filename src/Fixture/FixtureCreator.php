@@ -306,10 +306,12 @@ class FixtureCreator {
    * Requires the top-level Acquia packages via Composer.
    */
   private function composerRequireTopLevelAcquiaPackages(): void {
-    $process = $this->processRunner->createOrcaVendorBinProcess(array_merge(
-      ['composer', 'require', '--no-interaction'],
-      $this->getAcquiaPackageDependencies()
-    ));
+    $process = $this->processRunner->createOrcaVendorBinProcess(array_merge([
+      'composer',
+      'require',
+      '--no-update',
+      '--no-interaction',
+    ], $this->getAcquiaPackageDependencies()));
     $this->processRunner->run($process, $this->fixture->getPath());
   }
 
@@ -469,10 +471,11 @@ class FixtureCreator {
     foreach (array_keys($this->submoduleManager->getByParent($this->sut)) as $package_name) {
       $packages[] = "{$package_name}:@dev";
     }
-    $process = $this->processRunner->createOrcaVendorBinProcess(array_merge(
-      ['composer', 'require', '--no-interaction'],
-      $packages
-    ));
+    $process = $this->processRunner->createOrcaVendorBinProcess(array_merge([
+      'composer',
+      'require',
+      '--no-interaction',
+    ], $packages));
     $this->processRunner->run($process, $this->fixture->getPath());
   }
 
