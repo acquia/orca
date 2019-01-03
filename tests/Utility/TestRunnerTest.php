@@ -10,6 +10,7 @@ use Acquia\Orca\Task\TestFramework\TestRunner;
 use Acquia\Orca\Utility\ProcessRunner;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
 
 /**
@@ -26,6 +27,7 @@ class TestRunnerTest extends TestCase {
 
   public function setUp() {
     $this->behat = $this->prophesize(BehatTask::class);
+    $this->filesystem = $this->prophesize(Filesystem::class);
     $this->finder = $this->prophesize(Finder::class);
     $this->output = $this->prophesize(SymfonyStyle::class);
     $this->phpunit = $this->prophesize(PhpUnitTask::class);
@@ -54,6 +56,8 @@ class TestRunnerTest extends TestCase {
   protected function createTestRunner(): TestRunner {
     /** @var \Acquia\Orca\Task\TestFramework\BehatTask $behat */
     $behat = $this->behat->reveal();
+    /** @var \Symfony\Component\Filesystem\Filesystem $filesystem */
+    $filesystem = $this->filesystem->reveal();
     /** @var \Symfony\Component\Finder\Finder $finder */
     $finder = $this->finder->reveal();
     /** @var \Symfony\Component\Console\Style\SymfonyStyle $output */
@@ -66,7 +70,7 @@ class TestRunnerTest extends TestCase {
     $package_manager = $this->packageManager->reveal();
     /** @var \Acquia\Orca\Server\ServerStack $server_stack */
     $server_stack = $this->serverStack->reveal();
-    return new TestRunner($behat, $finder, $output, $phpunit, $process_runner, $package_manager, $server_stack);
+    return new TestRunner($behat, $filesystem, $finder, $output, $phpunit, $process_runner, $package_manager, $server_stack);
   }
 
 }

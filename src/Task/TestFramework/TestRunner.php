@@ -7,6 +7,7 @@ use Acquia\Orca\Server\ServerStack;
 use Acquia\Orca\Utility\ProcessRunner;
 use Acquia\Orca\Utility\SutSettingsTrait;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
 
 /**
@@ -22,6 +23,13 @@ class TestRunner {
    * @var \Acquia\Orca\Task\TestFramework\BehatTask
    */
   private $behat;
+
+  /**
+   * The filesystem.
+   *
+   * @var \Symfony\Component\Filesystem\Filesystem
+   */
+  private $filesystem;
 
   /**
    * The finder.
@@ -70,6 +78,8 @@ class TestRunner {
    *
    * @param \Acquia\Orca\Task\TestFramework\BehatTask $behat
    *   The Behat task.
+   * @param \Symfony\Component\Filesystem\Filesystem $filesystem
+   *   The filesystem.
    * @param \Symfony\Component\Finder\Finder $finder
    *   The finder.
    * @param \Symfony\Component\Console\Style\SymfonyStyle $output
@@ -83,8 +93,9 @@ class TestRunner {
    * @param \Acquia\Orca\Server\ServerStack $server_stack
    *   The server stack.
    */
-  public function __construct(BehatTask $behat, Finder $finder, SymfonyStyle $output, PhpUnitTask $phpunit, ProcessRunner $process_runner, PackageManager $package_manager, ServerStack $server_stack) {
+  public function __construct(BehatTask $behat, Filesystem $filesystem, Finder $finder, SymfonyStyle $output, PhpUnitTask $phpunit, ProcessRunner $process_runner, PackageManager $package_manager, ServerStack $server_stack) {
     $this->behat = $behat;
+    $this->filesystem = $filesystem;
     $this->finder = $finder;
     $this->output = $output;
     $this->phpunit = $phpunit;
@@ -141,6 +152,10 @@ class TestRunner {
     $this->output->title($message);
     foreach ($this->packageManager->getMultiple() as $package) {
       if ($this->sut && $package->getPackageName() === $this->sut->getPackageName()) {
+        continue;
+      }
+      if (!$this->filesystem->exists($package->getInstallPathAbsolute())) {
+        $this->output->warning(sprintf('Package %s absent from expected location: %s ', $package->getPackageName(), $package->getInstallPathAbsolute()));
         continue;
       }
       foreach ($this->getTestFrameworks() as $task) {
