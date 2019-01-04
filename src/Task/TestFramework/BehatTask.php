@@ -8,7 +8,7 @@ use Acquia\Orca\Utility\SutSettingsTrait;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 
 /**
- * Runs Behat stories.
+ * Runs Behat tests.
  */
 class BehatTask extends TaskBase implements TestFrameworkInterface {
 
@@ -18,7 +18,7 @@ class BehatTask extends TaskBase implements TestFrameworkInterface {
    * {@inheritdoc}
    */
   public function statusMessage(): string {
-    return 'Running Behat stories';
+    return 'Running Behat tests';
   }
 
   /**

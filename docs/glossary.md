@@ -20,7 +20,7 @@
 
 ## Behat
 
-| 'bēhat | An open source Behavior-Driven Development framework for PHP. [[Website]](http://behat.org/) ORCA automatically runs [public](#public-tests) and [private](#private-tests) Behat stories in Acquia packages using any `behat.yml` files found in them. See also [ignored tests](#ignored-tests).
+| 'bēhat | An open source Behavior-Driven Development framework for PHP. [[Website]](http://behat.org/) ORCA automatically runs [public](#public-tests) and [private](#private-tests) Behat tests in Acquia packages using any `behat.yml` files found in them. See also [ignored tests](#ignored-tests).
 
 ## BLT
 
