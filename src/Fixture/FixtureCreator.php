@@ -254,7 +254,6 @@ class FixtureCreator {
     $this->configureComposerForTopLevelAcquiaPackages();
     $this->composerRequireTopLevelAcquiaPackages();
     if ($this->sut) {
-      $this->forceSutSymlinkInstall();
       $this->verifySut();
     }
   }
@@ -309,25 +308,8 @@ class FixtureCreator {
     $process = $this->processRunner->createOrcaVendorBinProcess(array_merge([
       'composer',
       'require',
-      '--no-update',
       '--no-interaction',
     ], $this->getAcquiaPackageDependencies()));
-    $this->processRunner->run($process, $this->fixture->getPath());
-  }
-
-  /**
-   * Forces Composer to install the SUT from the local path repository.
-   */
-  private function forceSutSymlinkInstall(): void {
-    $this->filesystem->remove([
-      $this->fixture->getPath('composer.lock'),
-      $this->sut->getInstallPathAbsolute(),
-    ]);
-    $process = $this->processRunner->createOrcaVendorBinProcess([
-      'composer',
-      'install',
-      '--no-interaction',
-    ]);
     $this->processRunner->run($process, $this->fixture->getPath());
   }
 
