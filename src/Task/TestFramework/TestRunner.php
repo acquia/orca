@@ -67,6 +67,20 @@ class TestRunner {
   private $packageManager;
 
   /**
+   * The run Behat flag.
+   *
+   * @var bool
+   */
+  private $runBehat = TRUE;
+
+  /**
+   * The run PHPUnit flag.
+   *
+   * @var bool
+   */
+  private $runPhpunit = TRUE;
+
+  /**
    * The run servers flag.
    *
    * @var bool
@@ -132,10 +146,30 @@ class TestRunner {
   }
 
   /**
+   * Sets the run Behat flag.
+   *
+   * @param bool $run_behat
+   *   TRUE to run Behat or FALSE not to.
+   */
+  public function setRunBehat(bool $run_behat) {
+    $this->runBehat = $run_behat;
+  }
+
+  /**
+   * Sets the run PHPUnit flag.
+   *
+   * @param bool $run_phpunit
+   *   TRUE to run PHPUnit or FALSE not to.
+   */
+  public function setRunPhpunit(bool $run_phpunit) {
+    $this->runPhpunit = $run_phpunit;
+  }
+
+  /**
    * Sets the run servers flag.
    *
    * @param bool $run_servers
-   *   TRUE for to run servers or FALSE not to.
+   *   TRUE to run servers or FALSE not to.
    */
   public function setRunServers(bool $run_servers): void {
     $this->runServers = $run_servers;
@@ -156,7 +190,7 @@ class TestRunner {
    */
   private function runSutTests(): void {
     $this->output->title('Running SUT tests');
-    foreach ($this->getTestFrameworks() as $task) {
+    foreach ($this->getFrameworks() as $task) {
       $this->output->section("{$task->statusMessage()} for {$this->sut->getPackageName()}");
       $task->setPath($this->sut->getInstallPathAbsolute());
       $task->execute();
@@ -179,7 +213,7 @@ class TestRunner {
         $this->output->warning(sprintf('Package %s absent from expected location: %s ', $package->getPackageName(), $package->getInstallPathAbsolute()));
         continue;
       }
-      foreach ($this->getTestFrameworks() as $task) {
+      foreach ($this->getFrameworks() as $task) {
         $this->output->section("{$task->statusMessage()} for {$package->getPackageName()}");
         $task->setPath($package->getInstallPathAbsolute());
         $task->execute();
@@ -200,11 +234,15 @@ class TestRunner {
    *
    * @return \Acquia\Orca\Task\TestFramework\TestFrameworkInterface[]
    */
-  private function getTestFrameworks(): array {
-    return [
-      clone $this->phpunit,
-      clone $this->behat,
-    ];
+  private function getFrameworks(): array {
+    $frameworks = [];
+    if ($this->runPhpunit) {
+      $frameworks[] = $this->phpunit;
+    }
+    if ($this->runBehat) {
+      $frameworks[] = $this->behat;
+    }
+    return $frameworks;
   }
 
 }

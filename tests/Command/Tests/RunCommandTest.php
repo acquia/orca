@@ -28,7 +28,7 @@ class RunCommandTest extends CommandTestBase {
   protected function setUp() {
     $this->fixture = $this->prophesize(Fixture::class);
     $this->fixture->exists()
-      ->willReturn(FALSE);
+      ->willReturn(TRUE);
     $this->fixture->getPath()
       ->willReturn(self::FIXTURE_ROOT);
     $this->packageManager = $this->prophesize(PackageManager::class);
@@ -82,6 +82,34 @@ class RunCommandTest extends CommandTestBase {
       [TRUE, ['--no-servers' => TRUE], ['Fixture::exists', 'run', 'setRunServers'], 0, StatusCodes::OK, ''],
       [TRUE, [], ['Fixture::exists', 'run'], 1, StatusCodes::ERROR, ''],
       [TRUE, ['--sut-only' => TRUE], [], 0, StatusCodes::ERROR, "Error: Cannot run SUT-only tests without a SUT.\nHint: Use the \"--sut\" option to specify the SUT.\n"],
+    ];
+  }
+
+  /**
+   * @dataProvider providerFrameworkFlags
+   */
+  public function testFrameworkFlags($args, $call_set_run_behat, $call_set_run_phpunit) {
+    $this->testRunner
+      ->setRunBehat(FALSE)
+      ->shouldBeCalledTimes($call_set_run_behat);
+    $this->testRunner
+      ->setRunPhpunit(FALSE)
+      ->shouldBeCalledTimes($call_set_run_phpunit);
+    $this->testRunner
+      ->run()
+      ->shouldBeCalled();
+
+    $tester = $this->createCommandTester();
+
+    $this->executeCommand($tester, RunCommand::getDefaultName(), $args);
+  }
+
+  public function providerFrameworkFlags() {
+    return [
+      [[], 0, 0],
+      [['--behat' => 1], 0, 1],
+      [['--phpunit' => 1], 1, 0],
+      [['--behat' => 1, '--phpunit' => 1], 0, 0],
     ];
   }
 
