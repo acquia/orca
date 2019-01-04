@@ -16,4 +16,3 @@ ORCA (Official Representative Customer Application) is a tool for testing Acquia
 
 * [Getting Started](getting-started.md)
 * [Project Glossary](glossary.md)
-* [Command-Line Reference](command-line-ref.md)

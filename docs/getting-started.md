@@ -68,4 +68,4 @@ ORCA can also be installed and run locally for testing and development. Follow t
     orca
     ```
 
-1. See the [Command Line Reference](command-line-ref.md) or use the `--help` command option to learn more about the various commands, or see how they're used in [`bin/travis/script`](../bin/travis/script). Use the `fixture:run-server` command to run the web server for local development.
+1. Use the `--help` command option to learn more about the various commands or see how they're used in [`bin/travis/script`](../bin/travis/script). Use the `fixture:run-server` command to run the web server for local development.
