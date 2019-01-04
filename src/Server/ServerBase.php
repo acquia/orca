@@ -57,7 +57,10 @@ abstract class ServerBase implements ServerInterface {
    */
   public function start(): void {
     $this->process = $this->createProcess();
-    $this->process->start();
+    $this->process
+      ->setTimeout(NULL)
+      ->setIdleTimeout(NULL)
+      ->start();
   }
 
   /**
