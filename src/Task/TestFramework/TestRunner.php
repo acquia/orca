@@ -67,6 +67,13 @@ class TestRunner {
   private $packageManager;
 
   /**
+   * The run servers flag.
+   *
+   * @var bool
+   */
+  private $runServers = TRUE;
+
+  /**
    * The server stack.
    *
    * @var \Acquia\Orca\Server\ServerStack
@@ -110,14 +117,28 @@ class TestRunner {
    * @throws \Acquia\Orca\Exception\TaskFailureException
    */
   public function run(): void {
-    $this->startServers();
+    if ($this->runServers) {
+      $this->startServers();
+    }
     if ($this->sut) {
       $this->runSutTests();
     }
     if (!$this->isSutOnly) {
       $this->runNonSutTests();
     }
-    $this->stopServers();
+    if ($this->runServers) {
+      $this->stopServers();
+    }
+  }
+
+  /**
+   * Sets the run servers flag.
+   *
+   * @param bool $run_servers
+   *   TRUE for to run servers or FALSE not to.
+   */
+  public function setRunServers(bool $run_servers): void {
+    $this->runServers = $run_servers;
   }
 
   /**

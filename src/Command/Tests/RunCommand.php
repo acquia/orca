@@ -70,7 +70,8 @@ class RunCommand extends Command {
       ->setAliases(['test'])
       ->setDescription('Runs automated tests')
       ->addOption('sut', NULL, InputOption::VALUE_REQUIRED, 'The system under test (SUT) in the form of its package name, e.g., "drupal/example"')
-      ->addOption('sut-only', NULL, InputOption::VALUE_NONE, 'Run tests from only the system under test (SUT). Omit tests from all other Acquia packages');
+      ->addOption('sut-only', NULL, InputOption::VALUE_NONE, 'Run tests from only the system under test (SUT). Omit tests from all other Acquia packages')
+      ->addOption('no-servers', NULL, InputOption::VALUE_NONE, "Don't run the ChromeDriver and web servers.");
   }
 
   /**
@@ -79,6 +80,7 @@ class RunCommand extends Command {
   public function execute(InputInterface $input, OutputInterface $output): int {
     $sut = $input->getOption('sut');
     $sut_only = $input->getOption('sut-only');
+    $no_servers = $input->getOption('no-servers');
 
     if (!$this->isValidInput($sut, $sut_only, $output)) {
       return StatusCodes::ERROR;
@@ -94,6 +96,7 @@ class RunCommand extends Command {
 
     $this->setSut($sut);
     $this->setSutOnly($sut_only);
+    $this->setNoServers($no_servers);
 
     try {
       $this->testRunner->run();
@@ -155,6 +158,18 @@ class RunCommand extends Command {
   private function setSutOnly($sut_only): void {
     if ($sut_only) {
       $this->testRunner->setSutOnly(TRUE);
+    }
+  }
+
+  /**
+   * Sets the no-servers flag.
+   *
+   * @param string|string[]|bool|null $no_servers
+   *   The no-servers flag.
+   */
+  private function setNoServers($no_servers): void {
+    if ($no_servers) {
+      $this->testRunner->setRunServers(FALSE);
     }
   }
 
