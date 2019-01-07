@@ -30,6 +30,6 @@ matrix:
     - name: "Integrated test"
       env: ORCA_FIXTURE=standard
 
-install: ./bin/travis/install
+install: "./bin/travis/install master"
 
 script: ./bin/self-test
