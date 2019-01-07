@@ -23,6 +23,6 @@ matrix:
 
 install:
   - "git clone --depth 1 git@github.com:acquia/orca.git ../orca"
-  - ../orca/bin/travis/install
+  - "../orca/bin/travis/install 8.x-1.x"
 
 script: "../orca/bin/travis/script drupal/example"
