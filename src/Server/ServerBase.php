@@ -73,6 +73,15 @@ abstract class ServerBase implements ServerInterface {
   }
 
   /**
+   * {@inheritdoc}
+   */
+  public function wait(): void {
+    if ($this->process) {
+      $this->process->wait();
+    }
+  }
+
+  /**
    * Gets the fixture.
    *
    * @return \Acquia\Orca\Fixture\Fixture

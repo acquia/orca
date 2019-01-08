@@ -8,7 +8,6 @@ use Acquia\Orca\Server\WebServer;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Question\Question;
 
 /**
  * Provides a command.
@@ -71,20 +70,11 @@ class RunServerCommand extends Command {
       return StatusCodes::ERROR;
     }
 
-    $output->writeln([
-      'Web server started.',
-      sprintf('Listening on http://%s.', Fixture::WEB_ADDRESS),
-      sprintf('Document root is %s.', $this->fixture->getPath('docroot')),
-      'Press ENTER to quit.',
-    ]);
+    $output->writeln('Starting web server...');
     $this->webServer->start();
 
-    // Wait for user to press a key to quit.
-    /** @var \Symfony\Component\Console\Helper\QuestionHelper $question */
-    $question = $this->getHelper('question');
-    $question->ask($input, $output, new Question(''));
-
-    $this->webServer->stop();
+    // Wait for SIGINT (Ctrl-C) to kill process.
+    $this->webServer->wait();
 
     return StatusCodes::OK;
   }

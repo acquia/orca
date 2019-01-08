@@ -63,4 +63,13 @@ class ServerStack implements ServerInterface {
     }
   }
 
+  /**
+   * {@inheritdoc}
+   */
+  public function wait(): void {
+    foreach ($this->servers as $server) {
+      $server->wait();
+    }
+  }
+
 }
