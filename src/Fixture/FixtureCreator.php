@@ -340,7 +340,6 @@ class FixtureCreator {
       // Display some info about the SUT install path.
       $this->processRunner->createExecutableProcess([
         'stat',
-        '-x',
         $this->sut->getInstallPathAbsolute(),
       ]),
 
