@@ -326,26 +326,58 @@ class FixtureCreator {
     }
     elseif (!is_link($sut_install_path)) {
       $this->output->error('Failed to symlink SUT via local path repository.');
+      $this->displayFailedSymlinkDebuggingInfo();
+      throw new OrcaException();
+    }
+  }
 
-      // Display debugging information.
-      $process = $this->processRunner->createOrcaVendorBinProcess([
+  /**
+   * Displays debugging info about a failure to symlink the SUT.
+   */
+  private function displayFailedSymlinkDebuggingInfo() {
+    $processes = [
+
+      // Display some info about the SUT install path.
+      $this->processRunner->createExecutableProcess([
+        'stat',
+        '-x',
+        $this->sut->getInstallPathAbsolute(),
+      ]),
+
+      // See if Composer knows why it wasn't symlinked.
+      $this->processRunner->createOrcaVendorBinProcess([
         'composer',
+        "--working-dir={$this->fixture->getPath()}",
         'why-not',
         "{$this->sut->getPackageName()}:@dev",
-      ]);
-      $this->processRunner->run($process, $this->fixture->getPath());
-      $process = $this->processRunner->createExecutableProcess([
+      ]),
+
+      // Display the active Git branch of the path repo.
+      $this->processRunner->createExecutableProcess([
+        'git',
+        '-C',
+        $this->sut->getRepositoryUrl(),
+        'rev-parse',
+        '--abbrev-ref',
+        'HEAD',
+      ]),
+
+      // Display the fixture's composer.json.
+      $this->processRunner->createExecutableProcess([
         'cat',
         $this->fixture->getPath('composer.json'),
-      ]);
-      $this->processRunner->run($process);
-      $process = $this->processRunner->createExecutableProcess([
+      ]),
+
+      // Display the SUT's composer.json.
+      $this->processRunner->createExecutableProcess([
         'cat',
         $this->fixture->getPath("{$this->sut->getRepositoryUrl()}/composer.json"),
-      ]);
-      $this->processRunner->run($process);
+      ]),
 
-      throw new OrcaException();
+    ];
+
+    foreach ($processes as $process) {
+      $this->processRunner->run($process);
     }
   }
 
