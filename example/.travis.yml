@@ -2,9 +2,11 @@
 language: php
 dist: trusty
 
+# Use the lowest version of PHP supported by Acquia.
 php: 7.1
 
 addons:
+  # ChromeDriver is used for PHPUnit tests.
   chrome: stable
 
 cache:
@@ -12,6 +14,8 @@ cache:
     - "$HOME/.composer/cache"
     - "$HOME/.drush/cache"
 
+# Execution time is drastically reduced by splitting the build into multiple
+# concurrent threads.
 matrix:
   include:
     - name: "Static analysis"
@@ -23,6 +27,10 @@ matrix:
 
 install:
   - "git clone --depth 1 git@github.com:acquia/orca.git ../orca"
+  # Install ORCA and prepare the environment.
+  # Supply the topic branch of the SUT to help Composer guess its version.
   - "../orca/bin/travis/install 8.x-1.x"
 
+# Run test script.
+# Supply the package name of the SUT.
 script: "../orca/bin/travis/script drupal/example"
