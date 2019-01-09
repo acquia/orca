@@ -18,7 +18,7 @@ ORCA_ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 composer --no-dev -d${ORCA_ROOT} install
 
 # Handle a branch name argument.
-if [[ ! -z "$1" && $(git -C ${TRAVIS_BUILD_DIR} rev-parse --abbrev-ref HEAD) == "$1" ]]; then
+if [[ ! -z "$1" && $(git -C ${TRAVIS_BUILD_DIR} rev-parse --abbrev-ref HEAD) != "$1" ]]; then
   git -C ${TRAVIS_BUILD_DIR} branch -f "$1"
   git -C ${TRAVIS_BUILD_DIR} checkout "$1"
 fi
