@@ -493,21 +493,32 @@ class FixtureCreator {
    *   The commit message to use.
    */
   private function commitCodeChanges($message): void {
-    $cwd = $this->fixture->getPath();
-    $process = $this->processRunner->createExecutableProcess([
+    $commands = [];
+
+    // Prevent "Please tell me who you are" errors from Git.
+    $commands[] = [
+      'git',
+      'config',
+      'user.email',
+      'no-reply@acquia.com',
+    ];
+
+    $commands[] = [
       'git',
       'add',
       '--all',
-    ]);
-    $this->processRunner->run($process, $cwd);
-    $process = $this->processRunner->createExecutableProcess([
+    ];
+    $commands[] = [
       'git',
       'commit',
       sprintf('--message="%s"', $message),
-      '--author="ORCA <no-reply@acquia.com>"',
       '--allow-empty',
-    ]);
-    $this->processRunner->run($process, $cwd);
+    ];
+    foreach ($commands as $command) {
+      $this->processRunner
+        ->run($this->processRunner
+          ->createExecutableProcess($command), $this->fixture->getPath());
+    }
   }
 
   /**
