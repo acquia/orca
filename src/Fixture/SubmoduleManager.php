@@ -163,7 +163,7 @@ class SubmoduleManager {
       ->files()
       ->followLinks()
       ->in($paths)
-      ->notPath('vendor')
+      ->notPath(['docroot', 'vendor'])
       ->name('composer.json')
       ->filter(function (\SplFileInfo $file) {
         return $this->isSubmoduleComposerJson($file);

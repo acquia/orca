@@ -251,20 +251,12 @@ class FixtureCreator {
    *   If the SUT isn't properly installed.
    */
   private function addTopLevelAcquiaPackages(): void {
-    $this->configureComposerForTopLevelAcquiaPackages();
+    if ($this->sut) {
+      $this->addSutRepository();
+    }
     $this->composerRequireTopLevelAcquiaPackages();
     if ($this->sut) {
       $this->verifySut();
-    }
-  }
-
-  /**
-   * Configures Composer to find and place Acquia packages.
-   */
-  private function configureComposerForTopLevelAcquiaPackages(): void {
-    $this->loadComposerJson();
-    if ($this->sut) {
-      $this->addSutRepository();
     }
   }
 
@@ -276,6 +268,8 @@ class FixtureCreator {
    * to take effect.
    */
   private function addSutRepository(): void {
+    $this->loadComposerJson();
+
     // Remove original repositories.
     $this->jsonConfigSource->removeProperty('repositories');
 
@@ -436,7 +430,7 @@ class FixtureCreator {
     $this->jsonConfigSource->removeProperty('repositories');
 
     // Add new repositories.
-    foreach ($this->submoduleManager->getAll() as $package) {
+    foreach ($this->submoduleManager->getByParent($this->sut) as $package) {
       $this->jsonConfigSource->addRepository($package->getPackageName(), [
         'type' => 'path',
         'url' => $package->getRepositoryUrl(),
