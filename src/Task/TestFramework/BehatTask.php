@@ -48,7 +48,7 @@ class BehatTask extends TaskBase implements TestFrameworkInterface {
    * @return \Symfony\Component\Finder\Finder
    */
   private function getBehatConfigFiles() {
-    return $this->finder
+    return (clone $this->finder)
       ->files()
       ->followLinks()
       ->in($this->getPath())
