@@ -39,3 +39,8 @@ Static analysis requires no special setup of the SUT.
 ## Automated tests
 
 ORCA tests for functional and behavioral correctness with [PHPUnit](glossary.md#phpunit) and [Behat](glossary.md#behat).
+
+* An **integrated test** tests the SUT in the _presence_ of all other Acquia packages (i.e., in a standard fixture) to ensure that all packages can be added to the same codebase via Composer (preventing dependency conflicts), that there are no install time or functional conflicts between them, and prevents regressions.
+* An **isolated test** tests the SUT in the _absence_ of other non-required packages (i.e., in a SUT-only fixture) to ensure that it has no undeclared dependencies on other packages and functions correctly on its own.
+
+See [Designing automated tests](getting-started.md#designing-automated-tests).
