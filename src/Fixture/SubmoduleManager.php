@@ -125,6 +125,7 @@ class SubmoduleManager {
         'install_path' => $install_path,
         'url' => $file->getPath(),
         'version' => '@dev',
+        'version_dev' => '@dev',
       ];
       $submodules[$config->get('name')] = new Package($this->fixture, $package_data);
     }

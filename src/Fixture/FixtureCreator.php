@@ -24,11 +24,25 @@ class FixtureCreator {
   private $acquiaModuleInstaller;
 
   /**
+   * The current Drupal Core dev version string.
+   *
+   * @var string
+   */
+  private $drupalCoreDevVersion;
+
+  /**
    * The fixture.
    *
    * @var \Acquia\Orca\Fixture\Fixture
    */
   private $fixture;
+
+  /**
+   * The dev flag.
+   *
+   * @var bool
+   */
+  private $isDev = FALSE;
 
   /**
    * The Composer API for the fixture's composer.json.
@@ -77,6 +91,8 @@ class FixtureCreator {
    *
    * @param \Acquia\Orca\Fixture\AcquiaModuleInstaller $acquia_module_installer
    *   The Acquia module installer.
+   * @param string $drupal_core_dev_version
+   *   The current Drupal Core dev version string.
    * @param \Acquia\Orca\Fixture\Fixture $fixture
    *   The fixture.
    * @param \Symfony\Component\Console\Style\SymfonyStyle $output
@@ -88,8 +104,9 @@ class FixtureCreator {
    * @param \Acquia\Orca\Fixture\SubmoduleManager $submodule_manager
    *   The submodule manager.
    */
-  public function __construct(AcquiaModuleInstaller $acquia_module_installer, Fixture $fixture, SymfonyStyle $output, ProcessRunner $process_runner, PackageManager $package_manager, SubmoduleManager $submodule_manager) {
+  public function __construct(AcquiaModuleInstaller $acquia_module_installer, string $drupal_core_dev_version, Fixture $fixture, SymfonyStyle $output, ProcessRunner $process_runner, PackageManager $package_manager, SubmoduleManager $submodule_manager) {
     $this->acquiaModuleInstaller = $acquia_module_installer;
+    $this->drupalCoreDevVersion = $drupal_core_dev_version;
     $this->fixture = $fixture;
     $this->output = $output;
     $this->processRunner = $process_runner;
@@ -109,11 +126,22 @@ class FixtureCreator {
     $this->ensurePreconditions();
     $this->createBltProject();
     $this->removeUnneededPackages();
+    $this->addSpecialDevDependencies();
     $this->addAcquiaPackages();
     $this->installDrupal();
     $this->installAcquiaModules();
     $this->createBackupBranch();
     $this->output->success('Fixture created');
+  }
+
+  /**
+   * Sets the dev flag.
+   *
+   * @param bool $is_dev
+   *   TRUE for dev or FALSE for not.
+   */
+  public function setDev(bool $is_dev): void {
+    $this->isDev = $is_dev;
   }
 
   /**
@@ -136,7 +164,7 @@ class FixtureCreator {
 
       $composer_json = new JsonFile("{$sut_repo}/composer.json");
       if (!$composer_json->exists()) {
-        $this->output->error(sprintf('SUT is missing root composer.json', $sut_repo));
+        $this->output->error(sprintf('SUT is missing root composer.json'));
         throw new OrcaException();
       }
       $this->output->comment('SUT contains root composer.json');
@@ -162,9 +190,10 @@ class FixtureCreator {
       'composer',
       'create-project',
       '--stability=dev',
-      '--no-interaction',
-      '--no-install',
+      '--no-dev',
       '--no-scripts',
+      '--no-install',
+      '--no-interaction',
       'acquia/blt-project',
       $this->fixture->getPath(),
     ]);
@@ -207,19 +236,41 @@ class FixtureCreator {
     ]);
     $this->processRunner->run($process, $this->fixture->getPath());
 
-    // Remove BLT's dev requirements package, which conflicts with the Drupal
-    // core dev version.
+    if ($this->isDev) {
+      // Remove BLT's dev requirements package, which conflicts with the Drupal
+      // Core dev version.
+      $process = $this->processRunner->createOrcaVendorBinProcess([
+        'composer',
+        'remove',
+        '--dev',
+        '--no-update',
+        'acquia/blt-require-dev',
+      ]);
+      $this->processRunner->run($process, $this->fixture->getPath());
+    }
+  }
+
+  /**
+   * Adds special dependencies needed for a dev versions fixture.
+   */
+  private function addSpecialDevDependencies(): void {
+    if (!$this->isDev) {
+      return;
+    }
+
+    $this->output->section('Adding special dev dependencies');
+
+    // Require the dev version of Drupal Core.
     $process = $this->processRunner->createOrcaVendorBinProcess([
       'composer',
-      'remove',
-      '--dev',
+      'require',
       '--no-update',
-      'acquia/blt-require-dev',
+      "drupal/core:{$this->drupalCoreDevVersion}",
     ]);
+    $this->processRunner->run($process, $this->fixture->getPath());
 
     // Replace webflo/drupal-core-require-dev, which would otherwise be provided
     // by BLT's dev requirements package.
-    $this->processRunner->run($process, $this->fixture->getPath());
     $process = $this->processRunner->createOrcaVendorBinProcess([
       'composer',
       'require',
@@ -251,13 +302,9 @@ class FixtureCreator {
    *   If the SUT isn't properly installed.
    */
   private function addTopLevelAcquiaPackages(): void {
-    if ($this->sut) {
-      $this->addSutRepository();
-    }
+    $this->addSutRepository();
     $this->composerRequireTopLevelAcquiaPackages();
-    if ($this->sut) {
-      $this->verifySut();
-    }
+    $this->verifySut();
   }
 
   /**
@@ -268,6 +315,10 @@ class FixtureCreator {
    * to take effect.
    */
   private function addSutRepository(): void {
+    if (!$this->sut) {
+      return;
+    }
+
     $this->loadComposerJson();
 
     // Remove original repositories.
@@ -313,6 +364,10 @@ class FixtureCreator {
    * @throws \Acquia\Orca\Exception\OrcaException
    */
   private function verifySut(): void {
+    if (!$this->sut) {
+      return;
+    }
+
     $sut_install_path = $this->sut->getInstallPathAbsolute();
     if (!file_exists($sut_install_path)) {
       $this->output->error('Failed to place SUT at correct path.');
@@ -342,7 +397,7 @@ class FixtureCreator {
         'composer',
         "--working-dir={$this->fixture->getPath()}",
         'why-not',
-        "{$this->sut->getPackageName()}:@dev",
+        $this->sut->getPackageStringDev(),
       ]),
 
       // See why Composer installed what it did.
@@ -386,20 +441,21 @@ class FixtureCreator {
    * @return string[]
    */
   private function getAcquiaPackageDependencies(): array {
-    $dependencies = $this->packageManager->getMultiple(NULL, 'getPackageString');
+    $dependencies = $this->packageManager->getMultiple();
+    foreach ($dependencies as &$dependency) {
+      $dependency = ($this->isDev) ? $dependency->getPackageStringDev() : $dependency->getPackageStringRecommended();
+    }
 
     if (!$this->sut) {
       return array_values($dependencies);
     }
 
-    $sut_package_string = "{$this->sut->getPackageName()}:@dev";
-
     if ($this->isSutOnly) {
-      return [$sut_package_string];
+      return [$this->sut->getPackageStringDev()];
     }
 
     // Replace the version constraint on the SUT to allow for symlinking.
-    $dependencies[$this->sut->getPackageName()] = $sut_package_string;
+    $dependencies[$this->sut->getPackageName()] = $this->sut->getPackageStringDev();
 
     return array_values($dependencies);
   }
@@ -518,6 +574,7 @@ class FixtureCreator {
       'git',
       'commit',
       sprintf('--message="%s"', $message),
+      '--quiet',
       '--allow-empty',
     ];
     foreach ($commands as $command) {

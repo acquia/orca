@@ -83,11 +83,14 @@ class InitCommand extends Command {
       ->setHelp('Creates a BLT-based Drupal site build, includes the system under test using Composer, optionally includes all other Acquia packages, and installs Drupal.')
       ->addOption('sut', NULL, InputOption::VALUE_REQUIRED, 'The system under test (SUT) in the form of its package name, e.g., "drupal/example"')
       ->addOption('sut-only', NULL, InputOption::VALUE_NONE, 'Add only the system under test (SUT). Omit all other non-required Acquia packages')
+      ->addOption('dev', NULL, InputOption::VALUE_NONE, 'Use dev (HEAD) branches instead of stable releases of Drupal Core and Acquia packages')
       ->addOption('force', 'f', InputOption::VALUE_NONE, 'If the fixture already exists, remove it first without confirmation');
   }
 
   /**
    * {@inheritdoc}
+   *
+   * @throws \Exception
    */
   public function execute(InputInterface $input, OutputInterface $output): int {
     $sut = $input->getOption('sut');
@@ -111,6 +114,7 @@ class InitCommand extends Command {
 
     $this->setSut($sut);
     $this->setSutOnly($sut_only);
+    $this->setDev($input->getOption('dev'));
 
     try {
       $this->fixtureCreator->create();
@@ -172,6 +176,18 @@ class InitCommand extends Command {
   private function setSutOnly($sut_only): void {
     if ($sut_only) {
       $this->fixtureCreator->setSutOnly(TRUE);
+    }
+  }
+
+  /**
+   * Sets the dev flag.
+   *
+   * @param string|string[]|bool|null $dev
+   *   The dev flag.
+   */
+  private function setDev($dev): void {
+    if ($dev) {
+      $this->fixtureCreator->setDev($dev);
     }
   }
 

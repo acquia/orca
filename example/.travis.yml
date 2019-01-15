@@ -15,15 +15,22 @@ cache:
     - "$HOME/.drush/cache"
 
 # Execution time is drastically reduced by splitting the build into multiple
-# concurrent threads.
+# concurrent jobs.
 matrix:
   include:
-    - name: "Static analysis"
+    - name: "Static code analysis"
       env: ORCA_FIXTURE=none
-    - name: "Isolated test"
-      env: ORCA_FIXTURE=sut-only
-    - name: "Integrated test"
-      env: ORCA_FIXTURE=standard
+    - name: "Isolated test w/ recommended package versions"
+      env: ORCA_FIXTURE=sut-only ORCA_PACKAGE_STABILITY=stable
+    - name: "Integrated test w/ recommended package versions"
+      env: ORCA_FIXTURE=standard ORCA_PACKAGE_STABILITY=stable
+    - name: "Isolated test w/ dev package versions"
+      env: ORCA_FIXTURE=sut-only ORCA_PACKAGE_STABILITY=dev
+    - name: "Integrated test w/ dev package versions"
+      env: ORCA_FIXTURE=standard ORCA_PACKAGE_STABILITY=dev
+  allow_failures:
+    - env: ORCA_FIXTURE=sut-only ORCA_PACKAGE_STABILITY=dev
+    - env: ORCA_FIXTURE=standard ORCA_PACKAGE_STABILITY=dev
 
 install:
   - "git clone --depth 1 git@github.com:acquia/orca.git ../orca"

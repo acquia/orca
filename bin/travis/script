@@ -16,18 +16,42 @@ set -e
 
 ORCA_ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 ORCA_FIXTURE=${ORCA_FIXTURE:=any}
+ORCA_PACKAGE_STABILITY=${ORCA_PACKAGE_STABILITY:=any}
 
-## Perform static code analysis.
-[[ ${ORCA_FIXTURE} == @(any|none) ]] && run ${ORCA_ROOT}/bin/orca static-analysis:run ./
+[[ ${ORCA_FIXTURE} == @(any|none) ]] && STATIC_ANALYSIS=true
+[[ ${ORCA_FIXTURE} == @(any|sut-only) ]] && ISOLATED_TEST=true
+[[ ${ORCA_FIXTURE} == @(any|standard) ]] && INTEGRATED_TEST=true
+[[ ${ORCA_PACKAGE_STABILITY} == @(any|stable) ]] && STABLE_PACKAGES=true
+[[ ${ORCA_PACKAGE_STABILITY} == @(any|dev) ]] && DEV_PACKAGES=true
 
-# Run isolated tests (in the absence of other Acquia packages).
-if [[ ${ORCA_FIXTURE} == @(any|sut-only) ]]; then
+# Static code analysis.
+# ------------------------------------------------------------------------------
+[[ ! -z "$STATIC_ANALYSIS" ]] && run ${ORCA_ROOT}/bin/orca static-analysis:run ./
+
+# Isolated test w/ stable packages.
+# ------------------------------------------------------------------------------
+if [[ "$ISOLATED_TEST" && "$STABLE_PACKAGES" ]]; then
   run ${ORCA_ROOT}/bin/orca fixture:init -f --sut=$1 --sut-only
   run ${ORCA_ROOT}/bin/orca tests:run --sut=$1 --sut-only
 fi
 
-# Run integrated tests (in the presence of other Acquia packages).
-if [[ ${ORCA_FIXTURE} == @(any|standard) ]]; then
+# Integrated test w/ stable packages.
+# ------------------------------------------------------------------------------
+if [[ "$INTEGRATED_TEST" && "$STABLE_PACKAGES" ]]; then
   run ${ORCA_ROOT}/bin/orca fixture:init -f --sut=$1
   #run ${ORCA_ROOT}/bin/orca tests:run --sut=$1
+fi
+
+# Isolated test w/ dev packages.
+# ------------------------------------------------------------------------------
+if [[ "$ISOLATED_TEST" && "$DEV_PACKAGES" ]]; then
+  run ${ORCA_ROOT}/bin/orca fixture:init -f --sut=$1 --sut-only --dev
+  run ${ORCA_ROOT}/bin/orca tests:run --sut=$1 --sut-only
+fi
+
+# Integrated test w/ dev packages.
+# ------------------------------------------------------------------------------
+if [[ "$INTEGRATED_TEST" && "$DEV_PACKAGES" ]]; then
+  run ${ORCA_ROOT}/bin/orca fixture:init -f --sut=$1 --dev
+  run ${ORCA_ROOT}/bin/orca tests:run --sut=$1
 fi

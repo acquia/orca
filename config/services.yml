@@ -1,7 +1,7 @@
 ---
 parameters:
-  env(ORCA_PACKAGES_CONFIG): "config/packages.yml"
   env(ORCA_FIXTURE_DIR): "%app.fixture_dir%"
+  env(ORCA_PACKAGES_CONFIG): "config/packages.yml"
 
 services:
 
@@ -9,6 +9,7 @@ services:
     autoconfigure: true
     autowire: true
     bind:
+      $drupal_core_dev_version: "8.6.x-dev"
       $fixture_dir: "%env(ORCA_FIXTURE_DIR)%"
       $project_dir: "%kernel.project_dir%"
       $packages_config: "%env(ORCA_PACKAGES_CONFIG)%"

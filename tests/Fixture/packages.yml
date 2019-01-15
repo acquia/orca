@@ -1,3 +1,4 @@
 ---
 -
   name: drupal/example
+  version_dev: "*"

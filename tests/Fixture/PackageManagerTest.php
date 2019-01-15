@@ -17,12 +17,12 @@ use Symfony\Component\Yaml\Parser;
 class PackageManagerTest extends TestCase {
 
   private const PACKAGES_DATA = [
-    ['name' => 'drupal/module1'],
-    ['name' => 'drupal/module2', 'version' => '~1.0'],
-    ['name' => 'drupal/drush1', 'type' => 'drupal-drush'],
-    ['name' => 'drupal/drush2', 'type' => 'drupal-drush'],
-    ['name' => 'drupal/theme1', 'type' => 'drupal-theme'],
-    ['name' => 'drupal/theme2', 'type' => 'drupal-theme'],
+    ['name' => 'drupal/module1', 'version_dev' => '1.x-dev'],
+    ['name' => 'drupal/module2', 'version' => '~1.0', 'version_dev' => '1.x-dev'],
+    ['name' => 'drupal/drush1', 'type' => 'drupal-drush', 'version_dev' => '1.x-dev'],
+    ['name' => 'drupal/drush2', 'type' => 'drupal-drush', 'version_dev' => '1.x-dev'],
+    ['name' => 'drupal/theme1', 'type' => 'drupal-theme', 'version_dev' => '1.x-dev'],
+    ['name' => 'drupal/theme2', 'type' => 'drupal-theme', 'version_dev' => '1.x-dev'],
   ];
 
   private const ALL_PACKAGES = [
@@ -74,7 +74,7 @@ class PackageManagerTest extends TestCase {
   public function testPackageManager() {
     $manager = $this->createPackageManager();
     $all_packages = $manager->getMultiple();
-    $all_package_versions = $manager->getMultiple(NULL, 'getVersion');
+    $all_package_versions = $manager->getMultiple(NULL, 'getVersionRecommended');
     $modules = $manager->getMultiple('drupal-module');
     $module_repository_urls = $manager->getMultiple('drupal-module', 'getRepositoryUrl');
     $themes = $manager->getMultiple('drupal-theme');

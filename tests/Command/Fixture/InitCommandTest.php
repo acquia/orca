@@ -54,6 +54,9 @@ class InitCommandTest extends CommandTestBase {
       ->setSutOnly(TRUE)
       ->shouldBeCalledTimes((int) in_array('setSutOnly', $methods_called));
     $this->fixtureCreator
+      ->setDev(TRUE)
+      ->shouldBeCalledTimes((int) in_array('setDev', $methods_called));
+    $this->fixtureCreator
       ->create()
       ->shouldBeCalledTimes((int) in_array('create', $methods_called));
     if ($exception) {
@@ -77,6 +80,7 @@ class InitCommandTest extends CommandTestBase {
       [FALSE, ['--sut' => self::INVALID_PACKAGE], ['PackageManager::exists'], 0, StatusCodes::ERROR, sprintf("Error: Invalid value for \"--sut\" option: \"%s\".\n", self::INVALID_PACKAGE)],
       [FALSE, ['--sut' => self::VALID_PACKAGE], ['PackageManager::exists', 'Fixture::exists', 'create', 'setSut'], 0, StatusCodes::OK, ''],
       [FALSE, ['--sut' => self::VALID_PACKAGE, '--sut-only' => TRUE], ['PackageManager::exists', 'Fixture::exists', 'create', 'setSut', 'setSutOnly'], 0, StatusCodes::OK, ''],
+      [FALSE, ['--dev' => TRUE], ['Fixture::exists', 'setDev', 'create'], 0, StatusCodes::OK, ''],
       [FALSE, [], ['Fixture::exists', 'create'], 1, StatusCodes::ERROR, ''],
       [FALSE, ['--sut-only' => TRUE], [], 0, StatusCodes::ERROR, "Error: Cannot create a SUT-only fixture without a SUT.\nHint: Use the \"--sut\" option to specify the SUT.\n"],
     ];

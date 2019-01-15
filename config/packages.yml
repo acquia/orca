@@ -14,8 +14,9 @@
 #   Composer path repository used to symlink the system under test (SUT) into
 #   place. Defaults to a directory adjacent to the fixture root named the
 #   Composer project name, e.g., "../example" for a "drupal/example" project.
-# - "version": (optional) The package version to require via Composer. Defaults
-#   to "*".
+# - "version": (optional) The recommended package version to require via
+#   Composer. Defaults to "*".
+# - "version_dev": (required) The dev package version to require via Composer.
 #
 # These are converted to \Acquia\Orca\Fixture\Package objects by
 # \Acquia\Orca\Fixture\PackageManager. A different specification can be
@@ -27,42 +28,57 @@
   type: drupal-drush
   # acsf-tools specifies an installer-name.
   install_path: drush/Commands/acsf_tools
+  version_dev: dev-master
 -
   name: acquia/drupal-spec-tool
   type: behat-extension
+  version_dev: 2.x-dev
 #-
 #  name: drupal/acquia_commercemanager
 #  url: ../commerce-manager
+#  version_dev: 1.x-dev
 #-
 #  name: drupal/acquia_connector
 #  url: ../acquia-connector
+#  version_dev: 1.x-dev
 #-
 #  name: drupal/acquia_contenthub
 #  url: ../content-hub-d8
 #  version: ~1.0
+#  version_dev: 2.x-dev
 #-
 #  name: drupal/acquia_lift
+#  version_dev: 3.x-dev
 -
   name: drupal/acquia_purge
+  version_dev: 1.x-dev
 #-
 #  name: drupal/acsf
+#  version_dev: 2.x-dev
 -
   name: drupal/cog
   type: drupal-theme
+  version_dev: 1.x-dev
 -
   name: drupal/lightning_api
   url: ../lightning-api
+  version_dev: 3.x-dev
 -
   name: drupal/lightning_core
   url: ../lightning-core
+  version_dev: 3.x-dev
 -
   name: drupal/lightning_layout
   url: ../lightning-layout
+  version_dev: 1.x-dev
 -
   name: drupal/lightning_media
   url: ../lightning-media
+  version_dev: 3.x-dev
 -
   name: drupal/lightning_workflow
   url: ../lightning-workflow
+  version_dev: 3.x-dev
 #-
 #  name: drupal/media_acquiadam
+#  version_dev: 1.x-dev

@@ -65,13 +65,22 @@ class Package {
   private $type = 'drupal-module';
 
   /**
-   * The version constraint.
+   * The dev version constraint.
+   *
+   * E.g., "1.x-dev".
+   *
+   * @var string
+   */
+  private $versionDev;
+
+  /**
+   * The recommended version constraint.
    *
    * E.g., "*" or "~1.0".
    *
    * @var string
    */
-  private $version = '*';
+  private $versionRecommended = '*';
 
   /**
    * Constructs an instance.
@@ -94,8 +103,10 @@ class Package {
    *     into place. Defaults to a directory adjacent to the fixture root named
    *     the Composer project name, e.g., "../example" for a "drupal/example"
    *     project.
-   *   - "version": (optional) The package version to require via Composer.
-   *     Defaults to "*".
+   *   - "version": (optional) The recommended package version to require via
+   *     Composer. Defaults to "*".
+   *   - "version_dev": (required) The dev package version to require via
+   *     Composer.
    */
   public function __construct(Fixture $fixture, array $data) {
     $this->fixture = $fixture;
@@ -106,6 +117,7 @@ class Package {
     $this->initializeInstallPath();
     $this->initializeType();
     $this->initializeVersion();
+    $this->initializeVersionDev();
   }
 
   /**
@@ -121,6 +133,8 @@ class Package {
    * Gets the path the package installs at relative to the fixture root.
    *
    * @return string
+   *
+   * @SuppressWarnings(PHPMD.CyclomaticComplexity)
    */
   public function getInstallPathRelative(): string {
     if (!empty($this->installPath)) {
@@ -128,6 +142,9 @@ class Package {
     }
 
     switch ($this->getType()) {
+      case 'drupal-core':
+        return 'docroot/core';
+
       case 'drupal-drush':
         return "drush/Commands/{$this->getProjectName()}";
 
@@ -233,15 +250,27 @@ class Package {
   }
 
   /**
-   * Gets the package string.
+   * Gets the dev version package string.
+   *
+   * Gets the package string as passed to `composer require`, e.g.,
+   * "drupal/example:1.x-dev".
+   *
+   * @return string
+   */
+  public function getPackageStringDev(): string {
+    return "{$this->getPackageName()}:{$this->getVersionDev()}";
+  }
+
+  /**
+   * Gets the recommended version package string.
    *
    * Gets the package string as passed to `composer require`, e.g.,
    * "drupal/example:~1.0".
    *
    * @return string
    */
-  public function getPackageString(): string {
-    return "{$this->getPackageName()}:{$this->getVersion()}";
+  public function getPackageStringRecommended(): string {
+    return "{$this->getPackageName()}:{$this->getVersionRecommended()}";
   }
 
   /**
@@ -269,26 +298,50 @@ class Package {
   }
 
   /**
-   * Gets the version constraint.
+   * Gets the dev version constraint.
    *
    * E.g., "*" or "~1.0".
    *
    * @return string
    */
-  public function getVersion(): string {
-    return $this->version;
+  public function getVersionDev(): string {
+    return $this->versionDev;
   }
 
   /**
-   * Sets the version constraint.
+   * Sets the dev version constraint.
    *
    * @param string $version
    *   The version constraint, e.g., "*" or "~1.0".
    *
    * @return self
    */
-  public function setVersion(string $version): Package {
-    $this->version = $version;
+  public function setVersionDev(string $version): Package {
+    $this->versionDev = $version;
+    return $this;
+  }
+
+  /**
+   * Gets the recommended version constraint.
+   *
+   * E.g., "*" or "~1.0".
+   *
+   * @return string
+   */
+  public function getVersionRecommended(): string {
+    return $this->versionRecommended;
+  }
+
+  /**
+   * Sets the recommended version constraint.
+   *
+   * @param string $versionRecommended
+   *   The version constraint, e.g., "*" or "~1.0".
+   *
+   * @return self
+   */
+  public function setVersionRecommended(string $versionRecommended): Package {
+    $this->versionRecommended = $versionRecommended;
     return $this;
   }
 
@@ -352,8 +405,19 @@ class Package {
    */
   private function initializeVersion(): void {
     if (!empty($this->data['version'])) {
-      $this->setVersion($this->data['version']);
+      $this->setVersionRecommended($this->data['version']);
     }
+  }
+
+  /**
+   * Initializes the version.
+   */
+  private function initializeVersionDev(): void {
+    if (!array_key_exists('version_dev', $this->data)) {
+      throw new \InvalidArgumentException('Missing required property: "version_dev"');
+    }
+
+    $this->setVersionDev($this->data['version_dev']);
   }
 
 }
