@@ -8,8 +8,6 @@ use Acquia\Orca\Utility\SutSettingsTrait;
 use Composer\Config\JsonConfigSource;
 use Composer\Json\JsonFile;
 use Symfony\Component\Console\Style\SymfonyStyle;
-use Symfony\Component\Filesystem\Filesystem;
-use Symfony\Component\Finder\Finder;
 
 /**
  * Creates a fixture.
@@ -24,20 +22,6 @@ class FixtureCreator {
    * @var \Acquia\Orca\Fixture\AcquiaModuleInstaller
    */
   private $acquiaModuleInstaller;
-
-  /**
-   * The filesystem.
-   *
-   * @var \Symfony\Component\Filesystem\Filesystem
-   */
-  private $filesystem;
-
-  /**
-   * The finder.
-   *
-   * @var \Symfony\Component\Finder\Finder
-   */
-  private $finder;
 
   /**
    * The fixture.
@@ -93,10 +77,6 @@ class FixtureCreator {
    *
    * @param \Acquia\Orca\Fixture\AcquiaModuleInstaller $acquia_module_installer
    *   The Acquia module installer.
-   * @param \Symfony\Component\Filesystem\Filesystem $filesystem
-   *   The filesystem.
-   * @param \Symfony\Component\Finder\Finder $finder
-   *   The finder.
    * @param \Acquia\Orca\Fixture\Fixture $fixture
    *   The fixture.
    * @param \Symfony\Component\Console\Style\SymfonyStyle $output
@@ -108,10 +88,8 @@ class FixtureCreator {
    * @param \Acquia\Orca\Fixture\SubmoduleManager $submodule_manager
    *   The submodule manager.
    */
-  public function __construct(AcquiaModuleInstaller $acquia_module_installer, Filesystem $filesystem, Finder $finder, Fixture $fixture, SymfonyStyle $output, ProcessRunner $process_runner, PackageManager $package_manager, SubmoduleManager $submodule_manager) {
+  public function __construct(AcquiaModuleInstaller $acquia_module_installer, Fixture $fixture, SymfonyStyle $output, ProcessRunner $process_runner, PackageManager $package_manager, SubmoduleManager $submodule_manager) {
     $this->acquiaModuleInstaller = $acquia_module_installer;
-    $this->filesystem = $filesystem;
-    $this->finder = $finder;
     $this->fixture = $fixture;
     $this->output = $output;
     $this->processRunner = $process_runner;
