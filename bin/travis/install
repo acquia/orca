@@ -1,5 +1,12 @@
 #!/usr/bin/env bash
 
+# Prevent script from being run locally, which can lead to a broken environment
+# or lost work.
+if [[ -z "$TRAVIS" ]]; then
+  echo "Error: This script is meant to run on Travis CI only."
+  exit 1
+fi
+
 # Disable Xdebug.
 phpenv config-rm xdebug.ini
 
