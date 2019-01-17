@@ -323,14 +323,20 @@ class FixtureCreator {
         "{$this->sut->getPackageName()}:@dev",
       ]),
 
-      // Display the active Git branch of the path repo.
+      // See why Composer installed what it did.
+      $this->processRunner->createOrcaVendorBinProcess([
+        'composer',
+        "--working-dir={$this->fixture->getPath()}",
+        'why',
+        $this->sut->getPackageName(),
+      ]),
+
+      // Display the Git branches in the path repo.
       $this->processRunner->createExecutableProcess([
         'git',
         '-C',
         $this->sut->getRepositoryUrl(),
-        'rev-parse',
-        '--abbrev-ref',
-        'HEAD',
+        'branch',
       ]),
 
       // Display the fixture's composer.json.
