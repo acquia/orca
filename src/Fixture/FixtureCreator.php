@@ -206,6 +206,28 @@ class FixtureCreator {
       'drupal/acquia_purge',
     ]);
     $this->processRunner->run($process, $this->fixture->getPath());
+
+    // Remove BLT's dev requirements package, which conflicts with the Drupal
+    // core dev version.
+    $process = $this->processRunner->createOrcaVendorBinProcess([
+      'composer',
+      'remove',
+      '--dev',
+      '--no-update',
+      'acquia/blt-require-dev',
+    ]);
+
+    // Replace webflo/drupal-core-require-dev, which would otherwise be provided
+    // by BLT's dev requirements package.
+    $this->processRunner->run($process, $this->fixture->getPath());
+    $process = $this->processRunner->createOrcaVendorBinProcess([
+      'composer',
+      'require',
+      '--dev',
+      '--no-update',
+      'webflo/drupal-core-require-dev',
+    ]);
+    $this->processRunner->run($process, $this->fixture->getPath());
   }
 
   /**
