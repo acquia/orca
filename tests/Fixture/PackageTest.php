@@ -5,6 +5,9 @@ namespace Acquia\Orca\Tests\Fixture;
 use Acquia\Orca\Fixture\Fixture;
 use Acquia\Orca\Fixture\Package;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\OptionsResolver\Exception\InvalidOptionsException;
+use Symfony\Component\OptionsResolver\Exception\MissingOptionsException;
+use Symfony\Component\OptionsResolver\Exception\UndefinedOptionsException;
 
 /**
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Fixture\Fixture $fixture
@@ -76,21 +79,19 @@ class PackageTest extends TestCase {
   /**
    * @dataProvider providerConstructionError
    */
-  public function testConstructionError($data, $message) {
-    $this->expectException(\InvalidArgumentException::class);
-    $this->expectExceptionMessage($message);
+  public function testConstructionError($exception, $data) {
+    $this->expectException($exception);
 
     $this->createPackage($data);
   }
 
   public function providerConstructionError() {
     return [
-      [['version_dev' => '1.x'], 'Missing required property: "name"'],
-      [['name' => 'drupal/example'], 'Missing required property: "version_dev"'],
-      [['name' => NULL, 'version_dev' => '1.x'], 'Invalid value for "name" property: NULL'],
-      [['name' => '', 'version_dev' => '1.x'], 'Invalid value for "name" property: \'\''],
-      [['name' => [], 'version_dev' => '1.x'], "Invalid value for \"name\" property: array (\n)"],
-      [['name' => 'incomplete', 'version_dev' => '1.x'], 'Invalid value for "name" property: \'incomplete\''],
+      'Missing "name" property' => [MissingOptionsException::class, ['version_dev' => '1.x']],
+      'Missing "version_dev" property' => [MissingOptionsException::class, ['name' => 'drupal/example']],
+      'Invalid "name" value: wrong type' => [InvalidOptionsException::class, ['name' => NULL, 'version_dev' => '1.x']],
+      'Invalid "name" value: missing forward slash' => [InvalidOptionsException::class, ['name' => 'incomplete', 'version_dev' => '1.x']],
+      'Unexpected property' => [UndefinedOptionsException::class, ['unexpected' => '', 'name' => 'drupal/example', 'version_dev' => '1.x'], 'Unexpected property: "unexpected"'],
     ];
   }
 

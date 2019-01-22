@@ -2,13 +2,15 @@
 
 namespace Acquia\Orca\Fixture;
 
+use Symfony\Component\OptionsResolver\OptionsResolver;
+
 /**
  * Provides access to a package's details.
  */
 class Package {
 
   /**
-   * The raw package data supplied to the constructor.
+   * The package data.
    *
    * @var array
    */
@@ -20,67 +22,6 @@ class Package {
    * @var \Acquia\Orca\Fixture\Fixture
    */
   private $fixture;
-
-  /**
-   * The path the package installs at relative to the fixture root.
-   *
-   * @var string
-   */
-  private $installPath;
-
-  /**
-   * The package name.
-   *
-   * E.g., "drupal/example".
-   *
-   * @var string
-   */
-  private $packageName;
-
-  /**
-   * The project name.
-   *
-   * E.g., "example".
-   *
-   * @var string
-   */
-  private $projectName;
-
-  /**
-   * The URL for the Composer path repository.
-   *
-   * E.g., "../example" or "/var/www/example/modules/submodule".
-   *
-   * @var string
-   */
-  private $repositoryUrl;
-
-  /**
-   * The type.
-   *
-   * E.g., "drupal-module".
-   *
-   * @var string
-   */
-  private $type = 'drupal-module';
-
-  /**
-   * The dev version constraint.
-   *
-   * E.g., "1.x-dev".
-   *
-   * @var string
-   */
-  private $versionDev;
-
-  /**
-   * The recommended version constraint.
-   *
-   * E.g., "*" or "~1.0".
-   *
-   * @var string
-   */
-  private $versionRecommended = '*';
 
   /**
    * Constructs an instance.
@@ -105,19 +46,49 @@ class Package {
    *     project.
    *   - "version": (optional) The recommended package version to require via
    *     Composer. Defaults to "*".
-   *   - "version_dev": (required) The dev package version to require via
-   *     Composer.
+   *   - "version": (required) The dev package version to require via Composer.
    */
   public function __construct(Fixture $fixture, array $data) {
     $this->fixture = $fixture;
-    $this->data = $data;
-    $this->initializePackageName();
-    $this->initializeProjectName();
-    $this->initializeRepositoryUrl();
-    $this->initializeInstallPath();
-    $this->initializeType();
-    $this->initializeVersion();
-    $this->initializeVersionDev();
+    $this->data = $this->resolveData($data);
+  }
+
+  /**
+   * Resolves the given package data.
+   *
+   * @param array $data
+   *   The given package data.
+   *
+   * @return array
+   *   The resolved package data.
+   */
+  private function resolveData(array $data): array {
+    $resolver = (new OptionsResolver())
+      ->setDefined([
+        'name',
+        'type',
+        'install_path',
+        'url',
+        'version',
+        'version_dev',
+      ])
+      ->setRequired(['name', 'version_dev'])
+      ->setDefaults([
+        'type' => 'drupal-module',
+        'version' => '*',
+      ])
+      ->setAllowedTypes('name', 'string')
+      ->setAllowedValues('name', function ($value) {
+        // Require a a full package name: "vendor/project". A simple test for a
+        // forward slash will suffice.
+        return strpos($value, '/') !== FALSE;
+      })
+      ->setAllowedTypes('type', 'string')
+      ->setAllowedTypes('install_path', 'string')
+      ->setAllowedTypes('url', 'string')
+      ->setAllowedTypes('version', 'string')
+      ->setAllowedTypes('version_dev', 'string');
+    return $resolver->resolve($data);
   }
 
   /**
@@ -137,8 +108,8 @@ class Package {
    * @SuppressWarnings(PHPMD.CyclomaticComplexity)
    */
   public function getInstallPathRelative(): string {
-    if (!empty($this->installPath)) {
-      return $this->installPath;
+    if (!empty($this->data['install_path'])) {
+      return $this->data['install_path'];
     }
 
     switch ($this->getType()) {
@@ -168,39 +139,16 @@ class Package {
   }
 
   /**
-   * Sets the path the package installs at relative to the fixture root.
-   *
-   * @param string $install_path
-   *   The install path relative to the fixture root.
-   *
-   * @return self
-   */
-  public function setInstallPathRelative(string $install_path): Package {
-    $this->installPath = $install_path;
-    return $this;
-  }
-
-  /**
    * Gets the URL for the Composer path repository.
    *
    * E.g., "../example" or "/var/www/example/modules/submodule".
    */
   public function getRepositoryUrl(): string {
-    return $this->repositoryUrl;
-  }
+    if (!empty($this->data['url'])) {
+      return $this->data['url'];
+    }
 
-  /**
-   * Sets the URL for the Composer path repository.
-   *
-   * @param string $url
-   *   An absolute path or a path relative to the fixture root, e.g.,
-   *   "../example" or "/var/www/example/modules/submodule".
-   *
-   * @return self
-   */
-  public function setRepositoryUrl(string $url): Package {
-    $this->repositoryUrl = $url;
-    return $this;
+    return "../{$this->getProjectName()}";
   }
 
   /**
@@ -209,20 +157,7 @@ class Package {
    * E.g., "drupal-module".
    */
   public function getType(): string {
-    return $this->type;
-  }
-
-  /**
-   * Sets the type.
-   *
-   * @param string $type
-   *   The type, e.g., "drupal-module".
-   *
-   * @return self
-   */
-  public function setType(string $type): Package {
-    $this->type = $type;
-    return $this;
+    return $this->data['type'];
   }
 
   /**
@@ -233,20 +168,7 @@ class Package {
    * @return string
    */
   public function getPackageName(): string {
-    return $this->packageName;
-  }
-
-  /**
-   * Sets the package name.
-   *
-   * @param string $name
-   *   The name, e.g., "drupal/example".
-   *
-   * @return self
-   */
-  public function setPackageName(string $name): Package {
-    $this->packageName = $name;
-    return $this;
+    return $this->data['name'];
   }
 
   /**
@@ -281,20 +203,8 @@ class Package {
    * @return string
    */
   public function getProjectName(): string {
-    return $this->projectName;
-  }
-
-  /**
-   * Sets the project name.
-   *
-   * @param string $name
-   *   The project name, e.g., "example".
-   *
-   * @return self
-   */
-  public function setProjectName(string $name): Package {
-    $this->projectName = $name;
-    return $this;
+    $package_name_parts = explode('/', $this->data['name']);
+    return $package_name_parts[count($package_name_parts) - 1];
   }
 
   /**
@@ -305,20 +215,7 @@ class Package {
    * @return string
    */
   public function getVersionDev(): string {
-    return $this->versionDev;
-  }
-
-  /**
-   * Sets the dev version constraint.
-   *
-   * @param string $version
-   *   The version constraint, e.g., "*" or "~1.0".
-   *
-   * @return self
-   */
-  public function setVersionDev(string $version): Package {
-    $this->versionDev = $version;
-    return $this;
+    return $this->data['version_dev'];
   }
 
   /**
@@ -329,95 +226,7 @@ class Package {
    * @return string
    */
   public function getVersionRecommended(): string {
-    return $this->versionRecommended;
-  }
-
-  /**
-   * Sets the recommended version constraint.
-   *
-   * @param string $versionRecommended
-   *   The version constraint, e.g., "*" or "~1.0".
-   *
-   * @return self
-   */
-  public function setVersionRecommended(string $versionRecommended): Package {
-    $this->versionRecommended = $versionRecommended;
-    return $this;
-  }
-
-  /**
-   * Initializes the package name.
-   */
-  private function initializePackageName(): void {
-    if (!array_key_exists('name', $this->data)) {
-      throw new \InvalidArgumentException('Missing required property: "name"');
-    }
-    elseif (empty($this->data['name']) || !is_string($this->data['name']) || strpos($this->data['name'], '/') === FALSE) {
-      throw new \InvalidArgumentException(sprintf('Invalid value for "name" property: %s', var_export($this->data['name'], TRUE)));
-    }
-
-    $this->setPackageName($this->data['name']);
-  }
-
-  /**
-   * Initializes the project name.
-   */
-  private function initializeProjectName(): void {
-    $name_parts = explode('/', $this->getPackageName());
-    $name = $name_parts[count($name_parts) - 1];
-    $this->setProjectName($name);
-  }
-
-  /**
-   * Initializes the repository URL.
-   *
-   * I.e., the URL (path) of the package relative to the ORCA project directory
-   * as determined by its Git repository name.
-   */
-  private function initializeRepositoryUrl(): void {
-    $this->setRepositoryUrl("../{$this->getProjectName()}");
-
-    if (!empty($this->data['url'])) {
-      $this->setRepositoryUrl($this->data['url']);
-    }
-  }
-
-  /**
-   * Initializes the install path.
-   */
-  private function initializeInstallPath(): void {
-    if (!empty($this->data['install_path'])) {
-      $this->setInstallPathRelative($this->data['install_path']);
-    }
-  }
-
-  /**
-   * Initializes the type.
-   */
-  private function initializeType(): void {
-    if (!empty($this->data['type'])) {
-      $this->setType($this->data['type']);
-    }
-  }
-
-  /**
-   * Initializes the version.
-   */
-  private function initializeVersion(): void {
-    if (!empty($this->data['version'])) {
-      $this->setVersionRecommended($this->data['version']);
-    }
-  }
-
-  /**
-   * Initializes the version.
-   */
-  private function initializeVersionDev(): void {
-    if (!array_key_exists('version_dev', $this->data)) {
-      throw new \InvalidArgumentException('Missing required property: "version_dev"');
-    }
-
-    $this->setVersionDev($this->data['version_dev']);
+    return $this->data['version'];
   }
 
 }
