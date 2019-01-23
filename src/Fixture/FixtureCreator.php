@@ -246,6 +246,17 @@ class FixtureCreator {
       'acquia/blt-require-dev',
     ]);
     $this->processRunner->run($process, $this->fixture->getPath());
+
+    // Replace webflo/drupal-core-require-dev, which would otherwise be provided
+    // by BLT's dev requirements package.
+    $process = $this->processRunner->createOrcaVendorBinProcess([
+      'composer',
+      'require',
+      '--dev',
+      '--no-update',
+      'webflo/drupal-core-require-dev',
+    ]);
+    $this->processRunner->run($process, $this->fixture->getPath());
   }
 
   /**
@@ -264,17 +275,6 @@ class FixtureCreator {
       'require',
       '--no-update',
       "drupal/core:{$this->drupalCoreDevVersion}",
-    ]);
-    $this->processRunner->run($process, $this->fixture->getPath());
-
-    // Replace webflo/drupal-core-require-dev, which would otherwise be provided
-    // by BLT's dev requirements package.
-    $process = $this->processRunner->createOrcaVendorBinProcess([
-      'composer',
-      'require',
-      '--dev',
-      '--no-update',
-      'webflo/drupal-core-require-dev',
     ]);
     $this->processRunner->run($process, $this->fixture->getPath());
   }
