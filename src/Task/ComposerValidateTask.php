@@ -3,6 +3,7 @@
 namespace Acquia\Orca\Task;
 
 use Acquia\Orca\Exception\TaskFailureException;
+use Symfony\Component\Finder\Finder;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 
 /**
@@ -44,7 +45,7 @@ class ComposerValidateTask extends TaskBase {
    * @return \Symfony\Component\Finder\Finder
    */
   private function getComposerJsonFiles() {
-    return $this->finder
+    return (new Finder())
       ->files()
       ->followLinks()
       ->in($this->getPath())

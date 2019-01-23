@@ -5,6 +5,7 @@ namespace Acquia\Orca\Task\TestFramework;
 use Acquia\Orca\Exception\TaskFailureException;
 use Acquia\Orca\Task\TaskBase;
 use Acquia\Orca\Utility\SutSettingsTrait;
+use Symfony\Component\Finder\Finder;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 
 /**
@@ -48,7 +49,7 @@ class BehatTask extends TaskBase implements TestFrameworkInterface {
    * @return \Symfony\Component\Finder\Finder
    */
   private function getBehatConfigFiles() {
-    return (clone $this->finder)
+    return (new Finder())
       ->files()
       ->followLinks()
       ->in($this->getPath())

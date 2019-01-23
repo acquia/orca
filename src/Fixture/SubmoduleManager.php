@@ -26,13 +26,6 @@ class SubmoduleManager {
   private $filesystem;
 
   /**
-   * The finder.
-   *
-   * @var \Symfony\Component\Finder\Finder
-   */
-  private $finder;
-
-  /**
    * The fixture.
    *
    * @var \Acquia\Orca\Fixture\Fixture
@@ -60,17 +53,14 @@ class SubmoduleManager {
    *   The config loader.
    * @param \Symfony\Component\Filesystem\Filesystem $filesystem
    *   The filesystem.
-   * @param \Symfony\Component\Finder\Finder $finder
-   *   The finder.
    * @param \Acquia\Orca\Fixture\Fixture $fixture
    *   The fixture.
    * @param \Acquia\Orca\Fixture\PackageManager $package_manager
    *   The package manager.
    */
-  public function __construct(ConfigLoader $config_loader, Filesystem $filesystem, Finder $finder, Fixture $fixture, PackageManager $package_manager) {
+  public function __construct(ConfigLoader $config_loader, Filesystem $filesystem, Fixture $fixture, PackageManager $package_manager) {
     $this->configLoader = $config_loader;
     $this->filesystem = $filesystem;
-    $this->finder = $finder;
     $this->fixture = $fixture;
     $this->topLevelModules = $package_manager->getMultiple('drupal-module');
   }
@@ -160,7 +150,7 @@ class SubmoduleManager {
     if (!$paths) {
       return [];
     }
-    return $this->finder
+    return (new Finder())
       ->files()
       ->followLinks()
       ->in($paths)

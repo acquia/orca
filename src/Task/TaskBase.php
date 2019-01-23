@@ -4,19 +4,11 @@ namespace Acquia\Orca\Task;
 
 use Acquia\Orca\Fixture\Fixture;
 use Acquia\Orca\Utility\ProcessRunner;
-use Symfony\Component\Finder\Finder;
 
 /**
  * Provides a base task implementation.
  */
 abstract class TaskBase implements TaskInterface {
-
-  /**
-   * The finder.
-   *
-   * @var \Symfony\Component\Finder\Finder
-   */
-  protected $finder;
 
   /**
    * The fixture.
@@ -49,8 +41,6 @@ abstract class TaskBase implements TaskInterface {
   /**
    * Constructs an instance.
    *
-   * @param \Symfony\Component\Finder\Finder $finder
-   *   The finder.
    * @param \Acquia\Orca\Fixture\Fixture $fixture
    *   The fixture.
    * @param \Acquia\Orca\Utility\ProcessRunner $process_runner
@@ -58,9 +48,8 @@ abstract class TaskBase implements TaskInterface {
    * @param string $project_dir
    *   The ORCA project directory.
    */
-  public function __construct(Finder $finder, Fixture $fixture, ProcessRunner $process_runner, string $project_dir) {
+  public function __construct(Fixture $fixture, ProcessRunner $process_runner, string $project_dir) {
     $this->fixture = $fixture;
-    $this->finder = clone($finder);
     $this->processRunner = $process_runner;
     $this->projectDir = $project_dir;
   }

@@ -11,12 +11,10 @@ use Acquia\Orca\Utility\ProcessRunner;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Filesystem\Filesystem;
-use Symfony\Component\Finder\Finder;
 
 /**
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Task\TestFramework\BehatTask $behat
  * @property \Prophecy\Prophecy\ObjectProphecy|\Symfony\Component\Filesystem\Filesystem $filesystem
- * @property \Prophecy\Prophecy\ObjectProphecy|\Symfony\Component\Finder\Finder $finder
  * @property \Prophecy\Prophecy\ObjectProphecy|\Symfony\Component\Console\Style\SymfonyStyle $output
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Task\TestFramework\PhpUnitTask $phpunit
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Utility\ProcessRunner $processRunner
@@ -28,7 +26,6 @@ class TestRunnerTest extends TestCase {
   public function setUp() {
     $this->behat = $this->prophesize(BehatTask::class);
     $this->filesystem = $this->prophesize(Filesystem::class);
-    $this->finder = $this->prophesize(Finder::class);
     $this->output = $this->prophesize(SymfonyStyle::class);
     $this->phpunit = $this->prophesize(PhpUnitTask::class);
     $this->processRunner = $this->prophesize(ProcessRunner::class);
@@ -58,8 +55,6 @@ class TestRunnerTest extends TestCase {
     $behat = $this->behat->reveal();
     /** @var \Symfony\Component\Filesystem\Filesystem $filesystem */
     $filesystem = $this->filesystem->reveal();
-    /** @var \Symfony\Component\Finder\Finder $finder */
-    $finder = $this->finder->reveal();
     /** @var \Symfony\Component\Console\Style\SymfonyStyle $output */
     $output = $this->output->reveal();
     /** @var \Acquia\Orca\Task\TestFramework\PhpUnitTask $phpunit */
@@ -70,7 +65,7 @@ class TestRunnerTest extends TestCase {
     $package_manager = $this->packageManager->reveal();
     /** @var \Acquia\Orca\Server\ServerStack $server_stack */
     $server_stack = $this->serverStack->reveal();
-    return new TestRunner($behat, $filesystem, $finder, $output, $phpunit, $process_runner, $package_manager, $server_stack);
+    return new TestRunner($behat, $filesystem, $output, $phpunit, $process_runner, $package_manager, $server_stack);
   }
 
 }

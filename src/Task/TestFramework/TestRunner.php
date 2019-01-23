@@ -8,7 +8,6 @@ use Acquia\Orca\Utility\ProcessRunner;
 use Acquia\Orca\Utility\SutSettingsTrait;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Filesystem\Filesystem;
-use Symfony\Component\Finder\Finder;
 
 /**
  * Runs automated tests.
@@ -30,13 +29,6 @@ class TestRunner {
    * @var \Symfony\Component\Filesystem\Filesystem
    */
   private $filesystem;
-
-  /**
-   * The finder.
-   *
-   * @var \Symfony\Component\Finder\Finder
-   */
-  private $finder;
 
   /**
    * The output decorator.
@@ -101,8 +93,6 @@ class TestRunner {
    *   The Behat task.
    * @param \Symfony\Component\Filesystem\Filesystem $filesystem
    *   The filesystem.
-   * @param \Symfony\Component\Finder\Finder $finder
-   *   The finder.
    * @param \Symfony\Component\Console\Style\SymfonyStyle $output
    *   The output decorator.
    * @param \Acquia\Orca\Task\TestFramework\PhpUnitTask $phpunit
@@ -114,10 +104,9 @@ class TestRunner {
    * @param \Acquia\Orca\Server\ServerStack $server_stack
    *   The server stack.
    */
-  public function __construct(BehatTask $behat, Filesystem $filesystem, Finder $finder, SymfonyStyle $output, PhpUnitTask $phpunit, ProcessRunner $process_runner, PackageManager $package_manager, ServerStack $server_stack) {
+  public function __construct(BehatTask $behat, Filesystem $filesystem, SymfonyStyle $output, PhpUnitTask $phpunit, ProcessRunner $process_runner, PackageManager $package_manager, ServerStack $server_stack) {
     $this->behat = $behat;
     $this->filesystem = $filesystem;
-    $this->finder = $finder;
     $this->output = $output;
     $this->phpunit = $phpunit;
     $this->processRunner = $process_runner;
