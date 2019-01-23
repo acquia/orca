@@ -31,6 +31,13 @@ class FixtureCreator {
   private $drupalCoreDevVersion;
 
   /**
+   * The Drupal core version override.
+   *
+   * @var string|null
+   */
+  private $drupalCoreVersion;
+
+  /**
    * The fixture.
    *
    * @var \Acquia\Orca\Fixture\Fixture
@@ -93,6 +100,8 @@ class FixtureCreator {
    *   The Acquia module installer.
    * @param string $drupal_core_dev_version
    *   The current Drupal core dev version string.
+   * @param string|null $drupal_core_version
+   *   The Drupal core version override.
    * @param \Acquia\Orca\Fixture\Fixture $fixture
    *   The fixture.
    * @param \Symfony\Component\Console\Style\SymfonyStyle $output
@@ -104,9 +113,10 @@ class FixtureCreator {
    * @param \Acquia\Orca\Fixture\SubmoduleManager $submodule_manager
    *   The submodule manager.
    */
-  public function __construct(AcquiaModuleInstaller $acquia_module_installer, string $drupal_core_dev_version, Fixture $fixture, SymfonyStyle $output, ProcessRunner $process_runner, PackageManager $package_manager, SubmoduleManager $submodule_manager) {
+  public function __construct(AcquiaModuleInstaller $acquia_module_installer, string $drupal_core_dev_version, ?string $drupal_core_version, Fixture $fixture, SymfonyStyle $output, ProcessRunner $process_runner, PackageManager $package_manager, SubmoduleManager $submodule_manager) {
     $this->acquiaModuleInstaller = $acquia_module_installer;
     $this->drupalCoreDevVersion = $drupal_core_dev_version;
+    $this->drupalCoreVersion = $drupal_core_version;
     $this->fixture = $fixture;
     $this->output = $output;
     $this->processRunner = $process_runner;
@@ -125,8 +135,7 @@ class FixtureCreator {
   public function create(): void {
     $this->ensurePreconditions();
     $this->createBltProject();
-    $this->removeUnneededPackages();
-    $this->addSpecialDevDependencies();
+    $this->fixDefaultDependencies();
     $this->addAcquiaPackages();
     $this->installDrupal();
     $this->installAcquiaModules();
@@ -217,10 +226,10 @@ class FixtureCreator {
   }
 
   /**
-   * Removes unneeded packages.
+   * Fixes the default dependencies.
    */
-  private function removeUnneededPackages(): void {
-    $this->output->section('Removing unneeded packages');
+  private function fixDefaultDependencies(): void {
+    $this->output->section('Fixing default dependencies');
     $process = $this->processRunner->createOrcaVendorBinProcess([
       'composer',
       'remove',
@@ -247,6 +256,17 @@ class FixtureCreator {
     ]);
     $this->processRunner->run($process, $this->fixture->getPath());
 
+    // Install a specific version of Drupal core.
+    if ($this->drupalCoreVersion || $this->isDev) {
+      $process = $this->processRunner->createOrcaVendorBinProcess([
+        'composer',
+        'require',
+        '--no-update',
+        sprintf('drupal/core:%s', ($this->drupalCoreVersion) ?: $this->drupalCoreDevVersion),
+      ]);
+      $this->processRunner->run($process, $this->fixture->getPath());
+    }
+
     // Replace webflo/drupal-core-require-dev, which would otherwise be provided
     // by BLT's dev requirements package.
     $process = $this->processRunner->createOrcaVendorBinProcess([
@@ -255,26 +275,6 @@ class FixtureCreator {
       '--dev',
       '--no-update',
       'webflo/drupal-core-require-dev',
-    ]);
-    $this->processRunner->run($process, $this->fixture->getPath());
-  }
-
-  /**
-   * Adds special dependencies needed for a dev versions fixture.
-   */
-  private function addSpecialDevDependencies(): void {
-    if (!$this->isDev) {
-      return;
-    }
-
-    $this->output->section('Adding special dev dependencies');
-
-    // Require the dev version of Drupal core.
-    $process = $this->processRunner->createOrcaVendorBinProcess([
-      'composer',
-      'require',
-      '--no-update',
-      "drupal/core:{$this->drupalCoreDevVersion}",
     ]);
     $this->processRunner->run($process, $this->fixture->getPath());
   }
