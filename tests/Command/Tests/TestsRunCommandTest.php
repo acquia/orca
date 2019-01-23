@@ -6,7 +6,7 @@ use Acquia\Orca\Exception\OrcaException;
 use Acquia\Orca\Fixture\PackageManager;
 use Acquia\Orca\Task\TestFramework\TestRunner;
 use Acquia\Orca\Command\StatusCodes;
-use Acquia\Orca\Command\Tests\RunCommand;
+use Acquia\Orca\Command\Tests\TestsRunCommand;
 use Acquia\Orca\Fixture\Fixture;
 use Acquia\Orca\Tests\Command\CommandTestBase;
 use Symfony\Component\Console\Application;
@@ -23,7 +23,7 @@ use Symfony\Component\Console\Tester\CommandTester;
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Task\TestFramework\TestRunner $testRunner
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Server\WebServer $webServer
  */
-class RunCommandTest extends CommandTestBase {
+class TestsRunCommandTest extends CommandTestBase {
 
   protected function setUp() {
     $this->fixture = $this->prophesize(Fixture::class);
@@ -66,7 +66,7 @@ class RunCommandTest extends CommandTestBase {
     }
     $tester = $this->createCommandTester();
 
-    $this->executeCommand($tester, RunCommand::getDefaultName(), $args);
+    $this->executeCommand($tester, TestsRunCommand::getDefaultName(), $args);
 
     $this->assertEquals($display, $tester->getDisplay(), 'Displayed correct output.');
     $this->assertEquals($status_code, $tester->getStatusCode(), 'Returned correct status code.');
@@ -101,7 +101,7 @@ class RunCommandTest extends CommandTestBase {
 
     $tester = $this->createCommandTester();
 
-    $this->executeCommand($tester, RunCommand::getDefaultName(), $args);
+    $this->executeCommand($tester, TestsRunCommand::getDefaultName(), $args);
   }
 
   public function providerFrameworkFlags() {
@@ -121,10 +121,10 @@ class RunCommandTest extends CommandTestBase {
     $package_manager = $this->packageManager->reveal();
     /** @var \Acquia\Orca\Task\TestFramework\TestRunner $test_runner */
     $test_runner = $this->testRunner->reveal();
-    $application->add(new RunCommand($fixture, $package_manager, $test_runner));
-    /** @var \Acquia\Orca\Command\Tests\RunCommand $command */
-    $command = $application->find(RunCommand::getDefaultName());
-    $this->assertInstanceOf(RunCommand::class, $command, 'Instantiated class.');
+    $application->add(new TestsRunCommand($fixture, $package_manager, $test_runner));
+    /** @var \Acquia\Orca\Command\Tests\TestsRunCommand $command */
+    $command = $application->find(TestsRunCommand::getDefaultName());
+    $this->assertInstanceOf(TestsRunCommand::class, $command, 'Instantiated class.');
     return new CommandTester($command);
   }
 

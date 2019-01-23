@@ -3,7 +3,7 @@
 namespace Acquia\Orca\Tests\Command\Fixture;
 
 use Acquia\Orca\Command\StatusCodes;
-use Acquia\Orca\Command\Fixture\RmCommand;
+use Acquia\Orca\Command\Fixture\FixtureRmCommand;
 use Acquia\Orca\Fixture\FixtureRemover;
 use Acquia\Orca\Fixture\Fixture;
 use Acquia\Orca\Tests\Command\CommandTestBase;
@@ -14,7 +14,7 @@ use Symfony\Component\Console\Tester\CommandTester;
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Fixture\Fixture $fixture
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Fixture\FixtureRemover $fixtureRemover
  */
-class RmCommandTest extends CommandTestBase {
+class FixtureRmCommandTest extends CommandTestBase {
 
   protected function setUp() {
     $this->fixtureRemover = $this->prophesize(FixtureRemover::class);
@@ -39,7 +39,7 @@ class RmCommandTest extends CommandTestBase {
     $tester = $this->createCommandTester();
     $tester->setInputs($inputs);
 
-    $this->executeCommand($tester, RmCommand::getDefaultName(), $args);
+    $this->executeCommand($tester, FixtureRmCommand::getDefaultName(), $args);
 
     $this->assertEquals($display, $tester->getDisplay(), 'Displayed correct output.');
     $this->assertEquals($status_code, $tester->getStatusCode(), 'Returned correct status code.');
@@ -62,10 +62,10 @@ class RmCommandTest extends CommandTestBase {
     $fixture_remover = $this->fixtureRemover->reveal();
     /** @var \Acquia\Orca\Fixture\Fixture $fixture */
     $fixture = $this->fixture->reveal();
-    $application->add(new RmCommand($fixture, $fixture_remover));
-    /** @var \Acquia\Orca\Command\Fixture\RmCommand $command */
-    $command = $application->find(RmCommand::getDefaultName());
-    $this->assertInstanceOf(RmCommand::class, $command, 'Instantiated class.');
+    $application->add(new FixtureRmCommand($fixture, $fixture_remover));
+    /** @var \Acquia\Orca\Command\Fixture\FixtureRmCommand $command */
+    $command = $application->find(FixtureRmCommand::getDefaultName());
+    $this->assertInstanceOf(FixtureRmCommand::class, $command, 'Instantiated class.');
     return new CommandTester($command);
   }
 

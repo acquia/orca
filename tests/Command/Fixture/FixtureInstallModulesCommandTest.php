@@ -2,9 +2,9 @@
 
 namespace Acquia\Orca\Tests\Command\Fixture;
 
-use Acquia\Orca\Command\Fixture\InstallModulesCommand;
+use Acquia\Orca\Command\Fixture\FixtureInstallModulesCommand;
 use Acquia\Orca\Command\StatusCodes;
-use Acquia\Orca\Command\Fixture\RmCommand;
+use Acquia\Orca\Command\Fixture\FixtureRmCommand;
 use Acquia\Orca\Exception\OrcaException;
 use Acquia\Orca\Fixture\AcquiaModuleInstaller;
 use Acquia\Orca\Fixture\Fixture;
@@ -16,7 +16,7 @@ use Symfony\Component\Console\Tester\CommandTester;
  * @property \Prophecy\Prophecy\ObjectProphecy|AcquiaModuleInstaller $acquiaModuleInstaller
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Fixture\Fixture $fixture
  */
-class InstallModulesCommandTest extends CommandTestBase {
+class FixtureInstallModulesCommandTest extends CommandTestBase {
 
   protected function setUp() {
     $this->acquiaModuleInstaller = $this->prophesize(AcquiaModuleInstaller::class);
@@ -45,7 +45,7 @@ class InstallModulesCommandTest extends CommandTestBase {
     }
     $tester = $this->createCommandTester();
 
-    $this->executeCommand($tester, RmCommand::getDefaultName());
+    $this->executeCommand($tester, FixtureRmCommand::getDefaultName());
 
     $this->assertEquals($display, $tester->getDisplay(), 'Displayed correct output.');
     $this->assertEquals($status_code, $tester->getStatusCode(), 'Returned correct status code.');
@@ -65,10 +65,10 @@ class InstallModulesCommandTest extends CommandTestBase {
     $acquia_module_installer = $this->acquiaModuleInstaller->reveal();
     /** @var \Acquia\Orca\Fixture\Fixture $fixture */
     $fixture = $this->fixture->reveal();
-    $application->add(new InstallModulesCommand($acquia_module_installer, $fixture));
-    /** @var \Acquia\Orca\Command\Fixture\InstallModulesCommand $command */
-    $command = $application->find(InstallModulesCommand::getDefaultName());
-    $this->assertInstanceOf(InstallModulesCommand::class, $command, 'Instantiated class.');
+    $application->add(new FixtureInstallModulesCommand($acquia_module_installer, $fixture));
+    /** @var \Acquia\Orca\Command\Fixture\FixtureInstallModulesCommand $command */
+    $command = $application->find(FixtureInstallModulesCommand::getDefaultName());
+    $this->assertInstanceOf(FixtureInstallModulesCommand::class, $command, 'Instantiated class.');
     return new CommandTester($command);
   }
 

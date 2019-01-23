@@ -12,7 +12,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 /**
  * Provides a command.
  */
-class RunServerCommand extends Command {
+class FixtureRunServerCommand extends Command {
 
   /**
    * The default command name.

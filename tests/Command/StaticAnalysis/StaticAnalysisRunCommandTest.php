@@ -2,7 +2,7 @@
 
 namespace Acquia\Orca\Tests\Command\StaticAnalysis;
 
-use Acquia\Orca\Command\StaticAnalysis\RunCommand;
+use Acquia\Orca\Command\StaticAnalysis\StaticAnalysisRunCommand;
 use Acquia\Orca\Command\StatusCodes;
 use Acquia\Orca\Task\ComposerValidateTask;
 use Acquia\Orca\Task\PhpCompatibilitySniffTask;
@@ -20,7 +20,7 @@ use Symfony\Component\Filesystem\Filesystem;
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Task\PhpLintTask $phpLint
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Task\TaskRunner $taskRunner
  */
-class RunCommandTest extends CommandTestBase {
+class StaticAnalysisRunCommandTest extends CommandTestBase {
 
   private const SUT_PATH = '/var/www/example';
 
@@ -62,7 +62,7 @@ class RunCommandTest extends CommandTestBase {
       ->willReturn($status_code);
     $tester = $this->createCommandTester();
 
-    $this->executeCommand($tester, RunCommand::getDefaultName(), ['path' => self::SUT_PATH]);
+    $this->executeCommand($tester, StaticAnalysisRunCommand::getDefaultName(), ['path' => self::SUT_PATH]);
 
     $this->assertEquals($display, $tester->getDisplay(), 'Displayed correct output.');
     $this->assertEquals($status_code, $tester->getStatusCode(), 'Returned correct status code.');
@@ -88,10 +88,10 @@ class RunCommandTest extends CommandTestBase {
     $php_lint = $this->phpLint->reveal();
     /** @var \Acquia\Orca\Task\TaskRunner $task_runner */
     $task_runner = $this->taskRunner->reveal();
-    $application->add(new RunCommand($composer_validate, $filesystem, $php_compatibility_sniff, $php_lint, $task_runner));
-    /** @var \Acquia\Orca\Command\Tests\RunCommand $command */
-    $command = $application->find(RunCommand::getDefaultName());
-    $this->assertInstanceOf(RunCommand::class, $command, 'Instantiated class.');
+    $application->add(new StaticAnalysisRunCommand($composer_validate, $filesystem, $php_compatibility_sniff, $php_lint, $task_runner));
+    /** @var \Acquia\Orca\Command\Tests\TestsRunCommand $command */
+    $command = $application->find(StaticAnalysisRunCommand::getDefaultName());
+    $this->assertInstanceOf(StaticAnalysisRunCommand::class, $command, 'Instantiated class.');
     return new CommandTester($command);
   }
 

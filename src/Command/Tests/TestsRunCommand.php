@@ -15,7 +15,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 /**
  * Provides a command.
  */
-class RunCommand extends Command {
+class TestsRunCommand extends Command {
 
   /**
    * The default command name.

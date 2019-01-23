@@ -2,8 +2,8 @@
 
 namespace Acquia\Orca\Tests\Command\Fixture;
 
+use Acquia\Orca\Command\Fixture\FixtureInitCommand;
 use Acquia\Orca\Command\StatusCodes;
-use Acquia\Orca\Command\Fixture\InitCommand;
 use Acquia\Orca\Exception\OrcaException;
 use Acquia\Orca\Fixture\PackageManager;
 use Acquia\Orca\Fixture\FixtureRemover;
@@ -19,7 +19,7 @@ use Symfony\Component\Console\Tester\CommandTester;
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Fixture\FixtureRemover $fixtureRemover
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Fixture\PackageManager $packageManager
  */
-class InitCommandTest extends CommandTestBase {
+class FixtureInitCommandTest extends CommandTestBase {
 
   protected function setUp() {
     $this->fixtureCreator = $this->prophesize(FixtureCreator::class);
@@ -66,7 +66,7 @@ class InitCommandTest extends CommandTestBase {
     }
     $tester = $this->createCommandTester();
 
-    $this->executeCommand($tester, InitCommand::getDefaultName(), $args);
+    $this->executeCommand($tester, FixtureInitCommand::getDefaultName(), $args);
 
     $this->assertEquals($display, $tester->getDisplay(), 'Displayed correct output.');
     $this->assertEquals($status_code, $tester->getStatusCode(), 'Returned correct status code.');
@@ -96,10 +96,10 @@ class InitCommandTest extends CommandTestBase {
     $fixture = $this->fixture->reveal();
     /** @var \Acquia\Orca\Fixture\PackageManager $package_manager */
     $package_manager = $this->packageManager->reveal();
-    $application->add(new InitCommand($fixture, $fixture_creator, $fixture_remover, $package_manager));
-    /** @var \Acquia\Orca\Command\Fixture\InitCommand $command */
-    $command = $application->find(InitCommand::getDefaultName());
-    $this->assertInstanceOf(InitCommand::class, $command, 'Instantiated class.');
+    $application->add(new FixtureInitCommand($fixture, $fixture_creator, $fixture_remover, $package_manager));
+    /** @var \Acquia\Orca\Command\Fixture\FixtureInitCommand $command */
+    $command = $application->find(FixtureInitCommand::getDefaultName());
+    $this->assertInstanceOf(FixtureInitCommand::class, $command, 'Instantiated class.');
     return new CommandTester($command);
   }
 

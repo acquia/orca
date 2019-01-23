@@ -14,7 +14,7 @@ use Symfony\Component\Console\Question\ConfirmationQuestion;
 /**
  * Provides a command.
  */
-class RmCommand extends Command {
+class FixtureRmCommand extends Command {
 
   /**
    * The default command name.

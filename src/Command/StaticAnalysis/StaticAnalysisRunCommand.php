@@ -16,7 +16,7 @@ use Symfony\Component\Filesystem\Filesystem;
 /**
  * Provides a command.
  */
-class RunCommand extends Command {
+class StaticAnalysisRunCommand extends Command {
 
   /**
    * The filesystem.

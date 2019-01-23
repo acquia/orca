@@ -12,7 +12,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 /**
  * Provides a command.
  */
-class InstallModulesCommand extends Command {
+class FixtureInstallModulesCommand extends Command {
 
   /**
    * The default command name.

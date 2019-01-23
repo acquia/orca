@@ -16,7 +16,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 /**
  * Provides a command.
  */
-class InitCommand extends Command {
+class FixtureInitCommand extends Command {
 
   /**
    * The default command name.
