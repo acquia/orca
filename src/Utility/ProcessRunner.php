@@ -15,13 +15,6 @@ use Symfony\Component\Process\Process;
 class ProcessRunner {
 
   /**
-   * The executable finder.
-   *
-   * @var \Symfony\Component\Process\ExecutableFinder
-   */
-  private $executableFinder;
-
-  /**
    * The fixture.
    *
    * @var \Acquia\Orca\Fixture\Fixture
@@ -45,8 +38,6 @@ class ProcessRunner {
   /**
    * Constructs an instance.
    *
-   * @param \Symfony\Component\Process\ExecutableFinder $executable_finder
-   *   An executable finder.
    * @param \Acquia\Orca\Fixture\Fixture $fixture
    *   The fixture.
    * @param \Symfony\Component\Console\Style\SymfonyStyle $output
@@ -54,8 +45,7 @@ class ProcessRunner {
    * @param string $project_dir
    *   The ORCA project directory.
    */
-  public function __construct(ExecutableFinder $executable_finder, Fixture $fixture, SymfonyStyle $output, string $project_dir) {
-    $this->executableFinder = $executable_finder;
+  public function __construct(Fixture $fixture, SymfonyStyle $output, string $project_dir) {
     $this->fixture = $fixture;
     $this->output = $output;
     $this->projectDir = $project_dir;
@@ -104,7 +94,7 @@ class ProcessRunner {
    * @return \Symfony\Component\Process\Process
    */
   public function createExecutableProcess(array $command): Process {
-    $command[0] = $this->executableFinder->find($command[0]);
+    $command[0] = (new ExecutableFinder())->find($command[0]);
 
     if (is_null($command[0])) {
       throw new RuntimeException(sprintf('Could not find executable: %s.', $command[0]));

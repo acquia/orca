@@ -38,6 +38,4 @@ services:
 
   Symfony\Component\Filesystem\Filesystem: ~
 
-  Symfony\Component\Process\ExecutableFinder: ~
-
   Symfony\Component\Yaml\Parser: ~
