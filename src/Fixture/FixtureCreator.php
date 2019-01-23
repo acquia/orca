@@ -24,7 +24,7 @@ class FixtureCreator {
   private $acquiaModuleInstaller;
 
   /**
-   * The current Drupal Core dev version string.
+   * The current Drupal core dev version string.
    *
    * @var string
    */
@@ -92,7 +92,7 @@ class FixtureCreator {
    * @param \Acquia\Orca\Fixture\AcquiaModuleInstaller $acquia_module_installer
    *   The Acquia module installer.
    * @param string $drupal_core_dev_version
-   *   The current Drupal Core dev version string.
+   *   The current Drupal core dev version string.
    * @param \Acquia\Orca\Fixture\Fixture $fixture
    *   The fixture.
    * @param \Symfony\Component\Console\Style\SymfonyStyle $output
@@ -269,7 +269,7 @@ class FixtureCreator {
 
     $this->output->section('Adding special dev dependencies');
 
-    // Require the dev version of Drupal Core.
+    // Require the dev version of Drupal core.
     $process = $this->processRunner->createOrcaVendorBinProcess([
       'composer',
       'require',
