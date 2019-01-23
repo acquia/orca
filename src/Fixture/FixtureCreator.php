@@ -448,12 +448,14 @@ class FixtureCreator {
       return array_values($dependencies);
     }
 
+    $sut_package_string = "{$this->sut->getPackageName()}:@dev";
+
     if ($this->isSutOnly) {
-      return [$this->sut->getPackageStringDev()];
+      return [$sut_package_string];
     }
 
     // Replace the version constraint on the SUT to allow for symlinking.
-    $dependencies[$this->sut->getPackageName()] = $this->sut->getPackageStringDev();
+    $dependencies[$this->sut->getPackageName()] = $sut_package_string;
 
     return array_values($dependencies);
   }
