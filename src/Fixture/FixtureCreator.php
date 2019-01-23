@@ -236,18 +236,16 @@ class FixtureCreator {
     ]);
     $this->processRunner->run($process, $this->fixture->getPath());
 
-    if ($this->isDev) {
-      // Remove BLT's dev requirements package, which conflicts with the Drupal
-      // Core dev version.
-      $process = $this->processRunner->createOrcaVendorBinProcess([
-        'composer',
-        'remove',
-        '--dev',
-        '--no-update',
-        'acquia/blt-require-dev',
-      ]);
-      $this->processRunner->run($process, $this->fixture->getPath());
-    }
+    // Remove BLT's dev requirements package, which conflicts with the Drupal
+    // Core dev version.
+    $process = $this->processRunner->createOrcaVendorBinProcess([
+      'composer',
+      'remove',
+      '--dev',
+      '--no-update',
+      'acquia/blt-require-dev',
+    ]);
+    $this->processRunner->run($process, $this->fixture->getPath());
   }
 
   /**
