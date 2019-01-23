@@ -55,7 +55,7 @@ class RunCommand extends Command {
    */
   public function __construct(ComposerValidateTask $composer_validate, Filesystem $filesystem, PhpCompatibilitySniffTask $php_compatibility, PhpLintTask $php_lint, TaskRunner $task_runner) {
     $this->filesystem = $filesystem;
-    $this->taskRunner = (clone($task_runner))
+    $this->taskRunner = $task_runner
       ->addTask($composer_validate)
       ->addTask($php_compatibility)
       ->addTask($php_lint);
