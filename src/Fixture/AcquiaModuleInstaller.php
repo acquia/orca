@@ -99,7 +99,7 @@ class AcquiaModuleInstaller {
   private function getSutSettingsFromFixture(): void {
     $config = $this->configLoader->load($this->fixture->getPath('composer.json'));
     $this->setSut($config->get('extra.orca.sut'));
-    $this->setSutOnly($config->get('extra.orca.sut-only', FALSE));
+    $this->setSutOnly($config->get('extra.orca.is-sut-only', FALSE));
   }
 
   /**

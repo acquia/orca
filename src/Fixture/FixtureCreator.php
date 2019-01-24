@@ -340,7 +340,8 @@ class FixtureCreator {
   private function addComposerExtraData(): void {
     $this->jsonConfigSource->addProperty('extra.orca', [
       'sut' => ($this->sut) ? $this->sut->getPackageName() : NULL,
-      'sut-only' => $this->isSutOnly,
+      'is-sut-only' => $this->isSutOnly,
+      'is-dev' => $this->isDev,
     ]);
   }
 
