@@ -60,8 +60,8 @@ class FixtureInspector {
   public function getOverview(): array {
     $overview = [];
 
-    $overview[] = ['Fixture dir', $this->fixture->getPath()];
-    $overview[] = ['SUT', $this->getSutNamePretty()];
+    $overview[] = ['Fixture directory', $this->fixture->getPath()];
+    $overview[] = ['System under test (SUT)', $this->getSutNamePretty()];
     $overview[] = ['Fixture type', $this->getFixtureType()];
     $overview[] = ['Package stability', $this->getPackageStabilitySetting()];
     $overview[] = ['Drupal core version', $this->getInstalledPackageVersion('drupal/core')];
