@@ -230,19 +230,25 @@ class FixtureCreator {
    */
   private function fixDefaultDependencies(): void {
     $this->output->section('Fixing default dependencies');
-    $process = $this->processRunner->createOrcaVendorBinProcess([
-      'composer',
-      'remove',
-      '--no-update',
-      // The Lightning profile requirement conflicts with individual Lightning
-      // submodule requirements--namely, it prevents them from being symlinked
-      // via a local "path" repository.
-      'acquia/lightning',
+
+    // Remove unwanted packages.
+    $process = $this->processRunner->createOrcaVendorBinProcess(array_merge(
+      [
+        'composer',
+        'remove',
+        '--no-update',
+        // The Lightning profile requirement conflicts with individual Lightning
+        // submodule requirements--namely, it prevents them from being symlinked
+        // via a local "path" repository.
+        'acquia/lightning',
+      ],
       // Other Acquia packages are only conditionally required later and should
       // in no case be included up-front.
-      'drupal/acquia_connector',
-      'drupal/acquia_purge',
-    ]);
+      array_keys($this->packageManager->getMultiple()),
+      // @todo Remove the below line once acquia_connector is enabled and thus
+      //   included by the above line.
+      ['drupal/acquia_connector']
+    ));
     $this->processRunner->run($process, $this->fixture->getPath());
 
     // Remove BLT's dev requirements package, which conflicts with the Drupal
