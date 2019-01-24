@@ -1,13 +1,13 @@
 # Getting Started
 
-1. [Continuous integration](#continuous-integration)
+1. [Configuring Travis CI](#configuring-travis-ci)
 1. [Local installation](#local-installation)
 1. [Designing automated tests](#designing-automated-tests)
     1. [Tagging/grouping](#tagginggrouping)
 
-## Continuous integration
+## Configuring Travis CI
 
-ORCA's primary use case is in a continuous integration (CI) workflow, running against pull requests and commits. It provides two scripts corresponding to Travis CI hooks:
+ORCA's primary use case is in a continuous integration workflow, running against pull requests and commits. It provides two scripts corresponding to Travis CI hooks:
 
 * **[`bin/travis/install`](../bin/travis/install)** configures the environment and installs ORCA.
 * **[`bin/travis/script`](../bin/travis/script)** creates the fixtures and runs the tests.
@@ -15,6 +15,8 @@ ORCA's primary use case is in a continuous integration (CI) workflow, running ag
 See [`example/.travis.yml`](../example/.travis.yml) for an example Travis CI configuration. Features are explained in the comments.
 
 For more complex testing needs, ORCA commands can be invoked directly. See [Lightning Core's Travis CI configuration](https://github.com/acquia/lightning-core/blob/8.x-3.x/.travis.yml), for example.
+
+See also [Continuous integration](understanding-orca.md#continuous-integration).
 
 ## Local installation
 
@@ -58,3 +60,7 @@ The default behavior is to run a test only when the package providing it is the 
 Public tests (`orca_public`) are _always_ run, including when testing packages other than the one providing them. For example, a public test provided by Lightning API will also be run during tests of Acquia Commerce Manager, Acquia Lift, and the rest. Public tests thus lengthen builds for _all Acquia packages_ and should be used judiciously. Reserve them for high value features with meaningful risk of being broken by other packages, and make them as fast as possible.
 
 Ignored tests (`orca_ignore`) are "ignored" and _never_ run by ORCA. Tests should be ignored when they depend upon setup or preconditions that ORCA doesn't provide, such as a fixture based on a legacy version of Drupal core or a database populated by SQL dump. Once ignored, such tests can be scripted to run apart from ORCA after custom setup. See [Lightning Core's Travis CI configuration](https://github.com/acquia/lightning-core/blob/8.x-3.x/.travis.yml), for example. In practice, it should rarely be necessary to ignore a test, as most setup and teardown can be accomplished through [Behat hooks](http://behat.org/en/latest/user_guide/context/hooks.html) and [PHPUnit template methods](https://phpunit.de/manual/6.5/en/fixtures.html).
+
+---
+
+[README](README.md) | [Understanding ORCA](understanding-orca.md) | **Getting Started** | [Project Glossary](glossary.md) | [Contribution Guide](CONTRIBUTING.md)
