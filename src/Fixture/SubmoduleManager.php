@@ -154,7 +154,7 @@ class SubmoduleManager {
       ->files()
       ->followLinks()
       ->in($paths)
-      ->notPath(['docroot', 'vendor'])
+      ->exclude(['docroot', 'vendor'])
       ->name('composer.json')
       ->filter(function (\SplFileInfo $file) {
         return $this->isSubmoduleComposerJson($file);
@@ -170,22 +170,20 @@ class SubmoduleManager {
    * @return bool
    */
   private function isSubmoduleComposerJson(\SplFileInfo $file): bool {
-    // Ignore files that don't exist. (It is unknown why the Finder search
-    // returns non-existent files to begin with, but it does.)
-    if (!$this->filesystem->exists($file->getPathname())) {
-      return FALSE;
-    }
-
     try {
       $config = $this->configLoader->load($file->getPathname());
-      list($vendor_name, $package_name) = explode('/', $config->get('name'));
+      $name = $config->get('name');
+      if (!$name || strpos($name, '/') === FALSE) {
+        return FALSE;
+      }
+      list($vendor_name, $package_name) = explode('/', $name);
     }
     catch (\Exception $e) {
       return FALSE;
     }
 
     // Ignore top level modules.
-    if (in_array($config->get('name'), array_keys($this->topLevelModules))) {
+    if (in_array($name, array_keys($this->topLevelModules))) {
       return FALSE;
     }
 
