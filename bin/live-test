@@ -2,6 +2,8 @@
 
 # ORCA live product test script.
 
+set -e
+
 cd "$(dirname "$0")"
 
 export ORCA_FIXTURE_DIR="$(cd ../.. && pwd)/orca-build-$(date +%Y-%m-%d_%H-%m-%S)"
