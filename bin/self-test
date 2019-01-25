@@ -26,7 +26,7 @@ cp -R example ../
 # Execute tests from the SUT directory as a SUT would.
 cd ../example
 
-ORCA_FIXTURE_DIR="$(cd .. && pwd)/orca-build-$(date +%Y%m%d_%HH%mm%SS)" \
+ORCA_FIXTURE_DIR="$(cd .. && pwd)/orca-build-$(date +%Y-%m-%d_%H-%m-%S)" \
   ORCA_PACKAGES_CONFIG="tests/Fixture/packages.yml" \
   ../orca/bin/travis/script drupal/example
 
