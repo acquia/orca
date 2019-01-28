@@ -38,8 +38,8 @@ class ChromeDriverServer implements ServerInterface {
    * {@inheritdoc}
    */
   public function start(): void {
-    // ChromeDriver can't use Symfony Process because leads to timeouts during
-    // test runs.
+    // ChromeDriver can't use Symfony Process because it leads to timeouts
+    // during test runs.
     $command = [
       $this->fixture->getPath('vendor/bin/drush'),
       "--root={$this->fixture->getPath()}",
