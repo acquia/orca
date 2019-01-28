@@ -70,11 +70,14 @@ class ProcessRunner {
       $process->setWorkingDirectory($cwd);
     }
 
-    // Write process buffer to output.
-    $status = $process->setTimeout(0)->run(function () {
-      $buffer = func_get_arg(1);
-      $this->output->write($buffer);
-    });
+    $status = $process
+      ->setTimeout(NULL)
+      ->setIdleTimeout(NULL)
+      ->run(function () {
+        // Write process buffer to output.
+        $buffer = func_get_arg(1);
+        $this->output->write($buffer);
+      });
 
     if (!$process->isSuccessful()) {
       throw new ProcessFailedException($process);
