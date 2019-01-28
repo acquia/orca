@@ -22,6 +22,7 @@ branches:
     - wip
 
 matrix:
+  fast_finish: true
   include:
     - name: "Static analysis and unit tests"
       env: ORCA_FIXTURE=none
