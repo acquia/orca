@@ -60,6 +60,10 @@ abstract class ServerBase implements ServerInterface {
     $this->process
       ->setTimeout(NULL)
       ->setIdleTimeout(NULL)
+
+      // This is necessary for processes to run asynchronously.
+      ->disableOutput()
+
       ->start();
   }
 

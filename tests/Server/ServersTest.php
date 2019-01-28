@@ -10,25 +10,17 @@ use PHPUnit\Framework\TestCase;
 
 class ServersTest extends TestCase {
 
-  /**
-   * @dataProvider providerConstruction
-   */
-  public function testConstruction($class) {
+  public function testConstruction() {
     /** @var \Acquia\Orca\Fixture\Fixture $fixture */
     $fixture = $this->prophesize(Fixture::class)->reveal();
     /** @var \Acquia\Orca\Utility\ProcessRunner $process_runner */
     $process_runner = $this->prophesize(ProcessRunner::class)->reveal();
 
-    $object = new $class($fixture, $process_runner);
+    $chrome_driver_server = new ChromeDriverServer($fixture, $process_runner, '');
+    $web_server = new WebServer($fixture, $process_runner);
 
-    $this->assertInstanceOf($class, $object, 'Instantiated class.');
-  }
-
-  public function providerConstruction() {
-    return [
-      [ChromeDriverServer::class],
-      [WebServer::class],
-    ];
+    $this->assertInstanceOf(ChromeDriverServer::class, $chrome_driver_server, 'Instantiated ChromeDriverServer class.');
+    $this->assertInstanceOf(WebServer::class, $web_server, 'Instantiated WebServer class.');
   }
 
 }
