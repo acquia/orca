@@ -37,7 +37,7 @@ class ChromeDriverServer extends ServerBase {
    * {@inheritdoc}
    */
   protected function createProcess(): Process {
-    $command = sprintf('%s --port=4444 &', "{$this->projectDir}/vendor/bin/chromedriver");
+    $command = "{$this->projectDir}/vendor/bin/chromedriver --port=4444 &";
     return Process::fromShellCommandline($command);
   }
 
