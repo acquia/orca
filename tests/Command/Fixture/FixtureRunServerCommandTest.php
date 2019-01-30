@@ -50,7 +50,7 @@ class FixtureRunServerCommandTest extends CommandTestBase {
   public function providerCommand() {
     return [
       [FALSE, ['exists'], StatusCodes::ERROR, sprintf("Error: No fixture exists at %s.\nHint: Use the \"fixture:init\" command to create one.\n", self::FIXTURE_ROOT)],
-      [TRUE, ['exists', 'start', 'wait'], StatusCodes::OK, "Starting web server...\n"],
+      [TRUE, ['exists', 'start', 'wait'], StatusCodes::OK, sprintf("Starting web server...\nListening on http://%s.\nDocument root is %s.\nPress Ctrl-C to quit.\n", Fixture::WEB_ADDRESS, self::FIXTURE_DOCROOT)],
     ];
   }
 

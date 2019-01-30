@@ -72,6 +72,11 @@ class FixtureRunServerCommand extends Command {
 
     $output->writeln('Starting web server...');
     $this->webServer->start();
+    $output->writeln([
+      sprintf('Listening on http://%s.', Fixture::WEB_ADDRESS),
+      "Document root is {$this->fixture->getPath('docroot')}.",
+      'Press Ctrl-C to quit.',
+    ]);
 
     // Wait for SIGINT (Ctrl-C) to kill process.
     $this->webServer->wait();
