@@ -154,6 +154,7 @@ class SubmoduleManager {
       ->files()
       ->followLinks()
       ->in($paths)
+      ->depth('> 1')
       ->exclude(['docroot', 'vendor'])
       ->name('composer.json')
       ->filter(function (\SplFileInfo $file) {
@@ -179,11 +180,6 @@ class SubmoduleManager {
       list($vendor_name, $package_name) = explode('/', $name);
     }
     catch (\Exception $e) {
-      return FALSE;
-    }
-
-    // Ignore top level modules.
-    if (in_array($name, array_keys($this->topLevelModules))) {
       return FALSE;
     }
 
