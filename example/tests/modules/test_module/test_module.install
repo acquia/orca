@@ -1,0 +1,16 @@
+<?php
+
+/**
+ * @file
+ * Install, update, and uninstall functions for the Example Test Module.
+ */
+
+/**
+ * Implements hook_module_install().
+ *
+ * @throws \Exception
+ *   If run.
+ */
+function hook_test_module_install() {
+  throw new \Exception('Failed to respect submodule install opt out for test_module.');
+}
