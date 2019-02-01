@@ -7,7 +7,7 @@
     "minimum-stability": "dev",
     "extra": {
         "orca": {
-            "install": false
+            "enable": false
         }
     }
 }

@@ -71,11 +71,13 @@ class Package {
         'url',
         'version',
         'version_dev',
+        'enable',
       ])
       ->setRequired(['name', 'version_dev'])
       ->setDefaults([
         'type' => 'drupal-module',
         'version' => '*',
+        'enable' => TRUE,
       ])
       ->setAllowedTypes('name', 'string')
       ->setAllowedValues('name', function ($value) {
@@ -87,7 +89,8 @@ class Package {
       ->setAllowedTypes('install_path', 'string')
       ->setAllowedTypes('url', 'string')
       ->setAllowedTypes('version', 'string')
-      ->setAllowedTypes('version_dev', 'string');
+      ->setAllowedTypes('version_dev', 'string')
+      ->setAllowedTypes('enable', 'boolean');
     return $resolver->resolve($data);
   }
 
@@ -227,6 +230,19 @@ class Package {
    */
   public function getVersionRecommended(): string {
     return $this->data['version'];
+  }
+
+  /**
+   * Determines whether the package is a Drupal module that should get enabled.
+   *
+   * @return bool
+   */
+  public function shouldGetEnabled(): bool {
+    if ($this->getType() !== 'drupal-module') {
+      return FALSE;
+    }
+
+    return $this->data['enable'];
   }
 
 }

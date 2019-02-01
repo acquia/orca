@@ -17,11 +17,11 @@ class FixtureCreator {
   use SutSettingsTrait;
 
   /**
-   * The Acquia module installer.
+   * The Acquia module enabler.
    *
-   * @var \Acquia\Orca\Fixture\AcquiaModuleInstaller
+   * @var \Acquia\Orca\Fixture\AcquiaModuleEnabler
    */
-  private $acquiaModuleInstaller;
+  private $acquiaModuleEnabler;
 
   /**
    * The current Drupal core dev version string.
@@ -96,8 +96,8 @@ class FixtureCreator {
   /**
    * Constructs an instance.
    *
-   * @param \Acquia\Orca\Fixture\AcquiaModuleInstaller $acquia_module_installer
-   *   The Acquia module installer.
+   * @param \Acquia\Orca\Fixture\AcquiaModuleEnabler $acquia_module_enabler
+   *   The Acquia module enabler.
    * @param string $drupal_core_dev_version
    *   The current Drupal core dev version string.
    * @param string|null $drupal_core_version
@@ -113,8 +113,8 @@ class FixtureCreator {
    * @param \Acquia\Orca\Fixture\SubmoduleManager $submodule_manager
    *   The submodule manager.
    */
-  public function __construct(AcquiaModuleInstaller $acquia_module_installer, string $drupal_core_dev_version, ?string $drupal_core_version, Fixture $fixture, SymfonyStyle $output, ProcessRunner $process_runner, PackageManager $package_manager, SubmoduleManager $submodule_manager) {
-    $this->acquiaModuleInstaller = $acquia_module_installer;
+  public function __construct(AcquiaModuleEnabler $acquia_module_enabler, string $drupal_core_dev_version, ?string $drupal_core_version, Fixture $fixture, SymfonyStyle $output, ProcessRunner $process_runner, PackageManager $package_manager, SubmoduleManager $submodule_manager) {
+    $this->acquiaModuleEnabler = $acquia_module_enabler;
     $this->drupalCoreDevVersion = $drupal_core_dev_version;
     $this->drupalCoreVersion = $drupal_core_version;
     $this->fixture = $fixture;
@@ -138,7 +138,7 @@ class FixtureCreator {
     $this->fixDefaultDependencies();
     $this->addAcquiaPackages();
     $this->installDrupal();
-    $this->installAcquiaModules();
+    $this->enableAcquiaModules();
     $this->createBackupBranch();
     $this->output->success('Fixture created');
   }
@@ -662,12 +662,12 @@ PHP;
   }
 
   /**
-   * Installs the Acquia Drupal modules.
+   * Enables the Acquia Drupal modules.
    *
    * @throws \Exception
    */
-  private function installAcquiaModules(): void {
-    $this->acquiaModuleInstaller->install();
+  private function enableAcquiaModules(): void {
+    $this->acquiaModuleEnabler->enable();
   }
 
   /**

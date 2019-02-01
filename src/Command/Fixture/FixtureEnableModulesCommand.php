@@ -3,7 +3,7 @@
 namespace Acquia\Orca\Command\Fixture;
 
 use Acquia\Orca\Command\StatusCodes;
-use Acquia\Orca\Fixture\AcquiaModuleInstaller;
+use Acquia\Orca\Fixture\AcquiaModuleEnabler;
 use Acquia\Orca\Fixture\Fixture;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -12,21 +12,21 @@ use Symfony\Component\Console\Output\OutputInterface;
 /**
  * Provides a command.
  */
-class FixtureInstallModulesCommand extends Command {
+class FixtureEnableModulesCommand extends Command {
 
   /**
    * The default command name.
    *
    * @var string
    */
-  protected static $defaultName = 'fixture:install-modules';
+  protected static $defaultName = 'fixture:enable-modules';
 
   /**
-   * The Acquia module installer.
+   * The Acquia module enabler.
    *
-   * @var \Acquia\Orca\Fixture\AcquiaModuleInstaller
+   * @var \Acquia\Orca\Fixture\AcquiaModuleEnabler
    */
-  private $acquiaModuleInstaller;
+  private $acquiaModuleEnabler;
 
   /**
    * The fixture.
@@ -38,13 +38,13 @@ class FixtureInstallModulesCommand extends Command {
   /**
    * Constructs an instance.
    *
-   * @param \Acquia\Orca\Fixture\AcquiaModuleInstaller $acquia_module_installer
-   *   The Acquia module installer.
+   * @param \Acquia\Orca\Fixture\AcquiaModuleEnabler $acquia_module_enabler
+   *   The Acquia module enabler.
    * @param \Acquia\Orca\Fixture\Fixture $fixture
    *   The fixture.
    */
-  public function __construct(AcquiaModuleInstaller $acquia_module_installer, Fixture $fixture) {
-    $this->acquiaModuleInstaller = $acquia_module_installer;
+  public function __construct(AcquiaModuleEnabler $acquia_module_enabler, Fixture $fixture) {
+    $this->acquiaModuleEnabler = $acquia_module_enabler;
     $this->fixture = $fixture;
     parent::__construct(self::$defaultName);
   }
@@ -54,8 +54,13 @@ class FixtureInstallModulesCommand extends Command {
    */
   protected function configure() {
     $this
-      ->setAliases(['enmods'])
-      ->setDescription('Installs all Acquia modules')
+      ->setAliases([
+        'enmods',
+        // @deprecated For backward compatibility.
+        // @todo Remove before next release.
+        'fixture:install-modules',
+      ])
+      ->setDescription('Enables all Acquia modules')
       ->setHidden(TRUE);
   }
 
@@ -69,7 +74,7 @@ class FixtureInstallModulesCommand extends Command {
     }
 
     try {
-      $this->acquiaModuleInstaller->install();
+      $this->acquiaModuleEnabler->enable();
     }
     catch (\Exception $e) {
       return StatusCodes::ERROR;

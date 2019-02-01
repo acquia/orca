@@ -109,15 +109,17 @@ class SubmoduleManager {
       catch (\Exception $e) {
         continue;
       }
+      $name = $config->get('name');
       $install_path = str_replace("{$this->fixture->getPath()}/", '', $file->getPath());
       $package_data = [
-        'name' => $config->get('name'),
+        'name' => $name,
         'install_path' => $install_path,
         'url' => $file->getPath(),
         'version' => '@dev',
         'version_dev' => '@dev',
+        'enable' => $config->get('extra.orca.enable', TRUE),
       ];
-      $submodules[$config->get('name')] = new Package($this->fixture, $package_data);
+      $submodules[$name] = new Package($this->fixture, $package_data);
     }
     return $submodules;
   }
@@ -185,11 +187,6 @@ class SubmoduleManager {
 
     // Ignore everything but Drupal modules.
     if ($config->get('type') !== 'drupal-module') {
-      return FALSE;
-    }
-
-    // Ignore modules that explicitly opt out of installation.
-    if ($config->get('extra.orca.install', TRUE) === FALSE) {
       return FALSE;
     }
 

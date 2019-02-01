@@ -10,7 +10,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 /**
  * Installs Acquia Drupal modules.
  */
-class AcquiaModuleInstaller {
+class AcquiaModuleEnabler {
 
   use SutSettingsTrait;
 
@@ -82,13 +82,13 @@ class AcquiaModuleInstaller {
   }
 
   /**
-   * Installs modules.
+   * Enables modules.
    *
    * @throws \Exception
    */
-  public function install(): void {
+  public function enable(): void {
     $this->getSutSettingsFromFixture();
-    $this->installAcquiaModules();
+    $this->enableAcquiaModules();
   }
 
   /**
@@ -103,15 +103,15 @@ class AcquiaModuleInstaller {
   }
 
   /**
-   * Installs the Acquia modules.
+   * Enables the Acquia modules.
    */
-  private function installAcquiaModules(): void {
+  private function enableAcquiaModules(): void {
     if ($this->isSutOnly && ($this->sut->getType() !== 'drupal-module')) {
-      $this->output->warning('No modules to install because the fixture is SUT-only and the SUT is not a Drupal module');
+      $this->output->warning('No modules to enable because the fixture is SUT-only and the SUT is not a Drupal module');
       return;
     }
 
-    $this->output->section('Installing Acquia modules');
+    $this->output->section('Enabling Acquia modules');
     $module_list = $this->getAcquiaModuleList();
     $process = $this->processRunner->createFixtureVendorBinProcess(array_merge([
       'drush',
@@ -119,27 +119,35 @@ class AcquiaModuleInstaller {
       '--yes',
     ], $module_list));
     $this->processRunner->run($process, $this->fixture->getPath());
-    $this->output->success('Modules installed');
+    $this->output->success('Modules enabled');
   }
 
   /**
-   * Gets the list of Acquia modules to install.
+   * Gets the list of Acquia modules to enable.
    *
    * @return string[]
    */
   private function getAcquiaModuleList(): array {
+    $module_list = [];
+
+    $top_level_packages = $this->packageManager->getMultiple();
     if ($this->isSutOnly) {
-      $module_list = [$this->sut->getProjectName()];
-      foreach ($this->submoduleManager->getByParent($this->sut) as $submodule) {
-        $module_list[] = $submodule->getProjectName();
-      }
-      return $module_list;
+      $top_level_packages = [$this->sut];
     }
 
-    $module_list = array_values($this->packageManager->getMultiple('drupal-module', 'getProjectName'));
-    foreach ($this->submoduleManager->getAll() as $submodule) {
-      $module_list[] = $submodule->getProjectName();
+    foreach ($top_level_packages as $package) {
+      if ($package->getType() === 'drupal-module') {
+        $module_list[] = $package->getProjectName();
+      }
+
+      foreach ($this->submoduleManager->getByParent($package) as $submodule) {
+        if (!$submodule->shouldGetEnabled()) {
+          continue;
+        }
+        $module_list[] = $submodule->getProjectName();
+      }
     }
+
     return $module_list;
   }
 

@@ -17,6 +17,9 @@
 # - "version": (optional) The recommended package version to require via
 #   Composer. Defaults to "*".
 # - "version_dev": (required) The dev package version to require via Composer.
+# - "enable": (internal) TRUE if the package is a Drupal module that should be
+#   automatically enabled or FALSE if not. Defaults to TRUE for modules. Always
+#   FALSE for anything else.
 #
 # These are converted to \Acquia\Orca\Fixture\Package objects by
 # \Acquia\Orca\Fixture\PackageManager. A different specification can be
