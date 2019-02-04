@@ -667,6 +667,11 @@ PHP;
    * @throws \Exception
    */
   private function enableAcquiaModules(): void {
+    if ($this->isSutOnly && ($this->sut->getType() !== 'drupal-module')) {
+      // No modules to enable because the fixture is SUT-only and the SUT is not
+      // a Drupal module
+      return;
+    }
     $this->acquiaModuleEnabler->enable();
   }
 
