@@ -40,24 +40,24 @@
 #  name: drupal/acquia_commercemanager
 #  url: ../commerce-manager
 #  version_dev: 1.x-dev
-#-
-#  name: drupal/acquia_connector
-#  url: ../acquia-connector
-#  version_dev: 1.x-dev
-#-
-#  name: drupal/acquia_contenthub
-#  url: ../content-hub-d8
-#  version: ~1.0
-#  version_dev: 2.x-dev
-#-
-#  name: drupal/acquia_lift
-#  version_dev: 3.x-dev
+-
+  name: drupal/acquia_connector
+  url: ../acquia-connector
+  version_dev: 1.x-dev
+-
+  name: drupal/acquia_contenthub
+  url: ../content-hub-d8
+  version: ~1.0
+  version_dev: 2.x-dev
+-
+  name: drupal/acquia_lift
+  version_dev: 3.x-dev
 -
   name: drupal/acquia_purge
   version_dev: 1.x-dev
-#-
-#  name: drupal/acsf
-#  version_dev: 2.x-dev
+-
+  name: drupal/acsf
+  version_dev: 2.x-dev
 -
   name: drupal/cog
   type: drupal-theme
@@ -82,6 +82,6 @@
   name: drupal/lightning_workflow
   url: ../lightning-workflow
   version_dev: 3.x-dev
-#-
-#  name: drupal/media_acquiadam
-#  version_dev: 1.x-dev
+-
+  name: drupal/media_acquiadam
+  version_dev: 1.x-dev
