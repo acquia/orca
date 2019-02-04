@@ -39,7 +39,7 @@ fi
 # ------------------------------------------------------------------------------
 if [[ "$INTEGRATED_TEST" && "$STABLE_PACKAGES" ]]; then
   run ${ORCA_ROOT}/bin/orca fixture:init -f --sut=$1
-  #run ${ORCA_ROOT}/bin/orca tests:run --sut=$1
+  run ${ORCA_ROOT}/bin/orca tests:run --sut=$1
 fi
 
 # Isolated test w/ dev packages.
