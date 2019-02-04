@@ -4,14 +4,13 @@ namespace Acquia\Orca\Task\TestFramework;
 
 use Acquia\Orca\Exception\TaskFailureException;
 use Acquia\Orca\Fixture\Fixture;
-use Acquia\Orca\Task\TaskBase;
 use Acquia\Orca\Utility\SutSettingsTrait;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 
 /**
  * Runs PHPUnit tests.
  */
-class PhpUnitTask extends TaskBase {
+class PhpUnitTask extends TestFrameworkBase {
 
   use SutSettingsTrait;
 
@@ -19,7 +18,8 @@ class PhpUnitTask extends TaskBase {
    * {@inheritdoc}
    */
   public function statusMessage(): string {
-    return 'Running PHPUnit tests';
+    $which = ($this->isPublicTestsOnly()) ? 'public' : 'all';
+    return "Running {$which} PHPUnit tests";
   }
 
   /**
@@ -189,7 +189,7 @@ class PhpUnitTask extends TaskBase {
         "--configuration={$this->fixture->getPath('docroot/core/phpunit.xml.dist')}",
         '--exclude-group=orca_ignore',
       ];
-      if ($this->isSutOnly) {
+      if ($this->isPublicTestsOnly()) {
         $command[] = '--group=orca_public';
       }
       $command[] = $this->getPath();

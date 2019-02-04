@@ -182,6 +182,7 @@ class TestRunner {
     foreach ($this->getFrameworks() as $task) {
       $this->output->section("{$task->statusMessage()} for {$this->sut->getPackageName()}");
       $task->setPath($this->sut->getInstallPathAbsolute());
+      $task->limitToPublicTests(FALSE);
       $task->execute();
     }
   }
@@ -199,12 +200,13 @@ class TestRunner {
         continue;
       }
       if (!$this->filesystem->exists($package->getInstallPathAbsolute())) {
-        $this->output->warning(sprintf('Package %s absent from expected location: %s ', $package->getPackageName(), $package->getInstallPathAbsolute()));
+        $this->output->warning(sprintf('Package %s absent from expected location: %s', $package->getPackageName(), $package->getInstallPathAbsolute()));
         continue;
       }
       foreach ($this->getFrameworks() as $task) {
         $this->output->section("{$task->statusMessage()} for {$package->getPackageName()}");
         $task->setPath($package->getInstallPathAbsolute());
+        $task->limitToPublicTests(TRUE);
         $task->execute();
       }
     }

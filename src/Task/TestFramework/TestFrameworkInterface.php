@@ -10,20 +10,11 @@ use Acquia\Orca\Task\TaskInterface;
 interface TestFrameworkInterface extends TaskInterface {
 
   /**
-   * Sets the system under test (SUT).
+   * Sets whether or not to limit to public tests.
    *
-   * @param string|null $package_name
-   *   (Optional) The system under test (SUT) in the form of its package name,
-   *   e.g., "drupal/example", or NULL to unset the SUT.
+   * @param bool $limit
+   *   TRUE to limit to public tests or FALSE to include private tests.
    */
-  public function setSut(?string $package_name = NULL): void;
-
-  /**
-   * Sets the SUT-only flag.
-   *
-   * @param bool $is_sut_only
-   *   TRUE for SUT-only or FALSE for not.
-   */
-  public function setSutOnly(bool $is_sut_only): void;
+  public function limitToPublicTests(bool $limit): void;
 
 }

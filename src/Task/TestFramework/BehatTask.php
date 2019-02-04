@@ -3,7 +3,6 @@
 namespace Acquia\Orca\Task\TestFramework;
 
 use Acquia\Orca\Exception\TaskFailureException;
-use Acquia\Orca\Task\TaskBase;
 use Acquia\Orca\Utility\SutSettingsTrait;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Process\Exception\ProcessFailedException;
@@ -11,7 +10,7 @@ use Symfony\Component\Process\Exception\ProcessFailedException;
 /**
  * Runs Behat tests.
  */
-class BehatTask extends TaskBase implements TestFrameworkInterface {
+class BehatTask extends TestFrameworkBase {
 
   use SutSettingsTrait;
 
@@ -19,7 +18,8 @@ class BehatTask extends TaskBase implements TestFrameworkInterface {
    * {@inheritdoc}
    */
   public function statusMessage(): string {
-    return 'Running Behat tests';
+    $which = ($this->isPublicTestsOnly()) ? 'public' : 'all';
+    return "Running {$which} Behat tests";
   }
 
   /**
@@ -63,11 +63,12 @@ class BehatTask extends TaskBase implements TestFrameworkInterface {
    * @return string
    */
   private function getTags(): string {
-    $tags = ['~@orca_ignore'];
-    if ($this->isSutOnly) {
+    $tags = [];
+    if ($this->isPublicTestsOnly()) {
       $tags[] = '@orca_public';
     }
-    return implode(',', $tags);
+    $tags[] = '~@orca_ignore';
+    return implode('&&', $tags);
   }
 
 }
