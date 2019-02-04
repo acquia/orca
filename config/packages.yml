@@ -31,7 +31,7 @@
   type: drupal-drush
   # acsf-tools specifies an installer-name.
   install_path: drush/Commands/acsf_tools
-  version_dev: 9.x-dev
+  version_dev: dev-9.x-dev
 -
   name: acquia/drupal-spec-tool
   type: behat-extension
