@@ -32,6 +32,7 @@ ORCA_PACKAGE_STABILITY=${ORCA_PACKAGE_STABILITY:=any}
 # ------------------------------------------------------------------------------
 if [[ "$ISOLATED_TEST" && "$STABLE_PACKAGES" ]]; then
   run ${ORCA_ROOT}/bin/orca fixture:init -f --sut=$1 --sut-only
+  run ${ORCA_ROOT}/bin/orca fixture:status
   run ${ORCA_ROOT}/bin/orca tests:run --sut=$1 --sut-only
 fi
 
@@ -39,6 +40,7 @@ fi
 # ------------------------------------------------------------------------------
 if [[ "$INTEGRATED_TEST" && "$STABLE_PACKAGES" ]]; then
   run ${ORCA_ROOT}/bin/orca fixture:init -f --sut=$1
+  run ${ORCA_ROOT}/bin/orca fixture:status
   run ${ORCA_ROOT}/bin/orca tests:run --sut=$1
 fi
 
@@ -46,6 +48,7 @@ fi
 # ------------------------------------------------------------------------------
 if [[ "$ISOLATED_TEST" && "$DEV_PACKAGES" ]]; then
   run ${ORCA_ROOT}/bin/orca fixture:init -f --sut=$1 --sut-only --dev
+  run ${ORCA_ROOT}/bin/orca fixture:status
   run ${ORCA_ROOT}/bin/orca tests:run --sut=$1 --sut-only
 fi
 
@@ -53,5 +56,6 @@ fi
 # ------------------------------------------------------------------------------
 if [[ "$INTEGRATED_TEST" && "$DEV_PACKAGES" ]]; then
   run ${ORCA_ROOT}/bin/orca fixture:init -f --sut=$1 --dev
+  run ${ORCA_ROOT}/bin/orca fixture:status
   run ${ORCA_ROOT}/bin/orca tests:run --sut=$1
 fi
