@@ -35,6 +35,8 @@ class ChromeDriverServer extends ServerBase {
 
   /**
    * {@inheritdoc}
+   *
+   * @SuppressWarnings(PHPMD.StaticAccess)
    */
   protected function createProcess(): Process {
     $command = "{$this->projectDir}/vendor/bin/chromedriver --port=4444 &";
