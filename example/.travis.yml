@@ -33,7 +33,7 @@ matrix:
     - env: ORCA_FIXTURE=standard ORCA_PACKAGE_STABILITY=dev
 
 install:
-  - "git clone --depth 1 git@github.com:acquia/orca.git ../orca"
+  - "git clone --depth 1 https://github.com/acquia/orca.git ../orca"
   # Install ORCA and prepare the environment.
   # Supply the topic branch of the SUT to help Composer guess its version.
   - "../orca/bin/travis/install 8.x-1.x"
