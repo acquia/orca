@@ -57,7 +57,7 @@
   version_dev: 1.x-dev
 -
   name: drupal/acsf
-  version_dev: 2.x-dev
+  version_dev: "*"
 -
   name: drupal/cog
   type: drupal-theme
