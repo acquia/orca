@@ -7,7 +7,17 @@ if [[ -z "$TRAVIS" ]]; then
   exit 1
 fi
 
+if [[ -z "$1" ]]; then
+  echo "Missing required branch name argument, e.g.:"
+  echo "$0 8.x-1.x"
+  exit 127
+fi
+
 set -e
+
+function gitc {
+  git -C ${TRAVIS_BUILD_DIR} $@
+}
 
 # Disable Xdebug.
 phpenv config-rm xdebug.ini
@@ -26,21 +36,14 @@ export COMPOSER_EXIT_ON_PATCH_FAILURE=1
 ORCA_ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 composer --no-dev -d${ORCA_ROOT} install
 
-# Handle the branch name argument.
-if [[ ! -z "$1" ]]; then
-  function gitc {
-    git -C ${TRAVIS_BUILD_DIR} $@
-  }
-
-  # Ensure the checked out branch is named after the branch name argument.
-  gitc rev-parse --abbrev-ref HEAD
-  if [[ $(gitc rev-parse --abbrev-ref HEAD) != "$1" ]]; then
-    gitc branch -f $1
-    gitc checkout $1
-  fi
-
-  # Delete all other branches to avoid confusing the Composer version guesser.
-  for BRANCH in $(gitc for-each-ref --format="%(refname:short)" --no-contains=HEAD refs/heads/*); do
-    gitc branch -D ${BRANCH}
-  done
+# Ensure the checked out branch is named after the branch name argument.
+gitc rev-parse --abbrev-ref HEAD
+if [[ $(gitc rev-parse --abbrev-ref HEAD) != "$1" ]]; then
+  gitc branch -f $1
+  gitc checkout $1
 fi
+
+# Delete all other branches to avoid confusing the Composer version guesser.
+for BRANCH in $(gitc for-each-ref --format="%(refname:short)" --no-contains=HEAD refs/heads/*); do
+  gitc branch -D ${BRANCH}
+done
