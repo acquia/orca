@@ -53,6 +53,7 @@ class BehatTask extends TestFrameworkBase {
       ->files()
       ->followLinks()
       ->in($this->getPath())
+      ->depth('== 0')
       ->notPath('vendor')
       ->name('behat.yml');
   }
