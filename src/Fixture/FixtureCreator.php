@@ -389,6 +389,8 @@ class FixtureCreator {
    * Displays debugging info about a failure to symlink the SUT.
    */
   private function displayFailedSymlinkDebuggingInfo() {
+    $this->output->section('Debugging info');
+
     $processes = [
 
       // Display some info about the SUT install path.
