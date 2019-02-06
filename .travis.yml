@@ -41,4 +41,6 @@ matrix:
 
 install: "./bin/travis/install master"
 
-script: "[[ -z \"$ORCA_LIVE\" ]] && ./bin/self-test || ./bin/live-test"
+script:
+  - "if [[ -z \"$ORCA_LIVE\" ]]; then ./bin/self-test; fi"
+  - "if [[ \"$ORCA_LIVE\" == true ]]; then ./bin/live-test; fi"
