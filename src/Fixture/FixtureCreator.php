@@ -244,7 +244,7 @@ class FixtureCreator {
       ],
       // Other Acquia packages are only conditionally required later and should
       // in no case be included up-front.
-      array_keys($this->packageManager->getMultiple()),
+      $this->getUnwantedPackageList(),
       // @todo Remove the below line once acquia_connector is enabled and thus
       //   included by the above line.
       ['drupal/acquia_connector']
@@ -283,6 +283,21 @@ class FixtureCreator {
       'webflo/drupal-core-require-dev',
     ]);
     $this->processRunner->run($process, $this->fixture->getPath());
+  }
+
+  /**
+   * Gets the list of unwanted packages.
+   *
+   * @return array
+   */
+  private function getUnwantedPackageList(): array {
+    $packages = $this->packageManager->getMultiple();
+    if ($this->isSutOnly) {
+      // Don't remove BLT, because it won't be replaced in a SUT-only fixture,
+      // and a fixture cannot be successfully built without it.
+      unset($packages['acquia/blt']);
+    }
+    return array_keys($packages);
   }
 
   /**

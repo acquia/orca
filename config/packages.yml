@@ -32,11 +32,11 @@
   # acsf-tools specifies an installer-name.
   install_path: drush/Commands/acsf_tools
   version_dev: dev-9.x-dev
-#-
-#  name: acquia/blt
-#  type: composer-plugin
-#  version: ~10.0
-#  version_dev: 10.0.x-dev
+-
+  name: acquia/blt
+  type: composer-plugin
+  version: ~10.0
+  version_dev: 10.0.x-dev
 -
   name: acquia/drupal-spec-tool
   type: behat-extension
