@@ -7,6 +7,8 @@ if [[ -z "$TRAVIS" ]]; then
   exit 1
 fi
 
+set -e
+
 # Disable Xdebug.
 phpenv config-rm xdebug.ini
 
@@ -24,8 +26,21 @@ export COMPOSER_EXIT_ON_PATCH_FAILURE=1
 ORCA_ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 composer --no-dev -d${ORCA_ROOT} install
 
-# Handle a branch name argument.
-if [[ ! -z "$1" && $(git -C ${TRAVIS_BUILD_DIR} rev-parse --abbrev-ref HEAD) != "$1" ]]; then
-  git -C ${TRAVIS_BUILD_DIR} branch -f "$1"
-  git -C ${TRAVIS_BUILD_DIR} checkout "$1"
+# Handle the branch name argument.
+if [[ ! -z "$1" ]]; then
+  function gitc {
+    git -C ${TRAVIS_BUILD_DIR} $@
+  }
+
+  # Ensure the checked out branch is named after the branch name argument.
+  gitc rev-parse --abbrev-ref HEAD
+  if [[ $(gitc rev-parse --abbrev-ref HEAD) != "$1" ]]; then
+    gitc branch -f $1
+    gitc checkout $1
+  fi
+
+  # Delete all other branches to avoid confusing the Composer version guesser.
+  for BRANCH in $(gitc for-each-ref --format="%(refname:short)" --no-contains=HEAD refs/heads/*); do
+    gitc branch -D ${BRANCH}
+  done
 fi
