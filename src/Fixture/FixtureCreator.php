@@ -244,10 +244,7 @@ class FixtureCreator {
       ],
       // Other Acquia packages are only conditionally required later and should
       // in no case be included up-front.
-      $this->getUnwantedPackageList(),
-      // @todo Remove the below line once acquia_connector is enabled and thus
-      //   included by the above line.
-      ['drupal/acquia_connector']
+      $this->getUnwantedPackageList()
     ));
     $this->processRunner->run($process, $this->fixture->getPath());
 
