@@ -70,22 +70,14 @@ class PackageManager {
    * @param string|null $type
    *   (Optional) A type to filter to, e.g., "drupal-module", or NULL to not
    *   filter by type. Defaults to NULL.
-   * @param string|null $getter
-   *   (Optional) A getter method to call on the objects to get the return array
-   *   values, or NULL to return the full objects. Defaults to NULL.
    *
    * @return \Acquia\Orca\Fixture\Package[]|string[]
    *   An array of packages or package properties keyed by package name.
    */
-  public function getMultiple(?string $type = NULL, ?string $getter = NULL): array {
+  public function getMultiple(?string $type = NULL): array {
     $packages = [];
     foreach ($this->packages as $package_name => $package) {
       if ($type && $package->getType() !== $type) {
-        continue;
-      }
-
-      if ($getter && method_exists($package, $getter)) {
-        $packages[$package_name] = $package->{$getter}();
         continue;
       }
 

@@ -34,23 +34,9 @@ class PackageManagerTest extends TestCase {
     'drupal/theme2',
   ];
 
-  private const ALL_PACKAGE_VERSIONS = [
-    'drupal/module1' => '*',
-    'drupal/module2' => '~1.0',
-    'drupal/drush1' => '*',
-    'drupal/drush2' => '*',
-    'drupal/theme1' => '*',
-    'drupal/theme2' => '*',
-  ];
-
   private const MODULES = [
     'drupal/module1',
     'drupal/module2',
-  ];
-
-  private const MODULE_DIR_BASENAMES = [
-    'drupal/module1' => '../module1',
-    'drupal/module2' => '../module2',
   ];
 
   private const THEMES = [
@@ -74,18 +60,14 @@ class PackageManagerTest extends TestCase {
   public function testPackageManager() {
     $manager = $this->createPackageManager();
     $all_packages = $manager->getMultiple();
-    $all_package_versions = $manager->getMultiple(NULL, 'getVersionRecommended');
     $modules = $manager->getMultiple('drupal-module');
-    $module_repository_urls = $manager->getMultiple('drupal-module', 'getRepositoryUrl');
     $themes = $manager->getMultiple('drupal-theme');
     $package = $manager->get('drupal/module2');
 
     $this->assertEquals(self::ALL_PACKAGES, array_keys($all_packages), 'Set/got all packages.');
     $this->assertInstanceOf(Package::class, reset($all_packages));
-    $this->assertEquals(self::ALL_PACKAGE_VERSIONS, $all_package_versions);
     $this->assertEquals(self::MODULES, array_keys($modules), 'Got modules.');
     $this->assertInstanceOf(Package::class, reset($modules));
-    $this->assertEquals(self::MODULE_DIR_BASENAMES, $module_repository_urls, 'Got module repository URLs.');
     $this->assertEquals(self::THEMES, array_keys($themes), 'Got themes.');
     $this->assertInstanceOf(Package::class, reset($themes));
     $this->assertEquals('drupal/module2', $package->getPackageName(), 'Got package by name.');
