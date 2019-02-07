@@ -180,9 +180,9 @@ class TestRunner {
   private function runSutTests(): void {
     $this->output->title('Running SUT tests');
     foreach ($this->getFrameworks() as $task) {
-      $this->output->section("{$task->statusMessage()} for {$this->sut->getPackageName()}");
       $task->setPath($this->sut->getInstallPathAbsolute());
       $task->limitToPublicTests(FALSE);
+      $this->output->section("{$task->statusMessage()} for {$this->sut->getPackageName()}");
       $task->execute();
     }
   }
