@@ -53,7 +53,7 @@
   name: drupal/acquia_contenthub
   url: ../content-hub-d8
   version: ~1.0
-  version_dev: 2.x-dev
+  version_dev: 1.x-dev
 -
   name: drupal/acquia_lift
   version_dev: 3.x-dev
