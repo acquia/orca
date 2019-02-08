@@ -35,9 +35,12 @@ matrix:
     - name: "Integrated test w/ dev package versions"
       env: ORCA_FIXTURE=standard ORCA_PACKAGE_STABILITY=dev
     - name: "Live product test w/ recommended versions of all packages"
-      env: ORCA_LIVE=true
+      env: ORCA_LIVE=true ORCA_PACKAGE_STABILITY=stable
+    - name: "Live product test w/ dev versions of all packages"
+      env: ORCA_LIVE=true ORCA_PACKAGE_STABILITY=dev
   allow_failures:
-    - env: ORCA_LIVE=true
+    - env: ORCA_LIVE=true ORCA_PACKAGE_STABILITY=stable
+    - env: ORCA_LIVE=true ORCA_PACKAGE_STABILITY=dev
 
 install: "./bin/travis/install master"
 
