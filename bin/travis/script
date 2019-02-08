@@ -6,9 +6,10 @@ if [[ -z "$1" ]]; then
   exit 127
 fi
 
-function run {
-  echo "> $@"
-  eval "$@"
+function orca {
+  COMMAND="${ORCA_ROOT}/bin/orca $@"
+  echo "> $COMMAND"
+  eval ${COMMAND}
 }
 
 shopt -s extglob
@@ -26,36 +27,36 @@ ORCA_PACKAGE_STABILITY=${ORCA_PACKAGE_STABILITY:=any}
 
 # Static code analysis.
 # ------------------------------------------------------------------------------
-[[ ! -z "$STATIC_ANALYSIS" ]] && run ${ORCA_ROOT}/bin/orca static-analysis:run ./
+[[ ! -z "$STATIC_ANALYSIS" ]] && orca static-analysis:run ./
 
 # Isolated test w/ stable packages.
 # ------------------------------------------------------------------------------
 if [[ "$ISOLATED_TEST" && "$STABLE_PACKAGES" ]]; then
-  run ${ORCA_ROOT}/bin/orca fixture:init -f --sut=$1 --sut-only
-  run ${ORCA_ROOT}/bin/orca fixture:status
-  run ${ORCA_ROOT}/bin/orca tests:run --sut=$1 --sut-only
+  orca fixture:init -f --sut=$1 --sut-only
+  orca fixture:status
+  orca tests:run --sut=$1 --sut-only
 fi
 
 # Integrated test w/ stable packages.
 # ------------------------------------------------------------------------------
 if [[ "$INTEGRATED_TEST" && "$STABLE_PACKAGES" ]]; then
-  run ${ORCA_ROOT}/bin/orca fixture:init -f --sut=$1
-  run ${ORCA_ROOT}/bin/orca fixture:status
-  run ${ORCA_ROOT}/bin/orca tests:run --sut=$1
+  orca fixture:init -f --sut=$1
+  orca fixture:status
+  orca tests:run --sut=$1
 fi
 
 # Isolated test w/ dev packages.
 # ------------------------------------------------------------------------------
 if [[ "$ISOLATED_TEST" && "$DEV_PACKAGES" ]]; then
-  run ${ORCA_ROOT}/bin/orca fixture:init -f --sut=$1 --sut-only --dev
-  run ${ORCA_ROOT}/bin/orca fixture:status
-  run ${ORCA_ROOT}/bin/orca tests:run --sut=$1 --sut-only
+  orca fixture:init -f --sut=$1 --sut-only --dev
+  orca fixture:status
+  orca tests:run --sut=$1 --sut-only
 fi
 
 # Integrated test w/ dev packages.
 # ------------------------------------------------------------------------------
 if [[ "$INTEGRATED_TEST" && "$DEV_PACKAGES" ]]; then
-  run ${ORCA_ROOT}/bin/orca fixture:init -f --sut=$1 --dev
-  run ${ORCA_ROOT}/bin/orca fixture:status
-  run ${ORCA_ROOT}/bin/orca tests:run --sut=$1
+  orca fixture:init -f --sut=$1 --dev
+  orca fixture:status
+  orca tests:run --sut=$1
 fi
