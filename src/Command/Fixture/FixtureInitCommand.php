@@ -84,7 +84,8 @@ class FixtureInitCommand extends Command {
       ->addOption('sut', NULL, InputOption::VALUE_REQUIRED, 'The system under test (SUT) in the form of its package name, e.g., "drupal/example"')
       ->addOption('sut-only', NULL, InputOption::VALUE_NONE, 'Add only the system under test (SUT). Omit all other non-required Acquia packages')
       ->addOption('dev', NULL, InputOption::VALUE_NONE, 'Use dev (HEAD) branches instead of stable releases of Drupal core and Acquia packages')
-      ->addOption('force', 'f', InputOption::VALUE_NONE, 'If the fixture already exists, remove it first without confirmation');
+      ->addOption('force', 'f', InputOption::VALUE_NONE, 'If the fixture already exists, remove it first without confirmation')
+      ->addOption('no-sqlite', NULL, InputOption::VALUE_NONE, 'Use the default BLT database includes instead of SQLite');
   }
 
   /**
@@ -115,6 +116,7 @@ class FixtureInitCommand extends Command {
     $this->setSut($sut);
     $this->setSutOnly($sut_only);
     $this->setDev($input->getOption('dev'));
+    $this->setSqlite($input->getOption('no-sqlite'));
 
     try {
       $this->fixtureCreator->create();
@@ -188,6 +190,18 @@ class FixtureInitCommand extends Command {
   private function setDev($dev): void {
     if ($dev) {
       $this->fixtureCreator->setDev($dev);
+    }
+  }
+
+  /**
+   * Sets the SQLite flag.
+   *
+   * @param string|string[]|bool|null $no_sqlite
+   *   The no-sqlite flag.
+   */
+  private function setSqlite($no_sqlite): void {
+    if ($no_sqlite) {
+      $this->fixtureCreator->setSqlite(FALSE);
     }
   }
 

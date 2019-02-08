@@ -94,6 +94,13 @@ class FixtureCreator {
   private $submoduleManager;
 
   /**
+   * The SQLite flag.
+   *
+   * @var bool
+   */
+  private $useSqlite = TRUE;
+
+  /**
    * Constructs an instance.
    *
    * @param \Acquia\Orca\Fixture\AcquiaModuleEnabler $acquia_module_enabler
@@ -151,6 +158,16 @@ class FixtureCreator {
    */
   public function setDev(bool $is_dev): void {
     $this->isDev = $is_dev;
+  }
+
+  /**
+   * Sets the SQLite flag.
+   *
+   * @param bool $use_sqlite
+   *   TRUE to use SQLite or FALSE not to.
+   */
+  public function setSqlite(bool $use_sqlite): void {
+    $this->useSqlite = $use_sqlite;
   }
 
   /**
@@ -641,11 +658,16 @@ class FixtureCreator {
     }
 
     // Add the settings.
-    $data = "\n{$id}\n" . <<<'PHP'
+    $data = "\n{$id}\n";
+    if ($this->useSqlite) {
+      $data .= <<<'PHP'
 $databases['default']['default']['database'] = dirname(DRUPAL_ROOT) . '/docroot/sites/default/files/.ht.sqlite';
 $databases['default']['default']['driver'] = 'sqlite';
 unset($databases['default']['default']['namespace']);
 
+PHP;
+    }
+    $data .= <<<'PHP'
 // Override the definition of the service container used during Drupal's
 // bootstrapping process. This is needed so that the core db-tools.php script
 // can import database dumps properly. Without this, the destination database
