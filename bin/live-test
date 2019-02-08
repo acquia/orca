@@ -1,14 +1,27 @@
 #!/usr/bin/env bash
 
-# ORCA live product test script.
+# NAME
+#     live-test - Test with live packages
+#
+# SYNOPSIS
+#     live-test
+#
+# DESCRIPTION
+#     Performs a live product test with recommended versions of all packages.
 
 set -e
 
-cd "$(dirname "$0")"
+# Executes an ORCA command
+function orca {
+  COMMAND="${ORCA_ROOT}/bin/orca $@"
+  echo "> $COMMAND"
+  eval ${COMMAND}
+}
+
+ORCA_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 
 export ORCA_FIXTURE_DIR="$(cd ../.. && pwd)/orca-build-$(date +%Y-%m-%d_%H-%m-%S)"
 
-./orca fixture:init
-./orca tests:run
-
-echo && times
+orca fixture:init
+orca fixture:status
+orca tests:run

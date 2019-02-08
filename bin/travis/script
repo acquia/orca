@@ -1,19 +1,35 @@
 #!/usr/bin/env bash
 
+# NAME
+#     script - Run ORCA tests
+#
+# SYNOPSIS
+#     script <sut>
+#
+# DESCRIPTION
+#     Creates test fixtures and runs static code analysis and automated tests.
+#
+# OPTIONS
+#     <sut>
+#         The package name of the system under test (SUT), e.g., drupal/example
+#         or acquia/example.
+
+shopt -s extglob
+set -e
+
+# Require the SUT argument.
 if [[ -z "$1" ]]; then
   echo "Missing required SUT argument, e.g.:"
   echo "$0 drupal/example"
   exit 127
 fi
 
+# Executes an ORCA command
 function orca {
   COMMAND="${ORCA_ROOT}/bin/orca $@"
   echo "> $COMMAND"
   eval ${COMMAND}
 }
-
-shopt -s extglob
-set -e
 
 ORCA_ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 ORCA_FIXTURE=${ORCA_FIXTURE:=any}

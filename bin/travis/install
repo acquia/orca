@@ -1,5 +1,22 @@
 #!/usr/bin/env bash
 
+# NAME
+#     install - Install Travis CI dependencies
+#
+# SYNOPSIS
+#     install <branch>
+#
+# DESCRIPTION
+#     Configures the Travis CI environment, installs ORCA, and prepares the SUT.
+#
+# OPTIONS
+#     <branch>
+#         The name of the nearest Git version branch, e.g., 1.x or 8.x-1.x. This
+#         may be the destination branch of a pull request or the nearest
+#         ancestor of a topic branch.
+
+set -e
+
 # Prevent script from being run locally, which can lead to a broken environment
 # or lost work.
 if [[ -z "$TRAVIS" ]]; then
@@ -7,14 +24,14 @@ if [[ -z "$TRAVIS" ]]; then
   exit 1
 fi
 
+# Require the branch name argument.
 if [[ -z "$1" ]]; then
   echo "Missing required branch name argument, e.g.:"
   echo "$0 8.x-1.x"
   exit 127
 fi
 
-set -e
-
+# Executes a Git command in the Travis CI build directory
 function gitc {
   git -C ${TRAVIS_BUILD_DIR} $@
 }

@@ -1,14 +1,24 @@
 #!/usr/bin/env bash
 
-# ORCA self test script.
+# NAME
+#     self-test - Run ORCA's own automated tests
+#
+# SYNOPSIS
+#     self-test
+#
+# DESCRIPTION
+#     Runs static code analysis and automated tests on ORCA itself.
 
 shopt -s extglob
 set -e
 
+# Change to the ORCA root directory
 cd "$(dirname "$0")/.."
 
+# Install ORCA's dependencies.
 composer install
 
+# Perform static code analysis.
 ORCA_FIXTURE=${ORCA_FIXTURE:=any}
 if [[ ${ORCA_FIXTURE} == @(any|none) ]]; then
   echo && composer phpcs
@@ -26,8 +36,7 @@ cp -R example ../
 # Execute tests from the SUT directory as a SUT would.
 cd ../example
 
+# Execute the test script.
 ORCA_FIXTURE_DIR="$(cd .. && pwd)/orca-build-$(date +%Y-%m-%d_%H-%m-%S)" \
   ORCA_PACKAGES_CONFIG="tests/Fixture/packages.yml" \
   ../orca/bin/travis/script drupal/example
-
-echo && times
