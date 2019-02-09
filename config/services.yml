@@ -27,6 +27,14 @@ services:
     public: false
     resource: ../src
 
+  Composer\Config: ~
+
+  Composer\Package\Version\VersionGuesser: ~
+
+  Composer\Semver\VersionParser: ~
+
+  Composer\Util\ProcessExecutor: ~
+
   Symfony\Component\Console\Application: ~
 
   Symfony\Component\Console\Input\ArgvInput: ~

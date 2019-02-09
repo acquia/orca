@@ -4,31 +4,17 @@
 #     install - Install Travis CI dependencies
 #
 # SYNOPSIS
-#     install <branch>
+#     install
 #
 # DESCRIPTION
-#     Configures the Travis CI environment, installs ORCA, and prepares the SUT.
-#
-# OPTIONS
-#     <branch>
-#         The name of the nearest Git version branch, e.g., 1.x or 8.x-1.x. This
-#         may be the destination branch of a pull request or the nearest
-#         ancestor of a topic branch.
+#     Configures the Travis CI environment and installs ORCA.
 
 set -e
 
-# Prevent script from being run locally, which can lead to a broken environment
-# or lost work.
+# Prevent script from being run locally, which can lead to a broken environment.
 if [[ -z "$TRAVIS" ]]; then
   echo "Error: This script is meant to run on Travis CI only."
   exit 1
-fi
-
-# Require the branch name argument.
-if [[ -z "$1" ]]; then
-  echo "Missing required branch name argument, e.g.:"
-  echo "$0 8.x-1.x"
-  exit 127
 fi
 
 # Executes a Git command in the Travis CI build directory
@@ -52,15 +38,3 @@ export COMPOSER_EXIT_ON_PATCH_FAILURE=1
 # Install ORCA.
 ORCA_ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 composer --no-dev -d${ORCA_ROOT} install
-
-# Ensure the checked out branch is named after the branch name argument.
-gitc rev-parse --abbrev-ref HEAD
-if [[ $(gitc rev-parse --abbrev-ref HEAD) != "$1" ]]; then
-  gitc branch -f $1
-  gitc checkout $1
-fi
-
-# Delete all other branches to avoid confusing the Composer version guesser.
-for BRANCH in $(gitc for-each-ref --format="%(refname:short)" --no-contains=HEAD refs/heads/*); do
-  gitc branch -D ${BRANCH}
-done

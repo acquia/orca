@@ -7,6 +7,8 @@ use Acquia\Orca\Utility\ProcessRunner;
 use Acquia\Orca\Utility\SutSettingsTrait;
 use Composer\Config\JsonConfigSource;
 use Composer\Json\JsonFile;
+use Composer\Package\Version\VersionGuesser;
+use Noodlehaus\Config;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
@@ -101,6 +103,13 @@ class FixtureCreator {
   private $useSqlite = TRUE;
 
   /**
+   * The Composer version guesser.
+   *
+   * @var \Composer\Package\Version\VersionGuesser
+   */
+  private $versionGuesser;
+
+  /**
    * Constructs an instance.
    *
    * @param \Acquia\Orca\Fixture\AcquiaModuleEnabler $acquia_module_enabler
@@ -119,8 +128,10 @@ class FixtureCreator {
    *   The package manager.
    * @param \Acquia\Orca\Fixture\SubmoduleManager $submodule_manager
    *   The submodule manager.
+   * @param \Composer\Package\Version\VersionGuesser $version_guesser
+   *   The Composer version guesser.
    */
-  public function __construct(AcquiaModuleEnabler $acquia_module_enabler, string $drupal_core_dev_version, ?string $drupal_core_version, Fixture $fixture, SymfonyStyle $output, ProcessRunner $process_runner, PackageManager $package_manager, SubmoduleManager $submodule_manager) {
+  public function __construct(AcquiaModuleEnabler $acquia_module_enabler, string $drupal_core_dev_version, ?string $drupal_core_version, Fixture $fixture, SymfonyStyle $output, ProcessRunner $process_runner, PackageManager $package_manager, SubmoduleManager $submodule_manager, VersionGuesser $version_guesser) {
     $this->acquiaModuleEnabler = $acquia_module_enabler;
     $this->drupalCoreDevVersion = $drupal_core_dev_version;
     $this->drupalCoreVersion = $drupal_core_version;
@@ -129,6 +140,7 @@ class FixtureCreator {
     $this->processRunner = $process_runner;
     $this->packageManager = $package_manager;
     $this->submoduleManager = $submodule_manager;
+    $this->versionGuesser = $version_guesser;
   }
 
   /**
@@ -486,7 +498,7 @@ class FixtureCreator {
       return array_values($dependencies);
     }
 
-    $sut_package_string = "{$this->sut->getPackageName()}:@dev";
+    $sut_package_string = $this->getSutPackageString();
 
     if ($this->isSutOnly) {
       return [$sut_package_string];
@@ -496,6 +508,19 @@ class FixtureCreator {
     $dependencies[$this->sut->getPackageName()] = $sut_package_string;
 
     return array_values($dependencies);
+  }
+
+  /**
+   * Gets the package string for the SUT.
+   *
+   * @return string
+   */
+  private function getSutPackageString(): string {
+    $path = $this->fixture->getPath($this->sut->getRepositoryUrl());
+    $package_config = (array) new Config("{$path}/composer.json");
+    $guess = $this->versionGuesser->guessVersion($package_config, $path);
+    $version = (empty($guess['version'])) ? '@dev' : $guess['version'];
+    return "{$this->sut->getPackageName()}:{$version}";
   }
 
   /**
