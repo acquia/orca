@@ -29,8 +29,9 @@ phpenv config-rm xdebug.ini
 yes | pecl install yaml
 
 # Install Composer optimizations for faster builds.
-composer global require hirak/prestissimo
-composer global require zaporylie/composer-drupal-optimizations
+composer global require \
+  hirak/prestissimo \
+  zaporylie/composer-drupal-optimizations
 
 # Make Composer Patches throw an error when it can't apply a patch.
 export COMPOSER_EXIT_ON_PATCH_FAILURE=1
