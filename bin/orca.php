@@ -19,8 +19,6 @@ require __DIR__ . '/../vendor/autoload.php';
 
 set_time_limit(0);
 
-const ORCA_VERSION = 'v1.0.0-alpha1';
-
 $input = new ArgvInput();
 $env = $input->getParameterOption(['--env', '-e'], $_SERVER['APP_ENV'] ?? 'prod', TRUE);
 $debug = (bool) ($_SERVER['APP_DEBUG'] ?? ('prod' !== $env)) && !$input->hasParameterOption('--no-debug', TRUE);
@@ -49,5 +47,5 @@ $kernel->boot();
 $container = $kernel->getContainer();
 $application = $container->get(Application::class);
 $application->setName('ORCA');
-$application->setVersion(ORCA_VERSION);
+$application->setVersion(trim(file_get_contents(__DIR__ . '/../config/VERSION')));
 $application->run();
