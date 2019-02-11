@@ -42,7 +42,7 @@ matrix:
     - env: ORCA_LIVE=true ORCA_PACKAGE_STABILITY=stable
     - env: ORCA_LIVE=true ORCA_PACKAGE_STABILITY=dev
 
-install: ./bin/travis/install
+install: "./bin/travis/install master"
 
 script:
   - "if [[ -z \"$ORCA_LIVE\" ]]; then ./bin/self-test; fi"

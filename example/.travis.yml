@@ -35,7 +35,8 @@ matrix:
 install:
   - "git clone --depth 1 https://github.com/acquia/orca.git ../orca"
   # Install ORCA and prepare the environment.
-  - ../orca/bin/travis/install
+  # Supply the topic branch of the SUT to help Composer guess its version.
+  - "../orca/bin/travis/install 8.x-1.x"
 
 # Run test script.
 # Supply the package name of the SUT.
