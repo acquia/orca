@@ -39,6 +39,7 @@ ORCA checks the SUT for low level construction defects using the following stati
 * [Composer validate](https://getcomposer.org/doc/03-cli.md#validate) checks `composer.json` files for validity and completeness.
 * [PHP Parallel Lint](https://github.com/JakubOnderka/PHP-Parallel-Lint) checks PHP files for syntax errors.
 * [PHP_CodeSniffer](https://github.com/squizlabs/PHP_CodeSniffer) checks for [PHP compatibility](https://github.com/PHPCompatibility/PHPCompatibility) with all supported language versions.
+* The [Symfony YAML Linter](https://symfony.com/doc/current/components/yaml.html) checks YAML files for syntax errors.
 
 Static analysis requires no special setup of the SUT.
 

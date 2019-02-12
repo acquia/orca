@@ -8,6 +8,7 @@ use Acquia\Orca\Task\ComposerValidateTask;
 use Acquia\Orca\Task\PhpCompatibilitySniffTask;
 use Acquia\Orca\Task\PhpLintTask;
 use Acquia\Orca\Task\TaskRunner;
+use Acquia\Orca\Task\YamlLintTask;
 use Acquia\Orca\Tests\Command\CommandTestBase;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
@@ -19,6 +20,7 @@ use Symfony\Component\Filesystem\Filesystem;
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Task\PhpCompatibilitySniffTask $phpCompatibilitySniff
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Task\PhpLintTask $phpLint
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Task\TaskRunner $taskRunner
+ * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Task\YamlLintTask $yamlLint
  */
 class StaticAnalysisRunCommandTest extends CommandTestBase {
 
@@ -30,6 +32,7 @@ class StaticAnalysisRunCommandTest extends CommandTestBase {
     $this->phpCompatibilitySniff = $this->prophesize(PhpCompatibilitySniffTask::class);
     $this->phpLint = $this->prophesize(PhpLintTask::class);
     $this->taskRunner = $this->prophesize(TaskRunner::class);
+    $this->yamlLint = $this->prophesize(YamlLintTask::class);
   }
 
   /**
@@ -50,6 +53,10 @@ class StaticAnalysisRunCommandTest extends CommandTestBase {
       ->willReturn($this->taskRunner);
     $this->taskRunner
       ->addTask($this->phpLint->reveal())
+      ->shouldBeCalledTimes(1)
+      ->willReturn($this->taskRunner);
+    $this->taskRunner
+      ->addTask($this->yamlLint->reveal())
       ->shouldBeCalledTimes(1)
       ->willReturn($this->taskRunner);
     $this->taskRunner
@@ -88,7 +95,9 @@ class StaticAnalysisRunCommandTest extends CommandTestBase {
     $php_lint = $this->phpLint->reveal();
     /** @var \Acquia\Orca\Task\TaskRunner $task_runner */
     $task_runner = $this->taskRunner->reveal();
-    $application->add(new StaticAnalysisRunCommand($composer_validate, $filesystem, $php_compatibility_sniff, $php_lint, $task_runner));
+    /** @var \Acquia\Orca\Task\YamlLintTask $yaml_lint */
+    $yaml_lint = $this->yamlLint->reveal();
+    $application->add(new StaticAnalysisRunCommand($composer_validate, $filesystem, $php_compatibility_sniff, $php_lint, $task_runner, $yaml_lint));
     /** @var \Acquia\Orca\Command\Tests\TestsRunCommand $command */
     $command = $application->find(StaticAnalysisRunCommand::getDefaultName());
     $this->assertInstanceOf(StaticAnalysisRunCommand::class, $command, 'Instantiated class.');

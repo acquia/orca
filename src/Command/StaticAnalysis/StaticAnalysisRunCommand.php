@@ -7,6 +7,7 @@ use Acquia\Orca\Task\ComposerValidateTask;
 use Acquia\Orca\Task\PhpCompatibilitySniffTask;
 use Acquia\Orca\Task\PhpLintTask;
 use Acquia\Orca\Task\TaskRunner;
+use Acquia\Orca\Task\YamlLintTask;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -52,13 +53,16 @@ class StaticAnalysisRunCommand extends Command {
    *   The PHP lint task.
    * @param \Acquia\Orca\Task\TaskRunner $task_runner
    *   The task runner.
+   * @param \Acquia\Orca\Task\YamlLintTask $yaml_lint
+   *   The YAML lint task.
    */
-  public function __construct(ComposerValidateTask $composer_validate, Filesystem $filesystem, PhpCompatibilitySniffTask $php_compatibility, PhpLintTask $php_lint, TaskRunner $task_runner) {
+  public function __construct(ComposerValidateTask $composer_validate, Filesystem $filesystem, PhpCompatibilitySniffTask $php_compatibility, PhpLintTask $php_lint, TaskRunner $task_runner, YamlLintTask $yaml_lint) {
     $this->filesystem = $filesystem;
     $this->taskRunner = $task_runner
       ->addTask($composer_validate)
       ->addTask($php_compatibility)
-      ->addTask($php_lint);
+      ->addTask($php_lint)
+      ->addTask($yaml_lint);
     parent::__construct(self::$defaultName);
   }
 
