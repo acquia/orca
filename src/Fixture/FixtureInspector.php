@@ -61,10 +61,12 @@ class FixtureInspector {
     $overview = [];
 
     $overview[] = ['Fixture directory', $this->fixture->getPath()];
-    $overview[] = ['System under test (SUT)*', $this->getSutNamePretty()];
+    $overview[] = ['Site URI', sprintf('http://%s', Fixture::WEB_ADDRESS)];
+    $overview[] = ['System under test (SUT)', $this->getSutNamePretty()];
     $overview[] = ['Fixture type', $this->getFixtureType()];
     $overview[] = ['Package stability', $this->getPackageStabilitySetting()];
     $overview[] = ['Drupal core version', $this->getInstalledPackageVersion('drupal/core')];
+    $overview[] = ['Drush version', $this->getInstalledPackageVersion('drush/drush')];
 
     $overview = array_merge($overview, $this->getInstalledPackages());
 
@@ -190,9 +192,9 @@ class FixtureInspector {
   private function getInstalledPackages(): array {
     $packages = [new TableSeparator()];
     foreach (array_keys($this->packageManager->getMultiple()) as $package_name) {
-      $label = "  {$package_name}";
+      $label = $package_name;
       if ($package_name === $this->getSutName()) {
-        $label = "* {$package_name}";
+        $label = "{$package_name} *";
       }
       $packages[] = [$label, $this->getInstalledPackageVersion($package_name)];
     }
