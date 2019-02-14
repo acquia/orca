@@ -61,24 +61,6 @@ class Fixture {
   }
 
   /**
-   * Gets the file upload directories.
-   *
-   * @return string[]
-   *   An array of absolute path patterns compatible with Git.
-   */
-  public function getFileUploadDirs(): array {
-    // It would seem preferable in terms of resilience to get these values
-    // dynamically with Drush, but a working site such as Drush requires cannot
-    // be assumed in this context. Even if it could, getting these values from
-    // Drush takes in excess of two seconds, which would multiply to a
-    // considerable cost in practice.
-    return [
-      $this->getPath('docroot/sites/*/files'),
-      $this->getPath('files-private'),
-    ];
-  }
-
-  /**
    * Gets the fixture root path with an optional sub-path appended.
    *
    * @param string|null $sub_path

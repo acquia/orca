@@ -2,6 +2,8 @@
 
 namespace Acquia\Orca\Task\TestFramework;
 
+use Acquia\Orca\Fixture\FixtureResetter;
+use Acquia\Orca\Fixture\Package;
 use Acquia\Orca\Fixture\PackageManager;
 use Acquia\Orca\Server\ServerStack;
 use Acquia\Orca\Utility\ProcessRunner;
@@ -29,6 +31,13 @@ class TestRunner {
    * @var \Symfony\Component\Filesystem\Filesystem
    */
   private $filesystem;
+
+  /**
+   * The fixture resetter.
+   *
+   * @var \Acquia\Orca\Fixture\FixtureResetter
+   */
+  private $fixtureResetter;
 
   /**
    * The output decorator.
@@ -93,6 +102,8 @@ class TestRunner {
    *   The Behat task.
    * @param \Symfony\Component\Filesystem\Filesystem $filesystem
    *   The filesystem.
+   * @param \Acquia\Orca\Fixture\FixtureResetter $fixture_resetter
+   *   The fixture resetter.
    * @param \Symfony\Component\Console\Style\SymfonyStyle $output
    *   The output decorator.
    * @param \Acquia\Orca\Task\TestFramework\PhpUnitTask $phpunit
@@ -104,9 +115,10 @@ class TestRunner {
    * @param \Acquia\Orca\Server\ServerStack $server_stack
    *   The server stack.
    */
-  public function __construct(BehatTask $behat, Filesystem $filesystem, SymfonyStyle $output, PhpUnitTask $phpunit, ProcessRunner $process_runner, PackageManager $package_manager, ServerStack $server_stack) {
+  public function __construct(BehatTask $behat, Filesystem $filesystem, FixtureResetter $fixture_resetter, SymfonyStyle $output, PhpUnitTask $phpunit, ProcessRunner $process_runner, PackageManager $package_manager, ServerStack $server_stack) {
     $this->behat = $behat;
     $this->filesystem = $filesystem;
+    $this->fixtureResetter = $fixture_resetter;
     $this->output = $output;
     $this->phpunit = $phpunit;
     $this->processRunner = $process_runner;
@@ -179,11 +191,8 @@ class TestRunner {
    */
   private function runSutTests(): void {
     $this->output->title('Running SUT tests');
-    foreach ($this->getFrameworks() as $task) {
-      $task->setPath($this->sut->getInstallPathAbsolute());
-      $task->limitToPublicTests(FALSE);
-      $this->output->section("{$task->statusMessage()} for {$this->sut->getPackageName()}");
-      $task->execute();
+    foreach ($this->getFrameworks() as $framework) {
+      $this->execute($framework, $this->sut, FALSE);
     }
   }
 
@@ -203,13 +212,32 @@ class TestRunner {
         $this->output->warning(sprintf('Package %s absent from expected location: %s', $package->getPackageName(), $package->getInstallPathAbsolute()));
         continue;
       }
-      foreach ($this->getFrameworks() as $task) {
-        $this->output->section("{$task->statusMessage()} for {$package->getPackageName()}");
-        $task->setPath($package->getInstallPathAbsolute());
-        $task->limitToPublicTests(TRUE);
-        $task->execute();
+      foreach ($this->getFrameworks() as $framework) {
+        $this->execute($framework, $package, TRUE);
       }
     }
+  }
+
+  /**
+   * Executes the given test framework on the specified package.
+   *
+   * @param \Acquia\Orca\Task\TestFramework\TestFrameworkInterface $framework
+   *   The test framework to execute.
+   * @param \Acquia\Orca\Fixture\Package $package
+   *   The package to test.
+   * @param bool $public
+   *   TRUE to limit to public tests or FALSE not to.
+   *
+   * @throws \Acquia\Orca\Exception\TaskFailureException
+   */
+  private function execute(TestFrameworkInterface $framework, Package $package, bool $public): void {
+    $this->output->section("{$framework->statusMessage()} for {$package->getPackageName()}");
+    $this->output->comment('Resetting test fixture');
+    $this->fixtureResetter->reset();
+    $this->output->comment('Running tests');
+    $framework->setPath($package->getInstallPathAbsolute());
+    $framework->limitToPublicTests($public);
+    $framework->execute();
   }
 
   /**

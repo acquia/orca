@@ -3,8 +3,6 @@
 namespace Acquia\Orca\Fixture;
 
 use Acquia\Orca\Utility\ProcessRunner;
-use Symfony\Component\Process\ExecutableFinder;
-use Symfony\Component\Process\Process;
 
 /**
  * Resets a fixture.
@@ -39,35 +37,11 @@ class FixtureResetter {
   }
 
   /**
-   * Resets the fixture.
+   * Resets the fixture codebase and the database.
    */
   public function reset(): void {
-    $this->resetCodeAndDatabase();
-    $this->deleteUploadedFiles();
-  }
-
-  /**
-   * Resets the codebase and the database.
-   */
-  private function resetCodeAndDatabase(): void {
     $this->git(['checkout', '--force', Fixture::FRESH_FIXTURE_GIT_TAG]);
     $this->git(['clean', '--force', '-d']);
-  }
-
-  /**
-   * Deletes all uploaded files.
-   *
-   * @SuppressWarnings(PHPMD.StaticAccess)
-   */
-  private function deleteUploadedFiles(): void {
-    (Process::fromShellCommandline(implode(' ', array_merge([
-      (new ExecutableFinder())->find('git'),
-      'clean',
-      '--force',
-      '-dx',
-    ], $this->fixture->getFileUploadDirs()))))
-      ->setWorkingDirectory($this->fixture->getPath())
-      ->run();
   }
 
   /**
