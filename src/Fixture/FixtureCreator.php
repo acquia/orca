@@ -158,7 +158,7 @@ class FixtureCreator {
     $this->addAcquiaPackages();
     $this->installDrupal();
     $this->enableAcquiaModules();
-    $this->createBackupBranch();
+    $this->createAndCheckoutBackupTag();
     $this->output->success('Fixture created');
   }
 
@@ -628,18 +628,22 @@ class FixtureCreator {
       'no-reply@acquia.com',
     ];
 
+    // Add tracked file changes.
     $commands[] = [
       'git',
       'add',
       '--all',
     ];
+
+    // Commit changes.
     $commands[] = [
       'git',
       'commit',
-      sprintf('--message="%s"', $message),
+      "--message={$message}",
       '--quiet',
       '--allow-empty',
     ];
+
     foreach ($commands as $command) {
       $this->processRunner
         ->run($this->processRunner
@@ -686,7 +690,7 @@ class FixtureCreator {
     $data = "\n{$id}\n";
     if ($this->useSqlite) {
       $data .= <<<'PHP'
-$databases['default']['default']['database'] = dirname(DRUPAL_ROOT) . '/docroot/sites/default/files/.ht.sqlite';
+$databases['default']['default']['database'] = dirname(DRUPAL_ROOT) . '/db.sqlite';
 $databases['default']['default']['driver'] = 'sqlite';
 unset($databases['default']['default']['namespace']);
 
@@ -734,20 +738,24 @@ PHP;
       return;
     }
     $this->acquiaModuleEnabler->enable();
+    $this->commitCodeChanges('Enabled Acquia modules.');
   }
 
   /**
-   * Creates a backup branch for the current state of the code.
+   * Creates and checks out a backup tag for the current state of the fixture.
    */
-  private function createBackupBranch(): void {
-    $this->output->section('Creating backup branch');
-    $process = $this->processRunner->createExecutableProcess([
-      'git',
-      'branch',
-      '--force',
-      Fixture::BASE_FIXTURE_GIT_BRANCH,
-    ]);
-    $this->processRunner->run($process, $this->fixture->getPath());
+  private function createAndCheckoutBackupTag(): void {
+    $this->output->section('Creating backup tag');
+
+    $commands = [
+      ['git', 'tag', Fixture::FRESH_FIXTURE_GIT_TAG],
+      ['git', 'checkout', Fixture::FRESH_FIXTURE_GIT_TAG],
+    ];
+    foreach ($commands as $command) {
+      $process = $this->processRunner
+        ->createExecutableProcess($command);
+      $this->processRunner->run($process, $this->fixture->getPath());
+    }
   }
 
 }

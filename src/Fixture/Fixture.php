@@ -10,7 +10,7 @@ use Symfony\Component\Filesystem\Filesystem;
  */
 class Fixture {
 
-  public const BASE_FIXTURE_GIT_BRANCH = 'base-fixture';
+  public const FRESH_FIXTURE_GIT_TAG = 'fresh-fixture';
 
   public const WEB_ADDRESS = '127.0.0.1:8080';
 
@@ -58,6 +58,24 @@ class Fixture {
    */
   public function exists(): bool {
     return $this->filesystem->exists($this->getPath());
+  }
+
+  /**
+   * Gets the file upload directories.
+   *
+   * @return string[]
+   *   An array of absolute path patterns compatible with Git.
+   */
+  public function getFileUploadDirs(): array {
+    // It would seem preferable in terms of resilience to get these values
+    // dynamically with Drush, but a working site such as Drush requires cannot
+    // be assumed in this context. Even if it could, getting these values from
+    // Drush takes in excess of two seconds, which would multiply to a
+    // considerable cost in practice.
+    return [
+      $this->getPath('docroot/sites/*/files'),
+      $this->getPath('files-private'),
+    ];
   }
 
   /**
