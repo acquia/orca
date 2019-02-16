@@ -17,6 +17,9 @@ cache:
 # Execution time is drastically reduced by splitting the build into multiple
 # concurrent jobs.
 matrix:
+  # Mark the build as finished as soon as the only remaining jobs are allowed to
+  # fail.
+  fast_finish: true
   include:
     - name: "Static code analysis"
       env: ORCA_FIXTURE=none
