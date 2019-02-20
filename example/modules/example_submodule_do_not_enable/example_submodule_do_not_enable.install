@@ -1,0 +1,16 @@
+<?php
+
+/**
+ * @file
+ * Install, update, and uninstall functions for the Example Submodule: Do Not Enable.
+ */
+
+/**
+ * Implements hook_module_install().
+ *
+ * @throws \Exception
+ *   If run.
+ */
+function hook_example_submodule_do_not_enable_install() {
+  throw new \Exception('Failed to respect submodule enable opt out for test_module.');
+}

@@ -157,7 +157,14 @@ class SubmoduleManager {
       ->followLinks()
       ->in($paths)
       ->depth('> 1')
-      ->exclude(['docroot', 'vendor'])
+      ->exclude([
+        // Exclude test modules.
+        'tests',
+        // Ignore package vendor directories. (These should never exist on CI.
+        // This is mostly for local development.)
+        'docroot',
+        'vendor',
+      ])
       ->name('composer.json')
       ->filter(function (\SplFileInfo $file) {
         return $this->isSubmoduleComposerJson($file);

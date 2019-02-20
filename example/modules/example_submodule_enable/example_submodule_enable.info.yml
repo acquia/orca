@@ -1,0 +1,5 @@
+name: "Example Submodule: Enable"
+type: module
+description: "An example submodule that is enabled by ORCA."
+package: Other
+core: 8.x

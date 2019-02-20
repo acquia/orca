@@ -1,5 +1,0 @@
-name: "Example Submodule #1"
-type: module
-description: "Example submodule #1."
-package: Other
-core: 8.x

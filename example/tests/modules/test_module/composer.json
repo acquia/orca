@@ -1,13 +1,8 @@
 {
     "name": "drupal/test_module",
     "type": "drupal-module",
-    "description": "Example test module.",
+    "description": "An example test module.",
     "license": "GPL-2.0-or-later",
     "require": {},
-    "minimum-stability": "dev",
-    "extra": {
-        "orca": {
-            "enable": false
-        }
-    }
+    "minimum-stability": "dev"
 }

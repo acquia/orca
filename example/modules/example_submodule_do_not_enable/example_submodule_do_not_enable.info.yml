@@ -1,0 +1,5 @@
+name: "Example Submodule: Do Not Enable"
+type: module
+description: "An example submodule that is not enabled by ORCA."
+package: Other
+core: 8.x

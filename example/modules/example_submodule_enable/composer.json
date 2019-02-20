@@ -1,7 +1,7 @@
 {
-    "name": "drupal/example_submodule_1",
+    "name": "drupal/example_submodule_enable",
     "type": "drupal-module",
-    "description": "Example submodule #1.",
+    "description": "An example submodule that is enabled by ORCA.",
     "license": "GPL-2.0-or-later",
     "require": {},
     "minimum-stability": "dev"

@@ -19,7 +19,7 @@ ORCA doesn't install dev dependencies because Composer provides no means of doin
 
 ORCA automatically discovers and enables any submodule that satisfies the following criteria:
 
-* It exists in a subdirectory of a present package.
+* It exists in a subdirectory of a present package (other than `tests`).
 * It has a valid `composer.json`...
     * with a `type` value of `drupal-module`...
     * and a vendor name of "drupal", i.e., a `name` value beginning with `drupal/`.
