@@ -4,7 +4,7 @@ namespace Acquia\Orca\Command\Fixture;
 
 use Acquia\Orca\Command\StatusCodes;
 use Acquia\Orca\Fixture\Fixture;
-use Acquia\Orca\Fixture\FixtureResetter;
+use Acquia\Orca\Fixture\FixtureBackupper;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -14,14 +14,14 @@ use Symfony\Component\Console\Question\ConfirmationQuestion;
 /**
  * Provides a command.
  */
-class FixtureResetCommand extends Command {
+class FixtureBackupCommand extends Command {
 
   /**
    * The default command name.
    *
    * @var string
    */
-  protected static $defaultName = 'fixture:reset';
+  protected static $defaultName = 'fixture:backup';
 
   /**
    * The fixture.
@@ -31,23 +31,23 @@ class FixtureResetCommand extends Command {
   private $fixture;
 
   /**
-   * The fixture resetter.
+   * The fixture backupper.
    *
-   * @var \Acquia\Orca\Fixture\FixtureResetter
+   * @var \Acquia\Orca\Fixture\FixtureBackupper
    */
-  private $fixtureResetter;
+  private $fixtureBackupper;
 
   /**
    * Constructs an instance.
    *
    * @param \Acquia\Orca\Fixture\Fixture $fixture
    *   The fixture.
-   * @param \Acquia\Orca\Fixture\FixtureResetter $fixture_backupper
-   *   The fixture resetter.
+   * @param \Acquia\Orca\Fixture\FixtureBackupper $fixture_backupper
+   *   The fixture backupper.
    */
-  public function __construct(Fixture $fixture, FixtureResetter $fixture_backupper) {
+  public function __construct(Fixture $fixture, FixtureBackupper $fixture_backupper) {
     $this->fixture = $fixture;
-    $this->fixtureResetter = $fixture_backupper;
+    $this->fixtureBackupper = $fixture_backupper;
     parent::__construct(self::$defaultName);
   }
 
@@ -56,10 +56,10 @@ class FixtureResetCommand extends Command {
    */
   protected function configure() {
     $this
-      ->setAliases(['reset'])
-      ->setDescription('Resets the test fixture')
-      ->setHelp('Restores the original state of the fixture, including codebase and Drupal database.')
-      ->addOption('force', 'f', InputOption::VALUE_NONE, 'Remove without confirmation');
+      ->setAliases(['backup'])
+      ->setDescription('Backs up the test fixture')
+      ->setHelp('Backs up the current state of the fixture, including codebase and Drupal database.')
+      ->addOption('force', 'f', InputOption::VALUE_NONE, 'Backup without confirmation');
   }
 
   /**
@@ -73,7 +73,7 @@ class FixtureResetCommand extends Command {
 
     /** @var \Symfony\Component\Console\Helper\QuestionHelper $helper */
     $helper = $this->getHelper('question');
-    $question = new ConfirmationQuestion(sprintf('Are you sure you want to reset the test fixture at %s? ', $this->fixture->getPath()));
+    $question = new ConfirmationQuestion(sprintf('Are you sure you want to overwrite the backup of the test fixture at %s? ', $this->fixture->getPath()));
     if (
       !$input->getOption('force')
       && ($input->getOption('no-interaction') || !$helper->ask($input, $output, $question))
@@ -81,7 +81,7 @@ class FixtureResetCommand extends Command {
       return StatusCodes::USER_CANCEL;
     }
 
-    $this->fixtureResetter->reset();
+    $this->fixtureBackupper->backup();
     return StatusCodes::OK;
   }
 
