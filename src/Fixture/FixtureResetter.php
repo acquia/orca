@@ -5,7 +5,7 @@ namespace Acquia\Orca\Fixture;
 use Acquia\Orca\Utility\ProcessRunner;
 
 /**
- * Resets a fixture.
+ * Resets the fixture.
  */
 class FixtureResetter {
 
@@ -37,26 +37,15 @@ class FixtureResetter {
   }
 
   /**
-   * Resets the fixture codebase and the database.
+   * Resets the fixture codebase and database.
    */
   public function reset(): void {
-    $this->git(['checkout', '--force', Fixture::FRESH_FIXTURE_GIT_TAG]);
-    $this->git(['clean', '--force', '-d']);
-  }
-
-  /**
-   * Executes a Git command against the fixture.
-   *
-   * @param array $args
-   *   An array of Git command arguments.
-   */
-  private function git(array $args): void {
-    $command = $args;
-    array_unshift($command, 'git');
-    $this->processRunner
-      ->createExecutableProcess($command)
-      ->setWorkingDirectory($this->fixture->getPath())
-      ->run();
+    $this->processRunner->git([
+      'checkout',
+      '--force',
+      Fixture::FRESH_FIXTURE_GIT_TAG,
+    ]);
+    $this->processRunner->git(['clean', '--force', '-d']);
   }
 
 }

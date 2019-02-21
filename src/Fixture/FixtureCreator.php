@@ -618,37 +618,8 @@ class FixtureCreator {
    *   The commit message to use.
    */
   private function commitCodeChanges($message): void {
-    $commands = [];
-
-    // Prevent "Please tell me who you are" errors from Git.
-    $commands[] = [
-      'git',
-      'config',
-      'user.email',
-      'no-reply@acquia.com',
-    ];
-
-    // Add tracked file changes.
-    $commands[] = [
-      'git',
-      'add',
-      '--all',
-    ];
-
-    // Commit changes.
-    $commands[] = [
-      'git',
-      'commit',
-      "--message={$message}",
-      '--quiet',
-      '--allow-empty',
-    ];
-
-    foreach ($commands as $command) {
-      $this->processRunner
-        ->run($this->processRunner
-          ->createExecutableProcess($command), $this->fixture->getPath());
-    }
+    $this->processRunner->git(['add', '--all']);
+    $this->processRunner->gitCommit($message);
   }
 
   /**
@@ -746,16 +717,8 @@ PHP;
    */
   private function createAndCheckoutBackupTag(): void {
     $this->output->section('Creating backup tag');
-
-    $commands = [
-      ['git', 'tag', Fixture::FRESH_FIXTURE_GIT_TAG],
-      ['git', 'checkout', Fixture::FRESH_FIXTURE_GIT_TAG],
-    ];
-    foreach ($commands as $command) {
-      $process = $this->processRunner
-        ->createExecutableProcess($command);
-      $this->processRunner->run($process, $this->fixture->getPath());
-    }
+    $this->processRunner->git(['tag', Fixture::FRESH_FIXTURE_GIT_TAG]);
+    $this->processRunner->git(['checkout', Fixture::FRESH_FIXTURE_GIT_TAG]);
   }
 
 }

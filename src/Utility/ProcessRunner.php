@@ -137,6 +137,37 @@ class ProcessRunner {
   }
 
   /**
+   * Executes a Git command against the fixture.
+   *
+   * @param array $args
+   *   An array of Git command arguments.
+   */
+  public function git(array $args): void {
+    $command = $args;
+    array_unshift($command, 'git');
+    $this->run($this->createExecutableProcess($command), $this->fixture->getPath());
+  }
+
+  /**
+   * Executs a Git `commit` command against the fixture.
+   *
+   * @param string $message
+   *   The commit message.
+   */
+  public function gitCommit(string $message): void {
+    // Prevent "Please tell me who you are" errors.
+    $this->git(['config', 'user.email', 'no-reply@acquia.com']);
+
+    // Commit changes.
+    $this->git([
+      'commit',
+      "--message={$message}",
+      '--quiet',
+      '--allow-empty',
+    ]);
+  }
+
+  /**
    * Creates a process for a given vendor binary command.
    *
    * @param array $command
