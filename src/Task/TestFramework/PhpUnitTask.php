@@ -193,8 +193,7 @@ class PhpUnitTask extends TestFrameworkBase {
         $command[] = '--group=orca_public';
       }
       $command[] = $this->getPath();
-      $process = $this->processRunner->createOrcaVendorBinProcess($command);
-      $this->processRunner->run($process, $this->fixture->getPath());
+      $this->processRunner->runOrcaVendorBin($command, $this->fixture->getPath());
     }
     catch (ProcessFailedException $e) {
       throw new TaskFailureException();

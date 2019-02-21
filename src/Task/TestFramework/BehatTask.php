@@ -29,13 +29,12 @@ class BehatTask extends TestFrameworkBase {
     try {
       /** @var \Symfony\Component\Finder\SplFileInfo $config_file */
       foreach ($this->getBehatConfigFiles() as $config_file) {
-        $process = $this->processRunner->createOrcaVendorBinProcess([
+        $this->processRunner->runOrcaVendorBin([
           'behat',
           '--colors',
           "--config={$config_file->getPathname()}",
           "--tags={$this->getTags()}",
-        ]);
-        $this->processRunner->run($process, $this->fixture->getPath());
+        ], $this->fixture->getPath());
       }
     }
     catch (ProcessFailedException $e) {

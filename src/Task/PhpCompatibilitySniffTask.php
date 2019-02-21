@@ -24,7 +24,7 @@ class PhpCompatibilitySniffTask extends TaskBase {
    */
   public function execute(): void {
     try {
-      $process = $this->processRunner->createOrcaVendorBinProcess([
+      $this->processRunner->runOrcaVendorBin([
         'phpcs',
         '-p',
         '--colors',
@@ -36,7 +36,6 @@ class PhpCompatibilitySniffTask extends TaskBase {
         '--extensions=inc,install,module,php,profile,test,theme',
         $this->getPath(),
       ]);
-      $this->processRunner->run($process);
     }
     catch (ProcessFailedException $e) {
       throw new TaskFailureException();

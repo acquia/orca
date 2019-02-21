@@ -25,13 +25,12 @@ class ComposerValidateTask extends TaskBase {
     try {
       /** @var \Symfony\Component\Finder\SplFileInfo $composer_json */
       foreach ($this->getComposerJsonFiles() as $composer_json) {
-        $process = $this->processRunner->createOrcaVendorBinProcess([
+        $this->processRunner->runOrcaVendorBin([
           'composer',
           '--ansi',
           'validate',
           $composer_json->getPathname(),
         ]);
-        $this->processRunner->run($process);
       }
     }
     catch (ProcessFailedException $e) {

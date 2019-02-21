@@ -40,13 +40,14 @@ class FixtureBackupper {
    * Backs up the fixture codebase and database.
    */
   public function backup(): void {
-    $this->processRunner->git(['add', '--all']);
+    $fixture_path = $this->fixture->getPath();
+    $this->processRunner->git(['add', '--all'], $fixture_path);
     $this->processRunner->gitCommit('Backed up the fixture.');
     $this->processRunner->git([
       'tag',
       '--force',
       Fixture::FRESH_FIXTURE_GIT_TAG,
-    ]);
+    ], $fixture_path);
   }
 
 }

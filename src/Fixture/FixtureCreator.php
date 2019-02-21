@@ -224,7 +224,7 @@ class FixtureCreator {
    */
   private function createBltProject(): void {
     $this->output->section('Creating BLT project');
-    $process = $this->processRunner->createOrcaVendorBinProcess([
+    $this->processRunner->runOrcaVendorBin([
       'composer',
       'create-project',
       '--stability=dev',
@@ -235,7 +235,6 @@ class FixtureCreator {
       'acquia/blt-project',
       $this->fixture->getPath(),
     ]);
-    $this->processRunner->run($process);
 
     // Prevent errors later because "Source directory docroot/core has
     // uncommitted changes" after "Removing package drupal/core so that it can
@@ -259,9 +258,10 @@ class FixtureCreator {
    */
   private function fixDefaultDependencies(): void {
     $this->output->section('Fixing default dependencies');
+    $fixture_path = $this->fixture->getPath();
 
     // Remove unwanted packages.
-    $process = $this->processRunner->createOrcaVendorBinProcess(array_merge(
+    $this->processRunner->runOrcaVendorBin(array_merge(
       [
         'composer',
         'remove',
@@ -274,41 +274,37 @@ class FixtureCreator {
       // Other Acquia packages are only conditionally required later and should
       // in no case be included up-front.
       $this->getUnwantedPackageList()
-    ));
-    $this->processRunner->run($process, $this->fixture->getPath());
+    ), $fixture_path);
 
     // Remove BLT's dev requirements package, which conflicts with the Drupal
     // Core dev version.
-    $process = $this->processRunner->createOrcaVendorBinProcess([
+    $this->processRunner->runOrcaVendorBin([
       'composer',
       'remove',
       '--dev',
       '--no-update',
       'acquia/blt-require-dev',
-    ]);
-    $this->processRunner->run($process, $this->fixture->getPath());
+    ], $fixture_path);
 
     // Install a specific version of Drupal core.
     if ($this->drupalCoreVersion || $this->isDev) {
-      $process = $this->processRunner->createOrcaVendorBinProcess([
+      $this->processRunner->runOrcaVendorBin([
         'composer',
         'require',
         '--no-update',
         sprintf('drupal/core:%s', ($this->drupalCoreVersion) ?: $this->drupalCoreDevVersion),
-      ]);
-      $this->processRunner->run($process, $this->fixture->getPath());
+      ], $fixture_path);
     }
 
     // Replace webflo/drupal-core-require-dev, which would otherwise be provided
     // by BLT's dev requirements package.
-    $process = $this->processRunner->createOrcaVendorBinProcess([
+    $this->processRunner->runOrcaVendorBin([
       'composer',
       'require',
       '--dev',
       '--no-update',
       'webflo/drupal-core-require-dev',
-    ]);
-    $this->processRunner->run($process, $this->fixture->getPath());
+    ], $fixture_path);
   }
 
   /**
@@ -396,12 +392,11 @@ class FixtureCreator {
    * Requires the top-level Acquia packages via Composer.
    */
   private function composerRequireTopLevelAcquiaPackages(): void {
-    $process = $this->processRunner->createOrcaVendorBinProcess(array_merge([
+    $this->processRunner->runOrcaVendorBin(array_merge([
       'composer',
       'require',
       '--no-interaction',
-    ], $this->getAcquiaPackageDependencies()));
-    $this->processRunner->run($process, $this->fixture->getPath());
+    ], $this->getAcquiaPackageDependencies()), $this->fixture->getPath());
   }
 
   /**
@@ -432,55 +427,44 @@ class FixtureCreator {
   private function displayFailedSymlinkDebuggingInfo() {
     $this->output->section('Debugging info');
 
-    $processes = [
+    // Display some info about the SUT install path.
+    $this->processRunner->runExecutable([
+      'stat',
+      $this->sut->getInstallPathAbsolute(),
+    ]);
 
-      // Display some info about the SUT install path.
-      $this->processRunner->createExecutableProcess([
-        'stat',
-        $this->sut->getInstallPathAbsolute(),
-      ]),
+    $fixture_path = $this->fixture->getPath();
 
-      // See if Composer knows why it wasn't symlinked.
-      $this->processRunner->createOrcaVendorBinProcess([
-        'composer',
-        "--working-dir={$this->fixture->getPath()}",
-        'why-not',
-        $this->sut->getPackageStringDev(),
-      ]),
+    // See if Composer knows why it wasn't symlinked.
+    $this->processRunner->runOrcaVendorBin([
+      'composer',
+      'why-not',
+      $this->sut->getPackageStringDev(),
+    ], $fixture_path);
 
-      // See why Composer installed what it did.
-      $this->processRunner->createOrcaVendorBinProcess([
-        'composer',
-        "--working-dir={$this->fixture->getPath()}",
-        'why',
-        $this->sut->getPackageName(),
-      ]),
+    // See why Composer installed what it did.
+    $this->processRunner->runOrcaVendorBin([
+      'composer',
+      'why',
+      $this->sut->getPackageName(),
+    ], $fixture_path);
 
-      // Display the Git branches in the path repo.
-      $this->processRunner->createExecutableProcess([
-        'git',
-        '-C',
-        $this->sut->getRepositoryUrl(),
-        'branch',
-      ]),
+    // Display the Git branches in the path repo.
+    $this->processRunner->git([
+      'branch',
+    ], $this->sut->getRepositoryUrl());
 
-      // Display the fixture's composer.json.
-      $this->processRunner->createExecutableProcess([
-        'cat',
-        $this->fixture->getPath('composer.json'),
-      ]),
+    // Display the fixture's composer.json.
+    $this->processRunner->runExecutable([
+      'cat',
+      $this->fixture->getPath('composer.json'),
+    ]);
 
-      // Display the SUT's composer.json.
-      $this->processRunner->createExecutableProcess([
-        'cat',
-        $this->fixture->getPath("{$this->sut->getRepositoryUrl()}/composer.json"),
-      ]),
-
-    ];
-
-    foreach ($processes as $process) {
-      $this->processRunner->run($process);
-    }
+    // Display the SUT's composer.json.
+    $this->processRunner->runExecutable([
+      'cat',
+      $this->fixture->getPath("{$this->sut->getRepositoryUrl()}/composer.json"),
+    ]);
   }
 
   /**
@@ -603,12 +587,11 @@ class FixtureCreator {
     foreach (array_keys($this->submoduleManager->getByParent($this->sut)) as $package_name) {
       $packages[] = "{$package_name}:@dev";
     }
-    $process = $this->processRunner->createOrcaVendorBinProcess(array_merge([
+    $this->processRunner->runOrcaVendorBin(array_merge([
       'composer',
       'require',
       '--no-interaction',
-    ], $packages));
-    $this->processRunner->run($process, $this->fixture->getPath());
+    ], $packages), $this->fixture->getPath());
   }
 
   /**
@@ -618,7 +601,7 @@ class FixtureCreator {
    *   The commit message to use.
    */
   private function commitCodeChanges($message): void {
-    $this->processRunner->git(['add', '--all']);
+    $this->processRunner->git(['add', '--all'], $this->fixture->getPath());
     $this->processRunner->gitCommit($message);
   }
 
@@ -628,7 +611,7 @@ class FixtureCreator {
   private function installDrupal(): void {
     $this->output->section('Installing Drupal');
     $this->ensureDrupalSettings();
-    $process = $this->processRunner->createFixtureVendorBinProcess([
+    $this->processRunner->runFixtureVendorBin([
       'drush',
       'site-install',
       'minimal',
@@ -641,7 +624,6 @@ class FixtureCreator {
       '--verbose',
       '--ansi',
     ]);
-    $this->processRunner->run($process, $this->fixture->getPath());
     $this->commitCodeChanges('Installed Drupal.');
   }
 
@@ -717,8 +699,9 @@ PHP;
    */
   private function createAndCheckoutBackupTag(): void {
     $this->output->section('Creating backup tag');
-    $this->processRunner->git(['tag', Fixture::FRESH_FIXTURE_GIT_TAG]);
-    $this->processRunner->git(['checkout', Fixture::FRESH_FIXTURE_GIT_TAG]);
+    $fixture_path = $this->fixture->getPath();
+    $this->processRunner->git(['tag', Fixture::FRESH_FIXTURE_GIT_TAG], $fixture_path);
+    $this->processRunner->git(['checkout', Fixture::FRESH_FIXTURE_GIT_TAG], $fixture_path);
   }
 
 }

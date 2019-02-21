@@ -89,21 +89,40 @@ class ProcessRunner {
   }
 
   /**
-   * Creates a process for a given executable command.
+   * Runs a given executable command.
    *
    * @param array $command
    *   An array of command parts, where the first element is an executable name.
+   * @param string|null $cwd
+   *   The working directory, or NULL to use the working dir of the current PHP
+   *   process.
    *
-   * @return \Symfony\Component\Process\Process
+   * @return int
+   *   The exit status code.
    */
-  public function createExecutableProcess(array $command): Process {
+  public function runExecutable(array $command, ?string $cwd = NULL): int {
     $command[0] = (new ExecutableFinder())->find($command[0]);
 
     if (is_null($command[0])) {
       throw new RuntimeException(sprintf('Could not find executable: %s.', $command[0]));
     }
 
-    return new Process($command);
+    return $this->run(new Process($command), $cwd);
+  }
+
+  /**
+   * Runs a given command in the fixture vendor/bin directory.
+   *
+   * @param array $command
+   *   An array of command parts, where the first element is a vendor binary
+   *   name.
+   *
+   * @return int
+   *   The exit status code.
+   */
+  public function runFixtureVendorBin(array $command): int {
+    $process = $this->createFixtureVendorBinProcess($command);
+    return $this->run($process, $this->fixture->getPath());
   }
 
   /**
@@ -119,6 +138,24 @@ class ProcessRunner {
   public function createFixtureVendorBinProcess(array $command): Process {
     $command[0] = $this->fixture->getPath("vendor/bin/{$command[0]}");
     return $this->createVendorBinProcess($command);
+  }
+
+  /**
+   * Runs a given command in ORCA's vendor/bin directory.
+   *
+   * @param array $command
+   *   An array of command parts, where the first element is a vendor binary
+   *   name.
+   * @param string|null $cwd
+   *   The working directory, or NULL to use the working dir of the current PHP
+   *   process.
+   *
+   * @return int
+   *   The exit status code.
+   */
+  public function runOrcaVendorBin(array $command, ?string $cwd = NULL): int {
+    $process = $this->createOrcaVendorBinProcess($command);
+    return $this->run($process, $cwd);
   }
 
   /**
@@ -141,30 +178,41 @@ class ProcessRunner {
    *
    * @param array $args
    *   An array of Git command arguments.
+   * @param string|null $cwd
+   *   The working directory, or NULL to use the working dir of the current PHP
+   *   process.
+   *
+   * @return int
+   *   The exit status code.
    */
-  public function git(array $args): void {
+  public function git(array $args, ?string $cwd = NULL): int {
     $command = $args;
     array_unshift($command, 'git');
-    $this->run($this->createExecutableProcess($command), $this->fixture->getPath());
+    return $this->runExecutable($command, $cwd);
   }
 
   /**
-   * Executs a Git `commit` command against the fixture.
+   * Executes a Git `commit` command against the fixture.
    *
    * @param string $message
    *   The commit message.
+   *
+   * @return int
+   *   The exit status code.
    */
-  public function gitCommit(string $message): void {
+  public function gitCommit(string $message): int {
+    $cwd = $this->fixture->getPath();
+
     // Prevent "Please tell me who you are" errors.
-    $this->git(['config', 'user.email', 'no-reply@acquia.com']);
+    $this->git(['config', 'user.email', 'no-reply@acquia.com'], $cwd);
 
     // Commit changes.
-    $this->git([
+    return $this->git([
       'commit',
       "--message={$message}",
       '--quiet',
       '--allow-empty',
-    ]);
+    ], $cwd);
   }
 
   /**
