@@ -1,6 +1,6 @@
 <?php
 
-namespace Acquia\Orca\Command\Fixture;
+namespace Acquia\Orca\Command\Dev;
 
 use Acquia\Orca\Command\StatusCodes;
 use Acquia\Orca\Fixture\Fixture;
@@ -12,14 +12,14 @@ use Symfony\Component\Console\Output\OutputInterface;
 /**
  * Provides a command.
  */
-class FixtureRunServerCommand extends Command {
+class DevRunServerCommand extends Command {
 
   /**
    * The default command name.
    *
    * @var string
    */
-  protected static $defaultName = 'fixture:run-server';
+  protected static $defaultName = 'dev:run-server';
 
   /**
    * The fixture.
