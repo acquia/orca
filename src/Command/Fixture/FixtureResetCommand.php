@@ -33,7 +33,7 @@ class FixtureResetCommand extends Command {
   /**
    * The fixture resetter.
    *
-   * @var \Acquia\Orca\Fixture\FixtureRemover
+   * @var \Acquia\Orca\Fixture\FixtureResetter
    */
   private $fixtureResetter;
 
@@ -58,7 +58,7 @@ class FixtureResetCommand extends Command {
     $this
       ->setAliases(['reset'])
       ->setDescription('Resets the test fixture')
-      ->setHelp('Restores the original state of the fixture, including codebase, Drupal database, and uploaded files.')
+      ->setHelp('Restores the original state of the fixture, including codebase and Drupal database.')
       ->addOption('force', 'f', InputOption::VALUE_NONE, 'Remove without confirmation');
   }
 
