@@ -68,6 +68,10 @@
   type: drupal-theme
   version_dev: 1.x-dev
 -
+  name: acquia/lightning
+  type: drupal-profile
+  version_dev: 3.x-dev
+-
   name: drupal/lightning_api
   url: ../lightning-api
   version_dev: 3.x-dev
