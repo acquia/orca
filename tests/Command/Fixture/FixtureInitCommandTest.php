@@ -60,6 +60,9 @@ class FixtureInitCommandTest extends CommandTestBase {
       ->setSqlite(FALSE)
       ->shouldBeCalledTimes((int) in_array('setSqlite', $methods_called));
     $this->fixtureCreator
+      ->setProfile((@$args['--profile']) ?: 'minimal')
+      ->shouldBeCalledTimes((int) in_array('setProfile', $methods_called));
+    $this->fixtureCreator
       ->create()
       ->shouldBeCalledTimes((int) in_array('create', $methods_called));
     if ($exception) {
@@ -85,6 +88,7 @@ class FixtureInitCommandTest extends CommandTestBase {
       [FALSE, ['--sut' => self::VALID_PACKAGE, '--sut-only' => TRUE], ['PackageManager::exists', 'Fixture::exists', 'create', 'setSut', 'setSutOnly'], 0, StatusCodes::OK, ''],
       [FALSE, ['--dev' => TRUE], ['Fixture::exists', 'setDev', 'create'], 0, StatusCodes::OK, ''],
       [FALSE, ['--no-sqlite' => TRUE], ['Fixture::exists', 'setSqlite', 'create'], 0, StatusCodes::OK, ''],
+      [FALSE, ['--profile' => 'lightning'], ['Fixture::exists', 'setProfile', 'create'], 0, StatusCodes::OK, ''],
       [FALSE, [], ['Fixture::exists', 'create'], 1, StatusCodes::ERROR, ''],
       [FALSE, ['--sut-only' => TRUE], [], 0, StatusCodes::ERROR, "Error: Cannot create a SUT-only fixture without a SUT.\nHint: Use the \"--sut\" option to specify the SUT.\n"],
     ];

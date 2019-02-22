@@ -18,6 +18,8 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class FixtureInitCommand extends Command {
 
+  const DEFAULT_PROFILE = 'minimal';
+
   /**
    * The default command name.
    *
@@ -85,6 +87,7 @@ class FixtureInitCommand extends Command {
       ->addOption('sut-only', NULL, InputOption::VALUE_NONE, 'Add only the system under test (SUT). Omit all other non-required Acquia packages')
       ->addOption('dev', NULL, InputOption::VALUE_NONE, 'Use dev (HEAD) branches instead of stable releases of Drupal core and Acquia packages')
       ->addOption('force', 'f', InputOption::VALUE_NONE, 'If the fixture already exists, remove it first without confirmation')
+      ->addOption('profile', NULL, InputOption::VALUE_REQUIRED, 'The Drupal installation profile to use, e.g., "lightning"', self::DEFAULT_PROFILE)
       ->addOption('no-sqlite', NULL, InputOption::VALUE_NONE, 'Use the default BLT database includes instead of SQLite');
   }
 
@@ -116,6 +119,7 @@ class FixtureInitCommand extends Command {
     $this->setSut($sut);
     $this->setSutOnly($sut_only);
     $this->setDev($input->getOption('dev'));
+    $this->setProfile($input->getOption('profile'));
     $this->setSqlite($input->getOption('no-sqlite'));
 
     try {
@@ -190,6 +194,18 @@ class FixtureInitCommand extends Command {
   private function setDev($dev): void {
     if ($dev) {
       $this->fixtureCreator->setDev($dev);
+    }
+  }
+
+  /**
+   * Sets the installation profile.
+   *
+   * @param string|string[]|bool|null $profile
+   *   The installation profile.
+   */
+  private function setProfile($profile): void {
+    if ($profile !== self::DEFAULT_PROFILE) {
+      $this->fixtureCreator->setProfile($profile);
     }
   }
 

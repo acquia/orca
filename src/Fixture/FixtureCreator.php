@@ -75,6 +75,13 @@ class FixtureCreator {
   private $output;
 
   /**
+   * The package manager.
+   *
+   * @var \Acquia\Orca\Fixture\PackageManager
+   */
+  private $packageManager;
+
+  /**
    * The process runner.
    *
    * @var \Acquia\Orca\Utility\ProcessRunner
@@ -82,11 +89,11 @@ class FixtureCreator {
   private $processRunner;
 
   /**
-   * The package manager.
+   * The installation profile.
    *
-   * @var \Acquia\Orca\Fixture\PackageManager
+   * @var string
    */
-  private $packageManager;
+  private $profile = 'minimal';
 
   /**
    * The submodule manager.
@@ -170,6 +177,16 @@ class FixtureCreator {
    */
   public function setDev(bool $is_dev): void {
     $this->isDev = $is_dev;
+  }
+
+  /**
+   * Sets the installation profile.
+   *
+   * @param string $profile
+   *   The installation profile machine name, e.g., "minimal" or "lightning".
+   */
+  public function setProfile(string $profile): void {
+    $this->profile = $profile;
   }
 
   /**
@@ -614,7 +631,7 @@ class FixtureCreator {
     $this->processRunner->runFixtureVendorBin([
       'drush',
       'site-install',
-      'minimal',
+      $this->profile,
       "install_configure_form.update_status_module='[FALSE,FALSE]'",
       'install_configure_form.enable_update_status_module=NULL',
       '--site-name=ORCA',
