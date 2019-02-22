@@ -65,7 +65,6 @@ class FixtureRemover {
     $this->output->section('Removing fixture');
     $this->prepareFilesForDeletion();
     $this->deleteFixtureDirectory();
-    $this->output->success('Fixture removed');
   }
 
   /**

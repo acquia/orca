@@ -166,7 +166,6 @@ class FixtureCreator {
     $this->installDrupal();
     $this->enableAcquiaModules();
     $this->createAndCheckoutBackupTag();
-    $this->output->success('Fixture created');
   }
 
   /**

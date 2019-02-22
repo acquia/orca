@@ -118,7 +118,6 @@ class AcquiaModuleEnabler {
       'pm-enable',
       '--yes',
     ], $module_list));
-    $this->output->success('Modules enabled');
   }
 
   /**
