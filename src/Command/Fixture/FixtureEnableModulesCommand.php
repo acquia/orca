@@ -54,14 +54,8 @@ class FixtureEnableModulesCommand extends Command {
    */
   protected function configure() {
     $this
-      ->setAliases([
-        'enmods',
-        // @deprecated For backward compatibility.
-        // @todo Remove before next release.
-        'fixture:install-modules',
-      ])
-      ->setDescription('Enables all Acquia modules')
-      ->setHidden(TRUE);
+      ->setAliases(['enmods'])
+      ->setDescription('Enables all Acquia modules');
   }
 
   /**
