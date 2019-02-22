@@ -1,8 +1,8 @@
 <?php
 
-namespace Acquia\Orca\Tests\Command\Dev;
+namespace Acquia\Orca\Tests\Command\Fixture;
 
-use Acquia\Orca\Command\Dev\DevRunServerCommand;
+use Acquia\Orca\Command\Fixture\FixtureRunServerCommand;
 use Acquia\Orca\Command\StatusCodes;
 use Acquia\Orca\Fixture\Fixture;
 use Acquia\Orca\Server\WebServer;
@@ -14,7 +14,7 @@ use Symfony\Component\Console\Tester\CommandTester;
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Fixture\Fixture $fixture
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Server\WebServer $webServer
  */
-class DevRunServerCommandTest extends CommandTestBase {
+class FixtureRunServerCommandTest extends CommandTestBase {
 
   protected function setUp() {
     $this->fixture = $this->prophesize(Fixture::class);
@@ -41,7 +41,7 @@ class DevRunServerCommandTest extends CommandTestBase {
       ->shouldBeCalledTimes((int) in_array('wait', $methods_called));
     $tester = $this->createCommandTester();
 
-    $this->executeCommand($tester, DevRunServerCommand::getDefaultName());
+    $this->executeCommand($tester, FixtureRunServerCommand::getDefaultName());
 
     $this->assertEquals($display, $tester->getDisplay(), 'Displayed correct output.');
     $this->assertEquals($status_code, $tester->getStatusCode(), 'Returned correct status code.');
@@ -60,10 +60,10 @@ class DevRunServerCommandTest extends CommandTestBase {
     $fixture = $this->fixture->reveal();
     /** @var \Acquia\Orca\Server\WebServer $web_server */
     $web_server = $this->webServer->reveal();
-    $application->add(new DevRunServerCommand($fixture, $web_server));
+    $application->add(new FixtureRunServerCommand($fixture, $web_server));
     /** @var \Acquia\Orca\Command\Fixture\FixtureInitCommand $command */
-    $command = $application->find(DevRunServerCommand::getDefaultName());
-    $this->assertInstanceOf(DevRunServerCommand::class, $command, 'Instantiated class.');
+    $command = $application->find(FixtureRunServerCommand::getDefaultName());
+    $this->assertInstanceOf(FixtureRunServerCommand::class, $command, 'Instantiated class.');
     return new CommandTester($command);
   }
 
