@@ -1,6 +1,7 @@
 /var/*
 /vendor
 !/**/.gitkeep
+/.phpcs-cache
 /.phpunit
 /cghooks.lock
 /phpcs.xml

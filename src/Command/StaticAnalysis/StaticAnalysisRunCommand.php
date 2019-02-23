@@ -4,6 +4,7 @@ namespace Acquia\Orca\Command\StaticAnalysis;
 
 use Acquia\Orca\Command\StatusCodes;
 use Acquia\Orca\Task\ComposerValidateTask;
+use Acquia\Orca\Task\PhpCodeSnifferTask;
 use Acquia\Orca\Task\PhpCompatibilitySniffTask;
 use Acquia\Orca\Task\PhpLintTask;
 use Acquia\Orca\Task\TaskRunner;
@@ -47,6 +48,7 @@ class StaticAnalysisRunCommand extends Command {
    *   The Composer validate task.
    * @param \Symfony\Component\Filesystem\Filesystem $filesystem
    *   The filesystem.
+   * @param \Acquia\Orca\Task\PhpCodeSnifferTask $php_code_sniffer
    * @param \Acquia\Orca\Task\PhpCompatibilitySniffTask $php_compatibility
    *   The PHP compatibility sniff task.
    * @param \Acquia\Orca\Task\PhpLintTask $php_lint
@@ -56,12 +58,13 @@ class StaticAnalysisRunCommand extends Command {
    * @param \Acquia\Orca\Task\YamlLintTask $yaml_lint
    *   The YAML lint task.
    */
-  public function __construct(ComposerValidateTask $composer_validate, Filesystem $filesystem, PhpCompatibilitySniffTask $php_compatibility, PhpLintTask $php_lint, TaskRunner $task_runner, YamlLintTask $yaml_lint) {
+  public function __construct(ComposerValidateTask $composer_validate, Filesystem $filesystem, PhpCodeSnifferTask $php_code_sniffer, PhpCompatibilitySniffTask $php_compatibility, PhpLintTask $php_lint, TaskRunner $task_runner, YamlLintTask $yaml_lint) {
     $this->filesystem = $filesystem;
     $this->taskRunner = $task_runner
       ->addTask($composer_validate)
       ->addTask($php_compatibility)
       ->addTask($php_lint)
+      ->addTask($php_code_sniffer)
       ->addTask($yaml_lint);
     parent::__construct(self::$defaultName);
   }

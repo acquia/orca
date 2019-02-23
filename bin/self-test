@@ -18,16 +18,15 @@ cd "$(dirname "$0")/.."
 # Install ORCA's dependencies.
 composer install
 
+# Avoid testing locally with a stale cache.
+./bin/orca cache:clear
+
 # Perform static code analysis.
 ORCA_FIXTURE=${ORCA_FIXTURE:=any}
 if [[ ${ORCA_FIXTURE} == @(any|none) ]]; then
-  echo && composer phpcs
-  echo && composer phpmd
+  ./bin/orca static-analysis:run ./
   echo && composer phpunit
 fi
-
-# Avoid testing locally with a stale cache.
-./bin/orca cache:clear
 
 # Copy an example project into place as a test SUT.
 rm -rf ../example

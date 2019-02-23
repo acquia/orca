@@ -5,6 +5,7 @@ namespace Acquia\Orca\Tests\Command\StaticAnalysis;
 use Acquia\Orca\Command\StaticAnalysis\StaticAnalysisRunCommand;
 use Acquia\Orca\Command\StatusCodes;
 use Acquia\Orca\Task\ComposerValidateTask;
+use Acquia\Orca\Task\PhpCodeSnifferTask;
 use Acquia\Orca\Task\PhpCompatibilitySniffTask;
 use Acquia\Orca\Task\PhpLintTask;
 use Acquia\Orca\Task\TaskRunner;
@@ -17,6 +18,7 @@ use Symfony\Component\Filesystem\Filesystem;
 /**
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Task\ComposerValidateTask $composerValidate
  * @property \Prophecy\Prophecy\ObjectProphecy|\Symfony\Component\Filesystem\Filesystem $filesystem
+ * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Task\PhpCodeSnifferTask $phpCodeSniffer
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Task\PhpCompatibilitySniffTask $phpCompatibilitySniff
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Task\PhpLintTask $phpLint
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Task\TaskRunner $taskRunner
@@ -29,6 +31,7 @@ class StaticAnalysisRunCommandTest extends CommandTestBase {
   protected function setUp() {
     $this->composerValidate = $this->prophesize(ComposerValidateTask::class);
     $this->filesystem = $this->prophesize(Filesystem::class);
+    $this->phpCodeSniffer = $this->prophesize(PhpCodeSnifferTask::class);
     $this->phpCompatibilitySniff = $this->prophesize(PhpCompatibilitySniffTask::class);
     $this->phpLint = $this->prophesize(PhpLintTask::class);
     $this->taskRunner = $this->prophesize(TaskRunner::class);
@@ -45,6 +48,10 @@ class StaticAnalysisRunCommandTest extends CommandTestBase {
       ->willReturn($path_exists);
     $this->taskRunner
       ->addTask($this->composerValidate->reveal())
+      ->shouldBeCalledTimes(1)
+      ->willReturn($this->taskRunner);
+    $this->taskRunner
+      ->addTask($this->phpCodeSniffer->reveal())
       ->shouldBeCalledTimes(1)
       ->willReturn($this->taskRunner);
     $this->taskRunner
@@ -89,15 +96,17 @@ class StaticAnalysisRunCommandTest extends CommandTestBase {
     $composer_validate = $this->composerValidate->reveal();
     /** @var \Symfony\Component\Filesystem\Filesystem $filesystem */
     $filesystem = $this->filesystem->reveal();
-    /** @var \Acquia\Orca\Task\PhpCompatibilitySniffTask $php_compatibility_sniff */
-    $php_compatibility_sniff = $this->phpCompatibilitySniff->reveal();
+    /** @var \Acquia\Orca\Task\PhpCodeSnifferTask $php_code_sniffer */
+    $php_code_sniffer = $this->phpCodeSniffer->reveal();
+    /** @var \Acquia\Orca\Task\PhpCompatibilitySniffTask $php_compatibility */
+    $php_compatibility = $this->phpCompatibilitySniff->reveal();
     /** @var \Acquia\Orca\Task\PhpLintTask $php_lint */
     $php_lint = $this->phpLint->reveal();
     /** @var \Acquia\Orca\Task\TaskRunner $task_runner */
     $task_runner = $this->taskRunner->reveal();
     /** @var \Acquia\Orca\Task\YamlLintTask $yaml_lint */
     $yaml_lint = $this->yamlLint->reveal();
-    $application->add(new StaticAnalysisRunCommand($composer_validate, $filesystem, $php_compatibility_sniff, $php_lint, $task_runner, $yaml_lint));
+    $application->add(new StaticAnalysisRunCommand($composer_validate, $filesystem, $php_code_sniffer, $php_compatibility, $php_lint, $task_runner, $yaml_lint));
     /** @var \Acquia\Orca\Command\Tests\TestsRunCommand $command */
     $command = $application->find(StaticAnalysisRunCommand::getDefaultName());
     $this->assertInstanceOf(StaticAnalysisRunCommand::class, $command, 'Instantiated class.');

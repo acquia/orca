@@ -414,16 +414,16 @@
         },
         {
             "name": "composer/composer",
-            "version": "1.8.3",
+            "version": "1.8.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/composer/composer.git",
-                "reference": "a6a3b44581398b7135c7baa0557b7c5b10808b47"
+                "reference": "bc364c2480c17941e2135cfc568fa41794392534"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/composer/composer/zipball/a6a3b44581398b7135c7baa0557b7c5b10808b47",
-                "reference": "a6a3b44581398b7135c7baa0557b7c5b10808b47",
+                "url": "https://api.github.com/repos/composer/composer/zipball/bc364c2480c17941e2135cfc568fa41794392534",
+                "reference": "bc364c2480c17941e2135cfc568fa41794392534",
                 "shasum": ""
             },
             "require": {
@@ -490,7 +490,7 @@
                 "dependency",
                 "package"
             ],
-            "time": "2019-01-30T07:31:34+00:00"
+            "time": "2019-02-11T09:52:10+00:00"
         },
         {
             "name": "composer/semver",
@@ -1087,16 +1087,16 @@
         },
         {
             "name": "hassankhan/config",
-            "version": "2.0.0",
+            "version": "2.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/hassankhan/config.git",
-                "reference": "56f22b988d0b81bc9bae730c778afa0bbbf0e726"
+                "reference": "5c0ad8e530013c559cfa1e7e77a586075e667f56"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/hassankhan/config/zipball/56f22b988d0b81bc9bae730c778afa0bbbf0e726",
-                "reference": "56f22b988d0b81bc9bae730c778afa0bbbf0e726",
+                "url": "https://api.github.com/repos/hassankhan/config/zipball/5c0ad8e530013c559cfa1e7e77a586075e667f56",
+                "reference": "5c0ad8e530013c559cfa1e7e77a586075e667f56",
                 "shasum": ""
             },
             "require": {
@@ -1141,7 +1141,7 @@
                 "yaml",
                 "yml"
             ],
-            "time": "2018-10-03T20:34:25+00:00"
+            "time": "2019-02-01T13:58:25+00:00"
         },
         {
             "name": "jakub-onderka/php-console-color",
@@ -2158,6 +2158,7 @@
                 "mock",
                 "xunit"
             ],
+            "abandoned": true,
             "time": "2018-08-09T05:50:03+00:00"
         },
         {
@@ -4509,12 +4510,12 @@
             "source": {
                 "type": "git",
                 "url": "https://gitlab.com/weitzman/drupal-test-traits.git",
-                "reference": "1d4f83a2009d3ddb96219e4dfe4abcd3619ee93f"
+                "reference": "42aa980ee1a2f52aa3b29db2d5041ddaec47d0be"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://gitlab.com/api/v4/projects/weitzman%2Fdrupal-test-traits/repository/archive.zip?sha=1d4f83a2009d3ddb96219e4dfe4abcd3619ee93f",
-                "reference": "1d4f83a2009d3ddb96219e4dfe4abcd3619ee93f",
+                "url": "https://gitlab.com/api/v4/projects/weitzman%2Fdrupal-test-traits/repository/archive.zip?sha=42aa980ee1a2f52aa3b29db2d5041ddaec47d0be",
+                "reference": "42aa980ee1a2f52aa3b29db2d5041ddaec47d0be",
                 "shasum": ""
             },
             "require": {
@@ -4558,7 +4559,7 @@
                 }
             ],
             "description": "Traits for testing Drupal sites that have user content (versus unpopulated sites).",
-            "time": "2019-02-07T22:11:06+00:00"
+            "time": "2019-02-09T14:22:39+00:00"
         }
     ],
     "packages-dev": [
