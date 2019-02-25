@@ -49,6 +49,7 @@ class StaticAnalysisRunCommand extends Command {
    * @param \Symfony\Component\Filesystem\Filesystem $filesystem
    *   The filesystem.
    * @param \Acquia\Orca\Task\PhpCodeSnifferTask $php_code_sniffer
+   *   The PHP Code Sniffer task.
    * @param \Acquia\Orca\Task\PhpCompatibilitySniffTask $php_compatibility
    *   The PHP compatibility sniff task.
    * @param \Acquia\Orca\Task\PhpLintTask $php_lint
