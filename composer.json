@@ -33,7 +33,7 @@
         "symfony/options-resolver": "^4.2",
         "symfony/process": "^4.1",
         "symfony/yaml": "^4.1",
-        "weitzman/drupal-test-traits": "dev-master"
+        "weitzman/drupal-test-traits": "~1.0"
     },
     "conflict": {
         "symfony/symfony": "*"

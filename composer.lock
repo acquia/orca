@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "22205e8f7b5af379a9471161cf3219e6",
+    "content-hash": "578896c3a6372509ce624cb881df7fc4",
     "packages": [
         {
             "name": "behat/behat",
@@ -4506,16 +4506,16 @@
         },
         {
             "name": "weitzman/drupal-test-traits",
-            "version": "dev-master",
+            "version": "1.0.0",
             "source": {
                 "type": "git",
                 "url": "https://gitlab.com/weitzman/drupal-test-traits.git",
-                "reference": "42aa980ee1a2f52aa3b29db2d5041ddaec47d0be"
+                "reference": "83a206d0b5a18f3e86c29d5887a4a83bbf3fca06"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://gitlab.com/api/v4/projects/weitzman%2Fdrupal-test-traits/repository/archive.zip?sha=42aa980ee1a2f52aa3b29db2d5041ddaec47d0be",
-                "reference": "42aa980ee1a2f52aa3b29db2d5041ddaec47d0be",
+                "url": "https://gitlab.com/api/v4/projects/weitzman%2Fdrupal-test-traits/repository/archive.zip?sha=83a206d0b5a18f3e86c29d5887a4a83bbf3fca06",
+                "reference": "83a206d0b5a18f3e86c29d5887a4a83bbf3fca06",
                 "shasum": ""
             },
             "require": {
@@ -4559,7 +4559,7 @@
                 }
             ],
             "description": "Traits for testing Drupal sites that have user content (versus unpopulated sites).",
-            "time": "2019-02-09T14:22:39+00:00"
+            "time": "2019-02-04T15:46:51+00:00"
         }
     ],
     "packages-dev": [
@@ -4995,9 +4995,7 @@
     ],
     "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": {
-        "weitzman/drupal-test-traits": 20
-    },
+    "stability-flags": [],
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
