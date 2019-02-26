@@ -114,6 +114,10 @@
     <severity>0</severity>
   </rule>
 
+  <!-- PHP Compatibility sniffs -->
+  <config name="testVersion" value="7.1-"/>
+  <rule ref="PHPCompatibility"/>
+
   <!-- PSR-2 sniffs -->
   <rule ref="PSR2.Classes.PropertyDeclaration">
     <exclude name="PSR2.Classes.PropertyDeclaration.Underscore"/>

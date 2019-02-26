@@ -13,7 +13,6 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 /**
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Task\ComposerValidateTask $composerValidateTask
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Task\PhpLintTask $phpLintTask
- * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Task\PhpCompatibilitySniffTask $phpCompatibilityTask
  */
 class TaskRunnerTest extends TestCase {
 

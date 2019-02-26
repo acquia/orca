@@ -13,7 +13,7 @@ class PhpCodeSnifferTask extends TaskBase {
    * {@inheritdoc}
    */
   public function statusMessage(): string {
-    return 'Sniffing for coding standards violations';
+    return 'Sniffing for coding standards violations and PHP version incompatibilities';
   }
 
   /**

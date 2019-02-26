@@ -8,7 +8,6 @@ use Acquia\Orca\Utility\ConfigFileOverrider;
 use Acquia\Orca\Utility\ProcessRunner;
 use Acquia\Orca\Task\TestFramework\BehatTask;
 use Acquia\Orca\Task\ComposerValidateTask;
-use Acquia\Orca\Task\PhpCompatibilitySniffTask;
 use Acquia\Orca\Task\PhpLintTask;
 use Acquia\Orca\Task\TestFramework\PhpUnitTask;
 use PHPUnit\Framework\TestCase;
@@ -37,7 +36,6 @@ class TasksTest extends TestCase {
       [BehatTask::class],
       [ComposerValidateTask::class],
       [PhpCodeSnifferTask::class],
-      [PhpCompatibilitySniffTask::class],
       [PhpLintTask::class],
       [PhpUnitTask::class],
     ];
