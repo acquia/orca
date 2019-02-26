@@ -21,15 +21,15 @@ interface TaskInterface {
    *   A filesystem path.
    *
    * @return self
+   *   The task object.
    */
   public function setPath(string $path): TaskInterface;
 
   /**
    * Returns a status message describing the task being performed.
    *
-   * E.g., "Performing task".
-   *
    * @return string
+   *   A status message, e.g., "Performing task".
    */
   public function statusMessage(): string;
 

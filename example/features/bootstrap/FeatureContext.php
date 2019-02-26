@@ -11,6 +11,8 @@ use GuzzleHttp\Client;
 class FeatureContext implements Context {
 
   /**
+   * Provides a dummy step.
+   *
    * @Given /^I tag a scenario @orca_ignore$/
    * @When /^I run ORCA tests/
    */
@@ -18,6 +20,8 @@ class FeatureContext implements Context {
   }
 
   /**
+   * Visits the homepage.
+   *
    * @Given /^I visit the homepage$/
    */
   public function iVisitTheHomePage() {
@@ -26,6 +30,8 @@ class FeatureContext implements Context {
   }
 
   /**
+   * Asserts that a given HTTP status code was received.
+   *
    * @Then /^I should get an HTTP (\d+) status code$/
    *
    * @throws \Exception
@@ -37,6 +43,8 @@ class FeatureContext implements Context {
   }
 
   /**
+   * Asserts that the tagged scenario isn't run.
+   *
    * @Then /^the tagged scenario should not be run$/
    */
   public function theTaggedScenarioShouldNotBeRun() {

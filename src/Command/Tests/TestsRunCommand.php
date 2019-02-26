@@ -152,6 +152,7 @@ class TestsRunCommand extends Command {
    *   The output decorator.
    *
    * @return bool
+   *   TRUE if the command input is valid or FALSE if not.
    */
   private function isValidInput(OutputInterface $output): bool {
     if ($this->sutOnly && !$this->sut) {

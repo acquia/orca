@@ -252,6 +252,7 @@ class TestRunner {
    * Gets the test framework tasks.
    *
    * @return \Acquia\Orca\Task\TestFramework\TestFrameworkInterface[]
+   *   An indexed array of framework tasks.
    */
   private function getFrameworks(): array {
     $frameworks = [];

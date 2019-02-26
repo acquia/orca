@@ -55,7 +55,8 @@ class TaskRunner {
    * @param \Acquia\Orca\Task\TaskInterface $task
    *   The task to add.
    *
-   * @return \Acquia\Orca\Task\TaskRunner
+   * @return self
+   *   The task runner.
    */
   public function addTask(TaskInterface $task): self {
     $this->tasks[] = $task;
@@ -66,6 +67,7 @@ class TaskRunner {
    * Runs the tasks.
    *
    * @return int
+   *   The last task's exit status code.
    */
   public function run(): int {
     try {
@@ -88,6 +90,7 @@ class TaskRunner {
    *   Any valid filesystem path, absolute or relative.
    *
    * @return self
+   *   The task runner.
    */
   public function setPath(string $path): self {
     $this->path = $path;

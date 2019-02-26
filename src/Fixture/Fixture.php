@@ -55,6 +55,7 @@ class Fixture {
    * Determines whether or not the fixture already exists.
    *
    * @return bool
+   *   TRUE if the fixture already exists or FALSE if not.
    */
   public function exists(): bool {
     return $this->filesystem->exists($this->getPath());
@@ -67,6 +68,7 @@ class Fixture {
    *   (Optional) A sub-path to append.
    *
    * @return string
+   *   The fixture root path with sub-path appended if provided.
    */
   public function getPath(?string $sub_path = ''): string {
     $path = $this->rootPath;

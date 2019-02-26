@@ -81,6 +81,7 @@ class FixtureStatusCommand extends Command {
    * Provides the table style.
    *
    * @return \Symfony\Component\Console\Helper\TableStyle
+   *   A TableStyle object.
    */
   private function tableStyle(): TableStyle {
     return (new TableStyle())

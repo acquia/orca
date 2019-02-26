@@ -69,6 +69,7 @@ class SubmoduleManager {
    * Gets an array of all Acquia submodules.
    *
    * @return \Acquia\Orca\Fixture\Package[]
+   *   An indexed array of package objects.
    */
   public function getAll(): array {
     if ($this->submodules) {
@@ -86,6 +87,7 @@ class SubmoduleManager {
    *   The package to search for submodules.
    *
    * @return \Acquia\Orca\Fixture\Package[]
+   *   An indexed array of package objects.
    */
   public function getByParent(Package $package): array {
     $paths = [$package->getInstallPathAbsolute()];
@@ -99,6 +101,7 @@ class SubmoduleManager {
    *   The paths to search for submodules.
    *
    * @return \Acquia\Orca\Fixture\Package[]
+   *   An indexed array of package objects.
    */
   public function getInPaths(array $paths): array {
     $submodules = [];
@@ -127,7 +130,8 @@ class SubmoduleManager {
   /**
    * Gets an array of top level module install paths.
    *
-   * @return array
+   * @return string[]
+   *   An indexed array of paths.
    */
   private function getTopLevelModuleInstallPaths(): array {
     $paths = [];
@@ -147,6 +151,8 @@ class SubmoduleManager {
    *   An array of paths to recursively search for submodules.
    *
    * @return \Symfony\Component\Finder\Finder|array
+   *   A Finder query for all Acquia Drupal submodule composer.json files within
+   *   the given paths or an empty array if no paths are given.
    */
   private function findSubmoduleComposerJsonFiles(array $paths) {
     if (!$paths) {
@@ -178,6 +184,8 @@ class SubmoduleManager {
    *   The file to examine.
    *
    * @return bool
+   *   TRUE if the given composer.json file belongs to a submodule or FALSE if
+   *   not.
    */
   private function isSubmoduleComposerJson(\SplFileInfo $file): bool {
     try {

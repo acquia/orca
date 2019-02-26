@@ -46,6 +46,7 @@ class BehatTask extends TestFrameworkBase {
    * Finds all Behat config files.
    *
    * @return \Symfony\Component\Finder\Finder
+   *   A Finder query for all Behat config files.
    */
   private function getBehatConfigFiles() {
     return (new Finder())
@@ -61,6 +62,7 @@ class BehatTask extends TestFrameworkBase {
    * Gets the string of tags to pass to Behat.
    *
    * @return string
+   *   The string of tags to pass to Behat.
    */
   private function getTags(): string {
     $tags = [];

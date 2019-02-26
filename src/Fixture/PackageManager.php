@@ -44,6 +44,7 @@ class PackageManager {
    *   The package name of the package in question, e.g., "drupal/example".
    *
    * @return bool
+   *   TRUE if the given package exists or FALSE if not.
    */
   public function exists(string $package_name): bool {
     return array_key_exists($package_name, $this->packages);
@@ -56,6 +57,10 @@ class PackageManager {
    *   The package name.
    *
    * @return \Acquia\Orca\Fixture\Package
+   *   The requested package.
+   *
+   * @throws \InvalidArgumentException
+   *   If the requested package isn't found.
    */
   public function get(string $package_name): Package {
     if (empty($this->packages[$package_name])) {

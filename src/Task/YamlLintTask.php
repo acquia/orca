@@ -43,6 +43,7 @@ class YamlLintTask extends TaskBase {
    * Finds all YAML files.
    *
    * @return string[]
+   *   An indexed array of YAML file paths.
    */
   private function getYamlFiles() {
     $files = [];

@@ -327,6 +327,7 @@ class FixtureCreator {
    * Gets the list of unwanted packages.
    *
    * @return array
+   *   The list of unwanted packages.
    */
   private function getUnwantedPackageList(): array {
     $packages = $this->packageManager->getMultiple();
@@ -487,6 +488,7 @@ class FixtureCreator {
    * Gets the list of Composer dependency strings for Acquia packages.
    *
    * @return string[]
+   *   The list of Composer dependency strings for Acquia packages.
    */
   private function getAcquiaPackageDependencies(): array {
     $dependencies = $this->packageManager->getMultiple();
@@ -514,6 +516,7 @@ class FixtureCreator {
    * Gets the package string for the SUT.
    *
    * @return string
+   *   The package string for the SUT, e.g., "drupal/example:*".
    */
   private function getSutPackageString(): string {
     $path = $this->fixture->getPath($this->sut->getRepositoryUrl());
@@ -703,7 +706,7 @@ PHP;
   private function enableAcquiaModules(): void {
     if ($this->isSutOnly && ($this->sut->getType() !== 'drupal-module')) {
       // No modules to enable because the fixture is SUT-only and the SUT is not
-      // a Drupal module
+      // a Drupal module.
       return;
     }
     $this->acquiaModuleEnabler->enable();

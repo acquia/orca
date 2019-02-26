@@ -27,6 +27,7 @@ abstract class TestFrameworkBase extends TaskBase implements TestFrameworkInterf
    * Determines whether or not to limit to public tests.
    *
    * @return bool
+   *   TRUE to limit to public tests or FALSE not to.
    */
   protected function isPublicTestsOnly(): bool {
     return $this->isPublicTestsOnly;

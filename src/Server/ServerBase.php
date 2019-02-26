@@ -49,6 +49,7 @@ abstract class ServerBase implements ServerInterface {
    * Creates the server process.
    *
    * @return \Symfony\Component\Process\Process
+   *   The server process.
    */
   abstract protected function createProcess(): Process;
 
@@ -89,6 +90,7 @@ abstract class ServerBase implements ServerInterface {
    * Gets the fixture.
    *
    * @return \Acquia\Orca\Fixture\Fixture
+   *   The fixture.
    */
   protected function getFixture(): Fixture {
     return $this->fixture;
@@ -98,6 +100,7 @@ abstract class ServerBase implements ServerInterface {
    * Gets the process runner.
    *
    * @return \Acquia\Orca\Utility\ProcessRunner
+   *   The process runner.
    */
   protected function getProcessRunner(): ProcessRunner {
     return $this->processRunner;

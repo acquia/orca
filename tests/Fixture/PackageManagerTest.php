@@ -99,9 +99,6 @@ class PackageManagerTest extends TestCase {
     ];
   }
 
-  /**
-   * @return \Acquia\Orca\Fixture\PackageManager
-   */
   private function createPackageManager(): PackageManager {
     /** @var \Acquia\Orca\Fixture\Fixture $fixture */
     $fixture = $this->fixture->reveal();

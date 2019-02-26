@@ -69,6 +69,7 @@ abstract class TaskBase implements TaskInterface {
    * Gets the path.
    *
    * @return string
+   *   The path.
    */
   public function getPath(): string {
     if (!$this->path) {

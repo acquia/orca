@@ -81,6 +81,7 @@ class Kernel extends BaseKernel {
    * Gets the fixture directory.
    *
    * @return string
+   *   The fixture directory.
    */
   protected function getFixtureDir(): string {
     return realpath("{$this->getProjectDir()}/..") . '/orca-build';

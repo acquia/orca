@@ -98,6 +98,8 @@ class Package {
    * Gets the absolute path the package installs at.
    *
    * @return string
+   *   The absolute path the package installs at, e.g.,
+   *   "/var/www/orca/docroot/modules/contrib/example".
    */
   public function getInstallPathAbsolute(): string {
     return $this->fixture->getPath($this->getInstallPathRelative());
@@ -107,6 +109,8 @@ class Package {
    * Gets the path the package installs at relative to the fixture root.
    *
    * @return string
+   *   The path the package installs at relative to the fixture root, e.g.,
+   *   "docroot/modules/contrib/example".
    *
    * @SuppressWarnings(PHPMD.CyclomaticComplexity)
    */
@@ -144,7 +148,9 @@ class Package {
   /**
    * Gets the URL for the Composer path repository.
    *
-   * E.g., "../example" or "/var/www/example/modules/submodule".
+   * @return string
+   *   The URL for the Composer path repository, e.g., "../example" or
+   *   "/var/www/example/modules/submodule".
    */
   public function getRepositoryUrl(): string {
     if (!empty($this->data['url'])) {
@@ -155,9 +161,10 @@ class Package {
   }
 
   /**
-   * Gets the type.
+   * Gets the package type.
    *
-   * E.g., "drupal-module".
+   * @return string
+   *   The package type, e.g., "drupal-module".
    */
   public function getType(): string {
     return $this->data['type'];
@@ -166,9 +173,8 @@ class Package {
   /**
    * Gets the package name.
    *
-   * E.g., "drupal/example".
-   *
    * @return string
+   *   The package name, e.g., "drupal/example".
    */
   public function getPackageName(): string {
     return $this->data['name'];
@@ -177,10 +183,9 @@ class Package {
   /**
    * Gets the dev version package string.
    *
-   * Gets the package string as passed to `composer require`, e.g.,
-   * "drupal/example:1.x-dev".
-   *
    * @return string
+   *   The package string as passed to `composer require`, e.g.,
+   *   "drupal/example:1.x-dev".
    */
   public function getPackageStringDev(): string {
     return "{$this->getPackageName()}:{$this->getVersionDev()}";
@@ -189,10 +194,9 @@ class Package {
   /**
    * Gets the recommended version package string.
    *
-   * Gets the package string as passed to `composer require`, e.g.,
-   * "drupal/example:~1.0".
-   *
    * @return string
+   *   The package string as passed to `composer require`, e.g.,
+   *   "drupal/example:~1.0".
    */
   public function getPackageStringRecommended(): string {
     return "{$this->getPackageName()}:{$this->getVersionRecommended()}";
@@ -201,9 +205,8 @@ class Package {
   /**
    * Gets the project name.
    *
-   * E.g., "example".
-   *
    * @return string
+   *   The project name, e.g., "example".
    */
   public function getProjectName(): string {
     $package_name_parts = explode('/', $this->data['name']);
@@ -213,9 +216,8 @@ class Package {
   /**
    * Gets the dev version constraint.
    *
-   * E.g., "*" or "~1.0".
-   *
    * @return string
+   *   The dev version constraint, e.g., "*" or "~1.0".
    */
   public function getVersionDev(): string {
     return $this->data['version_dev'];
@@ -224,9 +226,8 @@ class Package {
   /**
    * Gets the recommended version constraint.
    *
-   * E.g., "*" or "~1.0".
-   *
    * @return string
+   *   The recommended version constraint, e.g., "*" or "~1.0".
    */
   public function getVersionRecommended(): string {
     return $this->data['version'];
@@ -236,6 +237,8 @@ class Package {
    * Determines whether the package is a Drupal module that should get enabled.
    *
    * @return bool
+   *   TRUE if the package is a Drupal module that should get enabled or FALSE
+   *   if not.
    */
   public function shouldGetEnabled(): bool {
     if ($this->getType() !== 'drupal-module') {

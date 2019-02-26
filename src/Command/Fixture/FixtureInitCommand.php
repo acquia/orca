@@ -143,6 +143,7 @@ class FixtureInitCommand extends Command {
    *   The output decorator.
    *
    * @return bool
+   *   TRUE if the command input is valid or FALSE if not.
    */
   private function isValidInput($sut, $sut_only, OutputInterface $output): bool {
     if ($sut_only && !$sut) {

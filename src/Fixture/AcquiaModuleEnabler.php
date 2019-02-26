@@ -124,6 +124,7 @@ class AcquiaModuleEnabler {
    * Gets the list of Acquia modules to enable.
    *
    * @return string[]
+   *   An indexed array of Acquia module machine names.
    */
   private function getAcquiaModuleList(): array {
     $module_list = [];

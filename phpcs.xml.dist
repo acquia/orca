@@ -16,128 +16,26 @@
 
   <file>.</file>
 
-  <exclude-pattern>*/vendor/*</exclude-pattern>
-  <exclude-pattern>*/var/cache/*</exclude-pattern>
+  <exclude-pattern>vendor/*</exclude-pattern>
+  <exclude-pattern>var/cache/*</exclude-pattern>
 
-  <!-- Prevent incorrect indentation of chained method calls. -->
-  <rule ref="PEAR.Functions.FunctionCallSignature">
-    <exclude name="PEAR.Functions.FunctionCallSignature.OpeningIndent"/>
+  <!-- Drupal sniffs -->
+  <rule ref="Drupal">
+    <exclude name="Drupal.Files.TxtFileLineLength.TooLong"/>
   </rule>
-
-  <!-- Begin Drupal Core rules. -->
-
-  <!-- Only include specific sniffs that pass. This ensures that, if new sniffs are added, HEAD does not fail.-->
-  <rule ref="Drupal.Classes.ClassCreateInstance"/>
-  <rule ref="Drupal.Classes.ClassDeclaration"/>
-  <rule ref="Drupal.Classes.FullyQualifiedNamespace"/>
-  <rule ref="Drupal.Classes.InterfaceName"/>
-  <rule ref="Drupal.Classes.UnusedUseStatement"/>
-  <rule ref="Drupal.Classes.UseLeadingBackslash"/>
-  <rule ref="Drupal.CSS.ClassDefinitionNameSpacing"/>
-  <rule ref="Drupal.CSS.ColourDefinition"/>
-  <rule ref="Drupal.Commenting.ClassComment">
-    <exclude name="Drupal.Commenting.ClassComment.Missing"/>
+  <!-- Relax rules for automated tests -->
+  <rule ref="Drupal.Arrays.Array.LongLineDeclaration">
+    <exclude-pattern>tests/*</exclude-pattern>
   </rule>
-  <rule ref="Drupal.Commenting.DataTypeNamespace"/>
-  <rule ref="Drupal.Commenting.DocComment">
-    <!-- Sniff for these errors: SpacingAfterTagGroup, WrongEnd, SpacingBetween,
-      ContentAfterOpen, SpacingBeforeShort, TagValueIndent, ShortStartSpace,
-      SpacingAfter, LongNotCapital -->
-    <!-- ParamNotFirst still not decided for PHPUnit-based tests.
-      @see https://www.drupal.org/node/2253915 -->
-    <exclude name="Drupal.Commenting.DocComment.ParamNotFirst"/>
-    <exclude name="Drupal.Commenting.DocComment.SpacingBeforeTags"/>
-    <exclude name="Drupal.Commenting.DocComment.LongFullStop"/>
-    <exclude name="Drupal.Commenting.DocComment.ShortNotCapital"/>
-    <exclude name="Drupal.Commenting.DocComment.ShortFullStop"/>
-    <!-- TagsNotGrouped and ParamGroup have false-positives.
-      @see https://www.drupal.org/node/2060925 -->
-    <exclude name="Drupal.Commenting.DocComment.TagsNotGrouped"/>
-    <exclude name="Drupal.Commenting.DocComment.ParamGroup"/>
-    <exclude name="Drupal.Commenting.DocComment.ShortSingleLine"/>
-    <exclude name="Drupal.Commenting.DocComment.TagGroupSpacing"/>
-    <exclude name="Drupal.Commenting.DocComment.MissingShort"/>
+  <rule ref="Drupal.Commenting.ClassComment.Missing">
+    <exclude-pattern>tests/*</exclude-pattern>
   </rule>
-  <rule ref="Drupal.Commenting.DocCommentStar"/>
-  <rule ref="Drupal.Commenting.FileComment"/>
-  <rule ref="Drupal.Commenting.FunctionComment">
-    <exclude name="Drupal.Commenting.FunctionComment.IncorrectTypeHint"/>
-    <exclude name="Drupal.Commenting.FunctionComment.InvalidNoReturn"/>
-    <exclude name="Drupal.Commenting.FunctionComment.InvalidTypeHint"/>
-    <exclude name="Drupal.Commenting.FunctionComment.Missing"/>
-    <exclude name="Drupal.Commenting.FunctionComment.MissingParamComment"/>
-    <exclude name="Drupal.Commenting.FunctionComment.MissingParamType"/>
-    <exclude name="Drupal.Commenting.FunctionComment.MissingReturnComment"/>
-    <exclude name="Drupal.Commenting.FunctionComment.MissingReturnType"/>
-    <exclude name="Drupal.Commenting.FunctionComment.ParamCommentFullStop"/>
-    <exclude name="Drupal.Commenting.FunctionComment.ParamMissingDefinition"/>
-    <exclude name="Drupal.Commenting.FunctionComment.TypeHintMissing"/>
+  <rule ref="Drupal.Commenting.DocComment.MissingShort">
+    <exclude-pattern>tests/*</exclude-pattern>
   </rule>
-  <rule ref="Drupal.Commenting.VariableComment">
-    <!-- Sniff for: DuplicateVar, EmptyVar, InlineVariableName -->
-    <exclude name="Drupal.Commenting.VariableComment.IncorrectVarType"/>
-    <exclude name="Drupal.Commenting.VariableComment.MissingVar"/>
-    <exclude name="Drupal.Commenting.VariableComment.VarOrder"/>
-    <exclude name="Drupal.Commenting.VariableComment.WrongStyle"/>
+  <rule ref="Drupal.Commenting.FunctionComment.Missing">
+    <exclude-pattern>tests/*</exclude-pattern>
   </rule>
-  <rule ref="Drupal.Commenting.InlineComment">
-    <!-- Sniff for: NoSpaceBefore, WrongStyle -->
-    <exclude name="Drupal.Commenting.InlineComment.DocBlock"/>
-    <exclude name="Drupal.Commenting.InlineComment.InvalidEndChar"/>
-    <exclude name="Drupal.Commenting.InlineComment.NotCapital"/>
-    <exclude name="Drupal.Commenting.InlineComment.SpacingAfter"/>
-    <exclude name="Drupal.Commenting.InlineComment.SpacingBefore"/>
-  </rule>
-  <rule ref="Drupal.Commenting.PostStatementComment"/>
-  <rule ref="Drupal.ControlStructures.ElseIf"/>
-  <rule ref="Drupal.ControlStructures.ControlSignature"/>
-  <rule ref="Drupal.ControlStructures.InlineControlStructure"/>
-  <rule ref="Drupal.Files.EndFileNewline"/>
-  <rule ref="Drupal.Files.FileEncoding"/>
-  <rule ref="Drupal.Files.TxtFileLineLength"/>
-  <rule ref="Drupal.Formatting.MultiLineAssignment"/>
-  <rule ref="Drupal.Formatting.MultipleStatementAlignment"/>
-  <rule ref="Drupal.Formatting.SpaceInlineIf"/>
-  <rule ref="Drupal.Formatting.SpaceUnaryOperator"/>
-  <rule ref="Drupal.Functions.DiscouragedFunctions"/>
-  <rule ref="Drupal.Functions.FunctionDeclaration"/>
-  <rule ref="Drupal.InfoFiles.AutoAddedKeys"/>
-  <rule ref="Drupal.InfoFiles.ClassFiles"/>
-  <rule ref="Drupal.InfoFiles.DuplicateEntry"/>
-  <rule ref="Drupal.InfoFiles.Required"/>
-  <rule ref="Drupal.Methods.MethodDeclaration">
-    <!-- Silence method name underscore warning which is covered already in
-      Drupal.NamingConventions.ValidFunctionName.ScopeNotCamelCaps. -->
-    <exclude name="Drupal.Methods.MethodDeclaration.Underscore"/>
-  </rule>
-  <rule ref="Drupal.NamingConventions.ValidVariableName">
-    <!-- Sniff for: LowerStart -->
-    <exclude name="Drupal.NamingConventions.ValidVariableName.LowerCamelName"/>
-  </rule>
-  <rule ref="Drupal.Scope.MethodScope"/>
-  <rule ref="Drupal.Semantics.EmptyInstall"/>
-  <rule ref="Drupal.Semantics.FunctionAlias"/>
-  <rule ref="Drupal.Semantics.FunctionT">
-    <exclude name="Drupal.Semantics.FunctionT.NotLiteralString"/>
-    <exclude name="Drupal.Semantics.FunctionT.ConcatString"/>
-  </rule>
-  <rule ref="Drupal.Semantics.FunctionWatchdog"/>
-  <rule ref="Drupal.Semantics.InstallHooks"/>
-  <rule ref="Drupal.Semantics.LStringTranslatable"/>
-  <rule ref="Drupal.Semantics.PregSecurity"/>
-  <rule ref="Drupal.Semantics.TInHookMenu"/>
-  <rule ref="Drupal.Semantics.TInHookSchema"/>
-  <rule ref="Drupal.WhiteSpace.CloseBracketSpacing"/>
-  <rule ref="Drupal.WhiteSpace.Comma"/>
-  <rule ref="Drupal.WhiteSpace.EmptyLines"/>
-  <rule ref="Drupal.WhiteSpace.Namespace"/>
-  <rule ref="Drupal.WhiteSpace.ObjectOperatorIndent"/>
-  <rule ref="Drupal.WhiteSpace.ObjectOperatorSpacing"/>
-  <rule ref="Drupal.WhiteSpace.OpenBracketSpacing"/>
-  <rule ref="Drupal.WhiteSpace.OpenTagNewline"/>
-  <rule ref="Drupal.WhiteSpace.OperatorSpacing"/>
-  <rule ref="Drupal.WhiteSpace.ScopeClosingBrace"/>
-  <rule ref="Drupal.WhiteSpace.ScopeIndent"/>
 
   <!-- Drupal Practice sniffs -->
   <rule ref="DrupalPractice.Commenting.ExpectedException"/>
@@ -185,12 +83,15 @@
   <rule ref="PEAR.Files.IncludingFile.UseRequire">
     <severity>0</severity>
   </rule>
+  <rule ref="PEAR.Functions.FunctionCallSignature.OpeningIndent">
+    <severity>0</severity>
+  </rule>
   <rule ref="PEAR.Functions.ValidDefaultValue"/>
 
   <!-- PEAR sniffs -->
   <rule ref="PEAR.Functions.FunctionCallSignature"/>
   <!-- The sniffs inside PEAR.Functions.FunctionCallSignature silenced below are
-    also silenced in Drupal CS' ruleset.xml. The code below is a 1-on-1 copy
+    also silenced in Drupal CS' ruleset.xml. The code below is a 1-to-1 copy
     from that file. -->
   <!-- Disable some error messages that we already cover. -->
   <rule ref="PEAR.Functions.FunctionCallSignature.SpaceAfterOpenBracket">
@@ -288,7 +189,8 @@
   <rule ref="Squiz.Functions.MultiLineFunctionDeclaration.ContentAfterBrace">
     <severity>0</severity>
   </rule>
-  <!-- Standard yet to be finalized on this (https://www.drupal.org/node/1539712). -->
+  <!-- Standard yet to be finalized on this
+    (https://www.drupal.org/node/1539712). -->
   <rule ref="Squiz.Functions.MultiLineFunctionDeclaration.FirstParamSpacing">
     <severity>0</severity>
   </rule>
@@ -325,7 +227,5 @@
 
   <!-- Zend sniffs -->
   <rule ref="Zend.Files.ClosingTag"/>
-
-  <!-- End Drupal Core rules. -->
 
 </ruleset>

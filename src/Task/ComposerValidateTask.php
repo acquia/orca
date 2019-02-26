@@ -42,6 +42,7 @@ class ComposerValidateTask extends TaskBase {
    * Finds all composer.json files.
    *
    * @return \Symfony\Component\Finder\Finder
+   *   A Finder query for all composer.json files.
    */
   private function getComposerJsonFiles() {
     return (new Finder())

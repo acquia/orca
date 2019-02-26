@@ -19,6 +19,7 @@ class ConfigLoader {
    *   A filename or an array of filenames of configuration files.
    *
    * @return \Noodlehaus\Config
+   *   A config object.
    *
    * @throws \Exception
    *   In case of loading or parsing errors.

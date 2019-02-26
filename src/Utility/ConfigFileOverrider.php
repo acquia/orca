@@ -4,6 +4,9 @@ namespace Acquia\Orca\Utility;
 
 use Symfony\Component\Filesystem\Filesystem;
 
+/**
+ * Temporarily overrides configuration files.
+ */
 class ConfigFileOverrider {
 
   /**
@@ -38,6 +41,7 @@ class ConfigFileOverrider {
    * Constructs an instance.
    *
    * @param \Symfony\Component\Filesystem\Filesystem $filesystem
+   *   The filesystem.
    */
   public function __construct(Filesystem $filesystem) {
     $this->filesystem = $filesystem;
@@ -49,18 +53,35 @@ class ConfigFileOverrider {
    * @param string $source
    *   The path to the source file.
    * @param string $dest
+   *   The path to the destination file.
    */
   public function setPaths(string $source, string $dest): void {
     $this->sourcePath = realpath($source);
     $this->destPath = $this->normalizePath($dest);
   }
 
+  /**
+   * Normalizes a given path.
+   *
+   * Resolves relative path components.
+   *
+   * @param string $dest
+   *   A filesystem path.
+   *
+   * @return string
+   *   The absolute normalized path.
+   */
   public function normalizePath(string $dest): string {
     $path = realpath(dirname($dest));
     $filename = basename($dest);
     return "{$path}/{$filename}";
   }
 
+  /**
+   * Overrides the active configuration file.
+   *
+   * Backs up the preexisting file if there is one.
+   */
   public function override(): void {
     if ($this->destFileExists()) {
       $this->backupDestFile();
@@ -72,6 +93,7 @@ class ConfigFileOverrider {
    * Determines whether or not the destination file already exists.
    *
    * @return bool
+   *   TRUE if the destination file already exists or FALSE if not.
    */
   public function destFileExists(): bool {
     return $this->filesystem->exists($this->destPath);

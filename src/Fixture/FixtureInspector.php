@@ -56,6 +56,7 @@ class FixtureInspector {
    * Gets an overview of the fixture.
    *
    * @return array
+   *   An indexed array of data columns ([Label, Value]).
    */
   public function getOverview(): array {
     $overview = [];
@@ -77,6 +78,8 @@ class FixtureInspector {
    * Gets a pretty form of the SUT name.
    *
    * @return string
+   *   The SUT name if available (e.g., "drupal/example" or "None") or "Unknown"
+   *   if not.
    */
   private function getSutNamePretty(): string {
     $name = $this->getSutName();
@@ -92,6 +95,7 @@ class FixtureInspector {
    * Gets the SUT name.
    *
    * @return string
+   *   The SUT name if available (e.g., "drupal/example") or "Unknown" if not.
    */
   private function getSutName(): string {
     $key = 'extra.orca.sut';
@@ -107,6 +111,7 @@ class FixtureInspector {
    * Gets the composer.json config.
    *
    * @return \Noodlehaus\Config|null
+   *   The composer.json config if available or NULL if not.
    */
   private function getComposerJson() {
     if (!$this->composerJson) {
@@ -120,6 +125,7 @@ class FixtureInspector {
    * Gets the fixture type.
    *
    * @return string
+   *   The fixture type, i.e., "No SUT", "SUT-only", "Standard", or "Unknown".
    */
   private function getFixtureType(): string {
     if (!$this->getSutName()) {
@@ -136,9 +142,10 @@ class FixtureInspector {
   }
 
   /**
-   * Gets the package versions.
+   * Gets the package stability setting.
    *
    * @return string
+   *   The package stability setting, i.e., "Dev/HEAD", "Stable", or "Unknown".
    */
   private function getPackageStabilitySetting(): string {
     $key = 'extra.orca.is-dev';
@@ -157,6 +164,8 @@ class FixtureInspector {
    *   The package name.
    *
    * @return string
+   *   The installed version of the given package if available (e.g., "1.0.0")
+   *   or a tilde (~) if not.
    */
   private function getInstalledPackageVersion(string $package_name): string {
     $packages = [];
@@ -175,6 +184,7 @@ class FixtureInspector {
    * Gets the composer.lock config.
    *
    * @return \Noodlehaus\Config|null
+   *   The composer.lock config if available or NULL if not.
    */
   private function getComposerLock() {
     if (!$this->composerLock) {
@@ -188,6 +198,10 @@ class FixtureInspector {
    * Gets the list of installed packages.
    *
    * @return array
+   *   An indexed array of installed packages containing the following values:
+   *   - The package label, e.g., "drupal/example" (with a trailing asterisk (*)
+   *     if it's the SUT.
+   *   - The installed package version, e.g., "1.0.0".
    */
   private function getInstalledPackages(): array {
     $packages = [new TableSeparator()];
