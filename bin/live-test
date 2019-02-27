@@ -25,7 +25,8 @@ ORCA_PACKAGE_STABILITY=${ORCA_PACKAGE_STABILITY:=any}
 [[ ${ORCA_PACKAGE_STABILITY} == @(any|stable) ]] && STABLE_PACKAGES=true
 [[ ${ORCA_PACKAGE_STABILITY} == @(any|dev) ]] && DEV_PACKAGES=true
 
-export ORCA_FIXTURE_DIR="$(cd ../.. && pwd)/orca-build-$(date +%Y-%m-%d_%H-%m-%S)"
+[[ -z "$TRAVIS" ]] && SUFFIX="-$(date +%Y-%m-%d_%H-%m-%S)" || SUFFIX=""
+export ORCA_FIXTURE_DIR="$(cd ../.. && pwd)/orca-build${SUFFIX}"
 
 # Live test w/ stable packages.
 # ------------------------------------------------------------------------------
