@@ -6,6 +6,7 @@ use Acquia\Orca\Command\StatusCodes;
 use Acquia\Orca\Task\StaticAnalysisTool\ComposerValidateTask;
 use Acquia\Orca\Task\StaticAnalysisTool\PhpCodeSnifferTask;
 use Acquia\Orca\Task\StaticAnalysisTool\PhpLintTask;
+use Acquia\Orca\Task\StaticAnalysisTool\PhpMessDetectorTask;
 use Acquia\Orca\Task\TaskRunner;
 use Acquia\Orca\Task\StaticAnalysisTool\YamlLintTask;
 use Symfony\Component\Console\Command\Command;
@@ -51,18 +52,21 @@ class StaticAnalysisRunCommand extends Command {
    *   The PHP Code Sniffer task.
    * @param \Acquia\Orca\Task\StaticAnalysisTool\PhpLintTask $php_lint
    *   The PHP lint task.
+   * @param \Acquia\Orca\Task\StaticAnalysisTool\PhpMessDetectorTask $php_mess_detector
+   *   The PHP Mess Detector task.
    * @param \Acquia\Orca\Task\TaskRunner $task_runner
    *   The task runner.
    * @param \Acquia\Orca\Task\StaticAnalysisTool\YamlLintTask $yaml_lint
    *   The YAML lint task.
    */
-  public function __construct(ComposerValidateTask $composer_validate, Filesystem $filesystem, PhpCodeSnifferTask $php_code_sniffer, PhpLintTask $php_lint, TaskRunner $task_runner, YamlLintTask $yaml_lint) {
+  public function __construct(ComposerValidateTask $composer_validate, Filesystem $filesystem, PhpCodeSnifferTask $php_code_sniffer, PhpLintTask $php_lint, PhpMessDetectorTask $php_mess_detector, TaskRunner $task_runner, YamlLintTask $yaml_lint) {
     $this->filesystem = $filesystem;
     $this->taskRunner = $task_runner
       ->addTask($composer_validate)
       ->addTask($php_lint)
+      ->addTask($yaml_lint)
       ->addTask($php_code_sniffer)
-      ->addTask($yaml_lint);
+      ->addTask($php_mess_detector);
     parent::__construct(self::$defaultName);
   }
 

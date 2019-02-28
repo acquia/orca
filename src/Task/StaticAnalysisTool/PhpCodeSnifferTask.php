@@ -29,7 +29,9 @@ class PhpCodeSnifferTask extends TaskBase {
       // Emit output but don't fail builds until all packages are made to pass
       // at a baseline.
     }
-    $this->restoreConfig();
+    finally {
+      $this->restoreConfig();
+    }
   }
 
   /**

@@ -7,6 +7,7 @@ use Acquia\Orca\Command\StatusCodes;
 use Acquia\Orca\Task\StaticAnalysisTool\ComposerValidateTask;
 use Acquia\Orca\Task\StaticAnalysisTool\PhpCodeSnifferTask;
 use Acquia\Orca\Task\StaticAnalysisTool\PhpLintTask;
+use Acquia\Orca\Task\StaticAnalysisTool\PhpMessDetectorTask;
 use Acquia\Orca\Task\TaskRunner;
 use Acquia\Orca\Task\StaticAnalysisTool\YamlLintTask;
 use Acquia\Orca\Tests\Command\CommandTestBase;
@@ -17,6 +18,7 @@ use Symfony\Component\Filesystem\Filesystem;
 /**
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Task\StaticAnalysisTool\ComposerValidateTask $composerValidate
  * @property \Prophecy\Prophecy\ObjectProphecy|\Symfony\Component\Filesystem\Filesystem $filesystem
+ * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Task\StaticAnalysisTool\PhpMessDetectorTask $phpMessDetector
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Task\StaticAnalysisTool\PhpCodeSnifferTask $phpCodeSniffer
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Task\StaticAnalysisTool\PhpLintTask $phpLint
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Task\TaskRunner $taskRunner
@@ -31,6 +33,7 @@ class StaticAnalysisRunCommandTest extends CommandTestBase {
     $this->filesystem = $this->prophesize(Filesystem::class);
     $this->phpCodeSniffer = $this->prophesize(PhpCodeSnifferTask::class);
     $this->phpLint = $this->prophesize(PhpLintTask::class);
+    $this->phpMessDetector = $this->prophesize(PhpMessDetectorTask::class);
     $this->taskRunner = $this->prophesize(TaskRunner::class);
     $this->yamlLint = $this->prophesize(YamlLintTask::class);
   }
@@ -53,6 +56,10 @@ class StaticAnalysisRunCommandTest extends CommandTestBase {
       ->willReturn($this->taskRunner);
     $this->taskRunner
       ->addTask($this->phpLint->reveal())
+      ->shouldBeCalledTimes(1)
+      ->willReturn($this->taskRunner);
+    $this->taskRunner
+      ->addTask($this->phpMessDetector->reveal())
       ->shouldBeCalledTimes(1)
       ->willReturn($this->taskRunner);
     $this->taskRunner
@@ -93,11 +100,13 @@ class StaticAnalysisRunCommandTest extends CommandTestBase {
     $php_code_sniffer = $this->phpCodeSniffer->reveal();
     /** @var \Acquia\Orca\Task\StaticAnalysisTool\PhpLintTask $php_lint */
     $php_lint = $this->phpLint->reveal();
+    /** @var \Acquia\Orca\Task\StaticAnalysisTool\PhpMessDetectorTask $php_mess_detector */
+    $php_mess_detector = $this->phpMessDetector->reveal();
     /** @var \Acquia\Orca\Task\TaskRunner $task_runner */
     $task_runner = $this->taskRunner->reveal();
     /** @var \Acquia\Orca\Task\StaticAnalysisTool\YamlLintTask $yaml_lint */
     $yaml_lint = $this->yamlLint->reveal();
-    $application->add(new StaticAnalysisRunCommand($composer_validate, $filesystem, $php_code_sniffer, $php_lint, $task_runner, $yaml_lint));
+    $application->add(new StaticAnalysisRunCommand($composer_validate, $filesystem, $php_code_sniffer, $php_lint, $php_mess_detector, $task_runner, $yaml_lint));
     /** @var \Acquia\Orca\Command\Tests\TestsRunCommand $command */
     $command = $application->find(StaticAnalysisRunCommand::getDefaultName());
     $this->assertInstanceOf(StaticAnalysisRunCommand::class, $command, 'Instantiated class.');

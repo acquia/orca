@@ -57,7 +57,7 @@
                 "set -e",
                 "vendor/bin/parallel-lint --exclude vendor --no-progress .",
                 "vendor/bin/phpcs",
-                "vendor/bin/phpmd bin,src text phpmd.xml.dist --ignore-violations-on-exit"
+                "vendor/bin/phpmd . text phpmd.xml.dist --ignore-violations-on-exit"
             ],
             "post-install-cmd": "vendor/bin/cghooks add --ignore-lock",
             "post-update-cmd": "vendor/bin/cghooks update"
@@ -99,7 +99,7 @@
         "phpcbf": "phpcbf",
         "phpcs": "phpcs",
         "phplint": "parallel-lint --exclude vendor --ignore-fails .",
-        "phpmd": "phpmd bin,src text phpmd.xml.dist --ignore-violations-on-exit",
+        "phpmd": "phpmd . text phpmd.xml.dist --ignore-violations-on-exit",
         "phpunit": "phpunit"
     }
 }
