@@ -4,15 +4,15 @@ namespace Acquia\Orca\Tests\Task;
 
 use Acquia\Orca\Command\StatusCodes;
 use Acquia\Orca\Task\TestFramework\BehatTask;
-use Acquia\Orca\Task\PhpLintTask;
+use Acquia\Orca\Task\StaticAnalysisTool\PhpLintTask;
 use Acquia\Orca\Task\TaskInterface;
 use Acquia\Orca\Task\TaskRunner;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
- * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Task\ComposerValidateTask $composerValidateTask
- * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Task\PhpLintTask $phpLintTask
+ * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Task\StaticAnalysisTool\ComposerValidateTask $composerValidateTask
+ * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Task\StaticAnalysisTool\PhpLintTask $phpLintTask
  */
 class TaskRunnerTest extends TestCase {
 
@@ -28,7 +28,7 @@ class TaskRunnerTest extends TestCase {
     $output = $output->reveal();
     /** @var \Acquia\Orca\Task\TestFramework\BehatTask $behat */
     $behat = $this->setTaskExpectations(BehatTask::class);
-    /** @var \Acquia\Orca\Task\PhpLintTask $php_lint */
+    /** @var \Acquia\Orca\Task\StaticAnalysisTool\PhpLintTask $php_lint */
     $php_lint = $this->setTaskExpectations(PhpLintTask::class);
 
     $runner = new TaskRunner($output);

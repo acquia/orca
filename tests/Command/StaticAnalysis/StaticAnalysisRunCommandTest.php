@@ -4,23 +4,23 @@ namespace Acquia\Orca\Tests\Command\StaticAnalysis;
 
 use Acquia\Orca\Command\StaticAnalysis\StaticAnalysisRunCommand;
 use Acquia\Orca\Command\StatusCodes;
-use Acquia\Orca\Task\ComposerValidateTask;
-use Acquia\Orca\Task\PhpCodeSnifferTask;
-use Acquia\Orca\Task\PhpLintTask;
+use Acquia\Orca\Task\StaticAnalysisTool\ComposerValidateTask;
+use Acquia\Orca\Task\StaticAnalysisTool\PhpCodeSnifferTask;
+use Acquia\Orca\Task\StaticAnalysisTool\PhpLintTask;
 use Acquia\Orca\Task\TaskRunner;
-use Acquia\Orca\Task\YamlLintTask;
+use Acquia\Orca\Task\StaticAnalysisTool\YamlLintTask;
 use Acquia\Orca\Tests\Command\CommandTestBase;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
- * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Task\ComposerValidateTask $composerValidate
+ * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Task\StaticAnalysisTool\ComposerValidateTask $composerValidate
  * @property \Prophecy\Prophecy\ObjectProphecy|\Symfony\Component\Filesystem\Filesystem $filesystem
- * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Task\PhpCodeSnifferTask $phpCodeSniffer
- * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Task\PhpLintTask $phpLint
+ * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Task\StaticAnalysisTool\PhpCodeSnifferTask $phpCodeSniffer
+ * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Task\StaticAnalysisTool\PhpLintTask $phpLint
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Task\TaskRunner $taskRunner
- * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Task\YamlLintTask $yamlLint
+ * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Task\StaticAnalysisTool\YamlLintTask $yamlLint
  */
 class StaticAnalysisRunCommandTest extends CommandTestBase {
 
@@ -85,17 +85,17 @@ class StaticAnalysisRunCommandTest extends CommandTestBase {
 
   private function createCommandTester(): CommandTester {
     $application = new Application();
-    /** @var \Acquia\Orca\Task\ComposerValidateTask $composer_validate */
+    /** @var \Acquia\Orca\Task\StaticAnalysisTool\ComposerValidateTask $composer_validate */
     $composer_validate = $this->composerValidate->reveal();
     /** @var \Symfony\Component\Filesystem\Filesystem $filesystem */
     $filesystem = $this->filesystem->reveal();
-    /** @var \Acquia\Orca\Task\PhpCodeSnifferTask $php_code_sniffer */
+    /** @var \Acquia\Orca\Task\StaticAnalysisTool\PhpCodeSnifferTask $php_code_sniffer */
     $php_code_sniffer = $this->phpCodeSniffer->reveal();
-    /** @var \Acquia\Orca\Task\PhpLintTask $php_lint */
+    /** @var \Acquia\Orca\Task\StaticAnalysisTool\PhpLintTask $php_lint */
     $php_lint = $this->phpLint->reveal();
     /** @var \Acquia\Orca\Task\TaskRunner $task_runner */
     $task_runner = $this->taskRunner->reveal();
-    /** @var \Acquia\Orca\Task\YamlLintTask $yaml_lint */
+    /** @var \Acquia\Orca\Task\StaticAnalysisTool\YamlLintTask $yaml_lint */
     $yaml_lint = $this->yamlLint->reveal();
     $application->add(new StaticAnalysisRunCommand($composer_validate, $filesystem, $php_code_sniffer, $php_lint, $task_runner, $yaml_lint));
     /** @var \Acquia\Orca\Command\Tests\TestsRunCommand $command */

@@ -3,11 +3,11 @@
 namespace Acquia\Orca\Command\StaticAnalysis;
 
 use Acquia\Orca\Command\StatusCodes;
-use Acquia\Orca\Task\ComposerValidateTask;
-use Acquia\Orca\Task\PhpCodeSnifferTask;
-use Acquia\Orca\Task\PhpLintTask;
+use Acquia\Orca\Task\StaticAnalysisTool\ComposerValidateTask;
+use Acquia\Orca\Task\StaticAnalysisTool\PhpCodeSnifferTask;
+use Acquia\Orca\Task\StaticAnalysisTool\PhpLintTask;
 use Acquia\Orca\Task\TaskRunner;
-use Acquia\Orca\Task\YamlLintTask;
+use Acquia\Orca\Task\StaticAnalysisTool\YamlLintTask;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -43,17 +43,17 @@ class StaticAnalysisRunCommand extends Command {
   /**
    * Constructs an instance.
    *
-   * @param \Acquia\Orca\Task\ComposerValidateTask $composer_validate
+   * @param \Acquia\Orca\Task\StaticAnalysisTool\ComposerValidateTask $composer_validate
    *   The Composer validate task.
    * @param \Symfony\Component\Filesystem\Filesystem $filesystem
    *   The filesystem.
-   * @param \Acquia\Orca\Task\PhpCodeSnifferTask $php_code_sniffer
+   * @param \Acquia\Orca\Task\StaticAnalysisTool\PhpCodeSnifferTask $php_code_sniffer
    *   The PHP Code Sniffer task.
-   * @param \Acquia\Orca\Task\PhpLintTask $php_lint
+   * @param \Acquia\Orca\Task\StaticAnalysisTool\PhpLintTask $php_lint
    *   The PHP lint task.
    * @param \Acquia\Orca\Task\TaskRunner $task_runner
    *   The task runner.
-   * @param \Acquia\Orca\Task\YamlLintTask $yaml_lint
+   * @param \Acquia\Orca\Task\StaticAnalysisTool\YamlLintTask $yaml_lint
    *   The YAML lint task.
    */
   public function __construct(ComposerValidateTask $composer_validate, Filesystem $filesystem, PhpCodeSnifferTask $php_code_sniffer, PhpLintTask $php_lint, TaskRunner $task_runner, YamlLintTask $yaml_lint) {

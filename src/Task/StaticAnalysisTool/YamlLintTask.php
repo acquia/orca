@@ -1,8 +1,9 @@
 <?php
 
-namespace Acquia\Orca\Task;
+namespace Acquia\Orca\Task\StaticAnalysisTool;
 
 use Acquia\Orca\Exception\TaskFailureException;
+use Acquia\Orca\Task\TaskBase;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process;

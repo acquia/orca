@@ -1,7 +1,8 @@
 <?php
 
-namespace Acquia\Orca\Task;
+namespace Acquia\Orca\Task\StaticAnalysisTool;
 
+use Acquia\Orca\Task\TaskBase;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 
 /**
