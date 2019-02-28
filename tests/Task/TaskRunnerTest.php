@@ -1,6 +1,6 @@
 <?php
 
-namespace Acquia\Orca\Tests\Task\TestFramework;
+namespace Acquia\Orca\Tests\Task;
 
 use Acquia\Orca\Command\StatusCodes;
 use Acquia\Orca\Task\TestFramework\BehatTask;
