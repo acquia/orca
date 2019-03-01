@@ -8,7 +8,10 @@
 * [Isolated test](#isolated-test)
 * [Non-SUT tests](#non-sut-tests)
 * [ORCA](#orca)
+* [ORCA internals](#orca-internals)
 * [PHPUnit](#phpunit)
+* [Plumbing interface](#orca-internals)
+* [Porcelain interface](#orca-internals)
 * [Private tests](#private-tests)
 * [Public tests](#public-tests)
 * [Standard fixture](#standard-fixture)
@@ -45,6 +48,10 @@ Automated tests provided by Acquia packages other than the [SUT](#sut).
 ## ORCA
 
 Official Representative Customer Application: a tool for testing all of Acquia's software packages together in the context of a realistic, functioning, best practices Drupal build. (You are here.)
+
+## ORCA internals
+
+ORCA may be thought of as providing two interfaces: a "porcelain" interface comprised of easy-to-use CI scripts that encapsulates high level testing policy and covers the 90% use case, and a "plumbing" interface consisting of a highly flexible command line application that exposes low level options and functionality. [Read more in Getting Started.](getting-started.md)
 
 ## PHPUnit
 
