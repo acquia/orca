@@ -3,6 +3,7 @@
 namespace Acquia\Orca\Fixture;
 
 use Acquia\Orca\Utility\ConfigLoader;
+use Noodlehaus\Config;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
 
@@ -120,11 +121,35 @@ class SubmoduleManager {
         'url' => $file->getPath(),
         'version' => '@dev',
         'version_dev' => '@dev',
-        'enable' => $config->get('extra.orca.enable', TRUE),
+        'enable' => $this->shouldModuleBeEnabled($config, $install_path),
       ];
       $submodules[$name] = new Package($this->fixture, $package_data);
     }
     return $submodules;
+  }
+
+  /**
+   * Determines whether or not the given submodule should be enabled.
+   *
+   * Test modules are never enabled because Drush cannot find them to enable.
+   * Standard modules are enabled unless they opt out by setting
+   * extra.orca.enable to FALSE in their composer.json.
+   *
+   * @param \Noodlehaus\Config $config
+   *   The submodule's composer.json config.
+   * @param string $install_path
+   *   The path the module installs at.
+   *
+   * @return bool
+   *   TRUE if the submodule should be enabled or FALSE if not.
+   */
+  private function shouldModuleBeEnabled(Config $config, $install_path): bool {
+    $is_test_module = (strpos($install_path, '/tests/') !== FALSE);
+    if ($is_test_module) {
+      return FALSE;
+    }
+
+    return $config->get('extra.orca.enable', TRUE);
   }
 
   /**
@@ -164,8 +189,6 @@ class SubmoduleManager {
       ->in($paths)
       ->depth('> 1')
       ->exclude([
-        // Exclude test modules.
-        'tests',
         // Ignore package vendor directories. (These should never exist on CI.
         // This is mostly for local development.)
         'docroot',
