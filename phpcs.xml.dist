@@ -87,8 +87,6 @@
     <severity>0</severity>
   </rule>
   <rule ref="PEAR.Functions.ValidDefaultValue"/>
-
-  <!-- PEAR sniffs -->
   <rule ref="PEAR.Functions.FunctionCallSignature"/>
   <!-- The sniffs inside PEAR.Functions.FunctionCallSignature silenced below are
     also silenced in Drupal CS' ruleset.xml. The code below is a 1-to-1 copy
@@ -117,6 +115,45 @@
   <!-- PHP Compatibility sniffs -->
   <config name="testVersion" value="7.1-"/>
   <rule ref="PHPCompatibility"/>
+
+  <!-- PHPCS_SecurityAudit sniffs -->
+  <!-- BadFunctions -->
+  <!-- PHP functions that can lead to security issues -->
+  <rule ref="Security.BadFunctions.Asserts"/>
+  <rule ref="Security.BadFunctions.Backticks"/>
+  <rule ref="Security.BadFunctions.CallbackFunctions"/>
+  <rule ref="Security.BadFunctions.CryptoFunctions"/>
+  <rule ref="Security.BadFunctions.EasyRFI"/>
+  <rule ref="Security.BadFunctions.EasyXSS">
+    <properties>
+      <property name="forceParanoia" value="1"/>
+    </properties>
+  </rule>
+  <rule ref="Security.BadFunctions.ErrorHandling"/>
+  <rule ref="Security.BadFunctions.FilesystemFunctions">
+    <exclude
+      name="PHPCS_SecurityAudit.BadFunctions.FilesystemFunctions.WarnFilesystem"/>
+  </rule>
+  <rule ref="Security.BadFunctions.FringeFunctions"/>
+  <rule ref="Security.BadFunctions.FunctionHandlingFunctions"/>
+  <rule ref="Security.BadFunctions.Mysqli"/>
+  <rule ref="Security.BadFunctions.NoEvals"/>
+  <rule ref="Security.BadFunctions.Phpinfos"/>
+  <rule ref="Security.BadFunctions.PregReplace">
+    <exclude
+      name="PHPCS_SecurityAudit.BadFunctions.PregReplace.PregReplaceDyn"/>
+  </rule>
+  <rule ref="Security.BadFunctions.SQLFunctions"/>
+  <rule ref="Security.BadFunctions.SystemExecFunctions"/>
+  <!-- CVE -->
+  <!-- Entries from CVE database from vendor PHP and bugs.php.net -->
+  <rule ref="Security.CVE.20132110"/>
+  <rule ref="Security.CVE.20134113"/>
+  <!-- Misc -->
+  <rule ref="Security.Misc.BadCorsHeader"/>
+  <rule ref="Security.Misc.IncludeMismatch"/>
+  <!-- Drupal -->
+  <rule ref="Security.Drupal8"/>
 
   <!-- PSR-2 sniffs -->
   <rule ref="PSR2.Classes.PropertyDeclaration">

@@ -22,6 +22,7 @@
         "jakub-onderka/php-console-highlighter": "^0.4.0",
         "jakub-onderka/php-parallel-lint": "^1.0",
         "lbaey/chromedriver": "^1.1",
+        "pheromone/phpcs-security-audit": "^2.0",
         "phpcompatibility/php-compatibility": "^9.0",
         "phpmd/phpmd": "^2.6",
         "phpunit/phpunit": "^6.5",
@@ -66,6 +67,7 @@
             "bypass-select": true,
             "chromedriver-version": "2.45"
         },
+        "phpcodesniffer-search-depth": 4,
         "scripts-dev": {
             "post-install-cmd": [
                 "@auto-scripts"

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "42401a38417b00ac6b6d07d547acd7c6",
+    "content-hash": "dd214bd3035bcc543daf412a6c7feaa5",
     "packages": [
         {
             "name": "behat/behat",
@@ -1534,6 +1534,43 @@
             ],
             "description": "Library for handling version information and constraints",
             "time": "2017-03-05T17:38:23+00:00"
+        },
+        {
+            "name": "pheromone/phpcs-security-audit",
+            "version": "2.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/FloeDesignTechnologies/phpcs-security-audit.git",
+                "reference": "6ca3459ffe27f78ffd6554e662fc71f5f32f7055"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/FloeDesignTechnologies/phpcs-security-audit/zipball/6ca3459ffe27f78ffd6554e662fc71f5f32f7055",
+                "reference": "6ca3459ffe27f78ffd6554e662fc71f5f32f7055",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.4",
+                "squizlabs/php_codesniffer": ">3.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "PHPCS_SecurityAudit\\": "Security/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-3.0-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "Jonathan Marcil",
+                    "homepage": "https://twitter.com/jonathanmarcil"
+                }
+            ],
+            "description": "phpcs-security-audit is a set of PHP_CodeSniffer rules that finds vulnerabilities and weaknesses related to security in PHP code",
+            "time": "2018-02-20T07:33:23+00:00"
         },
         {
             "name": "phpcompatibility/php-compatibility",
