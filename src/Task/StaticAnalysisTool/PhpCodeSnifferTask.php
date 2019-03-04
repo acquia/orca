@@ -38,7 +38,7 @@ class PhpCodeSnifferTask extends TaskBase {
    * Runs phpcs.
    */
   public function runPhpcs(): void {
-    $this->processRunner->runOrcaVendorBin(['phpcs'], $this->getPath());
+    $this->processRunner->runOrcaVendorBin(['phpcs', '-s'], $this->getPath());
   }
 
   /**

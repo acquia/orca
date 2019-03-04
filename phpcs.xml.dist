@@ -121,7 +121,10 @@
   <!-- PHP functions that can lead to security issues -->
   <rule ref="Security.BadFunctions.Asserts"/>
   <rule ref="Security.BadFunctions.Backticks"/>
-  <rule ref="Security.BadFunctions.CallbackFunctions"/>
+  <rule ref="Security.BadFunctions.CallbackFunctions">
+    <exclude
+      name="PHPCS_SecurityAudit.BadFunctions.CallbackFunctions.WarnFringestuff"/>
+  </rule>
   <rule ref="Security.BadFunctions.CryptoFunctions"/>
   <rule ref="Security.BadFunctions.EasyRFI"/>
   <rule ref="Security.BadFunctions.EasyXSS">
@@ -135,7 +138,10 @@
       name="PHPCS_SecurityAudit.BadFunctions.FilesystemFunctions.WarnFilesystem"/>
   </rule>
   <rule ref="Security.BadFunctions.FringeFunctions"/>
-  <rule ref="Security.BadFunctions.FunctionHandlingFunctions"/>
+  <rule ref="Security.BadFunctions.FunctionHandlingFunctions">
+    <exclude
+      name="PHPCS_SecurityAudit.BadFunctions.FunctionHandlingFunctions.WarnFunctionHandling"/>
+  </rule>
   <rule ref="Security.BadFunctions.Mysqli"/>
   <rule ref="Security.BadFunctions.NoEvals"/>
   <rule ref="Security.BadFunctions.Phpinfos"/>
