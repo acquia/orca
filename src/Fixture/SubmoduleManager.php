@@ -121,7 +121,7 @@ class SubmoduleManager {
         'url' => $file->getPath(),
         'version' => '@dev',
         'version_dev' => '@dev',
-        'enable' => $this->shouldModuleBeEnabled($config, $install_path),
+        'enable' => $this->shouldModuleGetEnabled($config, $install_path),
       ];
       $submodules[$name] = new Package($this->fixture, $package_data);
     }
@@ -129,7 +129,7 @@ class SubmoduleManager {
   }
 
   /**
-   * Determines whether or not the given submodule should be enabled.
+   * Determines whether or not the given submodule should get enabled.
    *
    * Test modules are never enabled because Drush cannot find them to enable.
    * Standard modules are enabled unless they opt out by setting
@@ -143,7 +143,7 @@ class SubmoduleManager {
    * @return bool
    *   TRUE if the submodule should be enabled or FALSE if not.
    */
-  private function shouldModuleBeEnabled(Config $config, $install_path): bool {
+  private function shouldModuleGetEnabled(Config $config, $install_path): bool {
     $is_test_module = (strpos($install_path, '/tests/') !== FALSE);
     if ($is_test_module) {
       return FALSE;
