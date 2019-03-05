@@ -39,6 +39,12 @@ function gitc {
 # Disable Xdebug.
 phpenv config-rm xdebug.ini
 
+# Remove PHP memory limit.
+echo 'memory_limit = -1' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
+
+# Prevent outgoing emails.
+echo 'sendmail_path = /bin/true' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
+
 # Install the PECL YAML parser for strict YAML parsing.
 yes | pecl install yaml
 
