@@ -14,7 +14,6 @@
 #         The package name of the system under test (SUT), e.g., drupal/example
 #         or acquia/example.
 
-shopt -s extglob
 set -e
 
 # Require the SUT argument.
@@ -32,46 +31,63 @@ function orca {
 }
 
 ORCA_ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
-ORCA_FIXTURE=${ORCA_FIXTURE:=any}
-ORCA_PACKAGE_STABILITY=${ORCA_PACKAGE_STABILITY:=any}
+ORCA_JOB=${ORCA_JOB:=ALL}
 
-[[ ${ORCA_FIXTURE} == @(any|none) ]] && STATIC_ANALYSIS=true
-[[ ${ORCA_FIXTURE} == @(any|sut-only) ]] && ISOLATED_TEST=true
-[[ ${ORCA_FIXTURE} == @(any|standard) ]] && INTEGRATED_TEST=true
-[[ ${ORCA_PACKAGE_STABILITY} == @(any|stable) ]] && STABLE_PACKAGES=true
-[[ ${ORCA_PACKAGE_STABILITY} == @(any|dev) ]] && DEV_PACKAGES=true
+[[ ${ORCA_JOB} == "ALL" || ${ORCA_JOB} = "STATIC_CODE_ANALYSIS" ]] && STATIC_CODE_ANALYSIS=true
+[[ ${ORCA_JOB} == "ALL" || ${ORCA_JOB} = "DEPRECATED_CODE_SCAN_SUT" ]] && DEPRECATED_CODE_SCAN_SUT=true
+[[ ${ORCA_JOB} == "ALL" || ${ORCA_JOB} = "DEPRECATED_CODE_SCAN_CONTRIB" ]] && DEPRECATED_CODE_SCAN_CONTRIB=true
+[[ ${ORCA_JOB} == "ALL" || ${ORCA_JOB} = "ISOLATED_RECOMMENDED" ]] && ISOLATED_RECOMMENDED=true
+[[ ${ORCA_JOB} == "ALL" || ${ORCA_JOB} = "INTEGRATED_RECOMMENDED" ]] && INTEGRATED_RECOMMENDED=true
+[[ ${ORCA_JOB} == "ALL" || ${ORCA_JOB} = "ISOLATED_DEV" ]] && ISOLATED_DEV=true
+[[ ${ORCA_JOB} == "ALL" || ${ORCA_JOB} = "INTEGRATED_DEV" ]] && INTEGRATED_DEV=true
 
 # Static code analysis.
 # ------------------------------------------------------------------------------
-[[ ! -z "$STATIC_ANALYSIS" ]] && orca static-analysis:run ./
+[[ "$STATIC_CODE_ANALYSIS" ]] && orca static-analysis:run ./
 
-# Isolated test w/ stable packages.
+# Deprecated code scan w/ SUT.
 # ------------------------------------------------------------------------------
-if [[ "$ISOLATED_TEST" && "$STABLE_PACKAGES" ]]; then
+if [[ "$DEPRECATED_CODE_SCAN_SUT" ]]; then
+  orca fixture:init -f --sut=$1 --sut-only
+  orca fixture:status
+  orca deprecated-code-scan:run --sut=$1
+fi
+
+# Deprecated code scan w/ dependencies.
+# ------------------------------------------------------------------------------
+if [[ "$DEPRECATED_CODE_SCAN_CONTRIB" ]]; then
+  orca fixture:init -f --sut=$1 --sut-only
+  orca fixture:status
+  orca deprecated-code-scan:run --contrib
+fi
+
+# Isolated test w/ recommended package versions.
+# ------------------------------------------------------------------------------
+if [[ "$ISOLATED_RECOMMENDED" ]]; then
   orca fixture:init -f --sut=$1 --sut-only
   orca fixture:status
   orca tests:run --sut=$1 --sut-only
 fi
 
-# Integrated test w/ stable packages.
+# Integrated test w/ recommended package versions.
 # ------------------------------------------------------------------------------
-if [[ "$INTEGRATED_TEST" && "$STABLE_PACKAGES" ]]; then
+if [[ "$INTEGRATED_RECOMMENDED" ]]; then
   orca fixture:init -f --sut=$1
   orca fixture:status
   orca tests:run --sut=$1
 fi
 
-# Isolated test w/ dev packages.
+# Isolated test w/ dev package versions.
 # ------------------------------------------------------------------------------
-if [[ "$ISOLATED_TEST" && "$DEV_PACKAGES" ]]; then
+if [[ "$ISOLATED_DEV" ]]; then
   orca fixture:init -f --sut=$1 --sut-only --dev
   orca fixture:status
   orca tests:run --sut=$1 --sut-only
 fi
 
-# Integrated test w/ dev packages.
+# Integrated test w/ dev package versions.
 # ------------------------------------------------------------------------------
-if [[ "$INTEGRATED_TEST" && "$DEV_PACKAGES" ]]; then
+if [[ "$INTEGRATED_DEV" ]]; then
   orca fixture:init -f --sut=$1 --dev
   orca fixture:status
   orca tests:run --sut=$1

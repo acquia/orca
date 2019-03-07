@@ -4,5 +4,10 @@
     "description": "Provides an example module for testing and illustration purposes.",
     "license": "GPL-2.0-or-later",
     "require": {},
-    "minimum-stability": "dev"
+    "minimum-stability": "dev",
+    "autoload": {
+        "psr-0": {
+            "": "features/bootstrap/"
+        }
+    }
 }

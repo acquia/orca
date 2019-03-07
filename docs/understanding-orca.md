@@ -58,16 +58,16 @@ See [Designing automated tests](getting-started.md#designing-automated-tests).
 
 ## Continuous integration
 
-ORCA includes out-of-the-box support for Travis CI for continuous integration. The default implementation runs five concurrent jobs per build in the following configurations:
+ORCA includes out-of-the-box support for Travis CI for continuous integration. The default implementation runs the following concurrent jobs per build:
 
-| | No fixture | SUT-only/stable | Standard/stable | SUT-only/dev | Standard/dev |
-| --- | :---: | :---: | :---: | :---: | :---: |
-| SUT version | Dev | Dev | Dev | Dev | Dev |
-| Drupal core version | n/a | Stable | Stable | Dev | Dev |
-| Other package versions  | n/a | Stable | Stable | Dev | Dev |
-| Static analysis | :black_circle: | :white_circle: | :white_circle: | :white_circle: | :white_circle: |
-| Automated tests | :white_circle: | :black_circle: | :black_circle: | :black_circle: | :black_circle: |
-| Allow failure | :white_circle: | :white_circle: | :white_circle: | :black_circle: | :black_circle: |
+| | Static code<br /> analysis | Deprecated<br /> code scan<br /> w/ SUT | Deprecated<br /> code scan w/<br /> dependencies | Integrated/<br /> recommended | Isolated/<br /> recommended | Integrated/<br /> dev | Isolated/<br /> dev |
+| --- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| Fixture type | None | SUT-only | SUT-only | SUT-only | SUT-only | Standard | Standard |
+| Package stability | n/a | Stable | Stable | Stable | Stable | Dev | Dev |
+| Static analysis | :black_circle: | :white_circle: | :white_circle: | :white_circle: | :white_circle: | :white_circle: | :white_circle: |
+| Deprecated code scan | :white_circle: | :black_circle: | :black_circle: | :white_circle: | :white_circle: | :white_circle: | :white_circle: |
+| Automated tests | :white_circle: | :white_circle: | :white_circle: | :black_circle: | :black_circle: | :black_circle: | :black_circle: |
+| Allow failure | :white_circle: | :white_circle: | :white_circle: | :white_circle: | :white_circle: | :black_circle: | :black_circle: |
 
 See [Configuring Travis CI](getting-started.md#configuring-travis-ci).
 

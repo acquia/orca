@@ -8,7 +8,7 @@ namespace Acquia\Orca\Task;
 interface TaskInterface {
 
   /**
-   * Executes the test.
+   * Executes the task.
    *
    * @throws \Acquia\Orca\Exception\TaskFailureException
    */

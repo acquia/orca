@@ -9,7 +9,6 @@
 # DESCRIPTION
 #     Performs a live product test with recommended versions of all packages.
 
-shopt -s extglob
 set -e
 
 # Executes an ORCA command
@@ -20,17 +19,17 @@ function orca {
 }
 
 ORCA_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
-ORCA_PACKAGE_STABILITY=${ORCA_PACKAGE_STABILITY:=any}
+ORCA_JOB=${ORCA_JOB:=ALL}
 
-[[ ${ORCA_PACKAGE_STABILITY} == @(any|stable) ]] && STABLE_PACKAGES=true
-[[ ${ORCA_PACKAGE_STABILITY} == @(any|dev) ]] && DEV_PACKAGES=true
+[[ ${ORCA_LIVE} == "ALL" || ${ORCA_LIVE} = "INTEGRATED_RECOMMENDED" ]] && INTEGRATED_RECOMMENDED=true
+[[ ${ORCA_LIVE} == "ALL" || ${ORCA_LIVE} = "INTEGRATED_DEV" ]] && INTEGRATED_DEV=true
 
 [[ -z "$TRAVIS" ]] && SUFFIX="-$(date +%Y-%m-%d_%H-%m-%S)" || SUFFIX=""
 export ORCA_FIXTURE_DIR="$(cd ../.. && pwd)/orca-build${SUFFIX}"
 
 # Live test w/ stable packages.
 # ------------------------------------------------------------------------------
-if [[ "$STABLE_PACKAGES" ]]; then
+if [[ ${ORCA_LIVE} = "RECOMMENDED" ]]; then
   orca fixture:init -f
   orca fixture:status
   orca tests:run
@@ -38,7 +37,7 @@ fi
 
 # Live test w/ dev packages.
 # ------------------------------------------------------------------------------
-if [[ "$DEV_PACKAGES" ]]; then
+if [[ ${ORCA_LIVE} = "DEV" ]]; then
   orca fixture:init -f --dev
   orca fixture:status
   orca tests:run --sut=$1

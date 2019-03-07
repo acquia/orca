@@ -9,7 +9,6 @@
 # DESCRIPTION
 #     Runs static code analysis and automated tests on ORCA itself.
 
-shopt -s extglob
 set -e
 
 # Change to the ORCA root directory
@@ -21,9 +20,9 @@ composer install
 # Avoid testing locally with a stale cache.
 ./bin/orca cache:clear
 
-# Perform static code analysis.
-ORCA_FIXTURE=${ORCA_FIXTURE:=any}
-if [[ ${ORCA_FIXTURE} == @(any|none) ]]; then
+# Run static code analysis and isolated unit tests.
+ORCA_JOB=${ORCA_JOB:=ALL}
+if [[ ${ORCA_JOB} == "ALL" || ${ORCA_JOB} = "STATIC_CODE_ANALYSIS" ]]; then
   ./bin/orca static-analysis:run ./
   echo && composer phpunit
 fi

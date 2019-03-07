@@ -1,0 +1,10 @@
+parameters:
+  fileExtensions:
+    - engine
+    - inc
+    - install
+    - module
+    - profile
+    - theme
+includes:
+  - ../../../vendor/mglaman/phpstan-drupal-deprecations/deprecation_testing.neon

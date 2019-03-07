@@ -11,6 +11,7 @@ cache:
   directories:
     - "$HOME/.composer/cache"
     - "$HOME/.drush/cache"
+    - "$TMPDIR/phpstan/cache"
 
 git:
   quiet: true
@@ -24,23 +25,20 @@ branches:
 matrix:
   fast_finish: true
   include:
-    - name: "Static analysis and unit tests"
-      env: ORCA_FIXTURE=none
-    - name: "Isolated test w/ recommended package versions"
-      env: ORCA_FIXTURE=sut-only ORCA_PACKAGE_STABILITY=stable
-    - name: "Integrated test w/ recommended package versions"
-      env: ORCA_FIXTURE=standard ORCA_PACKAGE_STABILITY=stable
-    - name: "Isolated test w/ dev package versions"
-      env: ORCA_FIXTURE=sut-only ORCA_PACKAGE_STABILITY=dev
-    - name: "Integrated test w/ dev package versions"
-      env: ORCA_FIXTURE=standard ORCA_PACKAGE_STABILITY=dev
-    - name: "Live product test w/ recommended versions of all packages"
-      env: ORCA_LIVE=true ORCA_PACKAGE_STABILITY=stable
-    - name: "Live product test w/ dev versions of all packages"
-      env: ORCA_LIVE=true ORCA_PACKAGE_STABILITY=dev
+    - { name: "Static code analysis and unit tests", env: ORCA_JOB=STATIC_CODE_ANALYSIS }
+    - { name: "Deprecated code scan w/ SUT", env: ORCA_JOB=DEPRECATED_CODE_SCAN_SUT }
+    - { name: "Deprecated code scan w/ dependencies", env: ORCA_JOB=DEPRECATED_CODE_SCAN_CONTRIB }
+    - { name: "Isolated test w/ recommended package versions", env: ORCA_JOB=ISOLATED_RECOMMENDED }
+    - { name: "Integrated test w/ recommended package versions", env: ORCA_JOB=INTEGRATED_RECOMMENDED }
+    - { name: "Isolated test w/ dev package versions", env: ORCA_JOB=ISOLATED_DEV }
+    - { name: "Integrated test w/ dev package versions", env: ORCA_JOB=INTEGRATED_DEV }
+    - { name: "Live product test w/ recommended versions of all packages", env: ORCA_LIVE=INTEGRATED_RECOMMENDED }
+    - { name: "Live product test w/ dev versions of all packages", env: ORCA_LIVE=INTEGRATED_DEV }
   allow_failures:
-    - env: ORCA_LIVE=true ORCA_PACKAGE_STABILITY=stable
-    - env: ORCA_LIVE=true ORCA_PACKAGE_STABILITY=dev
+    - env: ORCA_JOB=DEPRECATED_CODE_SCAN_SUT
+    - env: ORCA_JOB=DEPRECATED_CODE_SCAN_CONTRIB
+    - env: ORCA_LIVE=INTEGRATED_RECOMMENDED
+    - env: ORCA_LIVE=INTEGRATED_DEV
 
 install: "./bin/travis/install master"
 
