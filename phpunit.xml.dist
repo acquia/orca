@@ -10,11 +10,6 @@
 
   <php>
     <ini name="error_reporting" value="-1"/>
-    <env name="KERNEL_CLASS" value="Acquia\Orca\Kernel"/>
-    <env name="APP_ENV" value="test"/>
-    <env name="APP_DEBUG" value="1"/>
-    <env name="APP_SECRET" value="s$cretf0rt3st"/>
-    <env name="SHELL_VERBOSITY" value="-1"/>
   </php>
 
   <testsuites>
@@ -28,4 +23,5 @@
       <directory>src</directory>
     </whitelist>
   </filter>
+
 </phpunit>
