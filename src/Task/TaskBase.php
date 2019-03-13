@@ -5,6 +5,8 @@ namespace Acquia\Orca\Task;
 use Acquia\Orca\Fixture\Fixture;
 use Acquia\Orca\Utility\ConfigFileOverrider;
 use Acquia\Orca\Utility\ProcessRunner;
+use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\Filesystem\Filesystem;
 
 /**
  * Provides a base task implementation.
@@ -17,6 +19,13 @@ abstract class TaskBase implements TaskInterface {
    * @var \Acquia\Orca\Utility\ConfigFileOverrider
    */
   protected $configFileOverrider;
+
+  /**
+   * The filesystem.
+   *
+   * @var \Symfony\Component\Filesystem\Filesystem
+   */
+  protected $filesystem;
 
   /**
    * The fixture.
@@ -47,20 +56,33 @@ abstract class TaskBase implements TaskInterface {
   protected $projectDir;
 
   /**
+   * The output decorator.
+   *
+   * @var \Symfony\Component\Console\Output\OutputInterface
+   */
+  protected $output;
+
+  /**
    * Constructs an instance.
    *
    * @param \Acquia\Orca\Utility\ConfigFileOverrider $config_file_overrider
    *   The config file overrider.
+   * @param \Symfony\Component\Filesystem\Filesystem $filesystem
+   *   The filesystem.
    * @param \Acquia\Orca\Fixture\Fixture $fixture
    *   The fixture.
+   * @param \Symfony\Component\Console\Style\SymfonyStyle $output
+   *   The output decorator.
    * @param \Acquia\Orca\Utility\ProcessRunner $process_runner
    *   The process runner.
    * @param string $project_dir
    *   The ORCA project directory.
    */
-  public function __construct(ConfigFileOverrider $config_file_overrider, Fixture $fixture, ProcessRunner $process_runner, string $project_dir) {
+  public function __construct(ConfigFileOverrider $config_file_overrider, Filesystem $filesystem, Fixture $fixture, SymfonyStyle $output, ProcessRunner $process_runner, string $project_dir) {
     $this->configFileOverrider = $config_file_overrider;
+    $this->filesystem = $filesystem;
     $this->fixture = $fixture;
+    $this->output = $output;
     $this->processRunner = $process_runner;
     $this->projectDir = $project_dir;
   }

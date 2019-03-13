@@ -37,6 +37,7 @@ ORCA uses [path repositories](https://getcomposer.org/doc/05-repositories.md#pat
 ORCA checks the SUT for low level construction defects using the following static analysis tools:
 
 * [Composer validate](https://getcomposer.org/doc/03-cli.md#validate) checks `composer.json` files for validity and completeness.
+* [Composer normalize](https://github.com/localheinz/composer-normalize) checks `composer.json` files for consistent ordering and formatting.
 * [PHP Parallel Lint](https://github.com/JakubOnderka/PHP-Parallel-Lint) checks PHP files for syntax errors.
 * [PHP_CodeSniffer](https://github.com/squizlabs/PHP_CodeSniffer) detects coding standards violations using the following rulesets:
     * [Drupal Code Sniffer](https://packagist.org/packages/drupal/coder) encapsulates [Drupal coding standards](https://www.drupal.org/coding-standards ) and best practices for module development.

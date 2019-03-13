@@ -71,16 +71,15 @@ class TaskRunner {
    */
   public function run(): int {
     try {
-      $status = StatusCodes::OK;
       foreach ($this->tasks as $task) {
         $this->output->section($task->statusMessage());
         $task->setPath($this->path)->execute();
       }
     }
     catch (TaskFailureException $e) {
-      $status = StatusCodes::ERROR;
+      return StatusCodes::ERROR;
     }
-    return $status;
+    return StatusCodes::OK;
   }
 
   /**

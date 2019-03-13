@@ -12,6 +12,8 @@ use Acquia\Orca\Task\StaticAnalysisTool\ComposerValidateTask;
 use Acquia\Orca\Task\StaticAnalysisTool\PhpLintTask;
 use Acquia\Orca\Task\TestFramework\PhpUnitTask;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\Filesystem\Filesystem;
 
 class TasksTest extends TestCase {
 
@@ -21,13 +23,17 @@ class TasksTest extends TestCase {
   public function testConstruction($class) {
     /** @var \Acquia\Orca\Utility\ConfigFileOverrider $config_file_overrider */
     $config_file_overrider = $this->prophesize(ConfigFileOverrider::class)->reveal();
+    /** @var \Symfony\Component\Filesystem\Filesystem $filesystem */
+    $filesystem = $this->prophesize(Filesystem::class)->reveal();
     /** @var \Acquia\Orca\Fixture\Fixture $fixture */
     $fixture = $this->prophesize(Fixture::class)->reveal();
+    /** @var \Symfony\Component\Console\Style\SymfonyStyle $output */
+    $output = $this->prophesize(SymfonyStyle::class)->reveal();
     /** @var \Acquia\Orca\Utility\ProcessRunner $process_runner */
     $process_runner = $this->prophesize(ProcessRunner::class)->reveal();
     $project_dir = '/var/www/orca';
 
-    $object = new $class($config_file_overrider, $fixture, $process_runner, $project_dir);
+    $object = new $class($config_file_overrider, $filesystem, $fixture, $output, $process_runner, $project_dir);
 
     $this->assertInstanceOf($class, $object, sprintf('Successfully instantiated class: %s.', $class));
   }

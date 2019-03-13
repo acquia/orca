@@ -4,10 +4,10 @@
     "description": "An example submodule that is not enabled by ORCA.",
     "license": "GPL-2.0-or-later",
     "require": {},
-    "minimum-stability": "dev",
     "extra": {
         "orca": {
             "enable": false
         }
-    }
+    },
+    "minimum-stability": "dev"
 }
