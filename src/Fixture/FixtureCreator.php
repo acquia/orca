@@ -456,7 +456,7 @@ class FixtureCreator {
     $this->processRunner->runOrcaVendorBin([
       'composer',
       'why-not',
-      $this->sut->getPackageStringDev(),
+      $this->getSutPackageString(),
     ], $fixture_path);
 
     // See why Composer installed what it did.
