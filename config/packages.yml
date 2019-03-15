@@ -87,6 +87,6 @@
   name: drupal/lightning_workflow
   url: ../lightning-workflow
   version_dev: 3.x-dev
--
-  name: drupal/media_acquiadam
-  version_dev: 1.x-dev
+#-
+#  name: drupal/media_acquiadam
+#  version_dev: 1.x-dev
