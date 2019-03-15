@@ -21,6 +21,7 @@ matrix:
   # Mark the build as finished as soon as the only remaining jobs are allowed to
   # fail.
   fast_finish: true
+
   include:
     - { name: "Static code analysis", env: ORCA_JOB=STATIC_CODE_ANALYSIS }
     - { name: "Deprecated code scan w/ SUT", env: ORCA_JOB=DEPRECATED_CODE_SCAN_SUT }
@@ -36,8 +37,15 @@ matrix:
     - env: ORCA_JOB=INTEGRATED_DEV
 
 install:
-  - "git clone --depth 1 https://github.com/acquia/orca.git ../orca"
-  # Install ORCA and prepare the environment.
+  # Install ORCA.
+  - "composer config --global repositories.orca vcs https://github.com/acquia/orca"
+  # OPTION 1: Automatically get the latest version. Available stability options
+  # are "dev", "alpha", "beta", "RC", and "stable".
+  - "composer create-project --stability=alpha --no-dev acquia/orca ../orca"
+  # OPTION 2: Pin to a specific version, e.g.:
+  # - "composer create-project --no-dev acquia/orca ../orca v1.0.0"
+
+  # Prepare the environment.
   # Supply the topic branch of the SUT to help Composer guess its version.
   - "../orca/bin/travis/install 8.x-1.x"
 

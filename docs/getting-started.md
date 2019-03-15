@@ -9,7 +9,7 @@
 
 ORCA's primary use case is in a continuous integration workflow, running against pull requests and commits. It provides two scripts corresponding to Travis CI hooks:
 
-* **[`bin/travis/install`](../bin/travis/install)** configures the environment and installs ORCA.
+* **[`bin/travis/install`](../bin/travis/install)** configures the environment.
 * **[`bin/travis/script`](../bin/travis/script)** creates the fixtures and runs the tests.
 
 See [`example/.travis.yml`](../example/.travis.yml) for an example Travis CI configuration. Features are explained in the comments.
@@ -28,17 +28,12 @@ ORCA can also be installed and run locally for testing and development. Follow t
     PARENT_DIR="$HOME/Projects"
     ```
 
-1. Clone ORCA and your package(s) each into the directory, e.g.:
+1. Install ORCA and clone your package(s) each into the directory, e.g.:
 
     ```bash
-    git clone git@github.com:acquia/orca.git "${PARENT_DIR}/orca"
+    composer config --global repositories.orca vcs https://github.com/acquia/orca
+    composer create-project --stability=alpha --no-dev acquia/orca "${PARENT_DIR}/orca"
     git clone git@github.com:acquia/EXAMPLE.git "${PARENT_DIR}/EXAMPLE"
-    ```
-
-1. Install ORCA with Composer, e.g.:
-
-    ```bash
-    composer install --no-dev --working-dir="${PARENT_DIR}/orca"
     ```
 
 Invoke ORCA from the terminal (`bin/orca`). Use the `--help` command option to learn more about the various commands or see how they're used in [`bin/travis/script`](../bin/travis/script). Use the `fixture:run-server` command to run the web server for local development.

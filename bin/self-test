@@ -31,6 +31,9 @@ fi
 rm -rf ../example
 cp -R example ../
 
+# Remove dev dependencies so as to exercise ORCA as a SUT would.
+composer install --no-dev
+
 # Execute tests from the SUT directory as a SUT would.
 cd ../example
 
