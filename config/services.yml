@@ -5,7 +5,7 @@ parameters:
   env(ORCA_DRUPAL_CORE_VERSION): ~
   env(ORCA_FIXTURE_DIR): "%app.fixture_dir%"
   env(ORCA_PACKAGES_CONFIG): config/packages.yml
-  env(ORCA_PACKAGES_CONFIG_EXTRA): ~
+  env(ORCA_PACKAGES_CONFIG_ALTER): ~
 
   # Static configuration:
   drupal_core_dev_version: 8.6.x-dev
@@ -21,7 +21,7 @@ services:
       $fixture_dir: "%env(ORCA_FIXTURE_DIR)%"
       $project_dir: "%kernel.project_dir%"
       $packages_config: "%env(ORCA_PACKAGES_CONFIG)%"
-      $packages_config_extra: "%env(ORCA_PACKAGES_CONFIG_EXTRA)%"
+      $packages_config_alter: "%env(ORCA_PACKAGES_CONFIG_ALTER)%"
     public: true
 
   Acquia\Orca\:

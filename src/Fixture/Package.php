@@ -24,14 +24,22 @@ class Package {
   private $fixture;
 
   /**
+   * The package name.
+   *
+   * @var string
+   */
+  private $packageName;
+
+  /**
    * Constructs an instance.
    *
    * @param \Acquia\Orca\Fixture\Fixture $fixture
    *   The fixture.
+   * @param string $package_name
+   *   The package name, corresponding to the "name" property in its
+   *   composer.json file, e.g., "drupal/example".
    * @param array $data
    *   An array of package data that may contain the following key-value pairs:
-   *   - "name": (required) The package name, corresponding to the "name"
-   *     property in its composer.json file, e.g., "drupal/example".
    *   - "type": (optional) The package type, corresponding to the "type"
    *     property in its composer.json file. Defaults to "drupal-module".
    *   - "install_path": (optional) The path the package gets installed at
@@ -48,8 +56,9 @@ class Package {
    *     Composer. Defaults to "*".
    *   - "version": (required) The dev package version to require via Composer.
    */
-  public function __construct(Fixture $fixture, array $data) {
+  public function __construct(Fixture $fixture, string $package_name, array $data) {
     $this->fixture = $fixture;
+    $this->initializePackageName($package_name);
     $this->data = $this->resolveData($data);
   }
 
@@ -65,7 +74,6 @@ class Package {
   private function resolveData(array $data): array {
     $resolver = (new OptionsResolver())
       ->setDefined([
-        'name',
         'type',
         'install_path',
         'url',
@@ -73,18 +81,12 @@ class Package {
         'version_dev',
         'enable',
       ])
-      ->setRequired(['name', 'version_dev'])
+      ->setRequired(['version_dev'])
       ->setDefaults([
         'type' => 'drupal-module',
         'version' => '*',
         'enable' => TRUE,
       ])
-      ->setAllowedTypes('name', 'string')
-      ->setAllowedValues('name', function ($value) {
-        // Require a a full package name: "vendor/project". A simple test for a
-        // forward slash will suffice.
-        return strpos($value, '/') !== FALSE;
-      })
       ->setAllowedTypes('type', 'string')
       ->setAllowedTypes('install_path', 'string')
       ->setAllowedTypes('url', 'string')
@@ -177,7 +179,7 @@ class Package {
    *   The package name, e.g., "drupal/example".
    */
   public function getPackageName(): string {
-    return $this->data['name'];
+    return $this->packageName;
   }
 
   /**
@@ -209,7 +211,7 @@ class Package {
    *   The project name, e.g., "example".
    */
   public function getProjectName(): string {
-    $package_name_parts = explode('/', $this->data['name']);
+    $package_name_parts = explode('/', $this->packageName);
     return $package_name_parts[count($package_name_parts) - 1];
   }
 
@@ -246,6 +248,24 @@ class Package {
     }
 
     return $this->data['enable'];
+  }
+
+  /**
+   * Initializes the package name.
+   *
+   * @param string $package_name
+   *   The package name.
+   *
+   * @throws \InvalidArgumentException
+   *   In case of an invalid package name.
+   */
+  private function initializePackageName(string $package_name): void {
+    // Require a a full package name: "vendor/project". A simple test for a
+    // forward slash will suffice.
+    if (strpos($package_name, '/') === FALSE) {
+      throw new \InvalidArgumentException("Invalid package name: {$package_name}. Must take the form 'vendor/project'.");
+    }
+    $this->packageName = $package_name;
   }
 
 }

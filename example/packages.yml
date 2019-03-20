@@ -1,7 +1,0 @@
-# Package data to merge into the main specification at runtime using the
-# "ORCA_PACKAGES_CONFIG_EXTRA" environment variable. See config/packages.yml for
-# more information, including the schema.
----
--
-  name: drupal/example
-  version_dev: "*"

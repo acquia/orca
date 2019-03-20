@@ -50,18 +50,18 @@ class PackageManager {
    * @param string $packages_config
    *   The path to the packages configuration file relative to the ORCA project
    *   directory.
-   * @param string|null $packages_config_extra
+   * @param string|null $packages_config_alter
    *   The path to an extra packages configuration file relative to the ORCA
    *   project directory whose contents will be merged into the main packages
    *   configuration.
    * @param string $project_dir
    *   The ORCA project directory.
    */
-  public function __construct(Filesystem $filesystem, Fixture $fixture, Parser $parser, string $packages_config, ?string $packages_config_extra, string $project_dir) {
+  public function __construct(Filesystem $filesystem, Fixture $fixture, Parser $parser, string $packages_config, ?string $packages_config_alter, string $project_dir) {
     $this->filesystem = $filesystem;
     $this->parser = $parser;
     $this->projectDir = $project_dir;
-    $this->initializePackages($fixture, $packages_config, $packages_config_extra);
+    $this->initializePackages($fixture, $packages_config, $packages_config_alter);
   }
 
   /**
@@ -126,20 +126,28 @@ class PackageManager {
    * @param string $packages_config
    *   The path to the packages configuration file relative to the ORCA project
    *   directory.
-   * @param string|null $packages_config_extra
+   * @param string|null $packages_config_alter
    *   The path to an extra packages configuration file relative to the ORCA
    *   project directory whose contents will be merged into the main packages
    *   configuration.
    */
-  private function initializePackages(Fixture $fixture, string $packages_config, ?string $packages_config_extra): void {
+  private function initializePackages(Fixture $fixture, string $packages_config, ?string $packages_config_alter): void {
     $data = $this->parseYamlFile("{$this->projectDir}/{$packages_config}");
-    if ($packages_config_extra) {
-      $data = array_merge($data, $this->parseYamlFile("{$this->projectDir}/{$packages_config_extra}"));
+    if ($packages_config_alter) {
+      $data = array_merge($data, $this->parseYamlFile("{$this->projectDir}/{$packages_config_alter}"));
     }
-    foreach ($data as $datum) {
-      $package = new Package($fixture, $datum);
-      $this->packages[$package->getPackageName()] = $package;
+    foreach ($data as $package_name => $datum) {
+      // Skipping a falsy datum provides for a package to be effectively removed
+      // from the active specification at runtime by setting its value to NULL
+      // in the packages configuration alter file.
+      if (!$datum) {
+        continue;
+      }
+
+      $package = new Package($fixture, $package_name, $datum);
+      $this->packages[$package_name] = $package;
     }
+    ksort($this->packages);
   }
 
   /**
@@ -157,7 +165,7 @@ class PackageManager {
     }
     $data = $this->parser->parseFile($file);
     if (!is_array($data)) {
-      throw new \LogicException("YAML must be an array in {$file}");
+      throw new \LogicException("Incorrect schema in {$file}. See config/packages.yml.");
     }
     return $data;
   }
