@@ -7,4 +7,4 @@ drupal/bad_judgement: ~
 
 # Add the Example module.
 drupal/example:
-  version_dev: "*"
+  version_dev: "dev-master"
