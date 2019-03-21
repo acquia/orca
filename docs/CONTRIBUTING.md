@@ -27,4 +27,9 @@
 
 ---
 
-[README](README.md) | [Understanding ORCA](understanding-orca.md) | [Getting Started](getting-started.md) | [Project Glossary](glossary.md) | [FAQ](faq.md) | **Contribution Guide**
+[README](README.md)
+| [Understanding ORCA](understanding-orca.md)
+| [Getting Started](getting-started.md)
+| [Project Glossary](glossary.md)
+| [FAQ](faq.md)
+| **Contribution Guide**

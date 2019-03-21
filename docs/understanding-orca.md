@@ -74,4 +74,9 @@ See [Configuring Travis CI](getting-started.md#configuring-travis-ci).
 
 ---
 
-[README](README.md) | **Understanding ORCA** | [Getting Started](getting-started.md) | [Project Glossary](glossary.md) | [FAQ](faq.md) | [Contribution Guide](CONTRIBUTING.md)
+[README](README.md)
+| **Understanding ORCA**
+| [Getting Started](getting-started.md)
+| [Project Glossary](glossary.md)
+| [FAQ](faq.md)
+| [Contribution Guide](CONTRIBUTING.md)
