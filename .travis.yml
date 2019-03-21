@@ -32,13 +32,13 @@ matrix:
     - { name: "Integrated test w/ recommended package versions", env: ORCA_JOB=INTEGRATED_RECOMMENDED }
     - { name: "Isolated test w/ dev package versions", env: ORCA_JOB=ISOLATED_DEV }
     - { name: "Integrated test w/ dev package versions", env: ORCA_JOB=INTEGRATED_DEV }
-    - { name: "Live product test w/ recommended versions of all packages", env: ORCA_LIVE=INTEGRATED_RECOMMENDED }
-    - { name: "Live product test w/ dev versions of all packages", env: ORCA_LIVE=INTEGRATED_DEV }
+    - { name: "Live product test w/ recommended versions of all packages", env: ORCA_LIVE=RECOMMENDED }
+    - { name: "Live product test w/ dev versions of all packages", env: ORCA_LIVE=DEV }
   allow_failures:
     - env: ORCA_JOB=DEPRECATED_CODE_SCAN_SUT
     - env: ORCA_JOB=DEPRECATED_CODE_SCAN_CONTRIB
-    - env: ORCA_LIVE=INTEGRATED_RECOMMENDED
-    - env: ORCA_LIVE=INTEGRATED_DEV
+    - env: ORCA_LIVE=RECOMMENDED
+    - env: ORCA_LIVE=DEV
 
 install: "./bin/travis/install master"
 
