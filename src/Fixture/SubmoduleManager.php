@@ -116,14 +116,13 @@ class SubmoduleManager {
       $name = $config->get('name');
       $install_path = str_replace("{$this->fixture->getPath()}/", '', $file->getPath());
       $package_data = [
-        'name' => $name,
         'install_path' => $install_path,
         'url' => $file->getPath(),
         'version' => '@dev',
         'version_dev' => '@dev',
         'enable' => $this->shouldModuleGetEnabled($config, $install_path),
       ];
-      $submodules[$name] = new Package($this->fixture, $package_data);
+      $submodules[$name] = new Package($this->fixture, $name, $package_data);
     }
     return $submodules;
   }

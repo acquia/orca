@@ -1,4 +1,3 @@
 ---
--
-  name: drupal/example
+drupal/bad_judgement:
   version_dev: "*"

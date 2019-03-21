@@ -2,12 +2,20 @@
 
 namespace Acquia\Orca\Fixture;
 
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Yaml\Parser;
 
 /**
  * Provides access to packages specified in config.
  */
 class PackageManager {
+
+  /**
+   * The filesystem.
+   *
+   * @var \Symfony\Component\Filesystem\Filesystem
+   */
+  private $filesystem;
 
   /**
    * All defined packages keyed by package name.
@@ -17,8 +25,24 @@ class PackageManager {
   private $packages = [];
 
   /**
+   * The YAML parser.
+   *
+   * @var \Symfony\Component\Yaml\Parser
+   */
+  private $parser;
+
+  /**
+   * The ORCA project directory.
+   *
+   * @var string
+   */
+  private $projectDir;
+
+  /**
    * Constructs an instance.
    *
+   * @param \Symfony\Component\Filesystem\Filesystem $filesystem
+   *   The filesystem.
    * @param \Acquia\Orca\Fixture\Fixture $fixture
    *   The fixture.
    * @param \Symfony\Component\Yaml\Parser $parser
@@ -26,15 +50,18 @@ class PackageManager {
    * @param string $packages_config
    *   The path to the packages configuration file relative to the ORCA project
    *   directory.
+   * @param string|null $packages_config_alter
+   *   The path to an extra packages configuration file relative to the ORCA
+   *   project directory whose contents will be merged into the main packages
+   *   configuration.
    * @param string $project_dir
    *   The ORCA project directory.
    */
-  public function __construct(Fixture $fixture, Parser $parser, string $packages_config, string $project_dir) {
-    $data = $parser->parseFile("{$project_dir}/{$packages_config}");
-    foreach ($data as $datum) {
-      $package = new Package($fixture, $datum);
-      $this->packages[$package->getPackageName()] = $package;
-    }
+  public function __construct(Filesystem $filesystem, Fixture $fixture, Parser $parser, string $packages_config, ?string $packages_config_alter, string $project_dir) {
+    $this->filesystem = $filesystem;
+    $this->parser = $parser;
+    $this->projectDir = $project_dir;
+    $this->initializePackages($fixture, $packages_config, $packages_config_alter);
   }
 
   /**
@@ -89,6 +116,58 @@ class PackageManager {
       $packages[$package_name] = $package;
     }
     return $packages;
+  }
+
+  /**
+   * Initializes the packages.
+   *
+   * @param \Acquia\Orca\Fixture\Fixture $fixture
+   *   The fixture.
+   * @param string $packages_config
+   *   The path to the packages configuration file relative to the ORCA project
+   *   directory.
+   * @param string|null $packages_config_alter
+   *   The path to an extra packages configuration file relative to the ORCA
+   *   project directory whose contents will be merged into the main packages
+   *   configuration.
+   */
+  private function initializePackages(Fixture $fixture, string $packages_config, ?string $packages_config_alter): void {
+    $data = $this->parseYamlFile("{$this->projectDir}/{$packages_config}");
+    if ($packages_config_alter) {
+      $data = array_merge($data, $this->parseYamlFile("{$this->projectDir}/{$packages_config_alter}"));
+    }
+    foreach ($data as $package_name => $datum) {
+      // Skipping a falsy datum provides for a package to be effectively removed
+      // from the active specification at runtime by setting its value to NULL
+      // in the packages configuration alter file.
+      if (!$datum) {
+        continue;
+      }
+
+      $package = new Package($fixture, $package_name, $datum);
+      $this->packages[$package_name] = $package;
+    }
+    ksort($this->packages);
+  }
+
+  /**
+   * Parses a given YAML file and returns the data.
+   *
+   * @param string $file
+   *   The file to parse.
+   *
+   * @return array
+   *   The parsed data.
+   */
+  private function parseYamlFile(string $file): array {
+    if (!$this->filesystem->exists($file)) {
+      throw new \LogicException("No such file: {$file}");
+    }
+    $data = $this->parser->parseFile($file);
+    if (!is_array($data)) {
+      throw new \LogicException("Incorrect schema in {$file}. See config/packages.yml.");
+    }
+    return $data;
   }
 
 }

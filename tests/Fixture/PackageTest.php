@@ -23,7 +23,7 @@ class PackageTest extends TestCase {
    * @dataProvider providerPackage
    */
   public function testPackage($data, $package_name, $project_name, $type, $repository_url, $version, $dev_version, $enable, $package_string, $dev_package_string, $install_path) {
-    $package = $this->createPackage($data);
+    $package = $this->createPackage($package_name, $data);
 
     $this->assertInstanceOf(Package::class, $package, 'Instantiated class.');
     $this->assertEquals($package_name, $package->getPackageName(), 'Set/got package name.');
@@ -41,8 +41,7 @@ class PackageTest extends TestCase {
   public function providerPackage() {
     return [
       'Full specification' => [
-        [
-          'name' => 'drupal/example_library',
+        'drupal/example_library' => [
           'type' => 'library',
           'install_path' => 'custom/path/to/example_library',
           'url' => '/var/www/example_library',
@@ -61,8 +60,7 @@ class PackageTest extends TestCase {
         'custom/path/to/example_library',
       ],
       'Minimum specification/default values' => [
-        [
-          'name' => 'drupal/example_module',
+        'drupal/example_module' => [
           'version_dev' => '2.x-dev',
         ],
         'drupal/example_module',
@@ -77,8 +75,7 @@ class PackageTest extends TestCase {
         'docroot/modules/contrib/example_module',
       ],
       'Module to not enable' => [
-        [
-          'name' => 'drupal/example_module',
+        'drupal/example_module' => [
           'version_dev' => '2.x-dev',
           'enable' => FALSE,
         ],
@@ -99,20 +96,18 @@ class PackageTest extends TestCase {
   /**
    * @dataProvider providerConstructionError
    */
-  public function testConstructionError($exception, $data) {
+  public function testConstructionError($exception, $package_name, $data) {
     $this->expectException($exception);
 
-    $this->createPackage($data);
+    $this->createPackage($package_name, $data);
   }
 
   public function providerConstructionError() {
     return [
-      'Missing "name" property' => [MissingOptionsException::class, ['version_dev' => '1.x']],
-      'Missing "version_dev" property' => [MissingOptionsException::class, ['name' => 'drupal/example']],
-      'Invalid "name" value: wrong type' => [InvalidOptionsException::class, ['name' => NULL, 'version_dev' => '1.x']],
-      'Invalid "name" value: missing forward slash' => [InvalidOptionsException::class, ['name' => 'incomplete', 'version_dev' => '1.x']],
-      'Invalid "enable" value: non-boolean' => [InvalidOptionsException::class, ['name' => 'drupal/example', 'version_dev' => '1.x', 'enable' => 'invalid']],
-      'Unexpected property' => [UndefinedOptionsException::class, ['unexpected' => '', 'name' => 'drupal/example', 'version_dev' => '1.x'], 'Unexpected property: "unexpected"'],
+      'Invalid package name: missing forward slash' => [\InvalidArgumentException::class, 'incomplete', ['version_dev' => '1.x']],
+      'Missing "version_dev" property' => [MissingOptionsException::class, 'drupal/example', []],
+      'Invalid "enable" value: non-boolean' => [InvalidOptionsException::class, 'drupal/example', ['version_dev' => '1.x', 'enable' => 'invalid']],
+      'Unexpected property' => [UndefinedOptionsException::class, 'drupal/example', ['unexpected' => '', 'version_dev' => '1.x'], 'Unexpected property: "unexpected"'],
     ];
   }
 
@@ -124,13 +119,13 @@ class PackageTest extends TestCase {
     $this->fixture
       ->getPath($relative_install_path)
       ->willReturn($absolute_install_path);
+    $package_name = 'drupal/example';
     $data = [
-      'name' => 'drupal/example',
       'type' => $type,
       'version_dev' => '1.x-dev',
     ];
 
-    $package = $this->createPackage($data);
+    $package = $this->createPackage($package_name, $data);
 
     $this->assertEquals($relative_install_path, $package->getInstallPathRelative());
     $this->assertEquals($absolute_install_path, $package->getInstallPathAbsolute());
@@ -150,10 +145,10 @@ class PackageTest extends TestCase {
     ];
   }
 
-  protected function createPackage($data): Package {
+  protected function createPackage($package_name, $data): Package {
     /** @var \Acquia\Orca\Fixture\Fixture $fixture */
     $fixture = $this->fixture->reveal();
-    return new Package($fixture, $data);
+    return new Package($fixture, $package_name, $data);
   }
 
 }

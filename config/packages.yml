@@ -1,8 +1,8 @@
 ---
-# An indexed array of Acquia software package data. Each element is an
-# associative array that may contain the following key-value pairs:
-# - "name": (required) The package name, corresponding to the "name" property in
-#   its composer.json file, e.g., "drupal/example".
+# An array of Acquia software package data. Each package datum is keyed by its
+# package name, i.e., the "name" property in its composer.json file, e.g.,
+# "drupal/example", and has a corresponding array value that may contain the
+# following key-value pairs:
 # - "type": (optional) The package type, corresponding to the "type" property in
 #   its composer.json file. Defaults to "drupal-module".
 # - "install_path": (optional) The path the package gets installed at relative
@@ -23,70 +23,70 @@
 #
 # These are converted to \Acquia\Orca\Fixture\Package objects by
 # \Acquia\Orca\Fixture\PackageManager. A different specification can be
-# substituted at runtime using the "ORCA_PACKAGES_CONFIG" environment variable.
-# See config/services.yml for the relevant code or bin/self-test for a usage
+# substituted at runtime using the "ORCA_PACKAGES_CONFIG" environment variable
+# or merged in using the "ORCA_PACKAGES_CONFIG_ALTER" environment variable. See
+# config/services.yml for the relevant code or bin/self-test for a usage
 # example.
--
-  name: acquia/acsf-tools
+acquia/acsf-tools:
   type: drupal-drush
   # acsf-tools specifies an installer-name.
   install_path: drush/Commands/acsf_tools
   version_dev: dev-9.x-dev
--
-  name: acquia/blt
+
+acquia/blt:
   type: composer-plugin
   version: ~10.0
   version_dev: 10.0.x-dev
--
-  name: acquia/drupal-spec-tool
+
+acquia/drupal-spec-tool:
   type: behat-extension
   version_dev: 2.x-dev
-#-
-#  name: drupal/acquia_commercemanager
+
+#drupal/acquia_commercemanager:
 #  url: ../commerce-manager
 #  version_dev: 1.x-dev
--
-  name: drupal/acquia_connector
+
+drupal/acquia_connector:
   url: ../acquia-connector
   version_dev: 1.x-dev
--
-  name: drupal/acquia_contenthub
+
+drupal/acquia_contenthub:
   url: ../content-hub-d8
   version: ~1.0
   version_dev: 1.x-dev
--
-  name: drupal/acquia_lift
+
+drupal/acquia_lift:
   version_dev: 3.x-dev
--
-  name: drupal/acquia_purge
+
+drupal/acquia_purge:
   version_dev: 1.x-dev
-#-
-#  name: drupal/acsf
+
+#drupal/acsf:
 #  version_dev: "*"
--
-  name: drupal/cog
+
+drupal/cog:
   type: drupal-theme
   version_dev: 1.x-dev
--
-  name: drupal/lightning_api
+
+drupal/lightning_api:
   url: ../lightning-api
   version_dev: 3.x-dev
--
-  name: drupal/lightning_core
+
+drupal/lightning_core:
   url: ../lightning-core
   version_dev: 3.x-dev
--
-  name: drupal/lightning_layout
+
+drupal/lightning_layout:
   url: ../lightning-layout
   version_dev: 1.x-dev
--
-  name: drupal/lightning_media
+
+drupal/lightning_media:
   url: ../lightning-media
   version_dev: 3.x-dev
--
-  name: drupal/lightning_workflow
+
+drupal/lightning_workflow:
   url: ../lightning-workflow
   version_dev: 3.x-dev
-#-
-#  name: drupal/media_acquiadam
+
+#drupal/media_acquiadam:
 #  version_dev: 1.x-dev

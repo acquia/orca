@@ -1,0 +1,10 @@
+# Package data to merge into the main specification at runtime using the
+# "ORCA_PACKAGES_CONFIG_ALTER" environment variable. See config/packages.yml for
+# more information, including the schema.
+---
+# Remove the Bad judgement module.
+drupal/bad_judgement: ~
+
+# Add the Example module.
+drupal/example:
+  version_dev: "*"
