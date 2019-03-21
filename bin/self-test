@@ -38,4 +38,5 @@ cd ../example
 [[ -z "$TRAVIS" ]] && SUFFIX="-$(date +%Y-%m-%d_%H-%m-%S)" || SUFFIX=""
 ORCA_FIXTURE_DIR="$(cd .. && pwd)/orca-build${SUFFIX}" \
   ORCA_PACKAGES_CONFIG="tests/Fixture/packages.yml" \
+  ORCA_PACKAGES_CONFIG_ALTER="example/tests/packages.yml" \
   ../orca/bin/travis/script drupal/example

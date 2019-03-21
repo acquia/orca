@@ -5,9 +5,9 @@
     "license": "GPL-2.0-or-later",
     "require": {},
     "autoload": {
-        "psr-0": {
-            "": "features/bootstrap/"
-        }
+        "classmap": [
+            "features/bootstrap/"
+        ]
     },
     "minimum-stability": "dev"
 }

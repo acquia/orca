@@ -49,4 +49,10 @@ Cf. [Why doesn't ORCA enable my submodule?](#why-doesnt-orca-enable-my-submodule
 
 ---
 
-[README](README.md) | [Understanding ORCA](understanding-orca.md) | [Getting Started](getting-started.md) | [Project Glossary](glossary.md) | **FAQ** | [Contribution Guide](CONTRIBUTING.md)
+[README](README.md)
+| [Understanding ORCA](understanding-orca.md)
+| [Getting Started](getting-started.md)
+| [Advanced Usage](advanced-usage.md)
+| [Project Glossary](glossary.md)
+| **FAQ**
+| [Contribution Guide](CONTRIBUTING.md)
