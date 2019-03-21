@@ -66,6 +66,7 @@ Ignored tests (`orca_ignore`) are "ignored" and _never_ run by ORCA. Tests shoul
 [README](README.md)
 | [Understanding ORCA](understanding-orca.md)
 | **Getting Started**
+| [Advanced Usage](advanced-usage.md)
 | [Project Glossary](glossary.md)
 | [FAQ](faq.md)
 | [Contribution Guide](CONTRIBUTING.md)

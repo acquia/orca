@@ -90,6 +90,7 @@ In automated testing, a test fixture is all the things we need to have in place 
 [README](README.md)
 | [Understanding ORCA](understanding-orca.md)
 | [Getting Started](getting-started.md)
+| [Advanced Usage](advanced-usage.md)
 | **Project Glossary**
 | [FAQ](faq.md)
 | [Contribution Guide](CONTRIBUTING.md)
