@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b50453dcd8c47fe8befe90401feac77d",
+    "content-hash": "54b5b7557968e6e946210dfb4accb2a5",
     "packages": [
         {
             "name": "behat/behat",
@@ -5815,56 +5815,6 @@
                 "git"
             ],
             "time": "2018-12-28T14:57:06+00:00"
-        },
-        {
-            "name": "neronmoon/scriptsdev",
-            "version": "v0.1.4",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/neronmoon/scriptsdev.git",
-                "reference": "9ef8f2d21ef5552555571cdd4ab1d52047c69a73"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/neronmoon/scriptsdev/zipball/9ef8f2d21ef5552555571cdd4ab1d52047c69a73",
-                "reference": "9ef8f2d21ef5552555571cdd4ab1d52047c69a73",
-                "shasum": ""
-            },
-            "require": {
-                "composer-plugin-api": "^1.0"
-            },
-            "require-dev": {
-                "composer/composer": "~1.0@dev"
-            },
-            "type": "composer-plugin",
-            "extra": {
-                "class": "ScriptsDev\\Plugin"
-            },
-            "autoload": {
-                "psr-4": {
-                    "ScriptsDev\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Vitaliy Krasnoperov",
-                    "email": "alistar.neron@gmail.com"
-                }
-            ],
-            "description": "Scripts-dev behaviour for Composer",
-            "homepage": "https://github.com/neronmoon/scriptsdev",
-            "keywords": [
-                "commands",
-                "commands execution",
-                "composer",
-                "dev",
-                "scripts"
-            ],
-            "time": "2018-11-22T12:56:14+00:00"
         },
         {
             "name": "sensiolabs/security-checker",
