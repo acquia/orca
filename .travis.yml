@@ -35,7 +35,6 @@ matrix:
     - { name: "Live product test w/ recommended versions of all packages", env: ORCA_LIVE=RECOMMENDED }
     - { name: "Live product test w/ dev versions of all packages", env: ORCA_LIVE=DEV }
   allow_failures:
-    - env: ORCA_JOB=DEPRECATED_CODE_SCAN_SUT
     - env: ORCA_JOB=DEPRECATED_CODE_SCAN_CONTRIB
     - env: ORCA_LIVE=RECOMMENDED
     - env: ORCA_LIVE=DEV
