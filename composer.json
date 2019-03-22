@@ -81,9 +81,6 @@
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
-    "bin": [
-        "bin/orca"
-    ],
     "scripts": {
         "post-install-cmd": [
             "@auto-scripts"
