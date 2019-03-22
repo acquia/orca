@@ -17,10 +17,11 @@ class WebServer extends ServerBase {
     $docroot = $this->getFixture()
       ->getPath('docroot');
     return $this->getProcessRunner()
-      ->createFixtureVendorBinProcess([
-        'drush',
-        'runserver',
+      ->createExecutableProcess([
+        'php',
+        '-S',
         Fixture::WEB_ADDRESS,
+        $this->getFixture()->getPath('vendor/drush/drush/misc/d8-rs-router.php'),
       ])
       ->setWorkingDirectory($docroot);
   }
