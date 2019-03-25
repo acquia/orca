@@ -205,34 +205,37 @@ class FixtureCreator {
    *   If the preconditions are not met.
    */
   private function ensurePreconditions() {
+    // There are no preconditions if there is no SUT.
+    if (!$this->sut) {
+      return;
+    }
+
     $this->output->section('Checking preconditions');
 
-    if ($this->sut) {
-      $sut_repo = $this->fixture->getPath($this->sut->getRepositoryUrl());
+    $sut_repo = $this->fixture->getPath($this->sut->getRepositoryUrl());
 
-      if (!is_dir($sut_repo)) {
-        $this->output->error(sprintf('SUT is absent from expected location: %s', $sut_repo));
-        throw new OrcaException();
-      }
-      $this->output->comment(sprintf('SUT is present at expected location: %s', $sut_repo));
-
-      $composer_json = new JsonFile("{$sut_repo}/composer.json");
-      if (!$composer_json->exists()) {
-        $this->output->error(sprintf('SUT is missing root composer.json'));
-        throw new OrcaException();
-      }
-      $this->output->comment('SUT contains root composer.json');
-
-      $data = $composer_json->read();
-
-      $actual_name = isset($data['name']) ? $data['name'] : NULL;
-      $expected_name = $this->sut->getPackageName();
-      if ($actual_name !== $expected_name) {
-        $this->output->error(sprintf("SUT composer.json's 'name' value %s does not match expected %s", var_export($actual_name, TRUE), var_export($expected_name, TRUE)));
-        throw new OrcaException();
-      }
-      $this->output->comment(sprintf("SUT composer.json's 'name' value matches expected %s", var_export($expected_name, TRUE)));
+    if (!is_dir($sut_repo)) {
+      $this->output->error(sprintf('SUT is absent from expected location: %s', $sut_repo));
+      throw new OrcaException();
     }
+    $this->output->comment(sprintf('SUT is present at expected location: %s', $sut_repo));
+
+    $composer_json = new JsonFile("{$sut_repo}/composer.json");
+    if (!$composer_json->exists()) {
+      $this->output->error(sprintf('SUT is missing root composer.json'));
+      throw new OrcaException();
+    }
+    $this->output->comment('SUT contains root composer.json');
+
+    $data = $composer_json->read();
+
+    $actual_name = isset($data['name']) ? $data['name'] : NULL;
+    $expected_name = $this->sut->getPackageName();
+    if ($actual_name !== $expected_name) {
+      $this->output->error(sprintf("SUT composer.json's 'name' value %s does not match expected %s", var_export($actual_name, TRUE), var_export($expected_name, TRUE)));
+      throw new OrcaException();
+    }
+    $this->output->comment(sprintf("SUT composer.json's 'name' value matches expected %s", var_export($expected_name, TRUE)));
   }
 
   /**
