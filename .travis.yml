@@ -1,6 +1,5 @@
 ---
 language: php
-dist: trusty
 
 php: 7.1
 
@@ -13,32 +12,38 @@ cache:
     - "$HOME/.drush/cache"
     - "$TMPDIR/phpstan/cache"
 
-git:
-  quiet: true
-
 branches:
   only:
     - master
     - develop
     - wip
 
+env:
+  global:
+    - ORCA_SUT_NAME=drupal/example
+    - ORCA_SUT_BRANCH=master
+    - ORCA_PACKAGES_CONFIG=tests/Fixture/packages.yml
+    - ORCA_PACKAGES_CONFIG_ALTER=example/tests/packages.yml
+
 matrix:
   fast_finish: true
   include:
-    - { name: "Static code analysis and unit tests", env: ORCA_JOB=STATIC_CODE_ANALYSIS }
+    - { name: "Static code analysis", env: ORCA_JOB=STATIC_CODE_ANALYSIS }
     - { name: "Deprecated code scan w/ SUT", env: ORCA_JOB=DEPRECATED_CODE_SCAN_SUT }
     - { name: "Deprecated code scan w/ dependencies", env: ORCA_JOB=DEPRECATED_CODE_SCAN_CONTRIB }
     - { name: "Isolated test w/ recommended package versions", env: ORCA_JOB=ISOLATED_RECOMMENDED }
     - { name: "Integrated test w/ recommended package versions", env: ORCA_JOB=INTEGRATED_RECOMMENDED }
     - { name: "Isolated test w/ dev package versions", env: ORCA_JOB=ISOLATED_DEV }
     - { name: "Integrated test w/ dev package versions", env: ORCA_JOB=INTEGRATED_DEV }
-    - { name: "Live product test w/ recommended versions of all packages", env: ORCA_LIVE=RECOMMENDED }
-    - { name: "Live product test w/ dev versions of all packages", env: ORCA_LIVE=DEV }
   allow_failures:
     - env: ORCA_JOB=DEPRECATED_CODE_SCAN_CONTRIB
-    - env: ORCA_LIVE=RECOMMENDED
-    - env: ORCA_LIVE=DEV
 
-install: "./bin/travis/install master"
+before_install: ../orca/bin/travis/before_install.sh
 
-script: "if [[ \"$ORCA_LIVE\" ]]; then ./bin/live-test; else ./bin/self-test; fi"
+install:
+  - ../orca/bin/travis/self-test/install.sh
+  - ../orca/bin/travis/install.sh
+
+script:
+  - ../orca/bin/travis/self-test/script.sh
+  - ../orca/bin/travis/script.sh
