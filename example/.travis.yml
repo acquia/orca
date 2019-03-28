@@ -44,7 +44,9 @@ matrix:
 
 # Install ORCA and prepare the environment.
 before_install:
-  - git clone --depth 1 https://github.com/acquia/orca.git ../orca
+  # Clone the master branch for the latest release, develop for the dev HEAD, or
+  # a tag (e.g., v1.0.0) for a specific release.
+  - git clone --branch master --depth 1 https://github.com/acquia/orca.git ../orca
   - ../orca/bin/travis/before_install.sh
 
 # Create the test fixture and place the SUT.
