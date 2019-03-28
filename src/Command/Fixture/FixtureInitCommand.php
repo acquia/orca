@@ -85,6 +85,7 @@ class FixtureInitCommand extends Command {
       ->setHelp('Creates a BLT-based Drupal site build, includes the system under test using Composer, optionally includes all other Acquia packages, and installs Drupal.')
       ->addOption('sut', NULL, InputOption::VALUE_REQUIRED, 'The system under test (SUT) in the form of its package name, e.g., "drupal/example"')
       ->addOption('sut-only', NULL, InputOption::VALUE_NONE, 'Add only the system under test (SUT). Omit all other non-required Acquia packages')
+      ->addOption('core', NULL, InputOption::VALUE_REQUIRED, 'Change the version of Drupal core installed, e.g., "8.6.0", "~8.6", or "8.6.x-dev"')
       ->addOption('dev', NULL, InputOption::VALUE_NONE, 'Use dev (HEAD) branches instead of stable releases of Drupal core and Acquia packages')
       ->addOption('force', 'f', InputOption::VALUE_NONE, 'If the fixture already exists, remove it first without confirmation')
       ->addOption('profile', NULL, InputOption::VALUE_REQUIRED, 'The Drupal installation profile to use, e.g., "lightning"', self::DEFAULT_PROFILE)
@@ -119,6 +120,7 @@ class FixtureInitCommand extends Command {
     $this->setSut($sut);
     $this->setSutOnly($sut_only);
     $this->setDev($input->getOption('dev'));
+    $this->setCore($input->getOption('core'));
     $this->setProfile($input->getOption('profile'));
     $this->setSqlite($input->getOption('no-sqlite'));
 
@@ -195,6 +197,18 @@ class FixtureInitCommand extends Command {
   private function setDev($dev): void {
     if ($dev) {
       $this->fixtureCreator->setDev($dev);
+    }
+  }
+
+  /**
+   * Sets the Drupal core version.
+   *
+   * @param string|string[]|bool|null $version
+   *   The version string.
+   */
+  private function setCore($version): void {
+    if ($version) {
+      $this->fixtureCreator->setCoreVersion($version);
     }
   }
 
