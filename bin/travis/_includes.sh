@@ -9,20 +9,25 @@
 # DESCRIPTION
 #     Includes common features used by the Travis CI scripts.
 
-# Outputs a formatted error message and exit with an error code.
-function error {
-  RED="\033[1;31m"
-  NO_COLOR="\033[0m"
-  echo -e "\n${RED}$@${NO_COLOR}\n"
-  exit 1
+# Outputs a formatted error message and exits with an error code if a given
+# condition is not met.
+function assert {
+  if [[ ! "$1" ]]; then
+    RED="\033[1;31m"
+    NO_COLOR="\033[0m"
+    echo -e "\n${RED}Error: $2${NO_COLOR}\n"
+    exit 1
+  fi
+}
+
+# Asserts that necessary environment variables are set.
+function assert_env_vars {
+  assert "$ORCA_SUT_NAME" "Missing required ORCA_SUT_NAME environment variable.\nHint: ORCA_SUT_NAME=drupal/example"
+  assert "$ORCA_SUT_BRANCH" "Missing required ORCA_SUT_BRANCH environment variable.\nHint: ORCA_SUT_BRANCH=8.x-1.x"
 }
 
 # Prevent CI scripts from being run locally.
-[[ "$TRAVIS" ]] || error "Error: This script is meant to run on Travis CI only."
-
-# Assert required environment variables.
-[[ "$ORCA_SUT_NAME" ]] || error "Error: Missing required ORCA_SUT_NAME environment variable.\nHint: ORCA_SUT_NAME=drupal/example"
-[[ "$ORCA_SUT_BRANCH" ]] || error "Error: Missing required ORCA_SUT_BRANCH environment variable.\nHint: ORCA_SUT_BRANCH=8.x-1.x"
+assert "$TRAVIS" "This script is meant to run on Travis CI only."
 
 # Set environment variables.
 export ORCA_ROOT="$(cd "$(dirname "$BASH_SOURCE")/../.." && pwd)"

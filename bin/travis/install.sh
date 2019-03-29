@@ -11,6 +11,8 @@
 
 cd "$(dirname "$0")"; source _includes.sh
 
+assert_env_vars
+
 [[ "$ORCA_JOB" != "DEPRECATED_CODE_SCAN_SUT" ]] || ../orca fixture:init -f --sut=${ORCA_SUT_NAME} --sut-only
 
 [[ "$ORCA_JOB" != "DEPRECATED_CODE_SCAN_CONTRIB" ]] || ../orca fixture:init -f --sut=${ORCA_SUT_NAME} --sut-only
