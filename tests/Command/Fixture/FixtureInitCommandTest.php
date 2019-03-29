@@ -21,6 +21,8 @@ use Symfony\Component\Console\Tester\CommandTester;
  */
 class FixtureInitCommandTest extends CommandTestBase {
 
+  private const DRUPAL_CORE_VERSION = '8.6.0';
+
   protected function setUp() {
     $this->fixtureCreator = $this->prophesize(FixtureCreator::class);
     $this->fixtureRemover = $this->prophesize(FixtureRemover::class);
@@ -57,6 +59,9 @@ class FixtureInitCommandTest extends CommandTestBase {
       ->setDev(TRUE)
       ->shouldBeCalledTimes((int) in_array('setDev', $methods_called));
     $this->fixtureCreator
+      ->setCoreVersion(self::DRUPAL_CORE_VERSION)
+      ->shouldBeCalledTimes((int) in_array('setCoreVersion', $methods_called));
+    $this->fixtureCreator
       ->setSqlite(FALSE)
       ->shouldBeCalledTimes((int) in_array('setSqlite', $methods_called));
     $this->fixtureCreator
@@ -86,6 +91,7 @@ class FixtureInitCommandTest extends CommandTestBase {
       [FALSE, ['--sut' => self::INVALID_PACKAGE], ['PackageManager::exists'], 0, StatusCodes::ERROR, sprintf("Error: Invalid value for \"--sut\" option: \"%s\".\n", self::INVALID_PACKAGE)],
       [FALSE, ['--sut' => self::VALID_PACKAGE], ['PackageManager::exists', 'Fixture::exists', 'create', 'setSut'], 0, StatusCodes::OK, ''],
       [FALSE, ['--sut' => self::VALID_PACKAGE, '--sut-only' => TRUE], ['PackageManager::exists', 'Fixture::exists', 'create', 'setSut', 'setSutOnly'], 0, StatusCodes::OK, ''],
+      [FALSE, ['--core' => self::DRUPAL_CORE_VERSION], ['Fixture::exists', 'setCoreVersion', 'create'], 0, StatusCodes::OK, ''],
       [FALSE, ['--dev' => TRUE], ['Fixture::exists', 'setDev', 'create'], 0, StatusCodes::OK, ''],
       [FALSE, ['--no-sqlite' => TRUE], ['Fixture::exists', 'setSqlite', 'create'], 0, StatusCodes::OK, ''],
       [FALSE, ['--profile' => 'lightning'], ['Fixture::exists', 'setProfile', 'create'], 0, StatusCodes::OK, ''],

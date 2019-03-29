@@ -169,6 +169,16 @@ class FixtureCreator {
   }
 
   /**
+   * Sets the Drupal core version to install.
+   *
+   * @param string $version
+   *   The version string, e.g., "8.6.0".
+   */
+  public function setCoreVersion(string $version): void {
+    $this->drupalCoreVersion = $version;
+  }
+
+  /**
    * Sets the dev flag.
    *
    * @param bool $is_dev
