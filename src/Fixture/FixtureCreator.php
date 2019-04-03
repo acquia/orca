@@ -163,6 +163,7 @@ class FixtureCreator {
     $this->createBltProject();
     $this->fixDefaultDependencies();
     $this->addAcquiaPackages();
+    $this->installCloudHooks();
     $this->installDrupal();
     $this->enableAcquiaModules();
     $this->createAndCheckoutBackupTag();
@@ -635,6 +636,43 @@ class FixtureCreator {
   private function commitCodeChanges($message): void {
     $this->processRunner->git(['add', '--all'], $this->fixture->getPath());
     $this->processRunner->gitCommit($message);
+  }
+
+  /**
+   * Installs Acquia Cloud Hooks.
+   *
+   * @see https://github.com/acquia/cloud-hooks#installing-cloud-hooks
+   */
+  private function installCloudHooks(): void {
+    $this->output->section('Installing Cloud Hooks');
+    $cwd = $this->fixture->getPath();
+
+    $tarball = 'hooks.tar.gz';
+    $this->processRunner->runExecutable([
+      'curl',
+      '-L',
+      '-o',
+      $tarball,
+      'https://github.com/acquia/cloud-hooks/tarball/master',
+    ], $cwd);
+    $this->processRunner->runExecutable([
+      'tar',
+      'xzf',
+      $tarball,
+    ], $cwd);
+    $this->processRunner->runExecutable([
+      'rm',
+      $tarball,
+    ], $cwd);
+
+    $directory = glob($this->fixture->getPath('acquia-cloud-hooks-*'))[0];
+    $this->processRunner->runExecutable([
+      'mv',
+      $directory,
+      'hooks',
+    ], $cwd);
+
+    $this->commitCodeChanges('Installed Cloud Hooks.');
   }
 
   /**
