@@ -1,0 +1,30 @@
+---
+version: 1.2.0
+
+services:
+  - mysql
+  - php:
+      version: 7.1
+
+events:
+  build:
+    steps:
+      - before_install:
+          type: script
+          script:
+            - git config --global user.name ORCA
+            - git config --global user.email no-reply@acquia.com
+            - export ORCA_FIXTURE_DIR=$(pwd)
+            - mv ${ORCA_FIXTURE_DIR} ../orca
+            - cd ../orca
+            - composer install
+      - install:
+          type: script
+          script:
+            - export ORCA_PACKAGES_CONFIG_ALTER=bin/pipelines/packages_alter.yml
+            - ./bin/orca fixture:init --no-sqlite --profile=lightning
+            - cd ${ORCA_FIXTURE_DIR}
+            - ./vendor/bin/drush sql:dump --result-file=db.sql
+            - echo db.sql | tee -a .gitignore
+            - cp ../orca/bin/pipelines/refresh.sh hooks/common/post-code-deploy/
+            - cp ../orca/bin/pipelines/refresh.sh hooks/common/post-code-update/
