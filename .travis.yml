@@ -23,7 +23,7 @@ env:
     - ORCA_SUT_NAME=drupal/example
     - ORCA_SUT_BRANCH=master
     - ORCA_PACKAGES_CONFIG=tests/Fixture/packages.yml
-    - ORCA_PACKAGES_CONFIG_ALTER=example/tests/packages.yml
+    - ORCA_PACKAGES_CONFIG_ALTER=example/tests/packages_alter.yml
 
 matrix:
   fast_finish: true
