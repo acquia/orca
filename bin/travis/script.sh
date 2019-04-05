@@ -13,7 +13,7 @@ cd "$(dirname "$0")"; source _includes.sh
 
 assert_env_vars
 
-[[ "$ORCA_JOB" != "STATIC_CODE_ANALYSIS" ]] || ../orca static-analysis:run "${TRAVIS_BUILD_DIR}"
+[[ "$ORCA_JOB" != "STATIC_CODE_ANALYSIS" ]] || ../orca static-analysis:run ${ORCA_SUT_DIR}
 
 [[ "$ORCA_JOB" != "DEPRECATED_CODE_SCAN_SUT" ]] || ../orca deprecated-code-scan:run --sut=${ORCA_SUT_NAME}
 

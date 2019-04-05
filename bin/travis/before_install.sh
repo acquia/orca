@@ -38,8 +38,8 @@ export COMPOSER_EXIT_ON_PATCH_FAILURE=1
 composer -d${ORCA_ROOT} install
 
 # Ensure the checked out branch is named after the nearest Git version branch.
-git -C "${TRAVIS_BUILD_DIR}" rev-parse --abbrev-ref HEAD
-if [[ $(git -C "${TRAVIS_BUILD_DIR}" rev-parse --abbrev-ref HEAD) != "$ORCA_SUT_BRANCH" ]]; then
-  git -C "${TRAVIS_BUILD_DIR}" branch -f "$ORCA_SUT_BRANCH"
-  git -C "${TRAVIS_BUILD_DIR}" checkout "$ORCA_SUT_BRANCH"
+git -C "${ORCA_SUT_DIR}" rev-parse --abbrev-ref HEAD
+if [[ $(git -C "${ORCA_SUT_DIR}" rev-parse --abbrev-ref HEAD) != "$ORCA_SUT_BRANCH" ]]; then
+  git -C "${ORCA_SUT_DIR}" branch -f "$ORCA_SUT_BRANCH"
+  git -C "${ORCA_SUT_DIR}" checkout "$ORCA_SUT_BRANCH"
 fi
