@@ -33,15 +33,6 @@ acquia/acsf-tools:
   install_path: drush/Commands/acsf_tools
   version_dev: dev-9.x-dev
 
-acquia/blt:
-  type: composer-plugin
-  version: ~10.0
-  version_dev: 10.x-dev
-
-acquia/drupal-spec-tool:
-  type: behat-extension
-  version_dev: 2.x-dev
-
 #drupal/acquia_commercemanager:
 #  url: ../commerce-manager
 #  version_dev: 1.x-dev
@@ -64,9 +55,18 @@ drupal/acquia_purge:
 #drupal/acsf:
 #  version_dev: "*"
 
+acquia/blt:
+  type: composer-plugin
+  version: ~10.0
+  version_dev: 10.x-dev
+
 drupal/cog:
   type: drupal-theme
   version_dev: 1.x-dev
+
+acquia/drupal-spec-tool:
+  type: behat-extension
+  version_dev: 2.x-dev
 
 drupal/lightning_api:
   url: ../lightning-api
