@@ -28,13 +28,6 @@ class FixtureCreator {
   private $acquiaModuleEnabler;
 
   /**
-   * The current Drupal core dev version string.
-   *
-   * @var string
-   */
-  private $drupalCoreDevVersion;
-
-  /**
    * The Drupal core version override.
    *
    * @var string|null
@@ -123,10 +116,6 @@ class FixtureCreator {
    *
    * @param \Acquia\Orca\Fixture\AcquiaModuleEnabler $acquia_module_enabler
    *   The Acquia module enabler.
-   * @param string $drupal_core_dev_version
-   *   The current Drupal core dev version string.
-   * @param string|null $drupal_core_version
-   *   The Drupal core version override.
    * @param \Acquia\Orca\Fixture\Fixture $fixture
    *   The fixture.
    * @param \Symfony\Component\Console\Style\SymfonyStyle $output
@@ -140,10 +129,8 @@ class FixtureCreator {
    * @param \Composer\Package\Version\VersionGuesser $version_guesser
    *   The Composer version guesser.
    */
-  public function __construct(AcquiaModuleEnabler $acquia_module_enabler, string $drupal_core_dev_version, ?string $drupal_core_version, Fixture $fixture, SymfonyStyle $output, ProcessRunner $process_runner, PackageManager $package_manager, SubmoduleManager $submodule_manager, VersionGuesser $version_guesser) {
+  public function __construct(AcquiaModuleEnabler $acquia_module_enabler, Fixture $fixture, SymfonyStyle $output, ProcessRunner $process_runner, PackageManager $package_manager, SubmoduleManager $submodule_manager, VersionGuesser $version_guesser) {
     $this->acquiaModuleEnabler = $acquia_module_enabler;
-    $this->drupalCoreDevVersion = $drupal_core_dev_version;
-    $this->drupalCoreVersion = $drupal_core_version;
     $this->fixture = $fixture;
     $this->output = $output;
     $this->processRunner = $process_runner;
@@ -319,24 +306,26 @@ class FixtureCreator {
     ], $fixture_path);
 
     // Install a specific version of Drupal core.
-    if ($this->drupalCoreVersion || $this->isDev) {
+    if ($this->drupalCoreVersion) {
       $this->processRunner->runOrcaVendorBin([
         'composer',
         'require',
         '--no-update',
-        sprintf('drupal/core:%s', ($this->drupalCoreVersion) ?: $this->drupalCoreDevVersion),
+        "drupal/core:{$this->drupalCoreVersion}",
       ], $fixture_path);
     }
 
-    // Replace webflo/drupal-core-require-dev, which would otherwise be provided
-    // by BLT's dev requirements package.
-    $this->processRunner->runOrcaVendorBin([
-      'composer',
-      'require',
-      '--dev',
-      '--no-update',
-      'webflo/drupal-core-require-dev',
-    ], $fixture_path);
+    // For Drupal 8.6 or later, replace webflo/drupal-core-require-dev, which
+    // would otherwise be provided by BLT's dev requirements package.
+    if (!$this->drupalCoreVersion || floatval($this->drupalCoreVersion) >= 8.6) {
+      $this->processRunner->runOrcaVendorBin([
+        'composer',
+        'require',
+        '--dev',
+        '--no-update',
+        'webflo/drupal-core-require-dev',
+      ], $fixture_path);
+    }
   }
 
   /**

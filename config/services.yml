@@ -6,17 +6,12 @@ parameters:
   env(ORCA_PACKAGES_CONFIG): config/packages.yml
   env(ORCA_PACKAGES_CONFIG_ALTER): ~
 
-  # Static configuration:
-  drupal_core_dev_version: 8.6.x-dev
-
 services:
 
   _defaults:
     autoconfigure: true
     autowire: true
     bind:
-      $drupal_core_dev_version: "%drupal_core_dev_version%"
-      $drupal_core_version: "%drupal_core_dev_version%"
       $fixture_dir: "%env(ORCA_FIXTURE_DIR)%"
       $project_dir: "%kernel.project_dir%"
       $packages_config: "%env(ORCA_PACKAGES_CONFIG)%"
