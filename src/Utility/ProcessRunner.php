@@ -218,6 +218,7 @@ class ProcessRunner {
     $cwd = $this->fixture->getPath();
 
     // Prevent "Please tell me who you are" errors.
+    $this->git(['config', 'user.name', 'ORCA'], $cwd);
     $this->git(['config', 'user.email', 'no-reply@acquia.com'], $cwd);
 
     // Commit changes.
