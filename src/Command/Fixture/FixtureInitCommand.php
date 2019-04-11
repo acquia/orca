@@ -18,8 +18,6 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class FixtureInitCommand extends Command {
 
-  const DEFAULT_PROFILE = 'minimal';
-
   /**
    * The default command name.
    *
@@ -88,7 +86,7 @@ class FixtureInitCommand extends Command {
       ->addOption('core', NULL, InputOption::VALUE_REQUIRED, 'Change the version of Drupal core installed, e.g., "8.6.0", "~8.6", or "8.6.x-dev"')
       ->addOption('dev', NULL, InputOption::VALUE_NONE, 'Use dev (HEAD) branches instead of stable releases of Drupal core and Acquia packages')
       ->addOption('force', 'f', InputOption::VALUE_NONE, 'If the fixture already exists, remove it first without confirmation')
-      ->addOption('profile', NULL, InputOption::VALUE_REQUIRED, 'The Drupal installation profile to use, e.g., "lightning"', self::DEFAULT_PROFILE)
+      ->addOption('profile', NULL, InputOption::VALUE_REQUIRED, 'The Drupal installation profile to use, e.g., "lightning"', FixtureCreator::DEFAULT_PROFILE)
       ->addOption('no-sqlite', NULL, InputOption::VALUE_NONE, 'Use the default BLT database includes instead of SQLite');
   }
 
@@ -219,7 +217,7 @@ class FixtureInitCommand extends Command {
    *   The installation profile.
    */
   private function setProfile($profile): void {
-    if ($profile !== self::DEFAULT_PROFILE) {
+    if ($profile !== FixtureCreator::DEFAULT_PROFILE) {
       $this->fixtureCreator->setProfile($profile);
     }
   }

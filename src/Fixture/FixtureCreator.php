@@ -18,6 +18,8 @@ class FixtureCreator {
 
   use SutSettingsTrait;
 
+  const DEFAULT_PROFILE = 'minimal';
+
   /**
    * The Acquia module enabler.
    *
@@ -93,7 +95,7 @@ class FixtureCreator {
    *
    * @var string
    */
-  private $profile = 'minimal';
+  private $profile = self::DEFAULT_PROFILE;
 
   /**
    * The submodule manager.
