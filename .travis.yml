@@ -47,3 +47,5 @@ install:
 script:
   - ../orca/bin/travis/self-test/script.sh
   - ../orca/bin/travis/script.sh
+
+after_failure: ../orca/bin/travis/after_failure.sh
