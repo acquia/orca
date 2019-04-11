@@ -35,6 +35,7 @@
         "symfony/finder": "^4.1",
         "symfony/http-kernel": "^4.1",
         "symfony/options-resolver": "^4.2",
+        "symfony/phpunit-bridge": "^4.2",
         "symfony/process": "^4.1",
         "symfony/yaml": "^4.1",
         "weitzman/drupal-test-traits": "~1.0"
