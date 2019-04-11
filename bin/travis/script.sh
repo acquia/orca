@@ -28,3 +28,7 @@ assert_env_vars
 [[ "$ORCA_JOB" != "ISOLATED_DEV" ]] || ../orca tests:run --sut=${ORCA_SUT_NAME} --sut-only
 
 [[ "$ORCA_JOB" != "INTEGRATED_DEV" ]] || ../orca tests:run --sut=${ORCA_SUT_NAME}
+
+[[ "$ORCA_JOB" != "CORE_PREVIOUS" ]] || ../orca tests:run --sut=${ORCA_SUT_NAME}
+
+[[ "$ORCA_JOB" != "CORE_NEXT" ]] || ../orca tests:run --sut=${ORCA_SUT_NAME}

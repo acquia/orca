@@ -24,3 +24,7 @@ assert_env_vars
 [[ "$ORCA_JOB" != "ISOLATED_DEV" ]] || ../orca fixture:init -f --sut=${ORCA_SUT_NAME} --sut-only --dev
 
 [[ "$ORCA_JOB" != "INTEGRATED_DEV" ]] || ../orca fixture:init -f --sut=${ORCA_SUT_NAME} --dev
+
+[[ "$ORCA_JOB" != "CORE_PREVIOUS" ]] || ../orca fixture:init -f --sut=${ORCA_SUT_NAME} --core=PREVIOUS_MINOR
+
+[[ "$ORCA_JOB" != "CORE_NEXT" ]] || ../orca fixture:init -f --sut=${ORCA_SUT_NAME} --core=LATEST_PRERELEASE --dev
