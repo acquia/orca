@@ -89,6 +89,9 @@ class FixtureInitCommandTest extends CommandTestBase {
       ->setProfile((@$args['--profile']) ?: 'minimal')
       ->shouldBeCalledTimes((int) in_array('setProfile', $methods_called));
     $this->fixtureCreator
+      ->setInstallSite(FALSE)
+      ->shouldBeCalledTimes((int) in_array('setInstallSite', $methods_called));
+    $this->fixtureCreator
       ->create()
       ->shouldBeCalledTimes((int) in_array('create', $methods_called));
     if ($exception) {
@@ -118,6 +121,7 @@ class FixtureInitCommandTest extends CommandTestBase {
       [FALSE, ['--core' => 'LATEST_PRERELEASE'], ['Fixture::exists', 'getLatestPreReleaseVersion', 'setCoreVersion', 'create'], '8.7.0.0-beta2', 0, StatusCodes::OK, ''],
       [FALSE, ['--core' => 'CURRENT_RECOMMENDED', '--dev' => TRUE], ['Fixture::exists', 'setDev', 'getCurrentRecommendedVersion', 'setCoreVersion', 'create'], NULL, 0, StatusCodes::OK, ''],
       [FALSE, ['--dev' => TRUE], ['Fixture::exists', 'setDev', 'getCurrentDevVersion', 'setCoreVersion', 'create'], self::DRUPAL_CORE_DEV_VERSION, 0, StatusCodes::OK, ''],
+      [FALSE, ['--no-site-install' => TRUE], ['Fixture::exists', 'setInstallSite', 'create'], NULL, 0, StatusCodes::OK, ''],
       [FALSE, ['--no-sqlite' => TRUE], ['Fixture::exists', 'setSqlite', 'create'], NULL, 0, StatusCodes::OK, ''],
       [FALSE, ['--profile' => 'lightning'], ['Fixture::exists', 'setProfile', 'create'], NULL, 0, StatusCodes::OK, ''],
       [FALSE, [], ['Fixture::exists', 'create'], NULL, 1, StatusCodes::ERROR, ''],

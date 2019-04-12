@@ -105,7 +105,8 @@ class FixtureInitCommand extends Command {
       ->addOption('dev', NULL, InputOption::VALUE_NONE, 'Use dev versions of Acquia packages')
       ->addOption('force', 'f', InputOption::VALUE_NONE, 'If the fixture already exists, remove it first without confirmation')
       ->addOption('profile', NULL, InputOption::VALUE_REQUIRED, 'The Drupal installation profile to use, e.g., "lightning"', FixtureCreator::DEFAULT_PROFILE)
-      ->addOption('no-sqlite', NULL, InputOption::VALUE_NONE, 'Use the default BLT database includes instead of SQLite');
+      ->addOption('no-sqlite', NULL, InputOption::VALUE_NONE, 'Use the default BLT database includes instead of SQLite')
+      ->addOption('no-site-install', NULL, InputOption::VALUE_NONE, 'Do not install Drupal. Supersedes the "--profile" option');
   }
 
   /**
@@ -138,6 +139,7 @@ class FixtureInitCommand extends Command {
     $this->setDev($input->getOption('dev'));
     $this->setCore($input->getOption('core'), $input->getOption('dev'));
     $this->setProfile($input->getOption('profile'));
+    $this->setSiteInstall($input->getOption('no-site-install'));
     $this->setSqlite($input->getOption('no-sqlite'));
 
     try {
@@ -262,6 +264,18 @@ class FixtureInitCommand extends Command {
   private function setProfile($profile): void {
     if ($profile !== FixtureCreator::DEFAULT_PROFILE) {
       $this->fixtureCreator->setProfile($profile);
+    }
+  }
+
+  /**
+   * Sets the site install flag.
+   *
+   * @param string|string[]|bool|null $no_site_install
+   *   The no-site-install flag.
+   */
+  private function setSiteInstall($no_site_install) {
+    if ($no_site_install) {
+      $this->fixtureCreator->setInstallSite(FALSE);
     }
   }
 

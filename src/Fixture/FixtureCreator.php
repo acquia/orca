@@ -42,6 +42,13 @@ class FixtureCreator {
   private $fixture;
 
   /**
+   * The install site flag.
+   *
+   * @var bool
+   */
+  private $installSite = TRUE;
+
+  /**
    * The dev flag.
    *
    * @var bool
@@ -153,6 +160,7 @@ class FixtureCreator {
     $this->fixDefaultDependencies();
     $this->addAcquiaPackages();
     $this->installCloudHooks();
+    $this->ensureDrupalSettings();
     $this->installDrupal();
     $this->enableAcquiaModules();
     $this->createAndCheckoutBackupTag();
@@ -176,6 +184,16 @@ class FixtureCreator {
    */
   public function setDev(bool $is_dev): void {
     $this->isDev = $is_dev;
+  }
+
+  /**
+   * Sets the install site flag.
+   *
+   * @param bool $install_site
+   *   TRUE to install the site or FALSE not to.
+   */
+  public function setInstallSite(bool $install_site): void {
+    $this->installSite = $install_site;
   }
 
   /**
@@ -667,31 +685,10 @@ class FixtureCreator {
   }
 
   /**
-   * Installs Drupal.
-   */
-  private function installDrupal(): void {
-    $this->output->section('Installing Drupal');
-    $this->ensureDrupalSettings();
-    $this->processRunner->runFixtureVendorBin([
-      'drush',
-      'site-install',
-      $this->profile,
-      "install_configure_form.update_status_module='[FALSE,FALSE]'",
-      'install_configure_form.enable_update_status_module=NULL',
-      '--site-name=ORCA',
-      '--account-name=admin',
-      '--account-pass=admin',
-      '--no-interaction',
-      '--verbose',
-      '--ansi',
-    ]);
-    $this->commitCodeChanges('Installed Drupal.');
-  }
-
-  /**
    * Ensure that Drupal is correctly configured.
    */
   protected function ensureDrupalSettings(): void {
+    $this->output->section('Ensuring Drupal settings');
     $filename = $this->fixture->getPath('docroot/sites/default/settings/local.settings.php');
     $id = '# ORCA settings.';
 
@@ -738,6 +735,32 @@ $settings['bootstrap_container_definition'] = [
 ];
 PHP;
     file_put_contents($filename, $data, FILE_APPEND);
+    $this->commitCodeChanges('Ensured Drupal settings');
+  }
+
+  /**
+   * Installs Drupal.
+   */
+  private function installDrupal(): void {
+    if (!$this->installSite) {
+      return;
+    }
+
+    $this->output->section('Installing Drupal');
+    $this->processRunner->runFixtureVendorBin([
+      'drush',
+      'site-install',
+      $this->profile,
+      "install_configure_form.update_status_module='[FALSE,FALSE]'",
+      'install_configure_form.enable_update_status_module=NULL',
+      '--site-name=ORCA',
+      '--account-name=admin',
+      '--account-pass=admin',
+      '--no-interaction',
+      '--verbose',
+      '--ansi',
+    ]);
+    $this->commitCodeChanges('Installed Drupal.');
   }
 
   /**
@@ -746,11 +769,16 @@ PHP;
    * @throws \Exception
    */
   private function enableAcquiaModules(): void {
+    if (!$this->installSite) {
+      return;
+    }
+
     if ($this->isSutOnly && ($this->sut->getType() !== 'drupal-module')) {
       // No modules to enable because the fixture is SUT-only and the SUT is not
       // a Drupal module.
       return;
     }
+
     $this->acquiaModuleEnabler->enable();
     $this->commitCodeChanges('Enabled Acquia modules.');
   }
