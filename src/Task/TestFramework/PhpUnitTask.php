@@ -106,7 +106,17 @@ class PhpUnitTask extends TestFrameworkBase {
    *   The XPath object.
    */
   private function disableSymfonyDeprecationsHelper(string $path, \DOMDocument $doc, \DOMXPath $xpath): void {
-    if (!$xpath->query('//phpunit/php/env[@name="SYMFONY_DEPRECATIONS_HELPER"]')->length) {
+    $result = $xpath->query('//phpunit/php/env[@name="SYMFONY_DEPRECATIONS_HELPER"]');
+    // Before Drupal 8.6, the tag in question was present and merely needed the
+    // value changed.
+    if ($result->length) {
+      $element = $result->item(0);
+      $element->setAttribute('value', 'disabled');
+      $doc->save($path);
+    }
+    // Since Drupal 8.6, the tag in question has been commented out and must be
+    // re-created rather than modified directly.
+    else {
       $element = $doc->createElement('env');
       $element->setAttribute('name', 'SYMFONY_DEPRECATIONS_HELPER');
       $element->setAttribute('value', 'disabled');
