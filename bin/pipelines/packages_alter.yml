@@ -1,0 +1,4 @@
+---
+acquia/lightning:
+  type: drupal-profile
+  version_dev: "*"

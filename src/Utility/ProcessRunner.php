@@ -101,13 +101,27 @@ class ProcessRunner {
    *   The exit status code.
    */
   public function runExecutable(array $command, ?string $cwd = NULL): int {
+    $process = $this->createExecutableProcess($command);
+    return $this->run($process, $cwd);
+  }
+
+  /**
+   * Creates a process for a given executable command.
+   *
+   * @param array $command
+   *   An array of command parts, where the first element is an executable name.
+   *
+   * @return \Symfony\Component\Process\Process
+   *   The created process.
+   */
+  public function createExecutableProcess(array $command): Process {
     $command[0] = (new ExecutableFinder())->find($command[0]);
 
     if (is_null($command[0])) {
       throw new RuntimeException(sprintf('Could not find executable: %s.', $command[0]));
     }
 
-    return $this->run(new Process($command), $cwd);
+    return new Process($command);
   }
 
   /**
@@ -204,6 +218,7 @@ class ProcessRunner {
     $cwd = $this->fixture->getPath();
 
     // Prevent "Please tell me who you are" errors.
+    $this->git(['config', 'user.name', 'ORCA'], $cwd);
     $this->git(['config', 'user.email', 'no-reply@acquia.com'], $cwd);
 
     // Commit changes.

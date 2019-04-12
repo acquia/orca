@@ -18,19 +18,14 @@ class FixtureCreator {
 
   use SutSettingsTrait;
 
+  const DEFAULT_PROFILE = 'minimal';
+
   /**
    * The Acquia module enabler.
    *
    * @var \Acquia\Orca\Fixture\AcquiaModuleEnabler
    */
   private $acquiaModuleEnabler;
-
-  /**
-   * The current Drupal core dev version string.
-   *
-   * @var string
-   */
-  private $drupalCoreDevVersion;
 
   /**
    * The Drupal core version override.
@@ -45,6 +40,13 @@ class FixtureCreator {
    * @var \Acquia\Orca\Fixture\Fixture
    */
   private $fixture;
+
+  /**
+   * The install site flag.
+   *
+   * @var bool
+   */
+  private $installSite = TRUE;
 
   /**
    * The dev flag.
@@ -93,7 +95,7 @@ class FixtureCreator {
    *
    * @var string
    */
-  private $profile = 'minimal';
+  private $profile = self::DEFAULT_PROFILE;
 
   /**
    * The submodule manager.
@@ -121,10 +123,6 @@ class FixtureCreator {
    *
    * @param \Acquia\Orca\Fixture\AcquiaModuleEnabler $acquia_module_enabler
    *   The Acquia module enabler.
-   * @param string $drupal_core_dev_version
-   *   The current Drupal core dev version string.
-   * @param string|null $drupal_core_version
-   *   The Drupal core version override.
    * @param \Acquia\Orca\Fixture\Fixture $fixture
    *   The fixture.
    * @param \Symfony\Component\Console\Style\SymfonyStyle $output
@@ -138,10 +136,8 @@ class FixtureCreator {
    * @param \Composer\Package\Version\VersionGuesser $version_guesser
    *   The Composer version guesser.
    */
-  public function __construct(AcquiaModuleEnabler $acquia_module_enabler, string $drupal_core_dev_version, ?string $drupal_core_version, Fixture $fixture, SymfonyStyle $output, ProcessRunner $process_runner, PackageManager $package_manager, SubmoduleManager $submodule_manager, VersionGuesser $version_guesser) {
+  public function __construct(AcquiaModuleEnabler $acquia_module_enabler, Fixture $fixture, SymfonyStyle $output, ProcessRunner $process_runner, PackageManager $package_manager, SubmoduleManager $submodule_manager, VersionGuesser $version_guesser) {
     $this->acquiaModuleEnabler = $acquia_module_enabler;
-    $this->drupalCoreDevVersion = $drupal_core_dev_version;
-    $this->drupalCoreVersion = $drupal_core_version;
     $this->fixture = $fixture;
     $this->output = $output;
     $this->processRunner = $process_runner;
@@ -163,9 +159,21 @@ class FixtureCreator {
     $this->createBltProject();
     $this->fixDefaultDependencies();
     $this->addAcquiaPackages();
+    $this->installCloudHooks();
+    $this->ensureDrupalSettings();
     $this->installDrupal();
     $this->enableAcquiaModules();
     $this->createAndCheckoutBackupTag();
+  }
+
+  /**
+   * Sets the Drupal core version to install.
+   *
+   * @param string $version
+   *   The version string, e.g., "8.6.0".
+   */
+  public function setCoreVersion(string $version): void {
+    $this->drupalCoreVersion = $version;
   }
 
   /**
@@ -176,6 +184,16 @@ class FixtureCreator {
    */
   public function setDev(bool $is_dev): void {
     $this->isDev = $is_dev;
+  }
+
+  /**
+   * Sets the install site flag.
+   *
+   * @param bool $install_site
+   *   TRUE to install the site or FALSE not to.
+   */
+  public function setInstallSite(bool $install_site): void {
+    $this->installSite = $install_site;
   }
 
   /**
@@ -205,34 +223,37 @@ class FixtureCreator {
    *   If the preconditions are not met.
    */
   private function ensurePreconditions() {
+    // There are no preconditions if there is no SUT.
+    if (!$this->sut) {
+      return;
+    }
+
     $this->output->section('Checking preconditions');
 
-    if ($this->sut) {
-      $sut_repo = $this->fixture->getPath($this->sut->getRepositoryUrl());
+    $sut_repo = $this->fixture->getPath($this->sut->getRepositoryUrl());
 
-      if (!is_dir($sut_repo)) {
-        $this->output->error(sprintf('SUT is absent from expected location: %s', $sut_repo));
-        throw new OrcaException();
-      }
-      $this->output->comment(sprintf('SUT is present at expected location: %s', $sut_repo));
-
-      $composer_json = new JsonFile("{$sut_repo}/composer.json");
-      if (!$composer_json->exists()) {
-        $this->output->error(sprintf('SUT is missing root composer.json'));
-        throw new OrcaException();
-      }
-      $this->output->comment('SUT contains root composer.json');
-
-      $data = $composer_json->read();
-
-      $actual_name = isset($data['name']) ? $data['name'] : NULL;
-      $expected_name = $this->sut->getPackageName();
-      if ($actual_name !== $expected_name) {
-        $this->output->error(sprintf("SUT composer.json's 'name' value %s does not match expected %s", var_export($actual_name, TRUE), var_export($expected_name, TRUE)));
-        throw new OrcaException();
-      }
-      $this->output->comment(sprintf("SUT composer.json's 'name' value matches expected %s", var_export($expected_name, TRUE)));
+    if (!is_dir($sut_repo)) {
+      $this->output->error(sprintf('SUT is absent from expected location: %s', $sut_repo));
+      throw new OrcaException();
     }
+    $this->output->comment(sprintf('SUT is present at expected location: %s', $sut_repo));
+
+    $composer_json = new JsonFile("{$sut_repo}/composer.json");
+    if (!$composer_json->exists()) {
+      $this->output->error(sprintf('SUT is missing root composer.json'));
+      throw new OrcaException();
+    }
+    $this->output->comment('SUT contains root composer.json');
+
+    $data = $composer_json->read();
+
+    $actual_name = isset($data['name']) ? $data['name'] : NULL;
+    $expected_name = $this->sut->getPackageName();
+    if ($actual_name !== $expected_name) {
+      $this->output->error(sprintf("SUT composer.json's 'name' value %s does not match expected %s", var_export($actual_name, TRUE), var_export($expected_name, TRUE)));
+      throw new OrcaException();
+    }
+    $this->output->comment(sprintf("SUT composer.json's 'name' value matches expected %s", var_export($expected_name, TRUE)));
   }
 
   /**
@@ -303,24 +324,26 @@ class FixtureCreator {
     ], $fixture_path);
 
     // Install a specific version of Drupal core.
-    if ($this->drupalCoreVersion || $this->isDev) {
+    if ($this->drupalCoreVersion) {
       $this->processRunner->runOrcaVendorBin([
         'composer',
         'require',
         '--no-update',
-        sprintf('drupal/core:%s', ($this->drupalCoreVersion) ?: $this->drupalCoreDevVersion),
+        "drupal/core:{$this->drupalCoreVersion}",
       ], $fixture_path);
     }
 
-    // Replace webflo/drupal-core-require-dev, which would otherwise be provided
-    // by BLT's dev requirements package.
-    $this->processRunner->runOrcaVendorBin([
-      'composer',
-      'require',
-      '--dev',
-      '--no-update',
-      'webflo/drupal-core-require-dev',
-    ], $fixture_path);
+    // For Drupal 8.6 or later, replace webflo/drupal-core-require-dev, which
+    // would otherwise be provided by BLT's dev requirements package.
+    if (!$this->drupalCoreVersion || floatval($this->drupalCoreVersion) >= 8.6) {
+      $this->processRunner->runOrcaVendorBin([
+        'composer',
+        'require',
+        '--dev',
+        '--no-update',
+        'webflo/drupal-core-require-dev',
+      ], $fixture_path);
+    }
   }
 
   /**
@@ -625,31 +648,47 @@ class FixtureCreator {
   }
 
   /**
-   * Installs Drupal.
+   * Installs Acquia Cloud Hooks.
+   *
+   * @see https://github.com/acquia/cloud-hooks#installing-cloud-hooks
    */
-  private function installDrupal(): void {
-    $this->output->section('Installing Drupal');
-    $this->ensureDrupalSettings();
-    $this->processRunner->runFixtureVendorBin([
-      'drush',
-      'site-install',
-      $this->profile,
-      "install_configure_form.update_status_module='[FALSE,FALSE]'",
-      'install_configure_form.enable_update_status_module=NULL',
-      '--site-name=ORCA',
-      '--account-name=admin',
-      '--account-pass=admin',
-      '--no-interaction',
-      '--verbose',
-      '--ansi',
-    ]);
-    $this->commitCodeChanges('Installed Drupal.');
+  private function installCloudHooks(): void {
+    $this->output->section('Installing Cloud Hooks');
+    $cwd = $this->fixture->getPath();
+
+    $tarball = 'hooks.tar.gz';
+    $this->processRunner->runExecutable([
+      'curl',
+      '-L',
+      '-o',
+      $tarball,
+      'https://github.com/acquia/cloud-hooks/tarball/master',
+    ], $cwd);
+    $this->processRunner->runExecutable([
+      'tar',
+      'xzf',
+      $tarball,
+    ], $cwd);
+    $this->processRunner->runExecutable([
+      'rm',
+      $tarball,
+    ], $cwd);
+
+    $directory = glob($this->fixture->getPath('acquia-cloud-hooks-*'))[0];
+    $this->processRunner->runExecutable([
+      'mv',
+      $directory,
+      'hooks',
+    ], $cwd);
+
+    $this->commitCodeChanges('Installed Cloud Hooks.');
   }
 
   /**
    * Ensure that Drupal is correctly configured.
    */
   protected function ensureDrupalSettings(): void {
+    $this->output->section('Ensuring Drupal settings');
     $filename = $this->fixture->getPath('docroot/sites/default/settings/local.settings.php');
     $id = '# ORCA settings.';
 
@@ -696,6 +735,32 @@ $settings['bootstrap_container_definition'] = [
 ];
 PHP;
     file_put_contents($filename, $data, FILE_APPEND);
+    $this->commitCodeChanges('Ensured Drupal settings');
+  }
+
+  /**
+   * Installs Drupal.
+   */
+  private function installDrupal(): void {
+    if (!$this->installSite) {
+      return;
+    }
+
+    $this->output->section('Installing Drupal');
+    $this->processRunner->runFixtureVendorBin([
+      'drush',
+      'site-install',
+      $this->profile,
+      "install_configure_form.update_status_module='[FALSE,FALSE]'",
+      'install_configure_form.enable_update_status_module=NULL',
+      '--site-name=ORCA',
+      '--account-name=admin',
+      '--account-pass=admin',
+      '--no-interaction',
+      '--verbose',
+      '--ansi',
+    ]);
+    $this->commitCodeChanges('Installed Drupal.');
   }
 
   /**
@@ -704,11 +769,16 @@ PHP;
    * @throws \Exception
    */
   private function enableAcquiaModules(): void {
+    if (!$this->installSite) {
+      return;
+    }
+
     if ($this->isSutOnly && ($this->sut->getType() !== 'drupal-module')) {
       // No modules to enable because the fixture is SUT-only and the SUT is not
       // a Drupal module.
       return;
     }
+
     $this->acquiaModuleEnabler->enable();
     $this->commitCodeChanges('Enabled Acquia modules.');
   }

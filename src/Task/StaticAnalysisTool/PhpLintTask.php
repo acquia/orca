@@ -31,8 +31,8 @@ class PhpLintTask extends TaskBase {
         'vendor',
         '--colors',
         '--blame',
-        $this->getPath(),
-      ]);
+        '.',
+      ], $this->getPath());
     }
     catch (ProcessFailedException $e) {
       throw new TaskFailureException();

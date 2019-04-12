@@ -8,6 +8,7 @@ use Acquia\Orca\Fixture\FixtureCreator;
 use Acquia\Orca\Fixture\PackageManager;
 use Acquia\Orca\Fixture\FixtureRemover;
 use Acquia\Orca\Fixture\Fixture;
+use Acquia\Orca\Utility\DrupalCoreVersionFinder;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -18,14 +19,19 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class FixtureInitCommand extends Command {
 
-  const DEFAULT_PROFILE = 'minimal';
-
   /**
    * The default command name.
    *
    * @var string
    */
   protected static $defaultName = 'fixture:init';
+
+  /**
+   * The Drupal core version finder.
+   *
+   * @var \Acquia\Orca\Utility\DrupalCoreVersionFinder
+   */
+  private $drupalCoreVersionFinder;
 
   /**
    * The fixture.
@@ -58,6 +64,8 @@ class FixtureInitCommand extends Command {
   /**
    * Constructs an instance.
    *
+   * @param \Acquia\Orca\Utility\DrupalCoreVersionFinder $drupal_core_version_finder
+   *   The Drupal core version finder.
    * @param \Acquia\Orca\Fixture\Fixture $fixture
    *   The fixture.
    * @param \Acquia\Orca\Fixture\FixtureCreator $fixture_creator
@@ -67,7 +75,8 @@ class FixtureInitCommand extends Command {
    * @param \Acquia\Orca\Fixture\PackageManager $package_manager
    *   The package manager.
    */
-  public function __construct(Fixture $fixture, FixtureCreator $fixture_creator, FixtureRemover $fixture_remover, PackageManager $package_manager) {
+  public function __construct(DrupalCoreVersionFinder $drupal_core_version_finder, Fixture $fixture, FixtureCreator $fixture_creator, FixtureRemover $fixture_remover, PackageManager $package_manager) {
+    $this->drupalCoreVersionFinder = $drupal_core_version_finder;
     $this->fixtureCreator = $fixture_creator;
     $this->fixture = $fixture;
     $this->packageManager = $package_manager;
@@ -85,10 +94,19 @@ class FixtureInitCommand extends Command {
       ->setHelp('Creates a BLT-based Drupal site build, includes the system under test using Composer, optionally includes all other Acquia packages, and installs Drupal.')
       ->addOption('sut', NULL, InputOption::VALUE_REQUIRED, 'The system under test (SUT) in the form of its package name, e.g., "drupal/example"')
       ->addOption('sut-only', NULL, InputOption::VALUE_NONE, 'Add only the system under test (SUT). Omit all other non-required Acquia packages')
-      ->addOption('dev', NULL, InputOption::VALUE_NONE, 'Use dev (HEAD) branches instead of stable releases of Drupal core and Acquia packages')
+      ->addOption('core', NULL, InputOption::VALUE_REQUIRED, implode(PHP_EOL, [
+        'Change the version of Drupal core installed:',
+        '- PREVIOUS_MINOR: The latest stable release of the previous minor version, e.g., "8.5.14" if the current minor version is "8.6"',
+        '- CURRENT_RECOMMENDED: The current recommended release, e.g., "8.6.14"',
+        '- CURRENT_DEV: The current development version, e.g., "8.6.x-dev"',
+        '- LATEST_PRERELEASE: The latest pre-release version, e.g., "8.7.0-beta2". Note: This could be newer OR older than the current recommended release',
+        '- Any version string Composer understands, see https://getcomposer.org/doc/articles/versions.md',
+      ]))
+      ->addOption('dev', NULL, InputOption::VALUE_NONE, 'Use dev versions of Acquia packages')
       ->addOption('force', 'f', InputOption::VALUE_NONE, 'If the fixture already exists, remove it first without confirmation')
-      ->addOption('profile', NULL, InputOption::VALUE_REQUIRED, 'The Drupal installation profile to use, e.g., "lightning"', self::DEFAULT_PROFILE)
-      ->addOption('no-sqlite', NULL, InputOption::VALUE_NONE, 'Use the default BLT database includes instead of SQLite');
+      ->addOption('profile', NULL, InputOption::VALUE_REQUIRED, 'The Drupal installation profile to use, e.g., "lightning"', FixtureCreator::DEFAULT_PROFILE)
+      ->addOption('no-sqlite', NULL, InputOption::VALUE_NONE, 'Use the default BLT database includes instead of SQLite')
+      ->addOption('no-site-install', NULL, InputOption::VALUE_NONE, 'Do not install Drupal. Supersedes the "--profile" option');
   }
 
   /**
@@ -119,7 +137,9 @@ class FixtureInitCommand extends Command {
     $this->setSut($sut);
     $this->setSutOnly($sut_only);
     $this->setDev($input->getOption('dev'));
+    $this->setCore($input->getOption('core'), $input->getOption('dev'));
     $this->setProfile($input->getOption('profile'));
+    $this->setSiteInstall($input->getOption('no-site-install'));
     $this->setSqlite($input->getOption('no-sqlite'));
 
     try {
@@ -199,14 +219,63 @@ class FixtureInitCommand extends Command {
   }
 
   /**
+   * Sets the Drupal core version.
+   *
+   * @param string|string[]|bool|null $version
+   *   The version string.
+   * @param string|string[]|bool|null $dev
+   *   The dev flag.
+   */
+  private function setCore($version, $dev): void {
+    if ($dev && !$version) {
+      $version = 'CURRENT_DEV';
+    }
+
+    if (!$version) {
+      return;
+    }
+
+    switch ($version) {
+      case 'PREVIOUS_MINOR':
+        $version = $this->drupalCoreVersionFinder->getPreviousMinorVersion();
+        break;
+
+      case 'CURRENT_RECOMMENDED':
+        $version = $this->drupalCoreVersionFinder->getCurrentRecommendedVersion();
+        break;
+
+      case 'CURRENT_DEV':
+        $version = $this->drupalCoreVersionFinder->getCurrentDevVersion();
+        break;
+
+      case 'LATEST_PRERELEASE':
+        $version = $this->drupalCoreVersionFinder->getLatestPreReleaseVersion();
+        break;
+    }
+    $this->fixtureCreator->setCoreVersion($version);
+  }
+
+  /**
    * Sets the installation profile.
    *
    * @param string|string[]|bool|null $profile
    *   The installation profile.
    */
   private function setProfile($profile): void {
-    if ($profile !== self::DEFAULT_PROFILE) {
+    if ($profile !== FixtureCreator::DEFAULT_PROFILE) {
       $this->fixtureCreator->setProfile($profile);
+    }
+  }
+
+  /**
+   * Sets the site install flag.
+   *
+   * @param string|string[]|bool|null $no_site_install
+   *   The no-site-install flag.
+   */
+  private function setSiteInstall($no_site_install) {
+    if ($no_site_install) {
+      $this->fixtureCreator->setInstallSite(FALSE);
     }
   }
 

@@ -1,8 +1,7 @@
 ---
 language: php
-dist: trusty
 
-# Use the lowest version of PHP supported by Acquia.
+# The lowest version of PHP supported by Acquia.
 php: 7.1
 
 addons:
@@ -15,11 +14,19 @@ cache:
     - "$HOME/.drush/cache"
     - "$TMPDIR/phpstan/cache"
 
+env:
+  global:
+    # Provide your package's name.
+    - ORCA_SUT_NAME=drupal/example
+    # Specify the name of the nearest Git version branch, e.g., 1.x or 8.x-1.x.
+    # This may be the destination branch of a pull request or the nearest
+    # ancestor of a topic branch.
+    - ORCA_SUT_BRANCH=8.x-1.x
+
 # Execution time is drastically reduced by splitting the build into multiple
 # concurrent jobs.
 matrix:
-  # Mark the build as finished as soon as the only remaining jobs are allowed to
-  # fail.
+  # Mark the build as finished once the only remaining jobs are allowed to fail.
   fast_finish: true
   include:
     - { name: "Static code analysis", env: ORCA_JOB=STATIC_CODE_ANALYSIS }
@@ -29,18 +36,27 @@ matrix:
     - { name: "Integrated test w/ recommended package versions", env: ORCA_JOB=INTEGRATED_RECOMMENDED }
     - { name: "Isolated test w/ dev package versions", env: ORCA_JOB=ISOLATED_DEV }
     - { name: "Integrated test w/ dev package versions", env: ORCA_JOB=INTEGRATED_DEV }
+    - { name: "Previous minor version of Drupal core", env: ORCA_JOB=CORE_PREVIOUS }
+    - { name: "Next pre-release of Drupal core", env: ORCA_JOB=CORE_NEXT }
   allow_failures:
     - env: ORCA_JOB=DEPRECATED_CODE_SCAN_SUT
     - env: ORCA_JOB=DEPRECATED_CODE_SCAN_CONTRIB
     - env: ORCA_JOB=ISOLATED_DEV
     - env: ORCA_JOB=INTEGRATED_DEV
+    - env: ORCA_JOB=CORE_NEXT
 
-install:
-  - "git clone --depth 1 https://github.com/acquia/orca.git ../orca"
-  # Install ORCA and prepare the environment.
-  # Supply the topic branch of the SUT to help Composer guess its version.
-  - "../orca/bin/travis/install 8.x-1.x"
+# Install ORCA and prepare the environment.
+before_install:
+  # Clone the master branch for the latest release, develop for the dev HEAD, or
+  # a tag (e.g., v1.0.0) for a specific release.
+  - git clone --branch master --depth 1 https://github.com/acquia/orca.git ../orca
+  - ../orca/bin/travis/before_install.sh
 
-# Run test script.
-# Supply the package name of the SUT.
-script: "../orca/bin/travis/script drupal/example"
+# Create the test fixture and place the SUT.
+install: ../orca/bin/travis/install.sh
+
+# Run the test script.
+script: ../orca/bin/travis/script.sh
+
+# Display debugging information in case of failure.
+after_failure: ../orca/bin/travis/after_failure.sh

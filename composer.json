@@ -35,6 +35,7 @@
         "symfony/finder": "^4.1",
         "symfony/http-kernel": "^4.1",
         "symfony/options-resolver": "^4.2",
+        "symfony/phpunit-bridge": "^4.2",
         "symfony/process": "^4.1",
         "symfony/yaml": "^4.1",
         "weitzman/drupal-test-traits": "~1.0"
@@ -44,7 +45,6 @@
     },
     "require-dev": {
         "brainmaestro/composer-git-hooks": "^2.5",
-        "neronmoon/scriptsdev": "^0.1.3",
         "sensiolabs/security-checker": "^5.0"
     },
     "config": {
@@ -68,19 +68,7 @@
             "bypass-select": true,
             "chromedriver-version": "2.45"
         },
-        "phpcodesniffer-search-depth": 4,
-        "scripts-dev": {
-            "post-install-cmd": [
-                "@auto-scripts"
-            ],
-            "post-update-cmd": [
-                "@auto-scripts"
-            ],
-            "auto-scripts": [
-                "@composer normalize",
-                "vendor/bin/security-checker security:check"
-            ]
-        }
+        "phpcodesniffer-search-depth": 4
     },
     "autoload": {
         "psr-4": {
@@ -94,10 +82,17 @@
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
-    "bin": [
-        "bin/orca"
-    ],
     "scripts": {
+        "post-install-cmd": [
+            "@auto-scripts"
+        ],
+        "post-update-cmd": [
+            "@auto-scripts"
+        ],
+        "auto-scripts": [
+            "[ $COMPOSER_DEV_MODE -eq 0 ] || vendor/bin/composer normalize",
+            "[ $COMPOSER_DEV_MODE -eq 0 ] || vendor/bin/security-checker security:check"
+        ],
         "cghooks": "cghooks --ansi",
         "phpcbf": "phpcbf",
         "phpcs": "phpcs --cache=var/.phpcs-cache",
