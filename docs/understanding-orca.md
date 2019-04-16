@@ -61,14 +61,14 @@ See [Designing automated tests](getting-started.md#designing-automated-tests).
 
 ORCA includes out-of-the-box support for Travis CI for continuous integration. The default implementation runs the following concurrent jobs per build:
 
-| | Static code<br /> analysis | Deprecated<br /> code scan<br /> w/ SUT | Deprecated<br /> code scan w/<br /> dependencies | Integrated/<br /> recommended | Isolated/<br /> recommended | Integrated/<br /> dev | Isolated/<br /> dev |
-| --- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| Fixture type | None | SUT-only | SUT-only | SUT-only | SUT-only | Standard | Standard |
-| Package stability | n/a | Stable | Stable | Stable | Stable | Dev | Dev |
-| Static analysis | :black_circle: | :white_circle: | :white_circle: | :white_circle: | :white_circle: | :white_circle: | :white_circle: |
-| Deprecated code scan | :white_circle: | :black_circle: | :black_circle: | :white_circle: | :white_circle: | :white_circle: | :white_circle: |
-| Automated tests | :white_circle: | :white_circle: | :white_circle: | :black_circle: | :black_circle: | :black_circle: | :black_circle: |
-| Allow failure | :white_circle: | :white_circle: | :white_circle: | :white_circle: | :white_circle: | :black_circle: | :black_circle: |
+| | #1<br /> Static code<br /> analysis | #2<br /> Deprecated<br /> code scan<br /> w/ SUT | #3<br /> Deprecated<br /> code scan w/<br /> dependencies | #4<br /> Integrated/<br /> recommended | #5<br /> Isolated/<br /> recommended | #6<br /> Integrated/<br /> dev | #7<br /> Isolated/<br /> dev | #8<br /> Previous<br /> Drupal core<br /> minor&nbsp;version | #9<br /> Latest<br /> Drupal core<br /> pre-release |
+| --- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| Fixture type | None | SUT-only | SUT-only | SUT-only | SUT-only | Standard | Standard | Standard | Standard |
+| Package stability | n/a | Stable | Stable | Stable | Stable | Dev | Dev | Stable | Dev |
+| Static analysis | :black_circle: | :white_circle: | :white_circle: | :white_circle: | :white_circle: | :white_circle: | :white_circle: | :white_circle: | :white_circle: |
+| Deprecated code scan | :white_circle: | :black_circle: | :black_circle: | :white_circle: | :white_circle: | :white_circle: | :white_circle: | :white_circle: | :white_circle: |
+| Automated tests | :white_circle: | :white_circle: | :white_circle: | :black_circle: | :black_circle: | :black_circle: | :black_circle: | :black_circle: | :black_circle: |
+| Allow failure | :white_circle: | :white_circle: | :white_circle: | :white_circle: | :white_circle: | :black_circle: | :black_circle: | :white_circle: | :black_circle: |
 
 See [Configuring Travis CI](getting-started.md#configuring-travis-ci).
 
