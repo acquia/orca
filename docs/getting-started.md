@@ -49,10 +49,10 @@ Invoke ORCA from the terminal (`bin/orca`). Use the `--help` command option to l
 
 ORCA uses tags (for Behat) and groups (for PHPUnit) to determine which tests to run when, as depicted in the table below, where black indicates a test's being included and white indicates its being ignored:
 
-| | (Default) | `orca_public` | `orca_ignore` |
-| --- | :---: | :---: | :---: |
-| Isolated tests (own) | :black_circle: | :black_circle: | :white_circle: |
-| Integrated tests (own) | :black_circle: | :black_circle: | :white_circle: |
+|                            |    (Default)   |  `orca_public` |  `orca_ignore` |
+|----------------------------|:--------------:|:--------------:|:--------------:|
+| Isolated tests (own)       | :black_circle: | :black_circle: | :white_circle: |
+| Integrated tests (own)     | :black_circle: | :black_circle: | :white_circle: |
 | Integrated tests (others') | :white_circle: | :black_circle: | :white_circle: |
 
 The default behavior is to run a test only when the package providing it is the SUT--not when it is merely included in another package's test fixture. Any test not designated public or ignored is so treated. Such tests are referred to as "private tests". This should be considered the correct choice for most tests--particularly for features that involve little or no risk of conflict with other Acquia packages, including [isolated unit tests](http://wiki.c2.com/?UnitTestIsolation) by definition.
