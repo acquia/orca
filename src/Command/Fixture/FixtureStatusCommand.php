@@ -5,9 +5,8 @@ namespace Acquia\Orca\Command\Fixture;
 use Acquia\Orca\Command\StatusCodes;
 use Acquia\Orca\Fixture\FixtureInspector;
 use Acquia\Orca\Fixture\Fixture;
+use Acquia\Orca\Utility\StatusTable;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Helper\Table;
-use Symfony\Component\Console\Helper\TableStyle;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -69,25 +68,11 @@ class FixtureStatusCommand extends Command {
       return StatusCodes::ERROR;
     }
 
-    (new Table($output))
+    (new StatusTable($output))
       ->setRows($this->fixtureInspector->getOverview())
-      ->setStyle($this->tableStyle())
       ->render();
 
     return StatusCodes::OK;
-  }
-
-  /**
-   * Provides the table style.
-   *
-   * @return \Symfony\Component\Console\Helper\TableStyle
-   *   A TableStyle object.
-   */
-  private function tableStyle(): TableStyle {
-    return (new TableStyle())
-      ->setHorizontalBorderChars('', '-')
-      ->setVerticalBorderChars('', ':')
-      ->setDefaultCrossingChar('');
   }
 
 }
