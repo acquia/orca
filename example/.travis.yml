@@ -1,3 +1,21 @@
+# Example Travis CI configuration.
+#
+# This configuration file will cover ORCA integration for most packages almost
+# without modification. Use as follows:
+#
+# 1. Copy this file to your package root:
+#
+#    $ cp example/.travis.yml ../my_package/.travis.yml
+#
+# 2. Change the values in env.global for your package. No other changes are
+#    strictly necessary for a basic integration.
+#
+# 3. Strip the (now unnecessary) comments:
+#
+#    $ grep -v '^ *#' .travis.yml > .travis.yml
+#
+# For advanced needs,
+# @see https://github.com/acquia/orca/blob/develop/docs/advanced-usage.md
 ---
 language: php
 
@@ -15,6 +33,7 @@ cache:
     - "$TMPDIR/phpstan/cache"
 
 env:
+  # Change the following values for your implementation.
   global:
     # Provide your package's name.
     - ORCA_SUT_NAME=drupal/example
@@ -22,8 +41,9 @@ env:
     # This may be the destination branch of a pull request or the nearest
     # ancestor of a topic branch.
     - ORCA_SUT_BRANCH=8.x-1.x
-    # Use the master branch for the latest release, develop for Dev/HEAD, or a
-    # tag (e.g., v1.0.0) for a specific release.
+    # Specify the version of ORCA to use. Use the master branch for the latest
+    # release, develop for Dev/HEAD, or a tag name (e.g., v1.0.0) for a specific
+    # release.
     - ORCA_VERSION=master
 
 # Execution time is drastically reduced by splitting the build into multiple
@@ -41,8 +61,13 @@ matrix:
     - { name: "Isolated test w/ dev package versions", env: ORCA_JOB=ISOLATED_DEV }
     - { name: "Integrated test w/ dev package versions", env: ORCA_JOB=INTEGRATED_DEV }
     - { name: "Next pre-release of Drupal core", env: ORCA_JOB=CORE_NEXT }
+  # For various reasons, some jobs are allowed to fail without failing the whole
+  # build. They should still be watched for advance notice of future problems.
+  # @see https://docs.travis-ci.com/user/customizing-the-build#rows-that-are-allowed-to-fail
   allow_failures:
+    # Obviously, issues in third party code should not fail a build.
     - env: ORCA_JOB=DEPRECATED_CODE_SCAN_CONTRIB
+    # Dev jobs are allowed to fail due to their inherent instability.
     - env: ORCA_JOB=ISOLATED_DEV
     - env: ORCA_JOB=INTEGRATED_DEV
 
