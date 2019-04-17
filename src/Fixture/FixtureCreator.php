@@ -4,6 +4,7 @@ namespace Acquia\Orca\Fixture;
 
 use Acquia\Orca\Exception\OrcaException;
 use Acquia\Orca\Utility\ProcessRunner;
+use Acquia\Orca\Utility\StatusTable;
 use Acquia\Orca\Utility\SutSettingsTrait;
 use Composer\Config\JsonConfigSource;
 use Composer\Json\JsonFile;
@@ -40,6 +41,13 @@ class FixtureCreator {
    * @var \Acquia\Orca\Fixture\Fixture
    */
   private $fixture;
+
+  /**
+   * The fixture inspector.
+   *
+   * @var \Acquia\Orca\Fixture\FixtureInspector
+   */
+  private $fixtureInspector;
 
   /**
    * The install site flag.
@@ -125,6 +133,8 @@ class FixtureCreator {
    *   The Acquia module enabler.
    * @param \Acquia\Orca\Fixture\Fixture $fixture
    *   The fixture.
+   * @param \Acquia\Orca\Fixture\FixtureInspector $fixture_inspector
+   *   The fixture inspector.
    * @param \Symfony\Component\Console\Style\SymfonyStyle $output
    *   The output decorator.
    * @param \Acquia\Orca\Utility\ProcessRunner $process_runner
@@ -136,9 +146,10 @@ class FixtureCreator {
    * @param \Composer\Package\Version\VersionGuesser $version_guesser
    *   The Composer version guesser.
    */
-  public function __construct(AcquiaModuleEnabler $acquia_module_enabler, Fixture $fixture, SymfonyStyle $output, ProcessRunner $process_runner, PackageManager $package_manager, SubmoduleManager $submodule_manager, VersionGuesser $version_guesser) {
+  public function __construct(AcquiaModuleEnabler $acquia_module_enabler, Fixture $fixture, FixtureInspector $fixture_inspector, SymfonyStyle $output, ProcessRunner $process_runner, PackageManager $package_manager, SubmoduleManager $submodule_manager, VersionGuesser $version_guesser) {
     $this->acquiaModuleEnabler = $acquia_module_enabler;
     $this->fixture = $fixture;
+    $this->fixtureInspector = $fixture_inspector;
     $this->output = $output;
     $this->processRunner = $process_runner;
     $this->packageManager = $package_manager;
@@ -164,6 +175,7 @@ class FixtureCreator {
     $this->installDrupal();
     $this->enableAcquiaModules();
     $this->createAndCheckoutBackupTag();
+    $this->displayStatus();
   }
 
   /**
@@ -791,6 +803,16 @@ PHP;
     $fixture_path = $this->fixture->getPath();
     $this->processRunner->git(['tag', Fixture::FRESH_FIXTURE_GIT_TAG], $fixture_path);
     $this->processRunner->git(['checkout', Fixture::FRESH_FIXTURE_GIT_TAG], $fixture_path);
+  }
+
+  /**
+   * Displays the fixture status.
+   */
+  private function displayStatus() {
+    $this->output->section('Fixture created:');
+    (new StatusTable($this->output))
+      ->setRows($this->fixtureInspector->getOverview())
+      ->render();
   }
 
 }

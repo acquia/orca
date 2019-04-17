@@ -34,6 +34,12 @@ export ORCA_ROOT="$(cd "$(dirname "$BASH_SOURCE")/../.." && pwd)"
 export ORCA_FIXTURE_DIR=${ORCA_FIXTURE_DIR:="${ORCA_ROOT}/../orca-build"}
 export ORCA_SUT_DIR=${ORCA_SUT_DIR:=${TRAVIS_BUILD_DIR}}
 
+# Add binary directories to PATH.
+export PATH="$HOME/.composer/vendor/bin:$PATH"
+export PATH="$ORCA_ROOT/bin:$PATH"
+export PATH="$ORCA_ROOT/vendor/bin:$PATH"
+export PATH="$ORCA_FIXTURE_DIR/vendor/bin:$PATH"
+
 # Exit as soon as one command returns a non-zero exit code and make the shell
 # print all lines in the script before executing them.
 # @see https://docs.travis-ci.com/user/job-lifecycle/#complex-build-commands
