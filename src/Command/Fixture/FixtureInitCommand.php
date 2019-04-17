@@ -9,6 +9,7 @@ use Acquia\Orca\Fixture\PackageManager;
 use Acquia\Orca\Fixture\FixtureRemover;
 use Acquia\Orca\Fixture\Fixture;
 use Acquia\Orca\Utility\DrupalCoreVersionFinder;
+use Composer\Semver\VersionParser;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -18,6 +19,21 @@ use Symfony\Component\Console\Output\OutputInterface;
  * Provides a command.
  */
 class FixtureInitCommand extends Command {
+
+  public const CORE_OPTION_SPECIAL_VALUES = [
+    self::PREVIOUS_MINOR,
+    self::CURRENT_RECOMMENDED,
+    self::CURRENT_DEV,
+    self::LATEST_PRERELEASE,
+  ];
+
+  public const PREVIOUS_MINOR = 'PREVIOUS_MINOR';
+
+  public const CURRENT_RECOMMENDED = 'CURRENT_RECOMMENDED';
+
+  public const CURRENT_DEV = 'CURRENT_DEV';
+
+  public const LATEST_PRERELEASE = 'LATEST_PRERELEASE';
 
   /**
    * The default command name.
@@ -62,6 +78,13 @@ class FixtureInitCommand extends Command {
   private $packageManager;
 
   /**
+   * The version parser.
+   *
+   * @var \Composer\Semver\VersionParser
+   */
+  private $versionParser;
+
+  /**
    * Constructs an instance.
    *
    * @param \Acquia\Orca\Utility\DrupalCoreVersionFinder $drupal_core_version_finder
@@ -74,13 +97,16 @@ class FixtureInitCommand extends Command {
    *   The fixture remover.
    * @param \Acquia\Orca\Fixture\PackageManager $package_manager
    *   The package manager.
+   * @param \Composer\Semver\VersionParser $version_parser
+   *   The version parser.
    */
-  public function __construct(DrupalCoreVersionFinder $drupal_core_version_finder, Fixture $fixture, FixtureCreator $fixture_creator, FixtureRemover $fixture_remover, PackageManager $package_manager) {
+  public function __construct(DrupalCoreVersionFinder $drupal_core_version_finder, Fixture $fixture, FixtureCreator $fixture_creator, FixtureRemover $fixture_remover, PackageManager $package_manager, VersionParser $version_parser) {
     $this->drupalCoreVersionFinder = $drupal_core_version_finder;
-    $this->fixtureCreator = $fixture_creator;
     $this->fixture = $fixture;
-    $this->packageManager = $package_manager;
+    $this->fixtureCreator = $fixture_creator;
     $this->fixtureRemover = $fixture_remover;
+    $this->packageManager = $package_manager;
+    $this->versionParser = $version_parser;
     parent::__construct(self::$defaultName);
   }
 
@@ -96,10 +122,10 @@ class FixtureInitCommand extends Command {
       ->addOption('sut-only', NULL, InputOption::VALUE_NONE, 'Add only the system under test (SUT). Omit all other non-required Acquia packages')
       ->addOption('core', NULL, InputOption::VALUE_REQUIRED, implode(PHP_EOL, [
         'Change the version of Drupal core installed:',
-        '- PREVIOUS_MINOR: The latest stable release of the previous minor version, e.g., "8.5.14" if the current minor version is "8.6"',
-        '- CURRENT_RECOMMENDED: The current recommended release, e.g., "8.6.14"',
-        '- CURRENT_DEV: The current development version, e.g., "8.6.x-dev"',
-        '- LATEST_PRERELEASE: The latest pre-release version, e.g., "8.7.0-beta2". Note: This could be newer OR older than the current recommended release',
+        sprintf('- %s: The latest stable release of the previous minor version, e.g., "8.5.14" if the current minor version is "8.6"', self::PREVIOUS_MINOR),
+        sprintf('- %s: The current recommended release, e.g., "8.6.14"', self::CURRENT_RECOMMENDED),
+        sprintf('- %s: The current development version, e.g., "8.6.x-dev"', self::CURRENT_DEV),
+        sprintf('- %s: The latest pre-release version, e.g., "8.7.0-beta2". Note: This could be newer OR older than the current recommended release', self::LATEST_PRERELEASE),
         '- Any version string Composer understands, see https://getcomposer.org/doc/articles/versions.md',
       ]))
       ->addOption('dev', NULL, InputOption::VALUE_NONE, 'Use dev versions of Acquia packages')
@@ -117,8 +143,9 @@ class FixtureInitCommand extends Command {
   public function execute(InputInterface $input, OutputInterface $output): int {
     $sut = $input->getOption('sut');
     $sut_only = $input->getOption('sut-only');
+    $core = $input->getOption('core');
 
-    if (!$this->isValidInput($sut, $sut_only, $output)) {
+    if (!$this->isValidInput($sut, $sut_only, $core, $output)) {
       return StatusCodes::ERROR;
     }
 
@@ -137,7 +164,7 @@ class FixtureInitCommand extends Command {
     $this->setSut($sut);
     $this->setSutOnly($sut_only);
     $this->setDev($input->getOption('dev'));
-    $this->setCore($input->getOption('core'), $input->getOption('dev'));
+    $this->setCore($core, $input->getOption('dev'));
     $this->setProfile($input->getOption('profile'));
     $this->setSiteInstall($input->getOption('no-site-install'));
     $this->setSqlite($input->getOption('no-sqlite'));
@@ -153,19 +180,29 @@ class FixtureInitCommand extends Command {
   }
 
   /**
-   * Determines whether the command input is valid.
+   * Determines whether or not the command input is valid.
    *
    * @param string|string[]|bool|null $sut
    *   The "sut" option value.
    * @param string|string[]|bool|null $sut_only
    *   The "sut-only" option value.
+   * @param string|string[]|bool|null $core
+   *   The "core" option value.
    * @param \Symfony\Component\Console\Output\OutputInterface $output
    *   The output decorator.
    *
    * @return bool
    *   TRUE if the command input is valid or FALSE if not.
    */
-  private function isValidInput($sut, $sut_only, OutputInterface $output): bool {
+  private function isValidInput($sut, $sut_only, $core, OutputInterface $output): bool {
+    if ($core && !$this->isValidCoreValue($core)) {
+      $output->writeln([
+        sprintf('Error: Invalid value for "--core" option: "%s".', $core),
+        sprintf('Hint: Acceptable values are "%s", "%s", "%s", "%s", or any version string Composer understands.', self::PREVIOUS_MINOR, self::CURRENT_RECOMMENDED, self::CURRENT_DEV, self::LATEST_PRERELEASE),
+      ]);
+      return FALSE;
+    }
+
     if ($sut_only && !$sut) {
       $output->writeln([
         'Error: Cannot create a SUT-only fixture without a SUT.',
@@ -180,6 +217,28 @@ class FixtureInitCommand extends Command {
     }
 
     return TRUE;
+  }
+
+  /**
+   * Determines whether or not the given "core" option value is valid.
+   *
+   * @param string|string[]|bool|null $core
+   *   The "core" option value.
+   *
+   * @return bool
+   *   TRUE if the value is valid or FALSE if not.
+   */
+  private function isValidCoreValue($core): bool {
+    if (in_array($core, self::CORE_OPTION_SPECIAL_VALUES)) {
+      return TRUE;
+    }
+    try {
+      $this->versionParser->parseConstraints($core);
+      return TRUE;
+    }
+    catch (\UnexpectedValueException $e) {
+      return FALSE;
+    }
   }
 
   /**
@@ -228,7 +287,7 @@ class FixtureInitCommand extends Command {
    */
   private function setCore($version, $dev): void {
     if ($dev && !$version) {
-      $version = 'CURRENT_DEV';
+      $version = self::CURRENT_DEV;
     }
 
     if (!$version) {
@@ -236,19 +295,19 @@ class FixtureInitCommand extends Command {
     }
 
     switch ($version) {
-      case 'PREVIOUS_MINOR':
+      case self::PREVIOUS_MINOR:
         $version = $this->drupalCoreVersionFinder->getPreviousMinorVersion();
         break;
 
-      case 'CURRENT_RECOMMENDED':
+      case self::CURRENT_RECOMMENDED:
         $version = $this->drupalCoreVersionFinder->getCurrentRecommendedVersion();
         break;
 
-      case 'CURRENT_DEV':
+      case self::CURRENT_DEV:
         $version = $this->drupalCoreVersionFinder->getCurrentDevVersion();
         break;
 
-      case 'LATEST_PRERELEASE':
+      case self::LATEST_PRERELEASE:
         $version = $this->drupalCoreVersionFinder->getLatestPreReleaseVersion();
         break;
     }
