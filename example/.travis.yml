@@ -12,7 +12,7 @@
 #
 # 3. Strip the (now unnecessary) comments:
 #
-#    $ grep -v '^ *#' .travis.yml > .travis.yml
+#    $ sed -i '' '/^[[:blank:]]*#/d;s/#.*//' .travis.yml
 #
 # For advanced needs,
 # @see https://github.com/acquia/orca/blob/develop/docs/advanced-usage.md
