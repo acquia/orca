@@ -114,7 +114,7 @@ class StaticAnalysisRunCommand extends Command {
       ->setAliases(['analyze'])
       ->setDescription('Runs static analysis tools')
       ->setHelp('Tools can be specified individually or in combination. If none are specified, all will be run.')
-      ->addArgument('path', InputArgument::REQUIRED, 'The path to analyze.')
+      ->addArgument('path', InputArgument::REQUIRED, 'The path to analyze')
       ->addOption('composer', NULL, InputOption::VALUE_NONE, 'Run the Composer validation tool')
       ->addOption('phpcs', NULL, InputOption::VALUE_NONE, 'Run the PHP Code Sniffer tool')
       ->addOption('phplint', NULL, InputOption::VALUE_NONE, 'Run the PHP Lint tool')

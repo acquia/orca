@@ -94,7 +94,7 @@ class DeprecatedCodeScanRunCommand extends Command {
       ->setAliases(['phpstan'])
       ->setDescription('Scans for deprecated code')
       ->addOption('sut', NULL, InputOption::VALUE_REQUIRED, 'Scan the system under test (SUT). Provide its package name, e.g., "drupal/example"')
-      ->addOption('contrib', NULL, InputOption::VALUE_NONE, 'Scan contributed projects.');
+      ->addOption('contrib', NULL, InputOption::VALUE_NONE, 'Scan contributed projects');
   }
 
   /**
