@@ -48,23 +48,23 @@ class StaticAnalysisRunCommandTest extends CommandTestBase {
       ->willReturn($path_exists);
     $this->taskRunner
       ->addTask($this->composerValidate->reveal())
-      ->shouldBeCalledTimes(1)
+      ->shouldBeCalledTimes($run_called)
       ->willReturn($this->taskRunner);
     $this->taskRunner
       ->addTask($this->phpCodeSniffer->reveal())
-      ->shouldBeCalledTimes(1)
+      ->shouldBeCalledTimes($run_called)
       ->willReturn($this->taskRunner);
     $this->taskRunner
       ->addTask($this->phpLint->reveal())
-      ->shouldBeCalledTimes(1)
+      ->shouldBeCalledTimes($run_called)
       ->willReturn($this->taskRunner);
     $this->taskRunner
       ->addTask($this->phpMessDetector->reveal())
-      ->shouldBeCalledTimes(1)
+      ->shouldBeCalledTimes($run_called)
       ->willReturn($this->taskRunner);
     $this->taskRunner
       ->addTask($this->yamlLint->reveal())
-      ->shouldBeCalledTimes(1)
+      ->shouldBeCalledTimes($run_called)
       ->willReturn($this->taskRunner);
     $this->taskRunner
       ->setPath(self::SUT_PATH)
@@ -87,6 +87,45 @@ class StaticAnalysisRunCommandTest extends CommandTestBase {
       [TRUE, 1, StatusCodes::OK, ''],
       [TRUE, 1, StatusCodes::ERROR, ''],
       [FALSE, 0, StatusCodes::ERROR, sprintf("Error: No such path: %s.\n", self::SUT_PATH)],
+    ];
+  }
+
+  /**
+   * @dataProvider providerTaskFiltering
+   */
+  public function testTaskFiltering($args, $task) {
+    $args['path'] = self::SUT_PATH;
+    $this->filesystem
+      ->exists(self::SUT_PATH)
+      ->shouldBeCalledTimes(1)
+      ->willReturn(TRUE);
+    $this->taskRunner
+      ->addTask($this->$task->reveal())
+      ->shouldBeCalledTimes(1)
+      ->willReturn($this->taskRunner);
+    $this->taskRunner
+      ->setPath(self::SUT_PATH)
+      ->shouldBeCalledTimes(1)
+      ->willReturn($this->taskRunner);
+    $this->taskRunner
+      ->run()
+      ->shouldBeCalledTimes(1)
+      ->willReturn(StatusCodes::OK);
+    $tester = $this->createCommandTester();
+
+    $this->executeCommand($tester, StaticAnalysisRunCommand::getDefaultName(), $args);
+
+    $this->assertEquals('', $tester->getDisplay(), 'Displayed correct output.');
+    $this->assertEquals(StatusCodes::OK, $tester->getStatusCode(), 'Returned correct status code.');
+  }
+
+  public function providerTaskFiltering() {
+    return [
+      [['--composer' => 1], 'composerValidate'],
+      [['--phpcs' => 1], 'phpCodeSniffer'],
+      [['--phplint' => 1], 'phpLint'],
+      [['--phpmd' => 1], 'phpMessDetector'],
+      [['--yamllint' => 1], 'yamlLint'],
     ];
   }
 
