@@ -10,7 +10,6 @@
         }
     ],
     "require": {
-        "php": "^7.1",
         "ext-dom": "*",
         "ext-json": "*",
         "ext-sqlite3": "*",
