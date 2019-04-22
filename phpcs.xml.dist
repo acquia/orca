@@ -114,7 +114,7 @@
   <!-- PHP Compatibility sniffs -->
   <!-- Use the lowest version of PHP supported by Drupal.
     @see https://www.drupal.org/docs/8/system-requirements/php-requirements -->
-  <config name="testVersion" value="7.0.8-"/>
+  <config name="testVersion" value="7.1-"/>
   <rule ref="PHPCompatibility"/>
 
   <!-- PHPCS_SecurityAudit sniffs -->
