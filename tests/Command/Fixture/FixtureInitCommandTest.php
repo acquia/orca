@@ -25,28 +25,32 @@ use Symfony\Component\Console\Tester\CommandTester;
  */
 class FixtureInitCommandTest extends CommandTestBase {
 
-  private const CORE_VALUE_LITERAL_PREVIOUS_MINOR = '8.5.14.0';
+  private const CORE_VALUE_LITERAL_PREVIOUS_RELEASE = '8.5.14.0';
 
-  private const CORE_VALUE_LITERAL_RECOMMENDED_VERSION = '8.6.14.0';
+  private const CORE_VALUE_LITERAL_PREVIOUS_DEV = '8.5.x-dev';
 
-  private const CORE_VALUE_LITERAL_DEV_VERSION = '8.6.x-dev';
+  private const CORE_VALUE_LITERAL_CURRENT_RECOMMENDED = '8.6.14.0';
 
-  private const CORE_VALUE_LITERAL_LATEST_PRERELEASE = '8.7.0.0-beta2';
+  private const CORE_VALUE_LITERAL_CURRENT_DEV = '8.6.x-dev';
+
+  private const CORE_VALUE_LITERAL_NEXT_RELEASE = '8.7.0.0-beta2';
+
+  private const CORE_VALUE_LITERAL_NEXT_DEV = '8.7.x-dev';
 
   protected function setUp() {
     $this->drupalCoreVersionFinder = $this->prophesize(DrupalCoreVersionFinder::class);
     $this->drupalCoreVersionFinder
-      ->getPreviousMinorVersion()
-      ->willReturn(self::CORE_VALUE_LITERAL_PREVIOUS_MINOR);
+      ->getPreviousMinorRelease()
+      ->willReturn(self::CORE_VALUE_LITERAL_PREVIOUS_RELEASE);
     $this->drupalCoreVersionFinder
-      ->getCurrentRecommendedVersion()
-      ->willReturn(self::CORE_VALUE_LITERAL_RECOMMENDED_VERSION);
+      ->getCurrentRecommendedRelease()
+      ->willReturn(self::CORE_VALUE_LITERAL_CURRENT_RECOMMENDED);
     $this->drupalCoreVersionFinder
       ->getCurrentDevVersion()
-      ->willReturn(self::CORE_VALUE_LITERAL_DEV_VERSION);
+      ->willReturn(self::CORE_VALUE_LITERAL_CURRENT_DEV);
     $this->drupalCoreVersionFinder
-      ->getLatestPreReleaseVersion()
-      ->willReturn(self::CORE_VALUE_LITERAL_LATEST_PRERELEASE);
+      ->getNextRelease()
+      ->willReturn(self::CORE_VALUE_LITERAL_NEXT_RELEASE);
     $this->fixtureCreator = $this->prophesize(FixtureCreator::class);
     $this->fixtureRemover = $this->prophesize(FixtureRemover::class);
     $this->fixture = $this->prophesize(Fixture::class);
@@ -74,19 +78,19 @@ class FixtureInitCommandTest extends CommandTestBase {
       ->remove()
       ->shouldBeCalledTimes((int) in_array('remove', $methods_called));
     $this->drupalCoreVersionFinder
-      ->getPreviousMinorVersion()
+      ->getPreviousMinorRelease()
       ->shouldBeCalledTimes((int) in_array('getPreviousMinorVersion', $methods_called))
       ->willReturn($drupal_core_version);
     $this->drupalCoreVersionFinder
-      ->getCurrentRecommendedVersion()
+      ->getCurrentRecommendedRelease()
       ->shouldBeCalledTimes((int) in_array('getCurrentRecommendedVersion', $methods_called))
-      ->willReturn(self::CORE_VALUE_LITERAL_RECOMMENDED_VERSION);
+      ->willReturn(self::CORE_VALUE_LITERAL_CURRENT_RECOMMENDED);
     $this->drupalCoreVersionFinder
       ->getCurrentDevVersion()
       ->shouldBeCalledTimes((int) in_array('getCurrentDevVersion', $methods_called))
       ->willReturn($drupal_core_version);
     $this->drupalCoreVersionFinder
-      ->getLatestPreReleaseVersion()
+      ->getNextRelease()
       ->shouldBeCalledTimes((int) in_array('getLatestPreReleaseVersion', $methods_called))
       ->willReturn($drupal_core_version);
     $this->fixtureCreator
@@ -99,7 +103,7 @@ class FixtureInitCommandTest extends CommandTestBase {
       ->setDev(TRUE)
       ->shouldBeCalledTimes((int) in_array('setDev', $methods_called));
     $this->fixtureCreator
-      ->setCoreVersion($drupal_core_version ?: self::CORE_VALUE_LITERAL_RECOMMENDED_VERSION)
+      ->setCoreVersion($drupal_core_version ?: self::CORE_VALUE_LITERAL_CURRENT_RECOMMENDED)
       ->shouldBeCalledTimes((int) in_array('setCoreVersion', $methods_called));
     $this->fixtureCreator
       ->setSqlite(FALSE)
@@ -134,7 +138,7 @@ class FixtureInitCommandTest extends CommandTestBase {
       [FALSE, ['--sut' => self::INVALID_PACKAGE], ['PackageManager::exists'], NULL, 0, StatusCodes::ERROR, sprintf("Error: Invalid value for \"--sut\" option: \"%s\".\n", self::INVALID_PACKAGE)],
       [FALSE, ['--sut' => self::VALID_PACKAGE], ['PackageManager::exists', 'Fixture::exists', 'create', 'setSut'], NULL, 0, StatusCodes::OK, ''],
       [FALSE, ['--sut' => self::VALID_PACKAGE, '--sut-only' => TRUE], ['PackageManager::exists', 'Fixture::exists', 'create', 'setSut', 'setSutOnly'], NULL, 0, StatusCodes::OK, ''],
-      [FALSE, ['--dev' => TRUE], ['Fixture::exists', 'setDev', 'getCurrentDevVersion', 'setCoreVersion', 'create'], self::CORE_VALUE_LITERAL_DEV_VERSION, 0, StatusCodes::OK, ''],
+      [FALSE, ['--dev' => TRUE], ['Fixture::exists', 'setDev', 'getCurrentDevVersion', 'setCoreVersion', 'create'], self::CORE_VALUE_LITERAL_CURRENT_DEV, 0, StatusCodes::OK, ''],
       [FALSE, ['--no-site-install' => TRUE], ['Fixture::exists', 'setInstallSite', 'create'], NULL, 0, StatusCodes::OK, ''],
       [FALSE, ['--no-sqlite' => TRUE], ['Fixture::exists', 'setSqlite', 'create'], NULL, 0, StatusCodes::OK, ''],
       [FALSE, ['--profile' => 'lightning'], ['Fixture::exists', 'setProfile', 'create'], NULL, 0, StatusCodes::OK, ''],
@@ -156,23 +160,31 @@ class FixtureInitCommandTest extends CommandTestBase {
   /**
    * @dataProvider providerCoreOption
    */
-  public function testCoreOption($value, $call_parser, $set_version) {
+  public function testCoreOption($value, $set_version) {
     $this->drupalCoreVersionFinder
-      ->getPreviousMinorVersion()
-      ->shouldBeCalledTimes((int) ($value === FixtureInitCommand::PREVIOUS_MINOR))
-      ->willReturn(self::CORE_VALUE_LITERAL_PREVIOUS_MINOR);
+      ->getPreviousMinorRelease()
+      ->shouldBeCalledTimes((int) ($value === FixtureInitCommand::PREVIOUS_RELEASE))
+      ->willReturn(self::CORE_VALUE_LITERAL_PREVIOUS_RELEASE);
     $this->drupalCoreVersionFinder
-      ->getCurrentRecommendedVersion()
+      ->getPreviousDevVersion()
+      ->shouldBeCalledTimes((int) ($value === FixtureInitCommand::PREVIOUS_DEV))
+      ->willReturn(self::CORE_VALUE_LITERAL_PREVIOUS_DEV);
+    $this->drupalCoreVersionFinder
+      ->getCurrentRecommendedRelease()
       ->shouldBeCalledTimes((int) ($value === FixtureInitCommand::CURRENT_RECOMMENDED))
-      ->willReturn(self::CORE_VALUE_LITERAL_RECOMMENDED_VERSION);
+      ->willReturn(self::CORE_VALUE_LITERAL_CURRENT_RECOMMENDED);
     $this->drupalCoreVersionFinder
       ->getCurrentDevVersion()
       ->shouldBeCalledTimes((int) ($value === FixtureInitCommand::CURRENT_DEV))
-      ->willReturn(self::CORE_VALUE_LITERAL_DEV_VERSION);
+      ->willReturn(self::CORE_VALUE_LITERAL_CURRENT_DEV);
     $this->drupalCoreVersionFinder
-      ->getLatestPreReleaseVersion()
-      ->shouldBeCalledTimes((int) ($value === FixtureInitCommand::LATEST_PRERELEASE))
-      ->willReturn(self::CORE_VALUE_LITERAL_LATEST_PRERELEASE);
+      ->getNextRelease()
+      ->shouldBeCalledTimes((int) ($value === FixtureInitCommand::NEXT_RELEASE))
+      ->willReturn(self::CORE_VALUE_LITERAL_NEXT_RELEASE);
+    $this->drupalCoreVersionFinder
+      ->getNextDevVersion()
+      ->shouldBeCalledTimes((int) ($value === FixtureInitCommand::NEXT_DEV))
+      ->willReturn(self::CORE_VALUE_LITERAL_NEXT_DEV);
     $this->fixtureCreator->setCoreVersion($set_version)
       ->shouldBeCalledTimes(1);
     $this->fixtureCreator
@@ -190,14 +202,16 @@ class FixtureInitCommandTest extends CommandTestBase {
 
   public function providerCoreOption() {
     return [
-      [FixtureInitCommand::PREVIOUS_MINOR, 0, self::CORE_VALUE_LITERAL_PREVIOUS_MINOR],
-      [FixtureInitCommand::CURRENT_RECOMMENDED, 0, self::CORE_VALUE_LITERAL_RECOMMENDED_VERSION],
-      [FixtureInitCommand::CURRENT_DEV, 0, self::CORE_VALUE_LITERAL_DEV_VERSION],
-      [FixtureInitCommand::LATEST_PRERELEASE, 0, self::CORE_VALUE_LITERAL_LATEST_PRERELEASE],
-      [self::CORE_VALUE_LITERAL_PREVIOUS_MINOR, 1, self::CORE_VALUE_LITERAL_PREVIOUS_MINOR],
-      [self::CORE_VALUE_LITERAL_RECOMMENDED_VERSION, 1, self::CORE_VALUE_LITERAL_RECOMMENDED_VERSION],
-      [self::CORE_VALUE_LITERAL_DEV_VERSION, 1, self::CORE_VALUE_LITERAL_DEV_VERSION],
-      [self::CORE_VALUE_LITERAL_LATEST_PRERELEASE, 1, self::CORE_VALUE_LITERAL_LATEST_PRERELEASE],
+      [FixtureInitCommand::PREVIOUS_RELEASE, self::CORE_VALUE_LITERAL_PREVIOUS_RELEASE],
+      [FixtureInitCommand::PREVIOUS_DEV, self::CORE_VALUE_LITERAL_PREVIOUS_DEV],
+      [FixtureInitCommand::CURRENT_RECOMMENDED, self::CORE_VALUE_LITERAL_CURRENT_RECOMMENDED],
+      [FixtureInitCommand::CURRENT_DEV, self::CORE_VALUE_LITERAL_CURRENT_DEV],
+      [FixtureInitCommand::NEXT_RELEASE, self::CORE_VALUE_LITERAL_NEXT_RELEASE],
+      [FixtureInitCommand::NEXT_DEV, self::CORE_VALUE_LITERAL_NEXT_DEV],
+      [self::CORE_VALUE_LITERAL_PREVIOUS_RELEASE, self::CORE_VALUE_LITERAL_PREVIOUS_RELEASE],
+      [self::CORE_VALUE_LITERAL_CURRENT_RECOMMENDED, self::CORE_VALUE_LITERAL_CURRENT_RECOMMENDED],
+      [self::CORE_VALUE_LITERAL_CURRENT_DEV, self::CORE_VALUE_LITERAL_CURRENT_DEV],
+      [self::CORE_VALUE_LITERAL_NEXT_RELEASE, self::CORE_VALUE_LITERAL_NEXT_RELEASE],
     ];
   }
 
@@ -218,12 +232,12 @@ class FixtureInitCommandTest extends CommandTestBase {
 
   public function providerCoreOptionVersionParsing() {
     $error_message = 'Error: Invalid value for "--core" option: "%s".' . PHP_EOL
-      . 'Hint: Acceptable values are "PREVIOUS_MINOR", "CURRENT_RECOMMENDED", "CURRENT_DEV", "LATEST_PRERELEASE", or any version string Composer understands.' . PHP_EOL;
+      . 'Hint: Acceptable values are "PREVIOUS_RELEASE", "PREVIOUS_DEV", "CURRENT_RECOMMENDED", "CURRENT_DEV", "NEXT_RELEASE", "NEXT_DEV", or any version string Composer understands.' . PHP_EOL;
     return [
-      [StatusCodes::OK, self::CORE_VALUE_LITERAL_PREVIOUS_MINOR, ''],
-      [StatusCodes::OK, self::CORE_VALUE_LITERAL_RECOMMENDED_VERSION, ''],
-      [StatusCodes::OK, self::CORE_VALUE_LITERAL_DEV_VERSION, ''],
-      [StatusCodes::OK, self::CORE_VALUE_LITERAL_LATEST_PRERELEASE, ''],
+      [StatusCodes::OK, self::CORE_VALUE_LITERAL_PREVIOUS_RELEASE, ''],
+      [StatusCodes::OK, self::CORE_VALUE_LITERAL_CURRENT_RECOMMENDED, ''],
+      [StatusCodes::OK, self::CORE_VALUE_LITERAL_CURRENT_DEV, ''],
+      [StatusCodes::OK, self::CORE_VALUE_LITERAL_NEXT_RELEASE, ''],
       [StatusCodes::OK, '^1.0', ''],
       [StatusCodes::OK, '~1.0', ''],
       [StatusCodes::OK, '>=1.0', ''],

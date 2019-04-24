@@ -64,10 +64,10 @@ matrix:
     - { name: "Deprecated code scan of SUT plus contrib", env: ORCA_JOB=DEPRECATED_CODE_SCAN_CONTRIB }
     - { name: "Isolated test w/ recommended package versions", env: ORCA_JOB=ISOLATED_RECOMMENDED }
     - { name: "Integrated test w/ recommended package versions", env: ORCA_JOB=INTEGRATED_RECOMMENDED }
-    - { name: "Previous minor version of Drupal core", env: ORCA_JOB=CORE_PREVIOUS }
+    - { name: "Integrated test w/ recommended package versions & previous minor release of Drupal core", env: ORCA_JOB=CORE_PREVIOUS }
     - { name: "Isolated test w/ dev package versions", env: ORCA_JOB=ISOLATED_DEV }
     - { name: "Integrated test w/ dev package versions", env: ORCA_JOB=INTEGRATED_DEV }
-    - { name: "Next pre-release of Drupal core", env: ORCA_JOB=CORE_NEXT }
+    - { name: "Integrated test w/ dev package versions & next minor dev version of Drupal core", env: ORCA_JOB=CORE_NEXT }
   # For various reasons, some jobs are allowed to fail without failing the whole
   # build. They should still be watched for advance notice of future problems.
   # @see https://docs.travis-ci.com/user/customizing-the-build#rows-that-are-allowed-to-fail

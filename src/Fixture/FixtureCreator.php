@@ -350,17 +350,15 @@ class FixtureCreator {
       '--no-update',
     ], $additions), $fixture_path);
 
-    // For Drupal 8.6 or later, replace webflo/drupal-core-require-dev, which
-    // would otherwise be provided by BLT's dev requirements package.
-    if (!$this->drupalCoreVersion || floatval($this->drupalCoreVersion) >= 8.6) {
-      $this->processRunner->runOrcaVendorBin([
-        'composer',
-        'require',
-        '--dev',
-        '--no-update',
-        'webflo/drupal-core-require-dev',
-      ], $fixture_path);
-    }
+    // Replace webflo/drupal-core-require-dev, which would otherwise be provided
+    // by BLT's dev requirements package.
+    $this->processRunner->runOrcaVendorBin([
+      'composer',
+      'require',
+      '--dev',
+      '--no-update',
+      'webflo/drupal-core-require-dev:*',
+    ], $fixture_path);
   }
 
   /**
