@@ -83,15 +83,8 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "scripts": {
-        "post-install-cmd": [
-            "@auto-scripts"
-        ],
         "post-update-cmd": [
-            "@auto-scripts"
-        ],
-        "auto-scripts": [
-            "[ $COMPOSER_DEV_MODE -eq 0 ] || vendor/bin/composer normalize",
-            "[ $COMPOSER_DEV_MODE -eq 0 ] || vendor/bin/security-checker security:check"
+            "@composer normalize"
         ],
         "cghooks": "cghooks --ansi",
         "phpcbf": "phpcbf",
