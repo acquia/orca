@@ -77,7 +77,6 @@ class TaskRunner {
         $task->setPath($this->path)->execute();
       }
       catch (TaskFailureException $e) {
-        $this->output->error($task->statusMessage());
         $status = StatusCodes::ERROR;
       }
     }
