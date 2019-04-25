@@ -1,0 +1,15 @@
+diff --git a/src/Command/NormalizeCommand.php b/src/Command/NormalizeCommand.php
+index c7da965..5ff7df9 100644
+--- a/src/Command/NormalizeCommand.php
++++ b/src/Command/NormalizeCommand.php
+@@ -216,8 +216,8 @@ final class NormalizeCommand extends Command\BaseCommand
+ 
+             $io->write([
+                 '',
+-                '<fg=green>--- original </>',
+-                '<fg=red>+++ normalized </>',
++                '<fg=red>--- original </>',
++                '<fg=green>+++ normalized </>',
+                 '',
+                 '<fg=yellow>---------- begin diff ----------</>',
+             ]);

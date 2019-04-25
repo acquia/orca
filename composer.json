@@ -15,6 +15,7 @@
         "ext-sqlite3": "*",
         "behat/behat": "^3.5",
         "composer/composer": "^1.7",
+        "cweagans/composer-patches": "^1.6",
         "dealerdirect/phpcodesniffer-composer-installer": "^0.5",
         "drupal/coder": "^8.3",
         "hassankhan/config": "^2.0",
@@ -66,6 +67,11 @@
         "lbaey/chromedriver": {
             "bypass-select": true,
             "chromedriver-version": "2.45"
+        },
+        "patches": {
+            "localheinz/composer-normalize": {
+                "Fix reversed red/green colors in --dry-run output until next release": "resources/composer-normalize.patch"
+            }
         },
         "phpcodesniffer-search-depth": 4
     },
