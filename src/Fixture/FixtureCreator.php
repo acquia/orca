@@ -316,7 +316,7 @@ class FixtureCreator {
         'remove',
         '--no-update',
         // The Lightning profile requirement conflicts with individual Lightning
-        // submodule requirements--namely, it prevents them from being symlinked
+        // component requirements--namely, it prevents them from being symlinked
         // via a local "path" repository.
         'acquia/lightning',
       ],
@@ -335,15 +335,20 @@ class FixtureCreator {
       'acquia/blt-require-dev',
     ], $fixture_path);
 
+    // Add Drupal Console as a soft dependency akin to Drush.
+    $additions = ['drupal/console:~1.0'];
+
     // Install a specific version of Drupal core.
     if ($this->drupalCoreVersion) {
-      $this->processRunner->runOrcaVendorBin([
-        'composer',
-        'require',
-        '--no-update',
-        "drupal/core:{$this->drupalCoreVersion}",
-      ], $fixture_path);
+      $additions[] = "drupal/core:{$this->drupalCoreVersion}";
     }
+
+    // Require additional packages.
+    $this->processRunner->runOrcaVendorBin(array_merge([
+      'composer',
+      'require',
+      '--no-update',
+    ], $additions), $fixture_path);
 
     // For Drupal 8.6 or later, replace webflo/drupal-core-require-dev, which
     // would otherwise be provided by BLT's dev requirements package.
