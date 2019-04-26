@@ -15,13 +15,6 @@ use Symfony\Component\Process\Exception\ProcessFailedException;
 class ComposerValidateTask extends TaskBase {
 
   /**
-   * The path to the composer.json being validated.
-   *
-   * @var string|null
-   */
-  private $composerJson;
-
-  /**
    * Whether or not there have been any failures.
    *
    * @var bool
@@ -39,12 +32,16 @@ class ComposerValidateTask extends TaskBase {
    * {@inheritdoc}
    */
   public function execute(): void {
-    /** @var \Symfony\Component\Finder\SplFileInfo $info_file */
-    foreach ($this->getModuleInfoFiles() as $info_file) {
+    /** @var \Symfony\Component\Finder\SplFileInfo $file */
+    foreach ($this->getFiles() as $file) {
       try {
-        $this->getComposerJsonFrom($info_file);
-        $this->validate();
-        $this->normalize();
+        if ($file->getExtension() === 'yml') {
+          $this->checkForMissingComposerJson($file);
+          continue;
+        }
+        $path = realpath($file->getPathname());
+        $this->validate($path);
+        $this->normalize($path);
       }
       catch (OrcaException $e) {
         continue;
@@ -61,43 +58,46 @@ class ComposerValidateTask extends TaskBase {
    * @return \Symfony\Component\Finder\Finder
    *   A Finder query for all module info files.
    */
-  private function getModuleInfoFiles() {
+  private function getFiles() {
     return (new Finder())
       ->files()
       ->followLinks()
       ->in($this->getPath())
       ->notPath(['tests', 'vendor'])
-      ->name('*.info.yml');
+      ->name(['composer.json', '*.info.yml']);
   }
 
   /**
-   * Gets the composer.json file corresponding to the given module info file.
+   * Gets the composer.json file corresponding to the given info file.
    *
    * @param \Symfony\Component\Finder\SplFileInfo $info_file
-   *   A module info file.
+   *   An info file.
    *
    * @throws \Acquia\Orca\Exception\OrcaException
    *   If there is no corresponding composer.json file.
    */
-  private function getComposerJsonFrom(SplFileInfo $info_file) {
-    $this->composerJson = str_replace($info_file->getFilename(), 'composer.json', $info_file->getPathname());
-    if (!$this->filesystem->exists($this->composerJson)) {
+  private function checkForMissingComposerJson(SplFileInfo $info_file) {
+    $composer_json = str_replace($info_file->getFilename(), 'composer.json', $info_file->getPathname());
+    if (!$this->filesystem->exists($composer_json)) {
       $this->failures = TRUE;
-      $this->output->error("Missing required {$this->composerJson}.");
+      $this->output->error("Missing required {$composer_json}.");
       throw new OrcaException();
     }
   }
 
   /**
    * Validates the composer.json file.
+   *
+   * @param string $path
+   *   The absolute path to the file.
    */
-  private function validate(): void {
+  private function validate(string $path): void {
     try {
       $this->processRunner->runOrcaVendorBin([
         'composer',
         '--ansi',
         'validate',
-        $this->composerJson,
+        $path,
       ]);
     }
     catch (ProcessFailedException $e) {
@@ -107,15 +107,20 @@ class ComposerValidateTask extends TaskBase {
 
   /**
    * Tests whether the composer.json file is normalized.
+   *
+   * @param string $path
+   *   The absolute path to the file.
    */
-  private function normalize(): void {
+  private function normalize(string $path): void {
     try {
       $this->processRunner->runOrcaVendorBin([
         'composer',
         '--ansi',
         'normalize',
         '--dry-run',
-        realpath($this->composerJson),
+        $path,
+        // The cwd must be the ORCA project directory in order for Composer to
+        // find the "normalize" command.
       ], $this->projectDir);
     }
     catch (ProcessFailedException $e) {

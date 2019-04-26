@@ -39,6 +39,7 @@ export PATH="$HOME/.composer/vendor/bin:$PATH"
 export PATH="$ORCA_ROOT/bin:$PATH"
 export PATH="$ORCA_ROOT/vendor/bin:$PATH"
 export PATH="$ORCA_FIXTURE_DIR/vendor/bin:$PATH"
+export PATH="$TRAVIS_BUILD_DIR/vendor/bin:$PATH"
 
 # Exit as soon as one command returns a non-zero exit code and make the shell
 # print all lines in the script before executing them.

@@ -11,6 +11,6 @@
 
 cd "$(dirname "$0")"; source _includes.sh
 
-if [[ -f "$ORCA_FIXTURE_DIR/vendor/bin/drush" ]]; then
+if [[ -f "$ORCA_FIXTURE_DIR/vendor/bin/drush" && "$(drush core-status --field=bootstrap)" ]]; then
   drush watchdog:show --count=100 --severity=Error --extended
 fi

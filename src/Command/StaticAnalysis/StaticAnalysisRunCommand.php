@@ -12,6 +12,7 @@ use Acquia\Orca\Task\StaticAnalysisTool\YamlLintTask;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Filesystem\Filesystem;
 
@@ -21,6 +22,13 @@ use Symfony\Component\Filesystem\Filesystem;
 class StaticAnalysisRunCommand extends Command {
 
   /**
+   * The Composer validate task.
+   *
+   * @var \Acquia\Orca\Task\StaticAnalysisTool\ComposerValidateTask
+   */
+  private $composerValidate;
+
+  /**
    * The filesystem.
    *
    * @var \Symfony\Component\Filesystem\Filesystem
@@ -28,11 +36,39 @@ class StaticAnalysisRunCommand extends Command {
   private $filesystem;
 
   /**
+   * The PHP Code Sniffer task.
+   *
+   * @var \Acquia\Orca\Task\StaticAnalysisTool\PhpCodeSnifferTask
+   */
+  private $phpCodeSniffer;
+
+  /**
+   * The PHP lint task.
+   *
+   * @var \Acquia\Orca\Task\StaticAnalysisTool\PhpLintTask
+   */
+  private $phpLint;
+
+  /**
+   * The PHP Mess Detector task.
+   *
+   * @var \Acquia\Orca\Task\StaticAnalysisTool\PhpMessDetectorTask
+   */
+  private $phpMessDetector;
+
+  /**
    * The task runner.
    *
    * @var \Acquia\Orca\Task\TaskRunner
    */
   private $taskRunner;
+
+  /**
+   * The YAML lint task.
+   *
+   * @var \Acquia\Orca\Task\StaticAnalysisTool\YamlLintTask
+   */
+  private $yamlLint;
 
   /**
    * The default command name.
@@ -60,13 +96,13 @@ class StaticAnalysisRunCommand extends Command {
    *   The YAML lint task.
    */
   public function __construct(ComposerValidateTask $composer_validate, Filesystem $filesystem, PhpCodeSnifferTask $php_code_sniffer, PhpLintTask $php_lint, PhpMessDetectorTask $php_mess_detector, TaskRunner $task_runner, YamlLintTask $yaml_lint) {
+    $this->composerValidate = $composer_validate;
     $this->filesystem = $filesystem;
-    $this->taskRunner = $task_runner
-      ->addTask($composer_validate)
-      ->addTask($php_lint)
-      ->addTask($yaml_lint)
-      ->addTask($php_code_sniffer)
-      ->addTask($php_mess_detector);
+    $this->phpCodeSniffer = $php_code_sniffer;
+    $this->phpLint = $php_lint;
+    $this->phpMessDetector = $php_mess_detector;
+    $this->taskRunner = $task_runner;
+    $this->yamlLint = $yaml_lint;
     parent::__construct(self::$defaultName);
   }
 
@@ -77,7 +113,13 @@ class StaticAnalysisRunCommand extends Command {
     $this
       ->setAliases(['analyze'])
       ->setDescription('Runs static analysis tools')
-      ->addArgument('path', InputArgument::REQUIRED, 'The path to analyze.');
+      ->setHelp('Tools can be specified individually or in combination. If none are specified, all will be run.')
+      ->addArgument('path', InputArgument::REQUIRED, 'The path to analyze')
+      ->addOption('composer', NULL, InputOption::VALUE_NONE, 'Run the Composer validation tool')
+      ->addOption('phpcs', NULL, InputOption::VALUE_NONE, 'Run the PHP Code Sniffer tool')
+      ->addOption('phplint', NULL, InputOption::VALUE_NONE, 'Run the PHP Lint tool')
+      ->addOption('phpmd', NULL, InputOption::VALUE_NONE, 'Run the PHP Mess Detector tool')
+      ->addOption('yamllint', NULL, InputOption::VALUE_NONE, 'Run the YAML Lint tool');
   }
 
   /**
@@ -89,9 +131,41 @@ class StaticAnalysisRunCommand extends Command {
       $output->writeln(sprintf('Error: No such path: %s.', $path));
       return StatusCodes::ERROR;
     }
+    $this->configureTaskRunner($input);
     return $this->taskRunner
       ->setPath($path)
       ->run();
+  }
+
+  /**
+   * Configures the task runner.
+   *
+   * @param \Symfony\Component\Console\Input\InputInterface $input
+   *   The command input.
+   */
+  private function configureTaskRunner(InputInterface $input) {
+    $composer = $input->getOption('composer');
+    $phpcs = $input->getOption('phpcs');
+    $phplint = $input->getOption('phplint');
+    $phpmd = $input->getOption('phpmd');
+    $yamllint = $input->getOption('yamllint');
+    $all = !$composer && !$phpcs && !$phplint && !$phpmd && !$yamllint;
+
+    if ($all || $composer) {
+      $this->taskRunner->addTask($this->composerValidate);
+    }
+    if ($all || $phpcs) {
+      $this->taskRunner->addTask($this->phpCodeSniffer);
+    }
+    if ($all || $phplint) {
+      $this->taskRunner->addTask($this->phpLint);
+    }
+    if ($all || $phpmd) {
+      $this->taskRunner->addTask($this->phpMessDetector);
+    }
+    if ($all || $yamllint) {
+      $this->taskRunner->addTask($this->yamlLint);
+    }
   }
 
 }

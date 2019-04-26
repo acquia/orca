@@ -12,14 +12,16 @@
 #
 # 3. Strip the (now unnecessary) comments:
 #
-#    $ grep -v '^ *#' .travis.yml > .travis.yml
+#    $ sed -i '' '/^[[:blank:]]*#/d;s/#.*//' .travis.yml
 #
 # For advanced needs,
 # @see https://github.com/acquia/orca/blob/develop/docs/advanced-usage.md
 ---
 language: php
 
-# The lowest version of PHP supported by Acquia.
+# The lowest version of PHP supported by all of Drupal, Acquia, and ORCA itself.
+# @see https://www.drupal.org/docs/8/system-requirements/php-requirements
+# @see https://docs.acquia.com/acquia-cloud/arch/tech-platform/
 php: 7.1
 
 addons:
@@ -45,6 +47,11 @@ env:
     # release, develop for Dev/HEAD, or a tag name (e.g., v1.0.0) for a specific
     # release.
     - ORCA_VERSION=master
+    # If your package isn't in in ORCA's packages.yml or conflicts with details
+    # that are, you can modify the active packages configuration at runtime by
+    # uncommenting the following line and specifying your own alter file.
+    # @see https://github.com/acquia/orca/blob/master/docs/advanced-usage.md#ORCA_PACKAGES_CONFIG_ALTER
+    # - ORCA_PACKAGES_CONFIG_ALTER=../example/tests/packages_alter.yml
 
 # Execution time is drastically reduced by splitting the build into multiple
 # concurrent jobs.
@@ -53,8 +60,8 @@ matrix:
   fast_finish: true
   include:
     - { name: "Static code analysis", env: ORCA_JOB=STATIC_CODE_ANALYSIS }
-    - { name: "Deprecated code scan w/ SUT", env: ORCA_JOB=DEPRECATED_CODE_SCAN_SUT }
-    - { name: "Deprecated code scan w/ dependencies", env: ORCA_JOB=DEPRECATED_CODE_SCAN_CONTRIB }
+    - { name: "Deprecated code scan of SUT only", env: ORCA_JOB=DEPRECATED_CODE_SCAN_SUT }
+    - { name: "Deprecated code scan of SUT plus contrib", env: ORCA_JOB=DEPRECATED_CODE_SCAN_CONTRIB }
     - { name: "Isolated test w/ recommended package versions", env: ORCA_JOB=ISOLATED_RECOMMENDED }
     - { name: "Integrated test w/ recommended package versions", env: ORCA_JOB=INTEGRATED_RECOMMENDED }
     - { name: "Previous minor version of Drupal core", env: ORCA_JOB=CORE_PREVIOUS }

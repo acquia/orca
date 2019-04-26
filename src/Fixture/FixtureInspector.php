@@ -68,6 +68,7 @@ class FixtureInspector {
     $overview[] = ['Package stability', $this->getPackageStabilitySetting()];
     $overview[] = ['Drupal core version', $this->getInstalledPackageVersion('drupal/core')];
     $overview[] = ['Drush version', $this->getInstalledPackageVersion('drush/drush')];
+    $overview[] = ['Drupal Console version', $this->getInstalledPackageVersion('drupal/console')];
 
     $overview = array_merge($overview, $this->getInstalledPackages());
 

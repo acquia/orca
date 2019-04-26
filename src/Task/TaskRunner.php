@@ -70,16 +70,17 @@ class TaskRunner {
    *   The last task's exit status code.
    */
   public function run(): int {
-    try {
-      foreach ($this->tasks as $task) {
+    $status = StatusCodes::OK;
+    foreach ($this->tasks as $task) {
+      try {
         $this->output->section($task->statusMessage());
         $task->setPath($this->path)->execute();
       }
+      catch (TaskFailureException $e) {
+        $status = StatusCodes::ERROR;
+      }
     }
-    catch (TaskFailureException $e) {
-      return StatusCodes::ERROR;
-    }
-    return StatusCodes::OK;
+    return $status;
   }
 
   /**
