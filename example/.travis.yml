@@ -86,6 +86,9 @@ before_install:
 # Create the test fixture and place the SUT.
 install: ../orca/bin/travis/install.sh
 
+# Display details about the fixture.
+before_script: ../orca/bin/travis/before_script.sh
+
 # Run the test script.
 script: ../orca/bin/travis/script.sh
 

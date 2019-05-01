@@ -46,6 +46,8 @@ install:
   - ../orca/bin/travis/self-test/install.sh
   - ../orca/bin/travis/install.sh
 
+before_script: ../orca/bin/travis/before_script.sh
+
 script:
   - ../orca/bin/travis/self-test/script.sh
   - ../orca/bin/travis/script.sh
