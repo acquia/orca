@@ -46,8 +46,9 @@ drupal/acquia_lift:
 drupal/acquia_purge:
   version_dev: 1.x-dev
 
-#drupal/acsf:
-#  version_dev: "*"
+drupal/acsf:
+  version: ~1.0
+  version_dev: 1.x-dev
 
 acquia/blt:
   type: composer-plugin
