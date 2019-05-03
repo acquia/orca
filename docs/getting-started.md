@@ -49,6 +49,8 @@ Invoke ORCA from the terminal (`bin/orca`). Use the `--help` command option to l
 
 ORCA uses tags (for Behat) and groups (for PHPUnit) to determine which tests to run when, as depicted in the table below, where black indicates a test's being included and white indicates its being ignored:
 
+<!-- https://www.tablesgenerator.com/markdown_tables -->
+
 |                            |    (Default)   |  `orca_public` |  `orca_ignore` |
 |----------------------------|:--------------:|:--------------:|:--------------:|
 | Isolated tests (own)       | :black_circle: | :black_circle: | :white_circle: |

@@ -13,56 +13,69 @@ use Composer\Repository\RepositoryFactory;
 class DrupalCoreVersionFinder {
 
   /**
-   * The current recommended version.
+   * The current recommended release.
    *
    * @var string
    */
-  private $currentRecommendedVersion = '';
+  private $currentRecommendedRelease = '';
 
   /**
-   * The latest pre-release version.
+   * The next release.
    *
    * @var string
    */
-  private $latestPreReleaseVersion = '';
+  private $nextRelease = '';
 
   /**
-   * The previous minor version.
+   * The previous minor release.
    *
    * @var string
    */
-  private $previousMinorVersion = '';
+  private $previousMinorRelease = '';
 
   /**
-   * Gets the previous minor version.
+   * Gets the latest release from the previous minor version.
    *
    * @return string
    *   The version string, e.g., "8.5.14.0".
+   *
+   * @see \Acquia\Orca\Command\Fixture\FixtureInitCommand::PREVIOUS_RELEASE
    */
-  public function getPreviousMinorVersion(): string {
-    if ($this->previousMinorVersion) {
-      return $this->previousMinorVersion;
+  public function getPreviousMinorRelease(): string {
+    if ($this->previousMinorRelease) {
+      return $this->previousMinorRelease;
     }
-    $this->previousMinorVersion = $this->getVersionSelector()
-      ->findBestCandidate('drupal/core', "<{$this->getCurrentMinorVersion()}")
-      ->getVersion();
-    return $this->previousMinorVersion;
+    $this->previousMinorRelease = $this->getCoreVersion("<{$this->getCurrentMinorVersion()}");
+    return $this->previousMinorRelease;
   }
 
   /**
-   * Gets the current recommended version.
+   * Gets the previous minor dev version.
+   *
+   * @return string
+   *   The version string, e.g., "8.5.x-dev".
+   *
+   * @see \Acquia\Orca\Command\Fixture\FixtureInitCommand::PREVIOUS_DEV
+   */
+  public function getPreviousDevVersion(): string {
+    $previous_minor_version = floatval($this->getCurrentMinorVersion()) - 0.1;
+    return "{$previous_minor_version}.x-dev";
+  }
+
+  /**
+   * Gets the current recommended release.
    *
    * @return string
    *   The version string, e.g., "8.6.14.0".
+   *
+   * @see \Acquia\Orca\Command\Fixture\FixtureInitCommand::CURRENT_RECOMMENDED
    */
-  public function getCurrentRecommendedVersion(): string {
-    if ($this->currentRecommendedVersion) {
-      return $this->currentRecommendedVersion;
+  public function getCurrentRecommendedRelease(): string {
+    if ($this->currentRecommendedRelease) {
+      return $this->currentRecommendedRelease;
     }
-    $this->currentRecommendedVersion = $this->getVersionSelector()
-      ->findBestCandidate('drupal/core')
-      ->getVersion();
-    return $this->currentRecommendedVersion;
+    $this->currentRecommendedRelease = $this->getCoreVersion();
+    return $this->currentRecommendedRelease;
   }
 
   /**
@@ -70,6 +83,8 @@ class DrupalCoreVersionFinder {
    *
    * @return string
    *   The version string, e.g., "8.6.x-dev".
+   *
+   * @see \Acquia\Orca\Command\Fixture\FixtureInitCommand::CURRENT_DEV
    */
   public function getCurrentDevVersion(): string {
     return "{$this->getCurrentMinorVersion()}.x-dev";
@@ -80,15 +95,49 @@ class DrupalCoreVersionFinder {
    *
    * @return string
    *   The version string, e.g., "8.7.0.0-beta2".
+   *
+   * @see \Acquia\Orca\Command\Fixture\FixtureInitCommand::NEXT_RELEASE
    */
-  public function getLatestPreReleaseVersion(): string {
-    if ($this->latestPreReleaseVersion) {
-      return $this->latestPreReleaseVersion;
+  public function getNextRelease(): string {
+    if ($this->nextRelease) {
+      return $this->nextRelease;
     }
-    $this->latestPreReleaseVersion = $this->getVersionSelector('alpha')
-      ->findBestCandidate('drupal/core', ">{$this->getCurrentRecommendedVersion()}")
-      ->getVersion();
-    return $this->latestPreReleaseVersion;
+    $this->nextRelease = $this->getCoreVersion(">{$this->getCurrentRecommendedRelease()}", 'alpha');
+    return $this->nextRelease;
+  }
+
+  /**
+   * Gets the next minor dev version.
+   *
+   * @return string
+   *   The version string, e.g., "8.7.x-dev".
+   *
+   * @see \Acquia\Orca\Command\Fixture\FixtureInitCommand::NEXT_DEV
+   */
+  public function getNextDevVersion(): string {
+    $previous_minor_version = floatval($this->getCurrentMinorVersion()) + 0.1;
+    return "{$previous_minor_version}.x-dev";
+  }
+
+  /**
+   * Gets the Drupal core version matching the given criteria.
+   *
+   * @param string|null $target_package_version
+   *   The target package version.
+   * @param string $minimum_stability
+   *   The minimum stability. Available options (in order of stability) are
+   *   dev, alpha, beta, RC, and stable.
+   *
+   * @return string
+   *   The version string.
+   */
+  private function getCoreVersion(string $target_package_version = NULL, string $minimum_stability = 'stable'): string {
+    $best_candidate = $this->getVersionSelector($minimum_stability)
+      ->findBestCandidate('drupal/core', $target_package_version);
+    if (!$best_candidate) {
+      throw new \RuntimeException(sprintf('No Drupal core version satisfies the given constraints: version=%s, minimum stability=%s', $target_package_version, $minimum_stability));
+    }
+    return $best_candidate->getVersion();
   }
 
   /**
@@ -115,7 +164,7 @@ class DrupalCoreVersionFinder {
    *   The version string, e.g., "8.6".
    */
   private function getCurrentMinorVersion(): string {
-    return (string) floatval($this->getCurrentRecommendedVersion());
+    return (string) floatval($this->getCurrentRecommendedRelease());
   }
 
 }

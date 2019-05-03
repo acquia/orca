@@ -21,19 +21,25 @@ use Symfony\Component\Console\Output\OutputInterface;
 class FixtureInitCommand extends Command {
 
   public const CORE_OPTION_SPECIAL_VALUES = [
-    self::PREVIOUS_MINOR,
+    self::PREVIOUS_RELEASE,
+    self::PREVIOUS_DEV,
     self::CURRENT_RECOMMENDED,
     self::CURRENT_DEV,
-    self::LATEST_PRERELEASE,
+    self::NEXT_RELEASE,
+    self::NEXT_DEV,
   ];
 
-  public const PREVIOUS_MINOR = 'PREVIOUS_MINOR';
+  public const PREVIOUS_RELEASE = 'PREVIOUS_RELEASE';
+
+  public const PREVIOUS_DEV = 'PREVIOUS_DEV';
 
   public const CURRENT_RECOMMENDED = 'CURRENT_RECOMMENDED';
 
   public const CURRENT_DEV = 'CURRENT_DEV';
 
-  public const LATEST_PRERELEASE = 'LATEST_PRERELEASE';
+  public const NEXT_RELEASE = 'NEXT_RELEASE';
+
+  public const NEXT_DEV = 'NEXT_DEV';
 
   /**
    * The default command name.
@@ -122,10 +128,12 @@ class FixtureInitCommand extends Command {
       ->addOption('sut-only', NULL, InputOption::VALUE_NONE, 'Add only the system under test (SUT). Omit all other non-required Acquia packages')
       ->addOption('core', NULL, InputOption::VALUE_REQUIRED, implode(PHP_EOL, [
         'Change the version of Drupal core installed:',
-        sprintf('- %s: The latest stable release of the previous minor version, e.g., "8.5.14" if the current minor version is "8.6"', self::PREVIOUS_MINOR),
+        sprintf('- %s: The latest release of the previous minor version, e.g., "8.5.14" if the current minor version is 8.6', self::PREVIOUS_RELEASE),
+        sprintf('- %s: The development version of the previous minor version, e.g., "8.5.x-dev"', self::PREVIOUS_DEV),
         sprintf('- %s: The current recommended release, e.g., "8.6.14"', self::CURRENT_RECOMMENDED),
         sprintf('- %s: The current development version, e.g., "8.6.x-dev"', self::CURRENT_DEV),
-        sprintf('- %s: The latest pre-release version, e.g., "8.7.0-beta2". Note: This could be newer OR older than the current recommended release', self::LATEST_PRERELEASE),
+        sprintf('- %s: The next release version if available, e.g., "8.7.0-beta2"', self::NEXT_RELEASE),
+        sprintf('- %s: The next development version, e.g., "8.7.x-dev"', self::NEXT_DEV),
         '- Any version string Composer understands, see https://getcomposer.org/doc/articles/versions.md',
       ]))
       ->addOption('dev', NULL, InputOption::VALUE_NONE, 'Use dev versions of Acquia packages')
@@ -166,8 +174,8 @@ class FixtureInitCommand extends Command {
     $this->setDev($input->getOption('dev'));
     $this->setCore($core, $input->getOption('dev'));
     $this->setProfile($input->getOption('profile'));
-    $this->setSiteInstall($input->getOption('no-site-install'));
     $this->setSqlite($input->getOption('no-sqlite'));
+    $this->setSiteInstall($input->getOption('no-site-install'));
 
     try {
       $this->fixtureCreator->create();
@@ -198,7 +206,7 @@ class FixtureInitCommand extends Command {
     if ($core && !$this->isValidCoreValue($core)) {
       $output->writeln([
         sprintf('Error: Invalid value for "--core" option: "%s".', $core),
-        sprintf('Hint: Acceptable values are "%s", "%s", "%s", "%s", or any version string Composer understands.', self::PREVIOUS_MINOR, self::CURRENT_RECOMMENDED, self::CURRENT_DEV, self::LATEST_PRERELEASE),
+        sprintf('Hint: Acceptable values are "%s", or any version string Composer understands.', implode('", "', self::CORE_OPTION_SPECIAL_VALUES)),
       ]);
       return FALSE;
     }
@@ -295,20 +303,28 @@ class FixtureInitCommand extends Command {
     }
 
     switch ($version) {
-      case self::PREVIOUS_MINOR:
-        $version = $this->drupalCoreVersionFinder->getPreviousMinorVersion();
+      case self::PREVIOUS_RELEASE:
+        $version = $this->drupalCoreVersionFinder->getPreviousMinorRelease();
+        break;
+
+      case self::PREVIOUS_DEV:
+        $version = $this->drupalCoreVersionFinder->getPreviousDevVersion();
         break;
 
       case self::CURRENT_RECOMMENDED:
-        $version = $this->drupalCoreVersionFinder->getCurrentRecommendedVersion();
+        $version = $this->drupalCoreVersionFinder->getCurrentRecommendedRelease();
         break;
 
       case self::CURRENT_DEV:
         $version = $this->drupalCoreVersionFinder->getCurrentDevVersion();
         break;
 
-      case self::LATEST_PRERELEASE:
-        $version = $this->drupalCoreVersionFinder->getLatestPreReleaseVersion();
+      case self::NEXT_RELEASE:
+        $version = $this->drupalCoreVersionFinder->getNextRelease();
+        break;
+
+      case self::NEXT_DEV:
+        $version = $this->drupalCoreVersionFinder->getNextDevVersion();
         break;
     }
     $this->fixtureCreator->setCoreVersion($version);

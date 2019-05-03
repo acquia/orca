@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # NAME
-#     script.sh - Run ORCA tests
+#     script.sh - Run ORCA tests.
 #
 # SYNOPSIS
 #     script.sh

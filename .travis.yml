@@ -29,14 +29,14 @@ matrix:
   fast_finish: true
   include:
     - { name: "Static code analysis", env: ORCA_JOB=STATIC_CODE_ANALYSIS }
-    - { name: "Deprecated code scan w/ SUT", env: ORCA_JOB=DEPRECATED_CODE_SCAN_SUT }
-    - { name: "Deprecated code scan w/ dependencies", env: ORCA_JOB=DEPRECATED_CODE_SCAN_CONTRIB }
+    - { name: "Deprecated code scan of SUT only", env: ORCA_JOB=DEPRECATED_CODE_SCAN_SUT }
+    - { name: "Deprecated code scan of SUT plus contrib", env: ORCA_JOB=DEPRECATED_CODE_SCAN_CONTRIB }
     - { name: "Isolated test w/ recommended package versions", env: ORCA_JOB=ISOLATED_RECOMMENDED }
     - { name: "Integrated test w/ recommended package versions", env: ORCA_JOB=INTEGRATED_RECOMMENDED }
-    - { name: "Previous minor version of Drupal core", env: ORCA_JOB=CORE_PREVIOUS }
+    - { name: "Integrated test w/ recommended package versions & previous minor release of Drupal core", env: ORCA_JOB=CORE_PREVIOUS }
     - { name: "Isolated test w/ dev package versions", env: ORCA_JOB=ISOLATED_DEV }
     - { name: "Integrated test w/ dev package versions", env: ORCA_JOB=INTEGRATED_DEV }
-    - { name: "Next pre-release of Drupal core", env: ORCA_JOB=CORE_NEXT }
+    - { name: "Integrated test w/ dev package versions & next minor dev version of Drupal core", env: ORCA_JOB=CORE_NEXT }
   allow_failures:
     - env: ORCA_JOB=DEPRECATED_CODE_SCAN_CONTRIB
 
@@ -45,6 +45,8 @@ before_install: ../orca/bin/travis/before_install.sh
 install:
   - ../orca/bin/travis/self-test/install.sh
   - ../orca/bin/travis/install.sh
+
+before_script: ../orca/bin/travis/before_script.sh
 
 script:
   - ../orca/bin/travis/self-test/script.sh

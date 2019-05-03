@@ -11,6 +11,9 @@
 
 cd "$(dirname "$0")"; source _includes.sh
 
+# Display the Google Chrome version.
+google-chrome-stable --version
+
 # Disable Xdebug.
 phpenv config-rm xdebug.ini
 

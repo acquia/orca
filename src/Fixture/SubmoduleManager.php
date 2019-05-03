@@ -186,7 +186,7 @@ class SubmoduleManager {
       ->files()
       ->followLinks()
       ->in($paths)
-      ->depth('> 1')
+      ->depth('> 0')
       ->exclude([
         // Ignore package vendor directories. (These should never exist on CI.
         // This is mostly for local development.)
