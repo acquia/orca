@@ -15,8 +15,11 @@
 #   place. Defaults to a directory adjacent to the fixture root named the
 #   Composer project name, e.g., "../example" for a "drupal/example" project.
 # - "version": (optional) The recommended package version to require via
-#   Composer. Defaults to "*".
+#   Composer. Defaults to "*". Any version string Composer understands is
+#   acceptable. @see https://getcomposer.org/doc/articles/versions.md
 # - "version_dev": (required) The dev package version to require via Composer.
+#   Any version string Composer understands is acceptable.
+#   @see https://getcomposer.org/doc/articles/versions.md
 # - "enable": (internal) TRUE if the package is a Drupal module that should be
 #   automatically enabled or FALSE if not. Defaults to TRUE for modules. Always
 #   FALSE for anything else.
@@ -72,23 +75,23 @@ acquia/drupal-spec-tool:
 
 drupal/lightning_api:
   url: ../lightning-api
-  version_dev: '>=3.x-dev'
+  version_dev: '3.x-dev || 4.x-dev'
 
 drupal/lightning_core:
   url: ../lightning-core
-  version_dev: '>=3.x-dev'
+  version_dev: '3.x-dev || 4.x-dev'
 
 drupal/lightning_layout:
   url: ../lightning-layout
-  version_dev: '>=1.x-dev'
+  version_dev: '1.x-dev || 2.x-dev'
 
 drupal/lightning_media:
   url: ../lightning-media
-  version_dev: '>=3.x-dev'
+  version_dev: '3.x-dev || 4.x-dev'
 
 drupal/lightning_workflow:
   url: ../lightning-workflow
-  version_dev: '>=2.x-dev'
+  version_dev: '2.x-dev || 3.x-dev'
 
 #drupal/media_acquiadam:
 #  version_dev: 1.x-dev
