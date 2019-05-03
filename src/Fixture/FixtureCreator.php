@@ -335,8 +335,15 @@ class FixtureCreator {
       'acquia/blt-require-dev',
     ], $fixture_path);
 
+    $additions = [];
+
+    // Install the dev version of Drush.
+    if ($this->isDev) {
+      $additions[] = 'drush/drush:dev-master';
+    }
+
     // Add Drupal Console as a soft dependency akin to Drush.
-    $additions = ['drupal/console:~1.0'];
+    $additions[] = 'drupal/console:~1.0';
 
     // Install a specific version of Drupal core.
     if ($this->drupalCoreVersion) {
