@@ -87,7 +87,7 @@ drupal/lightning_layout:
 
 drupal/lightning_media:
   url: ../lightning-media
-  version_dev: '3.x-dev || 4.x-dev'
+  version_dev: '3.x-dev'
 
 drupal/lightning_workflow:
   url: ../lightning-workflow
