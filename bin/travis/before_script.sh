@@ -18,6 +18,9 @@ cd "$(dirname "$0")"; source _includes.sh
 # Display installed Composer packages.
 composer -d${ORCA_FIXTURE_DIR} show
 
+# Display outdated Composer packages information.
+composer -d${ORCA_FIXTURE_DIR} outdated
+
 # Display the list of available Drupal extensions (modules and themes).
 drush --no-ansi pm:list || true
 
