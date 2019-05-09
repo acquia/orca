@@ -28,3 +28,5 @@ assert_env_vars
 [[ "$ORCA_JOB" != "INTEGRATED_DEV" ]] || orca fixture:init -f --sut=${ORCA_SUT_NAME} --dev
 
 [[ "$ORCA_JOB" != "CORE_NEXT" ]] || orca fixture:init -f --sut=${ORCA_SUT_NAME} --core=NEXT_DEV --dev
+
+[[ "$ORCA_JOB" != "CUSTOM" ]] || orca fixture:init -f --sut=${ORCA_SUT_NAME} ${ORCA_CUSTOM_FIXTURE_INIT_ARGS:=}

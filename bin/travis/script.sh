@@ -32,3 +32,5 @@ assert_env_vars
 [[ "$ORCA_JOB" != "INTEGRATED_DEV" ]] || orca tests:run --sut=${ORCA_SUT_NAME}
 
 [[ "$ORCA_JOB" != "CORE_NEXT" ]] || orca tests:run --sut=${ORCA_SUT_NAME}
+
+[[ "$ORCA_JOB" != "CUSTOM" ]] || orca tests:run --sut=${ORCA_SUT_NAME} ${ORCA_CUSTOM_TESTS_RUN_ARGS:=}
