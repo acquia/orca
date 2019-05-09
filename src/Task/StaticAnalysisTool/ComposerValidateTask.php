@@ -118,6 +118,8 @@ class ComposerValidateTask extends TaskBase {
         '--ansi',
         'normalize',
         '--dry-run',
+        '--indent-size=4',
+        '--indent-style=space',
         $path,
         // The cwd must be the ORCA project directory in order for Composer to
         // find the "normalize" command.
