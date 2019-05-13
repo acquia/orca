@@ -60,8 +60,7 @@ matrix:
   fast_finish: true
   include:
     - { stage: "Fast tests", name: "Static code analysis", env: ORCA_JOB=STATIC_CODE_ANALYSIS }
-    - { stage: "All tests", name: "Deprecated code scan of SUT only", env: ORCA_JOB=DEPRECATED_CODE_SCAN_SUT }
-    - { name: "Deprecated code scan of SUT plus contrib", env: ORCA_JOB=DEPRECATED_CODE_SCAN_CONTRIB }
+    - { stage: "All tests", name: "Deprecated code scan", env: ORCA_JOB=DEPRECATED_CODE_SCAN_SUT }
     - { name: "Isolated test w/ recommended package versions", env: ORCA_JOB=ISOLATED_RECOMMENDED }
     - { name: "Integrated test w/ recommended package versions", env: ORCA_JOB=INTEGRATED_RECOMMENDED }
     - { name: "Integrated test w/ recommended package versions & previous minor release of Drupal core", env: ORCA_JOB=CORE_PREVIOUS }
@@ -72,8 +71,6 @@ matrix:
   # build. They should still be watched for advance notice of future problems.
   # @see https://docs.travis-ci.com/user/customizing-the-build#rows-that-are-allowed-to-fail
   allow_failures:
-    # Obviously, issues in third party code should not fail a build.
-    - env: ORCA_JOB=DEPRECATED_CODE_SCAN_CONTRIB
     # Dev jobs are allowed to fail due to their inherent instability.
     - env: ORCA_JOB=ISOLATED_DEV
     - env: ORCA_JOB=INTEGRATED_DEV

@@ -15,7 +15,7 @@ assert_env_vars
 
 [[ "$ORCA_JOB" != "DEPRECATED_CODE_SCAN_SUT" ]] || orca fixture:init -f --sut=${ORCA_SUT_NAME} --sut-only --no-site-install
 
-[[ "$ORCA_JOB" != "DEPRECATED_CODE_SCAN_CONTRIB" ]] || orca fixture:init -f --sut=${ORCA_SUT_NAME} --sut-only --no-site-install
+[[ "$ORCA_JOB" != "DEPRECATED_CODE_SCAN_CONTRIB" ]] || orca fixture:init -f --no-site-install
 
 [[ "$ORCA_JOB" != "ISOLATED_RECOMMENDED" ]] || orca fixture:init -f --sut=${ORCA_SUT_NAME} --sut-only
 
