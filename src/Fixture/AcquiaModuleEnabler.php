@@ -115,7 +115,7 @@ class AcquiaModuleEnabler {
     $module_list = $this->getAcquiaModuleList();
     $this->processRunner->runFixtureVendorBin(array_merge([
       'drush',
-      'pm-enable',
+      'pm:enable',
       '--yes',
     ], $module_list));
   }

@@ -771,7 +771,7 @@ PHP;
     $this->output->section('Installing Drupal');
     $this->processRunner->runFixtureVendorBin([
       'drush',
-      'site-install',
+      'site:install',
       $this->profile,
       "install_configure_form.update_status_module='[FALSE,FALSE]'",
       'install_configure_form.enable_update_status_module=NULL',
