@@ -15,7 +15,7 @@ function assert {
   if [[ ! "$1" ]]; then
     RED="\033[1;31m"
     NO_COLOR="\033[0m"
-    echo -e "\n${RED}Error: $2${NO_COLOR}\n"
+    echo "\n${RED}Error: $2${NO_COLOR}\n"
     exit 1
   fi
 }
