@@ -22,11 +22,11 @@ class FixtureCreator {
   const DEFAULT_PROFILE = 'minimal';
 
   /**
-   * The Acquia module enabler.
+   * The Acquia extension enabler.
    *
-   * @var \Acquia\Orca\Fixture\AcquiaModuleEnabler
+   * @var \Acquia\Orca\Fixture\AcquiaExtensionEnabler
    */
-  private $acquiaModuleEnabler;
+  private $acquiaExtensionEnabler;
 
   /**
    * The Drupal core version override.
@@ -129,8 +129,8 @@ class FixtureCreator {
   /**
    * Constructs an instance.
    *
-   * @param \Acquia\Orca\Fixture\AcquiaModuleEnabler $acquia_module_enabler
-   *   The Acquia module enabler.
+   * @param \Acquia\Orca\Fixture\AcquiaExtensionEnabler $acquia_extension_enabler
+   *   The Acquia extension enabler.
    * @param \Acquia\Orca\Fixture\Fixture $fixture
    *   The fixture.
    * @param \Acquia\Orca\Fixture\FixtureInspector $fixture_inspector
@@ -146,8 +146,8 @@ class FixtureCreator {
    * @param \Composer\Package\Version\VersionGuesser $version_guesser
    *   The Composer version guesser.
    */
-  public function __construct(AcquiaModuleEnabler $acquia_module_enabler, Fixture $fixture, FixtureInspector $fixture_inspector, SymfonyStyle $output, ProcessRunner $process_runner, PackageManager $package_manager, SubmoduleManager $submodule_manager, VersionGuesser $version_guesser) {
-    $this->acquiaModuleEnabler = $acquia_module_enabler;
+  public function __construct(AcquiaExtensionEnabler $acquia_extension_enabler, Fixture $fixture, FixtureInspector $fixture_inspector, SymfonyStyle $output, ProcessRunner $process_runner, PackageManager $package_manager, SubmoduleManager $submodule_manager, VersionGuesser $version_guesser) {
+    $this->acquiaExtensionEnabler = $acquia_extension_enabler;
     $this->fixture = $fixture;
     $this->fixtureInspector = $fixture_inspector;
     $this->output = $output;
@@ -173,7 +173,7 @@ class FixtureCreator {
     $this->installCloudHooks();
     $this->ensureDrupalSettings();
     $this->installDrupal();
-    $this->enableAcquiaModules();
+    $this->enableAcquiaExtensions();
     $this->createAndCheckoutBackupTag();
     $this->displayStatus();
   }
@@ -786,23 +786,23 @@ PHP;
   }
 
   /**
-   * Enables the Acquia Drupal modules.
+   * Enables the Acquia Drupal extensions.
    *
    * @throws \Exception
    */
-  private function enableAcquiaModules(): void {
+  private function enableAcquiaExtensions(): void {
     if (!$this->installSite) {
       return;
     }
 
-    if ($this->isSutOnly && ($this->sut->getType() !== 'drupal-module')) {
-      // No modules to enable because the fixture is SUT-only and the SUT is not
-      // a Drupal module.
+    if ($this->isSutOnly && !$this->acquiaExtensionEnabler->isExtension($this->sut)) {
+      // No extensions to enable because the fixture is SUT-only and the SUT is
+      // not a Drupal extension.
       return;
     }
 
-    $this->acquiaModuleEnabler->enable();
-    $this->commitCodeChanges('Enabled Acquia modules.');
+    $this->acquiaExtensionEnabler->enable();
+    $this->commitCodeChanges('Enabled Acquia extensions.');
   }
 
   /**

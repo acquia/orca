@@ -8,11 +8,15 @@ use Acquia\Orca\Utility\SutSettingsTrait;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
- * Installs Acquia Drupal modules.
+ * Installs Acquia Drupal extensions.
  */
-class AcquiaModuleEnabler {
+class AcquiaExtensionEnabler {
 
   use SutSettingsTrait;
+
+  private const TYPE_MODULE = 'drupal-module';
+
+  private const TYPE_THEME = 'drupal-theme';
 
   /**
    * The config loader.
@@ -82,13 +86,30 @@ class AcquiaModuleEnabler {
   }
 
   /**
-   * Enables modules.
+   * Enables extensions.
    *
    * @throws \Exception
    */
   public function enable(): void {
     $this->getSutSettingsFromFixture();
-    $this->enableAcquiaModules();
+    $this->enableAcquiaExtensions();
+  }
+
+  /**
+   * Determines whether or not a given package is a Drupal extension.
+   *
+   * @param \Acquia\Orca\Fixture\Package $package
+   *   The package.
+   *
+   * @return bool
+   *   Returns TRUE if the package is a Drupal extension, or FALSE if not.
+   */
+  public function isExtension(Package $package): bool {
+    $extension_types = [
+      'drupal-module',
+      'drupal-theme',
+    ];
+    return in_array($package->getType(), $extension_types);
   }
 
   /**
@@ -103,16 +124,27 @@ class AcquiaModuleEnabler {
   }
 
   /**
-   * Enables the Acquia modules.
+   * Enables the Acquia extensions.
    */
-  private function enableAcquiaModules(): void {
-    if ($this->isSutOnly && ($this->sut->getType() !== 'drupal-module')) {
-      $this->output->warning('No modules to enable because the fixture is SUT-only and the SUT is not a Drupal module');
+  private function enableAcquiaExtensions(): void {
+    if ($this->isSutOnly && !$this->isExtension($this->sut)) {
+      $this->output->warning('No extensions to enable because the fixture is SUT-only and the SUT is not a Drupal extension');
       return;
     }
 
-    $this->output->section('Enabling Acquia modules');
-    $module_list = $this->getAcquiaModuleList();
+    $this->output->section('Enabling Acquia modules & themes');
+    $this->enableModules();
+    $this->enableThemes();
+  }
+
+  /**
+   * Enables the Acquia modules.
+   */
+  private function enableModules(): void {
+    $module_list = $this->getAcquiaExtensionList(self::TYPE_MODULE);
+    if (!$module_list) {
+      return;
+    }
     $this->processRunner->runFixtureVendorBin(array_merge([
       'drush',
       'pm:enable',
@@ -121,13 +153,31 @@ class AcquiaModuleEnabler {
   }
 
   /**
-   * Gets the list of Acquia modules to enable.
+   * Enables the Acquia themes.
+   */
+  private function enableThemes(): void {
+    $theme_list = $this->getAcquiaExtensionList(self::TYPE_THEME);
+    if (!$theme_list) {
+      return;
+    }
+    $this->processRunner->runFixtureVendorBin(array_merge([
+      'drush',
+      'theme:enable',
+      '--yes',
+    ], $theme_list));
+  }
+
+  /**
+   * Gets the list of Acquia extensions to enable.
+   *
+   * @param string $extension_type
+   *   The extension type: ::TYPE_MODULE or ::TYPE_THEME.
    *
    * @return string[]
-   *   An indexed array of Acquia module machine names.
+   *   An indexed array of Acquia extension machine names.
    */
-  private function getAcquiaModuleList(): array {
-    $module_list = [];
+  private function getAcquiaExtensionList(string $extension_type): array {
+    $extension_list = [];
 
     $top_level_packages = $this->packageManager->getMultiple();
     if ($this->isSutOnly) {
@@ -135,19 +185,23 @@ class AcquiaModuleEnabler {
     }
 
     foreach ($top_level_packages as $package) {
-      if ($package->getType() === 'drupal-module') {
-        $module_list[] = $package->getProjectName();
+      if ($package->getType() === $extension_type) {
+        $extension_list[] = $package->getProjectName();
+      }
+
+      if ($extension_type !== self::TYPE_MODULE) {
+        continue;
       }
 
       foreach ($this->submoduleManager->getByParent($package) as $submodule) {
         if (!$submodule->shouldGetEnabled()) {
           continue;
         }
-        $module_list[] = $submodule->getProjectName();
+        $extension_list[] = $submodule->getProjectName();
       }
     }
 
-    return $module_list;
+    return $extension_list;
   }
 
 }

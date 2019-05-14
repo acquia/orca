@@ -22,7 +22,7 @@ composer -d${ORCA_FIXTURE_DIR} show
 composer -d${ORCA_FIXTURE_DIR} outdated
 
 # Display the list of available Drupal extensions (modules and themes).
-drush --no-ansi pm:list || true
+drush --no-ansi pm:list --fields=package,display_name,type,status,version || true
 
 # Display basic Drupal site details.
 drush core-status

@@ -3,7 +3,7 @@
 namespace Acquia\Orca\Command\Fixture;
 
 use Acquia\Orca\Command\StatusCodes;
-use Acquia\Orca\Fixture\AcquiaModuleEnabler;
+use Acquia\Orca\Fixture\AcquiaExtensionEnabler;
 use Acquia\Orca\Fixture\Fixture;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -12,21 +12,21 @@ use Symfony\Component\Console\Output\OutputInterface;
 /**
  * Provides a command.
  */
-class FixtureEnableModulesCommand extends Command {
+class FixtureEnableExtensionsCommand extends Command {
 
   /**
    * The default command name.
    *
    * @var string
    */
-  protected static $defaultName = 'fixture:enable-modules';
+  protected static $defaultName = 'fixture:enable-extensions';
 
   /**
-   * The Acquia module enabler.
+   * The Acquia extension enabler.
    *
-   * @var \Acquia\Orca\Fixture\AcquiaModuleEnabler
+   * @var \Acquia\Orca\Fixture\AcquiaExtensionEnabler
    */
-  private $acquiaModuleEnabler;
+  private $acquiaExtensionEnabler;
 
   /**
    * The fixture.
@@ -38,13 +38,13 @@ class FixtureEnableModulesCommand extends Command {
   /**
    * Constructs an instance.
    *
-   * @param \Acquia\Orca\Fixture\AcquiaModuleEnabler $acquia_module_enabler
-   *   The Acquia module enabler.
+   * @param \Acquia\Orca\Fixture\AcquiaExtensionEnabler $acquia_extension_enabler
+   *   The Acquia extension enabler.
    * @param \Acquia\Orca\Fixture\Fixture $fixture
    *   The fixture.
    */
-  public function __construct(AcquiaModuleEnabler $acquia_module_enabler, Fixture $fixture) {
-    $this->acquiaModuleEnabler = $acquia_module_enabler;
+  public function __construct(AcquiaExtensionEnabler $acquia_extension_enabler, Fixture $fixture) {
+    $this->acquiaExtensionEnabler = $acquia_extension_enabler;
     $this->fixture = $fixture;
     parent::__construct(self::$defaultName);
   }
@@ -54,8 +54,13 @@ class FixtureEnableModulesCommand extends Command {
    */
   protected function configure() {
     $this
-      ->setAliases(['enmods'])
-      ->setDescription('Enables all Acquia modules');
+      ->setAliases([
+        'extensions',
+        // Backward compatibility alias.
+        // @todo Remove this once Lightning no longer uses it.
+        'fixture:enable-modules',
+      ])
+      ->setDescription('Enables all Acquia Drupal extensions');
   }
 
   /**
@@ -68,7 +73,7 @@ class FixtureEnableModulesCommand extends Command {
     }
 
     try {
-      $this->acquiaModuleEnabler->enable();
+      $this->acquiaExtensionEnabler->enable();
     }
     catch (\Exception $e) {
       return StatusCodes::ERROR;
