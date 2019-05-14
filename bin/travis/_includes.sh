@@ -34,7 +34,6 @@ assert "$TRAVIS" "This script is meant to run on Travis CI only."
 # Set environment variables.
 export ORCA_ROOT="$(cd "$(dirname "$BASH_SOURCE")/../.." && pwd)"
 export ORCA_FIXTURE_DIR=${ORCA_FIXTURE_DIR:="${ORCA_ROOT}/../orca-build"}
-export ORCA_FIXTURE_DOCROOT=${ORCA_FIXTURE_DIR}/docroot
 export ORCA_SUT_DIR=${ORCA_SUT_DIR:=${TRAVIS_BUILD_DIR}}
 
 # Add binary directories to PATH.
@@ -45,7 +44,7 @@ export PATH="$ORCA_FIXTURE_DIR/vendor/bin:$PATH"
 export PATH="$TRAVIS_BUILD_DIR/vendor/bin:$PATH"
 
 # Add convenient aliases.
-alias drush="drush -r ${ORCA_FIXTURE_DOCROOT}"
+alias drush="drush -r ${ORCA_FIXTURE_DIR}"
 
 # Exit as soon as one command returns a non-zero exit code and make the shell
 # print all lines in the script before executing them.
