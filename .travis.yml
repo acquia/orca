@@ -28,8 +28,8 @@ env:
 matrix:
   fast_finish: true
   include:
-    - { stage: "Fast tests", name: "Static code analysis", env: ORCA_JOB=STATIC_CODE_ANALYSIS }
-    - { stage: "All tests", name: "Deprecated code scan of SUT", env: ORCA_JOB=DEPRECATED_CODE_SCAN_SUT }
+    - { name: "Static code analysis", env: ORCA_JOB=STATIC_CODE_ANALYSIS }
+    - { name: "Deprecated code scan of SUT", env: ORCA_JOB=DEPRECATED_CODE_SCAN_SUT }
     - { name: "Deprecated code scan of contrib", env: ORCA_JOB=DEPRECATED_CODE_SCAN_CONTRIB ORCA_PACKAGES_CONFIG=config/packages.yml ORCA_PACKAGES_CONFIG_ALTER= }
     - { name: "Isolated test w/ recommended package versions", env: ORCA_JOB=ISOLATED_RECOMMENDED }
     - { name: "Integrated test w/ recommended package versions", env: ORCA_JOB=INTEGRATED_RECOMMENDED }
