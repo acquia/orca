@@ -54,11 +54,11 @@ class AcquiaExtensionEnabler {
   private $packageManager;
 
   /**
-   * The submodule manager.
+   * The subextension manager.
    *
-   * @var \Acquia\Orca\Fixture\SubmoduleManager
+   * @var \Acquia\Orca\Fixture\SubextensionManager
    */
-  private $submoduleManager;
+  private $subextensionManager;
 
   /**
    * Constructs an instance.
@@ -73,16 +73,16 @@ class AcquiaExtensionEnabler {
    *   The process runner.
    * @param \Acquia\Orca\Fixture\PackageManager $package_manager
    *   The package manager.
-   * @param \Acquia\Orca\Fixture\SubmoduleManager $submodule_manager
-   *   The submodule manager.
+   * @param \Acquia\Orca\Fixture\SubextensionManager $subextension_manager
+   *   The subextension manager.
    */
-  public function __construct(ConfigLoader $config_loader, Fixture $fixture, SymfonyStyle $output, ProcessRunner $process_runner, PackageManager $package_manager, SubmoduleManager $submodule_manager) {
+  public function __construct(ConfigLoader $config_loader, Fixture $fixture, SymfonyStyle $output, ProcessRunner $process_runner, PackageManager $package_manager, SubextensionManager $subextension_manager) {
     $this->configLoader = $config_loader;
     $this->fixture = $fixture;
     $this->output = $output;
     $this->processRunner = $process_runner;
     $this->packageManager = $package_manager;
-    $this->submoduleManager = $submodule_manager;
+    $this->subextensionManager = $subextension_manager;
   }
 
   /**
@@ -93,23 +93,6 @@ class AcquiaExtensionEnabler {
   public function enable(): void {
     $this->getSutSettingsFromFixture();
     $this->enableAcquiaExtensions();
-  }
-
-  /**
-   * Determines whether or not a given package is a Drupal extension.
-   *
-   * @param \Acquia\Orca\Fixture\Package $package
-   *   The package.
-   *
-   * @return bool
-   *   Returns TRUE if the package is a Drupal extension, or FALSE if not.
-   */
-  public function isExtension(Package $package): bool {
-    $extension_types = [
-      'drupal-module',
-      'drupal-theme',
-    ];
-    return in_array($package->getType(), $extension_types);
   }
 
   /**
@@ -127,7 +110,7 @@ class AcquiaExtensionEnabler {
    * Enables the Acquia extensions.
    */
   private function enableAcquiaExtensions(): void {
-    if ($this->isSutOnly && !$this->isExtension($this->sut)) {
+    if ($this->isSutOnly && !$this->sut->isDrupalExtension()) {
       $this->output->warning('No extensions to enable because the fixture is SUT-only and the SUT is not a Drupal extension');
       return;
     }
@@ -160,11 +143,12 @@ class AcquiaExtensionEnabler {
     if (!$theme_list) {
       return;
     }
-    $this->processRunner->runFixtureVendorBin(array_merge([
+    $this->processRunner->runFixtureVendorBin([
       'drush',
       'theme:enable',
       '--yes',
-    ], $theme_list));
+      implode(',', $theme_list),
+    ]);
   }
 
   /**
@@ -189,15 +173,15 @@ class AcquiaExtensionEnabler {
         $extension_list[] = $package->getProjectName();
       }
 
-      if ($extension_type !== self::TYPE_MODULE) {
+      if (!$package->isDrupalExtension()) {
         continue;
       }
 
-      foreach ($this->submoduleManager->getByParent($package) as $submodule) {
-        if (!$submodule->shouldGetEnabled()) {
+      foreach ($this->subextensionManager->getByParent($package) as $subextension) {
+        if ($subextension->getType() !== $extension_type || !$subextension->shouldGetEnabled()) {
           continue;
         }
-        $extension_list[] = $submodule->getProjectName();
+        $extension_list[] = $subextension->getProjectName();
       }
     }
 

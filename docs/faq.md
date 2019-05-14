@@ -15,22 +15,22 @@ ORCA doesn't install dev dependencies because Composer provides no means of doin
 
 ## Drupal
 
-### Why doesn't ORCA enable my submodule?
+### Why doesn't ORCA enable my submodule/subtheme?
 
-ORCA automatically discovers and enables any submodule that satisfies the following criteria:
+ORCA automatically discovers and enables any subextension that satisfies the following criteria:
 
 * It exists in a subdirectory of a present package (other than `tests`).
 * It has a valid `composer.json`...
-    * with a `type` value of `drupal-module`...
+    * with a `type` value of `drupal-module` or `drupal-theme`...
     * and a vendor name of "drupal", i.e., a `name` value beginning with `drupal/`.
 * It has a corresponding `.info.yml` file (e.g., for a Composer `name` of `drupal/example`, `example.info.yml`).
-* It doesn't explicitly opt out. See [How can I prevent ORCA from enabling my submodule?](#how-can-i-prevent-orca-from-enabling-my-submodule).
+* It doesn't explicitly opt out. See [How can I prevent ORCA from enabling my submodule/subtheme?](#how-can-i-prevent-orca-from-enabling-my-submodulesubtheme).
 
-Cf. [`\Acquia\Orca\Fixture\SubmoduleManager`](../src/Fixture/SubmoduleManager.php).
+Cf. [`\Acquia\Orca\Fixture\subextensionManager`](../src/Fixture/subextensionManager.php).
 
-### How can I prevent ORCA from enabling my submodule?
+### How can I prevent ORCA from enabling my submodule/subtheme?
 
-To prevent ORCA from enabling a submodule, add an `extra.orca.enable` value of `TRUE` to its `composer.json`, e.g.:
+To prevent ORCA from enabling a subextension, add an `extra.orca.enable` value of `TRUE` to its `composer.json`, e.g.:
 
 ```json
 {
@@ -45,7 +45,7 @@ To prevent ORCA from enabling a submodule, add an `extra.orca.enable` value of `
 
 ```
 
-Cf. [Why doesn't ORCA enable my submodule?](#why-doesnt-orca-enable-my-submodule).
+Cf. [Why doesn't ORCA enable my submodule/subtheme?](#why-doesnt-orca-enable-my-submodulesubtheme).
 
 ---
 

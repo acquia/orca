@@ -106,11 +106,11 @@ class FixtureCreator {
   private $profile = self::DEFAULT_PROFILE;
 
   /**
-   * The submodule manager.
+   * The subextension manager.
    *
-   * @var \Acquia\Orca\Fixture\SubmoduleManager
+   * @var \Acquia\Orca\Fixture\SubextensionManager
    */
-  private $submoduleManager;
+  private $subextensionManager;
 
   /**
    * The SQLite flag.
@@ -141,19 +141,19 @@ class FixtureCreator {
    *   The process runner.
    * @param \Acquia\Orca\Fixture\PackageManager $package_manager
    *   The package manager.
-   * @param \Acquia\Orca\Fixture\SubmoduleManager $submodule_manager
-   *   The submodule manager.
+   * @param \Acquia\Orca\Fixture\SubextensionManager $subextension_manager
+   *   The subextension manager.
    * @param \Composer\Package\Version\VersionGuesser $version_guesser
    *   The Composer version guesser.
    */
-  public function __construct(AcquiaExtensionEnabler $acquia_extension_enabler, Fixture $fixture, FixtureInspector $fixture_inspector, SymfonyStyle $output, ProcessRunner $process_runner, PackageManager $package_manager, SubmoduleManager $submodule_manager, VersionGuesser $version_guesser) {
+  public function __construct(AcquiaExtensionEnabler $acquia_extension_enabler, Fixture $fixture, FixtureInspector $fixture_inspector, SymfonyStyle $output, ProcessRunner $process_runner, PackageManager $package_manager, SubextensionManager $subextension_manager, VersionGuesser $version_guesser) {
     $this->acquiaExtensionEnabler = $acquia_extension_enabler;
     $this->fixture = $fixture;
     $this->fixtureInspector = $fixture_inspector;
     $this->output = $output;
     $this->processRunner = $process_runner;
     $this->packageManager = $package_manager;
-    $this->submoduleManager = $submodule_manager;
+    $this->subextensionManager = $subextension_manager;
     $this->versionGuesser = $version_guesser;
   }
 
@@ -393,7 +393,7 @@ class FixtureCreator {
   private function addAcquiaPackages(): void {
     $this->output->section('Adding Acquia packages');
     $this->addTopLevelAcquiaPackages();
-    $this->addSutSubmodules();
+    $this->addSutSubextensions();
     $this->addComposerExtraData();
     $this->commitCodeChanges('Added Acquia packages.');
   }
@@ -572,38 +572,38 @@ class FixtureCreator {
   }
 
   /**
-   * Adds submodules of the SUT to composer.json.
+   * Adds subextensions of the SUT to composer.json.
    */
-  private function addSutSubmodules(): void {
-    if (!$this->sut || !$this->submoduleManager->getAll()) {
+  private function addSutSubextensions(): void {
+    if (!$this->sut || !$this->subextensionManager->getAll()) {
       return;
     }
-    $this->configureComposerForSutSubmodules();
-    $this->composerRequireSutSubmodules();
+    $this->configureComposerForSutSubextensions();
+    $this->composerRequireSutSubextensions();
   }
 
   /**
-   * Configures Composer to find and place submodules of the SUT.
+   * Configures Composer to find and place subextensions of the SUT.
    */
-  private function configureComposerForSutSubmodules(): void {
+  private function configureComposerForSutSubextensions(): void {
     $this->loadComposerJson();
-    $this->addSutSubmoduleRepositories();
-    $this->addInstallerPathsForSutSubmodules();
+    $this->addSutSubextensionRepositories();
+    $this->addInstallerPathsForSutSubextensions();
   }
 
   /**
-   * Adds Composer repositories for submodules of the SUT.
+   * Adds Composer repositories for subextensions of the SUT.
    *
    * Repositories take precedence in the order specified (i.e., first match
    * found wins), so our override needs to be added to the beginning in order
    * to take effect.
    */
-  private function addSutSubmoduleRepositories(): void {
+  private function addSutSubextensionRepositories(): void {
     // Remove original repositories.
     $this->jsonConfigSource->removeProperty('repositories');
 
     // Add new repositories.
-    foreach ($this->submoduleManager->getByParent($this->sut) as $package) {
+    foreach ($this->subextensionManager->getByParent($this->sut) as $package) {
       $this->jsonConfigSource->addRepository($package->getPackageName(), [
         'type' => 'path',
         'url' => $package->getRepositoryUrl(),
@@ -617,17 +617,17 @@ class FixtureCreator {
   }
 
   /**
-   * Adds installer-paths for submodules of the SUT.
+   * Adds installer-paths for subextensions of the SUT.
    */
-  private function addInstallerPathsForSutSubmodules(): void {
+  private function addInstallerPathsForSutSubextensions(): void {
     // Installer paths seem to be applied in the order specified, so overrides
     // need to be added to the beginning in order to take effect. Begin by
     // removing the original installer paths.
     $this->jsonConfigSource->removeProperty('extra.installer-paths');
 
     // Add new installer paths.
-    $package_names = array_keys($this->submoduleManager->getByParent($this->sut));
-    // Submodules are implicitly installed with their parent modules, and
+    $package_names = array_keys($this->subextensionManager->getByParent($this->sut));
+    // Subextensions are implicitly installed with their parent modules, and
     // Composer won't allow them to be placed in the same location via their
     // separate packages to be placed in the same location. Neither will it
     // allow them to be "installed" outside the repository, in the system temp
@@ -644,11 +644,11 @@ class FixtureCreator {
   }
 
   /**
-   * Requires the Acquia submodules via Composer.
+   * Requires the Acquia subextensions via Composer.
    */
-  private function composerRequireSutSubmodules(): void {
+  private function composerRequireSutSubextensions(): void {
     $packages = [];
-    foreach (array_keys($this->submoduleManager->getByParent($this->sut)) as $package_name) {
+    foreach (array_keys($this->subextensionManager->getByParent($this->sut)) as $package_name) {
       $packages[] = "{$package_name}:@dev";
     }
     $this->processRunner->runOrcaVendorBin(array_merge([
@@ -795,7 +795,7 @@ PHP;
       return;
     }
 
-    if ($this->isSutOnly && !$this->acquiaExtensionEnabler->isExtension($this->sut)) {
+    if ($this->isSutOnly && !$this->sut->isDrupalExtension()) {
       // No extensions to enable because the fixture is SUT-only and the SUT is
       // not a Drupal extension.
       return;

@@ -55,7 +55,7 @@ class FixtureEnableExtensionsCommand extends Command {
   protected function configure() {
     $this
       ->setAliases([
-        'extensions',
+        'enexts',
         // Backward compatibility alias.
         // @todo Remove this once Lightning no longer uses it.
         'fixture:enable-modules',
