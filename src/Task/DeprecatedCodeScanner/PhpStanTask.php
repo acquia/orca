@@ -89,9 +89,9 @@ class PhpStanTask {
         $command[] = $this->sut->getInstallPathAbsolute();
       }
       if ($this->scanContrib) {
-        $command[] = $this->getsAndEnsurePath('docroot/modules/contrib');
-        $command[] = $this->getsAndEnsurePath('docroot/profiles/contrib');
-        $command[] = $this->getsAndEnsurePath('docroot/themes/contrib');
+        $command[] = $this->getAndEnsurePath('docroot/modules/contrib');
+        $command[] = $this->getAndEnsurePath('docroot/profiles/contrib');
+        $command[] = $this->getAndEnsurePath('docroot/themes/contrib');
       }
       $this->processRunner->runOrcaVendorBin($command, $this->fixture->getPath());
     }
@@ -110,7 +110,7 @@ class PhpStanTask {
    * @return string
    *   The absolute path.
    */
-  private function getsAndEnsurePath(string $path): string {
+  private function getAndEnsurePath(string $path): string {
     $absolute_path = $this->fixture->getPath($path);
     $this->filesystem->mkdir($absolute_path);
     return $absolute_path;
