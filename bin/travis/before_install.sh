@@ -34,39 +34,40 @@ set -v
 # Make Composer Patches throw an error when it can't apply a patch.
 export COMPOSER_EXIT_ON_PATCH_FAILURE=1
 
-if [[ "$TRAVIS" ]]; then
-  # Display the Google Chrome version.
-  google-chrome-stable --version
+# The remaining before_install commands should only be run on Travis CI.
+[[ "$TRAVIS" ]] || exit
 
-  # Disable Xdebug.
-  phpenv config-rm xdebug.ini
+# Display the Google Chrome version.
+google-chrome-stable --version
 
-  {
-    # Remove PHP memory limit.
-    echo 'memory_limit = -1'
-    # Prevent email errors.
-    echo 'sendmail_path = /bin/true'
-    # Prevent PHPStan warnings about APCu constants.
-    echo 'extension = apcu.so'
-  } >> "$HOME/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini"
+# Disable Xdebug.
+phpenv config-rm xdebug.ini
 
-  # Install the PECL YAML parser for strict YAML parsing.
-  yes | pecl install yaml
+{
+  # Remove PHP memory limit.
+  echo 'memory_limit = -1'
+  # Prevent email errors.
+  echo 'sendmail_path = /bin/true'
+  # Prevent PHPStan warnings about APCu constants.
+  echo 'extension = apcu.so'
+} >> "$HOME/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini"
 
-  # Install Composer optimizations for faster builds.
-  composer global require \
-    hirak/prestissimo \
-    zaporylie/composer-drupal-optimizations
+# Install the PECL YAML parser for strict YAML parsing.
+yes | pecl install yaml
 
-  # Install ORCA.
-  composer -d"$ORCA_ROOT" install
+# Install Composer optimizations for faster builds.
+composer global require \
+  hirak/prestissimo \
+  zaporylie/composer-drupal-optimizations
 
-  orca --version
+# Install ORCA.
+composer -d"$ORCA_ROOT" install
 
-  # Ensure the checked out branch is named after the nearest Git version branch.
-  git -C "$ORCA_SUT_DIR" rev-parse --abbrev-ref HEAD
-  if [[ $(git -C "$ORCA_SUT_DIR" rev-parse --abbrev-ref HEAD) != "$ORCA_SUT_BRANCH" ]]; then
-    git -C "$ORCA_SUT_DIR" branch -f "$ORCA_SUT_BRANCH"
-    git -C "$ORCA_SUT_DIR" checkout "$ORCA_SUT_BRANCH"
-  fi
+orca --version
+
+# Ensure the checked out branch is named after the nearest Git version branch.
+git -C "$ORCA_SUT_DIR" rev-parse --abbrev-ref HEAD
+if [[ $(git -C "$ORCA_SUT_DIR" rev-parse --abbrev-ref HEAD) != "$ORCA_SUT_BRANCH" ]]; then
+  git -C "$ORCA_SUT_DIR" branch -f "$ORCA_SUT_BRANCH"
+  git -C "$ORCA_SUT_DIR" checkout "$ORCA_SUT_BRANCH"
 fi
