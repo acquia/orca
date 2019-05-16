@@ -15,22 +15,17 @@ assert_env_vars
 
 [[ ! -d "$ORCA_FIXTURE_DIR" ]] || orca fixture:status
 
-[[ "$ORCA_JOB" != "STATIC_CODE_ANALYSIS" ]] || orca static-analysis:run ${ORCA_SUT_DIR}
+[[ "$ORCA_FIXTURE_PROFILE" = "minimal" ]] || SUT_ONLY="--sut-only"
 
-[[ "$ORCA_JOB" != "DEPRECATED_CODE_SCAN_SUT" ]] || orca deprecated-code-scan:run --sut=${ORCA_SUT_NAME}
-
-[[ "$ORCA_JOB" != "DEPRECATED_CODE_SCAN_CONTRIB" ]] || orca deprecated-code-scan:run --contrib
-
-[[ "$ORCA_JOB" != "ISOLATED_RECOMMENDED" ]] || orca tests:run --sut=${ORCA_SUT_NAME} --sut-only
-
-[[ "$ORCA_JOB" != "INTEGRATED_RECOMMENDED" ]] || orca tests:run --sut=${ORCA_SUT_NAME}
-
-[[ "$ORCA_JOB" != "CORE_PREVIOUS" ]] || orca tests:run --sut=${ORCA_SUT_NAME}
-
-[[ "$ORCA_JOB" != "ISOLATED_DEV" ]] || orca tests:run --sut=${ORCA_SUT_NAME} --sut-only
-
-[[ "$ORCA_JOB" != "INTEGRATED_DEV" ]] || orca tests:run --sut=${ORCA_SUT_NAME}
-
-[[ "$ORCA_JOB" != "CORE_NEXT" ]] || orca tests:run --sut=${ORCA_SUT_NAME}
-
-[[ "$ORCA_JOB" != "CUSTOM" ]] || orca tests:run --sut=${ORCA_SUT_NAME} ${ORCA_CUSTOM_TESTS_RUN_ARGS:=}
+case "$ORCA_JOB" in
+  "STATIC_CODE_ANALYSIS") eval "orca static-analysis:run $ORCA_SUT_DIR" ;;
+  "DEPRECATED_CODE_SCAN_SUT") eval "orca deprecated-code-scan:run --sut=$ORCA_SUT_NAME" ;;
+  "DEPRECATED_CODE_SCAN_CONTRIB") eval "orca deprecated-code-scan:run --contrib" ;;
+  "ISOLATED_RECOMMENDED") eval "orca tests:run --sut=$ORCA_SUT_NAME --sut-only" ;;
+  "INTEGRATED_RECOMMENDED") eval "orca tests:run --sut=$ORCA_SUT_NAME $SUT_ONLY" ;;
+  "CORE_PREVIOUS") eval "orca tests:run --sut=$ORCA_SUT_NAME $SUT_ONLY" ;;
+  "ISOLATED_DEV") eval "orca tests:run --sut=$ORCA_SUT_NAME --sut-only" ;;
+  "INTEGRATED_DEV") eval "orca tests:run --sut=$ORCA_SUT_NAME $SUT_ONLY" ;;
+  "CORE_NEXT") eval "orca tests:run --sut=$ORCA_SUT_NAME $SUT_ONLY" ;;
+  "CUSTOM") eval "orca tests:run --sut=$ORCA_SUT_NAME ${ORCA_CUSTOM_TESTS_RUN_ARGS:=}" ;;
+esac

@@ -124,6 +124,7 @@ class FixtureInitCommand extends Command {
       ->setAliases(['init'])
       ->setDescription('Creates the test fixture')
       ->setHelp('Creates a BLT-based Drupal site build, includes the system under test using Composer, optionally includes all other Acquia packages, and installs Drupal.')
+      ->addOption('force', 'f', InputOption::VALUE_NONE, 'If the fixture already exists, remove it first without confirmation')
       ->addOption('sut', NULL, InputOption::VALUE_REQUIRED, 'The system under test (SUT) in the form of its package name, e.g., "drupal/example"')
       ->addOption('sut-only', NULL, InputOption::VALUE_NONE, 'Add only the system under test (SUT). Omit all other non-required Acquia packages')
       ->addOption('core', NULL, InputOption::VALUE_REQUIRED, implode(PHP_EOL, [
@@ -137,7 +138,6 @@ class FixtureInitCommand extends Command {
         '- Any version string Composer understands, see https://getcomposer.org/doc/articles/versions.md',
       ]))
       ->addOption('dev', NULL, InputOption::VALUE_NONE, 'Use dev versions of Acquia packages')
-      ->addOption('force', 'f', InputOption::VALUE_NONE, 'If the fixture already exists, remove it first without confirmation')
       ->addOption('profile', NULL, InputOption::VALUE_REQUIRED, 'The Drupal installation profile to use, e.g., "lightning"', FixtureCreator::DEFAULT_PROFILE)
       ->addOption('no-sqlite', NULL, InputOption::VALUE_NONE, 'Use the default BLT database includes instead of SQLite')
       ->addOption('no-site-install', NULL, InputOption::VALUE_NONE, 'Do not install Drupal. Supersedes the "--profile" option');

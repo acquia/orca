@@ -33,8 +33,9 @@ assert "$TRAVIS" "This script is meant to run on Travis CI only."
 
 # Set environment variables.
 export ORCA_ROOT="$(cd "$(dirname "$BASH_SOURCE")/../.." && pwd)"
-export ORCA_FIXTURE_DIR=${ORCA_FIXTURE_DIR:="${ORCA_ROOT}/../orca-build"}
+export ORCA_FIXTURE_DIR=${ORCA_FIXTURE_DIR:="$ORCA_ROOT/../orca-build"}
 export ORCA_SUT_DIR=${ORCA_SUT_DIR:=${TRAVIS_BUILD_DIR}}
+export ORCA_FIXTURE_PROFILE=${ORCA_FIXTURE_PROFILE:="minimal"}
 
 # Add binary directories to PATH.
 export PATH="$HOME/.composer/vendor/bin:$PATH"
