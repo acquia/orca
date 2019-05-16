@@ -58,8 +58,7 @@
             "pre-commit": [
                 "set -e",
                 "vendor/bin/parallel-lint --exclude vendor --no-progress .",
-                "vendor/bin/phpcs --cache=var/.phpcs-cache",
-                "vendor/bin/phpmd . text phpmd.xml.dist --ignore-violations-on-exit"
+                "vendor/bin/phpcs --cache=var/.phpcs-cache"
             ],
             "post-install-cmd": "vendor/bin/cghooks add --ignore-lock",
             "post-update-cmd": "vendor/bin/cghooks update"
