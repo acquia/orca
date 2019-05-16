@@ -24,12 +24,10 @@ function assert {
 function assert_env_vars {
   if [[ "$ORCA_JOB" != "DEPRECATED_CODE_SCAN_CONTRIB" ]]; then
     assert "$ORCA_SUT_NAME" "Missing required ORCA_SUT_NAME environment variable.\nHint: ORCA_SUT_NAME=drupal/example"
-    assert "$ORCA_SUT_BRANCH" "Missing required ORCA_SUT_BRANCH environment variable.\nHint: ORCA_SUT_BRANCH=8.x-1.x"
+    if [[ "$TRAVIS" ]]; then assert "$ORCA_SUT_BRANCH" "Missing required ORCA_SUT_BRANCH environment variable.\nHint: ORCA_SUT_BRANCH=8.x-1.x"; fi
   fi
+  if [[ ! "$TRAVIS" && "$ORCA_JOB" = "STATIC_CODE_ANALYSIS" ]]; then assert "$ORCA_SUT_DIR" "Missing required ORCA_SUT_DIR environment variable.\nHint: ORCA_SUT_DIR=~/Projects/example"; fi
 }
-
-# Prevent CI scripts from being run locally.
-assert "$TRAVIS" "This script is meant to run on Travis CI only."
 
 # Set environment variables.
 export ORCA_ROOT="$(cd "$(dirname "$BASH_SOURCE")/../.." && pwd)"
