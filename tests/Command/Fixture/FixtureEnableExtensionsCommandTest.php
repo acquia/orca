@@ -2,24 +2,23 @@
 
 namespace Acquia\Orca\Tests\Command\Fixture;
 
-use Acquia\Orca\Command\Fixture\FixtureEnableModulesCommand;
+use Acquia\Orca\Command\Fixture\FixtureEnableExtensionsCommand;
 use Acquia\Orca\Command\StatusCodes;
-use Acquia\Orca\Command\Fixture\FixtureRmCommand;
 use Acquia\Orca\Exception\OrcaException;
-use Acquia\Orca\Fixture\AcquiaModuleEnabler;
+use Acquia\Orca\Fixture\AcquiaExtensionEnabler;
 use Acquia\Orca\Fixture\Fixture;
 use Acquia\Orca\Tests\Command\CommandTestBase;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
 
 /**
- * @property \Prophecy\Prophecy\ObjectProphecy|AcquiaModuleEnabler $acquiaModuleEnabler
+ * @property \Prophecy\Prophecy\ObjectProphecy|AcquiaExtensionEnabler $acquiaModuleEnabler
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Fixture\Fixture $fixture
  */
-class FixtureEnableModulesCommandTest extends CommandTestBase {
+class FixtureEnableExtensionsCommandTest extends CommandTestBase {
 
   protected function setUp() {
-    $this->acquiaModuleEnabler = $this->prophesize(AcquiaModuleEnabler::class);
+    $this->acquiaModuleEnabler = $this->prophesize(AcquiaExtensionEnabler::class);
     $this->fixture = $this->prophesize(Fixture::class);
     $this->fixture->exists()
       ->willReturn(TRUE);
@@ -45,7 +44,7 @@ class FixtureEnableModulesCommandTest extends CommandTestBase {
     }
     $tester = $this->createCommandTester();
 
-    $this->executeCommand($tester, FixtureRmCommand::getDefaultName());
+    $this->executeCommand($tester, FixtureEnableExtensionsCommand::getDefaultName());
 
     $this->assertEquals($display, $tester->getDisplay(), 'Displayed correct output.');
     $this->assertEquals($status_code, $tester->getStatusCode(), 'Returned correct status code.');
@@ -61,14 +60,14 @@ class FixtureEnableModulesCommandTest extends CommandTestBase {
 
   private function createCommandTester(): CommandTester {
     $application = new Application();
-    /** @var \Acquia\Orca\Fixture\AcquiaModuleEnabler $acquia_module_enabler */
-    $acquia_module_enabler = $this->acquiaModuleEnabler->reveal();
+    /** @var \Acquia\Orca\Fixture\AcquiaExtensionEnabler $acquia_extension_enabler */
+    $acquia_extension_enabler = $this->acquiaModuleEnabler->reveal();
     /** @var \Acquia\Orca\Fixture\Fixture $fixture */
     $fixture = $this->fixture->reveal();
-    $application->add(new FixtureEnableModulesCommand($acquia_module_enabler, $fixture));
-    /** @var \Acquia\Orca\Command\Fixture\FixtureEnableModulesCommand $command */
-    $command = $application->find(FixtureEnableModulesCommand::getDefaultName());
-    $this->assertInstanceOf(FixtureEnableModulesCommand::class, $command, 'Instantiated class.');
+    $application->add(new FixtureEnableExtensionsCommand($acquia_extension_enabler, $fixture));
+    /** @var \Acquia\Orca\Command\Fixture\FixtureEnableExtensionsCommand $command */
+    $command = $application->find(FixtureEnableExtensionsCommand::getDefaultName());
+    $this->assertInstanceOf(FixtureEnableExtensionsCommand::class, $command, 'Instantiated class.');
     return new CommandTester($command);
   }
 

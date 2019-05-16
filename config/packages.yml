@@ -7,7 +7,7 @@
 #   its composer.json file. Defaults to "drupal-module".
 # - "install_path": (optional) The path the package gets installed at relative
 #   to the fixture root, e.g., docroot/modules/contrib/example.
-#   Used internally for Drupal submodules. Defaults by "type" to match the
+#   Used internally for Drupal subextensions. Defaults by "type" to match the
 #   "installer-paths" patterns specified by BLT.
 # - "url": (optional) The path, absolute or relative to the fixture root, of a
 #   local clone of the package. Used for the "url" property of the
@@ -87,11 +87,14 @@ drupal/lightning_layout:
 
 drupal/lightning_media:
   url: ../lightning-media
-  version_dev: '3.x-dev || 4.x-dev'
+  version_dev: '3.x-dev'
 
 drupal/lightning_workflow:
   url: ../lightning-workflow
   version_dev: '2.x-dev || 3.x-dev'
+
+drupal/mautic:
+  version_dev: 1.x-dev
 
 #drupal/media_acquiadam:
 #  version_dev: 1.x-dev

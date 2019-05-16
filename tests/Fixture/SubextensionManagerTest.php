@@ -4,7 +4,7 @@ namespace Acquia\Orca\Tests\Fixture;
 
 use Acquia\Orca\Fixture\Fixture;
 use Acquia\Orca\Fixture\PackageManager;
-use Acquia\Orca\Fixture\SubmoduleManager;
+use Acquia\Orca\Fixture\SubextensionManager;
 use Acquia\Orca\Utility\ConfigLoader;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Filesystem;
@@ -15,7 +15,7 @@ use Symfony\Component\Filesystem\Filesystem;
  * @property \Prophecy\Prophecy\ObjectProphecy|\Symfony\Component\Filesystem\Filesystem $filesystem
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Utility\ConfigLoader $configLoader
  */
-class SubmoduleManagerTest extends TestCase {
+class SubextensionManagerTest extends TestCase {
 
   protected function setUp() {
     $this->configLoader = $this->prophesize(ConfigLoader::class);
@@ -34,11 +34,14 @@ class SubmoduleManagerTest extends TestCase {
     $this->packageManager
       ->getMultiple('drupal-module')
       ->willReturn([]);
+    $this->packageManager
+      ->getMultiple('drupal-theme')
+      ->willReturn([]);
     /** @var \Acquia\Orca\Fixture\PackageManager $package_manager */
     $package_manager = $this->packageManager->reveal();
-    $object = new SubmoduleManager($config_loader, $filesystem, $fixture, $package_manager);
+    $object = new SubextensionManager($config_loader, $filesystem, $fixture, $package_manager);
 
-    $this->assertInstanceOf(SubmoduleManager::class, $object, 'Instantiated class.');
+    $this->assertInstanceOf(SubextensionManager::class, $object, 'Instantiated class.');
   }
 
 }

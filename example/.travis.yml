@@ -22,7 +22,7 @@ language: php
 # The lowest version of PHP supported by all of Drupal, Acquia, and ORCA itself.
 # @see https://www.drupal.org/docs/8/system-requirements/php-requirements
 # @see https://docs.acquia.com/acquia-cloud/arch/tech-platform/
-php: 7.1
+php: "7.1"
 
 addons:
   # ChromeDriver is used for PHPUnit tests.
@@ -52,6 +52,10 @@ env:
     # uncommenting the following line and specifying your own alter file.
     # @see https://github.com/acquia/orca/blob/master/docs/advanced-usage.md#ORCA_PACKAGES_CONFIG_ALTER
     # - ORCA_PACKAGES_CONFIG_ALTER=../example/tests/packages_alter.yml
+    # If your package is a Drupal installation profile, uncomment the following
+    # line and specify its machine name.
+    # @see https://github.com/acquia/orca/blob/master/docs/advanced-usage.md#ORCA_FIXTURE_PROFILE
+    # - ORCA_FIXTURE_PROFILE=example
 
 # Execution time is drastically reduced by splitting the build into multiple
 # concurrent jobs.
@@ -60,8 +64,7 @@ matrix:
   fast_finish: true
   include:
     - { name: "Static code analysis", env: ORCA_JOB=STATIC_CODE_ANALYSIS }
-    - { name: "Deprecated code scan of SUT only", env: ORCA_JOB=DEPRECATED_CODE_SCAN_SUT }
-    - { name: "Deprecated code scan of SUT plus contrib", env: ORCA_JOB=DEPRECATED_CODE_SCAN_CONTRIB }
+    - { name: "Deprecated code scan", env: ORCA_JOB=DEPRECATED_CODE_SCAN_SUT }
     - { name: "Isolated test w/ recommended package versions", env: ORCA_JOB=ISOLATED_RECOMMENDED }
     - { name: "Integrated test w/ recommended package versions", env: ORCA_JOB=INTEGRATED_RECOMMENDED }
     - { name: "Integrated test w/ recommended package versions & previous minor release of Drupal core", env: ORCA_JOB=CORE_PREVIOUS }
@@ -72,11 +75,10 @@ matrix:
   # build. They should still be watched for advance notice of future problems.
   # @see https://docs.travis-ci.com/user/customizing-the-build#rows-that-are-allowed-to-fail
   allow_failures:
-    # Obviously, issues in third party code should not fail a build.
-    - env: ORCA_JOB=DEPRECATED_CODE_SCAN_CONTRIB
     # Dev jobs are allowed to fail due to their inherent instability.
     - env: ORCA_JOB=ISOLATED_DEV
     - env: ORCA_JOB=INTEGRATED_DEV
+    - env: ORCA_JOB=CORE_NEXT
 
 # Install ORCA and prepare the environment.
 before_install:

@@ -8,9 +8,9 @@ use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
 
 /**
- * Provide access to Acquia Drupal submodules physically in the fixture.
+ * Provide access to Acquia Drupal subextensions physically in the fixture.
  */
-class SubmoduleManager {
+class SubextensionManager {
 
   /**
    * The config loader.
@@ -34,18 +34,18 @@ class SubmoduleManager {
   private $fixture;
 
   /**
-   * The top-level Acquia modules.
+   * The top-level Acquia extensions.
    *
    * @var \Acquia\Orca\Fixture\Package[]
    */
-  private $topLevelModules;
+  private $topLevelExtensions;
 
   /**
-   * The submodules found in the fixture.
+   * The subextensions found in the fixture.
    *
    * @var \Acquia\Orca\Fixture\Package[]
    */
-  private $submodules = [];
+  private $subextensions = [];
 
   /**
    * Constructs an instance.
@@ -63,29 +63,32 @@ class SubmoduleManager {
     $this->configLoader = $config_loader;
     $this->filesystem = $filesystem;
     $this->fixture = $fixture;
-    $this->topLevelModules = $package_manager->getMultiple('drupal-module');
+    $this->topLevelExtensions = array_merge(
+      $package_manager->getMultiple('drupal-module'),
+      $package_manager->getMultiple('drupal-theme')
+    );
   }
 
   /**
-   * Gets an array of all Acquia submodules.
+   * Gets an array of all Acquia subextensions.
    *
    * @return \Acquia\Orca\Fixture\Package[]
    *   An indexed array of package objects.
    */
   public function getAll(): array {
-    if ($this->submodules) {
-      return $this->submodules;
+    if ($this->subextensions) {
+      return $this->subextensions;
     }
-    $paths = $this->getTopLevelModuleInstallPaths();
-    $this->submodules = $this->getInPaths($paths);
-    return $this->submodules;
+    $paths = $this->getTopLevelExtensionInstallPaths();
+    $this->subextensions = $this->getInPaths($paths);
+    return $this->subextensions;
   }
 
   /**
-   * Gets an array of submodules of a given parent.
+   * Gets an array of subextensions of a given parent.
    *
    * @param \Acquia\Orca\Fixture\Package $package
-   *   The package to search for submodules.
+   *   The package to search for subextensions.
    *
    * @return \Acquia\Orca\Fixture\Package[]
    *   An indexed array of package objects.
@@ -96,17 +99,17 @@ class SubmoduleManager {
   }
 
   /**
-   * Gets an array of submodules in a given set of paths.
+   * Gets an array of subextensions in a given set of paths.
    *
    * @param string[] $paths
-   *   The paths to search for submodules.
+   *   The paths to search for subextensions.
    *
    * @return \Acquia\Orca\Fixture\Package[]
    *   An indexed array of package objects.
    */
   public function getInPaths(array $paths): array {
-    $submodules = [];
-    foreach ($this->findSubmoduleComposerJsonFiles($paths) as $file) {
+    $subextensions = [];
+    foreach ($this->findSubextensionComposerJsonFiles($paths) as $file) {
       try {
         $config = $this->configLoader->load($file->getPathname());
       }
@@ -116,35 +119,36 @@ class SubmoduleManager {
       $name = $config->get('name');
       $install_path = str_replace("{$this->fixture->getPath()}/", '', $file->getPath());
       $package_data = [
+        'type' => $config->get('type'),
         'install_path' => $install_path,
         'url' => $file->getPath(),
         'version' => '@dev',
         'version_dev' => '@dev',
-        'enable' => $this->shouldModuleGetEnabled($config, $install_path),
+        'enable' => $this->shouldExtensionGetEnabled($config, $install_path),
       ];
-      $submodules[$name] = new Package($this->fixture, $name, $package_data);
+      $subextensions[$name] = new Package($this->fixture, $name, $package_data);
     }
-    return $submodules;
+    return $subextensions;
   }
 
   /**
-   * Determines whether or not the given submodule should get enabled.
+   * Determines whether or not the given subextension should get enabled.
    *
-   * Test modules are never enabled because Drush cannot find them to enable.
-   * Standard modules are enabled unless they opt out by setting
+   * Test extensions are never enabled because Drush cannot find them to enable.
+   * Standard extensions are enabled unless they opt out by setting
    * extra.orca.enable to FALSE in their composer.json.
    *
    * @param \Noodlehaus\Config $config
-   *   The submodule's composer.json config.
+   *   The subextension's composer.json config.
    * @param string $install_path
-   *   The path the module installs at.
+   *   The path the extension installs at.
    *
    * @return bool
-   *   TRUE if the submodule should be enabled or FALSE if not.
+   *   TRUE if the subextension should be enabled or FALSE if not.
    */
-  private function shouldModuleGetEnabled(Config $config, $install_path): bool {
-    $is_test_module = (strpos($install_path, '/tests/') !== FALSE);
-    if ($is_test_module) {
+  private function shouldExtensionGetEnabled(Config $config, $install_path): bool {
+    $is_test_extension = (strpos($install_path, '/tests/') !== FALSE);
+    if ($is_test_extension) {
       return FALSE;
     }
 
@@ -152,14 +156,14 @@ class SubmoduleManager {
   }
 
   /**
-   * Gets an array of top level module install paths.
+   * Gets an array of top level extension install paths.
    *
    * @return string[]
    *   An indexed array of paths.
    */
-  private function getTopLevelModuleInstallPaths(): array {
+  private function getTopLevelExtensionInstallPaths(): array {
     $paths = [];
-    foreach ($this->topLevelModules as $package) {
+    foreach ($this->topLevelExtensions as $package) {
       $path = $package->getInstallPathAbsolute();
       if ($this->filesystem->exists($path)) {
         $paths[] = $path;
@@ -169,16 +173,16 @@ class SubmoduleManager {
   }
 
   /**
-   * Finds all Acquia Drupal submodule composer.json files.
+   * Finds all Acquia Drupal subextension composer.json files.
    *
    * @param string[] $paths
-   *   An array of paths to recursively search for submodules.
+   *   An array of paths to recursively search for subextensions.
    *
    * @return \Symfony\Component\Finder\Finder|array
-   *   A Finder query for all Acquia Drupal submodule composer.json files within
-   *   the given paths or an empty array if no paths are given.
+   *   A Finder query for all Acquia Drupal subextension composer.json files
+   *   within the given paths or an empty array if no paths are given.
    */
-  private function findSubmoduleComposerJsonFiles(array $paths) {
+  private function findSubextensionComposerJsonFiles(array $paths) {
     if (!$paths) {
       return [];
     }
@@ -195,21 +199,21 @@ class SubmoduleManager {
       ])
       ->name('composer.json')
       ->filter(function (\SplFileInfo $file) {
-        return $this->isSubmoduleComposerJson($file);
+        return $this->isSubextensionComposerJson($file);
       });
   }
 
   /**
-   * Determines whether a given composer.json file belongs to a submodule.
+   * Determines whether a given composer.json file belongs to a subextension.
    *
    * @param \SplFileInfo $file
    *   The file to examine.
    *
    * @return bool
-   *   TRUE if the given composer.json file belongs to a submodule or FALSE if
-   *   not.
+   *   TRUE if the given composer.json file belongs to a subextension or FALSE
+   *   if not.
    */
-  private function isSubmoduleComposerJson(\SplFileInfo $file): bool {
+  private function isSubextensionComposerJson(\SplFileInfo $file): bool {
     try {
       $config = $this->configLoader->load($file->getPathname());
       $name = $config->get('name');
@@ -222,17 +226,17 @@ class SubmoduleManager {
       return FALSE;
     }
 
-    // Ignore everything but Drupal modules.
-    if ($config->get('type') !== 'drupal-module') {
+    // Ignore everything but Drupal extensions.
+    if (!in_array($config->get('type'), ['drupal-module', 'drupal-theme'])) {
       return FALSE;
     }
 
-    // Ignore modules that aren't under the "drupal" vendor name.
+    // Ignore extensions that aren't under the "drupal" vendor name.
     if ($vendor_name !== 'drupal') {
       return FALSE;
     }
 
-    // Ignore modules without a corresponding .info.yml file.
+    // Ignore extensions without a corresponding .info.yml file.
     $info_yml_file = "{$file->getPath()}/{$package_name}.info.yml";
     if (!$this->filesystem->exists($info_yml_file)) {
       return FALSE;

@@ -44,7 +44,7 @@ class Package {
    *     property in its composer.json file. Defaults to "drupal-module".
    *   - "install_path": (optional) The path the package gets installed at
    *     relative to the fixture root, e.g., docroot/modules/contrib/example.
-   *     Used for Drupal submodules. Defaults by "type" to match the
+   *     Used for Drupal subextensions. Defaults by "type" to match the
    *     "installer-paths" patterns specified by BLT.
    *   - "url": (optional) The path, absolute or relative to the fixture root,
    *     of a local clone of the package. Used for the "url" property of the
@@ -236,14 +236,44 @@ class Package {
   }
 
   /**
+   * Determines whether the package is a Drupal extension.
+   *
+   * @return bool
+   *   Returns TRUE if it is, or FALSE if not.
+   */
+  public function isDrupalExtension(): bool {
+    return $this->isDrupalModule() || $this->isDrupalTheme();
+  }
+
+  /**
+   * Determines whether the package is a Drupal module.
+   *
+   * @return bool
+   *   Returns TRUE if it is, or FALSE if not.
+   */
+  public function isDrupalModule(): bool {
+    return $this->getType() === 'drupal-module';
+  }
+
+  /**
+   * Determines whether the package is a Drupal theme.
+   *
+   * @return bool
+   *   Returns TRUE if it is, or FALSE if not.
+   */
+  public function isDrupalTheme(): bool {
+    return $this->getType() === 'drupal-theme';
+  }
+
+  /**
    * Determines whether the package is a Drupal module that should get enabled.
    *
    * @return bool
-   *   TRUE if the package is a Drupal module that should get enabled or FALSE
-   *   if not.
+   *   TRUE if the package is a Drupal extension that should get enabled or
+   *   FALSE if not.
    */
   public function shouldGetEnabled(): bool {
-    if ($this->getType() !== 'drupal-module') {
+    if (!$this->isDrupalExtension()) {
       return FALSE;
     }
 
