@@ -26,7 +26,6 @@ Example:
 matrix:
   include:
     - { name: "Custom job", env: ORCA_JOB=CUSTOM ORCA_CUSTOM_FIXTURE_INIT_ARGS="--profile=lightning" ORCA_CUSTOM_TESTS_RUN_ARGS="--sut-only" }
-
 ```
 
 ---
