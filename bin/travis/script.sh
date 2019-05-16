@@ -9,7 +9,7 @@
 # DESCRIPTION
 #     Runs static code analysis and automated tests.
 
-cd "$(dirname "$0")"; source _includes.sh
+cd "$(dirname "$0")" || exit; source _includes.sh
 
 assert_env_vars
 

@@ -4,7 +4,7 @@
 #     _includes.sh - Include reusable code.
 #
 # SYNOPSIS
-#     cd "$(dirname "$0")"; source _includes.sh
+#     cd "$(dirname "$0")" || exit; source _includes.sh
 #
 # DESCRIPTION
 #     Includes common features used by the Travis CI scripts.
@@ -15,7 +15,7 @@ function assert {
   if [[ ! "$1" ]]; then
     RED="\033[1;31m"
     NO_COLOR="\033[0m"
-    echo "\n${RED}Error: $2${NO_COLOR}\n"
+    printf "\n%bError: %b%b\n" "$RED" "$2" "$NO_COLOR"
     exit 1
   fi
 }
@@ -30,7 +30,8 @@ function assert_env_vars {
 }
 
 # Set environment variables.
-export ORCA_ROOT="$(cd "$(dirname "$BASH_SOURCE")/../.." && pwd)"
+ORCA_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
+export ORCA_ROOT
 export ORCA_FIXTURE_DIR=${ORCA_FIXTURE_DIR:="$ORCA_ROOT/../orca-build"}
 export ORCA_SUT_DIR=${ORCA_SUT_DIR:=${TRAVIS_BUILD_DIR}}
 export ORCA_FIXTURE_PROFILE=${ORCA_FIXTURE_PROFILE:="minimal"}
@@ -43,7 +44,7 @@ export PATH="$ORCA_FIXTURE_DIR/vendor/bin:$PATH"
 export PATH="$TRAVIS_BUILD_DIR/vendor/bin:$PATH"
 
 # Add convenient aliases.
-alias drush="drush -r ${ORCA_FIXTURE_DIR}"
+alias drush='drush -r "$ORCA_FIXTURE_DIR"'
 
 # Exit as soon as one command returns a non-zero exit code and make the shell
 # print all lines in the script before executing them.

@@ -9,7 +9,7 @@
 # DESCRIPTION
 #     Creates the test fixture.
 
-cd "$(dirname "$0")"; source _includes.sh
+cd "$(dirname "$0")" || exit; source _includes.sh
 
 assert_env_vars
 

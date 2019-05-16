@@ -9,7 +9,7 @@
 # DESCRIPTION
 #     Configures the Travis CI environment, installs ORCA, and prepares the SUT.
 
-cd "$(dirname "$0")"; source _includes.sh
+cd "$(dirname "$0")" || exit; source _includes.sh
 
 # Display configuration values.
 set +v
@@ -27,7 +27,7 @@ CONFIG_VARS=(
   ORCA_SUT_NAME
 )
 for CONFIG_VAR in "${CONFIG_VARS[@]}"; do
-  eval "echo ${CONFIG_VAR} = $"${CONFIG_VAR}
+  eval "echo ${CONFIG_VAR} = $""$CONFIG_VAR"
 done
 set -v
 
@@ -41,14 +41,14 @@ if [[ "$TRAVIS" ]]; then
   # Disable Xdebug.
   phpenv config-rm xdebug.ini
 
-  # Remove PHP memory limit.
-  echo 'memory_limit = -1' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
-
-  # Prevent email errors.
-  echo 'sendmail_path = /bin/true' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
-
-  # Prevent PHPStan warnings about APCu constants.
-  echo 'extension = apcu.so' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
+  {
+    # Remove PHP memory limit.
+    echo 'memory_limit = -1'
+    # Prevent email errors.
+    echo 'sendmail_path = /bin/true'
+    # Prevent PHPStan warnings about APCu constants.
+    echo 'extension = apcu.so'
+  } >> "$HOME/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini"
 
   # Install the PECL YAML parser for strict YAML parsing.
   yes | pecl install yaml
@@ -59,14 +59,14 @@ if [[ "$TRAVIS" ]]; then
     zaporylie/composer-drupal-optimizations
 
   # Install ORCA.
-  composer -d${ORCA_ROOT} install
+  composer -d"$ORCA_ROOT" install
 
   orca --version
 
   # Ensure the checked out branch is named after the nearest Git version branch.
-  git -C "${ORCA_SUT_DIR}" rev-parse --abbrev-ref HEAD
-  if [[ $(git -C "${ORCA_SUT_DIR}" rev-parse --abbrev-ref HEAD) != "$ORCA_SUT_BRANCH" ]]; then
-    git -C "${ORCA_SUT_DIR}" branch -f "$ORCA_SUT_BRANCH"
-    git -C "${ORCA_SUT_DIR}" checkout "$ORCA_SUT_BRANCH"
+  git -C "$ORCA_SUT_DIR" rev-parse --abbrev-ref HEAD
+  if [[ $(git -C "$ORCA_SUT_DIR" rev-parse --abbrev-ref HEAD) != "$ORCA_SUT_BRANCH" ]]; then
+    git -C "$ORCA_SUT_DIR" branch -f "$ORCA_SUT_BRANCH"
+    git -C "$ORCA_SUT_DIR" checkout "$ORCA_SUT_BRANCH"
   fi
 fi
