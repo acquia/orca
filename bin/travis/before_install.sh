@@ -59,6 +59,8 @@ export COMPOSER_EXIT_ON_PATCH_FAILURE=1
 # Install ORCA.
 composer -d${ORCA_ROOT} install
 
+orca --version
+
 # Ensure the checked out branch is named after the nearest Git version branch.
 git -C "${ORCA_SUT_DIR}" rev-parse --abbrev-ref HEAD
 if [[ $(git -C "${ORCA_SUT_DIR}" rev-parse --abbrev-ref HEAD) != "$ORCA_SUT_BRANCH" ]]; then
