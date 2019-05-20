@@ -93,8 +93,5 @@ drupal/lightning_workflow:
   url: ../lightning-workflow
   version_dev: '2.x-dev || 3.x-dev'
 
-drupal/mautic:
-  version_dev: 1.x-dev
-
 #drupal/media_acquiadam:
 #  version_dev: 1.x-dev
