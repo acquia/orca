@@ -173,6 +173,7 @@ class FixtureCreator {
     $this->installCloudHooks();
     $this->ensureDrupalSettings();
     $this->installDrupal();
+    $this->setUpFilesDirectories();
     $this->enableAcquiaExtensions();
     $this->createAndCheckoutBackupTag();
     $this->displayStatus();
@@ -783,6 +784,32 @@ PHP;
       '--ansi',
     ]);
     $this->commitCodeChanges('Installed Drupal.');
+  }
+
+  /**
+   * Sets up the files directories.
+   *
+   * Ensures the existence of the uploaded files directories and sets
+   * permissions on them.
+   *
+   * @see https://www.drupal.org/docs/7/install/setting-up-the-files-directory
+   */
+  private function setUpFilesDirectories(): void {
+    $this->output->section('Setting up files directories');
+    $directories = [
+      $this->fixture->getPath('sites/all/files'),
+      $this->fixture->getPath('sites/default/files'),
+      $this->fixture->getPath('files-private'),
+    ];
+    $this->processRunner->runExecutable(array_merge([
+      'mkdir',
+      '-p',
+    ], $directories));
+    $this->processRunner->runExecutable(array_merge([
+      'chmod',
+      '-R',
+      '0770',
+    ], $directories));
   }
 
   /**
