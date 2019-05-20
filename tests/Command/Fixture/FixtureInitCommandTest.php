@@ -157,6 +157,46 @@ class FixtureInitCommandTest extends CommandTestBase {
     $this->assertEquals(StatusCodes::OK, $tester->getStatusCode(), 'Returned correct status code.');
   }
 
+  public function testBareOption() {
+    $this->fixtureCreator
+      ->setSut('acquia/blt')
+      ->shouldBeCalledTimes(1);
+    $this->fixtureCreator
+      ->setSutOnly(TRUE)
+      ->shouldBeCalledTimes(1);
+    $this->fixtureCreator
+      ->create()
+      ->shouldBeCalledTimes(1);
+    $tester = $this->createCommandTester();
+
+    $this->executeCommand($tester, FixtureInitCommand::getDefaultName(), ['--bare' => TRUE]);
+
+    $this->assertEquals('', $tester->getDisplay(), 'Displayed correct output.');
+    $this->assertEquals(StatusCodes::OK, $tester->getStatusCode(), 'Returned correct status code.');
+  }
+
+  /**
+   * @dataProvider providerBareOptionInvalidProvider
+   */
+  public function testBareOptionInvalid($options) {
+    $this->fixtureCreator
+      ->create()
+      ->shouldNotBeCalled();
+    $tester = $this->createCommandTester();
+
+    $this->executeCommand($tester, FixtureInitCommand::getDefaultName(), $options);
+
+    $this->assertEquals("Error: Cannot create a bare fixture with a SUT.\nHint: \"--bare\" already implies \"--sut=acquia/blt --sut-only\".\n", $tester->getDisplay(), 'Displayed correct output.');
+    $this->assertEquals(StatusCodes::ERROR, $tester->getStatusCode(), 'Returned correct status code.');
+  }
+
+  public function providerBareOptionInvalidProvider() {
+    return [
+      [['--bare' => TRUE, '--sut' => 'drupal/example']],
+      [['--bare' => TRUE, '--sut' => 'drupal/example', '--sut-only' => TRUE]],
+    ];
+  }
+
   /**
    * @dataProvider providerCoreOption
    */
