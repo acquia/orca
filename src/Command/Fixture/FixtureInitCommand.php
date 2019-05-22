@@ -8,12 +8,14 @@ use Acquia\Orca\Fixture\FixtureCreator;
 use Acquia\Orca\Fixture\PackageManager;
 use Acquia\Orca\Fixture\FixtureRemover;
 use Acquia\Orca\Fixture\Fixture;
+use Acquia\Orca\Fixture\SutPreconditionsTester;
 use Acquia\Orca\Utility\DrupalCoreVersionFinder;
 use Composer\Semver\VersionParser;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
  * Provides a command.
@@ -84,6 +86,13 @@ class FixtureInitCommand extends Command {
   private $packageManager;
 
   /**
+   * The SUT preconditions tester.
+   *
+   * @var \Acquia\Orca\Fixture\SutPreconditionsTester
+   */
+  private $sutPreconditionsTester;
+
+  /**
    * The version parser.
    *
    * @var \Composer\Semver\VersionParser
@@ -103,15 +112,18 @@ class FixtureInitCommand extends Command {
    *   The fixture remover.
    * @param \Acquia\Orca\Fixture\PackageManager $package_manager
    *   The package manager.
+   * @param \Acquia\Orca\Fixture\SutPreconditionsTester $sut_preconditions_tester
+   *   The SUT preconditions tester.
    * @param \Composer\Semver\VersionParser $version_parser
    *   The version parser.
    */
-  public function __construct(DrupalCoreVersionFinder $drupal_core_version_finder, Fixture $fixture, FixtureCreator $fixture_creator, FixtureRemover $fixture_remover, PackageManager $package_manager, VersionParser $version_parser) {
+  public function __construct(DrupalCoreVersionFinder $drupal_core_version_finder, Fixture $fixture, FixtureCreator $fixture_creator, FixtureRemover $fixture_remover, PackageManager $package_manager, SutPreconditionsTester $sut_preconditions_tester, VersionParser $version_parser) {
     $this->drupalCoreVersionFinder = $drupal_core_version_finder;
     $this->fixture = $fixture;
     $this->fixtureCreator = $fixture_creator;
     $this->fixtureRemover = $fixture_remover;
     $this->packageManager = $package_manager;
+    $this->sutPreconditionsTester = $sut_preconditions_tester;
     $this->versionParser = $version_parser;
     parent::__construct(self::$defaultName);
   }
@@ -159,18 +171,6 @@ class FixtureInitCommand extends Command {
       return StatusCodes::ERROR;
     }
 
-    if ($this->fixture->exists()) {
-      if (!$input->getOption('force')) {
-        $output->writeln([
-          "Error: Fixture already exists at {$this->fixture->getPath()}.",
-          'Hint: Use the "--force" option to remove it and proceed.',
-        ]);
-        return StatusCodes::ERROR;
-      }
-
-      $this->fixtureRemover->remove();
-    }
-
     if ($bare) {
       $sut = 'acquia/blt';
       $sut_only = TRUE;
@@ -181,13 +181,26 @@ class FixtureInitCommand extends Command {
     $this->setDev($input->getOption('dev'));
     $this->setCore($core, $input->getOption('dev'));
     $this->setProfile($input->getOption('profile'));
-    $this->setSqlite($input->getOption('no-sqlite'));
     $this->setSiteInstall($input->getOption('no-site-install'));
+    $this->setSqlite($input->getOption('no-sqlite'));
 
     try {
+      $this->testPreconditions($sut);
+      if ($this->fixture->exists()) {
+        if (!$input->getOption('force')) {
+          $output->writeln([
+            "Error: Fixture already exists at {$this->fixture->getPath()}.",
+            'Hint: Use the "--force" option to remove it and proceed.',
+          ]);
+          return StatusCodes::ERROR;
+        }
+        $this->fixtureRemover->remove();
+      }
       $this->fixtureCreator->create();
     }
     catch (OrcaException $e) {
+      (new SymfonyStyle($input, $output))
+        ->error($e->getMessage());
       return StatusCodes::ERROR;
     }
 
@@ -380,6 +393,21 @@ class FixtureInitCommand extends Command {
   private function setSqlite($no_sqlite): void {
     if ($no_sqlite) {
       $this->fixtureCreator->setSqlite(FALSE);
+    }
+  }
+
+  /**
+   * Tests preconditions.
+   *
+   * @param string|string[]|bool|null $sut
+   *   The SUT.
+   *
+   * @throws \Acquia\Orca\Exception\OrcaException
+   *   If preconditions are not satisfied.
+   */
+  private function testPreconditions($sut) {
+    if ($sut) {
+      $this->sutPreconditionsTester->test($sut);
     }
   }
 

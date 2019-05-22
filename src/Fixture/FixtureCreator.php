@@ -166,7 +166,6 @@ class FixtureCreator {
    *   In case of errors.
    */
   public function create(): void {
-    $this->ensurePreconditions();
     $this->createBltProject();
     $this->fixDefaultDependencies();
     $this->addAcquiaPackages();
@@ -227,46 +226,6 @@ class FixtureCreator {
    */
   public function setSqlite(bool $use_sqlite): void {
     $this->useSqlite = $use_sqlite;
-  }
-
-  /**
-   * Ensures that the preconditions for creating the fixture are satisfied.
-   *
-   * @throws \Acquia\Orca\Exception\OrcaException
-   *   If the preconditions are not met.
-   */
-  private function ensurePreconditions() {
-    // There are no preconditions if there is no SUT.
-    if (!$this->sut) {
-      return;
-    }
-
-    $this->output->section('Checking preconditions');
-
-    $sut_repo = $this->fixture->getPath($this->sut->getRepositoryUrl());
-
-    if (!is_dir($sut_repo)) {
-      $this->output->error(sprintf('SUT is absent from expected location: %s', $sut_repo));
-      throw new OrcaException();
-    }
-    $this->output->comment(sprintf('SUT is present at expected location: %s', $sut_repo));
-
-    $composer_json = new JsonFile("{$sut_repo}/composer.json");
-    if (!$composer_json->exists()) {
-      $this->output->error(sprintf('SUT is missing root composer.json'));
-      throw new OrcaException();
-    }
-    $this->output->comment('SUT contains root composer.json');
-
-    $data = $composer_json->read();
-
-    $actual_name = isset($data['name']) ? $data['name'] : NULL;
-    $expected_name = $this->sut->getPackageName();
-    if ($actual_name !== $expected_name) {
-      $this->output->error(sprintf("SUT composer.json's 'name' value %s does not match expected %s", var_export($actual_name, TRUE), var_export($expected_name, TRUE)));
-      throw new OrcaException();
-    }
-    $this->output->comment(sprintf("SUT composer.json's 'name' value matches expected %s", var_export($expected_name, TRUE)));
   }
 
   /**
@@ -454,13 +413,11 @@ class FixtureCreator {
 
     $sut_install_path = $this->sut->getInstallPathAbsolute();
     if (!file_exists($sut_install_path)) {
-      $this->output->error('Failed to place SUT at correct path.');
-      throw new OrcaException();
+      throw new OrcaException('Failed to place SUT at correct path.');
     }
     elseif (!is_link($sut_install_path)) {
-      $this->output->error('Failed to symlink SUT via local path repository.');
       $this->displayFailedSymlinkDebuggingInfo();
-      throw new OrcaException();
+      throw new OrcaException('Failed to symlink SUT via local path repository.');
     }
   }
 
