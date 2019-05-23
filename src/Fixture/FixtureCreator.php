@@ -326,16 +326,6 @@ class FixtureCreator {
       $this->getUnwantedPackageList()
     ), $fixture_path);
 
-    // Remove BLT's dev requirements package, which conflicts with the Drupal
-    // Core dev version.
-    $this->processRunner->runOrcaVendorBin([
-      'composer',
-      'remove',
-      '--dev',
-      '--no-update',
-      'acquia/blt-require-dev',
-    ], $fixture_path);
-
     $additions = [];
 
     // Install the dev version of Drush.
@@ -357,16 +347,6 @@ class FixtureCreator {
       'require',
       '--no-update',
     ], $additions), $fixture_path);
-
-    // Replace webflo/drupal-core-require-dev, which would otherwise be provided
-    // by BLT's dev requirements package.
-    $this->processRunner->runOrcaVendorBin([
-      'composer',
-      'require',
-      '--dev',
-      '--no-update',
-      'webflo/drupal-core-require-dev:*',
-    ], $fixture_path);
   }
 
   /**
