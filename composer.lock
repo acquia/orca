@@ -4,8 +4,58 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "cfaa8bafab6dda048340aa6eb2bdb341",
+    "content-hash": "a196adffb37dce803ae728825ed42c96",
     "packages": [
+        {
+            "name": "acquia/coding-standards",
+            "version": "v0.1.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/acquia/coding-standards-php.git",
+                "reference": "0ee6c69941b4c5182c4e9aa3cb39a3c50019dc9e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/acquia/coding-standards-php/zipball/0ee6c69941b4c5182c4e9aa3cb39a3c50019dc9e",
+                "reference": "0ee6c69941b4c5182c4e9aa3cb39a3c50019dc9e",
+                "shasum": ""
+            },
+            "require": {
+                "drupal/coder": "^8.3",
+                "pheromone/phpcs-security-audit": "^2.0",
+                "phpcompatibility/php-compatibility": "^9.0",
+                "squizlabs/php_codesniffer": "^3"
+            },
+            "type": "phpcodesniffer-standard",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Acquia\\DrupalCodingStandards\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-2.0-only"
+            ],
+            "authors": [
+                {
+                    "name": "Acquia Engineering",
+                    "homepage": "https://www.acquia.com",
+                    "role": "Maintainer"
+                }
+            ],
+            "description": "PHP_CodeSniffer rules (sniffs) for Acquia coding standards",
+            "keywords": [
+                "drupal",
+                "phpcs",
+                "standards"
+            ],
+            "time": "2019-06-18T17:47:18+00:00"
+        },
         {
             "name": "behat/behat",
             "version": "v3.5.0",
@@ -857,11 +907,11 @@
         },
         {
             "name": "drupal/coder",
-            "version": "8.3.3",
+            "version": "8.3.4",
             "source": {
                 "type": "git",
                 "url": "https://git.drupal.org/project/coder.git",
-                "reference": "a33d3388fb2e1d94bd2aee36a8ff79186e9d8f43"
+                "reference": "0a274321f4930f186d9f246783f0b4d743501cf8"
             },
             "require": {
                 "ext-mbstring": "*",
@@ -890,7 +940,7 @@
                 "phpcs",
                 "standards"
             ],
-            "time": "2019-04-16T18:56:06+00:00"
+            "time": "2019-05-24T11:44:05+00:00"
         },
         {
             "name": "fabpot/goutte",

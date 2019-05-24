@@ -22,15 +22,11 @@ class PhpCodeSnifferTask extends TaskBase {
    * {@inheritdoc}
    */
   public function execute(): void {
-    $this->overrideConfig();
     try {
       $this->runPhpcs();
     }
     catch (ProcessFailedException $e) {
       throw new TaskFailureException();
-    }
-    finally {
-      $this->restoreConfig();
     }
   }
 
@@ -38,25 +34,11 @@ class PhpCodeSnifferTask extends TaskBase {
    * Runs phpcs.
    */
   public function runPhpcs(): void {
-    $this->processRunner->runOrcaVendorBin(['phpcs', '-s'], $this->getPath());
-  }
-
-  /**
-   * Overrides the active configuration.
-   */
-  public function overrideConfig(): void {
-    $this->configFileOverrider->setPaths(
-      "{$this->projectDir}/phpcs.xml.dist",
-      "{$this->getPath()}/phpcs.xml"
-    );
-    $this->configFileOverrider->override();
-  }
-
-  /**
-   * Restores the previous configuration.
-   */
-  public function restoreConfig(): void {
-    $this->configFileOverrider->restore();
+    $this->processRunner->runOrcaVendorBin([
+      'phpcs',
+      '-s',
+      realpath($this->getPath()),
+    ], __DIR__);
   }
 
 }
