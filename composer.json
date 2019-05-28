@@ -61,6 +61,7 @@
                 "vendor/bin/parallel-lint --exclude vendor --no-progress .",
                 "vendor/bin/phpcs --cache=var/.phpcs-cache"
             ],
+            "pre-push": "vendor/bin/phpcs",
             "post-install-cmd": "vendor/bin/cghooks add --ignore-lock",
             "post-update-cmd": "vendor/bin/cghooks update"
         },
