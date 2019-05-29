@@ -54,12 +54,7 @@ class FixtureEnableExtensionsCommand extends Command {
    */
   protected function configure() {
     $this
-      ->setAliases([
-        'enexts',
-        // Backward compatibility alias.
-        // @todo Remove this once Lightning no longer uses it.
-        'fixture:enable-modules',
-      ])
+      ->setAliases(['enexts'])
       ->setDescription('Enables all Acquia Drupal extensions');
   }
 
