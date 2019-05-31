@@ -35,7 +35,7 @@ set -v
 export COMPOSER_EXIT_ON_PATCH_FAILURE=1
 
 # The remaining before_install commands should only be run on Travis CI.
-[[ "$TRAVIS" ]] || exit
+[[ "$TRAVIS" ]] || exit 0
 
 # Display the Google Chrome version.
 google-chrome-stable --version
