@@ -2,6 +2,7 @@
 
 namespace Acquia\Orca\Task\StaticAnalysisTool;
 
+use Acquia\Orca\Exception\TaskFailureException;
 use Acquia\Orca\Task\TaskBase;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 
@@ -26,8 +27,7 @@ class PhpCodeSnifferTask extends TaskBase {
       $this->runPhpcs();
     }
     catch (ProcessFailedException $e) {
-      // Emit output but don't fail builds until all packages are made to pass
-      // at a baseline.
+      throw new TaskFailureException();
     }
     finally {
       $this->restoreConfig();
