@@ -31,6 +31,7 @@ class BehatTask extends TestFrameworkBase {
       foreach ($this->getBehatConfigFiles() as $config_file) {
         $this->processRunner->runOrcaVendorBin([
           'behat',
+          '-vv',
           '--colors',
           "--config={$config_file->getPathname()}",
           "--tags={$this->getTags()}",
