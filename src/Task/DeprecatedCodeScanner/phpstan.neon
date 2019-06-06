@@ -6,5 +6,39 @@ parameters:
     - module
     - profile
     - theme
+  autoload_directories:
+    - %currentWorkingDirectory%/docroot/modules
+    - %currentWorkingDirectory%/docroot/profiles
+    - %currentWorkingDirectory%/docroot/themes
+    - %currentWorkingDirectory%/vendor/acquia
+  excludes_analyse:
+    # @see PF-1879
+    - %currentWorkingDirectory%/docroot/modules/contrib/acquia_lift/tests/src/Unit/Polyfill/Drupal.php
+    - %currentWorkingDirectory%/docroot/modules/contrib/acquia_lift/tests/src/Unit/Service/Context/PageContextTest.php
+    - %currentWorkingDirectory%/docroot/modules/contrib/acquia_lift/tests/src/Unit/Service/Helper/HelpMessageHelperTest.php
+    - %currentWorkingDirectory%/docroot/modules/contrib/acquia_lift/tests/src/Unit/Service/Helper/SettingsHelperTest.php
+
+    # @todo File an issue for this.
+    - %currentWorkingDirectory%/docroot/modules/contrib/ctools/modules/ctools_views/src/Tests/CToolsViewsBasicViewBlockTest.php
+
+    # @see https://www.drupal.org/project/libraries/issues/3039243
+    - %currentWorkingDirectory%/docroot/modules/contrib/libraries/src/ExternalLibrary/Exception/InvalidLibraryDependencyException.php
+    # @see https://www.drupal.org/project/libraries/issues/2882709
+    - %currentWorkingDirectory%/docroot/modules/contrib/libraries/src/ExternalLibrary/Utility/LibraryIdAccessorInterface.php
+
+    # @todo File an issue for this.
+    - %currentWorkingDirectory%/docroot/modules/contrib/libraries/src/*
+
+    # @todo File an issue for this.
+    - %currentWorkingDirectory%/docroot/modules/contrib/devel/kint/kint/examples/*
+
+    # @see https://www.drupal.org/project/page_manager/issues/3039249
+    - %currentWorkingDirectory%/docroot/modules/contrib/page_manager/page_manager_ui/src/Wizard/RouteParameters.php
+
+    # @todo File an issue for these.
+    - %currentWorkingDirectory%/docroot/modules/contrib/purge/modules/*/src/Tests/*
+    - %currentWorkingDirectory%/docroot/modules/contrib/purge/src/Plugin/Purge/Invalidation/*
+    - %currentWorkingDirectory%/docroot/modules/contrib/purge/src/Tests/*
+    - %currentWorkingDirectory%/docroot/modules/contrib/purge/tests/modules/*/src/Tests/*
 includes:
   - ../../../vendor/mglaman/phpstan-drupal-deprecations/deprecation_testing.neon
