@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # NAME
-#     install.sh - Install Travis CI dependencies.
+#     install.sh - Create the test fixture.
 #
 # SYNOPSIS
 #     install.sh
