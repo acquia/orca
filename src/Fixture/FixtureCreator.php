@@ -251,17 +251,20 @@ class FixtureCreator {
    */
   private function createBltProject(): void {
     $this->output->section('Creating BLT project');
-    $this->processRunner->runOrcaVendorBin([
+    $command = [
       'composer',
       'create-project',
-      '--stability=dev',
       '--no-dev',
       '--no-scripts',
       '--no-install',
       '--no-interaction',
       'acquia/blt-project',
       $this->fixture->getPath(),
-    ]);
+    ];
+    if ($this->sut === 'acquia/blt' || $this->isDev) {
+      $command[] = '--stability=dev';
+    }
+    $this->processRunner->runOrcaVendorBin($command);
 
     // Prevent errors later because "Source directory docroot/core has
     // uncommitted changes" after "Removing package drupal/core so that it can
