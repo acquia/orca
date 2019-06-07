@@ -25,6 +25,7 @@
         "lbaey/chromedriver": "^1.1",
         "localheinz/composer-normalize": "^0.9.0",
         "mglaman/phpstan-drupal-deprecations": "^0.11.1",
+        "myclabs/php-enum": "^1.7",
         "pheromone/phpcs-security-audit": "^2.0",
         "phpcompatibility/php-compatibility": "^9.0",
         "phpmd/phpmd": "^2.6",

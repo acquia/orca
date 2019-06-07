@@ -11,6 +11,7 @@ use Acquia\Orca\Fixture\Fixture;
 use Acquia\Orca\Fixture\FixtureCreator;
 use Acquia\Orca\Fixture\SutPreconditionsTester;
 use Acquia\Orca\Tests\Command\CommandTestBase;
+use Acquia\Orca\Enum\DrupalCoreVersion;
 use Acquia\Orca\Utility\DrupalCoreVersionFinder;
 use Composer\Semver\VersionParser;
 use Prophecy\Argument;
@@ -198,41 +199,43 @@ class FixtureInitCommandTest extends CommandTestBase {
   /**
    * @dataProvider providerCoreOption
    */
-  public function testCoreOption($value, $set_version) {
+  public function testCoreOption($value, $options, $set_version) {
     $this->drupalCoreVersionFinder
       ->getPreviousMinorRelease()
-      ->shouldBeCalledTimes((int) ($value === FixtureInitCommand::PREVIOUS_RELEASE))
+      ->shouldBeCalledTimes((int) ($value === DrupalCoreVersion::PREVIOUS_RELEASE()->getValue()))
       ->willReturn(self::CORE_VALUE_LITERAL_PREVIOUS_RELEASE);
     $this->drupalCoreVersionFinder
       ->getPreviousDevVersion()
-      ->shouldBeCalledTimes((int) ($value === FixtureInitCommand::PREVIOUS_DEV))
+      ->shouldBeCalledTimes((int) ($value === DrupalCoreVersion::PREVIOUS_DEV()->getValue()))
       ->willReturn(self::CORE_VALUE_LITERAL_PREVIOUS_DEV);
     $this->drupalCoreVersionFinder
       ->getCurrentRecommendedRelease()
-      ->shouldBeCalledTimes((int) ($value === FixtureInitCommand::CURRENT_RECOMMENDED))
+      ->shouldBeCalledTimes((int) ($value === DrupalCoreVersion::CURRENT_RECOMMENDED()->getValue()))
       ->willReturn(self::CORE_VALUE_LITERAL_CURRENT_RECOMMENDED);
     $this->drupalCoreVersionFinder
       ->getCurrentDevVersion()
-      ->shouldBeCalledTimes((int) ($value === FixtureInitCommand::CURRENT_DEV))
+      ->shouldBeCalledTimes((int) ($value === DrupalCoreVersion::CURRENT_DEV()->getValue()))
       ->willReturn(self::CORE_VALUE_LITERAL_CURRENT_DEV);
     $this->drupalCoreVersionFinder
       ->getNextRelease()
-      ->shouldBeCalledTimes((int) ($value === FixtureInitCommand::NEXT_RELEASE))
+      ->shouldBeCalledTimes((int) ($value === DrupalCoreVersion::NEXT_RELEASE()->getValue()))
       ->willReturn(self::CORE_VALUE_LITERAL_NEXT_RELEASE);
     $this->drupalCoreVersionFinder
       ->getNextDevVersion()
-      ->shouldBeCalledTimes((int) ($value === FixtureInitCommand::NEXT_DEV))
+      ->shouldBeCalledTimes((int) ($value === DrupalCoreVersion::NEXT_DEV()->getValue()))
       ->willReturn(self::CORE_VALUE_LITERAL_NEXT_DEV);
-    $this->fixtureCreator->setCoreVersion($set_version)
+    $this->fixtureCreator
+      ->setDev(TRUE)
+      ->shouldBeCalledTimes((int) isset($options['--dev']));
+    $this->fixtureCreator
+      ->setCoreVersion($set_version)
       ->shouldBeCalledTimes(1);
     $this->fixtureCreator
       ->create()
       ->shouldBeCalledTimes(1);
     $tester = $this->createCommandTester();
 
-    $this->executeCommand($tester, FixtureInitCommand::getDefaultName(), [
-      '--core' => $value,
-    ]);
+    $this->executeCommand($tester, FixtureInitCommand::getDefaultName(), $options);
 
     $this->assertEquals('', $tester->getDisplay(), 'Displayed correct output.');
     $this->assertEquals(StatusCodes::OK, $tester->getStatusCode(), 'Returned correct status code.');
@@ -240,16 +243,17 @@ class FixtureInitCommandTest extends CommandTestBase {
 
   public function providerCoreOption() {
     return [
-      [FixtureInitCommand::PREVIOUS_RELEASE, self::CORE_VALUE_LITERAL_PREVIOUS_RELEASE],
-      [FixtureInitCommand::PREVIOUS_DEV, self::CORE_VALUE_LITERAL_PREVIOUS_DEV],
-      [FixtureInitCommand::CURRENT_RECOMMENDED, self::CORE_VALUE_LITERAL_CURRENT_RECOMMENDED],
-      [FixtureInitCommand::CURRENT_DEV, self::CORE_VALUE_LITERAL_CURRENT_DEV],
-      [FixtureInitCommand::NEXT_RELEASE, self::CORE_VALUE_LITERAL_NEXT_RELEASE],
-      [FixtureInitCommand::NEXT_DEV, self::CORE_VALUE_LITERAL_NEXT_DEV],
-      [self::CORE_VALUE_LITERAL_PREVIOUS_RELEASE, self::CORE_VALUE_LITERAL_PREVIOUS_RELEASE],
-      [self::CORE_VALUE_LITERAL_CURRENT_RECOMMENDED, self::CORE_VALUE_LITERAL_CURRENT_RECOMMENDED],
-      [self::CORE_VALUE_LITERAL_CURRENT_DEV, self::CORE_VALUE_LITERAL_CURRENT_DEV],
-      [self::CORE_VALUE_LITERAL_NEXT_RELEASE, self::CORE_VALUE_LITERAL_NEXT_RELEASE],
+      [DrupalCoreVersion::PREVIOUS_RELEASE()->getValue(), ['--core' => DrupalCoreVersion::PREVIOUS_RELEASE()->getValue()], self::CORE_VALUE_LITERAL_PREVIOUS_RELEASE],
+      [DrupalCoreVersion::PREVIOUS_DEV()->getValue(), ['--core' => DrupalCoreVersion::PREVIOUS_DEV()->getValue()], self::CORE_VALUE_LITERAL_PREVIOUS_DEV],
+      [DrupalCoreVersion::CURRENT_RECOMMENDED()->getValue(), ['--core' => DrupalCoreVersion::CURRENT_RECOMMENDED()->getValue()], self::CORE_VALUE_LITERAL_CURRENT_RECOMMENDED],
+      [DrupalCoreVersion::CURRENT_DEV()->getValue(), ['--core' => DrupalCoreVersion::CURRENT_DEV()->getValue()], self::CORE_VALUE_LITERAL_CURRENT_DEV],
+      [DrupalCoreVersion::CURRENT_DEV()->getValue(), ['--dev' => TRUE], self::CORE_VALUE_LITERAL_CURRENT_DEV],
+      [DrupalCoreVersion::NEXT_RELEASE()->getValue(), ['--core' => DrupalCoreVersion::NEXT_RELEASE()->getValue()], self::CORE_VALUE_LITERAL_NEXT_RELEASE],
+      [DrupalCoreVersion::NEXT_DEV()->getValue(), ['--core' => DrupalCoreVersion::NEXT_DEV()->getValue()], self::CORE_VALUE_LITERAL_NEXT_DEV],
+      [self::CORE_VALUE_LITERAL_PREVIOUS_RELEASE, ['--core' => self::CORE_VALUE_LITERAL_PREVIOUS_RELEASE], self::CORE_VALUE_LITERAL_PREVIOUS_RELEASE],
+      [self::CORE_VALUE_LITERAL_CURRENT_RECOMMENDED, ['--core' => self::CORE_VALUE_LITERAL_CURRENT_RECOMMENDED], self::CORE_VALUE_LITERAL_CURRENT_RECOMMENDED],
+      [self::CORE_VALUE_LITERAL_CURRENT_DEV, ['--core' => self::CORE_VALUE_LITERAL_CURRENT_DEV], self::CORE_VALUE_LITERAL_CURRENT_DEV],
+      [self::CORE_VALUE_LITERAL_NEXT_RELEASE, ['--core' => self::CORE_VALUE_LITERAL_NEXT_RELEASE], self::CORE_VALUE_LITERAL_NEXT_RELEASE],
     ];
   }
 

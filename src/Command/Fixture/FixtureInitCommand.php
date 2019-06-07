@@ -9,6 +9,7 @@ use Acquia\Orca\Fixture\PackageManager;
 use Acquia\Orca\Fixture\FixtureRemover;
 use Acquia\Orca\Fixture\Fixture;
 use Acquia\Orca\Fixture\SutPreconditionsTester;
+use Acquia\Orca\Enum\DrupalCoreVersion;
 use Acquia\Orca\Utility\DrupalCoreVersionFinder;
 use Composer\Semver\VersionParser;
 use Symfony\Component\Console\Command\Command;
@@ -21,27 +22,6 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  * Provides a command.
  */
 class FixtureInitCommand extends Command {
-
-  public const CORE_OPTION_SPECIAL_VALUES = [
-    self::PREVIOUS_RELEASE,
-    self::PREVIOUS_DEV,
-    self::CURRENT_RECOMMENDED,
-    self::CURRENT_DEV,
-    self::NEXT_RELEASE,
-    self::NEXT_DEV,
-  ];
-
-  public const PREVIOUS_RELEASE = 'PREVIOUS_RELEASE';
-
-  public const PREVIOUS_DEV = 'PREVIOUS_DEV';
-
-  public const CURRENT_RECOMMENDED = 'CURRENT_RECOMMENDED';
-
-  public const CURRENT_DEV = 'CURRENT_DEV';
-
-  public const NEXT_RELEASE = 'NEXT_RELEASE';
-
-  public const NEXT_DEV = 'NEXT_DEV';
 
   /**
    * The default command name.
@@ -142,12 +122,12 @@ class FixtureInitCommand extends Command {
       ->addOption('bare', NULL, InputOption::VALUE_NONE, 'Omit all non-required Acquia packages')
       ->addOption('core', NULL, InputOption::VALUE_REQUIRED, implode(PHP_EOL, [
         'Change the version of Drupal core installed:',
-        sprintf('- %s: The latest release of the previous minor version, e.g., "8.5.14" if the current minor version is 8.6', self::PREVIOUS_RELEASE),
-        sprintf('- %s: The development version of the previous minor version, e.g., "8.5.x-dev"', self::PREVIOUS_DEV),
-        sprintf('- %s: The current recommended release, e.g., "8.6.14"', self::CURRENT_RECOMMENDED),
-        sprintf('- %s: The current development version, e.g., "8.6.x-dev"', self::CURRENT_DEV),
-        sprintf('- %s: The next release version if available, e.g., "8.7.0-beta2"', self::NEXT_RELEASE),
-        sprintf('- %s: The next development version, e.g., "8.7.x-dev"', self::NEXT_DEV),
+        sprintf('- %s: The latest release of the previous minor version, e.g., "8.5.14" if the current minor version is 8.6', DrupalCoreVersion::PREVIOUS_RELEASE()),
+        sprintf('- %s: The development version of the previous minor version, e.g., "8.5.x-dev"', DrupalCoreVersion::PREVIOUS_DEV()),
+        sprintf('- %s: The current recommended release, e.g., "8.6.14"', DrupalCoreVersion::CURRENT_RECOMMENDED()),
+        sprintf('- %s: The current development version, e.g., "8.6.x-dev"', DrupalCoreVersion::CURRENT_DEV()),
+        sprintf('- %s: The next release version if available, e.g., "8.7.0-beta2"', DrupalCoreVersion::NEXT_RELEASE()),
+        sprintf('- %s: The next development version, e.g., "8.7.x-dev"', DrupalCoreVersion::NEXT_DEV()),
         '- Any version string Composer understands, see https://getcomposer.org/doc/articles/versions.md',
       ]))
       ->addOption('dev', NULL, InputOption::VALUE_NONE, 'Use dev versions of Acquia packages')
@@ -229,7 +209,7 @@ class FixtureInitCommand extends Command {
     if ($core && !$this->isValidCoreValue($core)) {
       $output->writeln([
         sprintf('Error: Invalid value for "--core" option: "%s".', $core),
-        sprintf('Hint: Acceptable values are "%s", or any version string Composer understands.', implode('", "', self::CORE_OPTION_SPECIAL_VALUES)),
+        sprintf('Hint: Acceptable values are "%s", or any version string Composer understands.', implode('", "', DrupalCoreVersion::values())),
       ]);
       return FALSE;
     }
@@ -260,7 +240,7 @@ class FixtureInitCommand extends Command {
    *   TRUE if the value is valid or FALSE if not.
    */
   private function isValidCoreValue($core): bool {
-    if (in_array($core, self::CORE_OPTION_SPECIAL_VALUES)) {
+    if (in_array($core, DrupalCoreVersion::values())) {
       return TRUE;
     }
     try {
@@ -330,7 +310,7 @@ class FixtureInitCommand extends Command {
    */
   private function setCore($version, $dev): void {
     if ($dev && !$version) {
-      $version = self::CURRENT_DEV;
+      $version = DrupalCoreVersion::CURRENT_DEV();
     }
 
     if (!$version) {
@@ -338,27 +318,27 @@ class FixtureInitCommand extends Command {
     }
 
     switch ($version) {
-      case self::PREVIOUS_RELEASE:
+      case DrupalCoreVersion::PREVIOUS_RELEASE():
         $version = $this->drupalCoreVersionFinder->getPreviousMinorRelease();
         break;
 
-      case self::PREVIOUS_DEV:
+      case DrupalCoreVersion::PREVIOUS_DEV():
         $version = $this->drupalCoreVersionFinder->getPreviousDevVersion();
         break;
 
-      case self::CURRENT_RECOMMENDED:
+      case DrupalCoreVersion::CURRENT_RECOMMENDED():
         $version = $this->drupalCoreVersionFinder->getCurrentRecommendedRelease();
         break;
 
-      case self::CURRENT_DEV:
+      case DrupalCoreVersion::CURRENT_DEV():
         $version = $this->drupalCoreVersionFinder->getCurrentDevVersion();
         break;
 
-      case self::NEXT_RELEASE:
+      case DrupalCoreVersion::NEXT_RELEASE():
         $version = $this->drupalCoreVersionFinder->getNextRelease();
         break;
 
-      case self::NEXT_DEV:
+      case DrupalCoreVersion::NEXT_DEV():
         $version = $this->drupalCoreVersionFinder->getNextDevVersion();
         break;
     }

@@ -2,8 +2,8 @@
 
 namespace Acquia\Orca\Command\Debug;
 
-use Acquia\Orca\Command\Fixture\FixtureInitCommand;
 use Acquia\Orca\Command\StatusCodes;
+use Acquia\Orca\Enum\DrupalCoreVersion;
 use Acquia\Orca\Utility\DrupalCoreVersionFinder;
 use Acquia\Orca\Utility\StatusTable;
 use Symfony\Component\Console\Command\Command;
@@ -56,12 +56,12 @@ class DebugCoreVersionsCommand extends Command {
     $output->writeln('Getting version data via Composer. This takes a while.');
 
     $overview = [
-      $this->getRow(FixtureInitCommand::PREVIOUS_RELEASE),
-      $this->getRow(FixtureInitCommand::PREVIOUS_DEV),
-      $this->getRow(FixtureInitCommand::CURRENT_RECOMMENDED),
-      $this->getRow(FixtureInitCommand::CURRENT_DEV),
-      $this->getRow(FixtureInitCommand::NEXT_RELEASE),
-      $this->getRow(FixtureInitCommand::NEXT_DEV),
+      $this->getRow(DrupalCoreVersion::PREVIOUS_RELEASE()),
+      $this->getRow(DrupalCoreVersion::PREVIOUS_DEV()),
+      $this->getRow(DrupalCoreVersion::CURRENT_RECOMMENDED()),
+      $this->getRow(DrupalCoreVersion::CURRENT_DEV()),
+      $this->getRow(DrupalCoreVersion::NEXT_RELEASE()),
+      $this->getRow(DrupalCoreVersion::NEXT_DEV()),
     ];
 
     (new StatusTable($output))
@@ -73,37 +73,37 @@ class DebugCoreVersionsCommand extends Command {
   /**
    * Gets a table row for a given version constant.
    *
-   * @param string $version_constant
+   * @param \Acquia\Orca\Enum\DrupalCoreVersion $core_version
    *   The version constant.
    *
    * @return array
    *   A table row.
    */
-  private function getRow(string $version_constant): array {
-    $row = [$version_constant];
+  private function getRow(DrupalCoreVersion $core_version): array {
+    $row = [$core_version];
     try {
-      switch ($version_constant) {
-        case FixtureInitCommand::PREVIOUS_RELEASE:
+      switch ($core_version) {
+        case DrupalCoreVersion::PREVIOUS_RELEASE():
           $row[] = $this->drupalCoreVersionFinder->getPreviousMinorRelease();
           break;
 
-        case FixtureInitCommand::PREVIOUS_DEV:
+        case DrupalCoreVersion::PREVIOUS_DEV():
           $row[] = $this->drupalCoreVersionFinder->getPreviousDevVersion();
           break;
 
-        case FixtureInitCommand::CURRENT_RECOMMENDED:
+        case DrupalCoreVersion::CURRENT_RECOMMENDED():
           $row[] = $this->drupalCoreVersionFinder->getCurrentRecommendedRelease();
           break;
 
-        case FixtureInitCommand::CURRENT_DEV:
+        case DrupalCoreVersion::CURRENT_DEV():
           $row[] = $this->drupalCoreVersionFinder->getCurrentDevVersion();
           break;
 
-        case FixtureInitCommand::NEXT_RELEASE:
+        case DrupalCoreVersion::NEXT_RELEASE():
           $row[] = $this->drupalCoreVersionFinder->getNextRelease();
           break;
 
-        case FixtureInitCommand::NEXT_DEV:
+        case DrupalCoreVersion::NEXT_DEV():
           $row[] = $this->drupalCoreVersionFinder->getNextDevVersion();
           break;
       }

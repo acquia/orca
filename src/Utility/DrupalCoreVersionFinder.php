@@ -39,7 +39,7 @@ class DrupalCoreVersionFinder {
    * @return string
    *   The version string, e.g., "8.5.14.0".
    *
-   * @see \Acquia\Orca\Command\Fixture\FixtureInitCommand::PREVIOUS_RELEASE
+   * @see \Acquia\Orca\Enum\DrupalCoreVersion::PREVIOUS_RELEASE()
    */
   public function getPreviousMinorRelease(): string {
     if ($this->previousMinorRelease) {
@@ -55,7 +55,7 @@ class DrupalCoreVersionFinder {
    * @return string
    *   The version string, e.g., "8.5.x-dev".
    *
-   * @see \Acquia\Orca\Command\Fixture\FixtureInitCommand::PREVIOUS_DEV
+   * @see \Acquia\Orca\Enum\DrupalCoreVersion::PREVIOUS_DEV()
    */
   public function getPreviousDevVersion(): string {
     $previous_minor_version = floatval($this->getCurrentMinorVersion()) - 0.1;
@@ -68,7 +68,7 @@ class DrupalCoreVersionFinder {
    * @return string
    *   The version string, e.g., "8.6.14.0".
    *
-   * @see \Acquia\Orca\Command\Fixture\FixtureInitCommand::CURRENT_RECOMMENDED
+   * @see \Acquia\Orca\Enum\DrupalCoreVersion::CURRENT_RECOMMENDED()
    */
   public function getCurrentRecommendedRelease(): string {
     if ($this->currentRecommendedRelease) {
@@ -84,7 +84,7 @@ class DrupalCoreVersionFinder {
    * @return string
    *   The version string, e.g., "8.6.x-dev".
    *
-   * @see \Acquia\Orca\Command\Fixture\FixtureInitCommand::CURRENT_DEV
+   * @see \Acquia\Orca\Enum\DrupalCoreVersion::CURRENT_DEV()
    */
   public function getCurrentDevVersion(): string {
     return "{$this->getCurrentMinorVersion()}.x-dev";
@@ -96,7 +96,7 @@ class DrupalCoreVersionFinder {
    * @return string
    *   The version string, e.g., "8.7.0.0-beta2".
    *
-   * @see \Acquia\Orca\Command\Fixture\FixtureInitCommand::NEXT_RELEASE
+   * @see \Acquia\Orca\Enum\DrupalCoreVersion::NEXT_RELEASE()
    */
   public function getNextRelease(): string {
     if ($this->nextRelease) {
@@ -112,7 +112,7 @@ class DrupalCoreVersionFinder {
    * @return string
    *   The version string, e.g., "8.7.x-dev".
    *
-   * @see \Acquia\Orca\Command\Fixture\FixtureInitCommand::NEXT_DEV
+   * @see \Acquia\Orca\Enum\DrupalCoreVersion::NEXT_DEV()
    */
   public function getNextDevVersion(): string {
     $previous_minor_version = floatval($this->getCurrentMinorVersion()) + 0.1;
