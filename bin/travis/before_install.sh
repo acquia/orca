@@ -31,9 +31,6 @@ for CONFIG_VAR in "${CONFIG_VARS[@]}"; do
 done
 set -v
 
-# Make Composer Patches throw an error when it can't apply a patch.
-export COMPOSER_EXIT_ON_PATCH_FAILURE=1
-
 # The remaining before_install commands should only be run on Travis CI.
 [[ "$TRAVIS" ]] || exit 0
 

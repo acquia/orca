@@ -289,6 +289,31 @@ class FixtureInitCommandTest extends CommandTestBase {
     ];
   }
 
+  /**
+   * @dataProvider providerIgnorePatchFailureOption
+   */
+  public function testIgnorePatchFailureOption($options, $num_calls) {
+    $this->fixtureCreator
+      ->setComposerExitOnPatchFailure(FALSE)
+      ->shouldBeCalledTimes($num_calls);
+    $this->fixtureCreator
+      ->create()
+      ->shouldBeCalledTimes(1);
+    $tester = $this->createCommandTester();
+
+    $this->executeCommand($tester, FixtureInitCommand::getDefaultName(), $options);
+
+    $this->assertEquals("", $tester->getDisplay(), 'Displayed correct output.');
+    $this->assertEquals(StatusCodes::OK, $tester->getStatusCode(), 'Returned correct status code.');
+  }
+
+  public function providerIgnorePatchFailureOption() {
+    return [
+      [['--ignore-patch-failure' => TRUE], 1],
+      [[], 0],
+    ];
+  }
+
   public function testFixtureCreationFailure() {
     $exception_message = 'Failed to create fixture.';
 

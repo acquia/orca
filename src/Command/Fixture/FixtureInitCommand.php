@@ -116,9 +116,13 @@ class FixtureInitCommand extends Command {
       ->setAliases(['init'])
       ->setDescription('Creates the test fixture')
       ->setHelp('Creates a BLT-based Drupal site build, includes the system under test using Composer, optionally includes all other Acquia packages, and installs Drupal.')
+
+      // Fundamental options.
       ->addOption('force', 'f', InputOption::VALUE_NONE, 'If the fixture already exists, remove it first without confirmation')
       ->addOption('sut', NULL, InputOption::VALUE_REQUIRED, 'The system under test (SUT) in the form of its package name, e.g., "drupal/example"')
       ->addOption('sut-only', NULL, InputOption::VALUE_NONE, 'Add only the system under test (SUT). Omit all other non-required Acquia packages')
+
+      // Common options.
       ->addOption('bare', NULL, InputOption::VALUE_NONE, 'Omit all non-required Acquia packages')
       ->addOption('core', NULL, InputOption::VALUE_REQUIRED, implode(PHP_EOL, [
         'Change the version of Drupal core installed:',
@@ -132,6 +136,9 @@ class FixtureInitCommand extends Command {
       ]))
       ->addOption('dev', NULL, InputOption::VALUE_NONE, 'Use dev versions of Acquia packages')
       ->addOption('profile', NULL, InputOption::VALUE_REQUIRED, 'The Drupal installation profile to use, e.g., "lightning"', FixtureCreator::DEFAULT_PROFILE)
+
+      // Uncommon options.
+      ->addOption('ignore-patch-failure', NULL, InputOption::VALUE_NONE, 'Do not exit on failure to apply Composer patches. (Useful for debugging failures)')
       ->addOption('no-sqlite', NULL, InputOption::VALUE_NONE, 'Use the default BLT database includes instead of SQLite')
       ->addOption('no-site-install', NULL, InputOption::VALUE_NONE, 'Do not install Drupal. Supersedes the "--profile" option');
   }
@@ -154,8 +161,9 @@ class FixtureInitCommand extends Command {
     $this->setSut($sut);
     $this->setSutOnly($sut_only);
     $this->setBare($bare);
-    $this->setDev($input->getOption('dev'));
+    $this->setComposerExitOnPatchFailure($input->getOption('ignore-patch-failure'));
     $this->setCore($core, $input->getOption('dev'));
+    $this->setDev($input->getOption('dev'));
     $this->setProfile($input->getOption('profile'));
     $this->setSiteInstall($input->getOption('no-site-install'));
     $this->setSqlite($input->getOption('no-sqlite'));
@@ -297,6 +305,18 @@ class FixtureInitCommand extends Command {
   private function setDev($dev): void {
     if ($dev) {
       $this->fixtureCreator->setDev($dev);
+    }
+  }
+
+  /**
+   * Sets the Composer exit on failure flag.
+   *
+   * @param string|string[]|bool|null $ignore
+   *   The ignore-patch-failure flag.
+   */
+  private function setComposerExitOnPatchFailure($ignore): void {
+    if ($ignore) {
+      $this->fixtureCreator->setComposerExitOnPatchFailure(FALSE);
     }
   }
 

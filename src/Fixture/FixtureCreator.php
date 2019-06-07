@@ -29,6 +29,13 @@ class FixtureCreator {
   private $acquiaExtensionEnabler;
 
   /**
+   * The Composer exit on patch failure flag.
+   *
+   * @var bool
+   */
+  private $composerExitOnPatchFailure = TRUE;
+
+  /**
    * The Drupal core version override.
    *
    * @var string|null
@@ -174,6 +181,7 @@ class FixtureCreator {
    */
   public function create(): void {
     $this->createBltProject();
+    $this->configureBltProject();
     $this->fixDefaultDependencies();
     $this->addAcquiaPackages();
     $this->addComposerExtraData();
@@ -194,6 +202,16 @@ class FixtureCreator {
    */
   public function setBare(bool $is_bare): void {
     $this->isBare = $is_bare;
+  }
+
+  /**
+   * Sets the Composer exit on patch failure flag.
+   *
+   * @param bool $exit
+   *   TRUE to exit on Composer patch failure or FALSE not to.
+   */
+  public function setComposerExitOnPatchFailure(bool $exit): void {
+    $this->composerExitOnPatchFailure = $exit;
   }
 
   /**
@@ -265,13 +283,21 @@ class FixtureCreator {
       $command[] = '--stability=dev';
     }
     $this->processRunner->runOrcaVendorBin($command);
+  }
+
+  /**
+   * Configures the BLT project.
+   */
+  private function configureBltProject(): void {
+    $this->loadComposerJson();
 
     // Prevent errors later because "Source directory docroot/core has
     // uncommitted changes" after "Removing package drupal/core so that it can
     // be re-installed and re-patched".
     // @see https://drupal.stackexchange.com/questions/273859
-    $this->loadComposerJson();
     $this->jsonConfigSource->addConfigSetting('discard-changes', TRUE);
+
+    $this->jsonConfigSource->addProperty('extra.composer-exit-on-patch-failure', $this->composerExitOnPatchFailure);
   }
 
   /**
