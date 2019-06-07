@@ -57,6 +57,13 @@ class FixtureCreator {
   private $installSite = TRUE;
 
   /**
+   * The bare flag.
+   *
+   * @var bool
+   */
+  private $isBare = FALSE;
+
+  /**
    * The dev flag.
    *
    * @var bool
@@ -169,6 +176,7 @@ class FixtureCreator {
     $this->createBltProject();
     $this->fixDefaultDependencies();
     $this->addAcquiaPackages();
+    $this->addComposerExtraData();
     $this->installCloudHooks();
     $this->ensureDrupalSettings();
     $this->installDrupal();
@@ -176,6 +184,16 @@ class FixtureCreator {
     $this->enableAcquiaExtensions();
     $this->createAndCheckoutBackupTag();
     $this->displayStatus();
+  }
+
+  /**
+   * Sets the bare flag.
+   *
+   * @param bool $is_bare
+   *   TRUE for bare or FALSE otherwise.
+   */
+  public function setBare(bool $is_bare): void {
+    $this->isBare = $is_bare;
   }
 
   /**
@@ -301,11 +319,15 @@ class FixtureCreator {
     }
 
     // Require additional packages.
-    $this->processRunner->runOrcaVendorBin(array_merge([
+    $command = [
       'composer',
       'require',
-      '--no-update',
-    ], $additions), $fixture_path);
+    ];
+    if (!$this->isBare) {
+      $command[] = '--no-update';
+    }
+    $command = array_merge($command, $additions);
+    $this->processRunner->runOrcaVendorBin($command, $fixture_path);
   }
 
   /**
@@ -316,9 +338,9 @@ class FixtureCreator {
    */
   private function getUnwantedPackageList(): array {
     $packages = $this->packageManager->getMultiple();
-    if ($this->isSutOnly) {
-      // Don't remove BLT, because it won't be replaced in a SUT-only fixture,
-      // and a fixture cannot be successfully built without it.
+    if ($this->isBare || $this->isSutOnly) {
+      // Don't remove BLT because it won't be replaced in a bare or SUT-only
+      // fixture, and a fixture cannot be successfully built without it.
       unset($packages['acquia/blt']);
     }
     return array_keys($packages);
@@ -331,10 +353,13 @@ class FixtureCreator {
    *   If the SUT isn't properly installed.
    */
   private function addAcquiaPackages(): void {
+    if ($this->isBare) {
+      return;
+    }
+
     $this->output->section('Adding Acquia packages');
     $this->addTopLevelAcquiaPackages();
     $this->addSutSubextensions();
-    $this->addComposerExtraData();
     $this->commitCodeChanges('Added Acquia packages.');
   }
 
@@ -386,6 +411,7 @@ class FixtureCreator {
     $this->jsonConfigSource->addProperty('extra.orca', [
       'sut' => ($this->sut) ? $this->sut->getPackageName() : NULL,
       'is-sut-only' => $this->isSutOnly,
+      'is-bare' => $this->isBare,
       'is-dev' => $this->isDev,
     ]);
   }
@@ -759,6 +785,10 @@ PHP;
       return;
     }
 
+    if ($this->isBare) {
+      return;
+    }
+
     if ($this->isSutOnly && !$this->sut->isDrupalExtension()) {
       // No extensions to enable because the fixture is SUT-only and the SUT is
       // not a Drupal extension.
@@ -782,7 +812,7 @@ PHP;
   /**
    * Displays the fixture status.
    */
-  private function displayStatus() {
+  private function displayStatus(): void {
     $this->output->section('Fixture created:');
     (new StatusTable($this->output))
       ->setRows($this->fixtureInspector->getOverview())

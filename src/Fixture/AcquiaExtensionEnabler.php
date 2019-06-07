@@ -33,6 +33,13 @@ class AcquiaExtensionEnabler {
   private $fixture;
 
   /**
+   * The bare flag.
+   *
+   * @var bool
+   */
+  private $isBare = FALSE;
+
+  /**
    * The output decorator.
    *
    * @var \Symfony\Component\Console\Style\SymfonyStyle
@@ -91,25 +98,31 @@ class AcquiaExtensionEnabler {
    * @throws \Exception
    */
   public function enable(): void {
-    $this->getSutSettingsFromFixture();
+    $this->getFixtureSettings();
     $this->enableAcquiaExtensions();
   }
 
   /**
-   * Gets the SUT settings from the fixture.
+   * Gets the fixture settings.
    *
    * @throws \Exception
    */
-  private function getSutSettingsFromFixture(): void {
+  private function getFixtureSettings(): void {
     $config = $this->configLoader->load($this->fixture->getPath('composer.json'));
     $this->setSut($config->get('extra.orca.sut'));
     $this->setSutOnly($config->get('extra.orca.is-sut-only', FALSE));
+    $this->isBare = $config->get('extra.orca.is-bare', FALSE);
   }
 
   /**
    * Enables the Acquia extensions.
    */
   private function enableAcquiaExtensions(): void {
+    if ($this->isBare) {
+      $this->output->warning('No extensions to enable because the fixture is bare');
+      return;
+    }
+
     if ($this->isSutOnly && !$this->sut->isDrupalExtension()) {
       $this->output->warning('No extensions to enable because the fixture is SUT-only and the SUT is not a Drupal extension');
       return;

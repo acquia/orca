@@ -160,10 +160,7 @@ class FixtureInitCommandTest extends CommandTestBase {
 
   public function testBareOption() {
     $this->fixtureCreator
-      ->setSut('acquia/blt')
-      ->shouldBeCalledTimes(1);
-    $this->fixtureCreator
-      ->setSutOnly(TRUE)
+      ->setBare(TRUE)
       ->shouldBeCalledTimes(1);
     $this->fixtureCreator
       ->create()
@@ -187,7 +184,7 @@ class FixtureInitCommandTest extends CommandTestBase {
 
     $this->executeCommand($tester, FixtureInitCommand::getDefaultName(), $options);
 
-    $this->assertEquals("Error: Cannot create a bare fixture with a SUT.\nHint: \"--bare\" already implies \"--sut=acquia/blt --sut-only\".\n", $tester->getDisplay(), 'Displayed correct output.');
+    $this->assertEquals("Error: Cannot create a bare fixture with a SUT.\n", $tester->getDisplay(), 'Displayed correct output.');
     $this->assertEquals(StatusCodes::ERROR, $tester->getStatusCode(), 'Returned correct status code.');
   }
 

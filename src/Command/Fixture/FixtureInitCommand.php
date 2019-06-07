@@ -139,7 +139,7 @@ class FixtureInitCommand extends Command {
       ->addOption('force', 'f', InputOption::VALUE_NONE, 'If the fixture already exists, remove it first without confirmation')
       ->addOption('sut', NULL, InputOption::VALUE_REQUIRED, 'The system under test (SUT) in the form of its package name, e.g., "drupal/example"')
       ->addOption('sut-only', NULL, InputOption::VALUE_NONE, 'Add only the system under test (SUT). Omit all other non-required Acquia packages')
-      ->addOption('bare', NULL, InputOption::VALUE_NONE, 'Omit all non-required Acquia packages. This is equivalent to "--sut=acquia/blt --sut-only"')
+      ->addOption('bare', NULL, InputOption::VALUE_NONE, 'Omit all non-required Acquia packages')
       ->addOption('core', NULL, InputOption::VALUE_REQUIRED, implode(PHP_EOL, [
         'Change the version of Drupal core installed:',
         sprintf('- %s: The latest release of the previous minor version, e.g., "8.5.14" if the current minor version is 8.6', self::PREVIOUS_RELEASE),
@@ -171,13 +171,9 @@ class FixtureInitCommand extends Command {
       return StatusCodes::ERROR;
     }
 
-    if ($bare) {
-      $sut = 'acquia/blt';
-      $sut_only = TRUE;
-    }
-
     $this->setSut($sut);
     $this->setSutOnly($sut_only);
+    $this->setBare($bare);
     $this->setDev($input->getOption('dev'));
     $this->setCore($core, $input->getOption('dev'));
     $this->setProfile($input->getOption('profile'));
@@ -226,10 +222,7 @@ class FixtureInitCommand extends Command {
    */
   private function isValidInput($sut, $sut_only, $bare, $core, OutputInterface $output): bool {
     if ($bare && $sut) {
-      $output->writeln([
-        'Error: Cannot create a bare fixture with a SUT.',
-        'Hint: "--bare" already implies "--sut=acquia/blt --sut-only".',
-      ]);
+      $output->writeln('Error: Cannot create a bare fixture with a SUT.');
       return FALSE;
     }
 
@@ -300,6 +293,18 @@ class FixtureInitCommand extends Command {
   private function setSutOnly($sut_only): void {
     if ($sut_only) {
       $this->fixtureCreator->setSutOnly(TRUE);
+    }
+  }
+
+  /**
+   * Sets the bare flag.
+   *
+   * @param string|string[]|bool|null $bare
+   *   The bare flag.
+   */
+  private function setBare($bare): void {
+    if ($bare) {
+      $this->fixtureCreator->setBare(TRUE);
     }
   }
 
