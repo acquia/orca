@@ -106,6 +106,13 @@ class FixtureCreator {
   private $packageManager;
 
   /**
+   * The prefer source flag.
+   *
+   * @var bool
+   */
+  private $preferSource = FALSE;
+
+  /**
    * The process runner.
    *
    * @var \Acquia\Orca\Utility\ProcessRunner
@@ -245,6 +252,16 @@ class FixtureCreator {
   }
 
   /**
+   * Sets the prefer source flag.
+   *
+   * @param bool $prefer_source
+   *   TRUE to prefer source, or FALSE not to.
+   */
+  public function setPreferSource(bool $prefer_source): void {
+    $this->preferSource = $prefer_source;
+  }
+
+  /**
    * Sets the installation profile.
    *
    * @param string $profile
@@ -352,6 +369,9 @@ class FixtureCreator {
       'composer',
       'require',
     ];
+    if ($this->preferSource) {
+      $command[] = '--prefer-source';
+    }
     if (!$this->isBare) {
       $command[] = '--no-update';
     }
@@ -449,11 +469,15 @@ class FixtureCreator {
    * Requires the top-level Acquia packages via Composer.
    */
   private function composerRequireTopLevelAcquiaPackages(): void {
-    $this->processRunner->runOrcaVendorBin(array_merge([
+    $command = [
       'composer',
       'require',
       '--no-interaction',
-    ], $this->getAcquiaPackageDependencies()), $this->fixture->getPath());
+    ];
+    if ($this->preferSource) {
+      $command[] = '--prefer-source';
+    }
+    $this->processRunner->runOrcaVendorBin(array_merge($command, $this->getAcquiaPackageDependencies()), $this->fixture->getPath());
   }
 
   /**

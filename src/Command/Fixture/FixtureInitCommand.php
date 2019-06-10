@@ -140,7 +140,8 @@ class FixtureInitCommand extends Command {
       // Uncommon options.
       ->addOption('ignore-patch-failure', NULL, InputOption::VALUE_NONE, 'Do not exit on failure to apply Composer patches. (Useful for debugging failures)')
       ->addOption('no-sqlite', NULL, InputOption::VALUE_NONE, 'Use the default BLT database includes instead of SQLite')
-      ->addOption('no-site-install', NULL, InputOption::VALUE_NONE, 'Do not install Drupal. Supersedes the "--profile" option');
+      ->addOption('no-site-install', NULL, InputOption::VALUE_NONE, 'Do not install Drupal. Supersedes the "--profile" option')
+      ->addOption('prefer-source', NULL, InputOption::VALUE_NONE, 'Force installation from package sources when possible, including VCS information. Useful for core and contrib work');
   }
 
   /**
@@ -164,6 +165,7 @@ class FixtureInitCommand extends Command {
     $this->setComposerExitOnPatchFailure($input->getOption('ignore-patch-failure'));
     $this->setCore($core, $input->getOption('dev'));
     $this->setDev($input->getOption('dev'));
+    $this->setPreferSource($input->getOption('prefer-source'));
     $this->setProfile($input->getOption('profile'));
     $this->setSiteInstall($input->getOption('no-site-install'));
     $this->setSqlite($input->getOption('no-sqlite'));
@@ -363,6 +365,18 @@ class FixtureInitCommand extends Command {
         break;
     }
     $this->fixtureCreator->setCoreVersion($version);
+  }
+
+  /**
+   * Sets the prefer source flag.
+   *
+   * @param string|string[]|bool|null $prefer_source
+   *   The prefer-source flag.
+   */
+  private function setPreferSource($prefer_source): void {
+    if ($prefer_source) {
+      $this->fixtureCreator->setPreferSource($prefer_source);
+    }
   }
 
   /**

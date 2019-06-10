@@ -328,6 +328,21 @@ class FixtureInitCommandTest extends CommandTestBase {
     $this->assertContains("[ERROR] {$exception_message}", $tester->getDisplay(), 'Displayed correct output.');
   }
 
+  public function testPreferSourceOption() {
+    $this->fixtureCreator
+      ->setPreferSource(TRUE)
+      ->shouldBeCalledTimes(1);
+    $this->fixtureCreator
+      ->create()
+      ->shouldBeCalledTimes(1);
+    $tester = $this->createCommandTester();
+
+    $this->executeCommand($tester, FixtureInitCommand::getDefaultName(), ['--prefer-source' => TRUE]);
+
+    $this->assertEquals('', $tester->getDisplay(), 'Displayed correct output.');
+    $this->assertEquals(StatusCodes::OK, $tester->getStatusCode(), 'Returned correct status code.');
+  }
+
   public function testSutPreconditionTestFailure() {
     $sut_name = 'drupal/example';
     $exception_message = 'Failed to create fixture.';
