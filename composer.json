@@ -54,6 +54,9 @@
         "sort-packages": true
     },
     "extra": {
+        "chromedriver": {
+            "version": "74.0.3729.6"
+        },
         "hooks": {
             "pre-commit": [
                 "set -e",
@@ -64,8 +67,7 @@
             "post-update-cmd": "vendor/bin/cghooks update"
         },
         "lbaey/chromedriver": {
-            "bypass-select": true,
-            "chromedriver-version": "2.45"
+            "bypass-select": true
         },
         "patches": {
             "localheinz/composer-normalize": {
