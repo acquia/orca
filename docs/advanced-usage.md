@@ -26,7 +26,7 @@ These affect ORCA only as invoked via the Travis CI scripts.
         - { name: "Custom job", env: ORCA_JOB=CUSTOM ORCA_CUSTOM_FIXTURE_INIT_ARGS="--profile=lightning" }
     ```
 
-* <a name="ORCA_CUSTOM_TESTS_RUN_ARGS"></a>**`ORCA_CUSTOM_TESTS_RUN_ARGS`**: Add command-line arguments to the `tests:run` invocation in the [`script`](../bin/travis/script.sh) build phase of a custom job. Example:
+* <a name="ORCA_CUSTOM_TESTS_RUN_ARGS"></a>**`ORCA_CUSTOM_TESTS_RUN_ARGS`**: Add command-line arguments to the `qa:automated-tests` invocation in the [`script`](../bin/travis/script.sh) build phase of a custom job. Example:
 
     ```yaml
     matrix:

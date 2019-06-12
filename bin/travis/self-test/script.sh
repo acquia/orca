@@ -14,7 +14,7 @@ cd "$(dirname "$0")"; source ../_includes.sh
 if [[ "$ORCA_JOB" = "STATIC_CODE_ANALYSIS" ]]; then
   cd ../../../
   ./vendor/bin/security-checker security:check
-  ./bin/orca static-analysis:run ./
+  ./bin/orca qa:static-analysis ./
   ./vendor/bin/phpunit
   cd -
 fi
