@@ -40,7 +40,7 @@ class FixtureEnableExtensionsCommandTest extends CommandTestBase {
     if ($exception) {
       $this->acquiaModuleEnabler
         ->enable()
-        ->willThrow(OrcaException::class);
+        ->willThrow($exception);
     }
     $tester = $this->createCommandTester();
 
@@ -53,7 +53,7 @@ class FixtureEnableExtensionsCommandTest extends CommandTestBase {
   public function providerCommand() {
     return [
       [FALSE, 0, FALSE, StatusCodes::ERROR, sprintf("Error: No fixture exists at %s.\n", self::FIXTURE_ROOT)],
-      [TRUE, 1, TRUE, StatusCodes::ERROR, ''],
+      [TRUE, 1, new OrcaException('Oops.'), StatusCodes::ERROR, "\n [ERROR] Oops.                                                                  \n\n"],
       [TRUE, 1, FALSE, StatusCodes::OK, ''],
     ];
   }
