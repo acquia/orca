@@ -13,6 +13,13 @@ use Symfony\Component\Finder\Finder;
 class SubextensionManager {
 
   /**
+   * The active packages config alter data.
+   *
+   * @var array
+   */
+  private $alterData = [];
+
+  /**
    * The config loader.
    *
    * @var \Acquia\Orca\Utility\ConfigLoader
@@ -63,6 +70,7 @@ class SubextensionManager {
     $this->configLoader = $config_loader;
     $this->filesystem = $filesystem;
     $this->fixture = $fixture;
+    $this->alterData = $package_manager->getAlterData();
     $this->topLevelExtensions = array_merge(
       $package_manager->getMultiple('drupal-module'),
       $package_manager->getMultiple('drupal-theme')
@@ -116,7 +124,13 @@ class SubextensionManager {
       catch (\Exception $e) {
         continue;
       }
+
       $name = $config->get('name');
+
+      if (array_key_exists($name, $this->alterData) && is_null($this->alterData[$name])) {
+        continue;
+      }
+
       $install_path = str_replace("{$this->fixture->getPath()}/", '', $file->getPath());
       $package_data = [
         'type' => $config->get('type'),
@@ -126,6 +140,12 @@ class SubextensionManager {
         'version_dev' => '@dev',
         'enable' => $this->shouldExtensionGetEnabled($config, $install_path),
       ];
+
+      if (isset($this->alterData[$name])) {
+        $alter_data = array_intersect_key($this->alterData[$name], $package_data);
+        $package_data = array_replace($package_data, $alter_data);
+      }
+
       $subextensions[$name] = new Package($this->fixture, $name, $package_data);
     }
     return $subextensions;
