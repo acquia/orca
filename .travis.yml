@@ -49,4 +49,7 @@ before_script: ../orca/bin/travis/before_script.sh
 script:
   - ../orca/bin/travis/self-test/script.sh
   - ../orca/bin/travis/script.sh
+  - ../orca/bin/travis/before_cache.sh
+  - ../orca/bin/travis/after_success.sh
   - ../orca/bin/travis/after_failure.sh
+  - ../orca/bin/travis/after_script.sh
