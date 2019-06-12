@@ -8,38 +8,20 @@ use Acquia\Orca\Fixture\FixtureCreator;
 use Acquia\Orca\Fixture\PackageManager;
 use Acquia\Orca\Fixture\FixtureRemover;
 use Acquia\Orca\Fixture\Fixture;
+use Acquia\Orca\Fixture\SutPreconditionsTester;
+use Acquia\Orca\Enum\DrupalCoreVersion;
 use Acquia\Orca\Utility\DrupalCoreVersionFinder;
 use Composer\Semver\VersionParser;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
  * Provides a command.
  */
 class FixtureInitCommand extends Command {
-
-  public const CORE_OPTION_SPECIAL_VALUES = [
-    self::PREVIOUS_RELEASE,
-    self::PREVIOUS_DEV,
-    self::CURRENT_RECOMMENDED,
-    self::CURRENT_DEV,
-    self::NEXT_RELEASE,
-    self::NEXT_DEV,
-  ];
-
-  public const PREVIOUS_RELEASE = 'PREVIOUS_RELEASE';
-
-  public const PREVIOUS_DEV = 'PREVIOUS_DEV';
-
-  public const CURRENT_RECOMMENDED = 'CURRENT_RECOMMENDED';
-
-  public const CURRENT_DEV = 'CURRENT_DEV';
-
-  public const NEXT_RELEASE = 'NEXT_RELEASE';
-
-  public const NEXT_DEV = 'NEXT_DEV';
 
   /**
    * The default command name.
@@ -84,6 +66,13 @@ class FixtureInitCommand extends Command {
   private $packageManager;
 
   /**
+   * The SUT preconditions tester.
+   *
+   * @var \Acquia\Orca\Fixture\SutPreconditionsTester
+   */
+  private $sutPreconditionsTester;
+
+  /**
    * The version parser.
    *
    * @var \Composer\Semver\VersionParser
@@ -103,15 +92,18 @@ class FixtureInitCommand extends Command {
    *   The fixture remover.
    * @param \Acquia\Orca\Fixture\PackageManager $package_manager
    *   The package manager.
+   * @param \Acquia\Orca\Fixture\SutPreconditionsTester $sut_preconditions_tester
+   *   The SUT preconditions tester.
    * @param \Composer\Semver\VersionParser $version_parser
    *   The version parser.
    */
-  public function __construct(DrupalCoreVersionFinder $drupal_core_version_finder, Fixture $fixture, FixtureCreator $fixture_creator, FixtureRemover $fixture_remover, PackageManager $package_manager, VersionParser $version_parser) {
+  public function __construct(DrupalCoreVersionFinder $drupal_core_version_finder, Fixture $fixture, FixtureCreator $fixture_creator, FixtureRemover $fixture_remover, PackageManager $package_manager, SutPreconditionsTester $sut_preconditions_tester, VersionParser $version_parser) {
     $this->drupalCoreVersionFinder = $drupal_core_version_finder;
     $this->fixture = $fixture;
     $this->fixtureCreator = $fixture_creator;
     $this->fixtureRemover = $fixture_remover;
     $this->packageManager = $package_manager;
+    $this->sutPreconditionsTester = $sut_preconditions_tester;
     $this->versionParser = $version_parser;
     parent::__construct(self::$defaultName);
   }
@@ -124,23 +116,32 @@ class FixtureInitCommand extends Command {
       ->setAliases(['init'])
       ->setDescription('Creates the test fixture')
       ->setHelp('Creates a BLT-based Drupal site build, includes the system under test using Composer, optionally includes all other Acquia packages, and installs Drupal.')
+
+      // Fundamental options.
       ->addOption('force', 'f', InputOption::VALUE_NONE, 'If the fixture already exists, remove it first without confirmation')
       ->addOption('sut', NULL, InputOption::VALUE_REQUIRED, 'The system under test (SUT) in the form of its package name, e.g., "drupal/example"')
       ->addOption('sut-only', NULL, InputOption::VALUE_NONE, 'Add only the system under test (SUT). Omit all other non-required Acquia packages')
+
+      // Common options.
+      ->addOption('bare', NULL, InputOption::VALUE_NONE, 'Omit all non-required Acquia packages')
       ->addOption('core', NULL, InputOption::VALUE_REQUIRED, implode(PHP_EOL, [
         'Change the version of Drupal core installed:',
-        sprintf('- %s: The latest release of the previous minor version, e.g., "8.5.14" if the current minor version is 8.6', self::PREVIOUS_RELEASE),
-        sprintf('- %s: The development version of the previous minor version, e.g., "8.5.x-dev"', self::PREVIOUS_DEV),
-        sprintf('- %s: The current recommended release, e.g., "8.6.14"', self::CURRENT_RECOMMENDED),
-        sprintf('- %s: The current development version, e.g., "8.6.x-dev"', self::CURRENT_DEV),
-        sprintf('- %s: The next release version if available, e.g., "8.7.0-beta2"', self::NEXT_RELEASE),
-        sprintf('- %s: The next development version, e.g., "8.7.x-dev"', self::NEXT_DEV),
+        sprintf('- %s: The latest release of the previous minor version, e.g., "8.5.14" if the current minor version is 8.6', DrupalCoreVersion::PREVIOUS_RELEASE()),
+        sprintf('- %s: The development version of the previous minor version, e.g., "8.5.x-dev"', DrupalCoreVersion::PREVIOUS_DEV()),
+        sprintf('- %s: The current recommended release, e.g., "8.6.14"', DrupalCoreVersion::CURRENT_RECOMMENDED()),
+        sprintf('- %s: The current development version, e.g., "8.6.x-dev"', DrupalCoreVersion::CURRENT_DEV()),
+        sprintf('- %s: The next release version if available, e.g., "8.7.0-beta2"', DrupalCoreVersion::NEXT_RELEASE()),
+        sprintf('- %s: The next development version, e.g., "8.7.x-dev"', DrupalCoreVersion::NEXT_DEV()),
         '- Any version string Composer understands, see https://getcomposer.org/doc/articles/versions.md',
       ]))
       ->addOption('dev', NULL, InputOption::VALUE_NONE, 'Use dev versions of Acquia packages')
       ->addOption('profile', NULL, InputOption::VALUE_REQUIRED, 'The Drupal installation profile to use, e.g., "lightning"', FixtureCreator::DEFAULT_PROFILE)
+
+      // Uncommon options.
+      ->addOption('ignore-patch-failure', NULL, InputOption::VALUE_NONE, 'Do not exit on failure to apply Composer patches. (Useful for debugging failures)')
       ->addOption('no-sqlite', NULL, InputOption::VALUE_NONE, 'Use the default BLT database includes instead of SQLite')
-      ->addOption('no-site-install', NULL, InputOption::VALUE_NONE, 'Do not install Drupal. Supersedes the "--profile" option');
+      ->addOption('no-site-install', NULL, InputOption::VALUE_NONE, 'Do not install Drupal. Supersedes the "--profile" option')
+      ->addOption('prefer-source', NULL, InputOption::VALUE_NONE, 'Force installation from package sources when possible, including VCS information. Useful for core and contrib work');
   }
 
   /**
@@ -149,38 +150,43 @@ class FixtureInitCommand extends Command {
    * @throws \Exception
    */
   public function execute(InputInterface $input, OutputInterface $output): int {
+    $bare = $input->getOption('bare');
     $sut = $input->getOption('sut');
     $sut_only = $input->getOption('sut-only');
     $core = $input->getOption('core');
 
-    if (!$this->isValidInput($sut, $sut_only, $core, $output)) {
+    if (!$this->isValidInput($sut, $sut_only, $bare, $core, $output)) {
       return StatusCodes::ERROR;
-    }
-
-    if ($this->fixture->exists()) {
-      if (!$input->getOption('force')) {
-        $output->writeln([
-          "Error: Fixture already exists at {$this->fixture->getPath()}.",
-          'Hint: Use the "--force" option to remove it and proceed.',
-        ]);
-        return StatusCodes::ERROR;
-      }
-
-      $this->fixtureRemover->remove();
     }
 
     $this->setSut($sut);
     $this->setSutOnly($sut_only);
-    $this->setDev($input->getOption('dev'));
+    $this->setBare($bare);
+    $this->setComposerExitOnPatchFailure($input->getOption('ignore-patch-failure'));
     $this->setCore($core, $input->getOption('dev'));
+    $this->setDev($input->getOption('dev'));
+    $this->setPreferSource($input->getOption('prefer-source'));
     $this->setProfile($input->getOption('profile'));
-    $this->setSqlite($input->getOption('no-sqlite'));
     $this->setSiteInstall($input->getOption('no-site-install'));
+    $this->setSqlite($input->getOption('no-sqlite'));
 
     try {
+      $this->testPreconditions($sut);
+      if ($this->fixture->exists()) {
+        if (!$input->getOption('force')) {
+          $output->writeln([
+            "Error: Fixture already exists at {$this->fixture->getPath()}.",
+            'Hint: Use the "--force" option to remove it and proceed.',
+          ]);
+          return StatusCodes::ERROR;
+        }
+        $this->fixtureRemover->remove();
+      }
       $this->fixtureCreator->create();
     }
     catch (OrcaException $e) {
+      (new SymfonyStyle($input, $output))
+        ->error($e->getMessage());
       return StatusCodes::ERROR;
     }
 
@@ -194,6 +200,8 @@ class FixtureInitCommand extends Command {
    *   The "sut" option value.
    * @param string|string[]|bool|null $sut_only
    *   The "sut-only" option value.
+   * @param string|string[]|bool|null $bare
+   *   The "bare" option value.
    * @param string|string[]|bool|null $core
    *   The "core" option value.
    * @param \Symfony\Component\Console\Output\OutputInterface $output
@@ -202,11 +210,16 @@ class FixtureInitCommand extends Command {
    * @return bool
    *   TRUE if the command input is valid or FALSE if not.
    */
-  private function isValidInput($sut, $sut_only, $core, OutputInterface $output): bool {
+  private function isValidInput($sut, $sut_only, $bare, $core, OutputInterface $output): bool {
+    if ($bare && $sut) {
+      $output->writeln('Error: Cannot create a bare fixture with a SUT.');
+      return FALSE;
+    }
+
     if ($core && !$this->isValidCoreValue($core)) {
       $output->writeln([
         sprintf('Error: Invalid value for "--core" option: "%s".', $core),
-        sprintf('Hint: Acceptable values are "%s", or any version string Composer understands.', implode('", "', self::CORE_OPTION_SPECIAL_VALUES)),
+        sprintf('Hint: Acceptable values are "%s", or any version string Composer understands.', implode('", "', DrupalCoreVersion::values())),
       ]);
       return FALSE;
     }
@@ -237,7 +250,7 @@ class FixtureInitCommand extends Command {
    *   TRUE if the value is valid or FALSE if not.
    */
   private function isValidCoreValue($core): bool {
-    if (in_array($core, self::CORE_OPTION_SPECIAL_VALUES)) {
+    if (in_array($core, DrupalCoreVersion::values())) {
       return TRUE;
     }
     try {
@@ -274,6 +287,18 @@ class FixtureInitCommand extends Command {
   }
 
   /**
+   * Sets the bare flag.
+   *
+   * @param string|string[]|bool|null $bare
+   *   The bare flag.
+   */
+  private function setBare($bare): void {
+    if ($bare) {
+      $this->fixtureCreator->setBare(TRUE);
+    }
+  }
+
+  /**
    * Sets the dev flag.
    *
    * @param string|string[]|bool|null $dev
@@ -282,6 +307,18 @@ class FixtureInitCommand extends Command {
   private function setDev($dev): void {
     if ($dev) {
       $this->fixtureCreator->setDev($dev);
+    }
+  }
+
+  /**
+   * Sets the Composer exit on failure flag.
+   *
+   * @param string|string[]|bool|null $ignore
+   *   The ignore-patch-failure flag.
+   */
+  private function setComposerExitOnPatchFailure($ignore): void {
+    if ($ignore) {
+      $this->fixtureCreator->setComposerExitOnPatchFailure(FALSE);
     }
   }
 
@@ -295,7 +332,7 @@ class FixtureInitCommand extends Command {
    */
   private function setCore($version, $dev): void {
     if ($dev && !$version) {
-      $version = self::CURRENT_DEV;
+      $version = DrupalCoreVersion::CURRENT_DEV();
     }
 
     if (!$version) {
@@ -303,31 +340,43 @@ class FixtureInitCommand extends Command {
     }
 
     switch ($version) {
-      case self::PREVIOUS_RELEASE:
+      case DrupalCoreVersion::PREVIOUS_RELEASE():
         $version = $this->drupalCoreVersionFinder->getPreviousMinorRelease();
         break;
 
-      case self::PREVIOUS_DEV:
+      case DrupalCoreVersion::PREVIOUS_DEV():
         $version = $this->drupalCoreVersionFinder->getPreviousDevVersion();
         break;
 
-      case self::CURRENT_RECOMMENDED:
+      case DrupalCoreVersion::CURRENT_RECOMMENDED():
         $version = $this->drupalCoreVersionFinder->getCurrentRecommendedRelease();
         break;
 
-      case self::CURRENT_DEV:
+      case DrupalCoreVersion::CURRENT_DEV():
         $version = $this->drupalCoreVersionFinder->getCurrentDevVersion();
         break;
 
-      case self::NEXT_RELEASE:
+      case DrupalCoreVersion::NEXT_RELEASE():
         $version = $this->drupalCoreVersionFinder->getNextRelease();
         break;
 
-      case self::NEXT_DEV:
+      case DrupalCoreVersion::NEXT_DEV():
         $version = $this->drupalCoreVersionFinder->getNextDevVersion();
         break;
     }
     $this->fixtureCreator->setCoreVersion($version);
+  }
+
+  /**
+   * Sets the prefer source flag.
+   *
+   * @param string|string[]|bool|null $prefer_source
+   *   The prefer-source flag.
+   */
+  private function setPreferSource($prefer_source): void {
+    if ($prefer_source) {
+      $this->fixtureCreator->setPreferSource($prefer_source);
+    }
   }
 
   /**
@@ -363,6 +412,21 @@ class FixtureInitCommand extends Command {
   private function setSqlite($no_sqlite): void {
     if ($no_sqlite) {
       $this->fixtureCreator->setSqlite(FALSE);
+    }
+  }
+
+  /**
+   * Tests preconditions.
+   *
+   * @param string|string[]|bool|null $sut
+   *   The SUT.
+   *
+   * @throws \Acquia\Orca\Exception\OrcaException
+   *   If preconditions are not satisfied.
+   */
+  private function testPreconditions($sut) {
+    if ($sut) {
+      $this->sutPreconditionsTester->test($sut);
     }
   }
 

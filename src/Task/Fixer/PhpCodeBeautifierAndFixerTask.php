@@ -1,21 +1,21 @@
 <?php
 
-namespace Acquia\Orca\Task\StaticAnalysisTool;
+namespace Acquia\Orca\Task\Fixer;
 
 use Acquia\Orca\Exception\TaskFailureException;
 use Acquia\Orca\Task\TaskBase;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 
 /**
- * Sniffs for coding standards violations.
+ * Automatically fixes coding standards violations.
  */
-class PhpCodeSnifferTask extends TaskBase {
+class PhpCodeBeautifierAndFixerTask extends TaskBase {
 
   /**
    * {@inheritdoc}
    */
   public function statusMessage(): string {
-    return 'Sniffing for coding standards violations';
+    return 'Fixing coding standards violations';
   }
 
   /**
@@ -24,7 +24,7 @@ class PhpCodeSnifferTask extends TaskBase {
   public function execute(): void {
     $this->overrideConfig();
     try {
-      $this->runPhpcs();
+      $this->runPhpcbf();
     }
     catch (ProcessFailedException $e) {
       throw new TaskFailureException();
@@ -35,10 +35,10 @@ class PhpCodeSnifferTask extends TaskBase {
   }
 
   /**
-   * Runs phpcs.
+   * Runs phpcbf.
    */
-  public function runPhpcs(): void {
-    $this->processRunner->runOrcaVendorBin(['phpcs', '-s'], $this->getPath());
+  public function runPhpcbf(): void {
+    $this->processRunner->runOrcaVendorBin(['phpcbf'], $this->getPath());
   }
 
   /**

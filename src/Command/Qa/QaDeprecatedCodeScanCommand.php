@@ -1,6 +1,6 @@
 <?php
 
-namespace Acquia\Orca\Command\DeprecatedCodeScan;
+namespace Acquia\Orca\Command\Qa;
 
 use Acquia\Orca\Command\StatusCodes;
 use Acquia\Orca\Fixture\Fixture;
@@ -15,14 +15,14 @@ use Symfony\Component\Console\Output\OutputInterface;
 /**
  * Provides a command.
  */
-class DeprecatedCodeScanRunCommand extends Command {
+class QaDeprecatedCodeScanCommand extends Command {
 
   /**
    * The default command name.
    *
    * @var string
    */
-  protected static $defaultName = 'deprecated-code-scan:run';
+  protected static $defaultName = 'qa:deprecated-code-scan';
 
   /**
    * The fixture.
@@ -91,7 +91,10 @@ class DeprecatedCodeScanRunCommand extends Command {
    */
   protected function configure() {
     $this
-      ->setAliases(['phpstan'])
+      ->setAliases([
+        'deprecations',
+        'phpstan',
+      ])
       ->setDescription('Scans for deprecated code')
       ->addOption('sut', NULL, InputOption::VALUE_REQUIRED, 'Scan the system under test (SUT). Provide its package name, e.g., "drupal/example"')
       ->addOption('contrib', NULL, InputOption::VALUE_NONE, 'Scan contributed projects');

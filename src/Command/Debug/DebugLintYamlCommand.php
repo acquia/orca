@@ -1,20 +1,20 @@
 <?php
 
-namespace Acquia\Orca\Command\Lint;
+namespace Acquia\Orca\Command\Debug;
 
 use Symfony\Component\Yaml\Command\LintCommand;
 
 /**
  * Provides a command.
  */
-class LintYamlCommand extends LintCommand {
+class DebugLintYamlCommand extends LintCommand {
 
   /**
    * The default command name.
    *
    * @var string
    */
-  protected static $defaultName = 'lint:yaml';
+  protected static $defaultName = 'debug:lint-yaml';
 
   /**
    * {@inheritdoc}

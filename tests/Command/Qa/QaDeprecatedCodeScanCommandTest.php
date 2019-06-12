@@ -1,8 +1,8 @@
 <?php
 
-namespace Acquia\Orca\Tests\Command\StaticAnalysis;
+namespace Acquia\Orca\Tests\Command\Qa;
 
-use Acquia\Orca\Command\DeprecatedCodeScan\DeprecatedCodeScanRunCommand;
+use Acquia\Orca\Command\Qa\QaDeprecatedCodeScanCommand;
 use Acquia\Orca\Command\StatusCodes;
 use Acquia\Orca\Fixture\Fixture;
 use Acquia\Orca\Fixture\PackageManager;
@@ -18,7 +18,7 @@ use Symfony\Component\Console\Tester\CommandTester;
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Task\DeprecatedCodeScanner\PhpStanTask $phpstan
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Task\TaskRunner $taskRunner
  */
-class DeprecatedCodeScanRunCommandTest extends CommandTestBase {
+class QaDeprecatedCodeScanCommandTest extends CommandTestBase {
 
   protected function setUp() {
     $this->fixture = $this->prophesize(Fixture::class);
@@ -55,7 +55,7 @@ class DeprecatedCodeScanRunCommandTest extends CommandTestBase {
       ->willReturn($status_code);
     $tester = $this->createCommandTester();
 
-    $this->executeCommand($tester, DeprecatedCodeScanRunCommand::getDefaultName(), $args);
+    $this->executeCommand($tester, QaDeprecatedCodeScanCommand::getDefaultName(), $args);
 
     $this->assertEquals($display, $tester->getDisplay(), 'Displayed correct output.');
     $this->assertEquals($status_code, $tester->getStatusCode(), 'Returned correct status code.');
@@ -82,10 +82,10 @@ class DeprecatedCodeScanRunCommandTest extends CommandTestBase {
     $phpstan = $this->phpstan->reveal();
     /** @var \Acquia\Orca\Task\TaskRunner $task_runner */
     $task_runner = $this->taskRunner->reveal();
-    $application->add(new DeprecatedCodeScanRunCommand($fixture, $package_manager, $phpstan, $task_runner));
-    /** @var \Acquia\Orca\Command\Tests\TestsRunCommand $command */
-    $command = $application->find(DeprecatedCodeScanRunCommand::getDefaultName());
-    $this->assertInstanceOf(DeprecatedCodeScanRunCommand::class, $command, 'Instantiated class.');
+    $application->add(new QaDeprecatedCodeScanCommand($fixture, $package_manager, $phpstan, $task_runner));
+    /** @var \Acquia\Orca\Command\Qa\QaAutomatedTestsCommand $command */
+    $command = $application->find(QaDeprecatedCodeScanCommand::getDefaultName());
+    $this->assertInstanceOf(QaDeprecatedCodeScanCommand::class, $command, 'Instantiated class.');
     return new CommandTester($command);
   }
 

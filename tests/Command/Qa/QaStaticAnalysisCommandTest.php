@@ -1,8 +1,8 @@
 <?php
 
-namespace Acquia\Orca\Tests\Command\StaticAnalysis;
+namespace Acquia\Orca\Tests\Command\Qa;
 
-use Acquia\Orca\Command\StaticAnalysis\StaticAnalysisRunCommand;
+use Acquia\Orca\Command\Qa\QaStaticAnalysisCommand;
 use Acquia\Orca\Command\StatusCodes;
 use Acquia\Orca\Task\StaticAnalysisTool\ComposerValidateTask;
 use Acquia\Orca\Task\StaticAnalysisTool\PhpCodeSnifferTask;
@@ -24,7 +24,7 @@ use Symfony\Component\Filesystem\Filesystem;
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Task\TaskRunner $taskRunner
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Task\StaticAnalysisTool\YamlLintTask $yamlLint
  */
-class StaticAnalysisRunCommandTest extends CommandTestBase {
+class QaStaticAnalysisCommandTest extends CommandTestBase {
 
   private const SUT_PATH = '/var/www/example';
 
@@ -76,7 +76,7 @@ class StaticAnalysisRunCommandTest extends CommandTestBase {
       ->willReturn($status_code);
     $tester = $this->createCommandTester();
 
-    $this->executeCommand($tester, StaticAnalysisRunCommand::getDefaultName(), ['path' => self::SUT_PATH]);
+    $this->executeCommand($tester, QaStaticAnalysisCommand::getDefaultName(), ['path' => self::SUT_PATH]);
 
     $this->assertEquals($display, $tester->getDisplay(), 'Displayed correct output.');
     $this->assertEquals($status_code, $tester->getStatusCode(), 'Returned correct status code.');
@@ -113,7 +113,7 @@ class StaticAnalysisRunCommandTest extends CommandTestBase {
       ->willReturn(StatusCodes::OK);
     $tester = $this->createCommandTester();
 
-    $this->executeCommand($tester, StaticAnalysisRunCommand::getDefaultName(), $args);
+    $this->executeCommand($tester, QaStaticAnalysisCommand::getDefaultName(), $args);
 
     $this->assertEquals('', $tester->getDisplay(), 'Displayed correct output.');
     $this->assertEquals(StatusCodes::OK, $tester->getStatusCode(), 'Returned correct status code.');
@@ -145,10 +145,10 @@ class StaticAnalysisRunCommandTest extends CommandTestBase {
     $task_runner = $this->taskRunner->reveal();
     /** @var \Acquia\Orca\Task\StaticAnalysisTool\YamlLintTask $yaml_lint */
     $yaml_lint = $this->yamlLint->reveal();
-    $application->add(new StaticAnalysisRunCommand($composer_validate, $filesystem, $php_code_sniffer, $php_lint, $php_mess_detector, $task_runner, $yaml_lint));
-    /** @var \Acquia\Orca\Command\Tests\TestsRunCommand $command */
-    $command = $application->find(StaticAnalysisRunCommand::getDefaultName());
-    $this->assertInstanceOf(StaticAnalysisRunCommand::class, $command, 'Instantiated class.');
+    $application->add(new QaStaticAnalysisCommand($composer_validate, $filesystem, $php_code_sniffer, $php_lint, $php_mess_detector, $task_runner, $yaml_lint));
+    /** @var \Acquia\Orca\Command\Qa\QaAutomatedTestsCommand $command */
+    $command = $application->find(QaStaticAnalysisCommand::getDefaultName());
+    $this->assertInstanceOf(QaStaticAnalysisCommand::class, $command, 'Instantiated class.');
     return new CommandTester($command);
   }
 

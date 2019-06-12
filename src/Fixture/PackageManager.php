@@ -11,6 +11,13 @@ use Symfony\Component\Yaml\Parser;
 class PackageManager {
 
   /**
+   * The packages config alter data, if provided.
+   *
+   * @var array
+   */
+  private $alterData = [];
+
+  /**
    * The filesystem.
    *
    * @var \Symfony\Component\Filesystem\Filesystem
@@ -97,6 +104,16 @@ class PackageManager {
   }
 
   /**
+   * Gets the packages config alter data.
+   *
+   * @return array
+   *   An array of data keyed by package name.
+   */
+  public function getAlterData(): array {
+    return $this->alterData;
+  }
+
+  /**
    * Gets an array of packages or package values, optionally filtered by type.
    *
    * @param string|null $type
@@ -134,7 +151,8 @@ class PackageManager {
   private function initializePackages(Fixture $fixture, string $packages_config, ?string $packages_config_alter): void {
     $data = $this->parseYamlFile("{$this->projectDir}/{$packages_config}");
     if ($packages_config_alter) {
-      $data = array_merge($data, $this->parseYamlFile("{$this->projectDir}/{$packages_config_alter}"));
+      $this->alterData = $this->parseYamlFile("{$this->projectDir}/{$packages_config_alter}");
+      $data = array_merge($data, $this->alterData);
     }
     foreach ($data as $package_name => $datum) {
       // Skipping a falsy datum provides for a package to be effectively removed

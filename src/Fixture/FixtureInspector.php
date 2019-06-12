@@ -126,9 +126,14 @@ class FixtureInspector {
    * Gets the fixture type.
    *
    * @return string
-   *   The fixture type, i.e., "No SUT", "SUT-only", "Standard", or "Unknown".
+   *   The fixture type, i.e., "Bare", "No SUT", "SUT-only", "Standard", or
+   *   "Unknown".
    */
   private function getFixtureType(): string {
+    if ($this->getIsBare()) {
+      return 'Bare';
+    }
+
     if (!$this->getSutName()) {
       return 'No SUT';
     }
@@ -140,6 +145,22 @@ class FixtureInspector {
     }
 
     return $this->getComposerJson()->get($key) ? 'SUT-only' : 'Standard';
+  }
+
+  /**
+   * Determines whether or not the fixture is bare.
+   *
+   * @return bool
+   *   TRUE if the fixture is bare or FALSE if not.
+   */
+  private function getIsBare(): bool {
+    $key = 'extra.orca.is-bare';
+
+    if (!$this->getComposerJson()->has($key)) {
+      return FALSE;
+    }
+
+    return (bool) $this->getComposerJson()->get($key);
   }
 
   /**

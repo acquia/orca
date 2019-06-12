@@ -9,11 +9,11 @@
 #   to the fixture root, e.g., docroot/modules/contrib/example.
 #   Used internally for Drupal subextensions. Defaults by "type" to match the
 #   "installer-paths" patterns specified by BLT.
-# - "url": (optional) The path, absolute or relative to the fixture root, of a
-#   local clone of the package. Used for the "url" property of the
-#   Composer path repository used to symlink the system under test (SUT) into
-#   place. Defaults to a directory adjacent to the fixture root named the
-#   Composer project name, e.g., "../example" for a "drupal/example" project.
+# - "url": (optional) The path, absolute or relative to the root of a local
+#   clone of the package. Used for the "url" property of the Composer path
+#   repository used to symlink the system under test (SUT) into place. Defaults
+#   to a directory adjacent to the fixture root named the Composer project name,
+#   e.g., "../example" for a "drupal/example" project.
 # - "version": (optional) The recommended package version to require via
 #   Composer. Defaults to "*". Any version string Composer understands is
 #   acceptable. @see https://getcomposer.org/doc/articles/versions.md
@@ -92,9 +92,6 @@ drupal/lightning_media:
 drupal/lightning_workflow:
   url: ../lightning-workflow
   version_dev: '2.x-dev || 3.x-dev'
-
-drupal/mautic:
-  version_dev: 1.x-dev
 
 #drupal/media_acquiadam:
 #  version_dev: 1.x-dev

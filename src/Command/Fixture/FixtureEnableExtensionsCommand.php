@@ -8,6 +8,7 @@ use Acquia\Orca\Fixture\Fixture;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
  * Provides a command.
@@ -54,12 +55,7 @@ class FixtureEnableExtensionsCommand extends Command {
    */
   protected function configure() {
     $this
-      ->setAliases([
-        'enexts',
-        // Backward compatibility alias.
-        // @todo Remove this once Lightning no longer uses it.
-        'fixture:enable-modules',
-      ])
+      ->setAliases(['enexts'])
       ->setDescription('Enables all Acquia Drupal extensions');
   }
 
@@ -76,6 +72,8 @@ class FixtureEnableExtensionsCommand extends Command {
       $this->acquiaExtensionEnabler->enable();
     }
     catch (\Exception $e) {
+      $io = new SymfonyStyle($input, $output);
+      $io->error($e->getMessage());
       return StatusCodes::ERROR;
     }
 

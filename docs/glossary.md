@@ -1,5 +1,6 @@
 # Project Glossary
 
+* [Bare fixture](#bare-fixture)
 * [Behat](#behat)
 * [BLT](#blt)
 * [Fixture](#test-fixture)
@@ -20,6 +21,10 @@
 * [SUT-only fixture](#sut-only-fixture)
 * [System Under Test](#sut)
 * [Test fixture](#test-fixture)
+
+## Bare fixture
+
+A [test fixture](#test-fixture) that neither includes nor installs any [SUT](#sut) or other Acquia packages (except of course for BLT which is the foundation of all fixtures).
 
 ## Behat
 

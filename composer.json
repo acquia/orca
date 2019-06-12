@@ -10,6 +10,7 @@
         }
     ],
     "require": {
+        "php": ">=7.1",
         "ext-dom": "*",
         "ext-json": "*",
         "ext-sqlite3": "*",
@@ -24,6 +25,7 @@
         "lbaey/chromedriver": "^1.1",
         "localheinz/composer-normalize": "^0.9.0",
         "mglaman/phpstan-drupal-deprecations": "^0.11.1",
+        "myclabs/php-enum": "^1.7",
         "pheromone/phpcs-security-audit": "^2.0",
         "phpcompatibility/php-compatibility": "^9.0",
         "phpmd/phpmd": "^2.6",
@@ -63,6 +65,7 @@
                 "vendor/bin/parallel-lint --exclude vendor --no-progress .",
                 "vendor/bin/phpcs --cache=var/.phpcs-cache"
             ],
+            "pre-push": "vendor/bin/phpcs",
             "post-install-cmd": "vendor/bin/cghooks add --ignore-lock",
             "post-update-cmd": "vendor/bin/cghooks update"
         },

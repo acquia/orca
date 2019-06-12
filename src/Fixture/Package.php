@@ -54,7 +54,8 @@ class Package {
    *     project.
    *   - "version": (optional) The recommended package version to require via
    *     Composer. Defaults to "*".
-   *   - "version": (required) The dev package version to require via Composer.
+   *   - "version_dev": (required) The dev package version to require via
+   *     Composer.
    */
   public function __construct(Fixture $fixture, string $package_name, array $data) {
     $this->fixture = $fixture;

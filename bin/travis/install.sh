@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # NAME
-#     install.sh - Install Travis CI dependencies.
+#     install.sh - Create the test fixture.
 #
 # SYNOPSIS
 #     install.sh
@@ -12,6 +12,8 @@
 cd "$(dirname "$0")" || exit; source _includes.sh
 
 assert_env_vars
+
+orca debug:packages
 
 case "$ORCA_JOB" in
   "DEPRECATED_CODE_SCAN_SUT") eval "orca fixture:init -f --sut=$ORCA_SUT_NAME --sut-only --no-site-install" ;;

@@ -1,6 +1,6 @@
 <?php
 
-namespace Acquia\Orca\Command\StaticAnalysis;
+namespace Acquia\Orca\Command\Qa;
 
 use Acquia\Orca\Command\StatusCodes;
 use Acquia\Orca\Task\StaticAnalysisTool\ComposerValidateTask;
@@ -19,7 +19,7 @@ use Symfony\Component\Filesystem\Filesystem;
 /**
  * Provides a command.
  */
-class StaticAnalysisRunCommand extends Command {
+class QaStaticAnalysisCommand extends Command {
 
   /**
    * The Composer validate task.
@@ -75,7 +75,7 @@ class StaticAnalysisRunCommand extends Command {
    *
    * @var string
    */
-  protected static $defaultName = 'static-analysis:run';
+  protected static $defaultName = 'qa:static-analysis';
 
   /**
    * Constructs an instance.

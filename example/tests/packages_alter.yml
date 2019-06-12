@@ -8,3 +8,6 @@ drupal/bad_judgement: ~
 # Add the Example module.
 drupal/example:
   version_dev: "dev-master"
+
+# Remove the Example Submodule: Remove module.
+drupal/example_submodule_remove: ~

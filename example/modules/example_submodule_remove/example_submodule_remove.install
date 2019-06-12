@@ -11,6 +11,6 @@
  * @throws \Exception
  *   If run.
  */
-function hook_example_submodule_do_not_enable_install() {
-  throw new \Exception('Failed to respect subextension enabling opt out for example_submodule_do_not_enable.');
+function hook_example_submodule_remove_install() {
+  throw new \Exception('Failed to remove submodule example_submodule_remove via ORCA_PACKAGES_CONFIG_ALTER.');
 }

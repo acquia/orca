@@ -32,6 +32,9 @@ class SubextensionManagerTest extends TestCase {
     /** @var \Acquia\Orca\Fixture\Fixture $fixture */
     $fixture = $this->fixture->reveal();
     $this->packageManager
+      ->getAlterData()
+      ->willReturn([]);
+    $this->packageManager
       ->getMultiple('drupal-module')
       ->willReturn([]);
     $this->packageManager

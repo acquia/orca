@@ -72,6 +72,7 @@ ORCA includes out-of-the-box support for Travis CI for continuous integration. T
 | Deprecated code scan |           :white_circle:          |           :black_circle:          |           :white_circle:           |            :white_circle:            |                       :white_circle:                      |       :white_circle:       |        :white_circle:        |                  :white_circle:                 |
 | Automated tests      |           :white_circle:          |           :white_circle:          |           :black_circle:           |            :black_circle:            |                       :black_circle:                      |       :black_circle:       |        :black_circle:        |                  :black_circle:                 |
 | Allow failure        |           :white_circle:          |           :white_circle:          |           :white_circle:           |            :white_circle:            |                       :white_circle:                      |       :black_circle:       |        :black_circle:        |                  :black_circle:                 |
+
 See [Configuring Travis CI](getting-started.md#configuring-travis-ci).
 
 ---

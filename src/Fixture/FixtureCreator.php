@@ -29,6 +29,13 @@ class FixtureCreator {
   private $acquiaExtensionEnabler;
 
   /**
+   * The Composer exit on patch failure flag.
+   *
+   * @var bool
+   */
+  private $composerExitOnPatchFailure = TRUE;
+
+  /**
    * The Drupal core version override.
    *
    * @var string|null
@@ -55,6 +62,13 @@ class FixtureCreator {
    * @var bool
    */
   private $installSite = TRUE;
+
+  /**
+   * The bare flag.
+   *
+   * @var bool
+   */
+  private $isBare = FALSE;
 
   /**
    * The dev flag.
@@ -90,6 +104,13 @@ class FixtureCreator {
    * @var \Acquia\Orca\Fixture\PackageManager
    */
   private $packageManager;
+
+  /**
+   * The prefer source flag.
+   *
+   * @var bool
+   */
+  private $preferSource = FALSE;
 
   /**
    * The process runner.
@@ -166,16 +187,38 @@ class FixtureCreator {
    *   In case of errors.
    */
   public function create(): void {
-    $this->ensurePreconditions();
     $this->createBltProject();
+    $this->configureBltProject();
     $this->fixDefaultDependencies();
     $this->addAcquiaPackages();
+    $this->addComposerExtraData();
     $this->installCloudHooks();
     $this->ensureDrupalSettings();
     $this->installDrupal();
+    $this->setUpFilesDirectories();
     $this->enableAcquiaExtensions();
     $this->createAndCheckoutBackupTag();
     $this->displayStatus();
+  }
+
+  /**
+   * Sets the bare flag.
+   *
+   * @param bool $is_bare
+   *   TRUE for bare or FALSE otherwise.
+   */
+  public function setBare(bool $is_bare): void {
+    $this->isBare = $is_bare;
+  }
+
+  /**
+   * Sets the Composer exit on patch failure flag.
+   *
+   * @param bool $exit
+   *   TRUE to exit on Composer patch failure or FALSE not to.
+   */
+  public function setComposerExitOnPatchFailure(bool $exit): void {
+    $this->composerExitOnPatchFailure = $exit;
   }
 
   /**
@@ -209,6 +252,16 @@ class FixtureCreator {
   }
 
   /**
+   * Sets the prefer source flag.
+   *
+   * @param bool $prefer_source
+   *   TRUE to prefer source, or FALSE not to.
+   */
+  public function setPreferSource(bool $prefer_source): void {
+    $this->preferSource = $prefer_source;
+  }
+
+  /**
    * Sets the installation profile.
    *
    * @param string $profile
@@ -229,68 +282,39 @@ class FixtureCreator {
   }
 
   /**
-   * Ensures that the preconditions for creating the fixture are satisfied.
-   *
-   * @throws \Acquia\Orca\Exception\OrcaException
-   *   If the preconditions are not met.
-   */
-  private function ensurePreconditions() {
-    // There are no preconditions if there is no SUT.
-    if (!$this->sut) {
-      return;
-    }
-
-    $this->output->section('Checking preconditions');
-
-    $sut_repo = $this->fixture->getPath($this->sut->getRepositoryUrl());
-
-    if (!is_dir($sut_repo)) {
-      $this->output->error(sprintf('SUT is absent from expected location: %s', $sut_repo));
-      throw new OrcaException();
-    }
-    $this->output->comment(sprintf('SUT is present at expected location: %s', $sut_repo));
-
-    $composer_json = new JsonFile("{$sut_repo}/composer.json");
-    if (!$composer_json->exists()) {
-      $this->output->error(sprintf('SUT is missing root composer.json'));
-      throw new OrcaException();
-    }
-    $this->output->comment('SUT contains root composer.json');
-
-    $data = $composer_json->read();
-
-    $actual_name = isset($data['name']) ? $data['name'] : NULL;
-    $expected_name = $this->sut->getPackageName();
-    if ($actual_name !== $expected_name) {
-      $this->output->error(sprintf("SUT composer.json's 'name' value %s does not match expected %s", var_export($actual_name, TRUE), var_export($expected_name, TRUE)));
-      throw new OrcaException();
-    }
-    $this->output->comment(sprintf("SUT composer.json's 'name' value matches expected %s", var_export($expected_name, TRUE)));
-  }
-
-  /**
    * Creates a BLT project.
    */
   private function createBltProject(): void {
     $this->output->section('Creating BLT project');
-    $this->processRunner->runOrcaVendorBin([
+    $command = [
       'composer',
       'create-project',
-      '--stability=dev',
       '--no-dev',
       '--no-scripts',
       '--no-install',
       '--no-interaction',
       'acquia/blt-project',
       $this->fixture->getPath(),
-    ]);
+    ];
+    if ($this->sut === 'acquia/blt' || $this->isDev) {
+      $command[] = '--stability=dev';
+    }
+    $this->processRunner->runOrcaVendorBin($command);
+  }
+
+  /**
+   * Configures the BLT project.
+   */
+  private function configureBltProject(): void {
+    $this->loadComposerJson();
 
     // Prevent errors later because "Source directory docroot/core has
     // uncommitted changes" after "Removing package drupal/core so that it can
     // be re-installed and re-patched".
     // @see https://drupal.stackexchange.com/questions/273859
-    $this->loadComposerJson();
     $this->jsonConfigSource->addConfigSetting('discard-changes', TRUE);
+
+    $this->jsonConfigSource->addProperty('extra.composer-exit-on-patch-failure', $this->composerExitOnPatchFailure);
   }
 
   /**
@@ -341,11 +365,18 @@ class FixtureCreator {
     }
 
     // Require additional packages.
-    $this->processRunner->runOrcaVendorBin(array_merge([
+    $command = [
       'composer',
       'require',
-      '--no-update',
-    ], $additions), $fixture_path);
+    ];
+    if ($this->preferSource) {
+      $command[] = '--prefer-source';
+    }
+    if (!$this->isBare) {
+      $command[] = '--no-update';
+    }
+    $command = array_merge($command, $additions);
+    $this->processRunner->runOrcaVendorBin($command, $fixture_path);
   }
 
   /**
@@ -356,9 +387,9 @@ class FixtureCreator {
    */
   private function getUnwantedPackageList(): array {
     $packages = $this->packageManager->getMultiple();
-    if ($this->isSutOnly) {
-      // Don't remove BLT, because it won't be replaced in a SUT-only fixture,
-      // and a fixture cannot be successfully built without it.
+    if ($this->isBare || $this->isSutOnly) {
+      // Don't remove BLT because it won't be replaced in a bare or SUT-only
+      // fixture, and a fixture cannot be successfully built without it.
       unset($packages['acquia/blt']);
     }
     return array_keys($packages);
@@ -371,10 +402,13 @@ class FixtureCreator {
    *   If the SUT isn't properly installed.
    */
   private function addAcquiaPackages(): void {
+    if ($this->isBare) {
+      return;
+    }
+
     $this->output->section('Adding Acquia packages');
     $this->addTopLevelAcquiaPackages();
     $this->addSutSubextensions();
-    $this->addComposerExtraData();
     $this->commitCodeChanges('Added Acquia packages.');
   }
 
@@ -426,6 +460,7 @@ class FixtureCreator {
     $this->jsonConfigSource->addProperty('extra.orca', [
       'sut' => ($this->sut) ? $this->sut->getPackageName() : NULL,
       'is-sut-only' => $this->isSutOnly,
+      'is-bare' => $this->isBare,
       'is-dev' => $this->isDev,
     ]);
   }
@@ -434,11 +469,15 @@ class FixtureCreator {
    * Requires the top-level Acquia packages via Composer.
    */
   private function composerRequireTopLevelAcquiaPackages(): void {
-    $this->processRunner->runOrcaVendorBin(array_merge([
+    $command = [
       'composer',
       'require',
       '--no-interaction',
-    ], $this->getAcquiaPackageDependencies()), $this->fixture->getPath());
+    ];
+    if ($this->preferSource) {
+      $command[] = '--prefer-source';
+    }
+    $this->processRunner->runOrcaVendorBin(array_merge($command, $this->getAcquiaPackageDependencies()), $this->fixture->getPath());
   }
 
   /**
@@ -453,13 +492,11 @@ class FixtureCreator {
 
     $sut_install_path = $this->sut->getInstallPathAbsolute();
     if (!file_exists($sut_install_path)) {
-      $this->output->error('Failed to place SUT at correct path.');
-      throw new OrcaException();
+      throw new OrcaException('Failed to place SUT at correct path.');
     }
     elseif (!is_link($sut_install_path)) {
-      $this->output->error('Failed to symlink SUT via local path repository.');
       $this->displayFailedSymlinkDebuggingInfo();
-      throw new OrcaException();
+      throw new OrcaException('Failed to symlink SUT via local path repository.');
     }
   }
 
@@ -766,12 +803,42 @@ PHP;
   }
 
   /**
+   * Sets up the files directories.
+   *
+   * Ensures the existence of the uploaded files directories and sets
+   * permissions on them.
+   *
+   * @see https://www.drupal.org/docs/7/install/setting-up-the-files-directory
+   */
+  private function setUpFilesDirectories(): void {
+    $this->output->section('Setting up files directories');
+    $directories = [
+      $this->fixture->getPath('sites/all/files'),
+      $this->fixture->getPath('sites/default/files'),
+      $this->fixture->getPath('files-private'),
+    ];
+    $this->processRunner->runExecutable(array_merge([
+      'mkdir',
+      '-p',
+    ], $directories));
+    $this->processRunner->runExecutable(array_merge([
+      'chmod',
+      '-R',
+      '0770',
+    ], $directories));
+  }
+
+  /**
    * Enables the Acquia Drupal extensions.
    *
    * @throws \Exception
    */
   private function enableAcquiaExtensions(): void {
     if (!$this->installSite) {
+      return;
+    }
+
+    if ($this->isBare) {
       return;
     }
 
@@ -798,7 +865,7 @@ PHP;
   /**
    * Displays the fixture status.
    */
-  private function displayStatus() {
+  private function displayStatus(): void {
     $this->output->section('Fixture created:');
     (new StatusTable($this->output))
       ->setRows($this->fixtureInspector->getOverview())

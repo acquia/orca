@@ -1,6 +1,6 @@
 <?php
 
-namespace Acquia\Orca\Command\Tests;
+namespace Acquia\Orca\Command\Qa;
 
 use Acquia\Orca\Exception\OrcaException;
 use Acquia\Orca\Fixture\PackageManager;
@@ -15,14 +15,14 @@ use Symfony\Component\Console\Output\OutputInterface;
 /**
  * Provides a command.
  */
-class TestsRunCommand extends Command {
+class QaAutomatedTestsCommand extends Command {
 
   /**
    * The default command name.
    *
    * @var string
    */
-  protected static $defaultName = 'tests:run';
+  protected static $defaultName = 'qa:automated-tests';
 
   /**
    * The "behat" command line option.

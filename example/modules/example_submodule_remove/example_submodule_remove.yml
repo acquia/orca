@@ -1,0 +1,5 @@
+name: "Example Submodule: Remove"
+type: module
+description: "An example submodule that is removed from the packages config via ORCA_PACKAGES_CONFIG_ALTER."
+package: Other
+core: 8.x
