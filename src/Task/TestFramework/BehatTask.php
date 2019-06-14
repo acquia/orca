@@ -17,6 +17,13 @@ class BehatTask extends TestFrameworkBase {
   /**
    * {@inheritdoc}
    */
+  public function name(): string {
+    return 'Behat';
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function statusMessage(): string {
     $which = ($this->isPublicTestsOnly()) ? 'public' : 'all';
     return "Running {$which} Behat tests";
