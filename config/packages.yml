@@ -36,11 +36,9 @@
 #  version_dev: 1.x-dev
 
 drupal/acquia_connector:
-  url: ../acquia-connector
   version_dev: 1.x-dev
 
 drupal/acquia_contenthub:
-  url: ../content-hub-d8
   version: ~1.0
   version_dev: 1.x-dev
 
@@ -74,23 +72,18 @@ acquia/drupal-spec-tool:
   version_dev: 2.x-dev
 
 drupal/lightning_api:
-  url: ../lightning-api
   version_dev: '3.x-dev || 4.x-dev'
 
 drupal/lightning_core:
-  url: ../lightning-core
   version_dev: '3.x-dev || 4.x-dev'
 
 drupal/lightning_layout:
-  url: ../lightning-layout
   version_dev: '1.x-dev || 2.x-dev'
 
 drupal/lightning_media:
-  url: ../lightning-media
   version_dev: '3.x-dev'
 
 drupal/lightning_workflow:
-  url: ../lightning-workflow
   version_dev: '2.x-dev || 3.x-dev'
 
 #drupal/media_acquiadam:
