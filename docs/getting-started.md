@@ -7,13 +7,16 @@
 
 ## Configuring Travis CI
 
-ORCA's primary use case is in a continuous integration workflow, running against pull requests and commits. It provides several scripts in `bin/travis` corresponding to Travis CI hooks:
+ORCA's primary use case is in a continuous integration workflow, running against pull requests and commits. It provides several scripts in `bin/travis` corresponding to Travis CI phases:
 
 * **[`before_install.sh`](../bin/travis/before_install.sh)** prepares the environment and installs ORCA.
-* **[`install.sh`](../bin/travis/install.sh)** creates the test fixture.
+* **[`install.sh`](../bin/travis/install.sh)** creates the test fixture and places the system under test (SUT).
 * **[`before_script.sh`](../bin/travis/before_script.sh)** displays details about the fixture for debugging purposes.
 * **[`script.sh`](../bin/travis/script.sh)** runs static analysis and automated tests.
+* **[`before_cache.sh`](../bin/travis/before_cache.sh)** is reserved for future use.
+* **[`after_success.sh`](../bin/travis/after_success.sh)** is reserved for future use.
 * **[`after_failure.sh`](../bin/travis/after_failure.sh)** displays debugging information in case of job failure.
+* **[`after_script.sh`](../bin/travis/after_script.sh)** is reserved for future use.
 
 See [`example/.travis.yml`](../example/.travis.yml) for an example Travis CI configuration. Features are explained in the comments.
 
