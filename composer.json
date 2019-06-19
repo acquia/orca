@@ -100,5 +100,9 @@
         "phplint": "parallel-lint --exclude vendor --ignore-fails .",
         "phpmd": "phpmd . text phpmd.xml.dist --ignore-violations-on-exit",
         "phpunit": "phpunit"
+    },
+    "support": {
+        "issues": "https://github.com/acquia/orca/issues",
+        "source": "https://github.com/acquia/orca"
     }
 }
