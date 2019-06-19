@@ -7,6 +7,7 @@
 
 namespace Acquia\Orca;
 
+use Stecman\Component\Symfony\Console\BashCompletion\CompletionCommand;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Debug\Debug;
@@ -48,4 +49,8 @@ $container = $kernel->getContainer();
 $application = $container->get(Application::class);
 $application->setName('ORCA');
 $application->setVersion(trim(file_get_contents(__DIR__ . '/../config/VERSION')));
+
+// Add command autocompletion.
+$application->add(new CompletionCommand());
+
 $application->run();

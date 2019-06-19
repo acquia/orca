@@ -44,6 +44,16 @@ ORCA can also be installed and run locally for testing and development. Follow t
     composer install --no-dev --working-dir="${PARENT_DIR}/orca"
     ```
 
+1. Optionally add command autocompletion to your shell:
+
+    ```bash
+    # Bash:
+    bash $(path/to/orca _completion --generate-hook)
+
+    # Zsh:
+    source <(path/to/orca _completion --generate-hook)
+    ```
+
 Invoke ORCA from the terminal (`bin/orca`). Use the `--help` command option to learn more about the various commands or see how they're used in [`bin/travis/script`](../bin/travis/script). Use the `fixture:run-server` command to run the web server for local development.
 
 ## Designing automated tests
