@@ -14,7 +14,7 @@
         "ext-dom": "*",
         "ext-json": "*",
         "ext-sqlite3": "*",
-        "acquia/coding-standards": "^0.1",
+        "acquia/coding-standards": "^0.2.0",
         "behat/behat": "^3.5",
         "composer/composer": "^1.7",
         "cweagans/composer-patches": "^1.6",

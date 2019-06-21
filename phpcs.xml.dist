@@ -16,6 +16,9 @@
   <exclude-pattern>var/</exclude-pattern>
   <exclude-pattern>vendor/</exclude-pattern>
 
-  <rule ref="AcquiaDrupal"/>
+  <rule ref="AcquiaDrupalStrict"/>
+  <rule ref="DrupalPractice.General.ClassName.ClassPrefix">
+    <exclude-pattern>example/features/*</exclude-pattern>
+  </rule>
 
 </ruleset>

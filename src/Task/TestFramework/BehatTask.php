@@ -40,8 +40,8 @@ class BehatTask extends TestFrameworkBase {
           'behat',
           '-vv',
           '--colors',
-          "--config={$config_file->getPathname()}",
-          "--tags={$this->getTags()}",
+          sprintf('--config=%s', $config_file->getPathname()),
+          sprintf('--tags=%s', $this->getTags()),
         ], $this->fixture->getPath());
       }
     }

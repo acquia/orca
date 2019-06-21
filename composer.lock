@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c383d016fed6b6793e65c5522611bc3f",
+    "content-hash": "c57d3178029947d8a4a9e0523c48e3bc",
     "packages": [
         {
             "name": "acquia/coding-standards",
-            "version": "v0.1.1",
+            "version": "v0.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/acquia/coding-standards-php.git",
-                "reference": "0ee6c69941b4c5182c4e9aa3cb39a3c50019dc9e"
+                "reference": "40a86290fe6b428a5755529cb1ff9688f349ab56"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/acquia/coding-standards-php/zipball/0ee6c69941b4c5182c4e9aa3cb39a3c50019dc9e",
-                "reference": "0ee6c69941b4c5182c4e9aa3cb39a3c50019dc9e",
+                "url": "https://api.github.com/repos/acquia/coding-standards-php/zipball/40a86290fe6b428a5755529cb1ff9688f349ab56",
+                "reference": "40a86290fe6b428a5755529cb1ff9688f349ab56",
                 "shasum": ""
             },
             "require": {
@@ -26,15 +26,19 @@
                 "phpcompatibility/php-compatibility": "^9.0",
                 "squizlabs/php_codesniffer": "^3"
             },
+            "suggest": {
+                "brainmaestro/composer-git-hooks": "Easily manage Git hooks in your composer config.",
+                "dealerdirect/phpcodesniffer-composer-installer": "Automatically install PHP_CodeSniffer coding standards (rulesets)."
+            },
             "type": "phpcodesniffer-standard",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.x-dev"
+                    "dev-develop": "0.x-dev"
                 }
             },
             "autoload": {
                 "psr-4": {
-                    "Acquia\\DrupalCodingStandards\\": "src/"
+                    "Acquia\\CodingStandards\\": "src/"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -54,7 +58,7 @@
                 "phpcs",
                 "standards"
             ],
-            "time": "2019-06-18T17:47:18+00:00"
+            "time": "2019-06-21T15:26:57+00:00"
         },
         {
             "name": "behat/behat",

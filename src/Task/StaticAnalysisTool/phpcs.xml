@@ -14,6 +14,6 @@
   <exclude-pattern>vendor/</exclude-pattern>
   <exclude-pattern>var/</exclude-pattern>
 
-  <rule ref="AcquiaDrupal"/>
+  <rule ref="AcquiaDrupalTransitional"/>
 
 </ruleset>
