@@ -12,24 +12,7 @@
 cd "$(dirname "$0")" || exit; source _includes.sh
 
 # Display configuration values.
-set +v
-CONFIG_VARS=(
-  ORCA_CUSTOM_FIXTURE_INIT_ARGS
-  ORCA_CUSTOM_TESTS_RUN_ARGS
-  ORCA_FIXTURE_DIR
-  ORCA_FIXTURE_PROFILE
-  ORCA_JOB
-  ORCA_PACKAGES_CONFIG
-  ORCA_PACKAGES_CONFIG_ALTER
-  ORCA_ROOT
-  ORCA_SUT_BRANCH
-  ORCA_SUT_DIR
-  ORCA_SUT_NAME
-)
-for CONFIG_VAR in "${CONFIG_VARS[@]}"; do
-  eval "echo ${CONFIG_VAR} = $""$CONFIG_VAR"
-done
-set -v
+printenv | grep ORCA_
 
 # The remaining before_install commands should only be run on Travis CI.
 [[ "$TRAVIS" ]] || exit 0
