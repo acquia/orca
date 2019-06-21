@@ -63,6 +63,11 @@ acquia/blt:
 #acquia/cloud-hooks:
 #  version_dev: dev-master
 
+acquia/coding-standards:
+  type: phpcodesniffer-standard
+  url: ../coding-standards-php
+  version_dev: 0.x-dev
+
 drupal/cog:
   type: drupal-theme
   version_dev: 1.x-dev
