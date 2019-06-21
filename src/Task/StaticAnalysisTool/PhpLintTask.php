@@ -35,6 +35,11 @@ class PhpLintTask extends TaskBase {
       ], $this->getPath());
     }
     catch (ProcessFailedException $e) {
+      // Parallel lint exits with a 255 status code if it doesn't find any PHP
+      // files to lint, which should not be considered a failure.
+      if ($e->getProcess()->getExitCode() == 255) {
+        return;
+      }
       throw new TaskFailureException();
     }
   }
