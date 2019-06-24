@@ -50,6 +50,7 @@
         "sensiolabs/security-checker": "^5.0"
     },
     "config": {
+        "discard-changes": true,
         "preferred-install": {
             "*": "dist"
         },
@@ -68,6 +69,11 @@
             "pre-push": "vendor/bin/phpcs",
             "post-install-cmd": "vendor/bin/cghooks add --ignore-lock",
             "post-update-cmd": "vendor/bin/cghooks update"
+        },
+        "patches": {
+            "pheromone/phpcs-security-audit": {
+                "Fix undefined index error": "https://patch-diff.githubusercontent.com/raw/FloeDesignTechnologies/phpcs-security-audit/pull/41.patch"
+            }
         },
         "phpcodesniffer-search-depth": 4
     },
