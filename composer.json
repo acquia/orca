@@ -22,7 +22,6 @@
         "hassankhan/config": "^2.0",
         "jakub-onderka/php-console-highlighter": "^0.4.0",
         "jakub-onderka/php-parallel-lint": "^1.0",
-        "lbaey/chromedriver": "^1.1",
         "localheinz/composer-normalize": "^1.2",
         "mglaman/phpstan-drupal-deprecations": "^0.11.1",
         "mockery/mockery": "^1.2",
@@ -40,6 +39,7 @@
         "symfony/phpunit-bridge": "^4.2",
         "symfony/process": "^4.1",
         "symfony/yaml": "^4.1",
+        "vaimo/binary-chromedriver": "^5.0",
         "weitzman/drupal-test-traits": "~1.0"
     },
     "conflict": {
@@ -68,9 +68,6 @@
             "pre-push": "vendor/bin/phpcs",
             "post-install-cmd": "vendor/bin/cghooks add --ignore-lock",
             "post-update-cmd": "vendor/bin/cghooks update"
-        },
-        "lbaey/chromedriver": {
-            "bypass-select": true
         },
         "phpcodesniffer-search-depth": 4
     },

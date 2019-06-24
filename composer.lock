@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c0db433eb7475bf83576dc3aea523995",
+    "content-hash": "e5daf2445d22a84c54169cccacb689a5",
     "packages": [
         {
             "name": "acquia/coding-standards",
@@ -5945,33 +5945,43 @@
         },
         {
             "name": "vaimo/binary-chromedriver",
-            "version": "5.0.1",
+            "version": "5.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/vaimo/binary-chromedriver.git",
-                "reference": "811398da2f1356789ad78360fa915b5f7ef4f5ab"
+                "reference": "e4bfef0b7df19f634fceef6189bc054ccebd7a05"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/vaimo/binary-chromedriver/zipball/811398da2f1356789ad78360fa915b5f7ef4f5ab",
-                "reference": "811398da2f1356789ad78360fa915b5f7ef4f5ab",
+                "url": "https://api.github.com/repos/vaimo/binary-chromedriver/zipball/e4bfef0b7df19f634fceef6189bc054ccebd7a05",
+                "reference": "e4bfef0b7df19f634fceef6189bc054ccebd7a05",
                 "shasum": ""
             },
             "require": {
                 "composer-plugin-api": "^1.0",
-                "vaimo/webdriver-binary-downloader": "^2.0.0"
+                "php": ">=5.3.0",
+                "vaimo/webdriver-binary-downloader": "^2.1.0"
             },
             "replace": {
                 "lbaey/chromedriver": "*"
             },
             "require-dev": {
-                "vaimo/composer-changelogs": "^0.9.1"
+                "composer/composer": "^1.0.0",
+                "phpcompatibility/php-compatibility": "^9.1.1",
+                "phpmd/phpmd": "^2.6.0",
+                "phpunit/phpunit": "^4.8.36",
+                "sebastian/phpcpd": "^1.4.3",
+                "squizlabs/php_codesniffer": "^2.9.2",
+                "vaimo/composer-changelogs": "^0.15.4"
             },
             "type": "composer-plugin",
             "extra": {
                 "class": "Vaimo\\ChromeDriver\\Plugin",
                 "changelog": {
-                    "source": "changelog.json"
+                    "source": "changelog.json",
+                    "output": {
+                        "md": "CHANGELOG.md"
+                    }
                 }
             },
             "autoload": {
@@ -6005,7 +6015,7 @@
                 "testing",
                 "webdriver"
             ],
-            "time": "2018-12-12T19:47:00+00:00"
+            "time": "2019-05-02T20:10:57+00:00"
         },
         {
             "name": "vaimo/webdriver-binary-downloader",
