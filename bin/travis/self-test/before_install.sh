@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 
 # NAME
-#     install.sh - Install Travis CI dependencies for ORCA self-tests
+#     before_install.sh - Prepare the environment for ORCA self-tests.
 #
 # SYNOPSIS
-#     install.sh
+#     before_install.sh
 #
 # DESCRIPTION
 #     Places an example SUT.

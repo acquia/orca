@@ -24,6 +24,7 @@ env:
     - ORCA_SUT_BRANCH=master
     - ORCA_PACKAGES_CONFIG=tests/Fixture/packages.yml
     - ORCA_PACKAGES_CONFIG_ALTER=example/tests/packages_alter.yml
+    - ORCA_SUT_DIR=${TRAVIS_BUILD_DIR}/../example
 
 matrix:
   fast_finish: true
@@ -38,17 +39,19 @@ matrix:
     - { name: "Integrated test w/ dev package versions & next minor dev version of Drupal core", env: ORCA_JOB=CORE_NEXT }
     - { name: "Custom job", env: ORCA_JOB=CUSTOM ORCA_CUSTOM_FIXTURE_INIT_ARGS="--help" ORCA_CUSTOM_TESTS_RUN_ARGS="--help" }
 
-before_install: ../orca/bin/travis/before_install.sh
+before_install:
+  - ../orca/bin/travis/self-test/before_install.sh
+  - ../orca/bin/travis/before_install.sh
 
-install:
-  - ../orca/bin/travis/self-test/install.sh
-  - ../orca/bin/travis/install.sh
+install: ../orca/bin/travis/install.sh
 
 before_script: ../orca/bin/travis/before_script.sh
 
 script:
   - ../orca/bin/travis/self-test/script.sh
   - ../orca/bin/travis/script.sh
+
+after_script:
   - ../orca/bin/travis/before_cache.sh
   - ../orca/bin/travis/after_success.sh
   - ../orca/bin/travis/after_failure.sh
