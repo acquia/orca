@@ -408,7 +408,7 @@ class FixtureCreator {
 
     $this->output->section('Adding Acquia packages');
     $this->addTopLevelAcquiaPackages();
-    $this->addSutSubextensions();
+    $this->addAcquiaSubextensions();
     $this->commitCodeChanges('Added Acquia packages.');
   }
 
@@ -581,28 +581,37 @@ class FixtureCreator {
    *   The package string for the SUT, e.g., "drupal/example:*".
    */
   private function getSutPackageString(): string {
-    $path = $this->fixture->getPath($this->sut->getRepositoryUrl());
-    $package_config = (array) new Config("{$path}/composer.json");
-    $guess = $this->versionGuesser->guessVersion($package_config, $path);
-    $version = (empty($guess['version'])) ? '@dev' : $guess['version'];
-    return "{$this->sut->getPackageName()}:{$version}";
+    return "{$this->sut->getPackageName()}:{$this->getSutVersion()}";
   }
 
   /**
-   * Adds subextensions of the SUT to composer.json.
+   * Gets the version of the SUT.
+   *
+   * @return string
+   *   The versions of the SUT, e.g., "@dev" or "dev-8.x-1.x".
    */
-  private function addSutSubextensions(): void {
-    if (!$this->sut || !$this->subextensionManager->getAll()) {
-      return;
-    }
+  private function getSutVersion(): string {
+    $path = $this->fixture->getPath($this->sut->getRepositoryUrl());
+    $package_config = (array) new Config("{$path}/composer.json");
+    $guess = $this->versionGuesser->guessVersion($package_config, $path);
+    return (empty($guess['version'])) ? '@dev' : $guess['version'];
+  }
+
+  /**
+   * Adds Acquia subextensions to the fixture.
+   */
+  private function addAcquiaSubextensions(): void {
     $this->configureComposerForSutSubextensions();
-    $this->composerRequireSutSubextensions();
+    $this->composerRequireSubextensions();
   }
 
   /**
    * Configures Composer to find and place subextensions of the SUT.
    */
   private function configureComposerForSutSubextensions(): void {
+    if (!$this->sut || !$this->subextensionManager->getAll()) {
+      return;
+    }
     $this->loadComposerJson();
     $this->addSutSubextensionRepositories();
     $this->addInstallerPathsForSutSubextensions();
@@ -662,16 +671,26 @@ class FixtureCreator {
   /**
    * Requires the Acquia subextensions via Composer.
    */
-  private function composerRequireSutSubextensions(): void {
-    $packages = [];
-    foreach (array_keys($this->subextensionManager->getByParent($this->sut)) as $package_name) {
-      $packages[] = "{$package_name}:@dev";
+  private function composerRequireSubextensions(): void {
+    $subextensions = [];
+    foreach ($this->packageManager->getMultiple() as $package) {
+      $version = $package->getVersionRecommended();
+      if ($this->isDev) {
+        $version = $package->getVersionDev();
+      }
+      if ($this->sut && $package->getPackageName() === $this->sut->getPackageName()) {
+        $version = $this->getSutVersion();
+      }
+      foreach (array_keys($this->subextensionManager->getByParent($package)) as $package_name) {
+        $subextensions[] = "{$package_name}:{$version}";
+      }
     }
+    asort($subextensions);
     $this->processRunner->runOrcaVendorBin(array_merge([
       'composer',
       'require',
       '--no-interaction',
-    ], $packages), $this->fixture->getPath());
+    ], $subextensions), $this->fixture->getPath());
   }
 
   /**

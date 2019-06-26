@@ -86,8 +86,9 @@ class SubextensionManager {
     if ($this->subextensions) {
       return $this->subextensions;
     }
-    $paths = $this->getTopLevelExtensionInstallPaths();
-    $this->subextensions = $this->getInPaths($paths);
+    foreach ($this->topLevelExtensions as $package) {
+      $this->subextensions += $this->getByParent($package);
+    }
     return $this->subextensions;
   }
 
@@ -101,22 +102,10 @@ class SubextensionManager {
    *   An indexed array of package objects.
    */
   public function getByParent(Package $package): array {
-    $paths = [$package->getInstallPathAbsolute()];
-    return $this->getInPaths($paths);
-  }
-
-  /**
-   * Gets an array of subextensions in a given set of paths.
-   *
-   * @param string[] $paths
-   *   The paths to search for subextensions.
-   *
-   * @return \Acquia\Orca\Fixture\Package[]
-   *   An indexed array of package objects.
-   */
-  public function getInPaths(array $paths): array {
     $subextensions = [];
-    foreach ($this->findSubextensionComposerJsonFiles($paths) as $file) {
+
+    $parent_path = $package->getInstallPathAbsolute();
+    foreach ($this->findSubextensionComposerJsonFiles($parent_path) as $file) {
       try {
         $config = $this->configLoader->load($file->getPathname());
       }
@@ -135,8 +124,8 @@ class SubextensionManager {
         'type' => $config->get('type'),
         'install_path' => $install_path,
         'url' => $file->getPath(),
-        'version' => '@dev',
-        'version_dev' => '@dev',
+        'version' => $package->getVersionRecommended(),
+        'version_dev' => $package->getVersionDev(),
         // Discovered extensions are enabled unless they opt out by setting
         // extra.orca.enable to FALSE in their composer.json.
         'enable' => $config->get('extra.orca.enable', TRUE),
@@ -149,44 +138,28 @@ class SubextensionManager {
 
       $subextensions[$name] = new Package($this->fixture, $name, $package_data);
     }
-    return $subextensions;
-  }
 
-  /**
-   * Gets an array of top level extension install paths.
-   *
-   * @return string[]
-   *   An indexed array of paths.
-   */
-  private function getTopLevelExtensionInstallPaths(): array {
-    $paths = [];
-    foreach ($this->topLevelExtensions as $package) {
-      $path = $package->getInstallPathAbsolute();
-      if ($this->filesystem->exists($path)) {
-        $paths[] = $path;
-      }
-    }
-    return $paths;
+    return $subextensions;
   }
 
   /**
    * Finds all Acquia Drupal subextension composer.json files.
    *
-   * @param string[] $paths
-   *   An array of paths to recursively search for subextensions.
+   * @param string $path
+   *   A path to recursively search for subextensions.
    *
    * @return \Symfony\Component\Finder\Finder|array
    *   A Finder query for all Acquia Drupal subextension composer.json files
    *   within the given paths or an empty array if no paths are given.
    */
-  private function findSubextensionComposerJsonFiles(array $paths) {
-    if (!$paths) {
+  private function findSubextensionComposerJsonFiles(string $path) {
+    if (!$path) {
       return [];
     }
     return (new Finder())
       ->files()
       ->followLinks()
-      ->in($paths)
+      ->in($path)
       ->depth('> 0')
       ->exclude([
         // Test extensions are never enabled because Drush cannot find them to
