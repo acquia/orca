@@ -3,7 +3,6 @@
 namespace Acquia\Orca\Fixture;
 
 use Acquia\Orca\Utility\ConfigLoader;
-use Noodlehaus\Config;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
 
@@ -138,7 +137,9 @@ class SubextensionManager {
         'url' => $file->getPath(),
         'version' => '@dev',
         'version_dev' => '@dev',
-        'enable' => $this->shouldExtensionGetEnabled($config, $install_path),
+        // Discovered extensions are enabled unless they opt out by setting
+        // extra.orca.enable to FALSE in their composer.json.
+        'enable' => $config->get('extra.orca.enable', TRUE),
       ];
 
       if (isset($this->alterData[$name])) {
@@ -149,30 +150,6 @@ class SubextensionManager {
       $subextensions[$name] = new Package($this->fixture, $name, $package_data);
     }
     return $subextensions;
-  }
-
-  /**
-   * Determines whether or not the given subextension should get enabled.
-   *
-   * Test extensions are never enabled because Drush cannot find them to enable.
-   * Standard extensions are enabled unless they opt out by setting
-   * extra.orca.enable to FALSE in their composer.json.
-   *
-   * @param \Noodlehaus\Config $config
-   *   The subextension's composer.json config.
-   * @param string $install_path
-   *   The path the extension installs at.
-   *
-   * @return bool
-   *   TRUE if the subextension should be enabled or FALSE if not.
-   */
-  private function shouldExtensionGetEnabled(Config $config, $install_path): bool {
-    $is_test_extension = (strpos($install_path, '/tests/') !== FALSE);
-    if ($is_test_extension) {
-      return FALSE;
-    }
-
-    return $config->get('extra.orca.enable', TRUE);
   }
 
   /**
@@ -212,6 +189,9 @@ class SubextensionManager {
       ->in($paths)
       ->depth('> 0')
       ->exclude([
+        // Test extensions are never enabled because Drush cannot find them to
+        // enable.
+        'tests',
         // Ignore package vendor directories. (These should never exist on CI.
         // This is mostly for local development.)
         'docroot',
