@@ -646,11 +646,10 @@ class FixtureCreator {
     $package_names = array_keys($this->subextensionManager->getByParent($this->sut));
     // Subextensions are implicitly installed with their parent modules, and
     // Composer won't allow them to be placed in the same location via their
-    // separate packages to be placed in the same location. Neither will it
-    // allow them to be "installed" outside the repository, in the system temp
-    // directory or /dev/null, for example. In the absence of a better option,
-    // the private files directory provides a convenient destination that Git is
-    // already configured to ignore.
+    // separate packages. Neither will it allow them to be "installed" outside
+    // the repository, in the system temp directory or /dev/null, for example.
+    // In the absence of a better option, the private files directory provides a
+    // convenient destination that Git is already configured to ignore.
     $path = 'extra.installer-paths.files-private/{$name}';
     $this->jsonConfigSource->addProperty($path, $package_names);
 
