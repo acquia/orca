@@ -80,6 +80,7 @@ class ProcessRunner {
       });
 
     if (!$process->isSuccessful()) {
+      $process->disableOutput();
       throw new ProcessFailedException($process);
     }
 
