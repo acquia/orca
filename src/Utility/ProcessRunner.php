@@ -62,6 +62,9 @@ class ProcessRunner {
    *
    * @return int
    *   The exit status code.
+   *
+   * @throws \Symfony\Component\Process\Exception\ProcessFailedException
+   *   If the process is unsuccessful.
    */
   public function run(Process $process, ?string $cwd = NULL): int {
     $this->output->writeln(sprintf('> %s', $process->getCommandLine()));
@@ -217,10 +220,6 @@ class ProcessRunner {
    */
   public function gitCommit(string $message): int {
     $cwd = $this->fixture->getPath();
-
-    // Prevent "Please tell me who you are" errors.
-    $this->git(['config', 'user.name', 'ORCA'], $cwd);
-    $this->git(['config', 'user.email', 'no-reply@acquia.com'], $cwd);
 
     // Commit changes.
     return $this->git([

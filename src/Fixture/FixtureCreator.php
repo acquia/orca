@@ -11,6 +11,7 @@ use Composer\Json\JsonFile;
 use Composer\Package\Version\VersionGuesser;
 use Noodlehaus\Config;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\Process\Exception\ProcessFailedException;
 
 /**
  * Creates a fixture.
@@ -188,6 +189,7 @@ class FixtureCreator {
    */
   public function create(): void {
     $this->createBltProject();
+    $this->ensureGitConfig();
     $this->configureBltProject();
     $this->fixDefaultDependencies();
     $this->addAcquiaPackages();
@@ -198,6 +200,7 @@ class FixtureCreator {
     $this->setUpFilesDirectories();
     $this->enableAcquiaExtensions();
     $this->createAndCheckoutBackupTag();
+    $this->removeTemporaryLocalGitConfig();
     $this->displayStatus();
   }
 
@@ -300,6 +303,52 @@ class FixtureCreator {
       $command[] = '--stability=dev';
     }
     $this->processRunner->runOrcaVendorBin($command);
+  }
+
+  /**
+   * Ensures the necessary Git user configuration.
+   *
+   * Prevents "Please tell me who you are" errors.
+   */
+  private function ensureGitConfig(): void {
+    $this->git(['init']);
+    $this->ensureGitConfigHasValue('user.name', 'ORCA');
+    $this->ensureGitConfigHasValue('user.email', 'no-reply@acquia.com');
+  }
+
+  /**
+   * Executes a Git command.
+   *
+   * @param string[] $command
+   *   An array of command-line arguments.
+   */
+  private function git(array $command): void {
+    array_unshift($command, 'git');
+    $this->processRunner->runExecutable($command, $this->fixture->getPath());
+  }
+
+  /**
+   * Ensure that the given Git configuration has a value.
+   *
+   * @param string $name
+   *   The configuration name, e.g., "user.name".
+   * @param string $default_value
+   *   The value to set it to if it's empty.
+   */
+  private function ensureGitConfigHasValue(string $name, string $default_value): void {
+    try {
+      $this->git([
+        'config',
+        $name,
+      ]);
+    }
+    catch (ProcessFailedException $e) {
+      $this->git([
+        'config',
+        $name,
+        $default_value,
+      ]);
+    }
   }
 
   /**
@@ -878,6 +927,35 @@ PHP;
     $fixture_path = $this->fixture->getPath();
     $this->processRunner->git(['tag', Fixture::FRESH_FIXTURE_GIT_TAG], $fixture_path);
     $this->processRunner->git(['checkout', Fixture::FRESH_FIXTURE_GIT_TAG], $fixture_path);
+  }
+
+  /**
+   * Remove the temporary local Git user config.
+   *
+   * This is irrelevant in a CI context, but in case someone uses ORCA to create
+   * a fixture for other purposes, this prevents them from mistakenly
+   * attributing their own commits to ORCA.
+   */
+  private function removeTemporaryLocalGitConfig(): void {
+    $values = [
+      'user.name',
+      'user.email',
+    ];
+    foreach ($values as $value) {
+      try {
+        $this->git([
+          'config',
+          '--local',
+          '--unset',
+          $value,
+        ]);
+      }
+      catch (ProcessFailedException $e) {
+        // Git returns a non-zero status code (5) if asked to unset a
+        // configuration value that isn't set, which isn't a problem scenario in
+        // this case. Ignore.
+      }
+    }
   }
 
   /**
