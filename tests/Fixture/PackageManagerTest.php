@@ -52,11 +52,11 @@ class PackageManagerTest extends TestCase {
     'drupal/theme2',
   ];
 
-  private $projectDir = '/var/www/orca';
+  private const PROJECT_DIR = '/var/www/orca';
 
-  private $packagesConfig = 'config/packages.yml';
+  private const PACKAGES_CONFIG_FILE = 'config/packages.yml';
 
-  private $packagesConfigAlter = '../example/packages.yml';
+  private const PACKAGES_CONFIG_ALTER_FILE = '../example/packages.yml';
 
   protected function setUp() {
     $this->filesystem = $this->prophesize(Filesystem::class);
@@ -124,7 +124,7 @@ class PackageManagerTest extends TestCase {
     $fixture = $this->fixture->reveal();
     /** @var \Symfony\Component\Yaml\Parser $parser */
     $parser = $this->parser->reveal();
-    $object = new PackageManager($filesystem, $fixture, $parser, $this->packagesConfig, $this->packagesConfigAlter, $this->projectDir);
+    $object = new PackageManager($filesystem, $fixture, $parser, self::PACKAGES_CONFIG_FILE, self::PACKAGES_CONFIG_ALTER_FILE, self::PROJECT_DIR);
     $this->assertInstanceOf(PackageManager::class, $object, 'Instantiated class.');
     return $object;
   }
