@@ -695,13 +695,18 @@ class FixtureCreator {
    * Adds installer-paths for subextensions of the SUT.
    */
   private function addInstallerPathsForSutSubextensions(): void {
+    $package_names = array_keys($this->subextensionManager->getByParent($this->sut));
+
+    if (!$package_names) {
+      return;
+    }
+
     // Installer paths seem to be applied in the order specified, so overrides
     // need to be added to the beginning in order to take effect. Begin by
     // removing the original installer paths.
     $this->jsonConfigSource->removeProperty('extra.installer-paths');
 
     // Add new installer paths.
-    $package_names = array_keys($this->subextensionManager->getByParent($this->sut));
     // Subextensions are implicitly installed with their parent modules, and
     // Composer won't allow them to be placed in the same location via their
     // separate packages. Neither will it allow them to be "installed" outside
