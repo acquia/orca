@@ -925,8 +925,14 @@ PHP;
   private function createAndCheckoutBackupTag(): void {
     $this->output->section('Creating backup tag');
     $fixture_path = $this->fixture->getPath();
-    $this->processRunner->git(['tag', Fixture::FRESH_FIXTURE_GIT_TAG], $fixture_path);
-    $this->processRunner->git(['checkout', Fixture::FRESH_FIXTURE_GIT_TAG], $fixture_path);
+    $this->processRunner->git([
+      'tag',
+      Fixture::FRESH_FIXTURE_GIT_TAG,
+    ], $fixture_path);
+    $this->processRunner->git([
+      'checkout',
+      Fixture::FRESH_FIXTURE_GIT_TAG,
+    ], $fixture_path);
   }
 
   /**
