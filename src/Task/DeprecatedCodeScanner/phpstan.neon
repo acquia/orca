@@ -40,5 +40,9 @@ parameters:
     - %currentWorkingDirectory%/docroot/modules/contrib/purge/src/Plugin/Purge/Invalidation/*
     - %currentWorkingDirectory%/docroot/modules/contrib/purge/src/Tests/*
     - %currentWorkingDirectory%/docroot/modules/contrib/purge/tests/modules/*/src/Tests/*
+  ignoreErrors:
+    # @see https://github.com/acquia/orca/issues/27
+    - '#Call to deprecated method registerFile\(\) of class Doctrine\\Common\\Annotations\\AnnotationRegistry#'
+
 includes:
   - ../../../vendor/mglaman/phpstan-drupal-deprecations/deprecation_testing.neon
