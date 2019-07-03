@@ -209,8 +209,13 @@ class SubextensionManager {
       return FALSE;
     }
 
+    // Project names may include a namespace.
+    // @see https://www.drupal.org/project/project_composer/issues/3064900
+    $name_parts = explode('-', $package_name);
+    $extension_name = end($name_parts);
+
     // Ignore extensions without a corresponding .info.yml file.
-    $info_yml_file = "{$file->getPath()}/{$package_name}.info.yml";
+    $info_yml_file = "{$file->getPath()}/{$extension_name}.info.yml";
     if (!$this->filesystem->exists($info_yml_file)) {
       return FALSE;
     }
