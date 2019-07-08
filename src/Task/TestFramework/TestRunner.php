@@ -156,8 +156,7 @@ class TestRunner {
     }
 
     if ($this->failures) {
-      $this->output->error('Tests failed:');
-      $this->output->writeln($this->failures);
+      $this->output->block(implode(PHP_EOL, $this->failures), 'FAILURES', 'fg=white;bg=red', ' ', TRUE);
       $this->output->writeln('');
       throw new TaskFailureException();
     }
@@ -253,7 +252,9 @@ class TestRunner {
       $framework->execute();
     }
     catch (TaskFailureException $e) {
-      $this->failures[] = "       - {$package->getPackageName()}: {$framework->name()}";
+      $failure = "{$package->getPackageName()}: {$framework->name()}";
+      $this->output->block($failure, 'FAILURE', 'fg=white;bg=red');
+      $this->failures[] = $failure;
     }
   }
 
