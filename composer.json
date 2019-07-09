@@ -14,23 +14,21 @@
         "ext-dom": "*",
         "ext-json": "*",
         "ext-sqlite3": "*",
+        "acquia/coding-standards": "^0.2.0",
         "behat/behat": "^3.5",
         "composer/composer": "^1.7",
         "cweagans/composer-patches": "^1.6",
         "dealerdirect/phpcodesniffer-composer-installer": "^0.5",
-        "drupal/coder": "^8.3",
         "hassankhan/config": "^2.0",
         "jakub-onderka/php-console-highlighter": "^0.4.0",
         "jakub-onderka/php-parallel-lint": "^1.0",
-        "lbaey/chromedriver": "^1.1",
-        "localheinz/composer-normalize": "^0.9.0",
+        "localheinz/composer-normalize": "^1.2",
         "mglaman/phpstan-drupal-deprecations": "^0.11.1",
         "mockery/mockery": "^1.2",
         "myclabs/php-enum": "^1.7",
-        "pheromone/phpcs-security-audit": "^2.0",
-        "phpcompatibility/php-compatibility": "^9.0",
         "phpmd/phpmd": "^2.6",
         "phpunit/phpunit": "^6.5",
+        "stecman/symfony-console-completion": "^0.10.1",
         "symfony/config": "^4.1",
         "symfony/console": "^4.1",
         "symfony/dependency-injection": "^4.1",
@@ -41,6 +39,7 @@
         "symfony/phpunit-bridge": "^4.2",
         "symfony/process": "^4.1",
         "symfony/yaml": "^4.1",
+        "vaimo/binary-chromedriver": "^5.0",
         "weitzman/drupal-test-traits": "~1.0"
     },
     "conflict": {
@@ -51,6 +50,7 @@
         "sensiolabs/security-checker": "^5.0"
     },
     "config": {
+        "discard-changes": true,
         "preferred-install": {
             "*": "dist"
         },
@@ -70,12 +70,9 @@
             "post-install-cmd": "vendor/bin/cghooks add --ignore-lock",
             "post-update-cmd": "vendor/bin/cghooks update"
         },
-        "lbaey/chromedriver": {
-            "bypass-select": true
-        },
         "patches": {
-            "localheinz/composer-normalize": {
-                "Fix reversed red/green colors in --dry-run output until next release": "resources/composer-normalize.patch"
+            "pheromone/phpcs-security-audit": {
+                "Fix undefined index error": "https://patch-diff.githubusercontent.com/raw/FloeDesignTechnologies/phpcs-security-audit/pull/41.patch"
             }
         },
         "phpcodesniffer-search-depth": 4
@@ -98,9 +95,13 @@
         ],
         "cghooks": "cghooks --ansi",
         "phpcbf": "phpcbf",
-        "phpcs": "phpcs --cache=var/.phpcs-cache",
+        "phpcs": "phpcs -s --cache=var/.phpcs-cache",
         "phplint": "parallel-lint --exclude vendor --ignore-fails .",
         "phpmd": "phpmd . text phpmd.xml.dist --ignore-violations-on-exit",
         "phpunit": "phpunit"
+    },
+    "support": {
+        "issues": "https://github.com/acquia/orca/issues",
+        "source": "https://github.com/acquia/orca"
     }
 }

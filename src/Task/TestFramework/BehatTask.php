@@ -17,6 +17,13 @@ class BehatTask extends TestFrameworkBase {
   /**
    * {@inheritdoc}
    */
+  public function name(): string {
+    return 'Behat';
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function statusMessage(): string {
     $which = ($this->isPublicTestsOnly()) ? 'public' : 'all';
     return "Running {$which} Behat tests";
@@ -33,8 +40,8 @@ class BehatTask extends TestFrameworkBase {
           'behat',
           '-vv',
           '--colors',
-          "--config={$config_file->getPathname()}",
-          "--tags={$this->getTags()}",
+          sprintf('--config=%s', $config_file->getPathname()),
+          sprintf('--tags=%s', $this->getTags()),
         ], $this->fixture->getPath());
       }
     }

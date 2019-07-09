@@ -194,7 +194,7 @@ class AcquiaExtensionEnabler {
         if ($subextension->getType() !== $extension_type || !$subextension->shouldGetEnabled()) {
           continue;
         }
-        $extension_list[] = $subextension->getProjectName();
+        $extension_list[] = $subextension->getDrupalExtensionName();
       }
     }
 

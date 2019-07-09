@@ -3,7 +3,6 @@
 namespace Acquia\Orca\Fixture;
 
 use Acquia\Orca\Utility\ConfigLoader;
-use Noodlehaus\Config;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
 
@@ -87,8 +86,9 @@ class SubextensionManager {
     if ($this->subextensions) {
       return $this->subextensions;
     }
-    $paths = $this->getTopLevelExtensionInstallPaths();
-    $this->subextensions = $this->getInPaths($paths);
+    foreach ($this->topLevelExtensions as $package) {
+      $this->subextensions += $this->getByParent($package);
+    }
     return $this->subextensions;
   }
 
@@ -102,22 +102,10 @@ class SubextensionManager {
    *   An indexed array of package objects.
    */
   public function getByParent(Package $package): array {
-    $paths = [$package->getInstallPathAbsolute()];
-    return $this->getInPaths($paths);
-  }
-
-  /**
-   * Gets an array of subextensions in a given set of paths.
-   *
-   * @param string[] $paths
-   *   The paths to search for subextensions.
-   *
-   * @return \Acquia\Orca\Fixture\Package[]
-   *   An indexed array of package objects.
-   */
-  public function getInPaths(array $paths): array {
     $subextensions = [];
-    foreach ($this->findSubextensionComposerJsonFiles($paths) as $file) {
+
+    $parent_path = $package->getInstallPathAbsolute();
+    foreach ($this->findSubextensionComposerJsonFiles($parent_path) as $file) {
       try {
         $config = $this->configLoader->load($file->getPathname());
       }
@@ -136,9 +124,11 @@ class SubextensionManager {
         'type' => $config->get('type'),
         'install_path' => $install_path,
         'url' => $file->getPath(),
-        'version' => '@dev',
-        'version_dev' => '@dev',
-        'enable' => $this->shouldExtensionGetEnabled($config, $install_path),
+        'version' => $package->getVersionRecommended(),
+        'version_dev' => $package->getVersionDev(),
+        // Discovered extensions are enabled unless they opt out by setting
+        // extra.orca.enable to FALSE in their composer.json.
+        'enable' => $config->get('extra.orca.enable', TRUE),
       ];
 
       if (isset($this->alterData[$name])) {
@@ -148,70 +138,33 @@ class SubextensionManager {
 
       $subextensions[$name] = new Package($this->fixture, $name, $package_data);
     }
+
     return $subextensions;
-  }
-
-  /**
-   * Determines whether or not the given subextension should get enabled.
-   *
-   * Test extensions are never enabled because Drush cannot find them to enable.
-   * Standard extensions are enabled unless they opt out by setting
-   * extra.orca.enable to FALSE in their composer.json.
-   *
-   * @param \Noodlehaus\Config $config
-   *   The subextension's composer.json config.
-   * @param string $install_path
-   *   The path the extension installs at.
-   *
-   * @return bool
-   *   TRUE if the subextension should be enabled or FALSE if not.
-   */
-  private function shouldExtensionGetEnabled(Config $config, $install_path): bool {
-    $is_test_extension = (strpos($install_path, '/tests/') !== FALSE);
-    if ($is_test_extension) {
-      return FALSE;
-    }
-
-    return $config->get('extra.orca.enable', TRUE);
-  }
-
-  /**
-   * Gets an array of top level extension install paths.
-   *
-   * @return string[]
-   *   An indexed array of paths.
-   */
-  private function getTopLevelExtensionInstallPaths(): array {
-    $paths = [];
-    foreach ($this->topLevelExtensions as $package) {
-      $path = $package->getInstallPathAbsolute();
-      if ($this->filesystem->exists($path)) {
-        $paths[] = $path;
-      }
-    }
-    return $paths;
   }
 
   /**
    * Finds all Acquia Drupal subextension composer.json files.
    *
-   * @param string[] $paths
-   *   An array of paths to recursively search for subextensions.
+   * @param string $path
+   *   A path to recursively search for subextensions.
    *
    * @return \Symfony\Component\Finder\Finder|array
    *   A Finder query for all Acquia Drupal subextension composer.json files
    *   within the given paths or an empty array if no paths are given.
    */
-  private function findSubextensionComposerJsonFiles(array $paths) {
-    if (!$paths) {
+  private function findSubextensionComposerJsonFiles(string $path) {
+    if (!$this->filesystem->exists($path)) {
       return [];
     }
     return (new Finder())
       ->files()
       ->followLinks()
-      ->in($paths)
+      ->in($path)
       ->depth('> 0')
       ->exclude([
+        // Test extensions are never enabled because Drush cannot find them to
+        // enable.
+        'tests',
         // Ignore package vendor directories. (These should never exist on CI.
         // This is mostly for local development.)
         'docroot',
@@ -256,8 +209,13 @@ class SubextensionManager {
       return FALSE;
     }
 
+    // Project names may include a namespace.
+    // @see https://www.drupal.org/project/project_composer/issues/3064900
+    $name_parts = explode('-', $package_name);
+    $extension_name = end($name_parts);
+
     // Ignore extensions without a corresponding .info.yml file.
-    $info_yml_file = "{$file->getPath()}/{$package_name}.info.yml";
+    $info_yml_file = "{$file->getPath()}/{$extension_name}.info.yml";
     if (!$this->filesystem->exists($info_yml_file)) {
       return FALSE;
     }

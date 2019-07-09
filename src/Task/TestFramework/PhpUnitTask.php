@@ -17,6 +17,13 @@ class PhpUnitTask extends TestFrameworkBase {
   /**
    * {@inheritdoc}
    */
+  public function name(): string {
+    return 'PHPUnit';
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function statusMessage(): string {
     $which = ($this->isPublicTestsOnly()) ? 'public' : 'all';
     return "Running {$which} PHPUnit tests";
@@ -194,7 +201,6 @@ class PhpUnitTask extends TestFrameworkBase {
       $command = [
         'phpunit',
         '--colors=always',
-        '--stop-on-failure',
         '--debug',
         "--configuration={$this->fixture->getPath('docroot/core/phpunit.xml.dist')}",
         '--exclude-group=orca_ignore',

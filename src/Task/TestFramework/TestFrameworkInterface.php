@@ -10,6 +10,14 @@ use Acquia\Orca\Task\TaskInterface;
 interface TestFrameworkInterface extends TaskInterface {
 
   /**
+   * Gets the human-readable framework name.
+   *
+   * @return string
+   *   The framework name.
+   */
+  public function name(): string;
+
+  /**
    * Sets whether or not to limit to public tests.
    *
    * @param bool $limit

@@ -2,6 +2,7 @@
 
 namespace Acquia\Orca\Task\TestFramework;
 
+use Acquia\Orca\Exception\TaskFailureException;
 use Acquia\Orca\Fixture\FixtureResetter;
 use Acquia\Orca\Fixture\Package;
 use Acquia\Orca\Fixture\PackageManager;
@@ -24,6 +25,13 @@ class TestRunner {
    * @var \Acquia\Orca\Task\TestFramework\BehatTask
    */
   private $behat;
+
+  /**
+   * A list of test failure descriptions.
+   *
+   * @var string[]
+   */
+  private $failures = [];
 
   /**
    * The filesystem.
@@ -135,15 +143,24 @@ class TestRunner {
     if ($this->runServers) {
       $this->startServers();
     }
+
     if ($this->sut) {
       $this->runSutTests();
     }
     if (!$this->isSutOnly) {
       $this->runNonSutTests();
     }
+
     if ($this->runServers) {
       $this->stopServers();
     }
+
+    if ($this->failures) {
+      $this->output->block(implode(PHP_EOL, $this->failures), 'FAILURES', 'fg=white;bg=red', ' ', TRUE);
+      $this->output->writeln('');
+      throw new TaskFailureException();
+    }
+    $this->output->success('Tests passed');
   }
 
   /**
@@ -186,8 +203,6 @@ class TestRunner {
 
   /**
    * Runs tests for the system under test (SUT).
-   *
-   * @throws \Acquia\Orca\Exception\TaskFailureException
    */
   private function runSutTests(): void {
     $this->output->title('Running SUT tests');
@@ -198,8 +213,6 @@ class TestRunner {
 
   /**
    * Runs tests for packages other than the system under test (SUT).
-   *
-   * @throws \Acquia\Orca\Exception\TaskFailureException
    */
   private function runNonSutTests(): void {
     $message = ($this->sut) ? 'Running public non-SUT tests' : 'Running all public tests';
@@ -227,17 +240,22 @@ class TestRunner {
    *   The package to test.
    * @param bool $public
    *   TRUE to limit to public tests or FALSE not to.
-   *
-   * @throws \Acquia\Orca\Exception\TaskFailureException
    */
   private function execute(TestFrameworkInterface $framework, Package $package, bool $public): void {
-    $this->output->section("{$framework->statusMessage()} for {$package->getPackageName()}");
-    $this->output->comment('Resetting test fixture');
-    $this->fixtureResetter->reset();
-    $this->output->comment('Running tests');
-    $framework->setPath($package->getInstallPathAbsolute());
-    $framework->limitToPublicTests($public);
-    $framework->execute();
+    try {
+      $this->output->section("{$framework->statusMessage()} for {$package->getPackageName()}");
+      $this->output->comment('Resetting test fixture');
+      $this->fixtureResetter->reset();
+      $this->output->comment('Running tests');
+      $framework->setPath($package->getInstallPathAbsolute());
+      $framework->limitToPublicTests($public);
+      $framework->execute();
+    }
+    catch (TaskFailureException $e) {
+      $failure = "{$package->getPackageName()}: {$framework->name()}";
+      $this->output->block($failure, 'FAILURE', 'fg=white;bg=red');
+      $this->failures[] = $failure;
+    }
   }
 
   /**

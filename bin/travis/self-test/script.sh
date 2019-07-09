@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # NAME
-#     script.sh - Run ORCA self-tests
+#     script.sh - Run ORCA self-tests.
 #
 # SYNOPSIS
 #     script.sh
@@ -12,9 +12,12 @@
 cd "$(dirname "$0")"; source ../_includes.sh
 
 if [[ "$ORCA_JOB" = "STATIC_CODE_ANALYSIS" ]]; then
-  cd ../../../
-  ./vendor/bin/security-checker security:check
-  ./bin/orca qa:static-analysis ./
-  ./vendor/bin/phpunit
-  cd -
+  (
+    cd ../../../
+    ./vendor/bin/phpcs
+    ./vendor/bin/parallel-lint --exclude vendor .
+    ./vendor/bin/phpmd . text phpmd.xml.dist --ignore-violations-on-exit
+    ./vendor/bin/phpunit
+    ./vendor/bin/security-checker security:check
+  )
 fi

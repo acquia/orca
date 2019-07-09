@@ -50,6 +50,13 @@ class FixtureCreator {
   private $fixture;
 
   /**
+   * The fixture configurer.
+   *
+   * @var \Acquia\Orca\Fixture\FixtureConfigurer
+   */
+  private $fixtureConfigurer;
+
+  /**
    * The fixture inspector.
    *
    * @var \Acquia\Orca\Fixture\FixtureInspector
@@ -154,6 +161,8 @@ class FixtureCreator {
    *   The Acquia extension enabler.
    * @param \Acquia\Orca\Fixture\Fixture $fixture
    *   The fixture.
+   * @param \Acquia\Orca\Fixture\FixtureConfigurer $fixture_configurer
+   *   The fixture configurer.
    * @param \Acquia\Orca\Fixture\FixtureInspector $fixture_inspector
    *   The fixture inspector.
    * @param \Symfony\Component\Console\Style\SymfonyStyle $output
@@ -167,9 +176,10 @@ class FixtureCreator {
    * @param \Composer\Package\Version\VersionGuesser $version_guesser
    *   The Composer version guesser.
    */
-  public function __construct(AcquiaExtensionEnabler $acquia_extension_enabler, Fixture $fixture, FixtureInspector $fixture_inspector, SymfonyStyle $output, ProcessRunner $process_runner, PackageManager $package_manager, SubextensionManager $subextension_manager, VersionGuesser $version_guesser) {
+  public function __construct(AcquiaExtensionEnabler $acquia_extension_enabler, Fixture $fixture, FixtureConfigurer $fixture_configurer, FixtureInspector $fixture_inspector, SymfonyStyle $output, ProcessRunner $process_runner, PackageManager $package_manager, SubextensionManager $subextension_manager, VersionGuesser $version_guesser) {
     $this->acquiaExtensionEnabler = $acquia_extension_enabler;
     $this->fixture = $fixture;
+    $this->fixtureConfigurer = $fixture_configurer;
     $this->fixtureInspector = $fixture_inspector;
     $this->output = $output;
     $this->processRunner = $process_runner;
@@ -188,6 +198,7 @@ class FixtureCreator {
    */
   public function create(): void {
     $this->createBltProject();
+    $this->fixtureConfigurer->ensureGitConfig();
     $this->configureBltProject();
     $this->fixDefaultDependencies();
     $this->addAcquiaPackages();
@@ -198,6 +209,7 @@ class FixtureCreator {
     $this->setUpFilesDirectories();
     $this->enableAcquiaExtensions();
     $this->createAndCheckoutBackupTag();
+    $this->fixtureConfigurer->removeTemporaryLocalGitConfig();
     $this->displayStatus();
   }
 
@@ -408,7 +420,7 @@ class FixtureCreator {
 
     $this->output->section('Adding Acquia packages');
     $this->addTopLevelAcquiaPackages();
-    $this->addSutSubextensions();
+    $this->addAcquiaSubextensions();
     $this->commitCodeChanges('Added Acquia packages.');
   }
 
@@ -477,7 +489,8 @@ class FixtureCreator {
     if ($this->preferSource) {
       $command[] = '--prefer-source';
     }
-    $this->processRunner->runOrcaVendorBin(array_merge($command, $this->getAcquiaPackageDependencies()), $this->fixture->getPath());
+    $command = array_merge($command, $this->getAcquiaPackageDependencies());
+    $this->processRunner->runOrcaVendorBin($command, $this->fixture->getPath());
   }
 
   /**
@@ -581,28 +594,37 @@ class FixtureCreator {
    *   The package string for the SUT, e.g., "drupal/example:*".
    */
   private function getSutPackageString(): string {
-    $path = $this->fixture->getPath($this->sut->getRepositoryUrl());
-    $package_config = (array) new Config("{$path}/composer.json");
-    $guess = $this->versionGuesser->guessVersion($package_config, $path);
-    $version = (empty($guess['version'])) ? '@dev' : $guess['version'];
-    return "{$this->sut->getPackageName()}:{$version}";
+    return "{$this->sut->getPackageName()}:{$this->getSutVersion()}";
   }
 
   /**
-   * Adds subextensions of the SUT to composer.json.
+   * Gets the version of the SUT.
+   *
+   * @return string
+   *   The versions of the SUT, e.g., "@dev" or "dev-8.x-1.x".
    */
-  private function addSutSubextensions(): void {
-    if (!$this->sut || !$this->subextensionManager->getAll()) {
-      return;
-    }
+  private function getSutVersion(): string {
+    $path = $this->fixture->getPath($this->sut->getRepositoryUrl());
+    $package_config = (array) new Config("{$path}/composer.json");
+    $guess = $this->versionGuesser->guessVersion($package_config, $path);
+    return (empty($guess['version'])) ? '@dev' : $guess['version'];
+  }
+
+  /**
+   * Adds Acquia subextensions to the fixture.
+   */
+  private function addAcquiaSubextensions(): void {
     $this->configureComposerForSutSubextensions();
-    $this->composerRequireSutSubextensions();
+    $this->composerRequireSubextensions();
   }
 
   /**
    * Configures Composer to find and place subextensions of the SUT.
    */
   private function configureComposerForSutSubextensions(): void {
+    if (!$this->sut || !$this->subextensionManager->getAll()) {
+      return;
+    }
     $this->loadComposerJson();
     $this->addSutSubextensionRepositories();
     $this->addInstallerPathsForSutSubextensions();
@@ -637,20 +659,24 @@ class FixtureCreator {
    * Adds installer-paths for subextensions of the SUT.
    */
   private function addInstallerPathsForSutSubextensions(): void {
+    $package_names = array_keys($this->subextensionManager->getByParent($this->sut));
+
+    if (!$package_names) {
+      return;
+    }
+
     // Installer paths seem to be applied in the order specified, so overrides
     // need to be added to the beginning in order to take effect. Begin by
     // removing the original installer paths.
     $this->jsonConfigSource->removeProperty('extra.installer-paths');
 
     // Add new installer paths.
-    $package_names = array_keys($this->subextensionManager->getByParent($this->sut));
     // Subextensions are implicitly installed with their parent modules, and
     // Composer won't allow them to be placed in the same location via their
-    // separate packages to be placed in the same location. Neither will it
-    // allow them to be "installed" outside the repository, in the system temp
-    // directory or /dev/null, for example. In the absence of a better option,
-    // the private files directory provides a convenient destination that Git is
-    // already configured to ignore.
+    // separate packages. Neither will it allow them to be "installed" outside
+    // the repository, in the system temp directory or /dev/null, for example.
+    // In the absence of a better option, the private files directory provides a
+    // convenient destination that Git is already configured to ignore.
     $path = 'extra.installer-paths.files-private/{$name}';
     $this->jsonConfigSource->addProperty($path, $package_names);
 
@@ -663,16 +689,32 @@ class FixtureCreator {
   /**
    * Requires the Acquia subextensions via Composer.
    */
-  private function composerRequireSutSubextensions(): void {
-    $packages = [];
-    foreach (array_keys($this->subextensionManager->getByParent($this->sut)) as $package_name) {
-      $packages[] = "{$package_name}:@dev";
+  private function composerRequireSubextensions(): void {
+    $subextensions = [];
+    foreach ($this->packageManager->getMultiple() as $package) {
+      // The Drupal.org Composer Facade only supports subextensions in modules
+      // and themes.
+      if (!in_array($package->getType(), ['drupal-module', 'drupal-theme'])) {
+        continue;
+      }
+
+      $version = $package->getVersionRecommended();
+      if ($this->isDev) {
+        $version = $package->getVersionDev();
+      }
+      if ($this->sut && $package->getPackageName() === $this->sut->getPackageName()) {
+        $version = $this->getSutVersion();
+      }
+      foreach (array_keys($this->subextensionManager->getByParent($package)) as $package_name) {
+        $subextensions[] = "{$package_name}:{$version}";
+      }
     }
+    asort($subextensions);
     $this->processRunner->runOrcaVendorBin(array_merge([
       'composer',
       'require',
       '--no-interaction',
-    ], $packages), $this->fixture->getPath());
+    ], $subextensions), $this->fixture->getPath());
   }
 
   /**
@@ -858,8 +900,14 @@ PHP;
   private function createAndCheckoutBackupTag(): void {
     $this->output->section('Creating backup tag');
     $fixture_path = $this->fixture->getPath();
-    $this->processRunner->git(['tag', Fixture::FRESH_FIXTURE_GIT_TAG], $fixture_path);
-    $this->processRunner->git(['checkout', Fixture::FRESH_FIXTURE_GIT_TAG], $fixture_path);
+    $this->processRunner->git([
+      'tag',
+      Fixture::FRESH_FIXTURE_GIT_TAG,
+    ], $fixture_path);
+    $this->processRunner->git([
+      'checkout',
+      Fixture::FRESH_FIXTURE_GIT_TAG,
+    ], $fixture_path);
   }
 
   /**

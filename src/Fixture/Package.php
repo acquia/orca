@@ -98,6 +98,20 @@ class Package {
   }
 
   /**
+   * Gets the Drupal extension machine name.
+   *
+   * @return string
+   *   The Drupal extension machine name suitable for use with Drush, for
+   *   example.
+   */
+  public function getDrupalExtensionName(): string {
+    // Project names may include a namespace.
+    // @see https://www.drupal.org/project/project_composer/issues/3064900
+    $name_parts = explode('-', $this->getProjectName());
+    return end($name_parts);
+  }
+
+  /**
    * Gets the absolute path the package installs at.
    *
    * @return string
@@ -213,7 +227,7 @@ class Package {
    */
   public function getProjectName(): string {
     $package_name_parts = explode('/', $this->packageName);
-    return $package_name_parts[count($package_name_parts) - 1];
+    return end($package_name_parts);
   }
 
   /**

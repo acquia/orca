@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- https://github.com/squizlabs/PHP_CodeSniffer/wiki/Annotated-Ruleset -->
+<ruleset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="../../../vendor/squizlabs/php_codesniffer/phpcs.xsd"
+>
+
+  <description>PHP CodeSniffer configuration for analyzing ORCA itself.</description>
+
+  <arg name="colors"/>
+  <arg name="parallel" value="10"/>
+
+  <exclude-pattern>docroot/</exclude-pattern>
+  <exclude-pattern>vendor/</exclude-pattern>
+  <exclude-pattern>var/</exclude-pattern>
+
+  <rule ref="AcquiaDrupalTransitional"/>
+
+</ruleset>

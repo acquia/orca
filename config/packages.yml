@@ -57,11 +57,10 @@ acquia/blt:
   version: ~10.0
   version_dev: 10.x-dev
 
-# Acquia Cloud Hooks are installed quasi-manually via the documented method.
-# @see https://github.com/acquia/cloud-hooks#installing-cloud-hooks
-# @see \Acquia\Orca\Fixture\FixtureCreator::installCloudHooks()
-#acquia/cloud-hooks:
-#  version_dev: dev-master
+acquia/coding-standards:
+  type: phpcodesniffer-standard
+  url: ../coding-standards-php
+  version_dev: 0.x-dev
 
 drupal/cog:
   type: drupal-theme
