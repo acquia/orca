@@ -29,3 +29,4 @@ TARGET_ENV="$2"
 cd "$(dirname "$0")/../../../";
 
 ./vendor/bin/drush @$SITE.$TARGET_ENV sql:query --file=db.sql
+./vendor/bin/drush @$SITE.$TARGET_ENV cache:rebuild
