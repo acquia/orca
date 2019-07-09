@@ -8,7 +8,7 @@
 #
 # DESCRIPTION
 #     Refreshes the Acquia Cloud environment by reinstalling Drupal and enabling
-#     all Acquia modules. This script is copied the Cloud Hooks directory on
+#     all Acquia modules. This script is copied to the Cloud Hooks directory on
 #     Acquia Pipelines builds (see acquia-pipelines.yml) and executed via cron:
 #
 #     /var/www/html/${AH_SITE_NAME}/hooks/common/post-code-deploy/refresh.sh \
