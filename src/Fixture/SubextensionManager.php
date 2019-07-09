@@ -153,7 +153,7 @@ class SubextensionManager {
    *   within the given paths or an empty array if no paths are given.
    */
   private function findSubextensionComposerJsonFiles(string $path) {
-    if (!$path) {
+    if (!$this->filesystem->exists($path)) {
       return [];
     }
     return (new Finder())

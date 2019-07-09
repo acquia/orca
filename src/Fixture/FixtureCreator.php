@@ -489,7 +489,8 @@ class FixtureCreator {
     if ($this->preferSource) {
       $command[] = '--prefer-source';
     }
-    $this->processRunner->runOrcaVendorBin(array_merge($command, $this->getAcquiaPackageDependencies()), $this->fixture->getPath());
+    $command = array_merge($command, $this->getAcquiaPackageDependencies());
+    $this->processRunner->runOrcaVendorBin($command, $this->fixture->getPath());
   }
 
   /**
