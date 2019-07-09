@@ -692,6 +692,12 @@ class FixtureCreator {
   private function composerRequireSubextensions(): void {
     $subextensions = [];
     foreach ($this->packageManager->getMultiple() as $package) {
+      // The Drupal.org Composer Facade only supports subextensions in modules
+      // and themes.
+      if (!in_array($package->getType(), ['drupal-module', 'drupal-theme'])) {
+        continue;
+      }
+
       $version = $package->getVersionRecommended();
       if ($this->isDev) {
         $version = $package->getVersionDev();
