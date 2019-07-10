@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "3c9dc8a3f36489266197567d3cb0326b",
+    "content-hash": "e95f03a312bc0517c940a005806c626d",
     "packages": [
         {
             "name": "acquia/coding-standards",
@@ -2818,7 +2818,8 @@
             "type": "library",
             "extra": {
                 "patches_applied": {
-                    "Fix undefined index error": "https://patch-diff.githubusercontent.com/raw/FloeDesignTechnologies/phpcs-security-audit/pull/41.patch"
+                    "Fix undefined index error": "https://patch-diff.githubusercontent.com/raw/FloeDesignTechnologies/phpcs-security-audit/pull/41.patch",
+                    "Fix false positives for exec calls": "https://patch-diff.githubusercontent.com/raw/FloeDesignTechnologies/phpcs-security-audit/pull/43.patch"
                 }
             },
             "autoload": {

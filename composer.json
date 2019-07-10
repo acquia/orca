@@ -72,7 +72,8 @@
         },
         "patches": {
             "pheromone/phpcs-security-audit": {
-                "Fix undefined index error": "https://patch-diff.githubusercontent.com/raw/FloeDesignTechnologies/phpcs-security-audit/pull/41.patch"
+                "Fix undefined index error": "https://patch-diff.githubusercontent.com/raw/FloeDesignTechnologies/phpcs-security-audit/pull/41.patch",
+                "Fix false positives for exec calls": "https://patch-diff.githubusercontent.com/raw/FloeDesignTechnologies/phpcs-security-audit/pull/43.patch"
             }
         },
         "phpcodesniffer-search-depth": 4
