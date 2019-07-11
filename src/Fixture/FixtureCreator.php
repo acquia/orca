@@ -432,6 +432,7 @@ class FixtureCreator {
    */
   private function addTopLevelAcquiaPackages(): void {
     $this->addSutRepository();
+    $this->configureComposerForTopLevelAcquiaPackages();
     $this->composerRequireTopLevelAcquiaPackages();
     $this->verifySut();
   }
@@ -475,6 +476,34 @@ class FixtureCreator {
       'is-bare' => $this->isBare,
       'is-dev' => $this->isDev,
     ]);
+  }
+
+  /**
+   * Configures Composer to install Acquia packages from source.
+   */
+  private function configureComposerForTopLevelAcquiaPackages(): void {
+    $packages = $this->packageManager->getMultiple();
+
+    if (!$packages) {
+      return;
+    }
+
+    // The preferred-install patterns are applied in the order specified, so
+    // overrides need to be added to the beginning in order to take effect.
+    // @see https://getcomposer.org/doc/06-config.md#preferred-install
+    // Begin by removing the original installer paths.
+    $this->jsonConfigSource->removeConfigSetting('preferred-install');
+
+    $patterns = array_fill_keys(array_keys($packages), 'source');
+    $this->jsonConfigSource->addConfigSetting('preferred-install', $patterns);
+
+    // Append original patterns.
+    foreach ($this->jsonConfigDataBackup['config']['preferred-install'] as $key => $value) {
+      if (array_key_exists($key, $patterns)) {
+        continue;
+      }
+      $this->jsonConfigSource->addConfigSetting("preferred-install.{$key}", $value);
+    }
   }
 
   /**
