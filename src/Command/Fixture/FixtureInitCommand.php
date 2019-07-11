@@ -141,7 +141,7 @@ class FixtureInitCommand extends Command {
       ->addOption('ignore-patch-failure', NULL, InputOption::VALUE_NONE, 'Do not exit on failure to apply Composer patches. (Useful for debugging failures)')
       ->addOption('no-sqlite', NULL, InputOption::VALUE_NONE, 'Use the default BLT database includes instead of SQLite')
       ->addOption('no-site-install', NULL, InputOption::VALUE_NONE, 'Do not install Drupal. Supersedes the "--profile" option')
-      ->addOption('prefer-source', NULL, InputOption::VALUE_NONE, 'Force installation from package sources when possible, including VCS information. Useful for core and contrib work');
+      ->addOption('prefer-source', NULL, InputOption::VALUE_NONE, 'Force installation of non-Acquia packages from sources when possible, including VCS information. (Acquia packages are always installed from source.) Useful for core and contrib work');
   }
 
   /**
