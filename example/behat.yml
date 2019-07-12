@@ -2,8 +2,10 @@
 default:
   suites:
     default:
+      paths:
+        - 'docroot/modules/contrib/example/tests/features'
       contexts:
-        - FeatureContext
+        - Drupal\example\tests\FeatureContext
         - Drupal\DrupalExtension\Context\DrupalContext
         - Drupal\DrupalExtension\Context\MinkContext
         - Drupal\DrupalExtension\Context\MessageContext

@@ -61,6 +61,19 @@ Invoke ORCA from the terminal (`bin/orca`). Use the `--help` command option to l
 
 ## Designing automated tests
 
+### Basic Setup
+
+ORCA provides an example module to demonstrate how to configure your own custom tests. 
+
+#### Behat
+
+For Behat, see examples in the following files:
+
+* example/behat.yml (defines tests)
+* example/composer.json (autoloads FeatureContext)
+* example/tests/features (contains tests)
+* example/tests/features/bootstrap (contains FeatureContext)
+
 ### Tagging/grouping
 
 ORCA uses tags (for Behat) and groups (for PHPUnit) to determine which tests to run when, as depicted in the table below, where black indicates a test's being included and white indicates its being ignored:
