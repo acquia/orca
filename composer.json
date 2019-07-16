@@ -23,7 +23,6 @@
         "jakub-onderka/php-console-highlighter": "^0.4.0",
         "jakub-onderka/php-parallel-lint": "^1.0",
         "localheinz/composer-normalize": "^1.2",
-        "mglaman/phpstan-drupal-deprecations": "^0.11.1",
         "mockery/mockery": "^1.2",
         "myclabs/php-enum": "^1.7",
         "phpmd/phpmd": "^2.6",

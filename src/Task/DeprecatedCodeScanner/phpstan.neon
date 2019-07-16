@@ -45,4 +45,4 @@ parameters:
     - '#Call to deprecated method registerFile\(\) of class Doctrine\\Common\\Annotations\\AnnotationRegistry#'
 
 includes:
-  - ../../../vendor/mglaman/phpstan-drupal-deprecations/deprecation_testing.neon
+  - %currentWorkingDirectory%/vendor/mglaman/phpstan-drupal-deprecations/deprecation_testing.neon
