@@ -15,8 +15,7 @@ use Acquia\Orca\Enum\DrupalCoreVersion;
 use Acquia\Orca\Utility\DrupalCoreVersionFinder;
 use Composer\Semver\VersionParser;
 use Prophecy\Argument;
-use Symfony\Component\Console\Application;
-use Symfony\Component\Console\Tester\CommandTester;
+use Symfony\Component\Console\Command\Command;
 
 /**
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Utility\DrupalCoreVersionFinder $drupalCoreVersionFinder
@@ -68,6 +67,24 @@ class FixtureInitCommandTest extends CommandTestBase {
       ->wilLReturn(TRUE);
     $this->sutPreconditionsTester = $this->prophesize(SutPreconditionsTester::class);
     $this->versionParser = $this->prophesize(VersionParser::class);
+  }
+
+  protected function createCommand(): Command {
+    /** @var \Acquia\Orca\Utility\DrupalCoreVersionFinder $drupal_core_version_finder */
+    $drupal_core_version_finder = $this->drupalCoreVersionFinder->reveal();
+    /** @var \Acquia\Orca\Fixture\FixtureCreator $fixture_creator */
+    $fixture_creator = $this->fixtureCreator->reveal();
+    /** @var \Acquia\Orca\Fixture\FixtureRemover $fixture_remover */
+    $fixture_remover = $this->fixtureRemover->reveal();
+    /** @var \Acquia\Orca\Fixture\Fixture $fixture */
+    $fixture = $this->fixture->reveal();
+    /** @var \Acquia\Orca\Fixture\PackageManager $package_manager */
+    $package_manager = $this->packageManager->reveal();
+    /** @var \Acquia\Orca\Fixture\SutPreconditionsTester $sut_preconditions_tester */
+    $sut_preconditions_tester = $this->sutPreconditionsTester->reveal();
+    /** @var \Composer\Semver\VersionParser $version_parser */
+    $version_parser = ($this->versionParser instanceof VersionParser) ? $this->versionParser : $this->versionParser->reveal();
+    return new FixtureInitCommand($drupal_core_version_finder, $fixture, $fixture_creator, $fixture_remover, $package_manager, $sut_preconditions_tester, $version_parser);
   }
 
   /**
@@ -125,12 +142,11 @@ class FixtureInitCommandTest extends CommandTestBase {
     $this->fixtureCreator
       ->create()
       ->shouldBeCalledTimes((int) in_array('create', $methods_called));
-    $tester = $this->createCommandTester();
 
-    $this->executeCommand($tester, FixtureInitCommand::getDefaultName(), $args);
+    $this->executeCommand($args);
 
-    $this->assertEquals($display, $tester->getDisplay(), 'Displayed correct output.');
-    $this->assertEquals($status_code, $tester->getStatusCode(), 'Returned correct status code.');
+    $this->assertEquals($display, $this->getDisplay(), 'Displayed correct output.');
+    $this->assertEquals($status_code, $this->getStatusCode(), 'Returned correct status code.');
   }
 
   public function providerCommand() {
@@ -151,12 +167,11 @@ class FixtureInitCommandTest extends CommandTestBase {
 
   public function testNoOptions() {
     $this->versionParser = new VersionParser();
-    $tester = $this->createCommandTester();
 
-    $this->executeCommand($tester, FixtureInitCommand::getDefaultName());
+    $this->executeCommand();
 
-    $this->assertEquals('', $tester->getDisplay(), 'Displayed correct output.');
-    $this->assertEquals(StatusCodes::OK, $tester->getStatusCode(), 'Returned correct status code.');
+    $this->assertEquals('', $this->getDisplay(), 'Displayed correct output.');
+    $this->assertEquals(StatusCodes::OK, $this->getStatusCode(), 'Returned correct status code.');
   }
 
   public function testBareOption() {
@@ -166,12 +181,11 @@ class FixtureInitCommandTest extends CommandTestBase {
     $this->fixtureCreator
       ->create()
       ->shouldBeCalledTimes(1);
-    $tester = $this->createCommandTester();
 
-    $this->executeCommand($tester, FixtureInitCommand::getDefaultName(), ['--bare' => TRUE]);
+    $this->executeCommand(['--bare' => TRUE]);
 
-    $this->assertEquals('', $tester->getDisplay(), 'Displayed correct output.');
-    $this->assertEquals(StatusCodes::OK, $tester->getStatusCode(), 'Returned correct status code.');
+    $this->assertEquals('', $this->getDisplay(), 'Displayed correct output.');
+    $this->assertEquals(StatusCodes::OK, $this->getStatusCode(), 'Returned correct status code.');
   }
 
   /**
@@ -181,12 +195,11 @@ class FixtureInitCommandTest extends CommandTestBase {
     $this->fixtureCreator
       ->create()
       ->shouldNotBeCalled();
-    $tester = $this->createCommandTester();
 
-    $this->executeCommand($tester, FixtureInitCommand::getDefaultName(), $options);
+    $this->executeCommand($options);
 
-    $this->assertEquals("Error: Cannot create a bare fixture with a SUT.\n", $tester->getDisplay(), 'Displayed correct output.');
-    $this->assertEquals(StatusCodes::ERROR, $tester->getStatusCode(), 'Returned correct status code.');
+    $this->assertEquals("Error: Cannot create a bare fixture with a SUT.\n", $this->getDisplay(), 'Displayed correct output.');
+    $this->assertEquals(StatusCodes::ERROR, $this->getStatusCode(), 'Returned correct status code.');
   }
 
   public function providerBareOptionInvalidProvider() {
@@ -233,12 +246,11 @@ class FixtureInitCommandTest extends CommandTestBase {
     $this->fixtureCreator
       ->create()
       ->shouldBeCalledTimes(1);
-    $tester = $this->createCommandTester();
 
-    $this->executeCommand($tester, FixtureInitCommand::getDefaultName(), $options);
+    $this->executeCommand($options);
 
-    $this->assertEquals('', $tester->getDisplay(), 'Displayed correct output.');
-    $this->assertEquals(StatusCodes::OK, $tester->getStatusCode(), 'Returned correct status code.');
+    $this->assertEquals('', $this->getDisplay(), 'Displayed correct output.');
+    $this->assertEquals(StatusCodes::OK, $this->getStatusCode(), 'Returned correct status code.');
   }
 
   public function providerCoreOption() {
@@ -262,14 +274,13 @@ class FixtureInitCommandTest extends CommandTestBase {
    */
   public function testCoreOptionVersionParsing($status_code, $value, $display) {
     $this->versionParser = new VersionParser();
-    $tester = $this->createCommandTester();
 
-    $this->executeCommand($tester, FixtureInitCommand::getDefaultName(), [
+    $this->executeCommand([
       '--core' => $value,
     ]);
 
-    $this->assertEquals($status_code, $tester->getStatusCode(), 'Returned correct status code.');
-    $this->assertEquals($display, $tester->getDisplay(), 'Displayed correct output.');
+    $this->assertEquals($status_code, $this->getStatusCode(), 'Returned correct status code.');
+    $this->assertEquals($display, $this->getDisplay(), 'Displayed correct output.');
   }
 
   public function providerCoreOptionVersionParsing() {
@@ -299,12 +310,11 @@ class FixtureInitCommandTest extends CommandTestBase {
     $this->fixtureCreator
       ->create()
       ->shouldBeCalledTimes(1);
-    $tester = $this->createCommandTester();
 
-    $this->executeCommand($tester, FixtureInitCommand::getDefaultName(), $options);
+    $this->executeCommand($options);
 
-    $this->assertEquals("", $tester->getDisplay(), 'Displayed correct output.');
-    $this->assertEquals(StatusCodes::OK, $tester->getStatusCode(), 'Returned correct status code.');
+    $this->assertEquals("", $this->getDisplay(), 'Displayed correct output.');
+    $this->assertEquals(StatusCodes::OK, $this->getStatusCode(), 'Returned correct status code.');
   }
 
   public function providerIgnorePatchFailureOption() {
@@ -320,12 +330,11 @@ class FixtureInitCommandTest extends CommandTestBase {
     $this->fixtureCreator
       ->create(Argument::any())
       ->willThrow(new OrcaException($exception_message));
-    $tester = $this->createCommandTester();
 
-    $this->executeCommand($tester, FixtureInitCommand::getDefaultName());
+    $this->executeCommand();
 
-    $this->assertEquals(StatusCodes::ERROR, $tester->getStatusCode(), 'Returned correct status code.');
-    $this->assertContains("[ERROR] {$exception_message}", $tester->getDisplay(), 'Displayed correct output.');
+    $this->assertEquals(StatusCodes::ERROR, $this->getStatusCode(), 'Returned correct status code.');
+    $this->assertContains("[ERROR] {$exception_message}", $this->getDisplay(), 'Displayed correct output.');
   }
 
   public function testPreferSourceOption() {
@@ -335,12 +344,11 @@ class FixtureInitCommandTest extends CommandTestBase {
     $this->fixtureCreator
       ->create()
       ->shouldBeCalledTimes(1);
-    $tester = $this->createCommandTester();
 
-    $this->executeCommand($tester, FixtureInitCommand::getDefaultName(), ['--prefer-source' => TRUE]);
+    $this->executeCommand(['--prefer-source' => TRUE]);
 
-    $this->assertEquals('', $tester->getDisplay(), 'Displayed correct output.');
-    $this->assertEquals(StatusCodes::OK, $tester->getStatusCode(), 'Returned correct status code.');
+    $this->assertEquals('', $this->getDisplay(), 'Displayed correct output.');
+    $this->assertEquals(StatusCodes::OK, $this->getStatusCode(), 'Returned correct status code.');
   }
 
   public function testSutPreconditionTestFailure() {
@@ -355,38 +363,14 @@ class FixtureInitCommandTest extends CommandTestBase {
     $this->sutPreconditionsTester
       ->test($sut_name)
       ->willThrow(new OrcaException($exception_message));
-    $tester = $this->createCommandTester();
 
-    $this->executeCommand($tester, FixtureInitCommand::getDefaultName(), [
+    $this->executeCommand([
       '--force' => TRUE,
       '--sut' => $sut_name,
     ]);
 
-    $this->assertEquals(StatusCodes::ERROR, $tester->getStatusCode(), 'Returned correct status code.');
-    $this->assertContains("[ERROR] {$exception_message}", $tester->getDisplay(), 'Displayed correct output.');
-  }
-
-  private function createCommandTester(): CommandTester {
-    $application = new Application();
-    /** @var \Acquia\Orca\Utility\DrupalCoreVersionFinder $drupal_core_version_finder */
-    $drupal_core_version_finder = $this->drupalCoreVersionFinder->reveal();
-    /** @var \Acquia\Orca\Fixture\FixtureCreator $fixture_creator */
-    $fixture_creator = $this->fixtureCreator->reveal();
-    /** @var \Acquia\Orca\Fixture\FixtureRemover $fixture_remover */
-    $fixture_remover = $this->fixtureRemover->reveal();
-    /** @var \Acquia\Orca\Fixture\Fixture $fixture */
-    $fixture = $this->fixture->reveal();
-    /** @var \Acquia\Orca\Fixture\PackageManager $package_manager */
-    $package_manager = $this->packageManager->reveal();
-    /** @var \Acquia\Orca\Fixture\SutPreconditionsTester $sut_preconditions_tester */
-    $sut_preconditions_tester = $this->sutPreconditionsTester->reveal();
-    /** @var \Composer\Semver\VersionParser $version_parser */
-    $version_parser = ($this->versionParser instanceof VersionParser) ? $this->versionParser : $this->versionParser->reveal();
-    $application->add(new FixtureInitCommand($drupal_core_version_finder, $fixture, $fixture_creator, $fixture_remover, $package_manager, $sut_preconditions_tester, $version_parser));
-    /** @var \Acquia\Orca\Command\Fixture\FixtureInitCommand $command */
-    $command = $application->find(FixtureInitCommand::getDefaultName());
-    $this->assertInstanceOf(FixtureInitCommand::class, $command, 'Instantiated class.');
-    return new CommandTester($command);
+    $this->assertEquals(StatusCodes::ERROR, $this->getStatusCode(), 'Returned correct status code.');
+    $this->assertContains("[ERROR] {$exception_message}", $this->getDisplay(), 'Displayed correct output.');
   }
 
 }

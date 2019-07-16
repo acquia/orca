@@ -7,8 +7,7 @@ use Acquia\Orca\Command\StatusCodes;
 use Acquia\Orca\Fixture\Fixture;
 use Acquia\Orca\Fixture\FixtureResetter;
 use Acquia\Orca\Tests\Command\CommandTestBase;
-use Symfony\Component\Console\Application;
-use Symfony\Component\Console\Tester\CommandTester;
+use Symfony\Component\Console\Command\Command;
 
 /**
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Fixture\Fixture $fixture
@@ -25,6 +24,14 @@ class FixtureResetCommandTest extends CommandTestBase {
       ->willReturn(self::FIXTURE_ROOT);
   }
 
+  protected function createCommand(): Command {
+    /** @var \Acquia\Orca\Fixture\FixtureResetter $fixture_resetter */
+    $fixture_resetter = $this->fixtureResetter->reveal();
+    /** @var \Acquia\Orca\Fixture\Fixture $fixture */
+    $fixture = $this->fixture->reveal();
+    return new FixtureResetCommand($fixture, $fixture_resetter);
+  }
+
   /**
    * @dataProvider providerCommand
    */
@@ -36,13 +43,11 @@ class FixtureResetCommandTest extends CommandTestBase {
     $this->fixtureResetter
       ->reset()
       ->shouldBeCalledTimes($remove_called);
-    $tester = $this->createCommandTester();
-    $tester->setInputs($inputs);
 
-    $this->executeCommand($tester, FixtureResetCommand::getDefaultName(), $args);
+    $this->executeCommand($args, $inputs);
 
-    $this->assertEquals($display, $tester->getDisplay(), 'Displayed correct output.');
-    $this->assertEquals($status_code, $tester->getStatusCode(), 'Returned correct status code.');
+    $this->assertEquals($display, $this->getDisplay(), 'Displayed correct output.');
+    $this->assertEquals($status_code, $this->getStatusCode(), 'Returned correct status code.');
   }
 
   public function providerCommand() {
@@ -54,19 +59,6 @@ class FixtureResetCommandTest extends CommandTestBase {
       [TRUE, ['-f' => TRUE], [], 1, StatusCodes::OK, ''],
       [TRUE, ['-f' => TRUE, '-n' => TRUE], [], 1, StatusCodes::OK, ''],
     ];
-  }
-
-  private function createCommandTester(): CommandTester {
-    $application = new Application();
-    /** @var \Acquia\Orca\Fixture\FixtureResetter $fixture_resetter */
-    $fixture_resetter = $this->fixtureResetter->reveal();
-    /** @var \Acquia\Orca\Fixture\Fixture $fixture */
-    $fixture = $this->fixture->reveal();
-    $application->add(new FixtureResetCommand($fixture, $fixture_resetter));
-    /** @var \Acquia\Orca\Command\Fixture\FixtureResetCommand $command */
-    $command = $application->find(FixtureResetCommand::getDefaultName());
-    $this->assertInstanceOf(FixtureResetCommand::class, $command, 'Instantiated class.');
-    return new CommandTester($command);
   }
 
 }

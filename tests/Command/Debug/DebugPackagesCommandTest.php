@@ -7,8 +7,7 @@ use Acquia\Orca\Command\StatusCodes;
 use Acquia\Orca\Fixture\Package;
 use Acquia\Orca\Fixture\PackageManager;
 use Acquia\Orca\Tests\Command\CommandTestBase;
-use Symfony\Component\Console\Application;
-use Symfony\Component\Console\Tester\CommandTester;
+use Symfony\Component\Console\Command\Command;
 
 /**
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Fixture\PackageManager $packageManager
@@ -17,6 +16,12 @@ class DebugPackagesCommandTest extends CommandTestBase {
 
   protected function setUp() {
     $this->packageManager = $this->prophesize(PackageManager::class);
+  }
+
+  protected function createCommand(): Command {
+    /** @var \Acquia\Orca\Fixture\PackageManager $package_manager */
+    $package_manager = $this->packageManager->reveal();
+    return new DebugPackagesCommand($package_manager);
   }
 
   public function testCommand() {
@@ -33,9 +38,8 @@ class DebugPackagesCommandTest extends CommandTestBase {
       ->getMultiple()
       ->shouldBeCalledTimes(1)
       ->willReturn([$package, $package]);
-    $tester = $this->createCommandTester();
 
-    $this->executeCommand($tester, DebugPackagesCommand::getDefaultName());
+    $this->executeCommand();
 
     $this->assertEquals(ltrim("
 +-----------+---------------+----------------------------------+-------------+---------+-------------+--------+
@@ -44,19 +48,8 @@ class DebugPackagesCommandTest extends CommandTestBase {
 | Example 1 | drupal-module | docroot/modules/contrib/example1 | ../example1 | ~1.0    | 1.x-dev     | yes    |
 | Example 2 | drupal-module | docroot/modules/contrib/example2 | ../example2 | ~1.0    | 1.x-dev     | yes    |
 +-----------+---------------+----------------------------------+-------------+---------+-------------+--------+
-"), $tester->getDisplay(), 'Displayed correct output.');
-    $this->assertEquals(StatusCodes::OK, $tester->getStatusCode(), 'Returned correct status code.');
-  }
-
-  private function createCommandTester(): CommandTester {
-    $application = new Application();
-    /** @var \Acquia\Orca\Fixture\PackageManager $package_manager */
-    $package_manager = $this->packageManager->reveal();
-    $application->add(new DebugPackagesCommand($package_manager));
-    /** @var \Acquia\Orca\Command\Debug\DebugPackagesCommand $command */
-    $command = $application->find(DebugPackagesCommand::getDefaultName());
-    $this->assertInstanceOf(DebugPackagesCommand::class, $command, 'Instantiated class.');
-    return new CommandTester($command);
+"), $this->getDisplay(), 'Displayed correct output.');
+    $this->assertEquals(StatusCodes::OK, $this->getStatusCode(), 'Returned correct status code.');
   }
 
 }

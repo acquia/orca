@@ -3,13 +3,11 @@
 namespace Acquia\Orca\Tests\Command\Fixture;
 
 use Acquia\Orca\Command\Fixture\FixtureBackupCommand;
-use Acquia\Orca\Command\Fixture\FixtureResetCommand;
 use Acquia\Orca\Command\StatusCodes;
 use Acquia\Orca\Fixture\Fixture;
 use Acquia\Orca\Fixture\FixtureBackupper;
 use Acquia\Orca\Tests\Command\CommandTestBase;
-use Symfony\Component\Console\Application;
-use Symfony\Component\Console\Tester\CommandTester;
+use Symfony\Component\Console\Command\Command;
 
 /**
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Fixture\Fixture $fixture
@@ -26,6 +24,14 @@ class FixtureBackupCommandTest extends CommandTestBase {
       ->willReturn(self::FIXTURE_ROOT);
   }
 
+  protected function createCommand(): Command {
+    /** @var \Acquia\Orca\Fixture\FixtureBackupper $fixture_backupper */
+    $fixture_backupper = $this->fixtureBackupper->reveal();
+    /** @var \Acquia\Orca\Fixture\Fixture $fixture */
+    $fixture = $this->fixture->reveal();
+    return new FixtureBackupCommand($fixture, $fixture_backupper);
+  }
+
   /**
    * @dataProvider providerCommand
    */
@@ -37,13 +43,11 @@ class FixtureBackupCommandTest extends CommandTestBase {
     $this->fixtureBackupper
       ->backup()
       ->shouldBeCalledTimes($remove_called);
-    $tester = $this->createCommandTester();
-    $tester->setInputs($inputs);
 
-    $this->executeCommand($tester, FixtureResetCommand::getDefaultName(), $args);
+    $this->executeCommand($args, $inputs);
 
-    $this->assertEquals($display, $tester->getDisplay(), 'Displayed correct output.');
-    $this->assertEquals($status_code, $tester->getStatusCode(), 'Returned correct status code.');
+    $this->assertEquals($display, $this->getDisplay(), 'Displayed correct output.');
+    $this->assertEquals($status_code, $this->getStatusCode(), 'Returned correct status code.');
   }
 
   public function providerCommand() {
@@ -55,19 +59,6 @@ class FixtureBackupCommandTest extends CommandTestBase {
       [TRUE, ['-f' => TRUE], [], 1, StatusCodes::OK, ''],
       [TRUE, ['-f' => TRUE, '-n' => TRUE], [], 1, StatusCodes::OK, ''],
     ];
-  }
-
-  private function createCommandTester(): CommandTester {
-    $application = new Application();
-    /** @var \Acquia\Orca\Fixture\FixtureBackupper $fixture_backupper */
-    $fixture_backupper = $this->fixtureBackupper->reveal();
-    /** @var \Acquia\Orca\Fixture\Fixture $fixture */
-    $fixture = $this->fixture->reveal();
-    $application->add(new FixtureBackupCommand($fixture, $fixture_backupper));
-    /** @var \Acquia\Orca\Command\Fixture\FixtureBackupCommand $command */
-    $command = $application->find(FixtureBackupCommand::getDefaultName());
-    $this->assertInstanceOf(FixtureBackupCommand::class, $command, 'Instantiated class.');
-    return new CommandTester($command);
   }
 
 }

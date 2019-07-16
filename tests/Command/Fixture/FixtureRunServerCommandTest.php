@@ -7,8 +7,7 @@ use Acquia\Orca\Command\StatusCodes;
 use Acquia\Orca\Fixture\Fixture;
 use Acquia\Orca\Server\WebServer;
 use Acquia\Orca\Tests\Command\CommandTestBase;
-use Symfony\Component\Console\Application;
-use Symfony\Component\Console\Tester\CommandTester;
+use Symfony\Component\Console\Command\Command;
 
 /**
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Fixture\Fixture $fixture
@@ -25,6 +24,14 @@ class FixtureRunServerCommandTest extends CommandTestBase {
     $this->webServer = $this->prophesize(WebServer::class);
   }
 
+  protected function createCommand(): Command {
+    /** @var \Acquia\Orca\Fixture\Fixture $fixture */
+    $fixture = $this->fixture->reveal();
+    /** @var \Acquia\Orca\Server\WebServer $web_server */
+    $web_server = $this->webServer->reveal();
+    return new FixtureRunServerCommand($fixture, $web_server);
+  }
+
   /**
    * @dataProvider providerCommand
    */
@@ -39,12 +46,11 @@ class FixtureRunServerCommandTest extends CommandTestBase {
     $this->webServer
       ->wait()
       ->shouldBeCalledTimes((int) in_array('wait', $methods_called));
-    $tester = $this->createCommandTester();
 
-    $this->executeCommand($tester, FixtureRunServerCommand::getDefaultName());
+    $this->executeCommand();
 
-    $this->assertEquals($display, $tester->getDisplay(), 'Displayed correct output.');
-    $this->assertEquals($status_code, $tester->getStatusCode(), 'Returned correct status code.');
+    $this->assertEquals($display, $this->getDisplay(), 'Displayed correct output.');
+    $this->assertEquals($status_code, $this->getStatusCode(), 'Returned correct status code.');
   }
 
   public function providerCommand() {
@@ -52,19 +58,6 @@ class FixtureRunServerCommandTest extends CommandTestBase {
       [FALSE, ['exists'], StatusCodes::ERROR, sprintf("Error: No fixture exists at %s.\nHint: Use the \"fixture:init\" command to create one.\n", self::FIXTURE_ROOT)],
       [TRUE, ['exists', 'start', 'wait'], StatusCodes::OK, sprintf("Starting web server...\nListening on http://%s.\nDocument root is %s.\nPress Ctrl-C to quit.\n", Fixture::WEB_ADDRESS, self::FIXTURE_DOCROOT)],
     ];
-  }
-
-  private function createCommandTester(): CommandTester {
-    $application = new Application();
-    /** @var \Acquia\Orca\Fixture\Fixture $fixture */
-    $fixture = $this->fixture->reveal();
-    /** @var \Acquia\Orca\Server\WebServer $web_server */
-    $web_server = $this->webServer->reveal();
-    $application->add(new FixtureRunServerCommand($fixture, $web_server));
-    /** @var \Acquia\Orca\Command\Fixture\FixtureInitCommand $command */
-    $command = $application->find(FixtureRunServerCommand::getDefaultName());
-    $this->assertInstanceOf(FixtureRunServerCommand::class, $command, 'Instantiated class.');
-    return new CommandTester($command);
   }
 
 }

@@ -11,8 +11,7 @@ use Acquia\Orca\Task\StaticAnalysisTool\PhpMessDetectorTask;
 use Acquia\Orca\Task\TaskRunner;
 use Acquia\Orca\Task\StaticAnalysisTool\YamlLintTask;
 use Acquia\Orca\Tests\Command\CommandTestBase;
-use Symfony\Component\Console\Application;
-use Symfony\Component\Console\Tester\CommandTester;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
@@ -36,6 +35,24 @@ class QaStaticAnalysisCommandTest extends CommandTestBase {
     $this->phpMessDetector = $this->prophesize(PhpMessDetectorTask::class);
     $this->taskRunner = $this->prophesize(TaskRunner::class);
     $this->yamlLint = $this->prophesize(YamlLintTask::class);
+  }
+
+  protected function createCommand(): Command {
+    /** @var \Acquia\Orca\Task\StaticAnalysisTool\ComposerValidateTask $composer_validate */
+    $composer_validate = $this->composerValidate->reveal();
+    /** @var \Symfony\Component\Filesystem\Filesystem $filesystem */
+    $filesystem = $this->filesystem->reveal();
+    /** @var \Acquia\Orca\Task\StaticAnalysisTool\PhpCodeSnifferTask $php_code_sniffer */
+    $php_code_sniffer = $this->phpCodeSniffer->reveal();
+    /** @var \Acquia\Orca\Task\StaticAnalysisTool\PhpLintTask $php_lint */
+    $php_lint = $this->phpLint->reveal();
+    /** @var \Acquia\Orca\Task\StaticAnalysisTool\PhpMessDetectorTask $php_mess_detector */
+    $php_mess_detector = $this->phpMessDetector->reveal();
+    /** @var \Acquia\Orca\Task\TaskRunner $task_runner */
+    $task_runner = $this->taskRunner->reveal();
+    /** @var \Acquia\Orca\Task\StaticAnalysisTool\YamlLintTask $yaml_lint */
+    $yaml_lint = $this->yamlLint->reveal();
+    return new QaStaticAnalysisCommand($composer_validate, $filesystem, $php_code_sniffer, $php_lint, $php_mess_detector, $task_runner, $yaml_lint);
   }
 
   /**
@@ -74,12 +91,11 @@ class QaStaticAnalysisCommandTest extends CommandTestBase {
       ->run()
       ->shouldBeCalledTimes($run_called)
       ->willReturn($status_code);
-    $tester = $this->createCommandTester();
 
-    $this->executeCommand($tester, QaStaticAnalysisCommand::getDefaultName(), ['path' => self::SUT_PATH]);
+    $this->executeCommand(['path' => self::SUT_PATH]);
 
-    $this->assertEquals($display, $tester->getDisplay(), 'Displayed correct output.');
-    $this->assertEquals($status_code, $tester->getStatusCode(), 'Returned correct status code.');
+    $this->assertEquals($display, $this->getDisplay(), 'Displayed correct output.');
+    $this->assertEquals($status_code, $this->getStatusCode(), 'Returned correct status code.');
   }
 
   public function providerCommand() {
@@ -111,12 +127,11 @@ class QaStaticAnalysisCommandTest extends CommandTestBase {
       ->run()
       ->shouldBeCalledTimes(1)
       ->willReturn(StatusCodes::OK);
-    $tester = $this->createCommandTester();
 
-    $this->executeCommand($tester, QaStaticAnalysisCommand::getDefaultName(), $args);
+    $this->executeCommand($args);
 
-    $this->assertEquals('', $tester->getDisplay(), 'Displayed correct output.');
-    $this->assertEquals(StatusCodes::OK, $tester->getStatusCode(), 'Returned correct status code.');
+    $this->assertEquals('', $this->getDisplay(), 'Displayed correct output.');
+    $this->assertEquals(StatusCodes::OK, $this->getStatusCode(), 'Returned correct status code.');
   }
 
   public function providerTaskFiltering() {
@@ -127,29 +142,6 @@ class QaStaticAnalysisCommandTest extends CommandTestBase {
       [['--phpmd' => 1], 'phpMessDetector'],
       [['--yamllint' => 1], 'yamlLint'],
     ];
-  }
-
-  private function createCommandTester(): CommandTester {
-    $application = new Application();
-    /** @var \Acquia\Orca\Task\StaticAnalysisTool\ComposerValidateTask $composer_validate */
-    $composer_validate = $this->composerValidate->reveal();
-    /** @var \Symfony\Component\Filesystem\Filesystem $filesystem */
-    $filesystem = $this->filesystem->reveal();
-    /** @var \Acquia\Orca\Task\StaticAnalysisTool\PhpCodeSnifferTask $php_code_sniffer */
-    $php_code_sniffer = $this->phpCodeSniffer->reveal();
-    /** @var \Acquia\Orca\Task\StaticAnalysisTool\PhpLintTask $php_lint */
-    $php_lint = $this->phpLint->reveal();
-    /** @var \Acquia\Orca\Task\StaticAnalysisTool\PhpMessDetectorTask $php_mess_detector */
-    $php_mess_detector = $this->phpMessDetector->reveal();
-    /** @var \Acquia\Orca\Task\TaskRunner $task_runner */
-    $task_runner = $this->taskRunner->reveal();
-    /** @var \Acquia\Orca\Task\StaticAnalysisTool\YamlLintTask $yaml_lint */
-    $yaml_lint = $this->yamlLint->reveal();
-    $application->add(new QaStaticAnalysisCommand($composer_validate, $filesystem, $php_code_sniffer, $php_lint, $php_mess_detector, $task_runner, $yaml_lint));
-    /** @var \Acquia\Orca\Command\Qa\QaAutomatedTestsCommand $command */
-    $command = $application->find(QaStaticAnalysisCommand::getDefaultName());
-    $this->assertInstanceOf(QaStaticAnalysisCommand::class, $command, 'Instantiated class.');
-    return new CommandTester($command);
   }
 
 }
