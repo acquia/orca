@@ -507,6 +507,10 @@ class FixtureCreator {
     $patterns = array_fill_keys(array_keys($packages), 'source');
     $this->jsonConfigSource->addConfigSetting('preferred-install', $patterns);
 
+    if (empty($this->jsonConfigDataBackup['config']['preferred-install'])) {
+      return;
+    }
+
     // Append original patterns.
     foreach ($this->jsonConfigDataBackup['config']['preferred-install'] as $key => $value) {
       if (array_key_exists($key, $patterns)) {
