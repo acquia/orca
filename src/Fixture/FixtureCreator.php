@@ -456,18 +456,8 @@ class FixtureCreator {
 
     // Add new repository.
     $this->jsonConfigSource->addRepository($this->sut->getPackageName(), [
-      'type' => 'package',
-      'package' => [
-        [
-          'name' => $this->sut->getPackageName(),
-          'version' => $this->getSutVersion(),
-          'type' => $this->sut->getType(),
-          'dist' => [
-            'type' => 'path',
-            'url' => $this->fixture->getPath($this->sut->getRepositoryUrl()),
-          ],
-        ],
-      ],
+      'type' => 'path',
+      'url' => $this->fixture->getPath($this->sut->getRepositoryUrl()),
     ]);
 
     // Append original repositories.
