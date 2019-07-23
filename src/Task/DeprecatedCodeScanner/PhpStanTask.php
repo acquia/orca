@@ -92,7 +92,7 @@ class PhpStanTask {
         $command[] = $this->getAndEnsurePath('docroot/profiles/contrib');
         $command[] = $this->getAndEnsurePath('docroot/themes/contrib');
       }
-      $this->processRunner->runOrcaVendorBin($command, $this->fixture->getPath());
+      $this->processRunner->runFixtureVendorBin($command);
     }
     catch (ProcessFailedException $e) {
       return StatusCodes::ERROR;
