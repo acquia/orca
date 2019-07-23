@@ -2,9 +2,12 @@
 parameters:
 
   # Environment variables for dynamic configuration override:
+  env(ORCA_AMPLITUDE_API_KEY): ~
+  env(ORCA_AMPLITUDE_USER_ID): ~
   env(ORCA_FIXTURE_DIR): "%app.fixture_dir%"
   env(ORCA_PACKAGES_CONFIG): config/packages.yml
   env(ORCA_PACKAGES_CONFIG_ALTER): ~
+  env(ORCA_TELEMETRY_ENABLE): false
 
 services:
 
@@ -12,10 +15,13 @@ services:
     autoconfigure: true
     autowire: true
     bind:
+      $amplitude_api_key: "%env(ORCA_AMPLITUDE_API_KEY)%"
+      $amplitude_user_id: "%env(ORCA_AMPLITUDE_USER_ID)%"
       $fixture_dir: "%env(ORCA_FIXTURE_DIR)%"
       $project_dir: "%kernel.project_dir%"
       $packages_config: "%env(ORCA_PACKAGES_CONFIG)%"
       $packages_config_alter: "%env(ORCA_PACKAGES_CONFIG_ALTER)%"
+      $telemetry_is_enabled: "%env(bool:ORCA_TELEMETRY_ENABLE)%"
     public: true
 
   Acquia\Orca\:
@@ -48,3 +54,5 @@ services:
   Symfony\Component\Filesystem\Filesystem: ~
 
   Symfony\Component\Yaml\Parser: ~
+
+  Zumba\Amplitude\Amplitude: ~

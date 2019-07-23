@@ -25,6 +25,7 @@ env:
     - ORCA_PACKAGES_CONFIG=tests/Fixture/packages.yml
     - ORCA_PACKAGES_CONFIG_ALTER=example/tests/packages_alter.yml
     - ORCA_SUT_DIR=${TRAVIS_BUILD_DIR}/../example
+    - ORCA_TELEMETRY_ENABLE=TRUE
 
 matrix:
   fast_finish: true
