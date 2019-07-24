@@ -130,7 +130,7 @@ class FixtureInspector {
    *   "Unknown".
    */
   private function getFixtureType(): string {
-    if ($this->getIsBare()) {
+    if ($this->isBare()) {
       return 'Bare';
     }
 
@@ -145,22 +145,6 @@ class FixtureInspector {
     }
 
     return $this->getComposerJson()->get($key) ? 'SUT-only' : 'Standard';
-  }
-
-  /**
-   * Determines whether or not the fixture is bare.
-   *
-   * @return bool
-   *   TRUE if the fixture is bare or FALSE if not.
-   */
-  private function getIsBare(): bool {
-    $key = 'extra.orca.is-bare';
-
-    if (!$this->getComposerJson()->has($key)) {
-      return FALSE;
-    }
-
-    return (bool) $this->getComposerJson()->get($key);
   }
 
   /**
@@ -235,6 +219,22 @@ class FixtureInspector {
       $packages[] = [$label, $this->getInstalledPackageVersion($package_name)];
     }
     return $packages;
+  }
+
+  /**
+   * Determines whether or not the fixture is bare.
+   *
+   * @return bool
+   *   TRUE if the fixture is bare or FALSE if not.
+   */
+  private function isBare(): bool {
+    $key = 'extra.orca.is-bare';
+
+    if (!$this->getComposerJson()->has($key)) {
+      return FALSE;
+    }
+
+    return (bool) $this->getComposerJson()->get($key);
   }
 
 }

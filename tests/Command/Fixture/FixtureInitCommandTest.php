@@ -215,27 +215,27 @@ class FixtureInitCommandTest extends CommandTestBase {
   public function testCoreOption($value, $options, $set_version) {
     $this->drupalCoreVersionFinder
       ->getPreviousMinorRelease()
-      ->shouldBeCalledTimes((int) ($value === DrupalCoreVersion::PREVIOUS_RELEASE()->getValue()))
+      ->shouldBeCalledTimes((int) ($value === DrupalCoreVersion::PREVIOUS_RELEASE))
       ->willReturn(self::CORE_VALUE_LITERAL_PREVIOUS_RELEASE);
     $this->drupalCoreVersionFinder
       ->getPreviousDevVersion()
-      ->shouldBeCalledTimes((int) ($value === DrupalCoreVersion::PREVIOUS_DEV()->getValue()))
+      ->shouldBeCalledTimes((int) ($value === DrupalCoreVersion::PREVIOUS_DEV))
       ->willReturn(self::CORE_VALUE_LITERAL_PREVIOUS_DEV);
     $this->drupalCoreVersionFinder
       ->getCurrentRecommendedRelease()
-      ->shouldBeCalledTimes((int) ($value === DrupalCoreVersion::CURRENT_RECOMMENDED()->getValue()))
+      ->shouldBeCalledTimes((int) ($value === DrupalCoreVersion::CURRENT_RECOMMENDED))
       ->willReturn(self::CORE_VALUE_LITERAL_CURRENT_RECOMMENDED);
     $this->drupalCoreVersionFinder
       ->getCurrentDevVersion()
-      ->shouldBeCalledTimes((int) ($value === DrupalCoreVersion::CURRENT_DEV()->getValue()))
+      ->shouldBeCalledTimes((int) ($value === DrupalCoreVersion::CURRENT_DEV))
       ->willReturn(self::CORE_VALUE_LITERAL_CURRENT_DEV);
     $this->drupalCoreVersionFinder
       ->getNextRelease()
-      ->shouldBeCalledTimes((int) ($value === DrupalCoreVersion::NEXT_RELEASE()->getValue()))
+      ->shouldBeCalledTimes((int) ($value === DrupalCoreVersion::NEXT_RELEASE))
       ->willReturn(self::CORE_VALUE_LITERAL_NEXT_RELEASE);
     $this->drupalCoreVersionFinder
       ->getNextDevVersion()
-      ->shouldBeCalledTimes((int) ($value === DrupalCoreVersion::NEXT_DEV()->getValue()))
+      ->shouldBeCalledTimes((int) ($value === DrupalCoreVersion::NEXT_DEV))
       ->willReturn(self::CORE_VALUE_LITERAL_NEXT_DEV);
     $this->fixtureCreator
       ->setDev(TRUE)
@@ -255,13 +255,13 @@ class FixtureInitCommandTest extends CommandTestBase {
 
   public function providerCoreOption() {
     return [
-      [DrupalCoreVersion::PREVIOUS_RELEASE()->getValue(), ['--core' => DrupalCoreVersion::PREVIOUS_RELEASE()->getValue()], self::CORE_VALUE_LITERAL_PREVIOUS_RELEASE],
-      [DrupalCoreVersion::PREVIOUS_DEV()->getValue(), ['--core' => DrupalCoreVersion::PREVIOUS_DEV()->getValue()], self::CORE_VALUE_LITERAL_PREVIOUS_DEV],
-      [DrupalCoreVersion::CURRENT_RECOMMENDED()->getValue(), ['--core' => DrupalCoreVersion::CURRENT_RECOMMENDED()->getValue()], self::CORE_VALUE_LITERAL_CURRENT_RECOMMENDED],
-      [DrupalCoreVersion::CURRENT_DEV()->getValue(), ['--core' => DrupalCoreVersion::CURRENT_DEV()->getValue()], self::CORE_VALUE_LITERAL_CURRENT_DEV],
-      [DrupalCoreVersion::CURRENT_DEV()->getValue(), ['--dev' => TRUE], self::CORE_VALUE_LITERAL_CURRENT_DEV],
-      [DrupalCoreVersion::NEXT_RELEASE()->getValue(), ['--core' => DrupalCoreVersion::NEXT_RELEASE()->getValue()], self::CORE_VALUE_LITERAL_NEXT_RELEASE],
-      [DrupalCoreVersion::NEXT_DEV()->getValue(), ['--core' => DrupalCoreVersion::NEXT_DEV()->getValue()], self::CORE_VALUE_LITERAL_NEXT_DEV],
+      [DrupalCoreVersion::PREVIOUS_RELEASE, ['--core' => DrupalCoreVersion::PREVIOUS_RELEASE], self::CORE_VALUE_LITERAL_PREVIOUS_RELEASE],
+      [DrupalCoreVersion::PREVIOUS_DEV, ['--core' => DrupalCoreVersion::PREVIOUS_DEV], self::CORE_VALUE_LITERAL_PREVIOUS_DEV],
+      [DrupalCoreVersion::CURRENT_RECOMMENDED, ['--core' => DrupalCoreVersion::CURRENT_RECOMMENDED], self::CORE_VALUE_LITERAL_CURRENT_RECOMMENDED],
+      [DrupalCoreVersion::CURRENT_DEV, ['--core' => DrupalCoreVersion::CURRENT_DEV], self::CORE_VALUE_LITERAL_CURRENT_DEV],
+      [DrupalCoreVersion::CURRENT_DEV, ['--dev' => TRUE], self::CORE_VALUE_LITERAL_CURRENT_DEV],
+      [DrupalCoreVersion::NEXT_RELEASE, ['--core' => DrupalCoreVersion::NEXT_RELEASE], self::CORE_VALUE_LITERAL_NEXT_RELEASE],
+      [DrupalCoreVersion::NEXT_DEV, ['--core' => DrupalCoreVersion::NEXT_DEV], self::CORE_VALUE_LITERAL_NEXT_DEV],
       [self::CORE_VALUE_LITERAL_PREVIOUS_RELEASE, ['--core' => self::CORE_VALUE_LITERAL_PREVIOUS_RELEASE], self::CORE_VALUE_LITERAL_PREVIOUS_RELEASE],
       [self::CORE_VALUE_LITERAL_CURRENT_RECOMMENDED, ['--core' => self::CORE_VALUE_LITERAL_CURRENT_RECOMMENDED], self::CORE_VALUE_LITERAL_CURRENT_RECOMMENDED],
       [self::CORE_VALUE_LITERAL_CURRENT_DEV, ['--core' => self::CORE_VALUE_LITERAL_CURRENT_DEV], self::CORE_VALUE_LITERAL_CURRENT_DEV],
