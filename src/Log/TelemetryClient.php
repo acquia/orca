@@ -38,6 +38,16 @@ class TelemetryClient {
   }
 
   /**
+   * Determines whether or not telemetry is ready.
+   *
+   * @return bool
+   *   TRUE if telemetry is ready or FALSE if not.
+   */
+  public function isReady() {
+    return (bool) $this->amplitude;
+  }
+
+  /**
    * Logs an event.
    *
    * @param string $type

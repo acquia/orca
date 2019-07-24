@@ -37,6 +37,9 @@ services:
 
   Composer\Util\ProcessExecutor: ~
 
+  Env:
+    class: Env
+
   Symfony\Component\Console\Application: ~
 
   Symfony\Component\Console\Input\ArgvInput: ~

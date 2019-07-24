@@ -29,28 +29,32 @@ class TelemetryClientTest extends TestCase {
   /**
    * @dataProvider providerTelemetryClient
    */
-  public function testTelemetryClient($times_called, $telemetry_is_enabled, $amplitude_api_key, $amplitude_user_id, $event_type, $event_properties) {
-    $this->telemetryIsEnabled = $telemetry_is_enabled;
-    $this->amplitudeApiKey = $amplitude_api_key;
-    $this->amplitudeUserId = $amplitude_user_id;
+  public function testTelemetryClient($times_called, $is_enabled, $api_key, $user_id) {
+    $this->telemetryIsEnabled = $is_enabled;
+    $this->amplitudeApiKey = $api_key;
+    $this->amplitudeUserId = $user_id;
     $this->amplitude
-      ->init($amplitude_api_key, $amplitude_user_id)
+      ->init($api_key, $user_id)
       ->shouldBeCalledTimes($times_called);
+    $event_type = 'Event type';
+    $event_properties = ['key' => 'value'];
     $this->amplitude
       ->logEvent($event_type, $event_properties)
       ->shouldBecalledTimes($times_called);
 
     $client = $this->createTelemetryClient();
     $client->logEvent($event_type, $event_properties);
+    $is_ready = $client->isReady();
+
+    $this->assertEquals($is_enabled, $is_ready, 'Correctly set enabled/state state.');
   }
 
   public function providerTelemetryClient() {
     return [
-      [1, TRUE, 'apikey1', 'drupal/example1', 'Event type 1', ['key' => 'value']],
-      [1, TRUE, 'apikey2', 'drupal/example2', 'Event type 2', []],
-      [0, FALSE, 'apikey', 'drupal/example', '', []],
-      [0, TRUE, NULL, 'drupal/example', '', []],
-      [0, TRUE, 'apikey', NULL, '', []],
+      [1, TRUE, 'apikey1', 'drupal/example'],
+      [0, FALSE, 'apikey', 'drupal/example'],
+      [0, FALSE, NULL, 'drupal/example'],
+      [0, FALSE, 'apikey', NULL],
     ];
   }
 
