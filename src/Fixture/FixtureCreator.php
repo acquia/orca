@@ -365,7 +365,7 @@ class FixtureCreator {
 
     // Install the dev version of Drush.
     if ($this->isDev) {
-      $additions[] = 'drush/drush:dev-master';
+      $additions[] = 'drush/drush:dev-master || 10.x-dev || 9.x-dev || 9.5.x-dev';
     }
 
     // Add Drupal Console as a soft dependency akin to Drush.
