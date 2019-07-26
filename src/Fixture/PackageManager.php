@@ -114,7 +114,7 @@ class PackageManager {
   }
 
   /**
-   * Gets an array of packages or package values, optionally filtered by type.
+   * Gets an array of packages, optionally filtered by type.
    *
    * @param string|null $type
    *   (Optional) A type to filter to, e.g., "drupal-module", or NULL to not
