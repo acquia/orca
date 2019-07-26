@@ -9,8 +9,7 @@ use Acquia\Orca\Fixture\PackageManager;
 use Acquia\Orca\Task\DeprecatedCodeScanner\PhpStanTask;
 use Acquia\Orca\Task\TaskRunner;
 use Acquia\Orca\Tests\Command\CommandTestBase;
-use Symfony\Component\Console\Application;
-use Symfony\Component\Console\Tester\CommandTester;
+use Symfony\Component\Console\Command\Command;
 
 /**
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Fixture\Fixture $fixture
@@ -29,6 +28,18 @@ class QaDeprecatedCodeScanCommandTest extends CommandTestBase {
     $this->packageManager = $this->prophesize(PackageManager::class);
     $this->phpstan = $this->prophesize(PhpStanTask::class);
     $this->taskRunner = $this->prophesize(TaskRunner::class);
+  }
+
+  protected function createCommand(): Command {
+    /** @var \Acquia\Orca\Fixture\Fixture $fixture */
+    $fixture = $this->fixture->reveal();
+    /** @var \Acquia\Orca\Fixture\PackageManager $package_manager */
+    $package_manager = $this->packageManager->reveal();
+    /** @var \Acquia\Orca\Task\DeprecatedCodeScanner\PhpStanTask $phpstan */
+    $phpstan = $this->phpstan->reveal();
+    /** @var \Acquia\Orca\Task\TaskRunner $task_runner */
+    $task_runner = $this->taskRunner->reveal();
+    return new QaDeprecatedCodeScanCommand($fixture, $package_manager, $phpstan, $task_runner);
   }
 
   /**
@@ -53,12 +64,11 @@ class QaDeprecatedCodeScanCommandTest extends CommandTestBase {
       ->execute()
       ->shouldBeCalledTimes((int) in_array('execute', $methods_called))
       ->willReturn($status_code);
-    $tester = $this->createCommandTester();
 
-    $this->executeCommand($tester, QaDeprecatedCodeScanCommand::getDefaultName(), $args);
+    $this->executeCommand($args);
 
-    $this->assertEquals($display, $tester->getDisplay(), 'Displayed correct output.');
-    $this->assertEquals($status_code, $tester->getStatusCode(), 'Returned correct status code.');
+    $this->assertEquals($display, $this->getDisplay(), 'Displayed correct output.');
+    $this->assertEquals($status_code, $this->getStatusCode(), 'Returned correct status code.');
   }
 
   public function providerCommand() {
@@ -70,23 +80,6 @@ class QaDeprecatedCodeScanCommandTest extends CommandTestBase {
       [TRUE, ['--contrib' => TRUE], ['Fixture::exists', 'setScanContrib', 'execute'], StatusCodes::OK, ''],
       [TRUE, ['--sut' => self::VALID_PACKAGE, '--contrib' => TRUE], ['PackageManager::exists', 'Fixture::exists', 'setSut', 'setScanContrib', 'execute'], StatusCodes::OK, ''],
     ];
-  }
-
-  private function createCommandTester(): CommandTester {
-    $application = new Application();
-    /** @var \Acquia\Orca\Fixture\Fixture $fixture */
-    $fixture = $this->fixture->reveal();
-    /** @var \Acquia\Orca\Fixture\PackageManager $package_manager */
-    $package_manager = $this->packageManager->reveal();
-    /** @var \Acquia\Orca\Task\DeprecatedCodeScanner\PhpStanTask $phpstan */
-    $phpstan = $this->phpstan->reveal();
-    /** @var \Acquia\Orca\Task\TaskRunner $task_runner */
-    $task_runner = $this->taskRunner->reveal();
-    $application->add(new QaDeprecatedCodeScanCommand($fixture, $package_manager, $phpstan, $task_runner));
-    /** @var \Acquia\Orca\Command\Qa\QaAutomatedTestsCommand $command */
-    $command = $application->find(QaDeprecatedCodeScanCommand::getDefaultName());
-    $this->assertInstanceOf(QaDeprecatedCodeScanCommand::class, $command, 'Instantiated class.');
-    return new CommandTester($command);
   }
 
 }

@@ -23,9 +23,9 @@
         "jakub-onderka/php-console-highlighter": "^0.4.0",
         "jakub-onderka/php-parallel-lint": "^1.0",
         "localheinz/composer-normalize": "^1.2",
-        "mglaman/phpstan-drupal-deprecations": "^0.11.1",
         "mockery/mockery": "^1.2",
         "myclabs/php-enum": "^1.7",
+        "oscarotero/env": "^1.2",
         "phpmd/phpmd": "^2.6",
         "phpunit/phpunit": "^6.5",
         "stecman/symfony-console-completion": "^0.10.1",
@@ -40,7 +40,8 @@
         "symfony/process": "^4.1",
         "symfony/yaml": "^4.1",
         "vaimo/binary-chromedriver": "^5.0",
-        "weitzman/drupal-test-traits": "~1.0"
+        "weitzman/drupal-test-traits": "~1.0",
+        "zumba/amplitude-php": "^1.0"
     },
     "conflict": {
         "symfony/symfony": "*"
@@ -72,7 +73,8 @@
         },
         "patches": {
             "pheromone/phpcs-security-audit": {
-                "Fix undefined index error": "https://patch-diff.githubusercontent.com/raw/FloeDesignTechnologies/phpcs-security-audit/pull/41.patch"
+                "Fix undefined index error": "https://patch-diff.githubusercontent.com/raw/FloeDesignTechnologies/phpcs-security-audit/pull/41.patch",
+                "Fix false positives for exec calls": "https://patch-diff.githubusercontent.com/raw/FloeDesignTechnologies/phpcs-security-audit/pull/43.patch"
             }
         },
         "phpcodesniffer-search-depth": 4

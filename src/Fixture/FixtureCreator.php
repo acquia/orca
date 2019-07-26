@@ -365,16 +365,24 @@ class FixtureCreator {
 
     // Install the dev version of Drush.
     if ($this->isDev) {
-      $additions[] = 'drush/drush:dev-master';
+      $additions[] = 'drush/drush:dev-master || 10.x-dev || 9.x-dev || 9.5.x-dev';
     }
 
     // Add Drupal Console as a soft dependency akin to Drush.
-    $additions[] = 'drupal/console:~1.0';
+    $drupal_console_version = '~1.0';
+    if ($this->isDev) {
+      $drupal_console_version = 'dev-master';
+    }
+    $additions[] = "drupal/console:{$drupal_console_version}";
 
     // Install a specific version of Drupal core.
     if ($this->drupalCoreVersion) {
       $additions[] = "drupal/core:{$this->drupalCoreVersion}";
     }
+
+    // Install requirements for deprecation checking.
+    $additions[] = 'mglaman/phpstan-drupal-deprecations';
+    $additions[] = 'nette/di:^3.0';
 
     // Require additional packages.
     $command = [
@@ -432,6 +440,7 @@ class FixtureCreator {
    */
   private function addTopLevelAcquiaPackages(): void {
     $this->addSutRepository();
+    $this->configureComposerForTopLevelAcquiaPackages();
     $this->composerRequireTopLevelAcquiaPackages();
     $this->verifySut();
   }
@@ -475,6 +484,38 @@ class FixtureCreator {
       'is-bare' => $this->isBare,
       'is-dev' => $this->isDev,
     ]);
+  }
+
+  /**
+   * Configures Composer to install Acquia packages from source.
+   */
+  private function configureComposerForTopLevelAcquiaPackages(): void {
+    $packages = $this->packageManager->getMultiple();
+
+    if (!$packages) {
+      return;
+    }
+
+    // The preferred-install patterns are applied in the order specified, so
+    // overrides need to be added to the beginning in order to take effect.
+    // @see https://getcomposer.org/doc/06-config.md#preferred-install
+    // Begin by removing the original installer paths.
+    $this->jsonConfigSource->removeConfigSetting('preferred-install');
+
+    $patterns = array_fill_keys(array_keys($packages), 'source');
+    $this->jsonConfigSource->addConfigSetting('preferred-install', $patterns);
+
+    if (empty($this->jsonConfigDataBackup['config']['preferred-install'])) {
+      return;
+    }
+
+    // Append original patterns.
+    foreach ($this->jsonConfigDataBackup['config']['preferred-install'] as $key => $value) {
+      if (array_key_exists($key, $patterns)) {
+        continue;
+      }
+      $this->jsonConfigSource->addConfigSetting("preferred-install.{$key}", $value);
+    }
   }
 
   /**
@@ -594,7 +635,7 @@ class FixtureCreator {
    *   The package string for the SUT, e.g., "drupal/example:*".
    */
   private function getSutPackageString(): string {
-    return "{$this->sut->getPackageName()}:{$this->getSutVersion()}";
+    return $this->sut->getPackageName() . ':' . $this->getSutVersion();
   }
 
   /**
@@ -698,13 +739,7 @@ class FixtureCreator {
         continue;
       }
 
-      $version = $package->getVersionRecommended();
-      if ($this->isDev) {
-        $version = $package->getVersionDev();
-      }
-      if ($this->sut && $package->getPackageName() === $this->sut->getPackageName()) {
-        $version = $this->getSutVersion();
-      }
+      $version = $this->fixtureInspector->getInstalledPackageVersion($package->getPackageName());
       foreach (array_keys($this->subextensionManager->getByParent($package)) as $package_name) {
         $subextensions[] = "{$package_name}:{$version}";
       }

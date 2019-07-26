@@ -2,7 +2,9 @@
 
 1. [Configuring Travis CI](#configuring-travis-ci)
 1. [Local installation](#local-installation)
-1. [Designing automated tests](#designing-automated-tests)
+1. [Running automated tests](#running-automated-tests)
+    1. [PHPUnit](#phpunit)
+    1. [Behat](#behat)
     1. [Tagging/grouping](#tagginggrouping)
 
 ## Configuring Travis CI
@@ -59,7 +61,22 @@ ORCA can also be installed and run locally for testing and development. Follow t
 
 Invoke ORCA from the terminal (`bin/orca`). Use the `--help` command option to learn more about the various commands or see how they're used in [`bin/travis/script`](../bin/travis/script). Use the `fixture:run-server` command to run the web server for local development.
 
-## Designing automated tests
+## Running automated tests
+
+### PHPUnit
+
+ORCA has out-of-the-box support for [PHPUnit in Drupal 8](https://www.drupal.org/docs/8/phpunit) using core's configuration. Existing tests that work in Drupal should work in ORCA with no modification. [See a working example.](../example/tests/src/Unit/ExampleUnitTest.php)
+
+#### Behat
+
+Because Drupal core has no built-in support for Behat, special configuration is required for ORCA to run it:
+
+* Add a `behat.yml` in the root of your package repo to [configure your test profile](http://behat.org/en/latest/user_guide/configuration.html). (See [`example/behat.yml`](../example/behat.yml).)
+* Add your [feature context(s)](http://behat.org/en/latest/user_guide/context.html) to a designated directory, e.g., `tests/features/bootstrap`. (See [`example/tests/features/bootstrap/FeatureContext.php`](../example/tests/features/bootstrap/FeatureContext.php).)
+* Add your [feature files](http://behat.org/en/latest/user_guide/features_scenarios.html) to a designated directory, e.g., `tests/features`. (See [`example/tests/features`](../example/tests/features).)
+* Add the new classes to your Composer autoloader classmap so the deprecated code scanner can find them. (See [`example/composer.json`](../example/composer.json).)
+
+For more information on using Behat with Drupal, see [the Behat website](http://behat.org/) and [the Drupal Extension to Behat and Mink](https://behat-drupal-extension.readthedocs.io/). You might also find the [Drupal Spec Tool](https://github.com/acquia/drupal-spec-tool) interesting.
 
 ### Tagging/grouping
 

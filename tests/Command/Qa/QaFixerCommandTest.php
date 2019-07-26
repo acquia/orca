@@ -3,14 +3,12 @@
 namespace Acquia\Orca\Tests\Command\Qa;
 
 use Acquia\Orca\Command\Qa\QaFixerCommand;
-use Acquia\Orca\Command\Qa\QaStaticAnalysisCommand;
 use Acquia\Orca\Command\StatusCodes;
 use Acquia\Orca\Task\Fixer\ComposerNormalizeTask;
 use Acquia\Orca\Task\Fixer\PhpCodeBeautifierAndFixerTask;
 use Acquia\Orca\Task\TaskRunner;
 use Acquia\Orca\Tests\Command\CommandTestBase;
-use Symfony\Component\Console\Application;
-use Symfony\Component\Console\Tester\CommandTester;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
@@ -28,6 +26,18 @@ class QaFixerCommandTest extends CommandTestBase {
     $this->filesystem = $this->prophesize(Filesystem::class);
     $this->phpCodeBeautifierAndFixer = $this->prophesize(PhpCodeBeautifierAndFixerTask::class);
     $this->taskRunner = $this->prophesize(TaskRunner::class);
+  }
+
+  protected function createCommand(): Command {
+    /** @var \Acquia\Orca\Task\Fixer\ComposerNormalizeTask $composer_normalize */
+    $composer_normalize = $this->composerNormalize->reveal();
+    /** @var \Symfony\Component\Filesystem\Filesystem $filesystem */
+    $filesystem = $this->filesystem->reveal();
+    /** @var \Acquia\Orca\Task\Fixer\PhpCodeBeautifierAndFixerTask $php_code_beautifier_and_fixer */
+    $php_code_beautifier_and_fixer = $this->phpCodeBeautifierAndFixer->reveal();
+    /** @var \Acquia\Orca\Task\TaskRunner $task_runner */
+    $task_runner = $this->taskRunner->reveal();
+    return new QaFixerCommand($composer_normalize, $filesystem, $php_code_beautifier_and_fixer, $task_runner);
   }
 
   /**
@@ -54,12 +64,11 @@ class QaFixerCommandTest extends CommandTestBase {
       ->run()
       ->shouldBeCalledTimes($run_called)
       ->willReturn($status_code);
-    $tester = $this->createCommandTester();
 
-    $this->executeCommand($tester, QaFixerCommand::getDefaultName(), ['path' => self::SUT_PATH]);
+    $this->executeCommand(['path' => self::SUT_PATH]);
 
-    $this->assertEquals($display, $tester->getDisplay(), 'Displayed correct output.');
-    $this->assertEquals($status_code, $tester->getStatusCode(), 'Returned correct status code.');
+    $this->assertEquals($display, $this->getDisplay(), 'Displayed correct output.');
+    $this->assertEquals($status_code, $this->getStatusCode(), 'Returned correct status code.');
   }
 
   public function providerCommand() {
@@ -91,12 +100,11 @@ class QaFixerCommandTest extends CommandTestBase {
       ->run()
       ->shouldBeCalledTimes(1)
       ->willReturn(StatusCodes::OK);
-    $tester = $this->createCommandTester();
 
-    $this->executeCommand($tester, QaStaticAnalysisCommand::getDefaultName(), $args);
+    $this->executeCommand($args);
 
-    $this->assertEquals('', $tester->getDisplay(), 'Displayed correct output.');
-    $this->assertEquals(StatusCodes::OK, $tester->getStatusCode(), 'Returned correct status code.');
+    $this->assertEquals('', $this->getDisplay(), 'Displayed correct output.');
+    $this->assertEquals(StatusCodes::OK, $this->getStatusCode(), 'Returned correct status code.');
   }
 
   public function providerTaskFiltering() {
@@ -104,23 +112,6 @@ class QaFixerCommandTest extends CommandTestBase {
       [['--composer' => 1], 'composerNormalize'],
       [['--phpcbf' => 1], 'phpCodeBeautifierAndFixer'],
     ];
-  }
-
-  private function createCommandTester(): CommandTester {
-    $application = new Application();
-    /** @var \Acquia\Orca\Task\Fixer\ComposerNormalizeTask $composer_normalize */
-    $composer_normalize = $this->composerNormalize->reveal();
-    /** @var \Symfony\Component\Filesystem\Filesystem $filesystem */
-    $filesystem = $this->filesystem->reveal();
-    /** @var \Acquia\Orca\Task\Fixer\PhpCodeBeautifierAndFixerTask $php_code_beautifier_and_fixer */
-    $php_code_beautifier_and_fixer = $this->phpCodeBeautifierAndFixer->reveal();
-    /** @var \Acquia\Orca\Task\TaskRunner $task_runner */
-    $task_runner = $this->taskRunner->reveal();
-    $application->add(new QaFixerCommand($composer_normalize, $filesystem, $php_code_beautifier_and_fixer, $task_runner));
-    /** @var \Acquia\Orca\Command\Qa\QaAutomatedTestsCommand $command */
-    $command = $application->find(QaFixerCommand::getDefaultName());
-    $this->assertInstanceOf(QaFixerCommand::class, $command, 'Instantiated class.');
-    return new CommandTester($command);
   }
 
 }

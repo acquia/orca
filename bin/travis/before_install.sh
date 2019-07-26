@@ -12,7 +12,7 @@
 cd "$(dirname "$0")" || exit; source _includes.sh
 
 # Display configuration values.
-printenv | grep ORCA_
+printenv | grep ORCA_ | sort
 
 # The remaining before_install commands should only be run on Travis CI.
 [[ "$TRAVIS" ]] || exit 0

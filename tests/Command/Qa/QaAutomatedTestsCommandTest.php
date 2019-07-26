@@ -9,8 +9,7 @@ use Acquia\Orca\Command\StatusCodes;
 use Acquia\Orca\Command\Qa\QaAutomatedTestsCommand;
 use Acquia\Orca\Fixture\Fixture;
 use Acquia\Orca\Tests\Command\CommandTestBase;
-use Symfony\Component\Console\Application;
-use Symfony\Component\Console\Tester\CommandTester;
+use Symfony\Component\Console\Command\Command;
 
 /**
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Task\TestFramework\BehatTask $behat
@@ -33,6 +32,16 @@ class QaAutomatedTestsCommandTest extends CommandTestBase {
       ->willReturn(self::FIXTURE_ROOT);
     $this->packageManager = $this->prophesize(PackageManager::class);
     $this->testRunner = $this->prophesize(TestRunner::class);
+  }
+
+  protected function createCommand(): Command {
+    /** @var \Acquia\Orca\Fixture\Fixture $fixture */
+    $fixture = $this->fixture->reveal();
+    /** @var \Acquia\Orca\Fixture\PackageManager $package_manager */
+    $package_manager = $this->packageManager->reveal();
+    /** @var \Acquia\Orca\Task\TestFramework\TestRunner $test_runner */
+    $test_runner = $this->testRunner->reveal();
+    return new QaAutomatedTestsCommand($fixture, $package_manager, $test_runner);
   }
 
   /**
@@ -64,12 +73,11 @@ class QaAutomatedTestsCommandTest extends CommandTestBase {
         ->run()
         ->willThrow(OrcaException::class);
     }
-    $tester = $this->createCommandTester();
 
-    $this->executeCommand($tester, QaAutomatedTestsCommand::getDefaultName(), $args);
+    $this->executeCommand($args);
 
-    $this->assertEquals($display, $tester->getDisplay(), 'Displayed correct output.');
-    $this->assertEquals($status_code, $tester->getStatusCode(), 'Returned correct status code.');
+    $this->assertEquals($display, $this->getDisplay(), 'Displayed correct output.');
+    $this->assertEquals($status_code, $this->getStatusCode(), 'Returned correct status code.');
   }
 
   public function providerCommand() {
@@ -99,9 +107,7 @@ class QaAutomatedTestsCommandTest extends CommandTestBase {
       ->run()
       ->shouldBeCalled();
 
-    $tester = $this->createCommandTester();
-
-    $this->executeCommand($tester, QaAutomatedTestsCommand::getDefaultName(), $args);
+    $this->executeCommand($args);
   }
 
   public function providerFrameworkFlags() {
@@ -111,21 +117,6 @@ class QaAutomatedTestsCommandTest extends CommandTestBase {
       [['--phpunit' => 1], 1, 0],
       [['--behat' => 1, '--phpunit' => 1], 0, 0],
     ];
-  }
-
-  private function createCommandTester(): CommandTester {
-    $application = new Application();
-    /** @var \Acquia\Orca\Fixture\Fixture $fixture */
-    $fixture = $this->fixture->reveal();
-    /** @var \Acquia\Orca\Fixture\PackageManager $package_manager */
-    $package_manager = $this->packageManager->reveal();
-    /** @var \Acquia\Orca\Task\TestFramework\TestRunner $test_runner */
-    $test_runner = $this->testRunner->reveal();
-    $application->add(new QaAutomatedTestsCommand($fixture, $package_manager, $test_runner));
-    /** @var \Acquia\Orca\Command\Qa\QaAutomatedTestsCommand $command */
-    $command = $application->find(QaAutomatedTestsCommand::getDefaultName());
-    $this->assertInstanceOf(QaAutomatedTestsCommand::class, $command, 'Instantiated class.');
-    return new CommandTester($command);
   }
 
 }

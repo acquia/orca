@@ -130,7 +130,7 @@ class FixtureInspector {
    *   "Unknown".
    */
   private function getFixtureType(): string {
-    if ($this->getIsBare()) {
+    if ($this->isBare()) {
       return 'Bare';
     }
 
@@ -145,22 +145,6 @@ class FixtureInspector {
     }
 
     return $this->getComposerJson()->get($key) ? 'SUT-only' : 'Standard';
-  }
-
-  /**
-   * Determines whether or not the fixture is bare.
-   *
-   * @return bool
-   *   TRUE if the fixture is bare or FALSE if not.
-   */
-  private function getIsBare(): bool {
-    $key = 'extra.orca.is-bare';
-
-    if (!$this->getComposerJson()->has($key)) {
-      return FALSE;
-    }
-
-    return (bool) $this->getComposerJson()->get($key);
   }
 
   /**
@@ -189,7 +173,7 @@ class FixtureInspector {
    *   The installed version of the given package if available (e.g., "1.0.0")
    *   or a tilde (~) if not.
    */
-  private function getInstalledPackageVersion(string $package_name): string {
+  public function getInstalledPackageVersion(string $package_name): string {
     $packages = [];
     foreach ($this->getComposerLock()->get('packages') as $package) {
       $packages[$package['name']] = $package['version'];
@@ -235,6 +219,22 @@ class FixtureInspector {
       $packages[] = [$label, $this->getInstalledPackageVersion($package_name)];
     }
     return $packages;
+  }
+
+  /**
+   * Determines whether or not the fixture is bare.
+   *
+   * @return bool
+   *   TRUE if the fixture is bare or FALSE if not.
+   */
+  private function isBare(): bool {
+    $key = 'extra.orca.is-bare';
+
+    if (!$this->getComposerJson()->has($key)) {
+      return FALSE;
+    }
+
+    return (bool) $this->getComposerJson()->get($key);
   }
 
 }

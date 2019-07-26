@@ -8,8 +8,7 @@ use Acquia\Orca\Exception\OrcaException;
 use Acquia\Orca\Fixture\AcquiaExtensionEnabler;
 use Acquia\Orca\Fixture\Fixture;
 use Acquia\Orca\Tests\Command\CommandTestBase;
-use Symfony\Component\Console\Application;
-use Symfony\Component\Console\Tester\CommandTester;
+use Symfony\Component\Console\Command\Command;
 
 /**
  * @property \Prophecy\Prophecy\ObjectProphecy|AcquiaExtensionEnabler $acquiaModuleEnabler
@@ -24,6 +23,14 @@ class FixtureEnableExtensionsCommandTest extends CommandTestBase {
       ->willReturn(TRUE);
     $this->fixture->getPath()
       ->willReturn(self::FIXTURE_ROOT);
+  }
+
+  protected function createCommand(): Command {
+    /** @var \Acquia\Orca\Fixture\AcquiaExtensionEnabler $acquia_extension_enabler */
+    $acquia_extension_enabler = $this->acquiaModuleEnabler->reveal();
+    /** @var \Acquia\Orca\Fixture\Fixture $fixture */
+    $fixture = $this->fixture->reveal();
+    return new FixtureEnableExtensionsCommand($acquia_extension_enabler, $fixture);
   }
 
   /**
@@ -42,12 +49,11 @@ class FixtureEnableExtensionsCommandTest extends CommandTestBase {
         ->enable()
         ->willThrow($exception);
     }
-    $tester = $this->createCommandTester();
 
-    $this->executeCommand($tester, FixtureEnableExtensionsCommand::getDefaultName());
+    $this->executeCommand();
 
-    $this->assertEquals($display, $tester->getDisplay(), 'Displayed correct output.');
-    $this->assertEquals($status_code, $tester->getStatusCode(), 'Returned correct status code.');
+    $this->assertEquals($display, $this->getDisplay(), 'Displayed correct output.');
+    $this->assertEquals($status_code, $this->getStatusCode(), 'Returned correct status code.');
   }
 
   public function providerCommand() {
@@ -56,19 +62,6 @@ class FixtureEnableExtensionsCommandTest extends CommandTestBase {
       [TRUE, 1, new OrcaException('Oops.'), StatusCodes::ERROR, "\n [ERROR] Oops.                                                                  \n\n"],
       [TRUE, 1, FALSE, StatusCodes::OK, ''],
     ];
-  }
-
-  private function createCommandTester(): CommandTester {
-    $application = new Application();
-    /** @var \Acquia\Orca\Fixture\AcquiaExtensionEnabler $acquia_extension_enabler */
-    $acquia_extension_enabler = $this->acquiaModuleEnabler->reveal();
-    /** @var \Acquia\Orca\Fixture\Fixture $fixture */
-    $fixture = $this->fixture->reveal();
-    $application->add(new FixtureEnableExtensionsCommand($acquia_extension_enabler, $fixture));
-    /** @var \Acquia\Orca\Command\Fixture\FixtureEnableExtensionsCommand $command */
-    $command = $application->find(FixtureEnableExtensionsCommand::getDefaultName());
-    $this->assertInstanceOf(FixtureEnableExtensionsCommand::class, $command, 'Instantiated class.');
-    return new CommandTester($command);
   }
 
 }

@@ -7,8 +7,7 @@ use Acquia\Orca\Command\StatusCodes;
 use Acquia\Orca\Fixture\Fixture;
 use Acquia\Orca\Fixture\FixtureInspector;
 use Acquia\Orca\Tests\Command\CommandTestBase;
-use Symfony\Component\Console\Application;
-use Symfony\Component\Console\Tester\CommandTester;
+use Symfony\Component\Console\Command\Command;
 
 /**
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Fixture\Fixture $fixture
@@ -23,6 +22,14 @@ class FixtureStatusCommandTest extends CommandTestBase {
     $this->fixture->getPath()
       ->willReturn(self::FIXTURE_ROOT);
     $this->fixtureInspector = $this->prophesize(FixtureInspector::class);
+  }
+
+  protected function createCommand(): Command {
+    /** @var \Acquia\Orca\Fixture\Fixture $fixture */
+    $fixture = $this->fixture->reveal();
+    /** @var \Acquia\Orca\Fixture\FixtureInspector $fixture_inspector */
+    $fixture_inspector = $this->fixtureInspector->reveal();
+    return new FixtureStatusCommand($fixture, $fixture_inspector);
   }
 
   /**
@@ -40,12 +47,11 @@ class FixtureStatusCommandTest extends CommandTestBase {
         ['Key one', 'Value one'],
         ['Key two', 'Value two'],
       ]);
-    $tester = $this->createCommandTester();
 
-    $this->executeCommand($tester, FixtureStatusCommand::getDefaultName());
+    $this->executeCommand();
 
-    $this->assertEquals($display, $tester->getDisplay(), 'Displayed correct output.');
-    $this->assertEquals($status_code, $tester->getStatusCode(), 'Returned correct status code.');
+    $this->assertEquals($display, $this->getDisplay(), 'Displayed correct output.');
+    $this->assertEquals($status_code, $this->getStatusCode(), 'Returned correct status code.');
   }
 
   public function providerCommand() {
@@ -53,19 +59,6 @@ class FixtureStatusCommandTest extends CommandTestBase {
       [FALSE, 0, StatusCodes::ERROR, sprintf("Error: No fixture exists at %s.\n", self::FIXTURE_ROOT)],
       [TRUE, 1, StatusCodes::OK, "\n Key one : Value one \n Key two : Value two \n\n"],
     ];
-  }
-
-  private function createCommandTester(): CommandTester {
-    $application = new Application();
-    /** @var \Acquia\Orca\Fixture\Fixture $fixture */
-    $fixture = $this->fixture->reveal();
-    /** @var \Acquia\Orca\Fixture\FixtureInspector $fixture_inspector */
-    $fixture_inspector = $this->fixtureInspector->reveal();
-    $application->add(new FixtureStatusCommand($fixture, $fixture_inspector));
-    /** @var \Acquia\Orca\Command\Fixture\FixtureStatusCommand $command */
-    $command = $application->find(FixtureStatusCommand::getDefaultName());
-    $this->assertInstanceOf(FixtureStatusCommand::class, $command, 'Instantiated class.');
-    return new CommandTester($command);
   }
 
 }
