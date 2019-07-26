@@ -47,15 +47,22 @@ env:
     # release, develop for Dev/HEAD, or a tag name (e.g., v1.0.0) for a specific
     # release.
     - ORCA_VERSION=master
-    # If your package isn't in in ORCA's packages.yml or conflicts with details
+    # If your package isn't in ORCA's packages.yml or conflicts with details
     # that are, you can modify the active packages configuration at runtime by
     # uncommenting the following line and specifying your own alter file.
     # @see https://github.com/acquia/orca/blob/master/docs/advanced-usage.md#ORCA_PACKAGES_CONFIG_ALTER
     # - ORCA_PACKAGES_CONFIG_ALTER=../example/tests/packages_alter.yml
+    #
     # If your package is a Drupal installation profile, uncomment the following
     # line and specify its machine name.
     # @see https://github.com/acquia/orca/blob/master/docs/advanced-usage.md#ORCA_FIXTURE_PROFILE
     # - ORCA_FIXTURE_PROFILE=example
+    #
+    # To enable telemetry with Amplitude on cron runs, uncomment the following
+    # line and set ORCA_AMPLITUDE_API_KEY in your Travis CI repository settings:
+    # @see https://github.com/acquia/orca/blob/master/docs/advanced-usage.md#ORCA_TELEMETRY_ENABLE
+    # @see https://github.com/acquia/orca/blob/master/docs/advanced-usage.md#ORCA_AMPLITUDE_API_KEY
+    # - ORCA_TELEMETRY_ENABLE=TRUE
 
 # Execution time is drastically reduced by splitting the build into multiple
 # concurrent jobs.
@@ -109,5 +116,5 @@ after_success: ../orca/bin/travis/after_success.sh
 # Display debugging information in case of failure.
 after_failure: ../orca/bin/travis/after_failure.sh
 
-# Reserved for future use.
+# Perform final, post-script tasks.
 after_script: ../orca/bin/travis/after_script.sh

@@ -35,6 +35,9 @@ export ORCA_ROOT
 export ORCA_FIXTURE_DIR=${ORCA_FIXTURE_DIR:="$ORCA_ROOT/../orca-build"}
 export ORCA_SUT_DIR=${ORCA_SUT_DIR:=${TRAVIS_BUILD_DIR}}
 export ORCA_FIXTURE_PROFILE=${ORCA_FIXTURE_PROFILE:="minimal"}
+export ORCA_TELEMETRY_ENABLE=${ORCA_TELEMETRY_ENABLE:="FALSE"}
+export ORCA_AMPLITUDE_USER_ID=${ORCA_AMPLITUDE_USER_ID:="$ORCA_SUT_NAME:$ORCA_SUT_BRANCH"}
+
 # Override the available columns setting to prevent Drush output from wrapping
 # too narrowly.
 export COLUMNS=125

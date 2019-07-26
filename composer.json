@@ -25,6 +25,7 @@
         "localheinz/composer-normalize": "^1.2",
         "mockery/mockery": "^1.2",
         "myclabs/php-enum": "^1.7",
+        "oscarotero/env": "^1.2",
         "phpmd/phpmd": "^2.6",
         "phpunit/phpunit": "^6.5",
         "stecman/symfony-console-completion": "^0.10.1",
@@ -39,7 +40,8 @@
         "symfony/process": "^4.1",
         "symfony/yaml": "^4.1",
         "vaimo/binary-chromedriver": "^5.0",
-        "weitzman/drupal-test-traits": "~1.0"
+        "weitzman/drupal-test-traits": "~1.0",
+        "zumba/amplitude-php": "^1.0"
     },
     "conflict": {
         "symfony/symfony": "*"
