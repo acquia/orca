@@ -635,7 +635,7 @@ class FixtureCreator {
    *   The package string for the SUT, e.g., "drupal/example:*".
    */
   private function getSutPackageString(): string {
-    return "{$this->sut->getPackageName()}:{$this->getSutVersion()}";
+    return $this->sut->getPackageName() . ':' . $this->getSutVersion();
   }
 
   /**
@@ -739,13 +739,7 @@ class FixtureCreator {
         continue;
       }
 
-      $version = $package->getVersionRecommended();
-      if ($this->isDev) {
-        $version = $package->getVersionDev();
-      }
-      if ($this->sut && $package->getPackageName() === $this->sut->getPackageName()) {
-        $version = $this->getSutVersion();
-      }
+      $version = $this->fixtureInspector->getInstalledPackageVersion($package->getPackageName());
       foreach (array_keys($this->subextensionManager->getByParent($package)) as $package_name) {
         $subextensions[] = "{$package_name}:{$version}";
       }

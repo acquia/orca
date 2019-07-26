@@ -173,7 +173,7 @@ class FixtureInspector {
    *   The installed version of the given package if available (e.g., "1.0.0")
    *   or a tilde (~) if not.
    */
-  private function getInstalledPackageVersion(string $package_name): string {
+  public function getInstalledPackageVersion(string $package_name): string {
     $packages = [];
     foreach ($this->getComposerLock()->get('packages') as $package) {
       $packages[$package['name']] = $package['version'];
