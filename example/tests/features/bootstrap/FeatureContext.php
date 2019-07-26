@@ -1,5 +1,7 @@
 <?php
 
+namespace Drupal\example\tests;
+
 use Behat\Behat\Context\Context;
 use GuzzleHttp\Client;
 
