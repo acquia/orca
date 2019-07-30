@@ -3,6 +3,8 @@
 namespace Acquia\Orca\Log;
 
 use Acquia\Orca\Enum\TelemetryEventName;
+use Acquia\Orca\Task\StaticAnalysisTool\PhpLocTask;
+use Symfony\Component\Filesystem\Filesystem;
 
 /**
  * Builds telemetry event properties.
@@ -17,13 +19,40 @@ class TelemetryEventPropertiesBuilder {
   private $env;
 
   /**
+   * The filesystem.
+   *
+   * @var \Symfony\Component\Filesystem\Filesystem
+   */
+  private $filesystem;
+
+  /**
+   * The PHP LOC task.
+   *
+   * @var \Acquia\Orca\Task\StaticAnalysisTool\PhpLocTask
+   */
+  private $phpLocTask;
+
+  /**
+   * The event properties.
+   *
+   * @var array
+   */
+  private $properties = [];
+
+  /**
    * Constructs an instance.
    *
    * @param \Env $env
    *   The environment variables service.
+   * @param \Symfony\Component\Filesystem\Filesystem $filesystem
+   *   The filesystem.
+   * @param \Acquia\Orca\Task\StaticAnalysisTool\PhpLocTask $php_loc_task
+   *   The PHP LOC task.
    */
-  public function __construct(\Env $env) {
+  public function __construct(\Env $env, Filesystem $filesystem, PhpLocTask $php_loc_task) {
     $this->env = $env;
+    $this->filesystem = $filesystem;
+    $this->phpLocTask = $php_loc_task;
   }
 
   /**
@@ -52,6 +81,16 @@ class TelemetryEventPropertiesBuilder {
    *   An array of properties.
    */
   protected function buildTravisCiJobProperties(): array {
+    $this->properties = [];
+    $this->addEnvironmentVariables();
+    $this->addStaticAnalysisResults();
+    return $this->properties;
+  }
+
+  /**
+   * Adds environment variables to the event properties.
+   */
+  protected function addEnvironmentVariables(): void {
     $properties = array_flip([
       'ORCA_JOB',
       'TRAVIS_COMMIT',
@@ -67,7 +106,27 @@ class TelemetryEventPropertiesBuilder {
     array_walk($properties, function (&$value, $key) {
       $value = $this->env::get($key);
     });
-    return $properties;
+    $this->properties = array_merge($this->properties, $properties);
+  }
+
+  /**
+   * Adds static analysis results to the event properties.
+   */
+  private function addStaticAnalysisResults(): void {
+    $path = $this->phpLocTask->getJsonLogPath();
+
+    if (!$this->filesystem->exists($path)) {
+      return;
+    }
+
+    $json = file_get_contents($path);
+    $data = json_decode($json);
+
+    if (json_last_error()) {
+      return;
+    }
+
+    $this->properties['phploc'] = $data;
   }
 
 }
