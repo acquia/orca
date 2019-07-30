@@ -6,6 +6,7 @@ use Acquia\Orca\Command\StatusCodes;
 use Acquia\Orca\Task\StaticAnalysisTool\ComposerValidateTask;
 use Acquia\Orca\Task\StaticAnalysisTool\PhpCodeSnifferTask;
 use Acquia\Orca\Task\StaticAnalysisTool\PhpLintTask;
+use Acquia\Orca\Task\StaticAnalysisTool\PhpLocTask;
 use Acquia\Orca\Task\StaticAnalysisTool\PhpMessDetectorTask;
 use Acquia\Orca\Task\TaskRunner;
 use Acquia\Orca\Task\StaticAnalysisTool\YamlLintTask;
@@ -50,6 +51,13 @@ class QaStaticAnalysisCommand extends Command {
   private $phpLint;
 
   /**
+   * The PHP LOC task.
+   *
+   * @var \Acquia\Orca\Task\StaticAnalysisTool\PhpLocTask
+   */
+  private $phpLoc;
+
+  /**
    * The PHP Mess Detector task.
    *
    * @var \Acquia\Orca\Task\StaticAnalysisTool\PhpMessDetectorTask
@@ -88,6 +96,8 @@ class QaStaticAnalysisCommand extends Command {
    *   The PHP Code Sniffer task.
    * @param \Acquia\Orca\Task\StaticAnalysisTool\PhpLintTask $php_lint
    *   The PHP lint task.
+   * @param \Acquia\Orca\Task\StaticAnalysisTool\PhpLocTask $php_loc
+   *   The PHP LOC task.
    * @param \Acquia\Orca\Task\StaticAnalysisTool\PhpMessDetectorTask $php_mess_detector
    *   The PHP Mess Detector task.
    * @param \Acquia\Orca\Task\TaskRunner $task_runner
@@ -95,11 +105,12 @@ class QaStaticAnalysisCommand extends Command {
    * @param \Acquia\Orca\Task\StaticAnalysisTool\YamlLintTask $yaml_lint
    *   The YAML lint task.
    */
-  public function __construct(ComposerValidateTask $composer_validate, Filesystem $filesystem, PhpCodeSnifferTask $php_code_sniffer, PhpLintTask $php_lint, PhpMessDetectorTask $php_mess_detector, TaskRunner $task_runner, YamlLintTask $yaml_lint) {
+  public function __construct(ComposerValidateTask $composer_validate, Filesystem $filesystem, PhpCodeSnifferTask $php_code_sniffer, PhpLintTask $php_lint, PhpLocTask $php_loc, PhpMessDetectorTask $php_mess_detector, TaskRunner $task_runner, YamlLintTask $yaml_lint) {
     $this->composerValidate = $composer_validate;
     $this->filesystem = $filesystem;
     $this->phpCodeSniffer = $php_code_sniffer;
     $this->phpLint = $php_lint;
+    $this->phpLoc = $php_loc;
     $this->phpMessDetector = $php_mess_detector;
     $this->taskRunner = $task_runner;
     $this->yamlLint = $yaml_lint;
@@ -118,6 +129,7 @@ class QaStaticAnalysisCommand extends Command {
       ->addOption('composer', NULL, InputOption::VALUE_NONE, 'Run the Composer validation tool')
       ->addOption('phpcs', NULL, InputOption::VALUE_NONE, 'Run the PHP Code Sniffer tool')
       ->addOption('phplint', NULL, InputOption::VALUE_NONE, 'Run the PHP Lint tool')
+      ->addOption('phploc', NULL, InputOption::VALUE_NONE, 'Run the PHP LOC tool')
       ->addOption('phpmd', NULL, InputOption::VALUE_NONE, 'Run the PHP Mess Detector tool')
       ->addOption('yamllint', NULL, InputOption::VALUE_NONE, 'Run the YAML Lint tool');
   }
@@ -147,15 +159,19 @@ class QaStaticAnalysisCommand extends Command {
     $composer = $input->getOption('composer');
     $phpcs = $input->getOption('phpcs');
     $phplint = $input->getOption('phplint');
+    $phploc = $input->getOption('phploc');
     $phpmd = $input->getOption('phpmd');
     $yamllint = $input->getOption('yamllint');
-    $all = !$composer && !$phpcs && !$phplint && !$phpmd && !$yamllint;
+    $all = !$composer && !$phpcs && !$phplint && !$phploc && !$phpmd && !$yamllint;
 
     if ($all || $composer) {
       $this->taskRunner->addTask($this->composerValidate);
     }
     if ($all || $phpcs) {
       $this->taskRunner->addTask($this->phpCodeSniffer);
+    }
+    if ($all || $phploc) {
+      $this->taskRunner->addTask($this->phpLoc);
     }
     if ($all || $phplint) {
       $this->taskRunner->addTask($this->phpLint);
