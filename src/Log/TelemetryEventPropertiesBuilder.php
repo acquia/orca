@@ -3,6 +3,7 @@
 namespace Acquia\Orca\Log;
 
 use Acquia\Orca\Enum\TelemetryEventName;
+use Acquia\Orca\Task\DeprecatedCodeScanner\PhpStanTask;
 use Acquia\Orca\Task\StaticAnalysisTool\PhpLocTask;
 use Symfony\Component\Filesystem\Filesystem;
 
@@ -26,11 +27,11 @@ class TelemetryEventPropertiesBuilder {
   private $filesystem;
 
   /**
-   * The PHP LOC task.
+   * The ORCA project directory.
    *
-   * @var \Acquia\Orca\Task\StaticAnalysisTool\PhpLocTask
+   * @var string
    */
-  private $phpLocTask;
+  private $projectDir;
 
   /**
    * The event properties.
@@ -46,13 +47,13 @@ class TelemetryEventPropertiesBuilder {
    *   The environment variables service.
    * @param \Symfony\Component\Filesystem\Filesystem $filesystem
    *   The filesystem.
-   * @param \Acquia\Orca\Task\StaticAnalysisTool\PhpLocTask $php_loc_task
-   *   The PHP LOC task.
+   * @param string $project_dir
+   *   The ORCA project directory.
    */
-  public function __construct(\Env $env, Filesystem $filesystem, PhpLocTask $php_loc_task) {
+  public function __construct(\Env $env, Filesystem $filesystem, string $project_dir) {
     $this->env = $env;
     $this->filesystem = $filesystem;
-    $this->phpLocTask = $php_loc_task;
+    $this->projectDir = $project_dir;
   }
 
   /**
@@ -84,6 +85,7 @@ class TelemetryEventPropertiesBuilder {
     $this->properties = [];
     $this->addEnvironmentVariables();
     $this->addStaticAnalysisResults();
+    $this->addDeprecationScanningResults();
     return $this->properties;
   }
 
@@ -113,20 +115,65 @@ class TelemetryEventPropertiesBuilder {
    * Adds static analysis results to the event properties.
    */
   private function addStaticAnalysisResults(): void {
-    $path = $this->phpLocTask->getJsonLogPath();
+    $data = $this->getJsonFileData(PhpLocTask::JSON_LOG_PATH);
 
-    if (!$this->filesystem->exists($path)) {
-      return;
-    }
-
-    $json = file_get_contents($path);
-    $data = json_decode($json);
-
-    if (json_last_error()) {
+    if (empty($data)) {
       return;
     }
 
     $this->properties['phploc'] = $data;
+  }
+
+  /**
+   * Adds deprecation scanning results to the event properties.
+   */
+  private function addDeprecationScanningResults(): void {
+    $data = $this->getJsonFileData(PhpStanTask::JSON_LOG_PATH);
+
+    if (empty($data['totals']) || !is_array($data['totals'])) {
+      return;
+    }
+
+    $this->properties['phpstan']['totals'] = $data['totals'];
+  }
+
+  /**
+   * Gets JSON data from the file at the given path.
+   *
+   * @param string $path
+   *   The path to a JSON file relative to the ORCA project directory.
+   *
+   * @return array
+   *   The data from the given file if available, or an empty array if not.
+   */
+  private function getJsonFileData(string $path): array {
+    $path = $this->getProjectPath($path);
+
+    if (!$this->filesystem->exists($path)) {
+      return [];
+    }
+
+    $json = file_get_contents($path);
+    $data = json_decode($json, TRUE);
+
+    if (json_last_error()) {
+      return [];
+    }
+
+    return $data;
+  }
+
+  /**
+   * Gets the ORCA project directory with a sub-path appended.
+   *
+   * @param string $sub_path
+   *   A sub-path to append.
+   *
+   * @return string
+   *   The project directory with sub-path appended.
+   */
+  public function getProjectPath(string $sub_path): string {
+    return "{$this->projectDir}/{$sub_path}";
   }
 
 }

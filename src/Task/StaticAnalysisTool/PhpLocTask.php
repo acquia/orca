@@ -9,6 +9,8 @@ use Acquia\Orca\Task\TaskBase;
  */
 class PhpLocTask extends TaskBase {
 
+  public const JSON_LOG_PATH = 'var/phploc.json';
+
   /**
    * {@inheritdoc}
    */
@@ -25,19 +27,9 @@ class PhpLocTask extends TaskBase {
       '--exclude=var',
       '--exclude=vendor',
       '--exclude=docroot',
-      "--log-json={$this->getJsonLogPath()}",
+      sprintf('--log-json=%s/%s', $this->projectDir, self::JSON_LOG_PATH),
       '.',
     ], $this->getPath());
-  }
-
-  /**
-   * Gets the path to the JSON log file.
-   *
-   * @return string
-   *   The path.
-   */
-  public function getJsonLogPath(): string {
-    return "{$this->projectDir}/var/phploc.json";
   }
 
 }

@@ -5,8 +5,10 @@ namespace Acquia\Orca\Task\DeprecatedCodeScanner;
 use Acquia\Orca\Command\StatusCodes;
 use Acquia\Orca\Fixture\Fixture;
 use Acquia\Orca\Fixture\PackageManager;
+use Acquia\Orca\Log\TelemetryClient;
 use Acquia\Orca\Utility\ProcessRunner;
 use Acquia\Orca\Utility\SutSettingsTrait;
+use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 
@@ -16,6 +18,15 @@ use Symfony\Component\Process\Exception\ProcessFailedException;
 class PhpStanTask {
 
   use SutSettingsTrait;
+
+  public const JSON_LOG_PATH = 'var/phpstan.json';
+
+  /**
+   * The command array.
+   *
+   * @var array
+   */
+  private $command = [];
 
   /**
    * The filesystem.
@@ -46,11 +57,39 @@ class PhpStanTask {
   private $scanContrib = FALSE;
 
   /**
+   * The status code.
+   *
+   * @var int
+   */
+  private $status = StatusCodes::OK;
+
+  /**
    * The SUT to scan.
    *
    * @var \Acquia\Orca\Fixture\Package|null
    */
   private $sut;
+
+  /**
+   * The ORCA project directory.
+   *
+   * @var string
+   */
+  private $projectDir;
+
+  /**
+   * The output decorator.
+   *
+   * @var \Symfony\Component\Console\Style\SymfonyStyle
+   */
+  private $output;
+
+  /**
+   * The telemetry client.
+   *
+   * @var \Acquia\Orca\Log\TelemetryClient
+   */
+  private $telemetryClient;
 
   /**
    * Constructs an instance.
@@ -59,16 +98,25 @@ class PhpStanTask {
    *   The filesystem.
    * @param \Acquia\Orca\Fixture\Fixture $fixture
    *   The fixture.
+   * @param \Symfony\Component\Console\Style\SymfonyStyle $output
+   *   The output decorator.
    * @param \Acquia\Orca\Fixture\PackageManager $package_manager
    *   The package manager.
    * @param \Acquia\Orca\Utility\ProcessRunner $process_runner
    *   The process runner.
+   * @param string $project_dir
+   *   The ORCA project directory.
+   * @param \Acquia\Orca\Log\TelemetryClient $telemetry_client
+   *   The telemetry client.
    */
-  public function __construct(Filesystem $filesystem, Fixture $fixture, PackageManager $package_manager, ProcessRunner $process_runner) {
+  public function __construct(Filesystem $filesystem, Fixture $fixture, SymfonyStyle $output, PackageManager $package_manager, ProcessRunner $process_runner, string $project_dir, TelemetryClient $telemetry_client) {
     $this->filesystem = $filesystem;
     $this->fixture = $fixture;
+    $this->output = $output;
     $this->packageManager = $package_manager;
     $this->processRunner = $process_runner;
+    $this->projectDir = $project_dir;
+    $this->telemetryClient = $telemetry_client;
   }
 
   /**
@@ -78,26 +126,48 @@ class PhpStanTask {
    *   The exit status code.
    */
   public function execute(): int {
+    $this->command = $this->createCommand();
     try {
-      $command = [
-        'phpstan',
-        'analyse',
-        sprintf('--configuration=%s/phpstan.neon', __DIR__),
-      ];
-      if ($this->sut) {
-        $command[] = $this->sut->getInstallPathAbsolute();
-      }
-      if ($this->scanContrib) {
-        $command[] = $this->getAndEnsurePath('docroot/modules/contrib');
-        $command[] = $this->getAndEnsurePath('docroot/profiles/contrib');
-        $command[] = $this->getAndEnsurePath('docroot/themes/contrib');
-      }
-      $this->processRunner->runFixtureVendorBin($command);
+      $this->runCommand();
     }
     catch (ProcessFailedException $e) {
-      return StatusCodes::ERROR;
+      $this->status = StatusCodes::ERROR;
     }
-    return StatusCodes::OK;
+    $this->logResults();
+    return $this->status;
+  }
+
+  /**
+   * Sets the "scan contrib" flag.
+   *
+   * @param bool $scan_contrib
+   *   TRUE to scan contrib or FALSE not to.
+   */
+  public function setScanContrib(bool $scan_contrib): void {
+    $this->scanContrib = $scan_contrib;
+  }
+
+  /**
+   * Creates the command array.
+   *
+   * @return array
+   *   The command array.
+   */
+  private function createCommand(): array {
+    $command = [
+      'phpstan',
+      'analyse',
+      sprintf('--configuration=%s/phpstan.neon', __DIR__),
+    ];
+    if ($this->sut) {
+      $command[] = $this->sut->getInstallPathAbsolute();
+    }
+    if ($this->scanContrib) {
+      $command[] = $this->getAndEnsurePath('docroot/modules/contrib');
+      $command[] = $this->getAndEnsurePath('docroot/profiles/contrib');
+      $command[] = $this->getAndEnsurePath('docroot/themes/contrib');
+    }
+    return $command;
   }
 
   /**
@@ -116,13 +186,34 @@ class PhpStanTask {
   }
 
   /**
-   * Sets the "scan contrib" flag.
-   *
-   * @param bool $scan_contrib
-   *   TRUE to scan contrib or FALSE not to.
+   * Runs Phpstan and sends output to the console.
    */
-  public function setScanContrib(bool $scan_contrib): void {
-    $this->scanContrib = $scan_contrib;
+  protected function runCommand(): void {
+    $this->processRunner->runFixtureVendorBin($this->command);
+  }
+
+  /**
+   * Runs and logs the output to a file.
+   */
+  protected function logResults(): void {
+    if (!$this->telemetryClient->isReady()) {
+      return;
+    }
+
+    $this->output->comment('Logging results...');
+
+    // Prepare the log file.
+    $file = $this->projectDir . '/' . self::JSON_LOG_PATH;
+    $this->filesystem->remove($file);
+
+    // Run the command.
+    $this->command[] = '--error-format=prettyJson';
+    $process = $this->processRunner->createFixtureVendorBinProcess($this->command);
+    $process->setWorkingDirectory($this->fixture->getPath());
+    $process->run();
+
+    // Write the output to the log file.
+    $this->filesystem->dumpFile($file, trim($process->getOutput()));
   }
 
 }
