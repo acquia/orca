@@ -7,6 +7,7 @@ use Acquia\Orca\Command\StatusCodes;
 use Acquia\Orca\Task\StaticAnalysisTool\ComposerValidateTask;
 use Acquia\Orca\Task\StaticAnalysisTool\PhpCodeSnifferTask;
 use Acquia\Orca\Task\StaticAnalysisTool\PhpLintTask;
+use Acquia\Orca\Task\StaticAnalysisTool\PhpLocTask;
 use Acquia\Orca\Task\StaticAnalysisTool\PhpMessDetectorTask;
 use Acquia\Orca\Task\TaskRunner;
 use Acquia\Orca\Task\StaticAnalysisTool\YamlLintTask;
@@ -20,6 +21,7 @@ use Symfony\Component\Filesystem\Filesystem;
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Task\StaticAnalysisTool\PhpMessDetectorTask $phpMessDetector
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Task\StaticAnalysisTool\PhpCodeSnifferTask $phpCodeSniffer
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Task\StaticAnalysisTool\PhpLintTask $phpLint
+ * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Task\StaticAnalysisTool\PhpLocTask $phpLoc
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Task\TaskRunner $taskRunner
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Task\StaticAnalysisTool\YamlLintTask $yamlLint
  */
@@ -32,6 +34,7 @@ class QaStaticAnalysisCommandTest extends CommandTestBase {
     $this->filesystem = $this->prophesize(Filesystem::class);
     $this->phpCodeSniffer = $this->prophesize(PhpCodeSnifferTask::class);
     $this->phpLint = $this->prophesize(PhpLintTask::class);
+    $this->phpLoc = $this->prophesize(PhpLocTask::class);
     $this->phpMessDetector = $this->prophesize(PhpMessDetectorTask::class);
     $this->taskRunner = $this->prophesize(TaskRunner::class);
     $this->yamlLint = $this->prophesize(YamlLintTask::class);
@@ -46,13 +49,15 @@ class QaStaticAnalysisCommandTest extends CommandTestBase {
     $php_code_sniffer = $this->phpCodeSniffer->reveal();
     /** @var \Acquia\Orca\Task\StaticAnalysisTool\PhpLintTask $php_lint */
     $php_lint = $this->phpLint->reveal();
+    /** @var \Acquia\Orca\Task\StaticAnalysisTool\PhpLocTask $php_loc */
+    $php_loc = $this->phpLoc->reveal();
     /** @var \Acquia\Orca\Task\StaticAnalysisTool\PhpMessDetectorTask $php_mess_detector */
     $php_mess_detector = $this->phpMessDetector->reveal();
     /** @var \Acquia\Orca\Task\TaskRunner $task_runner */
     $task_runner = $this->taskRunner->reveal();
     /** @var \Acquia\Orca\Task\StaticAnalysisTool\YamlLintTask $yaml_lint */
     $yaml_lint = $this->yamlLint->reveal();
-    return new QaStaticAnalysisCommand($composer_validate, $filesystem, $php_code_sniffer, $php_lint, $php_mess_detector, $task_runner, $yaml_lint);
+    return new QaStaticAnalysisCommand($composer_validate, $filesystem, $php_code_sniffer, $php_lint, $php_loc, $php_mess_detector, $task_runner, $yaml_lint);
   }
 
   /**
@@ -73,6 +78,10 @@ class QaStaticAnalysisCommandTest extends CommandTestBase {
       ->willReturn($this->taskRunner);
     $this->taskRunner
       ->addTask($this->phpLint->reveal())
+      ->shouldBeCalledTimes($run_called)
+      ->willReturn($this->taskRunner);
+    $this->taskRunner
+      ->addTask($this->phpLoc->reveal())
       ->shouldBeCalledTimes($run_called)
       ->willReturn($this->taskRunner);
     $this->taskRunner
@@ -139,6 +148,7 @@ class QaStaticAnalysisCommandTest extends CommandTestBase {
       [['--composer' => 1], 'composerValidate'],
       [['--phpcs' => 1], 'phpCodeSniffer'],
       [['--phplint' => 1], 'phpLint'],
+      [['--phploc' => 1], 'phpLoc'],
       [['--phpmd' => 1], 'phpMessDetector'],
       [['--yamllint' => 1], 'yamlLint'],
     ];

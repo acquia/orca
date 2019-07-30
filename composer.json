@@ -26,6 +26,7 @@
         "mockery/mockery": "^1.2",
         "myclabs/php-enum": "^1.7",
         "oscarotero/env": "^1.2",
+        "phploc/phploc": "^5.0",
         "phpmd/phpmd": "^2.6",
         "phpunit/phpunit": "^6.5",
         "stecman/symfony-console-completion": "^0.10.1",
