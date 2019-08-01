@@ -42,6 +42,9 @@ export ORCA_AMPLITUDE_USER_ID=${ORCA_AMPLITUDE_USER_ID:="$ORCA_SUT_NAME:$ORCA_SU
 # too narrowly.
 export COLUMNS=125
 
+# Correct Selenium URL for new versions of Chrome/ChromeDriver:
+export BEHAT_PARAMS='{"extensions":{"Behat\\MinkExtension":{"selenium2":{"wd_host":"http://127.0.0.1:4444","capabilities":{"chrome":{"switches":["--headless","--disable-gpu"]}}}}}}'
+
 # Add binary directories to PATH.
 export PATH="$HOME/.composer/vendor/bin:$PATH"
 export PATH="$ORCA_ROOT/bin:$PATH"
