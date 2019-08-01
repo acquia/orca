@@ -58,9 +58,6 @@
         "sort-packages": true
     },
     "extra": {
-        "chromedriver": {
-            "version": "74.0.3729.6"
-        },
         "hooks": {
             "pre-commit": [
                 "set -e",
