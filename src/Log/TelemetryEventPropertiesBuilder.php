@@ -95,6 +95,9 @@ class TelemetryEventPropertiesBuilder {
   protected function addEnvironmentVariables(): void {
     $properties = array_flip([
       'ORCA_JOB',
+      // Built-in Travis CI environment variables.
+      // @see https://docs.travis-ci.com/user/environment-variables/#default-environment-variables
+      'TRAVIS_ALLOW_FAILURE',
       'TRAVIS_COMMIT',
       'TRAVIS_COMMIT_MESSAGE',
       'TRAVIS_JOB_ID',
