@@ -7,10 +7,10 @@
 #     after_script.sh
 #
 # DESCRIPTION
-#     Logs the job if telemetry is enabled.
+#     Logs the job on cron if telemetry is enabled.
 
 cd "$(dirname "$0")" || exit; source _includes.sh
 
 if [[ "$TRAVIS_EVENT_TYPE" = "cron" && "$ORCA_TELEMETRY_ENABLE" && "$ORCA_AMPLITUDE_API_KEY" && "$ORCA_AMPLITUDE_USER_ID" ]]; then
-  orca internal:log-event TRAVIS_CI_JOB
+  orca internal:log-job
 fi

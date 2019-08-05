@@ -26,6 +26,14 @@ interface TaskInterface {
   public function setPath(string $path): TaskInterface;
 
   /**
+   * Gets the human-readable task label.
+   *
+   * @return string
+   *   The task name, e.g., "Example Task".
+   */
+  public function label(): string;
+
+  /**
    * Returns a status message describing the task being performed.
    *
    * @return string

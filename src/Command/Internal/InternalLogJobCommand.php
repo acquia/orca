@@ -7,21 +7,21 @@ use Acquia\Orca\Enum\TelemetryEventName;
 use Acquia\Orca\Log\TelemetryClient;
 use Acquia\Orca\Log\TelemetryEventPropertiesBuilder;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Provides a command.
  */
-class InternalLogEventCommand extends Command {
+class InternalLogJobCommand extends Command {
 
   /**
    * The default command name.
    *
    * @var string
    */
-  public static $defaultName = 'internal:log-event';
+  public static $defaultName = 'internal:log-job';
 
   /**
    * The telemetry event properties builder.
@@ -60,21 +60,18 @@ class InternalLogEventCommand extends Command {
     $this
       ->setAliases(['log'])
       ->setDescription('Logs an event if telemetry is enabled.')
-      ->addArgument('name', InputArgument::REQUIRED, implode(PHP_EOL, [
-        'The event name:',
-        sprintf('- %s: %s', TelemetryEventName::TRAVIS_CI_JOB()->getKey(), TelemetryEventName::TRAVIS_CI_JOB),
-        sprintf('- %s: %s', TelemetryEventName::TEST()->getKey(), TelemetryEventName::TEST),
-      ]))
+      ->addOption('simulate', ['s'], InputOption::VALUE_NONE, 'Run in simulated mode: show what would be logged instead of actually logging it')
+      ->addOption('test', NULL, InputOption::VALUE_NONE, 'Send a test event for debugging')
       ->setHidden(TRUE);
   }
 
   /**
    * {@inheritdoc}
-   *
-   * @SuppressWarnings(PHPMD.StaticAccess)
    */
   protected function execute(InputInterface $input, OutputInterface $output): int {
-    if (!$this->telemetryClient->isReady()) {
+    $simulate = $input->getOption('simulate');
+
+    if (!$simulate && !$this->telemetryClient->isReady()) {
       $output->writeln([
         'Notice: Nothing logged. Telemetry is disabled.',
         'Hint: https://github.com/acquia/orca/blob/master/docs/advanced-usage.md#ORCA_TELEMETRY_ENABLE',
@@ -82,21 +79,31 @@ class InternalLogEventCommand extends Command {
       return StatusCodes::OK;
     }
 
-    $name = $input->getArgument('name');
+    $name = $this->getEventName((bool) $input->getOption('test'));
+    $properties = $this->telemetryEventPropertiesBuilder->build($name);
 
-    if (!TelemetryEventName::isValidKey($name)) {
-      $output->writeln([
-        sprintf('Error: Invalid value for "name" argument: "%s".', $name),
-        sprintf('Hint: Acceptable values are "%s".', implode('", "', TelemetryEventName::keys())),
-      ]);
-      return StatusCodes::ERROR;
+    if ($simulate) {
+      $output->write(print_r($properties, TRUE));
+      return StatusCodes::OK;
     }
 
-    $name = call_user_func([TelemetryEventName::class, $name]);
-    $properties = $this->telemetryEventPropertiesBuilder->build($name);
-    $this->telemetryClient->logEvent($name, $properties);
+    $this->telemetryClient->logEvent($name->getValue(), $properties);
 
     return StatusCodes::OK;
+  }
+
+  /**
+   * Gets the telemetry event name.
+   *
+   * @param bool $test_option
+   *   The "--test" option value.
+   *
+   * @return \Acquia\Orca\Enum\TelemetryEventName
+   *   The telemetry event name.
+   */
+  protected function getEventName(bool $test_option): TelemetryEventName {
+    $name = ($test_option) ? TelemetryEventName::TEST : TelemetryEventName::TRAVIS_CI_JOB;
+    return new TelemetryEventName($name);
   }
 
 }

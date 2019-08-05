@@ -17,7 +17,7 @@ class PhpUnitTask extends TestFrameworkBase {
   /**
    * {@inheritdoc}
    */
-  public function name(): string {
+  public function label(): string {
     return 'PHPUnit';
   }
 

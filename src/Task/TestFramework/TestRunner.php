@@ -252,7 +252,7 @@ class TestRunner {
       $framework->execute();
     }
     catch (TaskFailureException $e) {
-      $failure = "{$package->getPackageName()}: {$framework->name()}";
+      $failure = "{$package->getPackageName()}: {$framework->label()}";
       $this->output->block($failure, 'FAILURE', 'fg=white;bg=red');
       $this->failures[] = $failure;
     }

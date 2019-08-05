@@ -12,6 +12,13 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 class TaskRunner {
 
   /**
+   * A list of test failure descriptions.
+   *
+   * @var string[]
+   */
+  private $failures = [];
+
+  /**
    * The output decorator.
    *
    * @var \Symfony\Component\Console\Style\SymfonyStyle
@@ -77,9 +84,20 @@ class TaskRunner {
         $task->setPath($this->path)->execute();
       }
       catch (TaskFailureException $e) {
+        $failure = $task->label();
+        $this->output->block($failure, 'FAILURE', 'fg=white;bg=red');
+        $this->failures[] = $failure;
         $status = StatusCodes::ERROR;
       }
     }
+
+    if ($this->failures) {
+      $this->output->block(implode(PHP_EOL, $this->failures), 'FAILURES', 'fg=white;bg=red', ' ', TRUE);
+      $this->output->writeln('');
+      return StatusCodes::ERROR;
+    }
+
+    $this->output->success('Passed');
     return $status;
   }
 

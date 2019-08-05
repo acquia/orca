@@ -14,6 +14,13 @@ class PhpLintTask extends TaskBase {
   /**
    * {@inheritdoc}
    */
+  public function label(): string {
+    return 'PHP Lint';
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function statusMessage(): string {
     return 'Linting PHP files';
   }

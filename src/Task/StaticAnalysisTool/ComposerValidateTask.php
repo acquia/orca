@@ -24,6 +24,13 @@ class ComposerValidateTask extends TaskBase {
   /**
    * {@inheritdoc}
    */
+  public function label(): string {
+    return 'Composer Validate';
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function statusMessage(): string {
     return 'Validating composer.json files';
   }

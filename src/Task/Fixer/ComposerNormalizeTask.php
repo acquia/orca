@@ -22,6 +22,13 @@ class ComposerNormalizeTask extends TaskBase {
   /**
    * {@inheritdoc}
    */
+  public function label(): string {
+    return 'Composer Normalize';
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function statusMessage(): string {
     return 'Normalizing composer.json files';
   }

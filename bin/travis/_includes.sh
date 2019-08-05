@@ -43,6 +43,7 @@ export ORCA_AMPLITUDE_USER_ID=${ORCA_AMPLITUDE_USER_ID:="$ORCA_SUT_NAME:$ORCA_SU
 export COLUMNS=125
 
 # Correct Selenium URL for new versions of Chrome/ChromeDriver:
+# @see https://github.com/acquia/orca/pull/38
 export BEHAT_PARAMS='{"extensions":{"Behat\\MinkExtension":{"selenium2":{"wd_host":"http://127.0.0.1:4444","capabilities":{"chrome":{"switches":["--headless","--disable-gpu"]}}}}}}'
 
 # Add binary directories to PATH.

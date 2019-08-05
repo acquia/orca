@@ -3,6 +3,10 @@
 namespace Acquia\Orca\Log;
 
 use Acquia\Orca\Enum\TelemetryEventName;
+use Acquia\Orca\Task\DeprecatedCodeScanner\PhpStanTask;
+use Acquia\Orca\Task\StaticAnalysisTool\PhpCodeSnifferTask;
+use Acquia\Orca\Task\StaticAnalysisTool\PhpLocTask;
+use Symfony\Component\Filesystem\Filesystem;
 
 /**
  * Builds telemetry event properties.
@@ -17,13 +21,40 @@ class TelemetryEventPropertiesBuilder {
   private $env;
 
   /**
+   * The filesystem.
+   *
+   * @var \Symfony\Component\Filesystem\Filesystem
+   */
+  private $filesystem;
+
+  /**
+   * The ORCA project directory.
+   *
+   * @var string
+   */
+  private $projectDir;
+
+  /**
+   * The event properties.
+   *
+   * @var array
+   */
+  private $properties = [];
+
+  /**
    * Constructs an instance.
    *
    * @param \Env $env
    *   The environment variables service.
+   * @param \Symfony\Component\Filesystem\Filesystem $filesystem
+   *   The filesystem.
+   * @param string $project_dir
+   *   The ORCA project directory.
    */
-  public function __construct(\Env $env) {
+  public function __construct(\Env $env, Filesystem $filesystem, string $project_dir) {
     $this->env = $env;
+    $this->filesystem = $filesystem;
+    $this->projectDir = $project_dir;
   }
 
   /**
@@ -52,8 +83,23 @@ class TelemetryEventPropertiesBuilder {
    *   An array of properties.
    */
   protected function buildTravisCiJobProperties(): array {
+    $this->properties = [];
+    $this->addEnvironmentVariables();
+    $this->addPhpcsResults();
+    $this->addPhpLocResults();
+    $this->addDeprecationScanningResults();
+    return $this->properties;
+  }
+
+  /**
+   * Adds environment variables to the event properties.
+   */
+  protected function addEnvironmentVariables(): void {
     $properties = array_flip([
       'ORCA_JOB',
+      // Built-in Travis CI environment variables.
+      // @see https://docs.travis-ci.com/user/environment-variables/#default-environment-variables
+      'TRAVIS_ALLOW_FAILURE',
       'TRAVIS_COMMIT',
       'TRAVIS_COMMIT_MESSAGE',
       'TRAVIS_JOB_ID',
@@ -67,7 +113,85 @@ class TelemetryEventPropertiesBuilder {
     array_walk($properties, function (&$value, $key) {
       $value = $this->env::get($key);
     });
-    return $properties;
+    $this->properties = array_merge($this->properties, $properties);
+  }
+
+  /**
+   * Adds PHPCS results to the event properties.
+   */
+  private function addPhpcsResults(): void {
+    $data = $this->getJsonFileData(PhpCodeSnifferTask::JSON_LOG_PATH);
+
+    if (empty($data['totals']) || !is_array($data['totals'])) {
+      return;
+    }
+
+    $this->properties['phpcs']['totals'] = $data['totals'];
+  }
+
+  /**
+   * Adds PHP LOC results to the event properties.
+   */
+  private function addPhpLocResults(): void {
+    $data = $this->getJsonFileData(PhpLocTask::JSON_LOG_PATH);
+
+    if (empty($data)) {
+      return;
+    }
+
+    $this->properties['phploc'] = $data;
+  }
+
+  /**
+   * Adds deprecation scanning results to the event properties.
+   */
+  private function addDeprecationScanningResults(): void {
+    $data = $this->getJsonFileData(PhpStanTask::JSON_LOG_PATH);
+
+    if (empty($data['totals']) || !is_array($data['totals'])) {
+      return;
+    }
+
+    $this->properties['phpstan']['totals'] = $data['totals'];
+  }
+
+  /**
+   * Gets JSON data from the file at the given path.
+   *
+   * @param string $path
+   *   The path to a JSON file relative to the ORCA project directory.
+   *
+   * @return array
+   *   The data from the given file if available, or an empty array if not.
+   */
+  private function getJsonFileData(string $path): array {
+    $path = $this->getProjectPath($path);
+
+    if (!$this->filesystem->exists($path)) {
+      return [];
+    }
+
+    $json = file_get_contents($path);
+    $data = json_decode($json, TRUE);
+
+    if (json_last_error()) {
+      return [];
+    }
+
+    return $data;
+  }
+
+  /**
+   * Gets the ORCA project directory with a sub-path appended.
+   *
+   * @param string $sub_path
+   *   A sub-path to append.
+   *
+   * @return string
+   *   The project directory with sub-path appended.
+   */
+  public function getProjectPath(string $sub_path): string {
+    return "{$this->projectDir}/{$sub_path}";
   }
 
 }
