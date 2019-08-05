@@ -4,6 +4,7 @@ namespace Acquia\Orca\Log;
 
 use Acquia\Orca\Enum\TelemetryEventName;
 use Acquia\Orca\Task\DeprecatedCodeScanner\PhpStanTask;
+use Acquia\Orca\Task\StaticAnalysisTool\PhpCodeSnifferTask;
 use Acquia\Orca\Task\StaticAnalysisTool\PhpLocTask;
 use Symfony\Component\Filesystem\Filesystem;
 
@@ -84,7 +85,8 @@ class TelemetryEventPropertiesBuilder {
   protected function buildTravisCiJobProperties(): array {
     $this->properties = [];
     $this->addEnvironmentVariables();
-    $this->addStaticAnalysisResults();
+    $this->addPhpcsResults();
+    $this->addPhpLocResults();
     $this->addDeprecationScanningResults();
     return $this->properties;
   }
@@ -115,9 +117,22 @@ class TelemetryEventPropertiesBuilder {
   }
 
   /**
-   * Adds static analysis results to the event properties.
+   * Adds PHPCS results to the event properties.
    */
-  private function addStaticAnalysisResults(): void {
+  private function addPhpcsResults(): void {
+    $data = $this->getJsonFileData(PhpCodeSnifferTask::JSON_LOG_PATH);
+
+    if (empty($data['totals']) || !is_array($data['totals'])) {
+      return;
+    }
+
+    $this->properties['phpcs']['totals'] = $data['totals'];
+  }
+
+  /**
+   * Adds PHP LOC results to the event properties.
+   */
+  private function addPhpLocResults(): void {
     $data = $this->getJsonFileData(PhpLocTask::JSON_LOG_PATH);
 
     if (empty($data)) {
