@@ -31,6 +31,7 @@ class PhpLocTask extends TaskBase {
   public function execute(): void {
     $this->processRunner->runOrcaVendorBin([
       'phploc',
+      '--names=*.php,*.module,*.theme,*.inc,*.install,*.profile,*.engine',
       '--exclude=var',
       '--exclude=vendor',
       '--exclude=docroot',
