@@ -12,6 +12,13 @@ class PhpMessDetectorTask extends TaskBase {
   /**
    * {@inheritdoc}
    */
+  public function label(): string {
+    return 'PHP Mess Detector (PHPMD)';
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function statusMessage(): string {
     return 'Looking for potential problems in PHP source code';
   }

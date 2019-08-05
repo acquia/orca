@@ -24,6 +24,8 @@ class TaskRunnerTest extends TestCase {
     $output = $this->prophesize(SymfonyStyle::class);
     $output->section(self::STATUS_MESSAGE)
       ->shouldBeCalledTimes(2);
+    $output->success('Passed')
+      ->shouldBeCalledTimes(2);
     /** @var \Symfony\Component\Console\Style\SymfonyStyle $output */
     $output = $output->reveal();
     /** @var \Acquia\Orca\Task\TestFramework\BehatTask $behat */

@@ -24,6 +24,13 @@ class PhpCodeSnifferTask extends TaskBase {
   /**
    * {@inheritdoc}
    */
+  public function label(): string {
+    return 'PHP Code Sniffer (PHPCS)';
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function statusMessage(): string {
     return 'Sniffing for coding standards violations';
   }

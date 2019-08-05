@@ -16,6 +16,13 @@ class YamlLintTask extends TaskBase {
   /**
    * {@inheritdoc}
    */
+  public function label(): string {
+    return 'YAML Lint';
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function statusMessage(): string {
     return 'Linting YAML files';
   }

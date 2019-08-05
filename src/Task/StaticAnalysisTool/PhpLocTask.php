@@ -14,6 +14,13 @@ class PhpLocTask extends TaskBase {
   /**
    * {@inheritdoc}
    */
+  public function label(): string {
+    return 'PHPLOC';
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function statusMessage(): string {
     return 'Measuring the size of the PHP project';
   }

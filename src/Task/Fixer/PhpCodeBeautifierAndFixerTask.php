@@ -14,6 +14,13 @@ class PhpCodeBeautifierAndFixerTask extends TaskBase {
   /**
    * {@inheritdoc}
    */
+  public function label(): string {
+    return 'PHP Code Beautifier and Fixer (PHPCBF)';
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function statusMessage(): string {
     return 'Fixing coding standards violations';
   }
