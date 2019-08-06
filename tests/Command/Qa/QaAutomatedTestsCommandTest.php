@@ -2,12 +2,12 @@
 
 namespace Acquia\Orca\Tests\Command\Qa;
 
+use Acquia\Orca\Command\Qa\QaAutomatedTestsCommand;
+use Acquia\Orca\Command\StatusCodes;
 use Acquia\Orca\Exception\OrcaException;
+use Acquia\Orca\Fixture\Fixture;
 use Acquia\Orca\Fixture\PackageManager;
 use Acquia\Orca\Task\TestFramework\TestRunner;
-use Acquia\Orca\Command\StatusCodes;
-use Acquia\Orca\Command\Qa\QaAutomatedTestsCommand;
-use Acquia\Orca\Fixture\Fixture;
 use Acquia\Orca\Tests\Command\CommandTestBase;
 use Symfony\Component\Console\Command\Command;
 

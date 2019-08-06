@@ -3,13 +3,13 @@
 namespace Acquia\Orca\Command\Fixture;
 
 use Acquia\Orca\Command\StatusCodes;
-use Acquia\Orca\Exception\OrcaException;
-use Acquia\Orca\Fixture\FixtureCreator;
-use Acquia\Orca\Fixture\PackageManager;
-use Acquia\Orca\Fixture\FixtureRemover;
-use Acquia\Orca\Fixture\Fixture;
-use Acquia\Orca\Fixture\SutPreconditionsTester;
 use Acquia\Orca\Enum\DrupalCoreVersion;
+use Acquia\Orca\Exception\OrcaException;
+use Acquia\Orca\Fixture\Fixture;
+use Acquia\Orca\Fixture\FixtureCreator;
+use Acquia\Orca\Fixture\FixtureRemover;
+use Acquia\Orca\Fixture\PackageManager;
+use Acquia\Orca\Fixture\SutPreconditionsTester;
 use Acquia\Orca\Utility\DrupalCoreVersionFinder;
 use Composer\Semver\VersionParser;
 use Symfony\Component\Console\Command\Command;

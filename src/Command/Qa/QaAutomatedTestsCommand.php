@@ -2,11 +2,11 @@
 
 namespace Acquia\Orca\Command\Qa;
 
+use Acquia\Orca\Command\StatusCodes;
 use Acquia\Orca\Exception\OrcaException;
+use Acquia\Orca\Fixture\Fixture;
 use Acquia\Orca\Fixture\PackageManager;
 use Acquia\Orca\Task\TestFramework\TestRunner;
-use Acquia\Orca\Command\StatusCodes;
-use Acquia\Orca\Fixture\Fixture;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;

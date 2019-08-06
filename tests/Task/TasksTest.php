@@ -3,14 +3,14 @@
 namespace Acquia\Orca\Tests\Task;
 
 use Acquia\Orca\Fixture\Fixture;
+use Acquia\Orca\Task\StaticAnalysisTool\ComposerValidateTask;
 use Acquia\Orca\Task\StaticAnalysisTool\PhpCodeSnifferTask;
+use Acquia\Orca\Task\StaticAnalysisTool\PhpLintTask;
 use Acquia\Orca\Task\StaticAnalysisTool\PhpMessDetectorTask;
+use Acquia\Orca\Task\TestFramework\BehatTask;
+use Acquia\Orca\Task\TestFramework\PhpUnitTask;
 use Acquia\Orca\Utility\ConfigFileOverrider;
 use Acquia\Orca\Utility\ProcessRunner;
-use Acquia\Orca\Task\TestFramework\BehatTask;
-use Acquia\Orca\Task\StaticAnalysisTool\ComposerValidateTask;
-use Acquia\Orca\Task\StaticAnalysisTool\PhpLintTask;
-use Acquia\Orca\Task\TestFramework\PhpUnitTask;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Filesystem\Filesystem;

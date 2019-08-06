@@ -4,14 +4,14 @@ namespace Acquia\Orca\Tests\Command\Fixture;
 
 use Acquia\Orca\Command\Fixture\FixtureInitCommand;
 use Acquia\Orca\Command\StatusCodes;
+use Acquia\Orca\Enum\DrupalCoreVersion;
 use Acquia\Orca\Exception\OrcaException;
-use Acquia\Orca\Fixture\PackageManager;
-use Acquia\Orca\Fixture\FixtureRemover;
 use Acquia\Orca\Fixture\Fixture;
 use Acquia\Orca\Fixture\FixtureCreator;
+use Acquia\Orca\Fixture\FixtureRemover;
+use Acquia\Orca\Fixture\PackageManager;
 use Acquia\Orca\Fixture\SutPreconditionsTester;
 use Acquia\Orca\Tests\Command\CommandTestBase;
-use Acquia\Orca\Enum\DrupalCoreVersion;
 use Acquia\Orca\Utility\DrupalCoreVersionFinder;
 use Composer\Semver\VersionParser;
 use Prophecy\Argument;
