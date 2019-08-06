@@ -17,9 +17,6 @@
   <exclude-pattern>vendor/</exclude-pattern>
 
   <rule ref="AcquiaDrupalStrict"/>
-  <rule ref="Drupal.Commenting.VariableComment.Missing">
-    <exclude-pattern>tests/*</exclude-pattern>
-  </rule>
   <rule ref="DrupalPractice.General.ClassName.ClassPrefix">
     <exclude-pattern>example/features/*</exclude-pattern>
   </rule>

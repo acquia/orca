@@ -14,10 +14,9 @@
         "ext-dom": "*",
         "ext-json": "*",
         "ext-sqlite3": "*",
-        "acquia/coding-standards": "^0.2.0",
+        "acquia/coding-standards": "^0.3.0",
         "behat/behat": "^3.5",
         "composer/composer": "^1.7",
-        "cweagans/composer-patches": "^1.6",
         "dealerdirect/phpcodesniffer-composer-installer": "^0.5",
         "hassankhan/config": "^2.0",
         "jakub-onderka/php-console-highlighter": "^0.4.0",
@@ -68,12 +67,6 @@
             "pre-push": "vendor/bin/phpcs",
             "post-install-cmd": "vendor/bin/cghooks add --ignore-lock",
             "post-update-cmd": "vendor/bin/cghooks update"
-        },
-        "patches": {
-            "pheromone/phpcs-security-audit": {
-                "Fix undefined index error": "https://patch-diff.githubusercontent.com/raw/FloeDesignTechnologies/phpcs-security-audit/pull/41.patch",
-                "Fix false positives for exec calls": "https://patch-diff.githubusercontent.com/raw/FloeDesignTechnologies/phpcs-security-audit/pull/43.patch"
-            }
         },
         "phpcodesniffer-search-depth": 4
     },
