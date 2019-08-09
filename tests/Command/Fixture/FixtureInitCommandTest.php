@@ -151,16 +151,16 @@ class FixtureInitCommandTest extends CommandTestBase {
 
   public function providerCommand() {
     return [
-      [TRUE, [], ['Fixture::exists'], NULL, StatusCodes::ERROR, sprintf("Error: Fixture already exists at %s.\nHint: Use the \"--force\" option to remove it and proceed.\n", self::FIXTURE_ROOT)],
-      [TRUE, ['-f' => TRUE], ['Fixture::exists', 'remove', 'create'], NULL, StatusCodes::OK, ''],
-      [FALSE, [], ['Fixture::exists', 'create'], NULL, StatusCodes::OK, ''],
+      [TRUE, [], ['Fixture::exists', 'getCurrentRecommendedVersion', 'setCoreVersion'], NULL, StatusCodes::ERROR, sprintf("Error: Fixture already exists at %s.\nHint: Use the \"--force\" option to remove it and proceed.\n", self::FIXTURE_ROOT)],
+      [TRUE, ['-f' => TRUE], ['Fixture::exists', 'remove', 'create', 'getCurrentRecommendedVersion', 'setCoreVersion'], NULL, StatusCodes::OK, ''],
+      [FALSE, [], ['Fixture::exists', 'create', 'getCurrentRecommendedVersion', 'setCoreVersion'], NULL, StatusCodes::OK, ''],
       [FALSE, ['--sut' => self::INVALID_PACKAGE], ['PackageManager::exists'], NULL, StatusCodes::ERROR, sprintf("Error: Invalid value for \"--sut\" option: \"%s\".\n", self::INVALID_PACKAGE)],
-      [FALSE, ['--sut' => self::VALID_PACKAGE], ['PackageManager::exists', 'Fixture::exists', 'create', 'setSut'], NULL, StatusCodes::OK, ''],
-      [FALSE, ['--sut' => self::VALID_PACKAGE, '--sut-only' => TRUE], ['PackageManager::exists', 'Fixture::exists', 'create', 'setSut', 'setSutOnly'], NULL, StatusCodes::OK, ''],
-      [FALSE, ['--dev' => TRUE], ['Fixture::exists', 'setDev', 'getCurrentDevVersion', 'setCoreVersion', 'create'], self::CORE_VALUE_LITERAL_CURRENT_DEV, StatusCodes::OK, ''],
-      [FALSE, ['--no-site-install' => TRUE], ['Fixture::exists', 'setInstallSite', 'create'], NULL, StatusCodes::OK, ''],
-      [FALSE, ['--no-sqlite' => TRUE], ['Fixture::exists', 'setSqlite', 'create'], NULL, StatusCodes::OK, ''],
-      [FALSE, ['--profile' => 'lightning'], ['Fixture::exists', 'setProfile', 'create'], NULL, StatusCodes::OK, ''],
+      [FALSE, ['--sut' => self::VALID_PACKAGE], ['PackageManager::exists', 'Fixture::exists', 'getCurrentRecommendedVersion', 'setCoreVersion', 'setSut', 'create'], NULL, StatusCodes::OK, ''],
+      [FALSE, ['--sut' => self::VALID_PACKAGE, '--sut-only' => TRUE], ['PackageManager::exists', 'Fixture::exists', 'getCurrentRecommendedVersion', 'setCoreVersion', 'setSut', 'setSutOnly', 'create'], NULL, StatusCodes::OK, ''],
+      [FALSE, ['--dev' => TRUE], ['Fixture::exists', 'setDev', 'getCurrentRecommendedVersion', 'setCoreVersion', 'create'], self::CORE_VALUE_LITERAL_CURRENT_RECOMMENDED, StatusCodes::OK, ''],
+      [FALSE, ['--no-site-install' => TRUE], ['Fixture::exists', 'getCurrentRecommendedVersion', 'setCoreVersion', 'setInstallSite', 'create'], NULL, StatusCodes::OK, ''],
+      [FALSE, ['--no-sqlite' => TRUE], ['Fixture::exists', 'getCurrentRecommendedVersion', 'setCoreVersion', 'setSqlite', 'create'], NULL, StatusCodes::OK, ''],
+      [FALSE, ['--profile' => 'lightning'], ['Fixture::exists', 'getCurrentRecommendedVersion', 'setCoreVersion', 'setProfile', 'create'], NULL, StatusCodes::OK, ''],
       [FALSE, ['--sut-only' => TRUE], [], NULL, StatusCodes::ERROR, "Error: Cannot create a SUT-only fixture without a SUT.\nHint: Use the \"--sut\" option to specify the SUT.\n"],
     ];
   }
@@ -177,6 +177,9 @@ class FixtureInitCommandTest extends CommandTestBase {
   public function testBareOption() {
     $this->fixtureCreator
       ->setBare(TRUE)
+      ->shouldBeCalledTimes(1);
+    $this->fixtureCreator
+      ->setCoreVersion(self::CORE_VALUE_LITERAL_CURRENT_RECOMMENDED)
       ->shouldBeCalledTimes(1);
     $this->fixtureCreator
       ->create()
@@ -259,7 +262,6 @@ class FixtureInitCommandTest extends CommandTestBase {
       [DrupalCoreVersion::PREVIOUS_DEV, ['--core' => DrupalCoreVersion::PREVIOUS_DEV], self::CORE_VALUE_LITERAL_PREVIOUS_DEV],
       [DrupalCoreVersion::CURRENT_RECOMMENDED, ['--core' => DrupalCoreVersion::CURRENT_RECOMMENDED], self::CORE_VALUE_LITERAL_CURRENT_RECOMMENDED],
       [DrupalCoreVersion::CURRENT_DEV, ['--core' => DrupalCoreVersion::CURRENT_DEV], self::CORE_VALUE_LITERAL_CURRENT_DEV],
-      [DrupalCoreVersion::CURRENT_DEV, ['--dev' => TRUE], self::CORE_VALUE_LITERAL_CURRENT_DEV],
       [DrupalCoreVersion::NEXT_RELEASE, ['--core' => DrupalCoreVersion::NEXT_RELEASE], self::CORE_VALUE_LITERAL_NEXT_RELEASE],
       [DrupalCoreVersion::NEXT_DEV, ['--core' => DrupalCoreVersion::NEXT_DEV], self::CORE_VALUE_LITERAL_NEXT_DEV],
       [self::CORE_VALUE_LITERAL_PREVIOUS_RELEASE, ['--core' => self::CORE_VALUE_LITERAL_PREVIOUS_RELEASE], self::CORE_VALUE_LITERAL_PREVIOUS_RELEASE],
@@ -308,6 +310,9 @@ class FixtureInitCommandTest extends CommandTestBase {
       ->setComposerExitOnPatchFailure(FALSE)
       ->shouldBeCalledTimes($num_calls);
     $this->fixtureCreator
+      ->setCoreVersion(self::CORE_VALUE_LITERAL_CURRENT_RECOMMENDED)
+      ->shouldBeCalledTimes(1);
+    $this->fixtureCreator
       ->create()
       ->shouldBeCalledTimes(1);
 
@@ -326,7 +331,9 @@ class FixtureInitCommandTest extends CommandTestBase {
 
   public function testFixtureCreationFailure() {
     $exception_message = 'Failed to create fixture.';
-
+    $this->fixtureCreator
+      ->setCoreVersion(self::CORE_VALUE_LITERAL_CURRENT_RECOMMENDED)
+      ->shouldBeCalledTimes(1);
     $this->fixtureCreator
       ->create(Argument::any())
       ->willThrow(new OrcaException($exception_message));
@@ -338,6 +345,9 @@ class FixtureInitCommandTest extends CommandTestBase {
   }
 
   public function testPreferSourceOption() {
+    $this->fixtureCreator
+      ->setCoreVersion(self::CORE_VALUE_LITERAL_CURRENT_RECOMMENDED)
+      ->shouldBeCalledTimes(1);
     $this->fixtureCreator
       ->setPreferSource(TRUE)
       ->shouldBeCalledTimes(1);

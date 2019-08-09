@@ -22,7 +22,7 @@ class PackageTest extends TestCase {
   /**
    * @dataProvider providerPackage
    */
-  public function testPackage($data, $package_name, $project_name, $type, $repository_url, $version, $dev_version, $enable, $package_string, $dev_package_string, $install_path) {
+  public function testPackage($data, $package_name, $project_name, $type, $repository_url, $version, $dev_version, $enable, $install_path) {
     $package = $this->createPackage($package_name, $data);
 
     $this->assertInstanceOf(Package::class, $package, 'Instantiated class.');
@@ -33,8 +33,6 @@ class PackageTest extends TestCase {
     $this->assertEquals($version, $package->getVersionRecommended(), 'Set/got recommended version.');
     $this->assertEquals($dev_version, $package->getVersionDev(), 'Set/got dev version.');
     $this->assertEquals($enable, $package->shouldGetEnabled(), 'Determined whether or not should get enabled.');
-    $this->assertEquals($package_string, $package->getPackageStringRecommended(), 'Got recommended dependency string.');
-    $this->assertEquals($dev_package_string, $package->getPackageStringDev(), 'Got dev dependency string.');
     $this->assertEquals($install_path, $package->getInstallPathRelative(), 'Got relative install path.');
   }
 
@@ -55,8 +53,6 @@ class PackageTest extends TestCase {
         '~1.0',
         '1.x-dev',
         FALSE,
-        'drupal/example_library:~1.0',
-        'drupal/example_library:1.x-dev',
         'custom/path/to/example_library',
       ],
       'Minimum specification/default values' => [
@@ -70,8 +66,6 @@ class PackageTest extends TestCase {
         '*',
         '2.x-dev',
         TRUE,
-        'drupal/example_module:*',
-        'drupal/example_module:2.x-dev',
         'docroot/modules/contrib/example_module',
       ],
       'Module to not enable' => [
@@ -86,8 +80,6 @@ class PackageTest extends TestCase {
         '*',
         '2.x-dev',
         FALSE,
-        'drupal/example_module:*',
-        'drupal/example_module:2.x-dev',
         'docroot/modules/contrib/example_module',
       ],
     ];

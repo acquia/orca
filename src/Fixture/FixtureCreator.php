@@ -7,8 +7,13 @@ use Acquia\Orca\Utility\ProcessRunner;
 use Acquia\Orca\Utility\StatusTable;
 use Acquia\Orca\Utility\SutSettingsTrait;
 use Composer\Config\JsonConfigSource;
+use Composer\DependencyResolver\Pool;
+use Composer\Factory;
+use Composer\IO\NullIO;
 use Composer\Json\JsonFile;
 use Composer\Package\Version\VersionGuesser;
+use Composer\Package\Version\VersionSelector;
+use Composer\Repository\RepositoryFactory;
 use Noodlehaus\Config;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
@@ -520,6 +525,8 @@ class FixtureCreator {
 
   /**
    * Requires the top-level Acquia packages via Composer.
+   *
+   * @throws \Acquia\Orca\Exception\OrcaException
    */
   private function composerRequireTopLevelAcquiaPackages(): void {
     $command = [
@@ -605,11 +612,14 @@ class FixtureCreator {
    *
    * @return string[]
    *   The list of Composer dependency strings for Acquia packages.
+   *
+   * @throws \Acquia\Orca\Exception\OrcaException
    */
   private function getAcquiaPackageDependencies(): array {
     $dependencies = $this->packageManager->getMultiple();
     foreach ($dependencies as &$dependency) {
-      $dependency = ($this->isDev) ? $dependency->getPackageStringDev() : $dependency->getPackageStringRecommended();
+      $version = $this->findLatestVersion($dependency)->getPrettyVersion();
+      $dependency = "{$dependency->getPackageName()}:{$version}";
     }
 
     if (!$this->sut) {
@@ -626,6 +636,46 @@ class FixtureCreator {
     $dependencies[$this->sut->getPackageName()] = $sut_package_string;
 
     return array_values($dependencies);
+  }
+
+  /**
+   * Finds the latest available version for a given package.
+   *
+   * @param \Acquia\Orca\Fixture\Package $package
+   *   The package to get the latest version for.
+   *
+   * @return \Composer\Package\PackageInterface
+   *   The package for the latest version.
+   *
+   * @throws \Acquia\Orca\Exception\OrcaException
+   *   In case no version can be found.
+   */
+  private function findLatestVersion(Package $package) {
+    $io = new NullIO();
+    $packagist = RepositoryFactory::defaultRepos($io)['packagist.org'];
+    $drupal_org = RepositoryFactory::createRepo($io, Factory::createConfig($io), [
+      'type' => 'composer',
+      'url' => 'https://packages.drupal.org/8',
+    ]);
+
+    $stability = ($this->isDev) ? 'dev' : 'alpha';
+
+    $pool = new Pool($stability);
+    $pool->addRepository($packagist);
+    $pool->addRepository($drupal_org);
+
+    $target_version = ($this->isDev) ? $package->getVersionDev() : $package->getVersionRecommended();
+    if ($target_version === '*') {
+      $target_version = NULL;
+    }
+    $version = (new VersionSelector($pool))
+      ->findBestCandidate($package->getPackageName(), $target_version, NULL, $stability);
+
+    if (!$version) {
+      throw new OrcaException(sprintf('No available version could be found for %s:"%s"', $package->getPackageName(), $target_version));
+    }
+
+    return $version;
   }
 
   /**

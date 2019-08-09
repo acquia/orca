@@ -198,28 +198,6 @@ class Package {
   }
 
   /**
-   * Gets the dev version package string.
-   *
-   * @return string
-   *   The package string as passed to `composer require`, e.g.,
-   *   "drupal/example:1.x-dev".
-   */
-  public function getPackageStringDev(): string {
-    return "{$this->getPackageName()}:{$this->getVersionDev()}";
-  }
-
-  /**
-   * Gets the recommended version package string.
-   *
-   * @return string
-   *   The package string as passed to `composer require`, e.g.,
-   *   "drupal/example:~1.0".
-   */
-  public function getPackageStringRecommended(): string {
-    return "{$this->getPackageName()}:{$this->getVersionRecommended()}";
-  }
-
-  /**
    * Gets the project name.
    *
    * @return string
