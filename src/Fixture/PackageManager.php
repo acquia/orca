@@ -155,10 +155,10 @@ class PackageManager {
       $data = array_merge($data, $this->alterData);
     }
     foreach ($data as $package_name => $datum) {
-      // Skipping a falsy datum provides for a package to be effectively removed
+      // Skipping a null datum provides for a package to be effectively removed
       // from the active specification at runtime by setting its value to NULL
       // in the packages configuration alter file.
-      if (!$datum) {
+      if (is_null($datum)) {
         continue;
       }
 

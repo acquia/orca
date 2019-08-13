@@ -54,8 +54,8 @@ class Package {
    *     project.
    *   - "version": (optional) The recommended package version to require via
    *     Composer. Defaults to "*".
-   *   - "version_dev": (required) The dev package version to require via
-   *     Composer.
+   *   - "version_dev": (optional) The dev package version to require via
+   *     Composer. Defaults to "*@dev".
    */
   public function __construct(Fixture $fixture, string $package_name, array $data) {
     $this->fixture = $fixture;
@@ -82,10 +82,10 @@ class Package {
         'version_dev',
         'enable',
       ])
-      ->setRequired(['version_dev'])
       ->setDefaults([
         'type' => 'drupal-module',
         'version' => '*',
+        'version_dev' => '*@dev',
         'enable' => TRUE,
       ])
       ->setAllowedTypes('type', 'string')
@@ -212,7 +212,7 @@ class Package {
    * Gets the dev version constraint.
    *
    * @return string
-   *   The dev version constraint, e.g., "*" or "~1.0".
+   *   The dev version constraint, e.g., "*@dev" or "1.x-dev".
    */
   public function getVersionDev(): string {
     return $this->data['version_dev'];

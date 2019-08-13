@@ -6,7 +6,6 @@ use Acquia\Orca\Fixture\Fixture;
 use Acquia\Orca\Fixture\Package;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\OptionsResolver\Exception\InvalidOptionsException;
-use Symfony\Component\OptionsResolver\Exception\MissingOptionsException;
 use Symfony\Component\OptionsResolver\Exception\UndefinedOptionsException;
 
 /**
@@ -56,21 +55,18 @@ class PackageTest extends TestCase {
         'custom/path/to/example_library',
       ],
       'Minimum specification/default values' => [
-        'drupal/example_module' => [
-          'version_dev' => '2.x-dev',
-        ],
+        'drupal/example_module' => [],
         'drupal/example_module',
         'example_module',
         'drupal-module',
         '../example_module',
         '*',
-        '2.x-dev',
+        '*@dev',
         TRUE,
         'docroot/modules/contrib/example_module',
       ],
       'Module to not enable' => [
         'drupal/example_module' => [
-          'version_dev' => '2.x-dev',
           'enable' => FALSE,
         ],
         'drupal/example_module',
@@ -78,7 +74,7 @@ class PackageTest extends TestCase {
         'drupal-module',
         '../example_module',
         '*',
-        '2.x-dev',
+        '*@dev',
         FALSE,
         'docroot/modules/contrib/example_module',
       ],
@@ -96,10 +92,9 @@ class PackageTest extends TestCase {
 
   public function providerConstructionError() {
     return [
-      'Invalid package name: missing forward slash' => [\InvalidArgumentException::class, 'incomplete', ['version_dev' => '1.x']],
-      'Missing "version_dev" property' => [MissingOptionsException::class, 'drupal/example', []],
-      'Invalid "enable" value: non-boolean' => [InvalidOptionsException::class, 'drupal/example', ['version_dev' => '1.x', 'enable' => 'invalid']],
-      'Unexpected property' => [UndefinedOptionsException::class, 'drupal/example', ['unexpected' => '', 'version_dev' => '1.x'], 'Unexpected property: "unexpected"'],
+      'Invalid package name: missing forward slash' => [\InvalidArgumentException::class, 'incomplete', []],
+      'Invalid "enable" value: non-boolean' => [InvalidOptionsException::class, 'drupal/example', ['enable' => 'invalid']],
+      'Unexpected property' => [UndefinedOptionsException::class, 'drupal/example', ['unexpected' => ''], 'Unexpected property: "unexpected"'],
     ];
   }
 
@@ -114,7 +109,6 @@ class PackageTest extends TestCase {
     $package_name = 'drupal/example';
     $data = [
       'type' => $type,
-      'version_dev' => '1.x-dev',
     ];
 
     $package = $this->createPackage($package_name, $data);
