@@ -11,6 +11,7 @@ use Composer\DependencyResolver\Pool;
 use Composer\Factory;
 use Composer\IO\NullIO;
 use Composer\Json\JsonFile;
+use Composer\Package\PackageInterface;
 use Composer\Package\Version\VersionGuesser;
 use Composer\Package\Version\VersionSelector;
 use Composer\Repository\RepositoryFactory;
@@ -411,7 +412,7 @@ class FixtureCreator {
    *   The list of unwanted packages.
    */
   private function getUnwantedPackageList(): array {
-    $packages = $this->packageManager->getMultiple();
+    $packages = $this->packageManager->getAll();
     if ($this->isBare || $this->isSutOnly) {
       // Don't remove BLT because it won't be replaced in a bare or SUT-only
       // fixture, and a fixture cannot be successfully built without it.
@@ -495,7 +496,7 @@ class FixtureCreator {
    * Configures Composer to install Acquia packages from source.
    */
   private function configureComposerForTopLevelAcquiaPackages(): void {
-    $packages = $this->packageManager->getMultiple();
+    $packages = $this->packageManager->getAll();
 
     if (!$packages) {
       return;
@@ -616,26 +617,39 @@ class FixtureCreator {
    * @throws \Acquia\Orca\Exception\OrcaException
    */
   private function getAcquiaPackageDependencies(): array {
-    $dependencies = $this->packageManager->getMultiple();
-    foreach ($dependencies as &$dependency) {
-      $version = $this->findLatestVersion($dependency)->getPrettyVersion();
-      $dependency = "{$dependency->getPackageName()}:{$version}";
+    $dependencies = ($this->isSutOnly) ? [$this->sut] : $this->packageManager->getAll();
+    foreach ($dependencies as $package_name => &$package) {
+      if ($package == $this->sut) {
+        $package = $this->getSutPackageString();
+        continue;
+      }
+
+      $package_is_installable = $this->getTargetVersion($package);
+      if (!$package_is_installable) {
+        unset($dependencies[$package_name]);
+        continue;
+      }
+
+      $version = $this->findLatestVersion($package)->getPrettyVersion();
+      $package = "{$package->getPackageName()}:{$version}";
     }
-
-    if (!$this->sut) {
-      return array_values($dependencies);
-    }
-
-    $sut_package_string = $this->getSutPackageString();
-
-    if ($this->isSutOnly) {
-      return [$sut_package_string];
-    }
-
-    // Replace the version constraint on the SUT to allow for symlinking.
-    $dependencies[$this->sut->getPackageName()] = $sut_package_string;
 
     return array_values($dependencies);
+  }
+
+  /**
+   * Gets the target version for the given package.
+   *
+   * @param \Acquia\Orca\Fixture\Package $package
+   *   The package to get the target version for.
+   *
+   * @return string|null
+   *   The target version if available or NULL if not.
+   */
+  private function getTargetVersion(Package $package): ?string {
+    return ($this->isDev)
+      ? $package->getVersionDev($this->drupalCoreVersion)
+      : $package->getVersionRecommended($this->drupalCoreVersion);
   }
 
   /**
@@ -650,7 +664,7 @@ class FixtureCreator {
    * @throws \Acquia\Orca\Exception\OrcaException
    *   In case no version can be found.
    */
-  private function findLatestVersion(Package $package) {
+  private function findLatestVersion(Package $package): PackageInterface {
     $io = new NullIO();
     $packagist = RepositoryFactory::defaultRepos($io)['packagist.org'];
     $drupal_org = RepositoryFactory::createRepo($io, Factory::createConfig($io), [
@@ -664,7 +678,7 @@ class FixtureCreator {
     $pool->addRepository($packagist);
     $pool->addRepository($drupal_org);
 
-    $target_version = ($this->isDev) ? $package->getVersionDev() : $package->getVersionRecommended();
+    $target_version = $this->getTargetVersion($package);
     if ($target_version === '*') {
       $target_version = NULL;
     }
@@ -782,14 +796,14 @@ class FixtureCreator {
    */
   private function composerRequireSubextensions(): void {
     $subextensions = [];
-    foreach ($this->packageManager->getMultiple() as $package) {
+    foreach ($this->packageManager->getAll() as $package) {
       // The Drupal.org Composer Facade only supports subextensions in modules
       // and themes.
       if (!in_array($package->getType(), ['drupal-module', 'drupal-theme'])) {
         continue;
       }
 
-      $version = $this->fixtureInspector->getInstalledPackageVersion($package->getPackageName());
+      $version = $this->fixtureInspector->getInstalledPackageVersionPretty($package->getPackageName());
       foreach (array_keys($this->subextensionManager->getByParent($package)) as $package_name) {
         $subextensions[] = "{$package_name}:{$version}";
       }

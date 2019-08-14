@@ -35,7 +35,7 @@ class DebugPackagesCommandTest extends CommandTestBase {
     $package->getVersionDev()->willReturn('1.x-dev');
     $package->shouldGetEnabled()->willReturn(TRUE);
     $this->packageManager
-      ->getMultiple()
+      ->getAll()
       ->shouldBeCalledTimes(1)
       ->willReturn([$package, $package]);
 

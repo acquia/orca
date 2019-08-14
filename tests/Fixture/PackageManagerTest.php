@@ -42,16 +42,6 @@ class PackageManagerTest extends TestCase {
     'drupal/theme2',
   ];
 
-  private const MODULES = [
-    'drupal/module1',
-    'drupal/module2',
-  ];
-
-  private const THEMES = [
-    'drupal/theme1',
-    'drupal/theme2',
-  ];
-
   private const PROJECT_DIR = '/var/www/orca';
 
   private const PACKAGES_CONFIG_FILE = 'config/packages.yml';
@@ -77,17 +67,11 @@ class PackageManagerTest extends TestCase {
 
   public function testPackageManager() {
     $manager = $this->createPackageManager();
-    $all_packages = $manager->getMultiple();
-    $modules = $manager->getMultiple('drupal-module');
-    $themes = $manager->getMultiple('drupal-theme');
+    $all_packages = $manager->getAll();
     $package = $manager->get('drupal/module2');
 
     $this->assertEquals(self::ALL_PACKAGES, array_keys($all_packages), 'Set/got all packages.');
     $this->assertInstanceOf(Package::class, reset($all_packages));
-    $this->assertEquals(self::MODULES, array_keys($modules), 'Got modules.');
-    $this->assertInstanceOf(Package::class, reset($modules));
-    $this->assertEquals(self::THEMES, array_keys($themes), 'Got themes.');
-    $this->assertInstanceOf(Package::class, reset($themes));
     $this->assertEquals('drupal/module2', $package->getPackageName(), 'Got package by name.');
     $this->assertInstanceOf(Package::class, $package);
   }

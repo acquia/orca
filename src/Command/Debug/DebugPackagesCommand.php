@@ -85,7 +85,7 @@ class DebugPackagesCommand extends Command {
    */
   private function getRows(): array {
     $rows = [];
-    foreach ($this->packageManager->getMultiple() as $package) {
+    foreach ($this->packageManager->getAll() as $package) {
       $rows[] = [
         $package->getPackageName(),
         $package->getType(),

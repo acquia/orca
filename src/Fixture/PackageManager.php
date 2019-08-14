@@ -104,6 +104,16 @@ class PackageManager {
   }
 
   /**
+   * Gets an array of all packages.
+   *
+   * @return \Acquia\Orca\Fixture\Package[]|string[]
+   *   An array of packages or package properties keyed by package name.
+   */
+  public function getAll(): array {
+    return $this->packages;
+  }
+
+  /**
    * Gets the packages config alter data.
    *
    * @return array
@@ -111,28 +121,6 @@ class PackageManager {
    */
   public function getAlterData(): array {
     return $this->alterData;
-  }
-
-  /**
-   * Gets an array of packages, optionally filtered by type.
-   *
-   * @param string|null $type
-   *   (Optional) A type to filter to, e.g., "drupal-module", or NULL to not
-   *   filter by type. Defaults to NULL.
-   *
-   * @return \Acquia\Orca\Fixture\Package[]|string[]
-   *   An array of packages or package properties keyed by package name.
-   */
-  public function getMultiple(?string $type = NULL): array {
-    $packages = [];
-    foreach ($this->packages as $package_name => $package) {
-      if ($type && $package->getType() !== $type) {
-        continue;
-      }
-
-      $packages[$package_name] = $package;
-    }
-    return $packages;
   }
 
   /**

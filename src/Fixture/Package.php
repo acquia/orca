@@ -2,12 +2,20 @@
 
 namespace Acquia\Orca\Fixture;
 
+use Composer\Semver\VersionParser;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * Provides access to a package's details.
  */
 class Package {
+
+  /**
+   * The package core matrix.
+   *
+   * @var array
+   */
+  private $coreMatrix;
 
   /**
    * The package data.
@@ -56,11 +64,23 @@ class Package {
    *     Composer. Defaults to "*".
    *   - "version_dev": (optional) The dev package version to require via
    *     Composer. Defaults to "*@dev".
+   *   - "core_matrix": (optional) An array of package version mappings. Each
+   *     mapping is keyed by a Drupal core version constraint, e.g., "8.7.x",
+   *     with a value of an associative array optionally containing either or
+   *     both of the "version" and "version_dev" key-value pairs to be used when
+   *     the corresponding Drupal core version constraint is satisfied. Mappings
+   *     are processed in order, and the first match wins.
+   *     @see \Acquia\Orca\Tests\Fixture\PackageTest::testConditionalVersions
+   *   - "enable": (internal) TRUE if the package is a Drupal module that should
+   *     be automatically enabled or FALSE if not. Defaults to TRUE for modules.
+   *     Always FALSE for anything else.
    */
   public function __construct(Fixture $fixture, string $package_name, array $data) {
     $this->fixture = $fixture;
     $this->initializePackageName($package_name);
     $this->data = $this->resolveData($data);
+    $this->coreMatrix = $this->resolveCoreMatrix($this->data['core_matrix']);
+    unset($this->data['core_matrix']);
   }
 
   /**
@@ -80,21 +100,49 @@ class Package {
         'url',
         'version',
         'version_dev',
+        'core_matrix',
         'enable',
       ])
       ->setDefaults([
         'type' => 'drupal-module',
         'version' => '*',
         'version_dev' => '*@dev',
+        'core_matrix' => [],
         'enable' => TRUE,
       ])
       ->setAllowedTypes('type', 'string')
       ->setAllowedTypes('install_path', 'string')
       ->setAllowedTypes('url', 'string')
-      ->setAllowedTypes('version', 'string')
-      ->setAllowedTypes('version_dev', 'string')
+      ->setAllowedTypes('version', ['string', 'null'])
+      ->setAllowedTypes('version_dev', ['string', 'null'])
+      ->setAllowedTypes('core_matrix', 'array')
       ->setAllowedTypes('enable', 'boolean');
     return $resolver->resolve($data);
+  }
+
+  /**
+   * Resolves the given core matrix.
+   *
+   * @param array $matrix
+   *   The given package core matrix.
+   *
+   * @return array
+   *   The resolved package core matrix.
+   */
+  private function resolveCoreMatrix(array $matrix): array {
+    $resolver = (new OptionsResolver())
+      ->setDefined([
+        'version',
+        'version_dev',
+      ])
+      ->setAllowedTypes('version', ['string', 'null'])
+      ->setAllowedTypes('version_dev', ['string', 'null']);
+    $parser = new VersionParser();
+    foreach ($matrix as $constraint => &$data) {
+      $parser->parseConstraints($constraint);
+      $data = $resolver->resolve($data);
+    }
+    return $matrix;
   }
 
   /**
@@ -211,21 +259,29 @@ class Package {
   /**
    * Gets the dev version constraint.
    *
-   * @return string
-   *   The dev version constraint, e.g., "*@dev" or "1.x-dev".
+   * @param string $core_version
+   *   The Drupal core version targeted.
+   *
+   * @return string|null
+   *   The dev version constraint, e.g., "*@dev" or "1.x-dev", if available or
+   *   NULL if not.
    */
-  public function getVersionDev(): string {
-    return $this->data['version_dev'];
+  public function getVersionDev(string $core_version = NULL): ?string {
+    return $this->getVersion('version_dev', $core_version);
   }
 
   /**
    * Gets the recommended version constraint.
    *
-   * @return string
-   *   The recommended version constraint, e.g., "*" or "~1.0".
+   * @param string $core_version
+   *   The Drupal core version targeted.
+   *
+   * @return string|null
+   *   The recommended version constraint, e.g., "*" or "~1.0", if available or
+   *   NULL if not.
    */
-  public function getVersionRecommended(): string {
-    return $this->data['version'];
+  public function getVersionRecommended(string $core_version = NULL): ?string {
+    return $this->getVersion('version', $core_version);
   }
 
   /**
@@ -289,6 +345,42 @@ class Package {
       throw new \InvalidArgumentException("Invalid package name: {$package_name}. Must take the form 'vendor/project'.");
     }
     $this->packageName = $package_name;
+  }
+
+  /**
+   * Gets the package version for a given version of Drupal core.
+   *
+   * @param string $which
+   *   Which version to get, one of "version" or "version_dev".
+   * @param string|null $core_version
+   *   (Optional) The version of Drupal core to target, e.g., "8.7.0".
+   *
+   * @return string|null
+   *   The package version if available or NULL if not.
+   */
+  private function getVersion(string $which, string $core_version = NULL): ?string {
+    $match = $this->data[$which];
+
+    if (!$core_version) {
+      return $match;
+    }
+
+    foreach ($this->coreMatrix as $constraint => $data) {
+      if (!array_key_exists($which, $data)) {
+        continue;
+      }
+
+      $parser = new VersionParser();
+      $required = $parser->parseConstraints($constraint);
+      $provided = $parser->parseConstraints($core_version);
+
+      if ($required->matches($provided)) {
+        $match = $data[$which];
+        break;
+      }
+    }
+
+    return $match;
   }
 
 }

@@ -35,10 +35,7 @@ class SubextensionManagerTest extends TestCase {
       ->getAlterData()
       ->willReturn([]);
     $this->packageManager
-      ->getMultiple('drupal-module')
-      ->willReturn([]);
-    $this->packageManager
-      ->getMultiple('drupal-theme')
+      ->getAll()
       ->willReturn([]);
     /** @var \Acquia\Orca\Fixture\PackageManager $package_manager */
     $package_manager = $this->packageManager->reveal();

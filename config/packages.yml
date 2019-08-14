@@ -20,6 +20,13 @@
 # - "version_dev": (optional) The dev package version to require via Composer.
 #   Defaults to "*@dev". Any version string Composer understands is acceptable.
 #   @see https://getcomposer.org/doc/articles/versions.md
+# - "core_matrix": (optional) An array of package version mappings. Each mapping
+#   is keyed by a Drupal core version constraint, e.g., "8.7.x", with a value of
+#   an associative array optionally containing either or both of the "version"
+#   and "version_dev" key-value pairs to be used when the corresponding Drupal
+#   core version constraint is satisfied. Mappings are processed in order, and
+#   the first match wins.
+#   @see \Acquia\Orca\Tests\Fixture\PackageTest::testConditionalVersions
 # - "enable": (internal) TRUE if the package is a Drupal module that should be
 #   automatically enabled or FALSE if not. Defaults to TRUE for modules. Always
 #   FALSE for anything else.
@@ -61,14 +68,82 @@ drupal/cog:
 acquia/drupal-spec-tool:
   type: behat-extension
 
-drupal/lightning_api: []
+drupal/lightning_api:
+  core_matrix:
+    8.7.x:
+      version: 4.x
+      version_dev: 4.x-dev
+    8.6.x:
+      version: 3.x
+      version_dev: 3.x-dev
+    8.5.x:
+      version: 2.x
+      version_dev: 2.x-dev
+    8.4.x:
+      version: 1.x
+      version_dev: 1.x-dev
+    '*':
+      version: ~
+      version_dev: ~
 
-drupal/lightning_core: []
+drupal/lightning_core:
+  core_matrix:
+    8.7.x:
+      version: 4.x
+      version_dev: 4.x-dev
+    8.6.x:
+      version: 3.x
+      version_dev: 3.x-dev
+    8.5.x:
+      version: 2.x
+      version_dev: 2.x-dev
+    8.4.x:
+      version: 1.x
+      version_dev: 1.x-dev
+    '*':
+      version: ~
+      version_dev: ~
 
-drupal/lightning_layout: []
+drupal/lightning_layout:
+  core_matrix:
+    8.7.x:
+      version: 2.x
+      version_dev: 2.x-dev
+    8.6.x:
+      version: 1.x
+      version_dev: 1.x-dev
+    '*':
+      version: ~
+      version_dev: ~
 
-drupal/lightning_media: []
+drupal/lightning_media:
+  core_matrix:
+    8.6.x || 8.7.x:
+      version: 3.x
+      version_dev: 3.x-dev
+    8.5.x:
+      version: 2.x
+      version_dev: 2.x-dev
+    8.4.x:
+      version: 1.x
+      version_dev: 1.x-dev
+    '*':
+      version: ~
+      version_dev: ~
 
-drupal/lightning_workflow: []
+drupal/lightning_workflow:
+  core_matrix:
+    8.6.x || 8.7.x:
+      version: 3.x
+      version_dev: 3.x-dev
+    8.5.x:
+      version: 2.x
+      version_dev: 2.x-dev
+    8.4.x:
+      version: 1.x
+      version_dev: 1.x-dev
+    '*':
+      version: ~
+      version_dev: ~
 
 drupal/media_acquiadam: []
