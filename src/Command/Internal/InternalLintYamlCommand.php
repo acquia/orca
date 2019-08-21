@@ -7,7 +7,7 @@ use Symfony\Component\Yaml\Command\LintCommand;
 /**
  * Provides a command.
  */
-class DebugLintYamlCommand extends LintCommand {
+class InternalLintYamlCommand extends LintCommand {
 
   /**
    * The default command name.
