@@ -51,67 +51,24 @@ class DebugCoreVersionsCommand extends Command {
 
   /**
    * {@inheritdoc}
+   *
+   * @SuppressWarnings(PHPMD.StaticAccess)
    */
   public function execute(InputInterface $input, OutputInterface $output): int {
     $output->writeln('Getting version data via Composer. This takes a while.');
 
-    $overview = [
-      $this->getRow(DrupalCoreVersion::PREVIOUS_RELEASE),
-      $this->getRow(DrupalCoreVersion::PREVIOUS_DEV),
-      $this->getRow(DrupalCoreVersion::CURRENT_RECOMMENDED),
-      $this->getRow(DrupalCoreVersion::CURRENT_DEV),
-      $this->getRow(DrupalCoreVersion::NEXT_RELEASE),
-      $this->getRow(DrupalCoreVersion::NEXT_DEV),
-    ];
+    $overview = [];
+    foreach (DrupalCoreVersion::values() as $version) {
+      $overview[] = [
+        $version,
+        $this->drupalCoreVersionFinder->getPretty(new DrupalCoreVersion($version)),
+      ];
+    }
 
     (new StatusTable($output))
       ->setRows($overview)
       ->render();
     return StatusCodes::OK;
-  }
-
-  /**
-   * Gets a table row for a given version constant.
-   *
-   * @param string $core_version
-   *   The version constant.
-   *
-   * @return array
-   *   A table row.
-   */
-  private function getRow(string $core_version): array {
-    $row = [$core_version];
-    try {
-      switch ($core_version) {
-        case DrupalCoreVersion::PREVIOUS_RELEASE:
-          $row[] = $this->drupalCoreVersionFinder->getPreviousMinorRelease();
-          break;
-
-        case DrupalCoreVersion::PREVIOUS_DEV:
-          $row[] = $this->drupalCoreVersionFinder->getPreviousDevVersion();
-          break;
-
-        case DrupalCoreVersion::CURRENT_RECOMMENDED:
-          $row[] = $this->drupalCoreVersionFinder->getCurrentRecommendedRelease();
-          break;
-
-        case DrupalCoreVersion::CURRENT_DEV:
-          $row[] = $this->drupalCoreVersionFinder->getCurrentDevVersion();
-          break;
-
-        case DrupalCoreVersion::NEXT_RELEASE:
-          $row[] = $this->drupalCoreVersionFinder->getNextRelease();
-          break;
-
-        case DrupalCoreVersion::NEXT_DEV:
-          $row[] = $this->drupalCoreVersionFinder->getNextDevVersion();
-          break;
-      }
-    }
-    catch (\RuntimeException $e) {
-      $row[] = '~';
-    }
-    return $row;
   }
 
 }

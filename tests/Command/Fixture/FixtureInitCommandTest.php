@@ -42,18 +42,6 @@ class FixtureInitCommandTest extends CommandTestBase {
 
   protected function setUp() {
     $this->drupalCoreVersionFinder = $this->prophesize(DrupalCoreVersionFinder::class);
-    $this->drupalCoreVersionFinder
-      ->getPreviousMinorRelease()
-      ->willReturn(self::CORE_VALUE_LITERAL_PREVIOUS_RELEASE);
-    $this->drupalCoreVersionFinder
-      ->getCurrentRecommendedRelease()
-      ->willReturn(self::CORE_VALUE_LITERAL_CURRENT_RECOMMENDED);
-    $this->drupalCoreVersionFinder
-      ->getCurrentDevVersion()
-      ->willReturn(self::CORE_VALUE_LITERAL_CURRENT_DEV);
-    $this->drupalCoreVersionFinder
-      ->getNextRelease()
-      ->willReturn(self::CORE_VALUE_LITERAL_NEXT_RELEASE);
     $this->fixtureCreator = $this->prophesize(FixtureCreator::class);
     $this->fixtureRemover = $this->prophesize(FixtureRemover::class);
     $this->fixture = $this->prophesize(Fixture::class);
@@ -103,20 +91,16 @@ class FixtureInitCommandTest extends CommandTestBase {
       ->remove()
       ->shouldBeCalledTimes((int) in_array('remove', $methods_called));
     $this->drupalCoreVersionFinder
-      ->getPreviousMinorRelease()
+      ->get(new DrupalCoreVersion(DrupalCoreVersion::PREVIOUS_DEV))
       ->shouldBeCalledTimes((int) in_array('getPreviousMinorVersion', $methods_called))
       ->willReturn($drupal_core_version);
     $this->drupalCoreVersionFinder
-      ->getCurrentRecommendedRelease()
+      ->get(new DrupalCoreVersion(DrupalCoreVersion::CURRENT_RECOMMENDED))
       ->shouldBeCalledTimes((int) in_array('getCurrentRecommendedVersion', $methods_called))
       ->willReturn(self::CORE_VALUE_LITERAL_CURRENT_RECOMMENDED);
     $this->drupalCoreVersionFinder
-      ->getCurrentDevVersion()
+      ->get(new DrupalCoreVersion(DrupalCoreVersion::CURRENT_DEV))
       ->shouldBeCalledTimes((int) in_array('getCurrentDevVersion', $methods_called))
-      ->willReturn($drupal_core_version);
-    $this->drupalCoreVersionFinder
-      ->getNextRelease()
-      ->shouldBeCalledTimes((int) in_array('getLatestPreReleaseVersion', $methods_called))
       ->willReturn($drupal_core_version);
     $this->fixtureCreator
       ->setSut(@$args['--sut'])
@@ -166,6 +150,10 @@ class FixtureInitCommandTest extends CommandTestBase {
   }
 
   public function testNoOptions() {
+    $this->drupalCoreVersionFinder
+      ->get(new DrupalCoreVersion(DrupalCoreVersion::CURRENT_RECOMMENDED))
+      ->shouldBeCalledOnce()
+      ->willReturn(self::CORE_VALUE_LITERAL_CURRENT_RECOMMENDED);
     $this->versionParser = new VersionParser();
 
     $this->executeCommand();
@@ -175,6 +163,10 @@ class FixtureInitCommandTest extends CommandTestBase {
   }
 
   public function testBareOption() {
+    $this->drupalCoreVersionFinder
+      ->get(new DrupalCoreVersion(DrupalCoreVersion::CURRENT_RECOMMENDED))
+      ->shouldBeCalledOnce()
+      ->willReturn(self::CORE_VALUE_LITERAL_CURRENT_RECOMMENDED);
     $this->fixtureCreator
       ->setBare(TRUE)
       ->shouldBeCalledTimes(1);
@@ -215,31 +207,11 @@ class FixtureInitCommandTest extends CommandTestBase {
   /**
    * @dataProvider providerCoreOption
    */
-  public function testCoreOption($value, $options, $set_version) {
+  public function testCoreOption($value, $finder_calls, $options, $set_version) {
     $this->drupalCoreVersionFinder
-      ->getPreviousMinorRelease()
-      ->shouldBeCalledTimes((int) ($value === DrupalCoreVersion::PREVIOUS_RELEASE))
-      ->willReturn(self::CORE_VALUE_LITERAL_PREVIOUS_RELEASE);
-    $this->drupalCoreVersionFinder
-      ->getPreviousDevVersion()
-      ->shouldBeCalledTimes((int) ($value === DrupalCoreVersion::PREVIOUS_DEV))
-      ->willReturn(self::CORE_VALUE_LITERAL_PREVIOUS_DEV);
-    $this->drupalCoreVersionFinder
-      ->getCurrentRecommendedRelease()
-      ->shouldBeCalledTimes((int) ($value === DrupalCoreVersion::CURRENT_RECOMMENDED))
-      ->willReturn(self::CORE_VALUE_LITERAL_CURRENT_RECOMMENDED);
-    $this->drupalCoreVersionFinder
-      ->getCurrentDevVersion()
-      ->shouldBeCalledTimes((int) ($value === DrupalCoreVersion::CURRENT_DEV))
-      ->willReturn(self::CORE_VALUE_LITERAL_CURRENT_DEV);
-    $this->drupalCoreVersionFinder
-      ->getNextRelease()
-      ->shouldBeCalledTimes((int) ($value === DrupalCoreVersion::NEXT_RELEASE))
-      ->willReturn(self::CORE_VALUE_LITERAL_NEXT_RELEASE);
-    $this->drupalCoreVersionFinder
-      ->getNextDevVersion()
-      ->shouldBeCalledTimes((int) ($value === DrupalCoreVersion::NEXT_DEV))
-      ->willReturn(self::CORE_VALUE_LITERAL_NEXT_DEV);
+      ->get($value)
+      ->shouldBeCalledTimes($finder_calls)
+      ->willReturn($set_version);
     $this->fixtureCreator
       ->setDev(TRUE)
       ->shouldBeCalledTimes((int) isset($options['--dev']));
@@ -258,16 +230,16 @@ class FixtureInitCommandTest extends CommandTestBase {
 
   public function providerCoreOption() {
     return [
-      [DrupalCoreVersion::PREVIOUS_RELEASE, ['--core' => DrupalCoreVersion::PREVIOUS_RELEASE], self::CORE_VALUE_LITERAL_PREVIOUS_RELEASE],
-      [DrupalCoreVersion::PREVIOUS_DEV, ['--core' => DrupalCoreVersion::PREVIOUS_DEV], self::CORE_VALUE_LITERAL_PREVIOUS_DEV],
-      [DrupalCoreVersion::CURRENT_RECOMMENDED, ['--core' => DrupalCoreVersion::CURRENT_RECOMMENDED], self::CORE_VALUE_LITERAL_CURRENT_RECOMMENDED],
-      [DrupalCoreVersion::CURRENT_DEV, ['--core' => DrupalCoreVersion::CURRENT_DEV], self::CORE_VALUE_LITERAL_CURRENT_DEV],
-      [DrupalCoreVersion::NEXT_RELEASE, ['--core' => DrupalCoreVersion::NEXT_RELEASE], self::CORE_VALUE_LITERAL_NEXT_RELEASE],
-      [DrupalCoreVersion::NEXT_DEV, ['--core' => DrupalCoreVersion::NEXT_DEV], self::CORE_VALUE_LITERAL_NEXT_DEV],
-      [self::CORE_VALUE_LITERAL_PREVIOUS_RELEASE, ['--core' => self::CORE_VALUE_LITERAL_PREVIOUS_RELEASE], self::CORE_VALUE_LITERAL_PREVIOUS_RELEASE],
-      [self::CORE_VALUE_LITERAL_CURRENT_RECOMMENDED, ['--core' => self::CORE_VALUE_LITERAL_CURRENT_RECOMMENDED], self::CORE_VALUE_LITERAL_CURRENT_RECOMMENDED],
-      [self::CORE_VALUE_LITERAL_CURRENT_DEV, ['--core' => self::CORE_VALUE_LITERAL_CURRENT_DEV], self::CORE_VALUE_LITERAL_CURRENT_DEV],
-      [self::CORE_VALUE_LITERAL_NEXT_RELEASE, ['--core' => self::CORE_VALUE_LITERAL_NEXT_RELEASE], self::CORE_VALUE_LITERAL_NEXT_RELEASE],
+      [new DrupalCoreVersion(DrupalCoreVersion::PREVIOUS_RELEASE), 1, ['--core' => DrupalCoreVersion::PREVIOUS_RELEASE], self::CORE_VALUE_LITERAL_PREVIOUS_RELEASE],
+      [new DrupalCoreVersion(DrupalCoreVersion::PREVIOUS_DEV), 1, ['--core' => DrupalCoreVersion::PREVIOUS_DEV], self::CORE_VALUE_LITERAL_PREVIOUS_DEV],
+      [new DrupalCoreVersion(DrupalCoreVersion::CURRENT_RECOMMENDED), 1, ['--core' => DrupalCoreVersion::CURRENT_RECOMMENDED], self::CORE_VALUE_LITERAL_CURRENT_RECOMMENDED],
+      [new DrupalCoreVersion(DrupalCoreVersion::CURRENT_DEV), 1, ['--core' => DrupalCoreVersion::CURRENT_DEV], self::CORE_VALUE_LITERAL_CURRENT_DEV],
+      [new DrupalCoreVersion(DrupalCoreVersion::NEXT_RELEASE), 1, ['--core' => DrupalCoreVersion::NEXT_RELEASE], self::CORE_VALUE_LITERAL_NEXT_RELEASE],
+      [new DrupalCoreVersion(DrupalCoreVersion::NEXT_DEV), 1, ['--core' => DrupalCoreVersion::NEXT_DEV], self::CORE_VALUE_LITERAL_NEXT_DEV],
+      [self::CORE_VALUE_LITERAL_PREVIOUS_RELEASE, 0, ['--core' => self::CORE_VALUE_LITERAL_PREVIOUS_RELEASE], self::CORE_VALUE_LITERAL_PREVIOUS_RELEASE],
+      [self::CORE_VALUE_LITERAL_CURRENT_RECOMMENDED, 0, ['--core' => self::CORE_VALUE_LITERAL_CURRENT_RECOMMENDED], self::CORE_VALUE_LITERAL_CURRENT_RECOMMENDED],
+      [self::CORE_VALUE_LITERAL_CURRENT_DEV, 0, ['--core' => self::CORE_VALUE_LITERAL_CURRENT_DEV], self::CORE_VALUE_LITERAL_CURRENT_DEV],
+      [self::CORE_VALUE_LITERAL_NEXT_RELEASE, 0, ['--core' => self::CORE_VALUE_LITERAL_NEXT_RELEASE], self::CORE_VALUE_LITERAL_NEXT_RELEASE],
     ];
   }
 
@@ -306,6 +278,10 @@ class FixtureInitCommandTest extends CommandTestBase {
    * @dataProvider providerIgnorePatchFailureOption
    */
   public function testIgnorePatchFailureOption($options, $num_calls) {
+    $this->drupalCoreVersionFinder
+      ->get(new DrupalCoreVersion(DrupalCoreVersion::CURRENT_RECOMMENDED))
+      ->shouldBeCalledOnce()
+      ->willReturn(self::CORE_VALUE_LITERAL_CURRENT_RECOMMENDED);
     $this->fixtureCreator
       ->setComposerExitOnPatchFailure(FALSE)
       ->shouldBeCalledTimes($num_calls);
@@ -331,6 +307,10 @@ class FixtureInitCommandTest extends CommandTestBase {
 
   public function testFixtureCreationFailure() {
     $exception_message = 'Failed to create fixture.';
+    $this->drupalCoreVersionFinder
+      ->get(new DrupalCoreVersion(DrupalCoreVersion::CURRENT_RECOMMENDED))
+      ->shouldBeCalledOnce()
+      ->willReturn(self::CORE_VALUE_LITERAL_CURRENT_RECOMMENDED);
     $this->fixtureCreator
       ->setCoreVersion(self::CORE_VALUE_LITERAL_CURRENT_RECOMMENDED)
       ->shouldBeCalledTimes(1);
@@ -345,6 +325,10 @@ class FixtureInitCommandTest extends CommandTestBase {
   }
 
   public function testPreferSourceOption() {
+    $this->drupalCoreVersionFinder
+      ->get(new DrupalCoreVersion(DrupalCoreVersion::CURRENT_RECOMMENDED))
+      ->shouldBeCalledOnce()
+      ->willReturn(self::CORE_VALUE_LITERAL_CURRENT_RECOMMENDED);
     $this->fixtureCreator
       ->setCoreVersion(self::CORE_VALUE_LITERAL_CURRENT_RECOMMENDED)
       ->shouldBeCalledTimes(1);
@@ -365,6 +349,10 @@ class FixtureInitCommandTest extends CommandTestBase {
     $sut_name = 'drupal/example';
     $exception_message = 'Failed to create fixture.';
 
+    $this->drupalCoreVersionFinder
+      ->get(new DrupalCoreVersion(DrupalCoreVersion::CURRENT_RECOMMENDED))
+      ->shouldBeCalledOnce()
+      ->willReturn(self::CORE_VALUE_LITERAL_CURRENT_RECOMMENDED);
     $this->fixture->exists()
       ->willReturn(TRUE);
     $this->fixtureRemover
