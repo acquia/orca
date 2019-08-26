@@ -110,6 +110,8 @@ class FixtureInitCommand extends Command {
 
   /**
    * {@inheritdoc}
+   *
+   * @SuppressWarnings(PHPMD.StaticAccess)
    */
   protected function configure() {
     $this
@@ -124,16 +126,11 @@ class FixtureInitCommand extends Command {
 
       // Common options.
       ->addOption('bare', NULL, InputOption::VALUE_NONE, 'Omit all non-required Acquia packages')
-      ->addOption('core', NULL, InputOption::VALUE_REQUIRED, implode(PHP_EOL, [
-        'Change the version of Drupal core installed:',
-        sprintf('- %s: The latest release of the previous minor version, e.g., "8.5.14" if the current minor version is 8.6', DrupalCoreVersion::PREVIOUS_RELEASE),
-        sprintf('- %s: The development version of the previous minor version, e.g., "8.5.x-dev"', DrupalCoreVersion::PREVIOUS_DEV),
-        sprintf('- %s: The current recommended release, e.g., "8.6.14"', DrupalCoreVersion::CURRENT_RECOMMENDED),
-        sprintf('- %s: The current development version, e.g., "8.6.x-dev"', DrupalCoreVersion::CURRENT_DEV),
-        sprintf('- %s: The next release version if available, e.g., "8.7.0-beta2"', DrupalCoreVersion::NEXT_RELEASE),
-        sprintf('- %s: The next development version, e.g., "8.7.x-dev"', DrupalCoreVersion::NEXT_DEV),
-        '- Any version string Composer understands, see https://getcomposer.org/doc/articles/versions.md',
-      ]))
+      ->addOption('core', NULL, InputOption::VALUE_REQUIRED, implode(PHP_EOL, array_merge(
+        ['Change the version of Drupal core installed:'],
+        DrupalCoreVersion::commandHelp(),
+        ['- Any version string Composer understands, see https://getcomposer.org/doc/articles/versions.md']
+      )), DrupalCoreVersion::CURRENT_RECOMMENDED)
       ->addOption('dev', NULL, InputOption::VALUE_NONE, 'Use dev versions of Acquia packages')
       ->addOption('profile', NULL, InputOption::VALUE_REQUIRED, 'The Drupal installation profile to use, e.g., "lightning"', FixtureCreator::DEFAULT_PROFILE)
 
@@ -333,6 +330,8 @@ class FixtureInitCommand extends Command {
    *   The version string.
    * @param string|string[]|bool|null $dev
    *   The dev flag.
+   *
+   * @SuppressWarnings(PHPMD.StaticAccess)
    */
   private function setCore($version, $dev): void {
     if ($dev && !$version) {
@@ -343,31 +342,10 @@ class FixtureInitCommand extends Command {
       return;
     }
 
-    switch ($version) {
-      case DrupalCoreVersion::PREVIOUS_RELEASE:
-        $version = $this->drupalCoreVersionFinder->getPreviousMinorRelease();
-        break;
-
-      case DrupalCoreVersion::PREVIOUS_DEV:
-        $version = $this->drupalCoreVersionFinder->getPreviousDevVersion();
-        break;
-
-      case DrupalCoreVersion::CURRENT_RECOMMENDED:
-        $version = $this->drupalCoreVersionFinder->getCurrentRecommendedRelease();
-        break;
-
-      case DrupalCoreVersion::CURRENT_DEV:
-        $version = $this->drupalCoreVersionFinder->getCurrentDevVersion();
-        break;
-
-      case DrupalCoreVersion::NEXT_RELEASE:
-        $version = $this->drupalCoreVersionFinder->getNextRelease();
-        break;
-
-      case DrupalCoreVersion::NEXT_DEV:
-        $version = $this->drupalCoreVersionFinder->getNextDevVersion();
-        break;
+    if (DrupalCoreVersion::isValidKey($version)) {
+      $version = $this->drupalCoreVersionFinder->get(new DrupalCoreVersion($version));
     }
+
     $this->fixtureCreator->setCoreVersion($version);
   }
 

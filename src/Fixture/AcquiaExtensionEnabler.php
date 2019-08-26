@@ -33,6 +33,13 @@ class AcquiaExtensionEnabler {
   private $fixture;
 
   /**
+   * The fixture inspector.
+   *
+   * @var \Acquia\Orca\Fixture\FixtureInspector
+   */
+  private $fixtureInspector;
+
+  /**
    * The bare flag.
    *
    * @var bool
@@ -74,6 +81,8 @@ class AcquiaExtensionEnabler {
    *   The config loader.
    * @param \Acquia\Orca\Fixture\Fixture $fixture
    *   The fixture.
+   * @param \Acquia\Orca\Fixture\FixtureInspector $fixture_inspector
+   *   The fixture inspector.
    * @param \Symfony\Component\Console\Style\SymfonyStyle $output
    *   The output decorator.
    * @param \Acquia\Orca\Utility\ProcessRunner $process_runner
@@ -83,9 +92,10 @@ class AcquiaExtensionEnabler {
    * @param \Acquia\Orca\Fixture\SubextensionManager $subextension_manager
    *   The subextension manager.
    */
-  public function __construct(ConfigLoader $config_loader, Fixture $fixture, SymfonyStyle $output, ProcessRunner $process_runner, PackageManager $package_manager, SubextensionManager $subextension_manager) {
+  public function __construct(ConfigLoader $config_loader, Fixture $fixture, FixtureInspector $fixture_inspector, SymfonyStyle $output, ProcessRunner $process_runner, PackageManager $package_manager, SubextensionManager $subextension_manager) {
     $this->configLoader = $config_loader;
     $this->fixture = $fixture;
+    $this->fixtureInspector = $fixture_inspector;
     $this->output = $output;
     $this->processRunner = $process_runner;
     $this->packageManager = $package_manager;
@@ -176,13 +186,13 @@ class AcquiaExtensionEnabler {
   private function getAcquiaExtensionList(string $extension_type): array {
     $extension_list = [];
 
-    $top_level_packages = $this->packageManager->getMultiple();
+    $top_level_packages = $this->packageManager->getAll();
     if ($this->isSutOnly) {
       $top_level_packages = [$this->sut];
     }
 
     foreach ($top_level_packages as $package) {
-      if ($package->getType() === $extension_type) {
+      if ($this->shouldGetEnabled($package, $extension_type)) {
         $extension_list[] = $package->getProjectName();
       }
 
@@ -191,7 +201,7 @@ class AcquiaExtensionEnabler {
       }
 
       foreach ($this->subextensionManager->getByParent($package) as $subextension) {
-        if ($subextension->getType() !== $extension_type || !$subextension->shouldGetEnabled()) {
+        if (!$this->shouldGetEnabled($subextension, $extension_type)) {
           continue;
         }
         $extension_list[] = $subextension->getDrupalExtensionName();
@@ -199,6 +209,24 @@ class AcquiaExtensionEnabler {
     }
 
     return $extension_list;
+  }
+
+  /**
+   * Determines whether or not a given packages should get enabled.
+   *
+   * @param \Acquia\Orca\Fixture\Package $package
+   *   The package to consider.
+   * @param string $extension_type
+   *   The type of extension that should get enabled: ::TYPE_MODULE or
+   *   ::TYPE_THEME.
+   *
+   * @return bool
+   *   TRUE if the given package should be enabled or FALSE if not.
+   */
+  private function shouldGetEnabled(Package $package, string $extension_type): bool {
+    return $package->getType() === $extension_type
+      && $package->shouldGetEnabled()
+      && $this->fixtureInspector->getInstalledPackageVersion($package->getPackageName());
   }
 
 }

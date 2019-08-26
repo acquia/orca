@@ -217,7 +217,7 @@ class TestRunner {
   private function runNonSutTests(): void {
     $message = ($this->sut) ? 'Running public non-SUT tests' : 'Running all public tests';
     $this->output->title($message);
-    foreach ($this->packageManager->getMultiple() as $package) {
+    foreach ($this->packageManager->getAll() as $package) {
       if ($this->sut && $package->getPackageName() === $this->sut->getPackageName()) {
         continue;
       }

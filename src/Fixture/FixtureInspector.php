@@ -66,9 +66,9 @@ class FixtureInspector {
     $overview[] = ['System under test (SUT)', $this->getSutNamePretty()];
     $overview[] = ['Fixture type', $this->getFixtureType()];
     $overview[] = ['Package stability', $this->getPackageStabilitySetting()];
-    $overview[] = ['Drupal core version', $this->getInstalledPackageVersion('drupal/core')];
-    $overview[] = ['Drush version', $this->getInstalledPackageVersion('drush/drush')];
-    $overview[] = ['Drupal Console version', $this->getInstalledPackageVersion('drupal/console')];
+    $overview[] = ['Drupal core version', $this->getInstalledPackageVersionPretty('drupal/core')];
+    $overview[] = ['Drush version', $this->getInstalledPackageVersionPretty('drush/drush')];
+    $overview[] = ['Drupal Console version', $this->getInstalledPackageVersionPretty('drupal/console')];
 
     $overview = array_merge($overview, $this->getInstalledPackages());
 
@@ -173,14 +173,34 @@ class FixtureInspector {
    *   The installed version of the given package if available (e.g., "1.0.0")
    *   or a tilde (~) if not.
    */
-  public function getInstalledPackageVersion(string $package_name): string {
+  public function getInstalledPackageVersionPretty(string $package_name): string {
+    $version = $this->getInstalledPackageVersion($package_name);
+
+    if (!$version) {
+      return '~';
+    }
+
+    return $version;
+  }
+
+  /**
+   * Gets the installed version of a given package.
+   *
+   * @param string $package_name
+   *   The package name.
+   *
+   * @return string|null
+   *   The installed version of the given package if available (e.g., "1.0.0")
+   *   or NULL if not.
+   */
+  public function getInstalledPackageVersion(string $package_name): ?string {
     $packages = [];
     foreach ($this->getComposerLock()->get('packages') as $package) {
       $packages[$package['name']] = $package['version'];
     }
 
     if (!array_key_exists($package_name, $packages)) {
-      return '~';
+      return NULL;
     }
 
     return $packages[$package_name];
@@ -211,12 +231,12 @@ class FixtureInspector {
    */
   private function getInstalledPackages(): array {
     $packages = [new TableSeparator()];
-    foreach (array_keys($this->packageManager->getMultiple()) as $package_name) {
+    foreach (array_keys($this->packageManager->getAll()) as $package_name) {
       $label = $package_name;
       if ($package_name === $this->getSutName()) {
         $label = "{$package_name} *";
       }
-      $packages[] = [$label, $this->getInstalledPackageVersion($package_name)];
+      $packages[] = [$label, $this->getInstalledPackageVersionPretty($package_name)];
     }
     return $packages;
   }
