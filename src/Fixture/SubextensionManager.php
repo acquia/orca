@@ -70,10 +70,22 @@ class SubextensionManager {
     $this->filesystem = $filesystem;
     $this->fixture = $fixture;
     $this->alterData = $package_manager->getAlterData();
-    $this->topLevelExtensions = array_merge(
-      $package_manager->getMultiple('drupal-module'),
-      $package_manager->getMultiple('drupal-theme')
-    );
+    $this->initializeTopLevelExtensions($package_manager);
+  }
+
+  /**
+   * Initializes the top level extensions.
+   *
+   * @param \Acquia\Orca\Fixture\PackageManager $package_manager
+   *   The package manager.
+   */
+  public function initializeTopLevelExtensions(PackageManager $package_manager): void {
+    foreach ($package_manager->getAll() as $package_name => $package) {
+      if (!$package->isDrupalExtension()) {
+        continue;
+      }
+      $this->topLevelExtensions[$package_name] = $package;
+    }
   }
 
   /**

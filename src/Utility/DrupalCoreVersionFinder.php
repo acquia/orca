@@ -2,6 +2,7 @@
 
 namespace Acquia\Orca\Utility;
 
+use Acquia\Orca\Enum\DrupalCoreVersion;
 use Composer\DependencyResolver\Pool;
 use Composer\IO\NullIO;
 use Composer\Package\Version\VersionSelector;
@@ -34,6 +35,61 @@ class DrupalCoreVersionFinder {
   private $previousMinorRelease = '';
 
   /**
+   * Gets the Drupal core version for a given constant.
+   *
+   * @param \Acquia\Orca\Enum\DrupalCoreVersion $version
+   *   The Drupal core version constant.
+   *
+   * @return string
+   *   The corresponding version string.
+   *
+   * @throws \RuntimeException
+   *   If no corresponding version is found.
+   */
+  public function get(DrupalCoreVersion $version): string {
+    switch ($version->getValue()) {
+      case DrupalCoreVersion::PREVIOUS_RELEASE:
+        return $this->getPreviousMinorRelease();
+
+      case DrupalCoreVersion::PREVIOUS_DEV:
+        return $this->getPreviousDevVersion();
+
+      case DrupalCoreVersion::CURRENT_RECOMMENDED:
+        return $this->getCurrentRecommendedRelease();
+
+      case DrupalCoreVersion::CURRENT_DEV:
+        return $this->getCurrentDevVersion();
+
+      case DrupalCoreVersion::NEXT_RELEASE:
+        return $this->getNextRelease();
+
+      case DrupalCoreVersion::NEXT_DEV:
+        return $this->getNextDevVersion();
+
+      default:
+        throw new \LogicException(sprintf('Unknown version. Update %s:%s.', __CLASS__, __FUNCTION__));
+    }
+  }
+
+  /**
+   * Gets a formatted form of the Drupal core version for a given constant.
+   *
+   * @param \Acquia\Orca\Enum\DrupalCoreVersion $version
+   *   The Drupal core version constant.
+   *
+   * @return string
+   *   The corresponding version string if found or a tilde (~) if not.
+   */
+  public function getPretty(DrupalCoreVersion $version): string {
+    try {
+      return $this->get($version);
+    }
+    catch (\RuntimeException $e) {
+      return '~';
+    }
+  }
+
+  /**
    * Gets the latest release from the previous minor version.
    *
    * @return string
@@ -41,7 +97,7 @@ class DrupalCoreVersionFinder {
    *
    * @see \Acquia\Orca\Enum\DrupalCoreVersion::PREVIOUS_RELEASE
    */
-  public function getPreviousMinorRelease(): string {
+  private function getPreviousMinorRelease(): string {
     if ($this->previousMinorRelease) {
       return $this->previousMinorRelease;
     }
@@ -57,7 +113,7 @@ class DrupalCoreVersionFinder {
    *
    * @see \Acquia\Orca\Enum\DrupalCoreVersion::PREVIOUS_DEV
    */
-  public function getPreviousDevVersion(): string {
+  private function getPreviousDevVersion(): string {
     $previous_minor_version = floatval($this->getCurrentMinorVersion()) - 0.1;
     return "{$previous_minor_version}.x-dev";
   }
@@ -70,7 +126,7 @@ class DrupalCoreVersionFinder {
    *
    * @see \Acquia\Orca\Enum\DrupalCoreVersion::CURRENT_RECOMMENDED
    */
-  public function getCurrentRecommendedRelease(): string {
+  private function getCurrentRecommendedRelease(): string {
     if ($this->currentRecommendedRelease) {
       return $this->currentRecommendedRelease;
     }
@@ -86,7 +142,7 @@ class DrupalCoreVersionFinder {
    *
    * @see \Acquia\Orca\Enum\DrupalCoreVersion::CURRENT_DEV
    */
-  public function getCurrentDevVersion(): string {
+  private function getCurrentDevVersion(): string {
     return "{$this->getCurrentMinorVersion()}.x-dev";
   }
 
@@ -98,7 +154,7 @@ class DrupalCoreVersionFinder {
    *
    * @see \Acquia\Orca\Enum\DrupalCoreVersion::NEXT_RELEASE
    */
-  public function getNextRelease(): string {
+  private function getNextRelease(): string {
     if ($this->nextRelease) {
       return $this->nextRelease;
     }
@@ -114,7 +170,7 @@ class DrupalCoreVersionFinder {
    *
    * @see \Acquia\Orca\Enum\DrupalCoreVersion::NEXT_DEV
    */
-  public function getNextDevVersion(): string {
+  private function getNextDevVersion(): string {
     $previous_minor_version = floatval($this->getCurrentMinorVersion()) + 0.1;
     return "{$previous_minor_version}.x-dev";
   }

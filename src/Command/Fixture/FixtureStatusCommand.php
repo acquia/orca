@@ -3,8 +3,8 @@
 namespace Acquia\Orca\Command\Fixture;
 
 use Acquia\Orca\Command\StatusCodes;
-use Acquia\Orca\Fixture\FixtureInspector;
 use Acquia\Orca\Fixture\Fixture;
+use Acquia\Orca\Fixture\FixtureInspector;
 use Acquia\Orca\Utility\StatusTable;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;

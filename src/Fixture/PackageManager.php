@@ -104,6 +104,16 @@ class PackageManager {
   }
 
   /**
+   * Gets an array of all packages.
+   *
+   * @return \Acquia\Orca\Fixture\Package[]|string[]
+   *   An array of packages or package properties keyed by package name.
+   */
+  public function getAll(): array {
+    return $this->packages;
+  }
+
+  /**
    * Gets the packages config alter data.
    *
    * @return array
@@ -111,28 +121,6 @@ class PackageManager {
    */
   public function getAlterData(): array {
     return $this->alterData;
-  }
-
-  /**
-   * Gets an array of packages, optionally filtered by type.
-   *
-   * @param string|null $type
-   *   (Optional) A type to filter to, e.g., "drupal-module", or NULL to not
-   *   filter by type. Defaults to NULL.
-   *
-   * @return \Acquia\Orca\Fixture\Package[]|string[]
-   *   An array of packages or package properties keyed by package name.
-   */
-  public function getMultiple(?string $type = NULL): array {
-    $packages = [];
-    foreach ($this->packages as $package_name => $package) {
-      if ($type && $package->getType() !== $type) {
-        continue;
-      }
-
-      $packages[$package_name] = $package;
-    }
-    return $packages;
   }
 
   /**
@@ -155,10 +143,10 @@ class PackageManager {
       $data = array_merge($data, $this->alterData);
     }
     foreach ($data as $package_name => $datum) {
-      // Skipping a falsy datum provides for a package to be effectively removed
+      // Skipping a null datum provides for a package to be effectively removed
       // from the active specification at runtime by setting its value to NULL
       // in the packages configuration alter file.
-      if (!$datum) {
+      if (is_null($datum)) {
         continue;
       }
 

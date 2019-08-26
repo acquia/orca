@@ -25,14 +25,14 @@ language: php
 php: "7.2"
 
 addons:
-  # ChromeDriver is used by PHPUnit and Behat.
+  # Chrome is used via ChromeDriver by PHPUnit and Behat.
   chrome: stable
 
 cache:
   directories:
     - "$HOME/.composer/cache"
     - "$HOME/.drush/cache"
-    - "$TMPDIR/phpstan/cache"
+    - "${TMPDIR:-/tmp}/phpstan/cache"
 
 env:
   # Change the following values for your implementation.

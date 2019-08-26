@@ -4,14 +4,14 @@ namespace Acquia\Orca\Tests\Command\Fixture;
 
 use Acquia\Orca\Command\Fixture\FixtureInitCommand;
 use Acquia\Orca\Command\StatusCodes;
+use Acquia\Orca\Enum\DrupalCoreVersion;
 use Acquia\Orca\Exception\OrcaException;
-use Acquia\Orca\Fixture\PackageManager;
-use Acquia\Orca\Fixture\FixtureRemover;
 use Acquia\Orca\Fixture\Fixture;
 use Acquia\Orca\Fixture\FixtureCreator;
+use Acquia\Orca\Fixture\FixtureRemover;
+use Acquia\Orca\Fixture\PackageManager;
 use Acquia\Orca\Fixture\SutPreconditionsTester;
 use Acquia\Orca\Tests\Command\CommandTestBase;
-use Acquia\Orca\Enum\DrupalCoreVersion;
 use Acquia\Orca\Utility\DrupalCoreVersionFinder;
 use Composer\Semver\VersionParser;
 use Prophecy\Argument;
@@ -42,18 +42,6 @@ class FixtureInitCommandTest extends CommandTestBase {
 
   protected function setUp() {
     $this->drupalCoreVersionFinder = $this->prophesize(DrupalCoreVersionFinder::class);
-    $this->drupalCoreVersionFinder
-      ->getPreviousMinorRelease()
-      ->willReturn(self::CORE_VALUE_LITERAL_PREVIOUS_RELEASE);
-    $this->drupalCoreVersionFinder
-      ->getCurrentRecommendedRelease()
-      ->willReturn(self::CORE_VALUE_LITERAL_CURRENT_RECOMMENDED);
-    $this->drupalCoreVersionFinder
-      ->getCurrentDevVersion()
-      ->willReturn(self::CORE_VALUE_LITERAL_CURRENT_DEV);
-    $this->drupalCoreVersionFinder
-      ->getNextRelease()
-      ->willReturn(self::CORE_VALUE_LITERAL_NEXT_RELEASE);
     $this->fixtureCreator = $this->prophesize(FixtureCreator::class);
     $this->fixtureRemover = $this->prophesize(FixtureRemover::class);
     $this->fixture = $this->prophesize(Fixture::class);
@@ -103,20 +91,16 @@ class FixtureInitCommandTest extends CommandTestBase {
       ->remove()
       ->shouldBeCalledTimes((int) in_array('remove', $methods_called));
     $this->drupalCoreVersionFinder
-      ->getPreviousMinorRelease()
+      ->get(new DrupalCoreVersion(DrupalCoreVersion::PREVIOUS_DEV))
       ->shouldBeCalledTimes((int) in_array('getPreviousMinorVersion', $methods_called))
       ->willReturn($drupal_core_version);
     $this->drupalCoreVersionFinder
-      ->getCurrentRecommendedRelease()
+      ->get(new DrupalCoreVersion(DrupalCoreVersion::CURRENT_RECOMMENDED))
       ->shouldBeCalledTimes((int) in_array('getCurrentRecommendedVersion', $methods_called))
       ->willReturn(self::CORE_VALUE_LITERAL_CURRENT_RECOMMENDED);
     $this->drupalCoreVersionFinder
-      ->getCurrentDevVersion()
+      ->get(new DrupalCoreVersion(DrupalCoreVersion::CURRENT_DEV))
       ->shouldBeCalledTimes((int) in_array('getCurrentDevVersion', $methods_called))
-      ->willReturn($drupal_core_version);
-    $this->drupalCoreVersionFinder
-      ->getNextRelease()
-      ->shouldBeCalledTimes((int) in_array('getLatestPreReleaseVersion', $methods_called))
       ->willReturn($drupal_core_version);
     $this->fixtureCreator
       ->setSut(@$args['--sut'])
@@ -151,21 +135,25 @@ class FixtureInitCommandTest extends CommandTestBase {
 
   public function providerCommand() {
     return [
-      [TRUE, [], ['Fixture::exists'], NULL, StatusCodes::ERROR, sprintf("Error: Fixture already exists at %s.\nHint: Use the \"--force\" option to remove it and proceed.\n", self::FIXTURE_ROOT)],
-      [TRUE, ['-f' => TRUE], ['Fixture::exists', 'remove', 'create'], NULL, StatusCodes::OK, ''],
-      [FALSE, [], ['Fixture::exists', 'create'], NULL, StatusCodes::OK, ''],
+      [TRUE, [], ['Fixture::exists', 'getCurrentRecommendedVersion', 'setCoreVersion'], NULL, StatusCodes::ERROR, sprintf("Error: Fixture already exists at %s.\nHint: Use the \"--force\" option to remove it and proceed.\n", self::FIXTURE_ROOT)],
+      [TRUE, ['-f' => TRUE], ['Fixture::exists', 'remove', 'create', 'getCurrentRecommendedVersion', 'setCoreVersion'], NULL, StatusCodes::OK, ''],
+      [FALSE, [], ['Fixture::exists', 'create', 'getCurrentRecommendedVersion', 'setCoreVersion'], NULL, StatusCodes::OK, ''],
       [FALSE, ['--sut' => self::INVALID_PACKAGE], ['PackageManager::exists'], NULL, StatusCodes::ERROR, sprintf("Error: Invalid value for \"--sut\" option: \"%s\".\n", self::INVALID_PACKAGE)],
-      [FALSE, ['--sut' => self::VALID_PACKAGE], ['PackageManager::exists', 'Fixture::exists', 'create', 'setSut'], NULL, StatusCodes::OK, ''],
-      [FALSE, ['--sut' => self::VALID_PACKAGE, '--sut-only' => TRUE], ['PackageManager::exists', 'Fixture::exists', 'create', 'setSut', 'setSutOnly'], NULL, StatusCodes::OK, ''],
-      [FALSE, ['--dev' => TRUE], ['Fixture::exists', 'setDev', 'getCurrentDevVersion', 'setCoreVersion', 'create'], self::CORE_VALUE_LITERAL_CURRENT_DEV, StatusCodes::OK, ''],
-      [FALSE, ['--no-site-install' => TRUE], ['Fixture::exists', 'setInstallSite', 'create'], NULL, StatusCodes::OK, ''],
-      [FALSE, ['--no-sqlite' => TRUE], ['Fixture::exists', 'setSqlite', 'create'], NULL, StatusCodes::OK, ''],
-      [FALSE, ['--profile' => 'lightning'], ['Fixture::exists', 'setProfile', 'create'], NULL, StatusCodes::OK, ''],
+      [FALSE, ['--sut' => self::VALID_PACKAGE], ['PackageManager::exists', 'Fixture::exists', 'getCurrentRecommendedVersion', 'setCoreVersion', 'setSut', 'create'], NULL, StatusCodes::OK, ''],
+      [FALSE, ['--sut' => self::VALID_PACKAGE, '--sut-only' => TRUE], ['PackageManager::exists', 'Fixture::exists', 'getCurrentRecommendedVersion', 'setCoreVersion', 'setSut', 'setSutOnly', 'create'], NULL, StatusCodes::OK, ''],
+      [FALSE, ['--dev' => TRUE], ['Fixture::exists', 'setDev', 'getCurrentRecommendedVersion', 'setCoreVersion', 'create'], self::CORE_VALUE_LITERAL_CURRENT_RECOMMENDED, StatusCodes::OK, ''],
+      [FALSE, ['--no-site-install' => TRUE], ['Fixture::exists', 'getCurrentRecommendedVersion', 'setCoreVersion', 'setInstallSite', 'create'], NULL, StatusCodes::OK, ''],
+      [FALSE, ['--no-sqlite' => TRUE], ['Fixture::exists', 'getCurrentRecommendedVersion', 'setCoreVersion', 'setSqlite', 'create'], NULL, StatusCodes::OK, ''],
+      [FALSE, ['--profile' => 'lightning'], ['Fixture::exists', 'getCurrentRecommendedVersion', 'setCoreVersion', 'setProfile', 'create'], NULL, StatusCodes::OK, ''],
       [FALSE, ['--sut-only' => TRUE], [], NULL, StatusCodes::ERROR, "Error: Cannot create a SUT-only fixture without a SUT.\nHint: Use the \"--sut\" option to specify the SUT.\n"],
     ];
   }
 
   public function testNoOptions() {
+    $this->drupalCoreVersionFinder
+      ->get(new DrupalCoreVersion(DrupalCoreVersion::CURRENT_RECOMMENDED))
+      ->shouldBeCalledOnce()
+      ->willReturn(self::CORE_VALUE_LITERAL_CURRENT_RECOMMENDED);
     $this->versionParser = new VersionParser();
 
     $this->executeCommand();
@@ -175,8 +163,15 @@ class FixtureInitCommandTest extends CommandTestBase {
   }
 
   public function testBareOption() {
+    $this->drupalCoreVersionFinder
+      ->get(new DrupalCoreVersion(DrupalCoreVersion::CURRENT_RECOMMENDED))
+      ->shouldBeCalledOnce()
+      ->willReturn(self::CORE_VALUE_LITERAL_CURRENT_RECOMMENDED);
     $this->fixtureCreator
       ->setBare(TRUE)
+      ->shouldBeCalledTimes(1);
+    $this->fixtureCreator
+      ->setCoreVersion(self::CORE_VALUE_LITERAL_CURRENT_RECOMMENDED)
       ->shouldBeCalledTimes(1);
     $this->fixtureCreator
       ->create()
@@ -212,31 +207,11 @@ class FixtureInitCommandTest extends CommandTestBase {
   /**
    * @dataProvider providerCoreOption
    */
-  public function testCoreOption($value, $options, $set_version) {
+  public function testCoreOption($value, $finder_calls, $options, $set_version) {
     $this->drupalCoreVersionFinder
-      ->getPreviousMinorRelease()
-      ->shouldBeCalledTimes((int) ($value === DrupalCoreVersion::PREVIOUS_RELEASE))
-      ->willReturn(self::CORE_VALUE_LITERAL_PREVIOUS_RELEASE);
-    $this->drupalCoreVersionFinder
-      ->getPreviousDevVersion()
-      ->shouldBeCalledTimes((int) ($value === DrupalCoreVersion::PREVIOUS_DEV))
-      ->willReturn(self::CORE_VALUE_LITERAL_PREVIOUS_DEV);
-    $this->drupalCoreVersionFinder
-      ->getCurrentRecommendedRelease()
-      ->shouldBeCalledTimes((int) ($value === DrupalCoreVersion::CURRENT_RECOMMENDED))
-      ->willReturn(self::CORE_VALUE_LITERAL_CURRENT_RECOMMENDED);
-    $this->drupalCoreVersionFinder
-      ->getCurrentDevVersion()
-      ->shouldBeCalledTimes((int) ($value === DrupalCoreVersion::CURRENT_DEV))
-      ->willReturn(self::CORE_VALUE_LITERAL_CURRENT_DEV);
-    $this->drupalCoreVersionFinder
-      ->getNextRelease()
-      ->shouldBeCalledTimes((int) ($value === DrupalCoreVersion::NEXT_RELEASE))
-      ->willReturn(self::CORE_VALUE_LITERAL_NEXT_RELEASE);
-    $this->drupalCoreVersionFinder
-      ->getNextDevVersion()
-      ->shouldBeCalledTimes((int) ($value === DrupalCoreVersion::NEXT_DEV))
-      ->willReturn(self::CORE_VALUE_LITERAL_NEXT_DEV);
+      ->get($value)
+      ->shouldBeCalledTimes($finder_calls)
+      ->willReturn($set_version);
     $this->fixtureCreator
       ->setDev(TRUE)
       ->shouldBeCalledTimes((int) isset($options['--dev']));
@@ -255,17 +230,16 @@ class FixtureInitCommandTest extends CommandTestBase {
 
   public function providerCoreOption() {
     return [
-      [DrupalCoreVersion::PREVIOUS_RELEASE, ['--core' => DrupalCoreVersion::PREVIOUS_RELEASE], self::CORE_VALUE_LITERAL_PREVIOUS_RELEASE],
-      [DrupalCoreVersion::PREVIOUS_DEV, ['--core' => DrupalCoreVersion::PREVIOUS_DEV], self::CORE_VALUE_LITERAL_PREVIOUS_DEV],
-      [DrupalCoreVersion::CURRENT_RECOMMENDED, ['--core' => DrupalCoreVersion::CURRENT_RECOMMENDED], self::CORE_VALUE_LITERAL_CURRENT_RECOMMENDED],
-      [DrupalCoreVersion::CURRENT_DEV, ['--core' => DrupalCoreVersion::CURRENT_DEV], self::CORE_VALUE_LITERAL_CURRENT_DEV],
-      [DrupalCoreVersion::CURRENT_DEV, ['--dev' => TRUE], self::CORE_VALUE_LITERAL_CURRENT_DEV],
-      [DrupalCoreVersion::NEXT_RELEASE, ['--core' => DrupalCoreVersion::NEXT_RELEASE], self::CORE_VALUE_LITERAL_NEXT_RELEASE],
-      [DrupalCoreVersion::NEXT_DEV, ['--core' => DrupalCoreVersion::NEXT_DEV], self::CORE_VALUE_LITERAL_NEXT_DEV],
-      [self::CORE_VALUE_LITERAL_PREVIOUS_RELEASE, ['--core' => self::CORE_VALUE_LITERAL_PREVIOUS_RELEASE], self::CORE_VALUE_LITERAL_PREVIOUS_RELEASE],
-      [self::CORE_VALUE_LITERAL_CURRENT_RECOMMENDED, ['--core' => self::CORE_VALUE_LITERAL_CURRENT_RECOMMENDED], self::CORE_VALUE_LITERAL_CURRENT_RECOMMENDED],
-      [self::CORE_VALUE_LITERAL_CURRENT_DEV, ['--core' => self::CORE_VALUE_LITERAL_CURRENT_DEV], self::CORE_VALUE_LITERAL_CURRENT_DEV],
-      [self::CORE_VALUE_LITERAL_NEXT_RELEASE, ['--core' => self::CORE_VALUE_LITERAL_NEXT_RELEASE], self::CORE_VALUE_LITERAL_NEXT_RELEASE],
+      [new DrupalCoreVersion(DrupalCoreVersion::PREVIOUS_RELEASE), 1, ['--core' => DrupalCoreVersion::PREVIOUS_RELEASE], self::CORE_VALUE_LITERAL_PREVIOUS_RELEASE],
+      [new DrupalCoreVersion(DrupalCoreVersion::PREVIOUS_DEV), 1, ['--core' => DrupalCoreVersion::PREVIOUS_DEV], self::CORE_VALUE_LITERAL_PREVIOUS_DEV],
+      [new DrupalCoreVersion(DrupalCoreVersion::CURRENT_RECOMMENDED), 1, ['--core' => DrupalCoreVersion::CURRENT_RECOMMENDED], self::CORE_VALUE_LITERAL_CURRENT_RECOMMENDED],
+      [new DrupalCoreVersion(DrupalCoreVersion::CURRENT_DEV), 1, ['--core' => DrupalCoreVersion::CURRENT_DEV], self::CORE_VALUE_LITERAL_CURRENT_DEV],
+      [new DrupalCoreVersion(DrupalCoreVersion::NEXT_RELEASE), 1, ['--core' => DrupalCoreVersion::NEXT_RELEASE], self::CORE_VALUE_LITERAL_NEXT_RELEASE],
+      [new DrupalCoreVersion(DrupalCoreVersion::NEXT_DEV), 1, ['--core' => DrupalCoreVersion::NEXT_DEV], self::CORE_VALUE_LITERAL_NEXT_DEV],
+      [self::CORE_VALUE_LITERAL_PREVIOUS_RELEASE, 0, ['--core' => self::CORE_VALUE_LITERAL_PREVIOUS_RELEASE], self::CORE_VALUE_LITERAL_PREVIOUS_RELEASE],
+      [self::CORE_VALUE_LITERAL_CURRENT_RECOMMENDED, 0, ['--core' => self::CORE_VALUE_LITERAL_CURRENT_RECOMMENDED], self::CORE_VALUE_LITERAL_CURRENT_RECOMMENDED],
+      [self::CORE_VALUE_LITERAL_CURRENT_DEV, 0, ['--core' => self::CORE_VALUE_LITERAL_CURRENT_DEV], self::CORE_VALUE_LITERAL_CURRENT_DEV],
+      [self::CORE_VALUE_LITERAL_NEXT_RELEASE, 0, ['--core' => self::CORE_VALUE_LITERAL_NEXT_RELEASE], self::CORE_VALUE_LITERAL_NEXT_RELEASE],
     ];
   }
 
@@ -304,9 +278,16 @@ class FixtureInitCommandTest extends CommandTestBase {
    * @dataProvider providerIgnorePatchFailureOption
    */
   public function testIgnorePatchFailureOption($options, $num_calls) {
+    $this->drupalCoreVersionFinder
+      ->get(new DrupalCoreVersion(DrupalCoreVersion::CURRENT_RECOMMENDED))
+      ->shouldBeCalledOnce()
+      ->willReturn(self::CORE_VALUE_LITERAL_CURRENT_RECOMMENDED);
     $this->fixtureCreator
       ->setComposerExitOnPatchFailure(FALSE)
       ->shouldBeCalledTimes($num_calls);
+    $this->fixtureCreator
+      ->setCoreVersion(self::CORE_VALUE_LITERAL_CURRENT_RECOMMENDED)
+      ->shouldBeCalledTimes(1);
     $this->fixtureCreator
       ->create()
       ->shouldBeCalledTimes(1);
@@ -326,7 +307,13 @@ class FixtureInitCommandTest extends CommandTestBase {
 
   public function testFixtureCreationFailure() {
     $exception_message = 'Failed to create fixture.';
-
+    $this->drupalCoreVersionFinder
+      ->get(new DrupalCoreVersion(DrupalCoreVersion::CURRENT_RECOMMENDED))
+      ->shouldBeCalledOnce()
+      ->willReturn(self::CORE_VALUE_LITERAL_CURRENT_RECOMMENDED);
+    $this->fixtureCreator
+      ->setCoreVersion(self::CORE_VALUE_LITERAL_CURRENT_RECOMMENDED)
+      ->shouldBeCalledTimes(1);
     $this->fixtureCreator
       ->create(Argument::any())
       ->willThrow(new OrcaException($exception_message));
@@ -338,6 +325,13 @@ class FixtureInitCommandTest extends CommandTestBase {
   }
 
   public function testPreferSourceOption() {
+    $this->drupalCoreVersionFinder
+      ->get(new DrupalCoreVersion(DrupalCoreVersion::CURRENT_RECOMMENDED))
+      ->shouldBeCalledOnce()
+      ->willReturn(self::CORE_VALUE_LITERAL_CURRENT_RECOMMENDED);
+    $this->fixtureCreator
+      ->setCoreVersion(self::CORE_VALUE_LITERAL_CURRENT_RECOMMENDED)
+      ->shouldBeCalledTimes(1);
     $this->fixtureCreator
       ->setPreferSource(TRUE)
       ->shouldBeCalledTimes(1);
@@ -355,6 +349,10 @@ class FixtureInitCommandTest extends CommandTestBase {
     $sut_name = 'drupal/example';
     $exception_message = 'Failed to create fixture.';
 
+    $this->drupalCoreVersionFinder
+      ->get(new DrupalCoreVersion(DrupalCoreVersion::CURRENT_RECOMMENDED))
+      ->shouldBeCalledOnce()
+      ->willReturn(self::CORE_VALUE_LITERAL_CURRENT_RECOMMENDED);
     $this->fixture->exists()
       ->willReturn(TRUE);
     $this->fixtureRemover

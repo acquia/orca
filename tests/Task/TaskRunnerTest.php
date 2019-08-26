@@ -3,10 +3,10 @@
 namespace Acquia\Orca\Tests\Task;
 
 use Acquia\Orca\Command\StatusCodes;
-use Acquia\Orca\Task\TestFramework\BehatTask;
 use Acquia\Orca\Task\StaticAnalysisTool\PhpLintTask;
 use Acquia\Orca\Task\TaskInterface;
 use Acquia\Orca\Task\TaskRunner;
+use Acquia\Orca\Task\TestFramework\BehatTask;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Style\SymfonyStyle;
 

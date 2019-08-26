@@ -2,9 +2,9 @@
 
 namespace Acquia\Orca\Tests\Server;
 
+use Acquia\Orca\Fixture\Fixture;
 use Acquia\Orca\Server\ChromeDriverServer;
 use Acquia\Orca\Server\WebServer;
-use Acquia\Orca\Fixture\Fixture;
 use Acquia\Orca\Utility\ProcessRunner;
 use PHPUnit\Framework\TestCase;
 

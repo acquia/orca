@@ -2,10 +2,10 @@
 
 namespace Acquia\Orca\Tests\Command\Fixture;
 
-use Acquia\Orca\Command\StatusCodes;
 use Acquia\Orca\Command\Fixture\FixtureRmCommand;
-use Acquia\Orca\Fixture\FixtureRemover;
+use Acquia\Orca\Command\StatusCodes;
 use Acquia\Orca\Fixture\Fixture;
+use Acquia\Orca\Fixture\FixtureRemover;
 use Acquia\Orca\Tests\Command\CommandTestBase;
 use Symfony\Component\Console\Command\Command;
 

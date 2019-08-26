@@ -78,10 +78,7 @@ class QaFixerCommand extends Command {
    */
   protected function configure() {
     $this
-      ->setAliases([
-        'fix',
-        'phpcbf',
-      ])
+      ->setAliases(['fix'])
       ->setDescription('Fixes issues found by static analysis tools')
       ->setHelp('Tools can be specified individually or in combination. If none are specified, all will be run.')
       ->addArgument('path', InputArgument::REQUIRED, 'The path to fix issues in')
