@@ -53,6 +53,8 @@ drupal/acquia_lift:
 
 drupal/acquia_purge: []
 
+#drupal/acquia_search_solr: []
+
 #drupal/acsf: []
 
 acquia/blt:
