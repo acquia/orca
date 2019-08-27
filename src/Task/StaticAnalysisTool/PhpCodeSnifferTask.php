@@ -69,7 +69,7 @@ class PhpCodeSnifferTask extends TaskBase {
       'phpcs',
       '-s',
       realpath($this->getPath()),
-    ], __DIR__);
+    ], "{$this->projectDir}/resources");
   }
 
   /**
@@ -84,7 +84,7 @@ class PhpCodeSnifferTask extends TaskBase {
       '--report=json',
       sprintf('--report-file=%s/%s', $this->projectDir, self::JSON_LOG_PATH),
       realpath($this->getPath()),
-    ], __DIR__);
+    ], "{$this->projectDir}/resources");
   }
 
 }

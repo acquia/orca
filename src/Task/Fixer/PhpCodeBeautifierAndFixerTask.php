@@ -29,15 +29,11 @@ class PhpCodeBeautifierAndFixerTask extends TaskBase {
    * {@inheritdoc}
    */
   public function execute(): void {
-    $this->overrideConfig();
     try {
       $this->runPhpcbf();
     }
     catch (ProcessFailedException $e) {
       throw new TaskFailureException();
-    }
-    finally {
-      $this->restoreConfig();
     }
   }
 
@@ -45,25 +41,7 @@ class PhpCodeBeautifierAndFixerTask extends TaskBase {
    * Runs phpcbf.
    */
   public function runPhpcbf(): void {
-    $this->processRunner->runOrcaVendorBin(['phpcbf'], $this->getPath());
-  }
-
-  /**
-   * Overrides the active configuration.
-   */
-  public function overrideConfig(): void {
-    $this->configFileOverrider->setPaths(
-      "{$this->projectDir}/phpcs.xml.dist",
-      "{$this->getPath()}/phpcs.xml"
-    );
-    $this->configFileOverrider->override();
-  }
-
-  /**
-   * Restores the previous configuration.
-   */
-  public function restoreConfig(): void {
-    $this->configFileOverrider->restore();
+    $this->processRunner->runOrcaVendorBin(['phpcbf'], "{$this->projectDir}/resources");
   }
 
 }
