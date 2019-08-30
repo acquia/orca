@@ -33,13 +33,6 @@ class AcquiaExtensionEnabler {
   private $fixture;
 
   /**
-   * The fixture inspector.
-   *
-   * @var \Acquia\Orca\Fixture\FixtureInspector
-   */
-  private $fixtureInspector;
-
-  /**
    * The bare flag.
    *
    * @var bool
@@ -81,8 +74,6 @@ class AcquiaExtensionEnabler {
    *   The config loader.
    * @param \Acquia\Orca\Fixture\Fixture $fixture
    *   The fixture.
-   * @param \Acquia\Orca\Fixture\FixtureInspector $fixture_inspector
-   *   The fixture inspector.
    * @param \Symfony\Component\Console\Style\SymfonyStyle $output
    *   The output decorator.
    * @param \Acquia\Orca\Utility\ProcessRunner $process_runner
@@ -92,10 +83,9 @@ class AcquiaExtensionEnabler {
    * @param \Acquia\Orca\Fixture\SubextensionManager $subextension_manager
    *   The subextension manager.
    */
-  public function __construct(ConfigLoader $config_loader, Fixture $fixture, FixtureInspector $fixture_inspector, SymfonyStyle $output, ProcessRunner $process_runner, PackageManager $package_manager, SubextensionManager $subextension_manager) {
+  public function __construct(ConfigLoader $config_loader, Fixture $fixture, SymfonyStyle $output, ProcessRunner $process_runner, PackageManager $package_manager, SubextensionManager $subextension_manager) {
     $this->configLoader = $config_loader;
     $this->fixture = $fixture;
-    $this->fixtureInspector = $fixture_inspector;
     $this->output = $output;
     $this->processRunner = $process_runner;
     $this->packageManager = $package_manager;
@@ -225,8 +215,7 @@ class AcquiaExtensionEnabler {
    */
   private function shouldGetEnabled(Package $package, string $extension_type): bool {
     return $package->getType() === $extension_type
-      && $package->shouldGetEnabled()
-      && $this->fixtureInspector->getInstalledPackageVersion($package->getPackageName());
+      && $package->shouldGetEnabled();
   }
 
 }

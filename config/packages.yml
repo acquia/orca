@@ -53,6 +53,8 @@ drupal/acquia_lift:
 
 drupal/acquia_purge: []
 
+#drupal/acquia_search_solr: []
+
 #drupal/acsf: []
 
 acquia/blt:
@@ -65,8 +67,13 @@ acquia/coding-standards:
 drupal/cog:
   type: drupal-theme
 
+#drupal/cog_tools: []
+
 acquia/drupal-spec-tool:
   type: behat-extension
+
+drupal/lightning:
+  type: drupal-profile
 
 drupal/lightning_api:
   core_matrix:
@@ -85,6 +92,9 @@ drupal/lightning_api:
     '*':
       version: ~
       version_dev: ~
+
+#acquia/lightning_commerce:
+#  type: drupal-profile
 
 drupal/lightning_core:
   core_matrix:

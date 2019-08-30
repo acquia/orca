@@ -157,7 +157,7 @@ class PhpStanTask {
     $command = [
       'phpstan',
       'analyse',
-      sprintf('--configuration=%s/phpstan.neon', __DIR__),
+      "--configuration={$this->projectDir}/resources/phpstan.neon",
     ];
     if ($this->sut) {
       $command[] = $this->sut->getInstallPathAbsolute();
