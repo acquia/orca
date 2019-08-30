@@ -67,6 +67,8 @@ acquia/coding-standards:
 drupal/cog:
   type: drupal-theme
 
+#drupal/cog_tools: []
+
 acquia/drupal-spec-tool:
   type: behat-extension
 
@@ -90,6 +92,9 @@ drupal/lightning_api:
     '*':
       version: ~
       version_dev: ~
+
+#acquia/lightning_commerce:
+#  type: drupal-profile
 
 drupal/lightning_core:
   core_matrix:
