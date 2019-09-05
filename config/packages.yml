@@ -72,8 +72,8 @@ drupal/cog:
 acquia/drupal-spec-tool:
   type: behat-extension
 
-drupal/lightning:
-  type: drupal-profile
+#drupal/lightning:
+#  type: drupal-profile
 
 drupal/lightning_api:
   core_matrix:

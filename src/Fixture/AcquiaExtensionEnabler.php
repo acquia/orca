@@ -6,6 +6,7 @@ use Acquia\Orca\Utility\ConfigLoader;
 use Acquia\Orca\Utility\ProcessRunner;
 use Acquia\Orca\Utility\SutSettingsTrait;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\Filesystem\Filesystem;
 
 /**
  * Installs Acquia Drupal extensions.
@@ -24,6 +25,13 @@ class AcquiaExtensionEnabler {
    * @var \Acquia\Orca\Utility\ConfigLoader
    */
   private $configLoader;
+
+  /**
+   * The filesystem.
+   *
+   * @var \Symfony\Component\Filesystem\Filesystem
+   */
+  private $filesystem;
 
   /**
    * The fixture.
@@ -72,6 +80,8 @@ class AcquiaExtensionEnabler {
    *
    * @param \Acquia\Orca\Utility\ConfigLoader $config_loader
    *   The config loader.
+   * @param \Symfony\Component\Filesystem\Filesystem $filesystem
+   *   The filesystem.
    * @param \Acquia\Orca\Fixture\Fixture $fixture
    *   The fixture.
    * @param \Symfony\Component\Console\Style\SymfonyStyle $output
@@ -83,8 +93,9 @@ class AcquiaExtensionEnabler {
    * @param \Acquia\Orca\Fixture\SubextensionManager $subextension_manager
    *   The subextension manager.
    */
-  public function __construct(ConfigLoader $config_loader, Fixture $fixture, SymfonyStyle $output, ProcessRunner $process_runner, PackageManager $package_manager, SubextensionManager $subextension_manager) {
+  public function __construct(ConfigLoader $config_loader, Filesystem $filesystem, Fixture $fixture, SymfonyStyle $output, ProcessRunner $process_runner, PackageManager $package_manager, SubextensionManager $subextension_manager) {
     $this->configLoader = $config_loader;
+    $this->filesystem = $filesystem;
     $this->fixture = $fixture;
     $this->output = $output;
     $this->processRunner = $process_runner;
@@ -215,7 +226,8 @@ class AcquiaExtensionEnabler {
    */
   private function shouldGetEnabled(Package $package, string $extension_type): bool {
     return $package->getType() === $extension_type
-      && $package->shouldGetEnabled();
+      && $package->shouldGetEnabled()
+      && $this->filesystem->exists($package->getInstallPathAbsolute());
   }
 
 }
