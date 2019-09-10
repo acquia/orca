@@ -41,7 +41,10 @@ class PhpCodeBeautifierAndFixerTask extends TaskBase {
    * Runs phpcbf.
    */
   public function runPhpcbf(): void {
-    $this->processRunner->runOrcaVendorBin(['phpcbf'], "{$this->projectDir}/resources");
+    $this->processRunner->runOrcaVendorBin([
+      'phpcbf',
+      realpath($this->getPath()),
+    ], "{$this->projectDir}/resources");
   }
 
 }
