@@ -2,8 +2,8 @@
 
 namespace Acquia\Orca\Command\Debug;
 
-use Acquia\Orca\Command\StatusCodes;
 use Acquia\Orca\Enum\DrupalCoreVersion;
+use Acquia\Orca\Enum\StatusCode;
 use Acquia\Orca\Fixture\PackageManager;
 use Acquia\Orca\Utility\DrupalCoreVersionFinder;
 use Composer\Semver\VersionParser;
@@ -101,14 +101,14 @@ class DebugPackagesCommand extends Command {
         sprintf('Error: Invalid value for "core" option: "%s".', $argument),
         sprintf('Hint: Acceptable values are "%s", or any version string Composer understands.', implode('", "', DrupalCoreVersion::values())),
       ]);
-      return StatusCodes::ERROR;
+      return StatusCode::ERROR;
     }
 
     (new Table($output))
       ->setHeaders($this->getHeaders())
       ->setRows($this->getRows())
       ->render();
-    return StatusCodes::OK;
+    return StatusCode::OK;
   }
 
   /**

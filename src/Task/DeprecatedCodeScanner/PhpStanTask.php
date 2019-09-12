@@ -2,7 +2,7 @@
 
 namespace Acquia\Orca\Task\DeprecatedCodeScanner;
 
-use Acquia\Orca\Command\StatusCodes;
+use Acquia\Orca\Enum\StatusCode;
 use Acquia\Orca\Fixture\Fixture;
 use Acquia\Orca\Fixture\PackageManager;
 use Acquia\Orca\Log\TelemetryClient;
@@ -61,7 +61,7 @@ class PhpStanTask {
    *
    * @var int
    */
-  private $status = StatusCodes::OK;
+  private $status = StatusCode::OK;
 
   /**
    * The SUT to scan.
@@ -131,7 +131,7 @@ class PhpStanTask {
       $this->runCommand();
     }
     catch (ProcessFailedException $e) {
-      $this->status = StatusCodes::ERROR;
+      $this->status = StatusCode::ERROR;
     }
     $this->logResults();
     return $this->status;

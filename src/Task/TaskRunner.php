@@ -2,7 +2,7 @@
 
 namespace Acquia\Orca\Task;
 
-use Acquia\Orca\Command\StatusCodes;
+use Acquia\Orca\Enum\StatusCode;
 use Acquia\Orca\Exception\TaskFailureException;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
@@ -77,7 +77,7 @@ class TaskRunner {
    *   The last task's exit status code.
    */
   public function run(): int {
-    $status = StatusCodes::OK;
+    $status = StatusCode::OK;
     foreach ($this->tasks as $task) {
       try {
         $this->output->section($task->statusMessage());
@@ -87,14 +87,14 @@ class TaskRunner {
         $failure = $task->label();
         $this->output->block($failure, 'FAILURE', 'fg=white;bg=red');
         $this->failures[] = $failure;
-        $status = StatusCodes::ERROR;
+        $status = StatusCode::ERROR;
       }
     }
 
     if ($this->failures) {
       $this->output->block(implode(PHP_EOL, $this->failures), 'FAILURES', 'fg=white;bg=red', ' ', TRUE);
       $this->output->writeln('');
-      return StatusCodes::ERROR;
+      return StatusCode::ERROR;
     }
 
     $this->output->success('Passed');

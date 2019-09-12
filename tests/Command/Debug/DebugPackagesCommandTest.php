@@ -3,8 +3,8 @@
 namespace Acquia\Orca\Tests\Command\Debug;
 
 use Acquia\Orca\Command\Debug\DebugPackagesCommand;
-use Acquia\Orca\Command\StatusCodes;
 use Acquia\Orca\Enum\DrupalCoreVersion;
+use Acquia\Orca\Enum\StatusCode;
 use Acquia\Orca\Fixture\Package;
 use Acquia\Orca\Fixture\PackageManager;
 use Acquia\Orca\Tests\Command\CommandTestBase;
@@ -61,7 +61,7 @@ class DebugPackagesCommandTest extends CommandTestBase {
 | Example 2 | drupal-module | docroot/modules/contrib/example2 | ../example2 | ~1.0    | 1.x-dev     | yes    |
 +-----------+---------------+----------------------------------+-------------+---------+-------------+--------+
 "), $this->getDisplay(), 'Displayed correct output.');
-    $this->assertEquals(StatusCodes::OK, $this->getStatusCode(), 'Returned correct status code.');
+    $this->assertEquals(StatusCode::OK, $this->getStatusCode(), 'Returned correct status code.');
   }
 
   /**
@@ -90,7 +90,7 @@ class DebugPackagesCommandTest extends CommandTestBase {
 
     $this->executeCommand(['core' => $argument]);
 
-    $this->assertEquals(StatusCodes::OK, $this->getStatusCode(), 'Returned correct status code.');
+    $this->assertEquals(StatusCode::OK, $this->getStatusCode(), 'Returned correct status code.');
   }
 
   public function providerValidArguments() {
@@ -110,7 +110,7 @@ class DebugPackagesCommandTest extends CommandTestBase {
     $error_message = sprintf('Error: Invalid value for "core" option: "%s".', $version) . PHP_EOL
       . 'Hint: Acceptable values are "PREVIOUS_RELEASE", "PREVIOUS_DEV", "CURRENT_RECOMMENDED", "CURRENT_DEV", "NEXT_RELEASE", "NEXT_DEV", or any version string Composer understands.' . PHP_EOL;
     $this->assertEquals($error_message, $this->getDisplay(), 'Displayed correct output.');
-    $this->assertEquals(StatusCodes::ERROR, $this->getStatusCode(), 'Returned correct status code.');
+    $this->assertEquals(StatusCode::ERROR, $this->getStatusCode(), 'Returned correct status code.');
   }
 
   public function providerInvalidArguments() {

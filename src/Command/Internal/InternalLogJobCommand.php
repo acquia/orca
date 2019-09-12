@@ -2,7 +2,7 @@
 
 namespace Acquia\Orca\Command\Internal;
 
-use Acquia\Orca\Command\StatusCodes;
+use Acquia\Orca\Enum\StatusCode;
 use Acquia\Orca\Enum\TelemetryEventName;
 use Acquia\Orca\Log\TelemetryClient;
 use Acquia\Orca\Log\TelemetryEventPropertiesBuilder;
@@ -74,7 +74,7 @@ class InternalLogJobCommand extends Command {
         'Notice: Nothing logged. Telemetry is disabled.',
         'Hint: https://github.com/acquia/orca/blob/master/docs/advanced-usage.md#ORCA_TELEMETRY_ENABLE',
       ]);
-      return StatusCodes::OK;
+      return StatusCode::OK;
     }
 
     $name = $this->getEventName((bool) $input->getOption('test'));
@@ -82,12 +82,12 @@ class InternalLogJobCommand extends Command {
 
     if ($simulate) {
       $output->write(print_r($properties, TRUE));
-      return StatusCodes::OK;
+      return StatusCode::OK;
     }
 
     $this->telemetryClient->logEvent($name->getValue(), $properties);
 
-    return StatusCodes::OK;
+    return StatusCode::OK;
   }
 
   /**

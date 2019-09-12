@@ -2,7 +2,7 @@
 
 namespace Acquia\Orca\Command\Qa;
 
-use Acquia\Orca\Command\StatusCodes;
+use Acquia\Orca\Enum\StatusCode;
 use Acquia\Orca\Task\Fixer\ComposerNormalizeTask;
 use Acquia\Orca\Task\Fixer\PhpCodeBeautifierAndFixerTask;
 use Acquia\Orca\Task\TaskRunner;
@@ -93,7 +93,7 @@ class QaFixerCommand extends Command {
     $path = $input->getArgument('path');
     if (!$this->filesystem->exists($path)) {
       $output->writeln(sprintf('Error: No such path: %s.', $path));
-      return StatusCodes::ERROR;
+      return StatusCode::ERROR;
     }
     $this->configureTaskRunner($input);
     return $this->taskRunner

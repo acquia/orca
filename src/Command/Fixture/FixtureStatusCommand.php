@@ -2,7 +2,7 @@
 
 namespace Acquia\Orca\Command\Fixture;
 
-use Acquia\Orca\Command\StatusCodes;
+use Acquia\Orca\Enum\StatusCode;
 use Acquia\Orca\Fixture\Fixture;
 use Acquia\Orca\Fixture\FixtureInspector;
 use Acquia\Orca\Utility\StatusTable;
@@ -65,14 +65,14 @@ class FixtureStatusCommand extends Command {
   public function execute(InputInterface $input, OutputInterface $output): int {
     if (!$this->fixture->exists()) {
       $output->writeln("Error: No fixture exists at {$this->fixture->getPath()}.");
-      return StatusCodes::ERROR;
+      return StatusCode::ERROR;
     }
 
     (new StatusTable($output))
       ->setRows($this->fixtureInspector->getOverview())
       ->render();
 
-    return StatusCodes::OK;
+    return StatusCode::OK;
   }
 
 }

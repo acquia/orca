@@ -2,8 +2,8 @@
 
 namespace Acquia\Orca\Command\Fixture;
 
-use Acquia\Orca\Command\StatusCodes;
 use Acquia\Orca\Enum\DrupalCoreVersion;
+use Acquia\Orca\Enum\StatusCode;
 use Acquia\Orca\Exception\OrcaException;
 use Acquia\Orca\Fixture\Fixture;
 use Acquia\Orca\Fixture\FixtureCreator;
@@ -153,7 +153,7 @@ class FixtureInitCommand extends Command {
     $core = $input->getOption('core');
 
     if (!$this->isValidInput($sut, $sut_only, $bare, $core, $output)) {
-      return StatusCodes::ERROR;
+      return StatusCode::ERROR;
     }
 
     $this->setSut($sut);
@@ -175,7 +175,7 @@ class FixtureInitCommand extends Command {
             "Error: Fixture already exists at {$this->fixture->getPath()}.",
             'Hint: Use the "--force" option to remove it and proceed.',
           ]);
-          return StatusCodes::ERROR;
+          return StatusCode::ERROR;
         }
         $this->fixtureRemover->remove();
       }
@@ -184,10 +184,10 @@ class FixtureInitCommand extends Command {
     catch (OrcaException $e) {
       (new SymfonyStyle($input, $output))
         ->error($e->getMessage());
-      return StatusCodes::ERROR;
+      return StatusCode::ERROR;
     }
 
-    return StatusCodes::OK;
+    return StatusCode::OK;
   }
 
   /**

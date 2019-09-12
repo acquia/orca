@@ -2,7 +2,7 @@
 
 namespace Acquia\Orca\Command\Fixture;
 
-use Acquia\Orca\Command\StatusCodes;
+use Acquia\Orca\Enum\StatusCode;
 use Acquia\Orca\Fixture\Fixture;
 use Acquia\Orca\Server\WebServer;
 use Symfony\Component\Console\Command\Command;
@@ -67,7 +67,7 @@ class FixtureRunServerCommand extends Command {
         "Error: No fixture exists at {$this->fixture->getPath()}.",
         'Hint: Use the "fixture:init" command to create one.',
       ]);
-      return StatusCodes::ERROR;
+      return StatusCode::ERROR;
     }
 
     $output->writeln('Starting web server...');
@@ -81,7 +81,7 @@ class FixtureRunServerCommand extends Command {
     // Wait for SIGINT (Ctrl-C) to kill process.
     $this->webServer->wait();
 
-    return StatusCodes::OK;
+    return StatusCode::OK;
   }
 
 }

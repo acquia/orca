@@ -3,7 +3,7 @@
 namespace Acquia\Orca\Tests\Command\Qa;
 
 use Acquia\Orca\Command\Qa\QaAutomatedTestsCommand;
-use Acquia\Orca\Command\StatusCodes;
+use Acquia\Orca\Enum\StatusCode;
 use Acquia\Orca\Exception\OrcaException;
 use Acquia\Orca\Fixture\Fixture;
 use Acquia\Orca\Fixture\PackageManager;
@@ -82,14 +82,14 @@ class QaAutomatedTestsCommandTest extends CommandTestBase {
 
   public function providerCommand() {
     return [
-      [FALSE, [], ['Fixture::exists'], 0, StatusCodes::ERROR, sprintf("Error: No fixture exists at %s.\nHint: Use the \"fixture:init\" command to create one.\n", self::FIXTURE_ROOT)],
-      [TRUE, [], ['Fixture::exists', 'run'], 0, StatusCodes::OK, ''],
-      [TRUE, ['--sut' => self::INVALID_PACKAGE], ['PackageManager::exists'], 0, StatusCodes::ERROR, sprintf("Error: Invalid value for \"--sut\" option: \"%s\".\n", self::INVALID_PACKAGE)],
-      [TRUE, ['--sut' => self::VALID_PACKAGE], ['PackageManager::exists', 'Fixture::exists', 'run', 'setSut'], 0, StatusCodes::OK, ''],
-      [TRUE, ['--sut' => self::VALID_PACKAGE, '--sut-only' => TRUE], ['PackageManager::exists', 'Fixture::exists', 'run', 'setSut', 'setSutOnly'], 0, StatusCodes::OK, ''],
-      [TRUE, ['--no-servers' => TRUE], ['Fixture::exists', 'run', 'setRunServers'], 0, StatusCodes::OK, ''],
-      [TRUE, [], ['Fixture::exists', 'run'], 1, StatusCodes::ERROR, ''],
-      [TRUE, ['--sut-only' => TRUE], [], 0, StatusCodes::ERROR, "Error: Cannot run SUT-only tests without a SUT.\nHint: Use the \"--sut\" option to specify the SUT.\n"],
+      [FALSE, [], ['Fixture::exists'], 0, StatusCode::ERROR, sprintf("Error: No fixture exists at %s.\nHint: Use the \"fixture:init\" command to create one.\n", self::FIXTURE_ROOT)],
+      [TRUE, [], ['Fixture::exists', 'run'], 0, StatusCode::OK, ''],
+      [TRUE, ['--sut' => self::INVALID_PACKAGE], ['PackageManager::exists'], 0, StatusCode::ERROR, sprintf("Error: Invalid value for \"--sut\" option: \"%s\".\n", self::INVALID_PACKAGE)],
+      [TRUE, ['--sut' => self::VALID_PACKAGE], ['PackageManager::exists', 'Fixture::exists', 'run', 'setSut'], 0, StatusCode::OK, ''],
+      [TRUE, ['--sut' => self::VALID_PACKAGE, '--sut-only' => TRUE], ['PackageManager::exists', 'Fixture::exists', 'run', 'setSut', 'setSutOnly'], 0, StatusCode::OK, ''],
+      [TRUE, ['--no-servers' => TRUE], ['Fixture::exists', 'run', 'setRunServers'], 0, StatusCode::OK, ''],
+      [TRUE, [], ['Fixture::exists', 'run'], 1, StatusCode::ERROR, ''],
+      [TRUE, ['--sut-only' => TRUE], [], 0, StatusCode::ERROR, "Error: Cannot run SUT-only tests without a SUT.\nHint: Use the \"--sut\" option to specify the SUT.\n"],
     ];
   }
 

@@ -3,7 +3,7 @@
 namespace Acquia\Orca\Tests\Command\Qa;
 
 use Acquia\Orca\Command\Qa\QaFixerCommand;
-use Acquia\Orca\Command\StatusCodes;
+use Acquia\Orca\Enum\StatusCode;
 use Acquia\Orca\Task\Fixer\ComposerNormalizeTask;
 use Acquia\Orca\Task\Fixer\PhpCodeBeautifierAndFixerTask;
 use Acquia\Orca\Task\TaskRunner;
@@ -73,9 +73,9 @@ class QaFixerCommandTest extends CommandTestBase {
 
   public function providerCommand() {
     return [
-      [TRUE, 1, StatusCodes::OK, ''],
-      [TRUE, 1, StatusCodes::ERROR, ''],
-      [FALSE, 0, StatusCodes::ERROR, sprintf("Error: No such path: %s.\n", self::SUT_PATH)],
+      [TRUE, 1, StatusCode::OK, ''],
+      [TRUE, 1, StatusCode::ERROR, ''],
+      [FALSE, 0, StatusCode::ERROR, sprintf("Error: No such path: %s.\n", self::SUT_PATH)],
     ];
   }
 
@@ -99,12 +99,12 @@ class QaFixerCommandTest extends CommandTestBase {
     $this->taskRunner
       ->run()
       ->shouldBeCalledTimes(1)
-      ->willReturn(StatusCodes::OK);
+      ->willReturn(StatusCode::OK);
 
     $this->executeCommand($args);
 
     $this->assertEquals('', $this->getDisplay(), 'Displayed correct output.');
-    $this->assertEquals(StatusCodes::OK, $this->getStatusCode(), 'Returned correct status code.');
+    $this->assertEquals(StatusCode::OK, $this->getStatusCode(), 'Returned correct status code.');
   }
 
   public function providerTaskFiltering() {

@@ -2,7 +2,7 @@
 
 namespace Acquia\Orca\Tests\Task;
 
-use Acquia\Orca\Command\StatusCodes;
+use Acquia\Orca\Enum\StatusCode;
 use Acquia\Orca\Task\StaticAnalysisTool\PhpLintTask;
 use Acquia\Orca\Task\TaskInterface;
 use Acquia\Orca\Task\TaskRunner;
@@ -43,7 +43,7 @@ class TaskRunnerTest extends TestCase {
     (clone($runner))->run();
 
     $this->assertInstanceOf(TaskRunner::class, $runner, 'Instantiated class.');
-    $this->assertEquals(StatusCodes::OK, $status_code, 'Returned a "success" status code.');
+    $this->assertEquals(StatusCode::OK, $status_code, 'Returned a "success" status code.');
   }
 
   protected function setTaskExpectations($class): TaskInterface {

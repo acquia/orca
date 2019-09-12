@@ -3,7 +3,7 @@
 namespace Acquia\Orca\Tests\Command\Qa;
 
 use Acquia\Orca\Command\Qa\QaDeprecatedCodeScanCommand;
-use Acquia\Orca\Command\StatusCodes;
+use Acquia\Orca\Enum\StatusCode;
 use Acquia\Orca\Fixture\Fixture;
 use Acquia\Orca\Fixture\PackageManager;
 use Acquia\Orca\Task\DeprecatedCodeScanner\PhpStanTask;
@@ -73,12 +73,12 @@ class QaDeprecatedCodeScanCommandTest extends CommandTestBase {
 
   public function providerCommand() {
     return [
-      [TRUE, [], [], StatusCodes::ERROR, "Error: Nothing to do.\nHint: Use the \"--sut\" and \"--contrib\" options to specify what to scan.\n"],
-      [FALSE, ['--sut' => self::VALID_PACKAGE], ['PackageManager::exists', 'Fixture::exists'], StatusCodes::ERROR, sprintf("Error: No fixture exists at %s.\nHint: Use the \"fixture:init\" command to create one.\n", self::FIXTURE_ROOT)],
-      [TRUE, ['--sut' => self::INVALID_PACKAGE], ['PackageManager::exists'], StatusCodes::ERROR, sprintf("Error: Invalid value for \"--sut\" option: \"%s\".\n", self::INVALID_PACKAGE)],
-      [TRUE, ['--sut' => self::VALID_PACKAGE], ['PackageManager::exists', 'Fixture::exists', 'setSut', 'execute'], StatusCodes::OK, ''],
-      [TRUE, ['--contrib' => TRUE], ['Fixture::exists', 'setScanContrib', 'execute'], StatusCodes::OK, ''],
-      [TRUE, ['--sut' => self::VALID_PACKAGE, '--contrib' => TRUE], ['PackageManager::exists', 'Fixture::exists', 'setSut', 'setScanContrib', 'execute'], StatusCodes::OK, ''],
+      [TRUE, [], [], StatusCode::ERROR, "Error: Nothing to do.\nHint: Use the \"--sut\" and \"--contrib\" options to specify what to scan.\n"],
+      [FALSE, ['--sut' => self::VALID_PACKAGE], ['PackageManager::exists', 'Fixture::exists'], StatusCode::ERROR, sprintf("Error: No fixture exists at %s.\nHint: Use the \"fixture:init\" command to create one.\n", self::FIXTURE_ROOT)],
+      [TRUE, ['--sut' => self::INVALID_PACKAGE], ['PackageManager::exists'], StatusCode::ERROR, sprintf("Error: Invalid value for \"--sut\" option: \"%s\".\n", self::INVALID_PACKAGE)],
+      [TRUE, ['--sut' => self::VALID_PACKAGE], ['PackageManager::exists', 'Fixture::exists', 'setSut', 'execute'], StatusCode::OK, ''],
+      [TRUE, ['--contrib' => TRUE], ['Fixture::exists', 'setScanContrib', 'execute'], StatusCode::OK, ''],
+      [TRUE, ['--sut' => self::VALID_PACKAGE, '--contrib' => TRUE], ['PackageManager::exists', 'Fixture::exists', 'setSut', 'setScanContrib', 'execute'], StatusCode::OK, ''],
     ];
   }
 

@@ -2,8 +2,8 @@
 
 namespace Acquia\Orca\Command\Debug;
 
-use Acquia\Orca\Command\StatusCodes;
 use Acquia\Orca\Enum\DrupalCoreVersion;
+use Acquia\Orca\Enum\StatusCode;
 use Acquia\Orca\Utility\DrupalCoreVersionFinder;
 use Acquia\Orca\Utility\StatusTable;
 use Symfony\Component\Console\Command\Command;
@@ -68,7 +68,7 @@ class DebugCoreVersionsCommand extends Command {
     (new StatusTable($output))
       ->setRows($overview)
       ->render();
-    return StatusCodes::OK;
+    return StatusCode::OK;
   }
 
 }
