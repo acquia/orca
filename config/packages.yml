@@ -16,10 +16,12 @@
 #   e.g., "../example" for a "drupal/example" project.
 # - "version": (optional) The recommended package version to require via
 #   Composer. Defaults to "*". Any version string Composer understands is
-#   acceptable. @see https://getcomposer.org/doc/articles/versions.md
+#   acceptable. @see https://getcomposer.org/doc/articles/versions.md A null
+#   value (~) causes the package to be omitted.
 # - "version_dev": (optional) The dev package version to require via Composer.
 #   Defaults to "*@dev". Any version string Composer understands is acceptable.
-#   @see https://getcomposer.org/doc/articles/versions.md
+#   @see https://getcomposer.org/doc/articles/versions.md A null value (~)
+#   causes the package to be omitted.
 # - "core_matrix": (optional) An array of package version mappings. Each mapping
 #   is keyed by a Drupal core version constraint, e.g., "8.7.x", with a value of
 #   an associative array optionally containing either or both of the "version"
