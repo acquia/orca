@@ -28,13 +28,6 @@ class FixtureCreator {
   const DEFAULT_PROFILE = 'minimal';
 
   /**
-   * The Acquia extension enabler.
-   *
-   * @var \Acquia\Orca\Fixture\AcquiaExtensionEnabler
-   */
-  private $acquiaExtensionEnabler;
-
-  /**
    * The Composer exit on patch failure flag.
    *
    * @var bool
@@ -140,6 +133,13 @@ class FixtureCreator {
   private $profile = self::DEFAULT_PROFILE;
 
   /**
+   * The site installer.
+   *
+   * @var \Acquia\Orca\Fixture\SiteInstaller
+   */
+  private $siteInstaller;
+
+  /**
    * The subextension manager.
    *
    * @var \Acquia\Orca\Fixture\SubextensionManager
@@ -163,14 +163,14 @@ class FixtureCreator {
   /**
    * Constructs an instance.
    *
-   * @param \Acquia\Orca\Fixture\AcquiaExtensionEnabler $acquia_extension_enabler
-   *   The Acquia extension enabler.
    * @param \Acquia\Orca\Fixture\Fixture $fixture
    *   The fixture.
    * @param \Acquia\Orca\Fixture\FixtureConfigurer $fixture_configurer
    *   The fixture configurer.
    * @param \Acquia\Orca\Fixture\FixtureInspector $fixture_inspector
    *   The fixture inspector.
+   * @param \Acquia\Orca\Fixture\SiteInstaller $site_installer
+   *   The site installer.
    * @param \Symfony\Component\Console\Style\SymfonyStyle $output
    *   The output decorator.
    * @param \Acquia\Orca\Utility\ProcessRunner $process_runner
@@ -182,14 +182,14 @@ class FixtureCreator {
    * @param \Composer\Package\Version\VersionGuesser $version_guesser
    *   The Composer version guesser.
    */
-  public function __construct(AcquiaExtensionEnabler $acquia_extension_enabler, Fixture $fixture, FixtureConfigurer $fixture_configurer, FixtureInspector $fixture_inspector, SymfonyStyle $output, ProcessRunner $process_runner, PackageManager $package_manager, SubextensionManager $subextension_manager, VersionGuesser $version_guesser) {
-    $this->acquiaExtensionEnabler = $acquia_extension_enabler;
+  public function __construct(Fixture $fixture, FixtureConfigurer $fixture_configurer, FixtureInspector $fixture_inspector, SiteInstaller $site_installer, SymfonyStyle $output, ProcessRunner $process_runner, PackageManager $package_manager, SubextensionManager $subextension_manager, VersionGuesser $version_guesser) {
     $this->fixture = $fixture;
     $this->fixtureConfigurer = $fixture_configurer;
     $this->fixtureInspector = $fixture_inspector;
     $this->output = $output;
     $this->processRunner = $process_runner;
     $this->packageManager = $package_manager;
+    $this->siteInstaller = $site_installer;
     $this->subextensionManager = $subextension_manager;
     $this->versionGuesser = $version_guesser;
   }
@@ -211,9 +211,8 @@ class FixtureCreator {
     $this->addComposerExtraData();
     $this->installCloudHooks();
     $this->ensureDrupalSettings();
-    $this->installDrupal();
+    $this->installSite();
     $this->setUpFilesDirectories();
-    $this->enableAcquiaExtensions();
     $this->createAndCheckoutBackupTag();
     $this->fixtureConfigurer->removeTemporaryLocalGitConfig();
     $this->displayStatus();
@@ -919,28 +918,20 @@ PHP;
   }
 
   /**
-   * Installs Drupal.
+   * Installs the site.
+   *
+   * Installs Drupal and enables Acquia extensions.
+   *
+   * @throws \Exception
    */
-  private function installDrupal(): void {
+  private function installSite(): void {
     if (!$this->installSite) {
       return;
     }
 
-    $this->output->section('Installing Drupal');
-    $this->processRunner->runFixtureVendorBin([
-      'drush',
-      'site:install',
-      $this->profile,
-      "install_configure_form.update_status_module='[FALSE,FALSE]'",
-      'install_configure_form.enable_update_status_module=NULL',
-      '--site-name=ORCA',
-      '--account-name=admin',
-      '--account-pass=admin',
-      '--no-interaction',
-      '--verbose',
-      '--ansi',
-    ]);
-    $this->commitCodeChanges('Installed Drupal.');
+    $this->output->section('Installing site');
+    $this->siteInstaller->install($this->profile);
+    $this->commitCodeChanges('Installed site.');
   }
 
   /**
@@ -967,30 +958,6 @@ PHP;
       '-R',
       '0770',
     ], $directories));
-  }
-
-  /**
-   * Enables the Acquia Drupal extensions.
-   *
-   * @throws \Exception
-   */
-  private function enableAcquiaExtensions(): void {
-    if (!$this->installSite) {
-      return;
-    }
-
-    if ($this->isBare) {
-      return;
-    }
-
-    if ($this->isSutOnly && !$this->sut->isDrupalExtension()) {
-      // No extensions to enable because the fixture is SUT-only and the SUT is
-      // not a Drupal extension.
-      return;
-    }
-
-    $this->acquiaExtensionEnabler->enable();
-    $this->commitCodeChanges('Enabled Acquia extensions.');
   }
 
   /**
