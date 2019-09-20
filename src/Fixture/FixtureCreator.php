@@ -25,7 +25,7 @@ class FixtureCreator {
 
   use SutSettingsTrait;
 
-  const DEFAULT_PROFILE = 'minimal';
+  const DEFAULT_PROFILE = 'testing';
 
   /**
    * The Composer exit on patch failure flag.
