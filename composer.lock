@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a664218c77b7351ad6825a259b092aef",
+    "content-hash": "d68590d14e045343a7af5c02238212da",
     "packages": [
         {
             "name": "acquia/coding-standards",
@@ -1195,16 +1195,16 @@
         },
         {
             "name": "hassankhan/config",
-            "version": "2.0.2",
+            "version": "v2.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/hassankhan/config.git",
-                "reference": "d30cdc72d37a592e856e9f1b62e29a03b049d785"
+                "reference": "16fa4d3320ac9bb611dda0c8ea980edb58d227c9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/hassankhan/config/zipball/d30cdc72d37a592e856e9f1b62e29a03b049d785",
-                "reference": "d30cdc72d37a592e856e9f1b62e29a03b049d785",
+                "url": "https://api.github.com/repos/hassankhan/config/zipball/16fa4d3320ac9bb611dda0c8ea980edb58d227c9",
+                "reference": "16fa4d3320ac9bb611dda0c8ea980edb58d227c9",
                 "shasum": ""
             },
             "require": {
@@ -1249,7 +1249,7 @@
                 "yaml",
                 "yml"
             ],
-            "time": "2019-04-06T17:34:30+00:00"
+            "time": "2019-09-01T15:51:42+00:00"
         },
         {
             "name": "jakub-onderka/php-console-color",
