@@ -25,7 +25,7 @@ class FixtureCreator {
 
   use SutSettingsTrait;
 
-  const DEFAULT_PROFILE = 'testing';
+  const DEFAULT_PROFILE = 'orca';
 
   /**
    * The Composer exit on patch failure flag.

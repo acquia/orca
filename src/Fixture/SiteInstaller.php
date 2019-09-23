@@ -37,6 +37,13 @@ class SiteInstaller {
   private $fixture;
 
   /**
+   * Whether or not the ORCA profile is being installed.
+   *
+   * @var bool
+   */
+  private $isOrcaProfile = FALSE;
+
+  /**
    * The output decorator.
    *
    * @var \Symfony\Component\Console\Style\SymfonyStyle
@@ -112,11 +119,28 @@ class SiteInstaller {
    * @throws \Exception
    */
   public function install(string $profile): void {
-    $this->profile = $profile;
+    $this->setProfile($profile);
     $this->prepareTestingProfile();
     $this->installDrupal();
     $this->restoreTestingProfile();
     $this->enableExtensions();
+  }
+
+  /**
+   * Sets the installation profile.
+   *
+   * @param string $profile
+   *   The installation profile machine name, e.g., "minimal" or "lightning".
+   */
+  private function setProfile(string $profile): void {
+    if ($profile === 'orca') {
+      $this->isOrcaProfile = TRUE;
+      $this->profile = 'testing';
+      return;
+    }
+
+    $this->isOrcaProfile = FALSE;
+    $this->profile = $profile;
   }
 
   /**
@@ -126,23 +150,13 @@ class SiteInstaller {
    * from Standard.
    */
   private function prepareTestingProfile(): void {
-    if (!$this->isTestingProfile()) {
+    if (!$this->isOrcaProfile) {
       return;
     }
 
     $this->backupTestingProfile();
     $this->addDependencies();
     $this->copyStandardThemeSettings();
-  }
-
-  /**
-   * Determines whether or not the Testing profile is being installed.
-   *
-   * @return bool
-   *   TRUE if the Testing profile is being installed or FALSE if not.
-   */
-  private function isTestingProfile(): bool {
-    return $this->profile === 'testing';
   }
 
   /**
@@ -229,7 +243,7 @@ class SiteInstaller {
    * Restores the Testing profile.
    */
   private function restoreTestingProfile(): void {
-    if (!$this->isTestingProfile()) {
+    if (!$this->isOrcaProfile) {
       return;
     }
 
@@ -245,6 +259,11 @@ class SiteInstaller {
    */
   private function enableExtensions(): void {
     $this->acquiaExtensionEnabler->enable();
+
+    if (!$this->isOrcaProfile) {
+      return;
+    }
+
     try {
       $this->processRunner->runFixtureVendorBin([
         'drush',
