@@ -29,12 +29,12 @@ final class DrupalCoreVersion extends Enum {
    */
   public static function commandHelp() {
     return [
-      sprintf('- %s: The latest release of the previous minor version, e.g., "8.5.14" if the current minor version is 8.6', DrupalCoreVersion::PREVIOUS_RELEASE),
-      sprintf('- %s: The development version of the previous minor version, e.g., "8.5.x-dev"', DrupalCoreVersion::PREVIOUS_DEV),
-      sprintf('- %s: The current recommended release, e.g., "8.6.14"', DrupalCoreVersion::CURRENT_RECOMMENDED),
-      sprintf('- %s: The current development version, e.g., "8.6.x-dev"', DrupalCoreVersion::CURRENT_DEV),
-      sprintf('- %s: The next release version if available, e.g., "8.7.0-beta2"', DrupalCoreVersion::NEXT_RELEASE),
-      sprintf('- %s: The next development version, e.g., "8.7.x-dev"', DrupalCoreVersion::NEXT_DEV),
+      sprintf('- %s: The latest release of the previous minor version, e.g., "8.5.14" if the current minor version is 8.6', self::PREVIOUS_RELEASE),
+      sprintf('- %s: The development version of the previous minor version, e.g., "8.5.x-dev"', self::PREVIOUS_DEV),
+      sprintf('- %s: The current recommended release, e.g., "8.6.14"', self::CURRENT_RECOMMENDED),
+      sprintf('- %s: The current development version, e.g., "8.6.x-dev"', self::CURRENT_DEV),
+      sprintf('- %s: The next release version if available, e.g., "8.7.0-beta2"', self::NEXT_RELEASE),
+      sprintf('- %s: The next development version, e.g., "8.7.x-dev"', self::NEXT_DEV),
     ];
   }
 

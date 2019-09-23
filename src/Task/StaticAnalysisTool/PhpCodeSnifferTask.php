@@ -2,7 +2,7 @@
 
 namespace Acquia\Orca\Task\StaticAnalysisTool;
 
-use Acquia\Orca\Command\StatusCodes;
+use Acquia\Orca\Enum\StatusCode;
 use Acquia\Orca\Exception\TaskFailureException;
 use Acquia\Orca\Task\TaskBase;
 use Symfony\Component\Process\Exception\ProcessFailedException;
@@ -19,7 +19,7 @@ class PhpCodeSnifferTask extends TaskBase {
    *
    * @var int
    */
-  private $status = StatusCodes::OK;
+  private $status = StatusCode::OK;
 
   /**
    * {@inheritdoc}
@@ -55,7 +55,7 @@ class PhpCodeSnifferTask extends TaskBase {
       $this->runCommand();
     }
     catch (ProcessFailedException $e) {
-      $this->status = StatusCodes::ERROR;
+      $this->status = StatusCode::ERROR;
     }
     $this->logResults();
     return $this->status;

@@ -3,7 +3,7 @@
 namespace Acquia\Orca\Tests\Command\Fixture;
 
 use Acquia\Orca\Command\Fixture\FixtureRunServerCommand;
-use Acquia\Orca\Command\StatusCodes;
+use Acquia\Orca\Enum\StatusCode;
 use Acquia\Orca\Fixture\Fixture;
 use Acquia\Orca\Server\WebServer;
 use Acquia\Orca\Tests\Command\CommandTestBase;
@@ -55,8 +55,8 @@ class FixtureRunServerCommandTest extends CommandTestBase {
 
   public function providerCommand() {
     return [
-      [FALSE, ['exists'], StatusCodes::ERROR, sprintf("Error: No fixture exists at %s.\nHint: Use the \"fixture:init\" command to create one.\n", self::FIXTURE_ROOT)],
-      [TRUE, ['exists', 'start', 'wait'], StatusCodes::OK, sprintf("Starting web server...\nListening on http://%s.\nDocument root is %s.\nPress Ctrl-C to quit.\n", Fixture::WEB_ADDRESS, self::FIXTURE_DOCROOT)],
+      [FALSE, ['exists'], StatusCode::ERROR, sprintf("Error: No fixture exists at %s.\nHint: Use the \"fixture:init\" command to create one.\n", self::FIXTURE_ROOT)],
+      [TRUE, ['exists', 'start', 'wait'], StatusCode::OK, sprintf("Starting web server...\nListening on http://%s.\nDocument root is %s.\nPress Ctrl-C to quit.\n", Fixture::WEB_ADDRESS, self::FIXTURE_DOCROOT)],
     ];
   }
 

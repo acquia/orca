@@ -40,16 +40,26 @@ class FixtureInspector {
   private $packageManager;
 
   /**
+   * The subextension manager.
+   *
+   * @var \Acquia\Orca\Fixture\SubextensionManager
+   */
+  private $subextensionManager;
+
+  /**
    * Constructs an instance.
    *
    * @param \Acquia\Orca\Fixture\Fixture $fixture
    *   The fixture.
    * @param \Acquia\Orca\Fixture\PackageManager $package_manager
    *   The package manager.
+   * @param \Acquia\Orca\Fixture\SubextensionManager $subextension_manager
+   *   The subextension manager.
    */
-  public function __construct(Fixture $fixture, PackageManager $package_manager) {
+  public function __construct(Fixture $fixture, PackageManager $package_manager, SubextensionManager $subextension_manager) {
     $this->fixture = $fixture;
     $this->packageManager = $package_manager;
+    $this->subextensionManager = $subextension_manager;
   }
 
   /**
@@ -225,18 +235,30 @@ class FixtureInspector {
    *
    * @return array
    *   An indexed array of installed packages containing the following values:
-   *   - The package label, e.g., "drupal/example" (with a trailing asterisk (*)
-   *     if it's the SUT.
+   *   - The package label, e.g., "drupal/example", prefixed with "  - " if it's
+   *     a subextension and suffixed with a trailing asterisk (*) if it's the
+   *     SUT.
    *   - The installed package version, e.g., "1.0.0".
    */
   private function getInstalledPackages(): array {
     $packages = [new TableSeparator()];
-    foreach (array_keys($this->packageManager->getAll()) as $package_name) {
+    foreach ($this->packageManager->getAll() as $package_name => $package) {
       $label = $package_name;
       if ($package_name === $this->getSutName()) {
         $label = "{$package_name} *";
       }
-      $packages[] = [$label, $this->getInstalledPackageVersionPretty($package_name)];
+      $version = $this->getInstalledPackageVersionPretty($package_name);
+      $packages[] = [$label, $version];
+      if (!$this->getInstalledPackageVersion($package_name)) {
+        continue;
+      }
+      $parent_version = $version;
+      foreach (array_keys($this->subextensionManager->getByParent($package)) as $subextension_name) {
+        if ($version === $parent_version) {
+          $version = '"';
+        }
+        $packages[] = ["  - {$subextension_name}", $version];
+      }
     }
     return $packages;
   }

@@ -3,8 +3,8 @@
 namespace Acquia\Orca\Tests\Command\Fixture;
 
 use Acquia\Orca\Command\Fixture\FixtureInitCommand;
-use Acquia\Orca\Command\StatusCodes;
 use Acquia\Orca\Enum\DrupalCoreVersion;
+use Acquia\Orca\Enum\StatusCode;
 use Acquia\Orca\Exception\OrcaException;
 use Acquia\Orca\Fixture\Fixture;
 use Acquia\Orca\Fixture\FixtureCreator;
@@ -135,17 +135,17 @@ class FixtureInitCommandTest extends CommandTestBase {
 
   public function providerCommand() {
     return [
-      [TRUE, [], ['Fixture::exists', 'getCurrentRecommendedVersion', 'setCoreVersion'], NULL, StatusCodes::ERROR, sprintf("Error: Fixture already exists at %s.\nHint: Use the \"--force\" option to remove it and proceed.\n", self::FIXTURE_ROOT)],
-      [TRUE, ['-f' => TRUE], ['Fixture::exists', 'remove', 'create', 'getCurrentRecommendedVersion', 'setCoreVersion'], NULL, StatusCodes::OK, ''],
-      [FALSE, [], ['Fixture::exists', 'create', 'getCurrentRecommendedVersion', 'setCoreVersion'], NULL, StatusCodes::OK, ''],
-      [FALSE, ['--sut' => self::INVALID_PACKAGE], ['PackageManager::exists'], NULL, StatusCodes::ERROR, sprintf("Error: Invalid value for \"--sut\" option: \"%s\".\n", self::INVALID_PACKAGE)],
-      [FALSE, ['--sut' => self::VALID_PACKAGE], ['PackageManager::exists', 'Fixture::exists', 'getCurrentRecommendedVersion', 'setCoreVersion', 'setSut', 'create'], NULL, StatusCodes::OK, ''],
-      [FALSE, ['--sut' => self::VALID_PACKAGE, '--sut-only' => TRUE], ['PackageManager::exists', 'Fixture::exists', 'getCurrentRecommendedVersion', 'setCoreVersion', 'setSut', 'setSutOnly', 'create'], NULL, StatusCodes::OK, ''],
-      [FALSE, ['--dev' => TRUE], ['Fixture::exists', 'setDev', 'getCurrentRecommendedVersion', 'setCoreVersion', 'create'], self::CORE_VALUE_LITERAL_CURRENT_RECOMMENDED, StatusCodes::OK, ''],
-      [FALSE, ['--no-site-install' => TRUE], ['Fixture::exists', 'getCurrentRecommendedVersion', 'setCoreVersion', 'setInstallSite', 'create'], NULL, StatusCodes::OK, ''],
-      [FALSE, ['--no-sqlite' => TRUE], ['Fixture::exists', 'getCurrentRecommendedVersion', 'setCoreVersion', 'setSqlite', 'create'], NULL, StatusCodes::OK, ''],
-      [FALSE, ['--profile' => 'lightning'], ['Fixture::exists', 'getCurrentRecommendedVersion', 'setCoreVersion', 'setProfile', 'create'], NULL, StatusCodes::OK, ''],
-      [FALSE, ['--sut-only' => TRUE], [], NULL, StatusCodes::ERROR, "Error: Cannot create a SUT-only fixture without a SUT.\nHint: Use the \"--sut\" option to specify the SUT.\n"],
+      [TRUE, [], ['Fixture::exists', 'getCurrentRecommendedVersion', 'setCoreVersion'], NULL, StatusCode::ERROR, sprintf("Error: Fixture already exists at %s.\nHint: Use the \"--force\" option to remove it and proceed.\n", self::FIXTURE_ROOT)],
+      [TRUE, ['-f' => TRUE], ['Fixture::exists', 'remove', 'create', 'getCurrentRecommendedVersion', 'setCoreVersion'], NULL, StatusCode::OK, ''],
+      [FALSE, [], ['Fixture::exists', 'create', 'getCurrentRecommendedVersion', 'setCoreVersion'], NULL, StatusCode::OK, ''],
+      [FALSE, ['--sut' => self::INVALID_PACKAGE], ['PackageManager::exists'], NULL, StatusCode::ERROR, sprintf("Error: Invalid value for \"--sut\" option: \"%s\".\n", self::INVALID_PACKAGE)],
+      [FALSE, ['--sut' => self::VALID_PACKAGE], ['PackageManager::exists', 'Fixture::exists', 'getCurrentRecommendedVersion', 'setCoreVersion', 'setSut', 'create'], NULL, StatusCode::OK, ''],
+      [FALSE, ['--sut' => self::VALID_PACKAGE, '--sut-only' => TRUE], ['PackageManager::exists', 'Fixture::exists', 'getCurrentRecommendedVersion', 'setCoreVersion', 'setSut', 'setSutOnly', 'create'], NULL, StatusCode::OK, ''],
+      [FALSE, ['--dev' => TRUE], ['Fixture::exists', 'setDev', 'getCurrentRecommendedVersion', 'setCoreVersion', 'create'], self::CORE_VALUE_LITERAL_CURRENT_RECOMMENDED, StatusCode::OK, ''],
+      [FALSE, ['--no-site-install' => TRUE], ['Fixture::exists', 'getCurrentRecommendedVersion', 'setCoreVersion', 'setInstallSite', 'create'], NULL, StatusCode::OK, ''],
+      [FALSE, ['--no-sqlite' => TRUE], ['Fixture::exists', 'getCurrentRecommendedVersion', 'setCoreVersion', 'setSqlite', 'create'], NULL, StatusCode::OK, ''],
+      [FALSE, ['--profile' => 'lightning'], ['Fixture::exists', 'getCurrentRecommendedVersion', 'setCoreVersion', 'setProfile', 'create'], NULL, StatusCode::OK, ''],
+      [FALSE, ['--sut-only' => TRUE], [], NULL, StatusCode::ERROR, "Error: Cannot create a SUT-only fixture without a SUT.\nHint: Use the \"--sut\" option to specify the SUT.\n"],
     ];
   }
 
@@ -159,7 +159,7 @@ class FixtureInitCommandTest extends CommandTestBase {
     $this->executeCommand();
 
     $this->assertEquals('', $this->getDisplay(), 'Displayed correct output.');
-    $this->assertEquals(StatusCodes::OK, $this->getStatusCode(), 'Returned correct status code.');
+    $this->assertEquals(StatusCode::OK, $this->getStatusCode(), 'Returned correct status code.');
   }
 
   public function testBareOption() {
@@ -180,7 +180,7 @@ class FixtureInitCommandTest extends CommandTestBase {
     $this->executeCommand(['--bare' => TRUE]);
 
     $this->assertEquals('', $this->getDisplay(), 'Displayed correct output.');
-    $this->assertEquals(StatusCodes::OK, $this->getStatusCode(), 'Returned correct status code.');
+    $this->assertEquals(StatusCode::OK, $this->getStatusCode(), 'Returned correct status code.');
   }
 
   /**
@@ -194,7 +194,7 @@ class FixtureInitCommandTest extends CommandTestBase {
     $this->executeCommand($options);
 
     $this->assertEquals("Error: Cannot create a bare fixture with a SUT.\n", $this->getDisplay(), 'Displayed correct output.');
-    $this->assertEquals(StatusCodes::ERROR, $this->getStatusCode(), 'Returned correct status code.');
+    $this->assertEquals(StatusCode::ERROR, $this->getStatusCode(), 'Returned correct status code.');
   }
 
   public function providerBareOptionInvalidProvider() {
@@ -225,7 +225,7 @@ class FixtureInitCommandTest extends CommandTestBase {
     $this->executeCommand($options);
 
     $this->assertEquals('', $this->getDisplay(), 'Displayed correct output.');
-    $this->assertEquals(StatusCodes::OK, $this->getStatusCode(), 'Returned correct status code.');
+    $this->assertEquals(StatusCode::OK, $this->getStatusCode(), 'Returned correct status code.');
   }
 
   public function providerCoreOption() {
@@ -261,16 +261,16 @@ class FixtureInitCommandTest extends CommandTestBase {
     $error_message = 'Error: Invalid value for "--core" option: "%s".' . PHP_EOL
       . 'Hint: Acceptable values are "PREVIOUS_RELEASE", "PREVIOUS_DEV", "CURRENT_RECOMMENDED", "CURRENT_DEV", "NEXT_RELEASE", "NEXT_DEV", or any version string Composer understands.' . PHP_EOL;
     return [
-      [StatusCodes::OK, self::CORE_VALUE_LITERAL_PREVIOUS_RELEASE, ''],
-      [StatusCodes::OK, self::CORE_VALUE_LITERAL_CURRENT_RECOMMENDED, ''],
-      [StatusCodes::OK, self::CORE_VALUE_LITERAL_CURRENT_DEV, ''],
-      [StatusCodes::OK, self::CORE_VALUE_LITERAL_NEXT_RELEASE, ''],
-      [StatusCodes::OK, '^1.0', ''],
-      [StatusCodes::OK, '~1.0', ''],
-      [StatusCodes::OK, '>=1.0', ''],
-      [StatusCodes::OK, 'dev-topic-branch', ''],
-      [StatusCodes::ERROR, 'garbage', sprintf($error_message, 'garbage')],
-      [StatusCodes::ERROR, '1.0.x-garbage', sprintf($error_message, '1.0.x-garbage')],
+      [StatusCode::OK, self::CORE_VALUE_LITERAL_PREVIOUS_RELEASE, ''],
+      [StatusCode::OK, self::CORE_VALUE_LITERAL_CURRENT_RECOMMENDED, ''],
+      [StatusCode::OK, self::CORE_VALUE_LITERAL_CURRENT_DEV, ''],
+      [StatusCode::OK, self::CORE_VALUE_LITERAL_NEXT_RELEASE, ''],
+      [StatusCode::OK, '^1.0', ''],
+      [StatusCode::OK, '~1.0', ''],
+      [StatusCode::OK, '>=1.0', ''],
+      [StatusCode::OK, 'dev-topic-branch', ''],
+      [StatusCode::ERROR, 'garbage', sprintf($error_message, 'garbage')],
+      [StatusCode::ERROR, '1.0.x-garbage', sprintf($error_message, '1.0.x-garbage')],
     ];
   }
 
@@ -295,7 +295,7 @@ class FixtureInitCommandTest extends CommandTestBase {
     $this->executeCommand($options);
 
     $this->assertEquals("", $this->getDisplay(), 'Displayed correct output.');
-    $this->assertEquals(StatusCodes::OK, $this->getStatusCode(), 'Returned correct status code.');
+    $this->assertEquals(StatusCode::OK, $this->getStatusCode(), 'Returned correct status code.');
   }
 
   public function providerIgnorePatchFailureOption() {
@@ -320,7 +320,7 @@ class FixtureInitCommandTest extends CommandTestBase {
 
     $this->executeCommand();
 
-    $this->assertEquals(StatusCodes::ERROR, $this->getStatusCode(), 'Returned correct status code.');
+    $this->assertEquals(StatusCode::ERROR, $this->getStatusCode(), 'Returned correct status code.');
     $this->assertContains("[ERROR] {$exception_message}", $this->getDisplay(), 'Displayed correct output.');
   }
 
@@ -342,7 +342,7 @@ class FixtureInitCommandTest extends CommandTestBase {
     $this->executeCommand(['--prefer-source' => TRUE]);
 
     $this->assertEquals('', $this->getDisplay(), 'Displayed correct output.');
-    $this->assertEquals(StatusCodes::OK, $this->getStatusCode(), 'Returned correct status code.');
+    $this->assertEquals(StatusCode::OK, $this->getStatusCode(), 'Returned correct status code.');
   }
 
   public function testSutPreconditionTestFailure() {
@@ -367,7 +367,7 @@ class FixtureInitCommandTest extends CommandTestBase {
       '--sut' => $sut_name,
     ]);
 
-    $this->assertEquals(StatusCodes::ERROR, $this->getStatusCode(), 'Returned correct status code.');
+    $this->assertEquals(StatusCode::ERROR, $this->getStatusCode(), 'Returned correct status code.');
     $this->assertContains("[ERROR] {$exception_message}", $this->getDisplay(), 'Displayed correct output.');
   }
 

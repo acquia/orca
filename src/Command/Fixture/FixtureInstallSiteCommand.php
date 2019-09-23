@@ -4,7 +4,8 @@ namespace Acquia\Orca\Command\Fixture;
 
 use Acquia\Orca\Enum\StatusCode;
 use Acquia\Orca\Fixture\Fixture;
-use Acquia\Orca\Fixture\FixtureBackupper;
+use Acquia\Orca\Fixture\FixtureCreator;
+use Acquia\Orca\Fixture\SiteInstaller;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -14,14 +15,14 @@ use Symfony\Component\Console\Question\ConfirmationQuestion;
 /**
  * Provides a command.
  */
-class FixtureBackupCommand extends Command {
+class FixtureInstallSiteCommand extends Command {
 
   /**
    * The default command name.
    *
    * @var string
    */
-  protected static $defaultName = 'fixture:backup';
+  protected static $defaultName = 'fixture:install-site';
 
   /**
    * The fixture.
@@ -31,39 +32,44 @@ class FixtureBackupCommand extends Command {
   private $fixture;
 
   /**
-   * The fixture backupper.
+   * The site installer.
    *
-   * @var \Acquia\Orca\Fixture\FixtureBackupper
+   * @var \Acquia\Orca\Fixture\SiteInstaller
    */
-  private $fixtureBackupper;
+  private $siteInstaller;
 
   /**
    * Constructs an instance.
    *
    * @param \Acquia\Orca\Fixture\Fixture $fixture
    *   The fixture.
-   * @param \Acquia\Orca\Fixture\FixtureBackupper $fixture_backupper
-   *   The fixture backupper.
+   * @param \Acquia\Orca\Fixture\SiteInstaller $site_installer
+   *   The site installer.
    */
-  public function __construct(Fixture $fixture, FixtureBackupper $fixture_backupper) {
+  public function __construct(Fixture $fixture, SiteInstaller $site_installer) {
     $this->fixture = $fixture;
-    $this->fixtureBackupper = $fixture_backupper;
+    $this->siteInstaller = $site_installer;
     parent::__construct(self::$defaultName);
   }
 
   /**
    * {@inheritdoc}
+   *
+   * @SuppressWarnings(PHPMD.StaticAccess)
    */
   protected function configure() {
     $this
-      ->setAliases(['backup'])
-      ->setDescription('Backs up the test fixture')
-      ->setHelp('Backs up the current state of the fixture, including codebase and Drupal database.')
-      ->addOption('force', 'f', InputOption::VALUE_NONE, 'Backup without confirmation');
+      ->setAliases(['si'])
+      ->setDescription('Installs the site')
+      ->setHelp('Installs Drupal and enables Acquia extensions.')
+      ->addOption('force', 'f', InputOption::VALUE_NONE, 'Install without confirmation')
+      ->addOption('profile', NULL, InputOption::VALUE_REQUIRED, 'The Drupal installation profile to use, e.g., "lightning". ("orca" is a pseudo-profile based on "testing", with the Toolbar module enabled and Seven as the admin theme)', FixtureCreator::DEFAULT_PROFILE);
   }
 
   /**
    * {@inheritdoc}
+   *
+   * @throws \Exception
    */
   public function execute(InputInterface $input, OutputInterface $output): int {
     if (!$this->fixture->exists()) {
@@ -73,7 +79,7 @@ class FixtureBackupCommand extends Command {
 
     /** @var \Symfony\Component\Console\Helper\QuestionHelper $helper */
     $helper = $this->getHelper('question');
-    $question = new ConfirmationQuestion(sprintf('Are you sure you want to overwrite the backup of the test fixture at %s? ', $this->fixture->getPath()));
+    $question = new ConfirmationQuestion(sprintf('Are you sure you want to drop all tables in the database and install a fresh site at %s? ', $this->fixture->getPath()));
     if (
       !$input->getOption('force')
       && ($input->getOption('no-interaction') || !$helper->ask($input, $output, $question))
@@ -81,7 +87,8 @@ class FixtureBackupCommand extends Command {
       return StatusCode::USER_CANCEL;
     }
 
-    $this->fixtureBackupper->backup();
+    $profile = $input->getOption('profile');
+    $this->siteInstaller->install($profile);
     return StatusCode::OK;
   }
 

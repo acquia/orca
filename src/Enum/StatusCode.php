@@ -1,13 +1,15 @@
 <?php
 
-namespace Acquia\Orca\Command;
+namespace Acquia\Orca\Enum;
+
+use MyCLabs\Enum\Enum;
 
 /**
  * Defines sysexits compatible status codes.
  *
  * @see https://www.freebsd.org/cgi/man.cgi?query=sysexits
  */
-final class StatusCodes {
+final class StatusCode extends Enum {
 
   public const OK = 0;
 

@@ -170,7 +170,6 @@ class AcquiaExtensionEnabler {
     $this->processRunner->runFixtureVendorBin([
       'drush',
       'theme:enable',
-      '--yes',
       implode(',', $theme_list),
     ]);
   }

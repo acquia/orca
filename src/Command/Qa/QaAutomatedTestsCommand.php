@@ -2,7 +2,7 @@
 
 namespace Acquia\Orca\Command\Qa;
 
-use Acquia\Orca\Command\StatusCodes;
+use Acquia\Orca\Enum\StatusCode;
 use Acquia\Orca\Exception\OrcaException;
 use Acquia\Orca\Fixture\Fixture;
 use Acquia\Orca\Fixture\PackageManager;
@@ -122,7 +122,7 @@ class QaAutomatedTestsCommand extends Command {
     $this->sutOnly = $input->getOption('sut-only');
 
     if (!$this->isValidInput($output)) {
-      return StatusCodes::ERROR;
+      return StatusCode::ERROR;
     }
 
     if (!$this->fixture->exists()) {
@@ -130,7 +130,7 @@ class QaAutomatedTestsCommand extends Command {
         "Error: No fixture exists at {$this->fixture->getPath()}.",
         'Hint: Use the "fixture:init" command to create one.',
       ]);
-      return StatusCodes::ERROR;
+      return StatusCode::ERROR;
     }
 
     $this->configureTestRunner();
@@ -139,10 +139,10 @@ class QaAutomatedTestsCommand extends Command {
       $this->testRunner->run();
     }
     catch (OrcaException $e) {
-      return StatusCodes::ERROR;
+      return StatusCode::ERROR;
     }
 
-    return StatusCodes::OK;
+    return StatusCode::OK;
   }
 
   /**

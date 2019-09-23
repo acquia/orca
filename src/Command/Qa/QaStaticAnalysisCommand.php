@@ -2,7 +2,7 @@
 
 namespace Acquia\Orca\Command\Qa;
 
-use Acquia\Orca\Command\StatusCodes;
+use Acquia\Orca\Enum\StatusCode;
 use Acquia\Orca\Task\StaticAnalysisTool\ComposerValidateTask;
 use Acquia\Orca\Task\StaticAnalysisTool\PhpCodeSnifferTask;
 use Acquia\Orca\Task\StaticAnalysisTool\PhpLintTask;
@@ -141,7 +141,7 @@ class QaStaticAnalysisCommand extends Command {
     $path = $input->getArgument('path');
     if (!$this->filesystem->exists($path)) {
       $output->writeln(sprintf('Error: No such path: %s.', $path));
-      return StatusCodes::ERROR;
+      return StatusCode::ERROR;
     }
     $this->configureTaskRunner($input);
     return $this->taskRunner

@@ -3,7 +3,7 @@
 namespace Acquia\Orca\Tests\Command\Fixture;
 
 use Acquia\Orca\Command\Fixture\FixtureResetCommand;
-use Acquia\Orca\Command\StatusCodes;
+use Acquia\Orca\Enum\StatusCode;
 use Acquia\Orca\Fixture\Fixture;
 use Acquia\Orca\Fixture\FixtureResetter;
 use Acquia\Orca\Tests\Command\CommandTestBase;
@@ -52,12 +52,12 @@ class FixtureResetCommandTest extends CommandTestBase {
 
   public function providerCommand() {
     return [
-      [FALSE, [], [], 0, StatusCodes::ERROR, sprintf("Error: No fixture exists at %s.\n", self::FIXTURE_ROOT)],
-      [TRUE, [], ['n'], 0, StatusCodes::USER_CANCEL, 'Are you sure you want to reset the test fixture at /var/www/orca-build? '],
-      [TRUE, [], ['y'], 1, StatusCodes::OK, 'Are you sure you want to reset the test fixture at /var/www/orca-build? '],
-      [TRUE, ['-n' => TRUE], [], 0, StatusCodes::USER_CANCEL, ''],
-      [TRUE, ['-f' => TRUE], [], 1, StatusCodes::OK, ''],
-      [TRUE, ['-f' => TRUE, '-n' => TRUE], [], 1, StatusCodes::OK, ''],
+      [FALSE, [], [], 0, StatusCode::ERROR, sprintf("Error: No fixture exists at %s.\n", self::FIXTURE_ROOT)],
+      [TRUE, [], ['n'], 0, StatusCode::USER_CANCEL, 'Are you sure you want to reset the test fixture at /var/www/orca-build? '],
+      [TRUE, [], ['y'], 1, StatusCode::OK, 'Are you sure you want to reset the test fixture at /var/www/orca-build? '],
+      [TRUE, ['-n' => TRUE], [], 0, StatusCode::USER_CANCEL, ''],
+      [TRUE, ['-f' => TRUE], [], 1, StatusCode::OK, ''],
+      [TRUE, ['-f' => TRUE, '-n' => TRUE], [], 1, StatusCode::OK, ''],
     ];
   }
 

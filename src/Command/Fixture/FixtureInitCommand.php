@@ -2,8 +2,8 @@
 
 namespace Acquia\Orca\Command\Fixture;
 
-use Acquia\Orca\Command\StatusCodes;
 use Acquia\Orca\Enum\DrupalCoreVersion;
+use Acquia\Orca\Enum\StatusCode;
 use Acquia\Orca\Exception\OrcaException;
 use Acquia\Orca\Fixture\Fixture;
 use Acquia\Orca\Fixture\FixtureCreator;
@@ -132,7 +132,7 @@ class FixtureInitCommand extends Command {
         ['- Any version string Composer understands, see https://getcomposer.org/doc/articles/versions.md']
       )), DrupalCoreVersion::CURRENT_RECOMMENDED)
       ->addOption('dev', NULL, InputOption::VALUE_NONE, 'Use dev versions of Acquia packages')
-      ->addOption('profile', NULL, InputOption::VALUE_REQUIRED, 'The Drupal installation profile to use, e.g., "lightning"', FixtureCreator::DEFAULT_PROFILE)
+      ->addOption('profile', NULL, InputOption::VALUE_REQUIRED, 'The Drupal installation profile to use, e.g., "lightning". ("orca" is a pseudo-profile based on "testing", with the Toolbar module enabled and Seven as the admin theme)', FixtureCreator::DEFAULT_PROFILE)
 
       // Uncommon options.
       ->addOption('ignore-patch-failure', NULL, InputOption::VALUE_NONE, 'Do not exit on failure to apply Composer patches. (Useful for debugging failures)')
@@ -153,7 +153,7 @@ class FixtureInitCommand extends Command {
     $core = $input->getOption('core');
 
     if (!$this->isValidInput($sut, $sut_only, $bare, $core, $output)) {
-      return StatusCodes::ERROR;
+      return StatusCode::ERROR;
     }
 
     $this->setSut($sut);
@@ -175,7 +175,7 @@ class FixtureInitCommand extends Command {
             "Error: Fixture already exists at {$this->fixture->getPath()}.",
             'Hint: Use the "--force" option to remove it and proceed.',
           ]);
-          return StatusCodes::ERROR;
+          return StatusCode::ERROR;
         }
         $this->fixtureRemover->remove();
       }
@@ -184,10 +184,10 @@ class FixtureInitCommand extends Command {
     catch (OrcaException $e) {
       (new SymfonyStyle($input, $output))
         ->error($e->getMessage());
-      return StatusCodes::ERROR;
+      return StatusCode::ERROR;
     }
 
-    return StatusCodes::OK;
+    return StatusCode::OK;
   }
 
   /**

@@ -2,7 +2,7 @@
 
 namespace Acquia\Orca\Command\Fixture;
 
-use Acquia\Orca\Command\StatusCodes;
+use Acquia\Orca\Enum\StatusCode;
 use Acquia\Orca\Fixture\Fixture;
 use Acquia\Orca\Fixture\FixtureRemover;
 use Symfony\Component\Console\Command\Command;
@@ -68,7 +68,7 @@ class FixtureRmCommand extends Command {
   public function execute(InputInterface $input, OutputInterface $output): int {
     if (!$this->fixture->exists()) {
       $output->writeln("Error: No fixture exists at {$this->fixture->getPath()}.");
-      return StatusCodes::ERROR;
+      return StatusCode::ERROR;
     }
 
     /** @var \Symfony\Component\Console\Helper\QuestionHelper $helper */
@@ -78,11 +78,11 @@ class FixtureRmCommand extends Command {
       !$input->getOption('force')
       && ($input->getOption('no-interaction') || !$helper->ask($input, $output, $question))
     ) {
-      return StatusCodes::USER_CANCEL;
+      return StatusCode::USER_CANCEL;
     }
 
     $this->fixtureRemover->remove();
-    return StatusCodes::OK;
+    return StatusCode::OK;
   }
 
 }

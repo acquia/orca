@@ -3,7 +3,7 @@
 namespace Acquia\Orca\Tests\Command\Fixture;
 
 use Acquia\Orca\Command\Fixture\FixtureEnableExtensionsCommand;
-use Acquia\Orca\Command\StatusCodes;
+use Acquia\Orca\Enum\StatusCode;
 use Acquia\Orca\Exception\OrcaException;
 use Acquia\Orca\Fixture\AcquiaExtensionEnabler;
 use Acquia\Orca\Fixture\Fixture;
@@ -58,9 +58,9 @@ class FixtureEnableExtensionsCommandTest extends CommandTestBase {
 
   public function providerCommand() {
     return [
-      [FALSE, 0, FALSE, StatusCodes::ERROR, sprintf("Error: No fixture exists at %s.\n", self::FIXTURE_ROOT)],
-      [TRUE, 1, new OrcaException('Oops.'), StatusCodes::ERROR, "\n [ERROR] Oops.                                                                  \n\n"],
-      [TRUE, 1, FALSE, StatusCodes::OK, ''],
+      [FALSE, 0, FALSE, StatusCode::ERROR, sprintf("Error: No fixture exists at %s.\n", self::FIXTURE_ROOT)],
+      [TRUE, 1, new OrcaException('Oops.'), StatusCode::ERROR, "\n [ERROR] Oops.                                                                  \n\n"],
+      [TRUE, 1, FALSE, StatusCode::OK, ''],
     ];
   }
 

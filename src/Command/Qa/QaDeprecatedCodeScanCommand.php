@@ -2,7 +2,7 @@
 
 namespace Acquia\Orca\Command\Qa;
 
-use Acquia\Orca\Command\StatusCodes;
+use Acquia\Orca\Enum\StatusCode;
 use Acquia\Orca\Fixture\Fixture;
 use Acquia\Orca\Fixture\PackageManager;
 use Acquia\Orca\Task\DeprecatedCodeScanner\PhpStanTask;
@@ -108,7 +108,7 @@ class QaDeprecatedCodeScanCommand extends Command {
     $this->contrib = $input->getOption('contrib');
 
     if (!$this->isValidInput($output)) {
-      return StatusCodes::ERROR;
+      return StatusCode::ERROR;
     }
 
     if (!$this->fixture->exists()) {
@@ -116,7 +116,7 @@ class QaDeprecatedCodeScanCommand extends Command {
         "Error: No fixture exists at {$this->fixture->getPath()}.",
         'Hint: Use the "fixture:init" command to create one.',
       ]);
-      return StatusCodes::ERROR;
+      return StatusCode::ERROR;
     }
 
     if ($this->sut) {

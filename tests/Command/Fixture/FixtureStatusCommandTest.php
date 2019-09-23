@@ -3,7 +3,7 @@
 namespace Acquia\Orca\Tests\Command\Fixture;
 
 use Acquia\Orca\Command\Fixture\FixtureStatusCommand;
-use Acquia\Orca\Command\StatusCodes;
+use Acquia\Orca\Enum\StatusCode;
 use Acquia\Orca\Fixture\Fixture;
 use Acquia\Orca\Fixture\FixtureInspector;
 use Acquia\Orca\Tests\Command\CommandTestBase;
@@ -56,8 +56,8 @@ class FixtureStatusCommandTest extends CommandTestBase {
 
   public function providerCommand() {
     return [
-      [FALSE, 0, StatusCodes::ERROR, sprintf("Error: No fixture exists at %s.\n", self::FIXTURE_ROOT)],
-      [TRUE, 1, StatusCodes::OK, "\n Key one : Value one \n Key two : Value two \n\n"],
+      [FALSE, 0, StatusCode::ERROR, sprintf("Error: No fixture exists at %s.\n", self::FIXTURE_ROOT)],
+      [TRUE, 1, StatusCode::OK, "\n Key one : Value one \n Key two : Value two \n\n"],
     ];
   }
 

@@ -3,7 +3,7 @@
 namespace Acquia\Orca\Tests\Command\Internal;
 
 use Acquia\Orca\Command\Internal\InternalLogJobCommand;
-use Acquia\Orca\Command\StatusCodes;
+use Acquia\Orca\Enum\StatusCode;
 use Acquia\Orca\Enum\TelemetryEventName;
 use Acquia\Orca\Log\TelemetryClient;
 use Acquia\Orca\Log\TelemetryEventPropertiesBuilder;
@@ -53,7 +53,7 @@ class InternalLogJobCommandTest extends CommandTestBase {
     $this->executeCommand();
 
     $this->assertEquals('', $this->getDisplay(), 'Displayed correct output.');
-    $this->assertEquals(StatusCodes::OK, $this->getStatusCode(), 'Returned correct status code.');
+    $this->assertEquals(StatusCode::OK, $this->getStatusCode(), 'Returned correct status code.');
   }
 
   public function testWithTelemetryDisabled() {
@@ -66,7 +66,7 @@ class InternalLogJobCommandTest extends CommandTestBase {
 
     $this->assertEquals('Notice: Nothing logged. Telemetry is disabled.' . PHP_EOL .
       'Hint: https://github.com/acquia/orca/blob/master/docs/advanced-usage.md#ORCA_TELEMETRY_ENABLE' . PHP_EOL, $this->getDisplay(), 'Displayed correct output.');
-    $this->assertEquals(StatusCodes::OK, $this->getStatusCode(), 'Returned correct status code.');
+    $this->assertEquals(StatusCode::OK, $this->getStatusCode(), 'Returned correct status code.');
   }
 
   public function testSimulateOption() {
@@ -81,7 +81,7 @@ class InternalLogJobCommandTest extends CommandTestBase {
     $this->executeCommand(['--simulate' => TRUE]);
 
     $this->assertEquals(print_r($properties, TRUE), $this->getDisplay(), 'Displayed correct output.');
-    $this->assertEquals(StatusCodes::OK, $this->getStatusCode(), 'Returned correct status code.');
+    $this->assertEquals(StatusCode::OK, $this->getStatusCode(), 'Returned correct status code.');
   }
 
   public function testTestOption() {
@@ -101,7 +101,7 @@ class InternalLogJobCommandTest extends CommandTestBase {
     $this->executeCommand(['--test' => TRUE]);
 
     $this->assertEquals('', $this->getDisplay(), 'Displayed correct output.');
-    $this->assertEquals(StatusCodes::OK, $this->getStatusCode(), 'Returned correct status code.');
+    $this->assertEquals(StatusCode::OK, $this->getStatusCode(), 'Returned correct status code.');
   }
 
 }

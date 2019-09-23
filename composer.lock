@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a664218c77b7351ad6825a259b092aef",
+    "content-hash": "d68590d14e045343a7af5c02238212da",
     "packages": [
         {
             "name": "acquia/coding-standards",
-            "version": "v0.4.0",
+            "version": "v0.4.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/acquia/coding-standards-php.git",
-                "reference": "2751e7d3c17fb0d405efea18e3016ca5756f92fa"
+                "reference": "4281b9ec9613f3f1e43869ccf572ae6fb3c18d4c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/acquia/coding-standards-php/zipball/2751e7d3c17fb0d405efea18e3016ca5756f92fa",
-                "reference": "2751e7d3c17fb0d405efea18e3016ca5756f92fa",
+                "url": "https://api.github.com/repos/acquia/coding-standards-php/zipball/4281b9ec9613f3f1e43869ccf572ae6fb3c18d4c",
+                "reference": "4281b9ec9613f3f1e43869ccf572ae6fb3c18d4c",
                 "shasum": ""
             },
             "require": {
@@ -49,8 +49,8 @@
             "authors": [
                 {
                     "name": "Acquia Engineering",
-                    "role": "Maintainer",
-                    "homepage": "https://www.acquia.com"
+                    "homepage": "https://www.acquia.com",
+                    "role": "Maintainer"
                 }
             ],
             "description": "PHP_CodeSniffer rules (sniffs) for Acquia coding standards",
@@ -59,7 +59,7 @@
                 "phpcs",
                 "standards"
             ],
-            "time": "2019-08-06T20:48:56+00:00"
+            "time": "2019-09-06T19:51:25+00:00"
         },
         {
             "name": "behat/behat",
@@ -1195,16 +1195,16 @@
         },
         {
             "name": "hassankhan/config",
-            "version": "2.0.2",
+            "version": "v2.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/hassankhan/config.git",
-                "reference": "d30cdc72d37a592e856e9f1b62e29a03b049d785"
+                "reference": "16fa4d3320ac9bb611dda0c8ea980edb58d227c9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/hassankhan/config/zipball/d30cdc72d37a592e856e9f1b62e29a03b049d785",
-                "reference": "d30cdc72d37a592e856e9f1b62e29a03b049d785",
+                "url": "https://api.github.com/repos/hassankhan/config/zipball/16fa4d3320ac9bb611dda0c8ea980edb58d227c9",
+                "reference": "16fa4d3320ac9bb611dda0c8ea980edb58d227c9",
                 "shasum": ""
             },
             "require": {
@@ -1249,7 +1249,7 @@
                 "yaml",
                 "yml"
             ],
-            "time": "2019-04-06T17:34:30+00:00"
+            "time": "2019-09-01T15:51:42+00:00"
         },
         {
             "name": "jakub-onderka/php-console-color",
@@ -2054,16 +2054,16 @@
         },
         {
             "name": "phpcompatibility/php-compatibility",
-            "version": "9.2.0",
+            "version": "9.3.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/PHPCompatibility/PHPCompatibility.git",
-                "reference": "3db1bf1e28123fd574a4ae2e9a84072826d51b5e"
+                "reference": "9999344e47e7af6b00e1a898eacc4e4368fb7196"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHPCompatibility/PHPCompatibility/zipball/3db1bf1e28123fd574a4ae2e9a84072826d51b5e",
-                "reference": "3db1bf1e28123fd574a4ae2e9a84072826d51b5e",
+                "url": "https://api.github.com/repos/PHPCompatibility/PHPCompatibility/zipball/9999344e47e7af6b00e1a898eacc4e4368fb7196",
+                "reference": "9999344e47e7af6b00e1a898eacc4e4368fb7196",
                 "shasum": ""
             },
             "require": {
@@ -2087,18 +2087,18 @@
             ],
             "authors": [
                 {
-                    "name": "Contributors",
-                    "homepage": "https://github.com/PHPCompatibility/PHPCompatibility/graphs/contributors"
-                },
-                {
                     "name": "Wim Godden",
-                    "role": "lead",
-                    "homepage": "https://github.com/wimg"
+                    "homepage": "https://github.com/wimg",
+                    "role": "lead"
                 },
                 {
                     "name": "Juliette Reinders Folmer",
-                    "role": "lead",
-                    "homepage": "https://github.com/jrfnl"
+                    "homepage": "https://github.com/jrfnl",
+                    "role": "lead"
+                },
+                {
+                    "name": "Contributors",
+                    "homepage": "https://github.com/PHPCompatibility/PHPCompatibility/graphs/contributors"
                 }
             ],
             "description": "A set of sniffs for PHP_CodeSniffer that checks for PHP cross-version compatibility.",
@@ -2108,7 +2108,7 @@
                 "phpcs",
                 "standards"
             ],
-            "time": "2019-06-27T19:58:56+00:00"
+            "time": "2019-09-05T18:36:49+00:00"
         },
         {
             "name": "phpdocumentor/reflection-common",
