@@ -49,11 +49,11 @@ class FixtureCreator {
   private $fixture;
 
   /**
-   * The fixture configurer.
+   * The fixture configurator.
    *
-   * @var \Acquia\Orca\Fixture\FixtureConfigurer
+   * @var \Acquia\Orca\Fixture\FixtureConfigurator
    */
-  private $fixtureConfigurer;
+  private $fixtureConfigurator;
 
   /**
    * The fixture inspector.
@@ -165,8 +165,8 @@ class FixtureCreator {
    *
    * @param \Acquia\Orca\Fixture\Fixture $fixture
    *   The fixture.
-   * @param \Acquia\Orca\Fixture\FixtureConfigurer $fixture_configurer
-   *   The fixture configurer.
+   * @param \Acquia\Orca\Fixture\FixtureConfigurator $fixture_configurator
+   *   The fixture configurator.
    * @param \Acquia\Orca\Fixture\FixtureInspector $fixture_inspector
    *   The fixture inspector.
    * @param \Acquia\Orca\Fixture\SiteInstaller $site_installer
@@ -182,9 +182,9 @@ class FixtureCreator {
    * @param \Composer\Package\Version\VersionGuesser $version_guesser
    *   The Composer version guesser.
    */
-  public function __construct(Fixture $fixture, FixtureConfigurer $fixture_configurer, FixtureInspector $fixture_inspector, SiteInstaller $site_installer, SymfonyStyle $output, ProcessRunner $process_runner, PackageManager $package_manager, SubextensionManager $subextension_manager, VersionGuesser $version_guesser) {
+  public function __construct(Fixture $fixture, FixtureConfigurator $fixture_configurator, FixtureInspector $fixture_inspector, SiteInstaller $site_installer, SymfonyStyle $output, ProcessRunner $process_runner, PackageManager $package_manager, SubextensionManager $subextension_manager, VersionGuesser $version_guesser) {
     $this->fixture = $fixture;
-    $this->fixtureConfigurer = $fixture_configurer;
+    $this->fixtureConfigurator = $fixture_configurator;
     $this->fixtureInspector = $fixture_inspector;
     $this->output = $output;
     $this->processRunner = $process_runner;
@@ -204,7 +204,7 @@ class FixtureCreator {
    */
   public function create(): void {
     $this->createBltProject();
-    $this->fixtureConfigurer->ensureGitConfig();
+    $this->fixtureConfigurator->ensureGitConfig();
     $this->configureBltProject();
     $this->fixDefaultDependencies();
     $this->addAcquiaPackages();
@@ -214,7 +214,7 @@ class FixtureCreator {
     $this->installSite();
     $this->setUpFilesDirectories();
     $this->createAndCheckoutBackupTag();
-    $this->fixtureConfigurer->removeTemporaryLocalGitConfig();
+    $this->fixtureConfigurator->removeTemporaryLocalGitConfig();
     $this->displayStatus();
   }
 

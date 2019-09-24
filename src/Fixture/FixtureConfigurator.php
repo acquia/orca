@@ -8,7 +8,7 @@ use Symfony\Component\Process\Exception\ProcessFailedException;
 /**
  * Configures a fixture.
  */
-class FixtureConfigurer {
+class FixtureConfigurator {
 
   /**
    * The fixture.

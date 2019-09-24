@@ -17,11 +17,11 @@ class FixtureBackupper {
   private $fixture;
 
   /**
-   * The fixture configurer.
+   * The fixture configurator.
    *
-   * @var \Acquia\Orca\Fixture\FixtureConfigurer
+   * @var \Acquia\Orca\Fixture\FixtureConfigurator
    */
-  private $fixtureConfigurer;
+  private $fixtureConfigurator;
 
   /**
    * The process runner.
@@ -35,14 +35,14 @@ class FixtureBackupper {
    *
    * @param \Acquia\Orca\Fixture\Fixture $fixture
    *   The fixture.
-   * @param \Acquia\Orca\Fixture\FixtureConfigurer $fixture_configurer
-   *   The fixture configurer.
+   * @param \Acquia\Orca\Fixture\FixtureConfigurator $fixture_configurator
+   *   The fixture configurator.
    * @param \Acquia\Orca\Utility\ProcessRunner $process_runner
    *   The process runner.
    */
-  public function __construct(Fixture $fixture, FixtureConfigurer $fixture_configurer, ProcessRunner $process_runner) {
+  public function __construct(Fixture $fixture, FixtureConfigurator $fixture_configurator, ProcessRunner $process_runner) {
     $this->fixture = $fixture;
-    $this->fixtureConfigurer = $fixture_configurer;
+    $this->fixtureConfigurator = $fixture_configurator;
     $this->processRunner = $process_runner;
   }
 
@@ -50,9 +50,9 @@ class FixtureBackupper {
    * Backs up the fixture codebase and database.
    */
   public function backup(): void {
-    $this->fixtureConfigurer->ensureGitConfig();
+    $this->fixtureConfigurator->ensureGitConfig();
     $this->doGitBackup();
-    $this->fixtureConfigurer->removeTemporaryLocalGitConfig();
+    $this->fixtureConfigurator->removeTemporaryLocalGitConfig();
   }
 
   /**
