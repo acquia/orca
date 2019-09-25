@@ -912,6 +912,11 @@ $settings['bootstrap_container_definition'] = [
     ],
   ],
 ];
+
+// Change the config cache to use a memory backend to prevent SQLite "too many
+// SQL variables" errors.
+// @see https://www.drupal.org/project/drupal/issues/2031261
+$settings['bootstrap_container_definition']['cache.config']['tags']['default_backend'] = 'cache.backend.memory';
 PHP;
     file_put_contents($filename, $data, FILE_APPEND);
     $this->commitCodeChanges('Ensured Drupal settings');
