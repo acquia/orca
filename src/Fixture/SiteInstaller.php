@@ -175,7 +175,12 @@ class SiteInstaller {
     $path = $this->fixture->getPath('docroot/core/profiles/testing/testing.info.yml');
     $info_file = (Config::load($path));
 
-    $this->addItems($info_file, 'install', ['block', 'help', 'toolbar']);
+    $this->addItems($info_file, 'install', [
+      'block',
+      'dblog',
+      'help',
+      'toolbar',
+    ]);
     $this->addItems($info_file, 'themes', ['seven']);
 
     $info_file->toFile($path, new Yaml());
