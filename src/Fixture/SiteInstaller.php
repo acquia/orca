@@ -114,7 +114,7 @@ class SiteInstaller {
    * Installs the site.
    *
    * @param string $profile
-   *   The machine name of the profile to install, e.g., "lightning".
+   *   The machine name of the profile to install, e.g., "minimal".
    *
    * @throws \Exception
    */
@@ -130,7 +130,7 @@ class SiteInstaller {
    * Sets the installation profile.
    *
    * @param string $profile
-   *   The installation profile machine name, e.g., "minimal" or "lightning".
+   *   The installation profile machine name, e.g., "minimal".
    */
   private function setProfile(string $profile): void {
     if ($profile === 'orca') {

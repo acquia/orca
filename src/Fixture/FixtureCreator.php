@@ -282,7 +282,7 @@ class FixtureCreator {
    * Sets the installation profile.
    *
    * @param string $profile
-   *   The installation profile machine name, e.g., "minimal" or "lightning".
+   *   The installation profile machine name, e.g., "minimal".
    */
   public function setProfile(string $profile): void {
     $this->profile = $profile;
