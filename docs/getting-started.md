@@ -30,6 +30,8 @@ See also [Continuous integration](understanding-orca.md#continuous-integration).
 
 ORCA can also be installed and run locally for testing and development. Follow these steps to set it up:
 
+1. Ensure you have PHP 7.2 or later with at least 256 MB of memory allocated to it and [Composer](https://getcomposer.org) installed.
+
 1. Choose a directory to contain your package(s), e.g.:
 
     ```bash
@@ -48,6 +50,22 @@ ORCA can also be installed and run locally for testing and development. Follow t
     ```bash
     composer install --no-dev --working-dir="${PARENT_DIR}/orca"
     ```
+
+1. Optionally make the commandline executable globally-accessible...
+
+    - Via symlink, e.g.:
+
+        ```bash
+        ln -s path/to/orca/bin/orca /usr/local/bin/orca
+        ```
+
+    - Or via alias, e.g.:
+
+        ```bash
+        alias orca="path/to/orca/bin/orca"
+        ```
+
+      (Add this to your `.bash_profile`/`.bashrc` or equivalent to make it permanent.)
 
 1. Optionally add command autocompletion to your shell:
 
