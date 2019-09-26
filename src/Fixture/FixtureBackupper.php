@@ -59,14 +59,13 @@ class FixtureBackupper {
    * Performs the Git-based backup operation.
    */
   private function doGitBackup(): void {
-    $fixture_path = $this->fixture->getPath();
-    $this->processRunner->git(['add', '--all'], $fixture_path);
+    $this->processRunner->git(['add', '--all']);
     $this->processRunner->gitCommit('Backed up the fixture.');
     $this->processRunner->git([
       'tag',
       '--force',
       Fixture::FRESH_FIXTURE_GIT_TAG,
-    ], $fixture_path);
+    ]);
   }
 
 }

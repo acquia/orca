@@ -11,13 +11,6 @@ use Symfony\Component\Process\Exception\ProcessFailedException;
 class FixtureConfigurator {
 
   /**
-   * The fixture.
-   *
-   * @var \Acquia\Orca\Fixture\Fixture
-   */
-  private $fixture;
-
-  /**
    * The process runner.
    *
    * @var \Acquia\Orca\Utility\ProcessRunner
@@ -27,13 +20,10 @@ class FixtureConfigurator {
   /**
    * Constructs an instance.
    *
-   * @param \Acquia\Orca\Fixture\Fixture $fixture
-   *   The fixture.
    * @param \Acquia\Orca\Utility\ProcessRunner $process_runner
    *   The process runner.
    */
-  public function __construct(Fixture $fixture, ProcessRunner $process_runner) {
-    $this->fixture = $fixture;
+  public function __construct(ProcessRunner $process_runner) {
     $this->processRunner = $process_runner;
   }
 
@@ -55,7 +45,7 @@ class FixtureConfigurator {
    *   An array of command-line arguments.
    */
   private function git(array $command): void {
-    $this->processRunner->git($command, $this->fixture->getPath());
+    $this->processRunner->git($command);
   }
 
   /**

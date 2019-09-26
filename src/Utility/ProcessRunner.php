@@ -204,6 +204,7 @@ class ProcessRunner {
    *   The exit status code.
    */
   public function git(array $args, ?string $cwd = NULL): int {
+    $cwd = $cwd ?? $this->fixture->getPath();
     $command = $args;
     array_unshift($command, 'git');
     return $this->runExecutable($command, $cwd);
@@ -219,15 +220,12 @@ class ProcessRunner {
    *   The exit status code.
    */
   public function gitCommit(string $message): int {
-    $cwd = $this->fixture->getPath();
-
-    // Commit changes.
     return $this->git([
       'commit',
       "--message={$message}",
       '--quiet',
       '--allow-empty',
-    ], $cwd);
+    ]);
   }
 
   /**
