@@ -16,6 +16,27 @@ use Symfony\Component\Process\Exception\ProcessFailedException;
 class SiteInstaller {
 
   /**
+   * The profile to base the "orca" pseudo-profile on.
+   *
+   * @var string
+   */
+  private $baseProfile = 'minimal';
+
+  /**
+   * The path the base profile is backed up to.
+   *
+   * @var string|null
+   */
+  private $baseProfileBackupPath;
+
+  /**
+   * The path of the base profile.
+   *
+   * @var string|null
+   */
+  private $baseProfilePath;
+
+  /**
    * The Acquia extension enabler.
    *
    * @var \Acquia\Orca\Fixture\AcquiaExtensionEnabler
@@ -65,20 +86,6 @@ class SiteInstaller {
   private $profile;
 
   /**
-   * The path the Testing profile is backed up to.
-   *
-   * @var string|null
-   */
-  private $profileBackupPath;
-
-  /**
-   * The path of the Testing profile.
-   *
-   * @var string|null
-   */
-  private $profilePath;
-
-  /**
    * The ORCA project directory.
    *
    * @var string
@@ -120,9 +127,9 @@ class SiteInstaller {
    */
   public function install(string $profile): void {
     $this->setProfile($profile);
-    $this->prepareTestingProfile();
+    $this->prepareBaseProfile();
     $this->installDrupal();
-    $this->restoreTestingProfile();
+    $this->restoreBaseProfile();
     $this->enableExtensions();
   }
 
@@ -135,7 +142,7 @@ class SiteInstaller {
   private function setProfile(string $profile): void {
     if ($profile === 'orca') {
       $this->isOrcaProfile = TRUE;
-      $this->profile = 'testing';
+      $this->profile = $this->baseProfile;
       return;
     }
 
@@ -144,40 +151,38 @@ class SiteInstaller {
   }
 
   /**
-   * Prepares the Testing profile for installation.
+   * Prepares the base profile for installation.
    *
-   * Augments the Testing profile, if selected, with some basic theme settings
-   * from Standard.
+   * If the "orca" profile is selected, augments the base profile with some
+   * basic theme settings from Standard.
    */
-  private function prepareTestingProfile(): void {
+  private function prepareBaseProfile(): void {
     if (!$this->isOrcaProfile) {
       return;
     }
 
-    $this->backupTestingProfile();
+    $this->backupBaseProfile();
     $this->addDependencies();
     $this->copyStandardThemeSettings();
   }
 
   /**
-   * Backs up the Testing profile.
+   * Backs up the base profile.
    */
-  private function backupTestingProfile(): void {
-    $this->profilePath = $this->fixture->getPath('docroot/core/profiles/testing');
-    $this->profileBackupPath = sprintf('%s/var/backup/testing-%s', $this->projectDir, uniqid());
-    $this->filesystem->mirror($this->profilePath, $this->profileBackupPath);
+  private function backupBaseProfile(): void {
+    $this->baseProfilePath = $this->fixture->getPath("docroot/core/profiles/{$this->baseProfile}");
+    $this->baseProfileBackupPath = "{$this->projectDir}/var/backup/{$this->baseProfile}-" . uniqid();
+    $this->filesystem->mirror($this->baseProfilePath, $this->baseProfileBackupPath);
   }
 
   /**
-   * Adds dependencies to the Testing profile.
+   * Adds dependencies to the base profile.
    */
   private function addDependencies(): void {
-    $path = $this->fixture->getPath('docroot/core/profiles/testing/testing.info.yml');
+    $path = $this->fixture->getPath("docroot/core/profiles/{$this->baseProfile}/{$this->baseProfile}.info.yml");
     $info_file = (Config::load($path));
 
     $this->addItems($info_file, 'install', [
-      'block',
-      'dblog',
       'help',
       'toolbar',
     ]);
@@ -203,13 +208,9 @@ class SiteInstaller {
   }
 
   /**
-   * Copies the theme and block settings from the Standard profile to Testing.
+   * Copies the theme and block settings from the Standard profile.
    */
   private function copyStandardThemeSettings(): void {
-    // Ensure no theme settings in the install config conflict with those about
-    // to be copied into the optional config.
-    $this->filesystem->remove($this->fixture->getPath('docroot/core/profiles/testing/config/install/system.theme.yml'));
-
     $files = (new Finder())
       ->files()
       ->in($this->fixture->getPath('docroot/core/profiles/standard/config/install'))
@@ -219,7 +220,7 @@ class SiteInstaller {
       ]);
     /** @var \SplFileInfo $file */
     foreach ($files as $file) {
-      $target_pathname = str_replace("/standard/config/install", "/testing/config/optional", $file->getPathname());
+      $target_pathname = str_replace("/standard/config/install", "/{$this->baseProfile}/config/optional", $file->getPathname());
       $this->filesystem->copy($file->getPathname(), $target_pathname, TRUE);
     }
   }
@@ -245,16 +246,16 @@ class SiteInstaller {
   }
 
   /**
-   * Restores the Testing profile.
+   * Restores the base profile.
    */
-  private function restoreTestingProfile(): void {
+  private function restoreBaseProfile(): void {
     if (!$this->isOrcaProfile) {
       return;
     }
 
-    $this->filesystem->remove($this->profilePath);
-    $this->filesystem->mirror($this->profileBackupPath, $this->profilePath);
-    $this->filesystem->remove($this->profileBackupPath);
+    $this->filesystem->remove($this->baseProfilePath);
+    $this->filesystem->mirror($this->baseProfileBackupPath, $this->baseProfilePath);
+    $this->filesystem->remove($this->baseProfileBackupPath);
   }
 
   /**
