@@ -163,7 +163,7 @@ class SiteInstaller {
 
     $this->backupBaseProfile();
     $this->addDependencies();
-    $this->copyStandardThemeSettings();
+    $this->augmentThemeSettings();
   }
 
   /**
@@ -208,6 +208,14 @@ class SiteInstaller {
   }
 
   /**
+   * Augments the theme settings.
+   */
+  private function augmentThemeSettings(): void {
+    $this->copyStandardThemeSettings();
+    $this->resetDefaultTheme();
+  }
+
+  /**
    * Copies the theme and block settings from the Standard profile.
    */
   private function copyStandardThemeSettings(): void {
@@ -223,6 +231,16 @@ class SiteInstaller {
       $target_pathname = str_replace("/standard/config/install", "/{$this->baseProfile}/config/optional", $file->getPathname());
       $this->filesystem->copy($file->getPathname(), $target_pathname, TRUE);
     }
+  }
+
+  /**
+   * Resets the default theme.
+   */
+  private function resetDefaultTheme(): void {
+    $path = $this->fixture->getPath("docroot/core/profiles/{$this->baseProfile}/config/optional/system.theme.yml");
+    $config = (Config::load($path));
+    $config->set('default', 'stark');
+    $config->toFile($path, new Yaml());
   }
 
   /**
