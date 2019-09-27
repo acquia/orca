@@ -49,11 +49,11 @@ class FixtureCreator {
   private $fixture;
 
   /**
-   * The fixture configurer.
+   * The fixture configurator.
    *
-   * @var \Acquia\Orca\Fixture\FixtureConfigurer
+   * @var \Acquia\Orca\Fixture\FixtureConfigurator
    */
-  private $fixtureConfigurer;
+  private $fixtureConfigurator;
 
   /**
    * The fixture inspector.
@@ -165,8 +165,8 @@ class FixtureCreator {
    *
    * @param \Acquia\Orca\Fixture\Fixture $fixture
    *   The fixture.
-   * @param \Acquia\Orca\Fixture\FixtureConfigurer $fixture_configurer
-   *   The fixture configurer.
+   * @param \Acquia\Orca\Fixture\FixtureConfigurator $fixture_configurator
+   *   The fixture configurator.
    * @param \Acquia\Orca\Fixture\FixtureInspector $fixture_inspector
    *   The fixture inspector.
    * @param \Acquia\Orca\Fixture\SiteInstaller $site_installer
@@ -182,9 +182,9 @@ class FixtureCreator {
    * @param \Composer\Package\Version\VersionGuesser $version_guesser
    *   The Composer version guesser.
    */
-  public function __construct(Fixture $fixture, FixtureConfigurer $fixture_configurer, FixtureInspector $fixture_inspector, SiteInstaller $site_installer, SymfonyStyle $output, ProcessRunner $process_runner, PackageManager $package_manager, SubextensionManager $subextension_manager, VersionGuesser $version_guesser) {
+  public function __construct(Fixture $fixture, FixtureConfigurator $fixture_configurator, FixtureInspector $fixture_inspector, SiteInstaller $site_installer, SymfonyStyle $output, ProcessRunner $process_runner, PackageManager $package_manager, SubextensionManager $subextension_manager, VersionGuesser $version_guesser) {
     $this->fixture = $fixture;
-    $this->fixtureConfigurer = $fixture_configurer;
+    $this->fixtureConfigurator = $fixture_configurator;
     $this->fixtureInspector = $fixture_inspector;
     $this->output = $output;
     $this->processRunner = $process_runner;
@@ -204,7 +204,7 @@ class FixtureCreator {
    */
   public function create(): void {
     $this->createBltProject();
-    $this->fixtureConfigurer->ensureGitConfig();
+    $this->fixtureConfigurator->ensureGitConfig();
     $this->configureBltProject();
     $this->fixDefaultDependencies();
     $this->addAcquiaPackages();
@@ -214,7 +214,7 @@ class FixtureCreator {
     $this->installSite();
     $this->setUpFilesDirectories();
     $this->createAndCheckoutBackupTag();
-    $this->fixtureConfigurer->removeTemporaryLocalGitConfig();
+    $this->fixtureConfigurator->removeTemporaryLocalGitConfig();
     $this->displayStatus();
   }
 
@@ -282,7 +282,7 @@ class FixtureCreator {
    * Sets the installation profile.
    *
    * @param string $profile
-   *   The installation profile machine name, e.g., "minimal" or "lightning".
+   *   The installation profile machine name, e.g., "minimal".
    */
   public function setProfile(string $profile): void {
     $this->profile = $profile;
@@ -568,8 +568,7 @@ class FixtureCreator {
     $this->output->section('Debugging info');
 
     // Display some info about the SUT install path.
-    $this->processRunner->runExecutable([
-      'stat',
+    $this->processRunner->runExecutable('stat', [
       $this->sut->getInstallPathAbsolute(),
     ]);
 
@@ -595,14 +594,12 @@ class FixtureCreator {
     ], $this->sut->getRepositoryUrl());
 
     // Display the fixture's composer.json.
-    $this->processRunner->runExecutable([
-      'cat',
+    $this->processRunner->runExecutable('cat', [
       $this->fixture->getPath('composer.json'),
     ]);
 
     // Display the SUT's composer.json.
-    $this->processRunner->runExecutable([
-      'cat',
+    $this->processRunner->runExecutable('cat', [
       $this->fixture->getPath("{$this->sut->getRepositoryUrl()}/composer.json"),
     ]);
   }
@@ -822,7 +819,7 @@ class FixtureCreator {
    *   The commit message to use.
    */
   private function commitCodeChanges($message): void {
-    $this->processRunner->git(['add', '--all'], $this->fixture->getPath());
+    $this->processRunner->git(['add', '--all']);
     $this->processRunner->gitCommit($message);
   }
 
@@ -836,26 +833,22 @@ class FixtureCreator {
     $cwd = $this->fixture->getPath();
 
     $tarball = 'hooks.tar.gz';
-    $this->processRunner->runExecutable([
-      'curl',
+    $this->processRunner->runExecutable('curl', [
       '-L',
       '-o',
       $tarball,
       'https://github.com/acquia/cloud-hooks/tarball/master',
     ], $cwd);
-    $this->processRunner->runExecutable([
-      'tar',
+    $this->processRunner->runExecutable('tar', [
       'xzf',
       $tarball,
     ], $cwd);
-    $this->processRunner->runExecutable([
-      'rm',
+    $this->processRunner->runExecutable('rm', [
       $tarball,
     ], $cwd);
 
     $directory = glob($this->fixture->getPath('acquia-cloud-hooks-*'))[0];
-    $this->processRunner->runExecutable([
-      'mv',
+    $this->processRunner->runExecutable('mv', [
       $directory,
       'hooks',
     ], $cwd);
@@ -912,6 +905,11 @@ $settings['bootstrap_container_definition'] = [
     ],
   ],
 ];
+
+// Change the config cache to use a memory backend to prevent SQLite "too many
+// SQL variables" errors.
+// @see https://www.drupal.org/project/drupal/issues/2031261
+$settings['cache']['bins']['config'] = 'cache.backend.memory';
 PHP;
     file_put_contents($filename, $data, FILE_APPEND);
     $this->commitCodeChanges('Ensured Drupal settings');
@@ -949,12 +947,10 @@ PHP;
       $this->fixture->getPath('sites/default/files'),
       $this->fixture->getPath('files-private'),
     ];
-    $this->processRunner->runExecutable(array_merge([
-      'mkdir',
+    $this->processRunner->runExecutable('mkdir', array_merge([
       '-p',
     ], $directories));
-    $this->processRunner->runExecutable(array_merge([
-      'chmod',
+    $this->processRunner->runExecutable('chmod', array_merge([
       '-R',
       '0770',
     ], $directories));
@@ -965,15 +961,14 @@ PHP;
    */
   private function createAndCheckoutBackupTag(): void {
     $this->output->section('Creating backup tag');
-    $fixture_path = $this->fixture->getPath();
     $this->processRunner->git([
       'tag',
       Fixture::FRESH_FIXTURE_GIT_TAG,
-    ], $fixture_path);
+    ]);
     $this->processRunner->git([
       'checkout',
       Fixture::FRESH_FIXTURE_GIT_TAG,
-    ], $fixture_path);
+    ]);
   }
 
   /**

@@ -2,6 +2,7 @@
 
 namespace Acquia\Orca\Fixture;
 
+use Acquia\Orca\Utility\ProcessRunner;
 use Noodlehaus\Config;
 use Noodlehaus\Parser\Json;
 use Symfony\Component\Console\Helper\TableSeparator;
@@ -26,6 +27,13 @@ class FixtureInspector {
   private $composerLock;
 
   /**
+   * The Drush core status data.
+   *
+   * @var array|null
+   */
+  private $drushStatus;
+
+  /**
    * The fixture.
    *
    * @var \Acquia\Orca\Fixture\Fixture
@@ -38,6 +46,13 @@ class FixtureInspector {
    * @var \Acquia\Orca\Fixture\PackageManager
    */
   private $packageManager;
+
+  /**
+   * The process runner.
+   *
+   * @var \Acquia\Orca\Utility\ProcessRunner
+   */
+  private $processRunner;
 
   /**
    * The subextension manager.
@@ -53,12 +68,15 @@ class FixtureInspector {
    *   The fixture.
    * @param \Acquia\Orca\Fixture\PackageManager $package_manager
    *   The package manager.
+   * @param \Acquia\Orca\Utility\ProcessRunner $process_runner
+   *   The process runner.
    * @param \Acquia\Orca\Fixture\SubextensionManager $subextension_manager
    *   The subextension manager.
    */
-  public function __construct(Fixture $fixture, PackageManager $package_manager, SubextensionManager $subextension_manager) {
+  public function __construct(Fixture $fixture, PackageManager $package_manager, ProcessRunner $process_runner, SubextensionManager $subextension_manager) {
     $this->fixture = $fixture;
     $this->packageManager = $package_manager;
+    $this->processRunner = $process_runner;
     $this->subextensionManager = $subextension_manager;
   }
 
@@ -76,9 +94,24 @@ class FixtureInspector {
     $overview[] = ['System under test (SUT)', $this->getSutNamePretty()];
     $overview[] = ['Fixture type', $this->getFixtureType()];
     $overview[] = ['Package stability', $this->getPackageStabilitySetting()];
-    $overview[] = ['Drupal core version', $this->getInstalledPackageVersionPretty('drupal/core')];
-    $overview[] = ['Drush version', $this->getInstalledPackageVersionPretty('drush/drush')];
-    $overview[] = ['Drupal Console version', $this->getInstalledPackageVersionPretty('drupal/console')];
+    $overview[] = [
+      'Install profile',
+      $this->getDrushStatusField('install-profile'),
+    ];
+    $overview[] = ['Default theme', $this->getDrushStatusField('theme')];
+    $overview[] = ['Admin theme', $this->getDrushStatusField('admin-theme')];
+    $overview[] = [
+      'Drupal core version',
+      $this->getInstalledPackageVersionPretty('drupal/core'),
+    ];
+    $overview[] = [
+      'Drush version',
+      $this->getInstalledPackageVersionPretty('drush/drush'),
+    ];
+    $overview[] = [
+      'Drupal Console version',
+      $this->getInstalledPackageVersionPretty('drupal/console'),
+    ];
 
     $overview = array_merge($overview, $this->getInstalledPackages());
 
@@ -171,6 +204,51 @@ class FixtureInspector {
     }
 
     return $this->getComposerJson()->get($key) ? 'Dev/HEAD' : 'Stable';
+  }
+
+  /**
+   * Gets the value of a given field from Drush's core status output.
+   *
+   * @param string $field
+   *   The field name.
+   *
+   * @return string
+   *   The field value.
+   */
+  private function getDrushStatusField(string $field): string {
+    $json = $this->getDrushStatusJson();
+    if (!array_key_exists($field, $json) || !is_string($json[$field])) {
+      return '~';
+    }
+    return $json[$field];
+  }
+
+  /**
+   * Gets Drush's core status JSON representation.
+   *
+   * @return array
+   *   The retrieved status data if available, or an empty array if not.
+   */
+  private function getDrushStatusJson(): array {
+    if (!is_null($this->drushStatus)) {
+      return $this->drushStatus;
+    }
+
+    $process = $this->processRunner->createFixtureVendorBinProcess([
+      'drush',
+      'core:status',
+      '--format=json',
+    ]);
+    $process->run();
+    $data = json_decode($process->getOutput(), TRUE);
+
+    if (json_last_error()) {
+      $this->drushStatus = [];
+    }
+
+    $this->drushStatus = $data;
+
+    return $this->drushStatus;
   }
 
   /**

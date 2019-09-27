@@ -18,7 +18,7 @@ assert_env_vars
 # The Drupal installation profile is such a fundamental aspect of the fixture
 # that it cannot be changed and other packages' tests still be expected to pass.
 # Thus if the SUT changes it, only its own tests are run.
-[[ "$ORCA_FIXTURE_PROFILE" = "minimal" ]] || SUT_ONLY="--sut-only"
+[[ "$ORCA_FIXTURE_PROFILE" = "orca" ]] || SUT_ONLY="--sut-only"
 
 case "$ORCA_JOB" in
   "STATIC_CODE_ANALYSIS") eval "orca qa:static-analysis $ORCA_SUT_DIR" ;;
