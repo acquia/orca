@@ -568,8 +568,7 @@ class FixtureCreator {
     $this->output->section('Debugging info');
 
     // Display some info about the SUT install path.
-    $this->processRunner->runExecutable([
-      'stat',
+    $this->processRunner->runExecutable('stat', [
       $this->sut->getInstallPathAbsolute(),
     ]);
 
@@ -595,14 +594,12 @@ class FixtureCreator {
     ], $this->sut->getRepositoryUrl());
 
     // Display the fixture's composer.json.
-    $this->processRunner->runExecutable([
-      'cat',
+    $this->processRunner->runExecutable('cat', [
       $this->fixture->getPath('composer.json'),
     ]);
 
     // Display the SUT's composer.json.
-    $this->processRunner->runExecutable([
-      'cat',
+    $this->processRunner->runExecutable('cat', [
       $this->fixture->getPath("{$this->sut->getRepositoryUrl()}/composer.json"),
     ]);
   }
@@ -836,26 +833,22 @@ class FixtureCreator {
     $cwd = $this->fixture->getPath();
 
     $tarball = 'hooks.tar.gz';
-    $this->processRunner->runExecutable([
-      'curl',
+    $this->processRunner->runExecutable('curl', [
       '-L',
       '-o',
       $tarball,
       'https://github.com/acquia/cloud-hooks/tarball/master',
     ], $cwd);
-    $this->processRunner->runExecutable([
-      'tar',
+    $this->processRunner->runExecutable('tar', [
       'xzf',
       $tarball,
     ], $cwd);
-    $this->processRunner->runExecutable([
-      'rm',
+    $this->processRunner->runExecutable('rm', [
       $tarball,
     ], $cwd);
 
     $directory = glob($this->fixture->getPath('acquia-cloud-hooks-*'))[0];
-    $this->processRunner->runExecutable([
-      'mv',
+    $this->processRunner->runExecutable('mv', [
       $directory,
       'hooks',
     ], $cwd);
@@ -954,12 +947,10 @@ PHP;
       $this->fixture->getPath('sites/default/files'),
       $this->fixture->getPath('files-private'),
     ];
-    $this->processRunner->runExecutable(array_merge([
-      'mkdir',
+    $this->processRunner->runExecutable('mkdir', array_merge([
       '-p',
     ], $directories));
-    $this->processRunner->runExecutable(array_merge([
-      'chmod',
+    $this->processRunner->runExecutable('chmod', array_merge([
       '-R',
       '0770',
     ], $directories));

@@ -80,8 +80,7 @@ class FixtureRemover {
 
     // Filesystem::remove() seems like a better choice than a raw Process, but
     // for reasons unknown, it fails due to file permissions.
-    $this->processRunner->runExecutable([
-      'chmod',
+    $this->processRunner->runExecutable('chmod', [
       '-R',
       'u+w',
       '.',

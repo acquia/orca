@@ -95,16 +95,19 @@ class ProcessRunner {
   /**
    * Runs a given executable command.
    *
-   * @param array $command
-   *   An array of command parts, where the first element is an executable name.
+   * @param string $exe
+   *   The executable command name.
+   * @param array $args
+   *   An array of command arguments.
    * @param string|null $cwd
-   *   The working directory, or NULL to use the working dir of the current PHP
-   *   process.
+   *   The working directory, or NULL to use the fixture directory.
    *
    * @return int
    *   The exit status code.
    */
-  public function runExecutable(array $command, ?string $cwd = NULL): int {
+  public function runExecutable(string $exe, array $args, ?string $cwd = NULL): int {
+    $cwd = $cwd ?? $this->fixture->getPath();
+    $command = array_merge([$exe], $args);
     $process = $this->createExecutableProcess($command);
     return $this->run($process, $cwd);
   }
@@ -165,8 +168,7 @@ class ProcessRunner {
    *   An array of command parts, where the first element is a vendor binary
    *   name.
    * @param string|null $cwd
-   *   The working directory, or NULL to use the working dir of the current PHP
-   *   process.
+   *   The working directory, or NULL to use the fixture directory.
    *
    * @return int
    *   The exit status code.
@@ -192,22 +194,18 @@ class ProcessRunner {
   }
 
   /**
-   * Executes a Git command against the fixture.
+   * Executes a Git command.
    *
    * @param array $args
    *   An array of Git command arguments.
    * @param string|null $cwd
-   *   The working directory, or NULL to use the working dir of the current PHP
-   *   process.
+   *   The working directory, or NULL to use the fixture directory.
    *
    * @return int
    *   The exit status code.
    */
   public function git(array $args, ?string $cwd = NULL): int {
-    $cwd = $cwd ?? $this->fixture->getPath();
-    $command = $args;
-    array_unshift($command, 'git');
-    return $this->runExecutable($command, $cwd);
+    return $this->runExecutable('git', $args, $cwd);
   }
 
   /**
