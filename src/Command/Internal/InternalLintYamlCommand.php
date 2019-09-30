@@ -6,6 +6,8 @@ use Symfony\Component\Yaml\Command\LintCommand;
 
 /**
  * Provides a command.
+ *
+ * @codeCoverageIgnore
  */
 class InternalLintYamlCommand extends LintCommand {
 

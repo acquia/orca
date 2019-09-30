@@ -200,6 +200,12 @@ class PhpUnitTask extends TestFrameworkBase {
     try {
       $command = [
         'phpunit',
+        '--verbose',
+      ];
+      if ($this->isToGenerateCodeCoverage()) {
+        $command[] = "--coverage-clover={$this->cloverCoveragePath}";
+      }
+      $command += [
         '--colors=always',
         '--debug',
         "--configuration={$this->fixture->getPath('docroot/core/phpunit.xml.dist')}",
@@ -212,7 +218,7 @@ class PhpUnitTask extends TestFrameworkBase {
       $this->processRunner->runFixtureVendorBin($command);
     }
     catch (ProcessFailedException $e) {
-      throw new TaskFailureException();
+      throw new TaskFailureException($e->getMessage());
     }
   }
 

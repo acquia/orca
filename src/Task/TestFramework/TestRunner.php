@@ -249,6 +249,9 @@ class TestRunner {
       $this->output->comment('Running tests');
       $framework->setPath($package->getInstallPathAbsolute());
       $framework->limitToPublicTests($public);
+      if ($this->sut && $this->isSutOnly) {
+        $framework->generateCodeCoverage(TRUE);
+      }
       $framework->execute();
     }
     catch (TaskFailureException $e) {

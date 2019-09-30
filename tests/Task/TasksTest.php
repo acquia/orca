@@ -22,6 +22,7 @@ class TasksTest extends TestCase {
    * @dataProvider providerConstruction
    */
   public function testConstruction($class) {
+    $clover_coverage_path = '/var/coverage/clover.xml';
     /** @var \Acquia\Orca\Utility\ConfigFileOverrider $config_file_overrider */
     $config_file_overrider = $this->prophesize(ConfigFileOverrider::class)->reveal();
     /** @var \Symfony\Component\Filesystem\Filesystem $filesystem */
@@ -36,7 +37,7 @@ class TasksTest extends TestCase {
     $process_runner = $this->prophesize(ProcessRunner::class)->reveal();
     $project_dir = '/var/www/orca';
 
-    $object = new $class($config_file_overrider, $filesystem, $fixture, $output, $phpcs_configurator, $process_runner, $project_dir);
+    $object = new $class($clover_coverage_path, $config_file_overrider, $filesystem, $fixture, $output, $phpcs_configurator, $process_runner, $project_dir);
 
     $this->assertInstanceOf($class, $object, sprintf('Successfully instantiated class: %s.', $class));
   }

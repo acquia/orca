@@ -20,6 +20,13 @@ function assert {
   fi
 }
 
+# Outputs a formatted warning message.
+function notice {
+  CYAN="\e[34m"
+  NO_COLOR="\033[0m"
+  printf "\n%bNotice: %b%b\n" "$CYAN" "$1" "$NO_COLOR"
+}
+
 # Asserts that necessary environment variables are set.
 function assert_env_vars {
   if [[ "$ORCA_JOB" != "DEPRECATED_CODE_SCAN_CONTRIB" ]]; then
@@ -32,6 +39,7 @@ function assert_env_vars {
 # Set environment variables.
 ORCA_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 export ORCA_ROOT
+export ORCA_COVERAGE_CLOVER_PATH=${ORCA_COVERAGE_CLOVER_PATH:="$HOME/build/logs/clover.xml"}
 export ORCA_FIXTURE_DIR=${ORCA_FIXTURE_DIR:="$ORCA_ROOT/../orca-build"}
 export ORCA_SUT_DIR=${ORCA_SUT_DIR:=${TRAVIS_BUILD_DIR}}
 export ORCA_FIXTURE_PROFILE=${ORCA_FIXTURE_PROFILE:="orca"}

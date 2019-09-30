@@ -14,6 +14,13 @@ use Symfony\Component\Filesystem\Filesystem;
 abstract class TaskBase implements TaskInterface {
 
   /**
+   * The Clover coverage XML path.
+   *
+   * @var string
+   */
+  protected $cloverCoveragePath;
+
+  /**
    * The config file overrider.
    *
    * @var \Acquia\Orca\Utility\ConfigFileOverrider
@@ -72,6 +79,8 @@ abstract class TaskBase implements TaskInterface {
   /**
    * Constructs an instance.
    *
+   * @param string $clover_coverage_path
+   *   The Clover coverage XML path.
    * @param \Acquia\Orca\Utility\ConfigFileOverrider $config_file_overrider
    *   The config file overrider.
    * @param \Symfony\Component\Filesystem\Filesystem $filesystem
@@ -87,16 +96,17 @@ abstract class TaskBase implements TaskInterface {
    * @param string $project_dir
    *   The ORCA project directory.
    */
-  public function __construct(ConfigFileOverrider $config_file_overrider, Filesystem $filesystem, Fixture $fixture, SymfonyStyle $output, PhpcsConfigurator $phpcs_configurator, ProcessRunner $process_runner, string $project_dir) {
+  public function __construct(string $clover_coverage_path, ConfigFileOverrider $config_file_overrider, Filesystem $filesystem, Fixture $fixture, SymfonyStyle $output, PhpcsConfigurator $phpcs_configurator, ProcessRunner $process_runner, string $project_dir) {
     $this->configFileOverrider = $config_file_overrider;
     $this->filesystem = $filesystem;
     $this->fixture = $fixture;
     $this->output = $output;
 
-    // @todo The injection of this service in a base class like this constitutes
-    //   a violation of the interface segregation principle because not all of
-    //   its children use it. This is an indication for refactoring to use
-    //   composition instead of inheritance.
+    // @todo The injection of these services in a base class like this
+    //   constitutes a violation of the interface segregation principle because
+    //   not all of its children use it. This is an indication for refactoring
+    //   to use composition instead of inheritance.
+    $this->cloverCoveragePath = $clover_coverage_path;
     $this->phpcsConfigurator = $phpcs_configurator;
 
     $this->processRunner = $process_runner;
