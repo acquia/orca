@@ -294,7 +294,7 @@ class FixtureInitCommandTest extends CommandTestBase {
 
     $this->executeCommand($options);
 
-    $this->assertEquals("", $this->getDisplay(), 'Displayed correct output.');
+    $this->assertEquals('', $this->getDisplay(), 'Displayed correct output.');
     $this->assertEquals(StatusCode::OK, $this->getStatusCode(), 'Returned correct status code.');
   }
 
@@ -369,6 +369,57 @@ class FixtureInitCommandTest extends CommandTestBase {
 
     $this->assertEquals(StatusCode::ERROR, $this->getStatusCode(), 'Returned correct status code.');
     $this->assertContains("[ERROR] {$exception_message}", $this->getDisplay(), 'Displayed correct output.');
+  }
+
+  /**
+   * @dataProvider providerSymlinkAllOption
+   */
+  public function testSymlinkAllOption($options, $num_calls) {
+    $this->drupalCoreVersionFinder
+      ->get(new DrupalCoreVersion(DrupalCoreVersion::CURRENT_RECOMMENDED))
+      ->shouldBeCalledOnce()
+      ->willReturn(self::CORE_VALUE_LITERAL_CURRENT_RECOMMENDED);
+    $this->fixtureCreator
+      ->setSymlinkAll(TRUE)
+      ->shouldBeCalledTimes($num_calls);
+    $this->fixtureCreator
+      ->setCoreVersion(self::CORE_VALUE_LITERAL_CURRENT_RECOMMENDED)
+      ->shouldBeCalledTimes(1);
+    $this->fixtureCreator
+      ->create()
+      ->shouldBeCalledTimes(1);
+
+    $this->executeCommand($options);
+
+    $this->assertEquals('', $this->getDisplay(), 'Displayed correct output.');
+    $this->assertEquals(StatusCode::OK, $this->getStatusCode(), 'Returned correct status code.');
+  }
+
+  public function providerSymlinkAllOption() {
+    return [
+      [['--symlink-all' => TRUE], 1],
+      [[], 0],
+    ];
+  }
+
+  /**
+   * @dataProvider providerSymlinkAllOptionInvalid
+   */
+  public function testSymlinkAllOptionInvalid($options) {
+    $this->fixtureCreator
+      ->create()
+      ->shouldNotBeCalled();
+
+    $this->executeCommand($options);
+
+    $this->assertEquals("Error: Cannot symlink all in a bare fixture.\n", $this->getDisplay(), 'Displayed correct output.');
+    $this->assertEquals(StatusCode::ERROR, $this->getStatusCode(), 'Returned correct status code.');
+  }
+
+  public function providerSymlinkAllOptionInvalid() {
+    return [
+      [['--bare' => TRUE, '--symlink-all' => TRUE]],
+    ];
   }
 
 }

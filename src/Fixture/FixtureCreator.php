@@ -17,6 +17,7 @@ use Composer\Package\Version\VersionSelector;
 use Composer\Repository\RepositoryFactory;
 use Noodlehaus\Config;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\Filesystem\Filesystem;
 
 /**
  * Creates a fixture.
@@ -147,6 +148,13 @@ class FixtureCreator {
   private $subextensionManager;
 
   /**
+   * The symlink all flag.
+   *
+   * @var bool
+   */
+  private $symlinkAll = FALSE;
+
+  /**
    * The SQLite flag.
    *
    * @var bool
@@ -161,8 +169,17 @@ class FixtureCreator {
   private $versionGuesser;
 
   /**
+   * The filesystem.
+   *
+   * @var \Symfony\Component\Filesystem\Filesystem
+   */
+  private $filesystem;
+
+  /**
    * Constructs an instance.
    *
+   * @param \Symfony\Component\Filesystem\Filesystem $filesystem
+   *   The filesystem.
    * @param \Acquia\Orca\Fixture\Fixture $fixture
    *   The fixture.
    * @param \Acquia\Orca\Fixture\FixtureConfigurator $fixture_configurator
@@ -182,7 +199,8 @@ class FixtureCreator {
    * @param \Composer\Package\Version\VersionGuesser $version_guesser
    *   The Composer version guesser.
    */
-  public function __construct(Fixture $fixture, FixtureConfigurator $fixture_configurator, FixtureInspector $fixture_inspector, SiteInstaller $site_installer, SymfonyStyle $output, ProcessRunner $process_runner, PackageManager $package_manager, SubextensionManager $subextension_manager, VersionGuesser $version_guesser) {
+  public function __construct(Filesystem $filesystem, Fixture $fixture, FixtureConfigurator $fixture_configurator, FixtureInspector $fixture_inspector, SiteInstaller $site_installer, SymfonyStyle $output, ProcessRunner $process_runner, PackageManager $package_manager, SubextensionManager $subextension_manager, VersionGuesser $version_guesser) {
+    $this->filesystem = $filesystem;
     $this->fixture = $fixture;
     $this->fixtureConfigurator = $fixture_configurator;
     $this->fixtureInspector = $fixture_inspector;
@@ -296,6 +314,16 @@ class FixtureCreator {
    */
   public function setSqlite(bool $use_sqlite): void {
     $this->useSqlite = $use_sqlite;
+  }
+
+  /**
+   * Sets the symlink all flag.
+   *
+   * @param bool $symlink_all
+   *   TRUE to symlink all Acquia packages or FALSE not to.
+   */
+  public function setSymlinkAll(bool $symlink_all): void {
+    $this->symlinkAll = $symlink_all;
   }
 
   /**
@@ -444,39 +472,59 @@ class FixtureCreator {
    *   If the SUT isn't properly installed.
    */
   private function addTopLevelAcquiaPackages(): void {
-    $this->addSutRepository();
+    $this->addPathRepositories();
     $this->configureComposerForTopLevelAcquiaPackages();
     $this->composerRequireTopLevelAcquiaPackages();
     $this->verifySut();
   }
 
   /**
-   * Adds a Composer repository for the system under test.
+   * Adds Composer path repositories for Acquia packages.
    *
    * Repositories take precedence in the order specified (i.e., first match
-   * found wins), so our override needs to be added to the beginning in order
+   * found wins), so our overrides need to be added to the beginning in order
    * to take effect.
    */
-  private function addSutRepository(): void {
-    if (!$this->sut) {
+  private function addPathRepositories(): void {
+    if (!$this->sut && !$this->symlinkAll) {
       return;
     }
 
+    // Remove existing repositories.
     $this->loadComposerJson();
-
-    // Remove original repositories.
     $this->jsonConfigSource->removeProperty('repositories');
 
-    // Add new repository.
-    $this->jsonConfigSource->addRepository($this->sut->getPackageName(), [
-      'type' => 'path',
-      'url' => $this->fixture->getPath($this->sut->getRepositoryUrl()),
-    ]);
+    foreach ($this->getLocalPackages() as $package) {
+      $this->jsonConfigSource->addRepository($package->getPackageName(), [
+        'type' => 'path',
+        'url' => $this->fixture->getPath($package->getRepositoryUrl()),
+      ]);
+    }
 
     // Append original repositories.
     foreach ($this->jsonConfigDataBackup['repositories'] as $key => $value) {
       $this->jsonConfigSource->addRepository($key, $value);
     }
+  }
+
+  /**
+   * Gets all local packages.
+   *
+   * @return \Acquia\Orca\Fixture\Package[]
+   *   An associative array of local package objects keyed by their package
+   *   names.
+   */
+  private function getLocalPackages(): array {
+    $packages = [];
+    foreach ($this->packageManager->getAll() as $package_name => $package) {
+      $is_sut = $package == $this->sut;
+      if (!$is_sut && !$this->symlinkAll) {
+        continue;
+      }
+
+      $packages[$package_name] = $package;
+    }
+    return $packages;
   }
 
   /**
@@ -578,7 +626,7 @@ class FixtureCreator {
     $this->processRunner->runOrcaVendorBin([
       'composer',
       'why-not',
-      $this->getSutPackageString(),
+      $this->getLocalPackageString($this->sut),
     ], $fixture_path);
 
     // See why Composer installed what it did.
@@ -613,24 +661,54 @@ class FixtureCreator {
    * @throws \Acquia\Orca\Exception\OrcaException
    */
   private function getAcquiaPackageDependencies(): array {
-    $dependencies = ($this->isSutOnly) ? [$this->sut] : $this->packageManager->getAll();
+    $dependencies = ($this->symlinkAll) ? $this->getLocalPackages() : $this->packageManager->getAll();
+    if ($this->isSutOnly) {
+      $dependencies = [$this->sut];
+    }
     foreach ($dependencies as $package_name => &$package) {
+      // Always symlink the SUT.
       if ($package == $this->sut) {
-        $package = $this->getSutPackageString();
+        $package = $this->getLocalPackageString($package);
         continue;
       }
 
+      // Omit packages that are non-installable per their specification.
       $package_is_installable = $this->getTargetVersion($package);
       if (!$package_is_installable) {
         unset($dependencies[$package_name]);
         continue;
       }
 
+      // If configured to symlink all and package exists locally, symlink it.
+      if ($this->shouldSymlinkNonSut($package)) {
+        $package = $this->getLocalPackageString($package);
+        continue;
+      }
+
+      // Otherwise use the latest installable version according to Composer.
       $version = $this->findLatestVersion($package)->getPrettyVersion();
       $package = "{$package->getPackageName()}:{$version}";
     }
 
     return array_values($dependencies);
+  }
+
+  /**
+   * Determines whether or not the given non-SUT package should be symlinked.
+   *
+   * @param \Acquia\Orca\Fixture\Package $package
+   *   The package in question.
+   *
+   * @return bool
+   *   TRUE if the given package should be symlinked or FALSE if not.
+   */
+  private function shouldSymlinkNonSut(Package $package): bool {
+    if (!$this->symlinkAll) {
+      return FALSE;
+    }
+
+    $path = $this->fixture->getPath($package->getRepositoryUrl());
+    return $this->filesystem->exists($path);
   }
 
   /**
@@ -689,23 +767,29 @@ class FixtureCreator {
   }
 
   /**
-   * Gets the package string for the SUT.
+   * Gets the package string for a given local package..
+   *
+   * @param \Acquia\Orca\Fixture\Package $package
+   *   The local package.
    *
    * @return string
-   *   The package string for the SUT, e.g., "drupal/example:*".
+   *   The package string for the given package, e.g., "drupal/example:*".
    */
-  private function getSutPackageString(): string {
-    return $this->sut->getPackageName() . ':' . $this->getSutVersion();
+  private function getLocalPackageString(Package $package): string {
+    return $package->getPackageName() . ':' . $this->getLocalPackageVersion($package);
   }
 
   /**
-   * Gets the version of the SUT.
+   * Gets the version of a given local package.
+   *
+   * @param \Acquia\Orca\Fixture\Package $package
+   *   The local package.
    *
    * @return string
-   *   The versions of the SUT, e.g., "@dev" or "dev-8.x-1.x".
+   *   The versions of the given package, e.g., "@dev" or "dev-8.x-1.x".
    */
-  private function getSutVersion(): string {
-    $path = $this->fixture->getPath($this->sut->getRepositoryUrl());
+  private function getLocalPackageVersion(Package $package): string {
+    $path = $this->fixture->getPath($package->getRepositoryUrl());
     $package_config = (array) new Config("{$path}/composer.json");
     $guess = $this->versionGuesser->guessVersion($package_config, $path);
     return (empty($guess['version'])) ? '@dev' : $guess['version'];
@@ -715,39 +799,38 @@ class FixtureCreator {
    * Adds Acquia subextensions to the fixture.
    */
   private function addAcquiaSubextensions(): void {
-    $this->configureComposerForSutSubextensions();
+    $this->configureComposerForLocalSubextensions();
     $this->composerRequireSubextensions();
   }
 
   /**
-   * Configures Composer to find and place subextensions of the SUT.
+   * Configures Composer to find and place subextensions of local packages.
    */
-  private function configureComposerForSutSubextensions(): void {
-    if (!$this->sut || !$this->subextensionManager->getAll()) {
-      return;
-    }
+  private function configureComposerForLocalSubextensions(): void {
     $this->loadComposerJson();
-    $this->addSutSubextensionRepositories();
-    $this->addInstallerPathsForSutSubextensions();
+    $this->addLocalSubextensionRepositories();
+    $this->addInstallerPathsForLocalSubextensions();
   }
 
   /**
-   * Adds Composer repositories for subextensions of the SUT.
+   * Adds Composer repositories for subextensions of local packages.
    *
    * Repositories take precedence in the order specified (i.e., first match
    * found wins), so our override needs to be added to the beginning in order
    * to take effect.
    */
-  private function addSutSubextensionRepositories(): void {
+  private function addLocalSubextensionRepositories(): void {
     // Remove original repositories.
     $this->jsonConfigSource->removeProperty('repositories');
 
     // Add new repositories.
-    foreach ($this->subextensionManager->getByParent($this->sut) as $package) {
-      $this->jsonConfigSource->addRepository($package->getPackageName(), [
-        'type' => 'path',
-        'url' => $package->getRepositoryUrl(),
-      ]);
+    foreach ($this->getLocalPackages() as $package) {
+      foreach ($this->subextensionManager->getByParent($package) as $subextension) {
+        $this->jsonConfigSource->addRepository($subextension->getPackageName(), [
+          'type' => 'path',
+          'url' => $subextension->getRepositoryUrl(),
+        ]);
+      }
     }
 
     // Append original repositories.
@@ -757,10 +840,10 @@ class FixtureCreator {
   }
 
   /**
-   * Adds installer-paths for subextensions of the SUT.
+   * Adds installer-paths for subextensions of local packages.
    */
-  private function addInstallerPathsForSutSubextensions(): void {
-    $package_names = array_keys($this->subextensionManager->getByParent($this->sut));
+  private function addInstallerPathsForLocalSubextensions(): void {
+    $package_names = $this->getLocalSubextensionPackageNames();
 
     if (!$package_names) {
       return;
@@ -785,6 +868,21 @@ class FixtureCreator {
     foreach ($this->jsonConfigDataBackup['extra']['installer-paths'] as $key => $value) {
       $this->jsonConfigSource->addProperty("extra.installer-paths.{$key}", $value);
     }
+  }
+
+  /**
+   * Gets all local subextension package names.
+   *
+   * @return string[]
+   *   An indexed array of package names.
+   */
+  private function getLocalSubextensionPackageNames(): array {
+    $package_names = [];
+    foreach ($this->getLocalPackages() as $package) {
+      $subextension_names = array_keys($this->subextensionManager->getByParent($package));
+      $package_names = array_merge($package_names, $subextension_names);
+    }
+    return $package_names;
   }
 
   /**
