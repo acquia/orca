@@ -57,7 +57,7 @@ drupal/acquia_purge: []
 
 #drupal/acquia_search_solr: []
 
-#drupal/acsf: []
+drupal/acsf: []
 
 acquia/blt:
   type: composer-plugin
