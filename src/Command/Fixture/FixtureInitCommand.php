@@ -132,13 +132,14 @@ class FixtureInitCommand extends Command {
         ['- Any version string Composer understands, see https://getcomposer.org/doc/articles/versions.md']
       )), DrupalCoreVersion::CURRENT_RECOMMENDED)
       ->addOption('dev', NULL, InputOption::VALUE_NONE, 'Use dev versions of Acquia packages')
-      ->addOption('profile', NULL, InputOption::VALUE_REQUIRED, 'The Drupal installation profile to use, e.g., "minimal". ("orca" is a pseudo-profile based on "testing", with the Toolbar module enabled and Seven as the admin theme)', FixtureCreator::DEFAULT_PROFILE)
+      ->addOption('profile', NULL, InputOption::VALUE_REQUIRED, 'The Drupal installation profile to use, e.g., "minimal". ("orca" is a pseudo-profile based on "minimal", with the Toolbar module enabled and Seven as the admin theme)', FixtureCreator::DEFAULT_PROFILE)
 
       // Uncommon options.
       ->addOption('ignore-patch-failure', NULL, InputOption::VALUE_NONE, 'Do not exit on failure to apply Composer patches. (Useful for debugging failures)')
       ->addOption('no-sqlite', NULL, InputOption::VALUE_NONE, 'Use the default BLT database includes instead of SQLite')
       ->addOption('no-site-install', NULL, InputOption::VALUE_NONE, 'Do not install Drupal. Supersedes the "--profile" option')
-      ->addOption('prefer-source', NULL, InputOption::VALUE_NONE, 'Force installation of non-Acquia packages from sources when possible, including VCS information. (Acquia packages are always installed from source.) Useful for core and contrib work');
+      ->addOption('prefer-source', NULL, InputOption::VALUE_NONE, 'Force installation of non-Acquia packages from sources when possible, including VCS information. (Acquia packages are always installed from source.) Useful for core and contrib work')
+      ->addOption('symlink-all', NULL, InputOption::VALUE_NONE, 'Symlink all possible Acquia packages via local path repository. Packages absent from the expected location will be installed normally');
   }
 
   /**
@@ -151,8 +152,9 @@ class FixtureInitCommand extends Command {
     $sut = $input->getOption('sut');
     $sut_only = $input->getOption('sut-only');
     $core = $input->getOption('core');
+    $symlink_all = $input->getOption('symlink-all');
 
-    if (!$this->isValidInput($sut, $sut_only, $bare, $core, $output)) {
+    if (!$this->isValidInput($sut, $sut_only, $bare, $core, $symlink_all, $output)) {
       return StatusCode::ERROR;
     }
 
@@ -166,6 +168,7 @@ class FixtureInitCommand extends Command {
     $this->setProfile($input->getOption('profile'));
     $this->setSiteInstall($input->getOption('no-site-install'));
     $this->setSqlite($input->getOption('no-sqlite'));
+    $this->setSymlinkAll($symlink_all);
 
     try {
       $this->testPreconditions($sut);
@@ -201,6 +204,8 @@ class FixtureInitCommand extends Command {
    *   The "bare" option value.
    * @param string|string[]|bool|null $core
    *   The "core" option value.
+   * @param string|string[]|bool|null $symlink_all
+   *   The "symlink-all" option value.
    * @param \Symfony\Component\Console\Output\OutputInterface $output
    *   The output decorator.
    *
@@ -209,9 +214,14 @@ class FixtureInitCommand extends Command {
    *
    * @SuppressWarnings(PHPMD.StaticAccess)
    */
-  private function isValidInput($sut, $sut_only, $bare, $core, OutputInterface $output): bool {
+  private function isValidInput($sut, $sut_only, $bare, $core, $symlink_all, OutputInterface $output): bool {
     if ($bare && $sut) {
       $output->writeln('Error: Cannot create a bare fixture with a SUT.');
+      return FALSE;
+    }
+
+    if ($bare && $symlink_all) {
+      $output->writeln('Error: Cannot symlink all in a bare fixture.');
       return FALSE;
     }
 
@@ -394,6 +404,18 @@ class FixtureInitCommand extends Command {
   private function setSqlite($no_sqlite): void {
     if ($no_sqlite) {
       $this->fixtureCreator->setSqlite(FALSE);
+    }
+  }
+
+  /**
+   * Sets the symlink all flag.
+   *
+   * @param string|string[]|bool|null $symlink_all
+   *   The symlink-all flag.
+   */
+  private function setSymlinkAll($symlink_all): void {
+    if ($symlink_all) {
+      $this->fixtureCreator->setSymlinkAll(TRUE);
     }
   }
 
