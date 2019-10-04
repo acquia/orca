@@ -40,6 +40,9 @@ composer global require \
   hirak/prestissimo \
   zaporylie/composer-drupal-optimizations
 
+# Install Travis command line client.
+gem install travis
+
 # Install ORCA.
 composer -d"$ORCA_ROOT" install
 
