@@ -6,6 +6,7 @@ use Acquia\Orca\Utility\ProcessRunner;
 use Noodlehaus\Config;
 use Noodlehaus\Parser\Json;
 use Symfony\Component\Console\Helper\TableSeparator;
+use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
  * Creates a fixture.
@@ -41,6 +42,13 @@ class FixtureInspector {
   private $fixture;
 
   /**
+   * The output decorator.
+   *
+   * @var \Symfony\Component\Console\Style\SymfonyStyle
+   */
+  private $output;
+
+  /**
    * The package manager.
    *
    * @var \Acquia\Orca\Fixture\PackageManager
@@ -66,6 +74,8 @@ class FixtureInspector {
    *
    * @param \Acquia\Orca\Fixture\Fixture $fixture
    *   The fixture.
+   * @param \Symfony\Component\Console\Style\SymfonyStyle $output
+   *   The output decorator.
    * @param \Acquia\Orca\Fixture\PackageManager $package_manager
    *   The package manager.
    * @param \Acquia\Orca\Utility\ProcessRunner $process_runner
@@ -73,8 +83,9 @@ class FixtureInspector {
    * @param \Acquia\Orca\Fixture\SubextensionManager $subextension_manager
    *   The subextension manager.
    */
-  public function __construct(Fixture $fixture, PackageManager $package_manager, ProcessRunner $process_runner, SubextensionManager $subextension_manager) {
+  public function __construct(Fixture $fixture, SymfonyStyle $output, PackageManager $package_manager, ProcessRunner $process_runner, SubextensionManager $subextension_manager) {
     $this->fixture = $fixture;
+    $this->output = $output;
     $this->packageManager = $package_manager;
     $this->processRunner = $process_runner;
     $this->subextensionManager = $subextension_manager;
@@ -213,12 +224,12 @@ class FixtureInspector {
    *   The field name.
    *
    * @return string
-   *   The field value.
+   *   The field value if available or an exclamation mark (!) if not.
    */
   private function getDrushStatusField(string $field): string {
     $json = $this->getDrushStatusJson();
     if (!array_key_exists($field, $json) || !is_string($json[$field])) {
-      return '~';
+      return '!';
     }
     return $json[$field];
   }
@@ -247,6 +258,11 @@ class FixtureInspector {
     }
 
     $this->drushStatus = $data;
+
+    if (!is_array($this->drushStatus)) {
+      $this->output->warning('Could not retrieve Drush status info. Some fixture details, denoted with an exclamation mark (!), are unavailable.');
+      $this->drushStatus = [];
+    }
 
     return $this->drushStatus;
   }
