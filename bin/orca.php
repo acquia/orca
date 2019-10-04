@@ -18,6 +18,7 @@ if (!file_exists(__DIR__ . '/../vendor/autoload.php')) {
 }
 require __DIR__ . '/../vendor/autoload.php';
 
+ini_set('memory_limit', -1);
 set_time_limit(0);
 
 $input = new ArgvInput();
