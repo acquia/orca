@@ -9,7 +9,7 @@ use Acquia\Orca\Task\TaskBase;
  */
 class PhpLocTask extends TaskBase {
 
-  public const JSON_LOG_PATH = 'var/phploc.json';
+  public const JSON_LOG_PATH = 'var/log/phploc.json';
 
   /**
    * {@inheritdoc}
