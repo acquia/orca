@@ -98,7 +98,7 @@ For more information on using Behat with Drupal, see [the Behat website](http://
 
 ### Tagging/grouping
 
-ORCA uses tags (for Behat) and groups (for PHPUnit) to determine which tests to run when, as depicted in the table below, where black indicates a test's being included and white indicates its being ignored:
+ORCA uses tags (for Behat) and groups (for PHPUnit) to determine which tests to run when, as depicted in the table below:
 
 <!-- https://www.tablesgenerator.com/markdown_tables -->
 
@@ -110,7 +110,7 @@ ORCA uses tags (for Behat) and groups (for PHPUnit) to determine which tests to 
 
 The default behavior is to run a test only when the package providing it is the SUT--not when it is merely included in another package's test fixture. Any test not designated public or ignored is so treated. Such tests are referred to as "private tests". This should be considered the correct choice for most tests--particularly for features that involve little or no risk of conflict with other Acquia packages, including [isolated unit tests](http://wiki.c2.com/?UnitTestIsolation) by definition.
 
-Public tests (`orca_public`) are _always_ run, including when testing packages other than the one providing them. For example, a public test provided by Lightning API will also be run during tests of Acquia Commerce Manager, Acquia Lift, and the rest. Public tests thus lengthen builds for _all Acquia packages_ and should be used judiciously. Reserve them for high value features with meaningful risk of being broken by other packages, and make them as fast as possible.
+Public PHPUnit tests (`orca_public`) are _always_ run, including when testing packages other than the one providing them. (Behat has proved a source of too much instability to inflict across the board, so the default Travis CI jobs _never_ run non-SUT Behat tests.) For example, a public PHPUnit test provided by Lightning API will also be run during tests of Acquia Commerce Manager, Acquia Lift, and the rest. Public tests thus lengthen builds for _all Acquia packages_ and should be used judiciously. Reserve them for high value features with meaningful risk of being broken by other packages, and make them as fast as possible.
 
 Ignored tests (`orca_ignore`) are "ignored" and _never_ run by ORCA. Tests should be ignored when they depend upon setup or preconditions that ORCA doesn't provide, such as a fixture with unique dependencies or a database populated by SQL dump. Once ignored, such tests can be scripted to run apart from ORCA after custom setup. In practice, it should rarely be necessary to ignore a test, as most setup and teardown can be accomplished through [Behat hooks](http://behat.org/en/latest/user_guide/context/hooks.html) and [PHPUnit template methods](https://phpunit.de/manual/6.5/en/fixtures.html).
 
