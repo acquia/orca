@@ -40,8 +40,6 @@
 # config/services.yml for the relevant code or bin/self-test for a usage
 # example.
 
-#drupal/acquia_commercemanager: []
-
 drupal/acquia_connector:
   version_dev: 1.x-dev <2.0
 
@@ -55,8 +53,6 @@ drupal/acquia_lift:
 
 drupal/acquia_purge: []
 
-#drupal/acquia_search_solr: []
-
 drupal/acsf: []
 
 acquia/blt:
@@ -68,8 +64,6 @@ acquia/coding-standards:
 
 drupal/cog:
   type: drupal-theme
-
-#drupal/cog_tools: []
 
 acquia/drupal-spec-tool:
   type: behat-extension
