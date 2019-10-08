@@ -10,7 +10,7 @@
         }
     ],
     "require": {
-        "php": ">=7.1",
+        "php": ">=7.2",
         "ext-dom": "*",
         "ext-json": "*",
         "ext-sqlite3": "*",
@@ -62,7 +62,7 @@
             "pre-commit": [
                 "set -e",
                 "vendor/bin/parallel-lint --exclude vendor --no-progress .",
-                "vendor/bin/phpcs --cache=var/.phpcs-cache"
+                "vendor/bin/phpcs --cache=var/cache/phpcs.json"
             ],
             "pre-push": "vendor/bin/phpcs",
             "post-install-cmd": "vendor/bin/cghooks add --ignore-lock",
@@ -88,7 +88,7 @@
         ],
         "cghooks": "cghooks --ansi",
         "phpcbf": "phpcbf",
-        "phpcs": "phpcs -s --cache=var/.phpcs-cache",
+        "phpcs": "phpcs -s --cache=var/cache/phpcs.json",
         "phplint": "parallel-lint --exclude vendor --ignore-fails .",
         "phpmd": "phpmd . text phpmd.xml.dist --ignore-violations-on-exit",
         "phpunit": "phpunit"

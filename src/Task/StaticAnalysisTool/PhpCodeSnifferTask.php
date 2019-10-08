@@ -12,7 +12,7 @@ use Symfony\Component\Process\Exception\ProcessFailedException;
  */
 class PhpCodeSnifferTask extends TaskBase {
 
-  public const JSON_LOG_PATH = 'var/phpcs.json';
+  public const JSON_LOG_PATH = 'var/log/phpcs.json';
 
   /**
    * The status code.

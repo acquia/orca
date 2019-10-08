@@ -19,7 +19,7 @@ class PhpStanTask {
 
   use SutSettingsTrait;
 
-  public const JSON_LOG_PATH = 'var/phpstan.json';
+  public const JSON_LOG_PATH = 'var/log/phpstan.json';
 
   /**
    * The command array.

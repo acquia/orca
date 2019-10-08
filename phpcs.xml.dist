@@ -8,7 +8,7 @@
   <description>PHP CodeSniffer configuration for analyzing packages with ORCA.</description>
 
   <arg name="colors"/>
-  <arg name="cache" value="var/.phpcs-cache"/>
+  <arg name="cache" value="var/cache/phpcs.json"/>
   <arg name="parallel" value="10"/>
 
   <file>.</file>
