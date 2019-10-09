@@ -3,6 +3,7 @@
 namespace Acquia\Orca\Tests\Command\Qa;
 
 use Acquia\Orca\Command\Qa\QaStaticAnalysisCommand;
+use Acquia\Orca\Enum\PhpcsStandard;
 use Acquia\Orca\Enum\StatusCode;
 use Acquia\Orca\Task\StaticAnalysisTool\ComposerValidateTask;
 use Acquia\Orca\Task\StaticAnalysisTool\PhpCodeSnifferTask;
@@ -28,6 +29,8 @@ use Symfony\Component\Filesystem\Filesystem;
 class QaStaticAnalysisCommandTest extends CommandTestBase {
 
   private const SUT_PATH = '/var/www/example';
+
+  private $defaultPhpcsStandard = PhpcsStandard::DEFAULT;
 
   protected function setUp() {
     $this->composerValidate = $this->prophesize(ComposerValidateTask::class);
@@ -57,7 +60,7 @@ class QaStaticAnalysisCommandTest extends CommandTestBase {
     $task_runner = $this->taskRunner->reveal();
     /** @var \Acquia\Orca\Task\StaticAnalysisTool\YamlLintTask $yaml_lint */
     $yaml_lint = $this->yamlLint->reveal();
-    return new QaStaticAnalysisCommand($composer_validate, $filesystem, $php_code_sniffer, $php_lint, $php_loc, $php_mess_detector, $task_runner, $yaml_lint);
+    return new QaStaticAnalysisCommand($composer_validate, $this->defaultPhpcsStandard, $filesystem, $php_code_sniffer, $php_lint, $php_loc, $php_mess_detector, $task_runner, $yaml_lint);
   }
 
   /**
@@ -151,6 +154,116 @@ class QaStaticAnalysisCommandTest extends CommandTestBase {
       [['--phploc' => 1], 'phpLoc'],
       [['--phpmd' => 1], 'phpMessDetector'],
       [['--yamllint' => 1], 'yamlLint'],
+    ];
+  }
+
+  /**
+   * @dataProvider providerPhpcsStandardOption
+   */
+  public function testPhpcsStandardOption($args, $standard) {
+    $this->filesystem
+      ->exists(self::SUT_PATH)
+      ->shouldBeCalledOnce()
+      ->willReturn(TRUE);
+    $this->phpCodeSniffer
+      ->setStandard(new PhpcsStandard($standard))
+      ->shouldBeCalledOnce();
+    $this->taskRunner
+      ->addTask($this->phpCodeSniffer->reveal())
+      ->shouldBeCalledOnce()
+      ->willReturn($this->taskRunner);
+    $this->taskRunner
+      ->setPath(self::SUT_PATH)
+      ->shouldBeCalledOnce()
+      ->willReturn($this->taskRunner);
+    $this->taskRunner
+      ->run()
+      ->shouldBeCalledOnce();
+    $args['--phpcs'] = 1;
+    $args['path'] = self::SUT_PATH;
+
+    $this->executeCommand($args);
+
+    $this->assertEquals('', $this->getDisplay(), 'Displayed correct output.');
+    $this->assertEquals(StatusCode::OK, $this->getStatusCode(), 'Returned correct status code.');
+  }
+
+  public function providerPhpcsStandardOption() {
+    return [
+      [[], $this->defaultPhpcsStandard],
+      [['--phpcs-standard' => PhpcsStandard::ACQUIA_PHP], PhpcsStandard::ACQUIA_PHP],
+      [['--phpcs-standard' => PhpcsStandard::ACQUIA_DRUPAL_TRANSITIONAL], PhpcsStandard::ACQUIA_DRUPAL_TRANSITIONAL],
+      [['--phpcs-standard' => PhpcsStandard::ACQUIA_DRUPAL_STRICT], PhpcsStandard::ACQUIA_DRUPAL_STRICT],
+    ];
+  }
+
+  /**
+   * @dataProvider providerPhpcsStandardEnvVar
+   */
+  public function testPhpcsStandardEnvVar($standard) {
+    $this->defaultPhpcsStandard = $standard;
+    $this->filesystem
+      ->exists(self::SUT_PATH)
+      ->shouldBeCalledTimes(1)
+      ->willReturn(TRUE);
+    $this->phpCodeSniffer
+      ->setStandard(new PhpcsStandard($this->defaultPhpcsStandard))
+      ->shouldBeCalledOnce();
+    $this->taskRunner
+      ->addTask($this->phpCodeSniffer->reveal())
+      ->shouldBeCalledOnce()
+      ->willReturn($this->taskRunner);
+    $this->taskRunner
+      ->setPath(self::SUT_PATH)
+      ->shouldBeCalledOnce()
+      ->willReturn($this->taskRunner);
+    $this->taskRunner
+      ->run()
+      ->shouldBeCalledOnce();
+    $args = [
+      '--phpcs' => 1,
+      'path' => self::SUT_PATH,
+    ];
+
+    $this->executeCommand($args);
+
+    $this->assertEquals('', $this->getDisplay(), 'Displayed correct output.');
+    $this->assertEquals(StatusCode::OK, $this->getStatusCode(), 'Returned correct status code.');
+  }
+
+  public function providerPhpcsStandardEnvVar() {
+    return [
+      [PhpcsStandard::ACQUIA_PHP],
+      [PhpcsStandard::ACQUIA_DRUPAL_TRANSITIONAL],
+      [PhpcsStandard::ACQUIA_DRUPAL_STRICT],
+    ];
+  }
+
+  /**
+   * @dataProvider providerInvalidPhpcsStandard
+   */
+  public function testInvalidPhpcsStandard($args, $default_standard, $display) {
+    $this->defaultPhpcsStandard = $default_standard;
+    $this->filesystem
+      ->exists(self::SUT_PATH)
+      ->shouldBeCalledOnce()
+      ->willReturn(TRUE);
+    $this->taskRunner
+      ->run()
+      ->shouldNotBeCalled();
+    $args['--phpcs'] = 1;
+    $args['path'] = self::SUT_PATH;
+
+    $this->executeCommand($args);
+
+    $this->assertEquals($display, $this->getDisplay(), 'Displayed correct output.');
+    $this->assertEquals(StatusCode::ERROR, $this->getStatusCode(), 'Returned correct status code.');
+  }
+
+  public function providerInvalidPhpcsStandard() {
+    return [
+      [['--phpcs-standard' => 'invalid'], $this->defaultPhpcsStandard, 'Error: Invalid value for "--phpcs-standard" option: "invalid".' . PHP_EOL],
+      [[], 'invalid', 'Error: Invalid value for $ORCA_PHPCS_STANDARD environment variable: "invalid".' . PHP_EOL],
     ];
   }
 

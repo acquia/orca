@@ -63,6 +63,13 @@ abstract class TaskBase implements TaskInterface {
   protected $output;
 
   /**
+   * The PHPCS configurator.
+   *
+   * @var \Acquia\Orca\Task\PhpcsConfigurator
+   */
+  protected $phpcsConfigurator;
+
+  /**
    * Constructs an instance.
    *
    * @param \Acquia\Orca\Utility\ConfigFileOverrider $config_file_overrider
@@ -73,16 +80,25 @@ abstract class TaskBase implements TaskInterface {
    *   The fixture.
    * @param \Symfony\Component\Console\Style\SymfonyStyle $output
    *   The output decorator.
+   * @param \Acquia\Orca\Task\PhpcsConfigurator $phpcs_configurator
+   *   The PHPCS configurator.
    * @param \Acquia\Orca\Utility\ProcessRunner $process_runner
    *   The process runner.
    * @param string $project_dir
    *   The ORCA project directory.
    */
-  public function __construct(ConfigFileOverrider $config_file_overrider, Filesystem $filesystem, Fixture $fixture, SymfonyStyle $output, ProcessRunner $process_runner, string $project_dir) {
+  public function __construct(ConfigFileOverrider $config_file_overrider, Filesystem $filesystem, Fixture $fixture, SymfonyStyle $output, PhpcsConfigurator $phpcs_configurator, ProcessRunner $process_runner, string $project_dir) {
     $this->configFileOverrider = $config_file_overrider;
     $this->filesystem = $filesystem;
     $this->fixture = $fixture;
     $this->output = $output;
+
+    // @todo The injection of this service in a base class like this constitutes
+    //   a violation of the interface segregation principle because not all of
+    //   its children use it. This is an indication for refactoring to use
+    //   composition instead of inheritance.
+    $this->phpcsConfigurator = $phpcs_configurator;
+
     $this->processRunner = $process_runner;
     $this->projectDir = $project_dir;
   }

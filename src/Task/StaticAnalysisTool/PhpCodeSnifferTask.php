@@ -2,7 +2,7 @@
 
 namespace Acquia\Orca\Task\StaticAnalysisTool;
 
-use Acquia\Orca\Enum\StatusCode;
+use Acquia\Orca\Enum\PhpcsStandard;
 use Acquia\Orca\Exception\TaskFailureException;
 use Acquia\Orca\Task\TaskBase;
 use Symfony\Component\Process\Exception\ProcessFailedException;
@@ -15,11 +15,11 @@ class PhpCodeSnifferTask extends TaskBase {
   public const JSON_LOG_PATH = 'var/log/phpcs.json';
 
   /**
-   * The status code.
+   * The standard to use.
    *
-   * @var int
+   * @var string
    */
-  private $status = StatusCode::OK;
+  private $standard = PhpcsStandard::DEFAULT;
 
   /**
    * {@inheritdoc}
@@ -39,37 +39,35 @@ class PhpCodeSnifferTask extends TaskBase {
    * {@inheritdoc}
    */
   public function execute(): void {
+    $this->phpcsConfigurator->prepareTemporaryConfig(new PhpcsStandard($this->standard));
+
     try {
-      $this->runPhpcs();
+      $this->runPhpcsCommand();
     }
     catch (ProcessFailedException $e) {
-      throw new TaskFailureException();
+      // Swallow failure from the first run so as not to prevent the log run,
+      // which will fail identically, ensuring the correct exception is thrown.
+    }
+
+    try {
+      $this->logResults();
+    }
+    catch (ProcessFailedException $e) {
+      throw new TaskFailureException(NULL, NULL, $e);
+    }
+    finally {
+      $this->phpcsConfigurator->cleanupTemporaryConfig();
     }
   }
 
   /**
-   * Runs phpcs.
+   * Sets the standard to use.
+   *
+   * @param \Acquia\Orca\Enum\PhpcsStandard $standard
+   *   The PHPCS standard.
    */
-  public function runPhpcs(): int {
-    try {
-      $this->runCommand();
-    }
-    catch (ProcessFailedException $e) {
-      $this->status = StatusCode::ERROR;
-    }
-    $this->logResults();
-    return $this->status;
-  }
-
-  /**
-   * Runs phpcs and sends output to the console.
-   */
-  private function runCommand(): void {
-    $this->processRunner->runOrcaVendorBin([
-      'phpcs',
-      '-s',
-      realpath($this->getPath()),
-    ], "{$this->projectDir}/resources");
+  public function setStandard(PhpcsStandard $standard): void {
+    $this->standard = $standard;
   }
 
   /**
@@ -77,14 +75,25 @@ class PhpCodeSnifferTask extends TaskBase {
    */
   private function logResults(): void {
     $this->output->comment('Logging results...');
+    $this->runPhpcsCommand([
+      sprintf('--report-file=%s/%s', $this->projectDir, self::JSON_LOG_PATH),
+    ]);
+  }
 
-    $this->processRunner->runOrcaVendorBin([
+  /**
+   * Runs the PHPCS command.
+   *
+   * @param array $options
+   *   Command line options to add to the defaults.
+   */
+  private function runPhpcsCommand(array $options = []): void {
+    $command = array_merge([
       'phpcs',
       '-s',
-      '--report=json',
-      sprintf('--report-file=%s/%s', $this->projectDir, self::JSON_LOG_PATH),
+    ], $options, [
       realpath($this->getPath()),
-    ], "{$this->projectDir}/resources");
+    ]);
+    $this->processRunner->runOrcaVendorBin($command, $this->phpcsConfigurator->getTempDir());
   }
 
 }
