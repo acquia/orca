@@ -18,6 +18,8 @@ These affect ORCA in all contexts.
 
 * <a name="ORCA_PACKAGES_CONFIG_ALTER"></a>**`ORCA_PACKAGES_CONFIG_ALTER`**: Alter the main list of packages ORCA installs in fixtures and runs tests on (add, remove, or change packages and their properties). Acceptable values are any valid path to a YAML file relative to ORCA itself, e.g., `../example/tests/packages_alter.yml`. See [`.travis.yml`](../.travis.yml) and [`example/tests/packages_alter.yml`](../example/tests/packages_alter.yml) for an example and explanation of the schema. **Note:** This option should be used conservatively as it erodes the uniformity at the heart of ORCA's _representative_ nature.
 
+* <a name="ORCA_PHPCS_STANDARD"></a>**`ORCA_PHPCS_STANDARD`**: Change the PHP Code Sniffer standard used by the `qa:static-analysis` and `qa:fixer` commands. Acceptable values are `AcquiaPHP`, `AcquiaDrupalStrict`, and `AcquiaDrupalTransitional`. See [Acquia Coding Standards for PHP](https://packagist.org/packages/acquia/coding-standards) for details.
+
 * <a name="ORCA_TELEMETRY_ENABLE"></a>**`ORCA_TELEMETRY_ENABLE`**: Set to `TRUE` to enable telemetry with Amplitude. Requires [`ORCA_AMPLITUDE_API_KEY`](#ORCA_AMPLITUDE_API_KEY) and [`ORCA_AMPLITUDE_USER_ID`](#ORCA_AMPLITUDE_USER_ID) values. On Travis CI, only takes effect for cron events.
 
 ### Travis CI scripts

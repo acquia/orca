@@ -59,6 +59,12 @@ env:
     # @see https://github.com/acquia/orca/blob/master/docs/advanced-usage.md#ORCA_FIXTURE_PROFILE
     # - ORCA_FIXTURE_PROFILE=example
     #
+    # Change the PHP Code Sniffer standard used for static analysis. Acceptable
+    # values are "AcquiaPHP", "AcquiaDrupalStrict", and
+    # "AcquiaDrupalTransitional". Defaults to "AcquiaDrupalTransitional".
+    # @see https://github.com/acquia/orca/blob/master/docs/advanced-usage.md#ORCA_PHPCS_STANDARD
+    # - ORCA_PHPCS_STANDARD=AcquiaDrupalTransitional
+    #
     # To enable telemetry with Amplitude on cron runs, uncomment the following
     # line and set ORCA_AMPLITUDE_API_KEY in your Travis CI repository settings:
     # @see https://github.com/acquia/orca/blob/master/docs/advanced-usage.md#ORCA_TELEMETRY_ENABLE

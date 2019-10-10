@@ -16,7 +16,8 @@
   <exclude-pattern>vendor/</exclude-pattern>
   <exclude-pattern>var/</exclude-pattern>
 
-  <rule ref="AcquiaDrupalTransitional"/>
+  <!-- This value is replaced at runtime by \Acquia\Orca\Task\PhpcsConfigurator -->
+  <rule ref="{{ STANDARD }}"/>
 
   <!-- @todo Remove after updating to the next release of Coder module.
    @see https://www.drupal.org/project/coder/issues/3066108 -->
