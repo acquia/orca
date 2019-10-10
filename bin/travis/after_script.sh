@@ -19,4 +19,4 @@ fi
 # Show ORCA's own current build status. A failure may signify an upstream issue
 # or service level outage that could have affected this build.
 # @see https://travis-ci.org/acquia/orca/branches
-travis history --no-interactive --repo=acquia/orca --branch=master --limit=1 --date
+travis history --no-interactive --repo=acquia/orca --branch=master --limit=2 --date
