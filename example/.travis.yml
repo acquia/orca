@@ -125,3 +125,36 @@ after_failure: ../orca/bin/travis/after_failure.sh
 
 # Perform final, post-script tasks.
 after_script: ../orca/bin/travis/after_script.sh
+
+# Get build notifications.
+# @see https://docs.travis-ci.com/user/notifications
+# notifications:
+#   slack:
+#     # @see https://docs.travis-ci.com/user/notifications#configuring-slack-notifications
+#     rooms:
+#       # Get this value from your Slack Travis CI app configuration and encrypt
+#       # it if your .travis.yml is stored in a public repository.
+#       # @see https://docs.travis-ci.com/user/notifications#configuring-slack-notifications
+#       # @see https://github.com/travis-ci/travis.rb#encrypt
+#       - secure: example_value_hdfgubdsifgudfbgs3453durghssecurestringidsuag34522irueg=
+#     # Limit to when the build changes from passing to failing or vice versa.
+#     on_success: change
+#     on_failure: change
+#     # Limit to the major version branches.
+#     if: branch = env(ORCA_SUT_BRANCH)
+#   email:
+#     # @see https://docs.travis-ci.com/user/notifications#configuring-email-notifications
+#     recipients:
+#       # Email distribution lists (groups) are preferable to individual addresses
+#       # so that personnel changes don't require corresponding code changes.
+#       # Though the online documentation doesn't explicitly mention it, this
+#       # value can also be encrypted if your .travis.yml is stored in a public
+#       # repository, e.g.:
+#       # @code travis encrypt username@example.com
+#       # @see https://github.com/travis-ci/travis.rb#encrypt
+#       - secure: example_value_hdfgubdsifgudfbgs3453durghssecurestringidsuag34522irueg=
+#     # Limit to when the build changes from passing to failing or vice versa.
+#     on_success: change
+#     on_failure: change
+#     # Limit to the major version branches.
+#     if: branch = env(ORCA_SUT_BRANCH)
