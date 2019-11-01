@@ -61,7 +61,7 @@ class FixtureInstallSiteCommand extends Command {
     $this
       ->setAliases(['si'])
       ->setDescription('Installs the site')
-      ->setHelp('Installs Drupal and enables Acquia extensions.')
+      ->setHelp('Installs Drupal and enables company extensions.')
       ->addOption('force', 'f', InputOption::VALUE_NONE, 'Install without confirmation')
       ->addOption('profile', NULL, InputOption::VALUE_REQUIRED, 'The Drupal installation profile to use, e.g., "minimal". ("orca" is a pseudo-profile based on "testing", with the Toolbar module enabled and Seven as the admin theme)', FixtureCreator::DEFAULT_PROFILE);
   }

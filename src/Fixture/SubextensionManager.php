@@ -7,7 +7,7 @@ use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
 
 /**
- * Provide access to Acquia Drupal subextensions physically in the fixture.
+ * Provide access to company Drupal subextensions physically in the fixture.
  */
 class SubextensionManager {
 
@@ -89,7 +89,7 @@ class SubextensionManager {
   }
 
   /**
-   * Gets an array of all Acquia subextensions.
+   * Gets an array of all company subextensions.
    *
    * @return \Acquia\Orca\Fixture\Package[]
    *   An indexed array of package objects.
@@ -155,13 +155,13 @@ class SubextensionManager {
   }
 
   /**
-   * Finds all Acquia Drupal subextension composer.json files.
+   * Finds all company Drupal subextension composer.json files.
    *
    * @param string $path
    *   A path to recursively search for subextensions.
    *
    * @return \Symfony\Component\Finder\Finder|array
-   *   A Finder query for all Acquia Drupal subextension composer.json files
+   *   A Finder query for all company Drupal subextension composer.json files
    *   within the given paths or an empty array if no paths are given.
    */
   private function findSubextensionComposerJsonFiles(string $path) {

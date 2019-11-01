@@ -320,7 +320,7 @@ class FixtureCreator {
    * Sets the symlink all flag.
    *
    * @param bool $symlink_all
-   *   TRUE to symlink all Acquia packages or FALSE not to.
+   *   TRUE to symlink all company packages or FALSE not to.
    */
   public function setSymlinkAll(bool $symlink_all): void {
     $this->symlinkAll = $symlink_all;
@@ -389,7 +389,7 @@ class FixtureCreator {
         // via a local "path" repository.
         'acquia/lightning',
       ],
-      // Other Acquia packages are only conditionally required later and should
+      // Other company packages are only conditionally required later and should
       // in no case be included up-front.
       $this->getUnwantedPackageList()
     ), $fixture_path);
@@ -449,7 +449,7 @@ class FixtureCreator {
   }
 
   /**
-   * Adds Acquia packages to the codebase.
+   * Adds company packages to the codebase.
    *
    * @throws \Acquia\Orca\Exception\OrcaException
    *   If the SUT isn't properly installed.
@@ -459,27 +459,27 @@ class FixtureCreator {
       return;
     }
 
-    $this->output->section('Adding Acquia packages');
+    $this->output->section('Adding company packages');
     $this->addTopLevelAcquiaPackages();
-    $this->addAcquiaSubextensions();
-    $this->commitCodeChanges('Added Acquia packages.');
+    $this->addCompanySubextensions();
+    $this->commitCodeChanges('Added company packages.');
   }
 
   /**
-   * Adds the top-level Acquia packages to composer.json.
+   * Adds the top-level company packages to composer.json.
    *
    * @throws \Acquia\Orca\Exception\OrcaException
    *   If the SUT isn't properly installed.
    */
   private function addTopLevelAcquiaPackages(): void {
     $this->addPathRepositories();
-    $this->configureComposerForTopLevelAcquiaPackages();
-    $this->composerRequireTopLevelAcquiaPackages();
+    $this->configureComposerForTopLevelCompanyPackages();
+    $this->composerRequireTopLevelCompanyPackages();
     $this->verifySut();
   }
 
   /**
-   * Adds Composer path repositories for Acquia packages.
+   * Adds Composer path repositories for company packages.
    *
    * Repositories take precedence in the order specified (i.e., first match
    * found wins), so our overrides need to be added to the beginning in order
@@ -540,9 +540,9 @@ class FixtureCreator {
   }
 
   /**
-   * Configures Composer to install Acquia packages from source.
+   * Configures Composer to install company packages from source.
    */
-  private function configureComposerForTopLevelAcquiaPackages(): void {
+  private function configureComposerForTopLevelCompanyPackages(): void {
     $packages = $this->packageManager->getAll();
 
     if (!$packages) {
@@ -572,11 +572,11 @@ class FixtureCreator {
   }
 
   /**
-   * Requires the top-level Acquia packages via Composer.
+   * Requires the top-level company packages via Composer.
    *
    * @throws \Acquia\Orca\Exception\OrcaException
    */
-  private function composerRequireTopLevelAcquiaPackages(): void {
+  private function composerRequireTopLevelCompanyPackages(): void {
     $command = [
       'composer',
       'require',
@@ -585,7 +585,7 @@ class FixtureCreator {
     if ($this->preferSource) {
       $command[] = '--prefer-source';
     }
-    $command = array_merge($command, $this->getAcquiaPackageDependencies());
+    $command = array_merge($command, $this->getCompanyPackageDependencies());
     $this->processRunner->runOrcaVendorBin($command, $this->fixture->getPath());
   }
 
@@ -653,14 +653,14 @@ class FixtureCreator {
   }
 
   /**
-   * Gets the list of Composer dependency strings for Acquia packages.
+   * Gets the list of Composer dependency strings for company packages.
    *
    * @return string[]
-   *   The list of Composer dependency strings for Acquia packages.
+   *   The list of Composer dependency strings for company packages.
    *
    * @throws \Acquia\Orca\Exception\OrcaException
    */
-  private function getAcquiaPackageDependencies(): array {
+  private function getCompanyPackageDependencies(): array {
     $dependencies = ($this->symlinkAll) ? $this->getLocalPackages() : $this->packageManager->getAll();
     if ($this->isSutOnly) {
       $dependencies = [$this->sut];
@@ -796,9 +796,9 @@ class FixtureCreator {
   }
 
   /**
-   * Adds Acquia subextensions to the fixture.
+   * Adds company subextensions to the fixture.
    */
-  private function addAcquiaSubextensions(): void {
+  private function addCompanySubextensions(): void {
     $this->configureComposerForLocalSubextensions();
     $this->composerRequireSubextensions();
   }
@@ -886,7 +886,7 @@ class FixtureCreator {
   }
 
   /**
-   * Requires the Acquia subextensions via Composer.
+   * Requires the company subextensions via Composer.
    */
   private function composerRequireSubextensions(): void {
     $subextensions = [];
@@ -1016,7 +1016,7 @@ PHP;
   /**
    * Installs the site.
    *
-   * Installs Drupal and enables Acquia extensions.
+   * Installs Drupal and enables company extensions.
    *
    * @throws \Exception
    */

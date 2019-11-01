@@ -20,10 +20,10 @@ ORCA is a [Symfony Console](https://symfony.com/doc/current/components/console.h
 
 ## Test fixtures
 
-An ORCA test fixture is comprised of a [BLT](glossary.md#blt) project with one or all Acquia software packages (as specified in [`config/packages.yml`](../config/packages.yml)) added via Composer. There are two basic kinds:
+An ORCA test fixture is comprised of a [BLT](glossary.md#blt) project with one or all company software packages (as specified in [`config/packages.yml`](../config/packages.yml)) added via Composer. There are two basic kinds:
 
-* A **standard fixture** includes and installs the SUT as well as all other Acquia packages.
-* A **SUT-only fixture** includes and installs the SUT and omits all other non-required Acquia packages.
+* A **standard fixture** includes and installs the SUT as well as all other company packages.
+* A **SUT-only fixture** includes and installs the SUT and omits all other non-required company packages.
 
 Packages are included at one of two levels of stability:
 
@@ -52,7 +52,7 @@ Static analysis requires no special setup of the SUT.
 
 ORCA tests for functional and behavioral correctness with [PHPUnit](glossary.md#phpunit) and [Behat](glossary.md#behat).
 
-* An **integrated test** tests the SUT in the _presence_ of all other Acquia packages (i.e., in a standard fixture) to ensure that all packages can be added to the same codebase via Composer (preventing dependency conflicts), that there are no install time or functional conflicts between them, and prevents regressions.
+* An **integrated test** tests the SUT in the _presence_ of all other company packages (i.e., in a standard fixture) to ensure that all packages can be added to the same codebase via Composer (preventing dependency conflicts), that there are no install time or functional conflicts between them, and prevents regressions.
 * An **isolated test** tests the SUT in the _absence_ of other non-required packages (i.e., in a SUT-only fixture) to ensure that it has no undeclared dependencies on other packages and functions correctly on its own.
 
 See [Designing automated tests](getting-started.md#designing-automated-tests).

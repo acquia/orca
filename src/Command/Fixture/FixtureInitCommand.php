@@ -117,29 +117,29 @@ class FixtureInitCommand extends Command {
     $this
       ->setAliases(['init'])
       ->setDescription('Creates the test fixture')
-      ->setHelp('Creates a BLT-based Drupal site build, includes the system under test using Composer, optionally includes all other Acquia packages, and installs Drupal.')
+      ->setHelp('Creates a BLT-based Drupal site build, includes the system under test using Composer, optionally includes all other company packages, and installs Drupal.')
 
       // Fundamental options.
       ->addOption('force', 'f', InputOption::VALUE_NONE, 'If the fixture already exists, remove it first without confirmation')
       ->addOption('sut', NULL, InputOption::VALUE_REQUIRED, 'The system under test (SUT) in the form of its package name, e.g., "drupal/example"')
-      ->addOption('sut-only', NULL, InputOption::VALUE_NONE, 'Add only the system under test (SUT). Omit all other non-required Acquia packages')
+      ->addOption('sut-only', NULL, InputOption::VALUE_NONE, 'Add only the system under test (SUT). Omit all other non-required company packages')
 
       // Common options.
-      ->addOption('bare', NULL, InputOption::VALUE_NONE, 'Omit all non-required Acquia packages')
+      ->addOption('bare', NULL, InputOption::VALUE_NONE, 'Omit all non-required company packages')
       ->addOption('core', NULL, InputOption::VALUE_REQUIRED, implode(PHP_EOL, array_merge(
         ['Change the version of Drupal core installed:'],
         DrupalCoreVersion::commandHelp(),
         ['- Any version string Composer understands, see https://getcomposer.org/doc/articles/versions.md']
       )), DrupalCoreVersion::CURRENT_RECOMMENDED)
-      ->addOption('dev', NULL, InputOption::VALUE_NONE, 'Use dev versions of Acquia packages')
+      ->addOption('dev', NULL, InputOption::VALUE_NONE, 'Use dev versions of company packages')
       ->addOption('profile', NULL, InputOption::VALUE_REQUIRED, 'The Drupal installation profile to use, e.g., "minimal". ("orca" is a pseudo-profile based on "minimal", with the Toolbar module enabled and Seven as the admin theme)', FixtureCreator::DEFAULT_PROFILE)
 
       // Uncommon options.
       ->addOption('ignore-patch-failure', NULL, InputOption::VALUE_NONE, 'Do not exit on failure to apply Composer patches. (Useful for debugging failures)')
       ->addOption('no-sqlite', NULL, InputOption::VALUE_NONE, 'Use the default BLT database includes instead of SQLite')
       ->addOption('no-site-install', NULL, InputOption::VALUE_NONE, 'Do not install Drupal. Supersedes the "--profile" option')
-      ->addOption('prefer-source', NULL, InputOption::VALUE_NONE, 'Force installation of non-Acquia packages from sources when possible, including VCS information. (Acquia packages are always installed from source.) Useful for core and contrib work')
-      ->addOption('symlink-all', NULL, InputOption::VALUE_NONE, 'Symlink all possible Acquia packages via local path repository. Packages absent from the expected location will be installed normally');
+      ->addOption('prefer-source', NULL, InputOption::VALUE_NONE, 'Force installation of non-company packages from sources when possible, including VCS information. (Company packages are always installed from source.) Useful for core and contrib work')
+      ->addOption('symlink-all', NULL, InputOption::VALUE_NONE, 'Symlink all possible company packages via local path repository. Packages absent from the expected location will be installed normally');
   }
 
   /**

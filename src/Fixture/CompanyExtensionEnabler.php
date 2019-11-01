@@ -9,9 +9,9 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
- * Installs Acquia Drupal extensions.
+ * Installs company Drupal extensions.
  */
-class AcquiaExtensionEnabler {
+class CompanyExtensionEnabler {
 
   use SutSettingsTrait;
 
@@ -126,7 +126,7 @@ class AcquiaExtensionEnabler {
   }
 
   /**
-   * Enables the Acquia extensions.
+   * Enables the company extensions.
    */
   private function enableAcquiaExtensions(): void {
     if ($this->isBare) {
@@ -139,16 +139,16 @@ class AcquiaExtensionEnabler {
       return;
     }
 
-    $this->output->section('Enabling Acquia modules & themes');
+    $this->output->section('Enabling company modules & themes');
     $this->enableModules();
     $this->enableThemes();
   }
 
   /**
-   * Enables the Acquia modules.
+   * Enables the company modules.
    */
   private function enableModules(): void {
-    $module_list = $this->getAcquiaExtensionList(self::TYPE_MODULE);
+    $module_list = $this->getCompanyExtensionList(self::TYPE_MODULE);
     if (!$module_list) {
       return;
     }
@@ -160,10 +160,10 @@ class AcquiaExtensionEnabler {
   }
 
   /**
-   * Enables the Acquia themes.
+   * Enables the company themes.
    */
   private function enableThemes(): void {
-    $theme_list = $this->getAcquiaExtensionList(self::TYPE_THEME);
+    $theme_list = $this->getCompanyExtensionList(self::TYPE_THEME);
     if (!$theme_list) {
       return;
     }
@@ -175,15 +175,15 @@ class AcquiaExtensionEnabler {
   }
 
   /**
-   * Gets the list of Acquia extensions to enable.
+   * Gets the list of company extensions to enable.
    *
    * @param string $extension_type
    *   The extension type: ::TYPE_MODULE or ::TYPE_THEME.
    *
    * @return string[]
-   *   An indexed array of Acquia extension machine names.
+   *   An indexed array of company extension machine names.
    */
-  private function getAcquiaExtensionList(string $extension_type): array {
+  private function getCompanyExtensionList(string $extension_type): array {
     $extension_list = [];
 
     $top_level_packages = $this->packageManager->getAll();

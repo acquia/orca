@@ -11,7 +11,7 @@ use Symfony\Component\Finder\Finder;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 
 /**
- * Installs a site and enables Acquia extensions.
+ * Installs a site and enables company extensions.
  */
 class SiteInstaller {
 
@@ -37,11 +37,11 @@ class SiteInstaller {
   private $baseProfilePath;
 
   /**
-   * The Acquia extension enabler.
+   * The company extension enabler.
    *
-   * @var \Acquia\Orca\Fixture\AcquiaExtensionEnabler
+   * @var \Acquia\Orca\Fixture\CompanyExtensionEnabler
    */
-  private $acquiaExtensionEnabler;
+  private $companyExtensionEnabler;
 
   /**
    * The filesystem.
@@ -95,8 +95,8 @@ class SiteInstaller {
   /**
    * Constructs an instance.
    *
-   * @param \Acquia\Orca\Fixture\AcquiaExtensionEnabler $acquia_extension_enabler
-   *   The Acquia extension enabler.
+   * @param \Acquia\Orca\Fixture\CompanyExtensionEnabler $company_extension_enabler
+   *   The company extension enabler.
    * @param \Symfony\Component\Filesystem\Filesystem $filesystem
    *   The filesystem.
    * @param \Acquia\Orca\Fixture\Fixture $fixture
@@ -108,8 +108,8 @@ class SiteInstaller {
    * @param \Symfony\Component\Console\Style\SymfonyStyle $output
    *   The output decorator.
    */
-  public function __construct(AcquiaExtensionEnabler $acquia_extension_enabler, Filesystem $filesystem, Fixture $fixture, ProcessRunner $process_runner, string $project_dir, SymfonyStyle $output) {
-    $this->acquiaExtensionEnabler = $acquia_extension_enabler;
+  public function __construct(CompanyExtensionEnabler $company_extension_enabler, Filesystem $filesystem, Fixture $fixture, ProcessRunner $process_runner, string $project_dir, SymfonyStyle $output) {
+    $this->companyExtensionEnabler = $company_extension_enabler;
     $this->filesystem = $filesystem;
     $this->fixture = $fixture;
     $this->output = $output;
@@ -277,12 +277,12 @@ class SiteInstaller {
   }
 
   /**
-   * Enables Acquia Drupal extensions.
+   * Enables company Drupal extensions.
    *
    * @throws \Exception
    */
   private function enableExtensions(): void {
-    $this->acquiaExtensionEnabler->enable();
+    $this->companyExtensionEnabler->enable();
 
     if (!$this->isOrcaProfile) {
       return;
