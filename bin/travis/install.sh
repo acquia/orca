@@ -7,7 +7,7 @@
 #     install.sh
 #
 # DESCRIPTION
-#     Creates the test fixture.
+#     Creates the test fixture and places the SUT.
 
 cd "$(dirname "$0")" || exit; source _includes.sh
 

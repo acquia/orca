@@ -7,6 +7,7 @@
 * [Ignored tests](#ignored-tests)
 * [Integrated test](#integrated-test)
 * [Isolated test](#isolated-test)
+* [Isolated unit tests](#isolated-unit-tests)
 * [Non-SUT tests](#non-sut-tests)
 * [ORCA](#orca)
 * [ORCA internals](#orca-internals)
@@ -28,7 +29,7 @@ A [test fixture](#test-fixture) that neither includes nor installs any [SUT](#su
 
 ## Behat
 
-| 'bēhat | An open source Behavior-Driven Development framework for PHP. [[Website]](http://behat.org/) ORCA automatically runs [public](#public-tests) and [private](#private-tests) Behat tests in company packages using any `behat.yml` files found in their root directories. See also [ignored tests](#ignored-tests).
+| 'bēhat | An open source Behavior-Driven Development framework for PHP. [[Website]](http://behat.org/) ORCA automatically runs [public](#public-tests) and [private](#private-tests) Behat tests in the SUT only using a `behat.yml` files found in its root directory if present. See also [ignored tests](#ignored-tests).
 
 ## BLT
 
@@ -45,6 +46,10 @@ A test of the [SUT](#sut) in the presence of all other company packages (i.e., i
 ## Isolated test
 
 A test of the [SUT](#sut) in the absence of other non-required packages (i.e., in a [SUT-only fixture](#sut-only-fixture)). [Read more in Understanding ORCA.](understanding-orca.md#automated-tests)
+
+## Isolated unit tests
+
+Unit tests that run "in isolation", i.e., separate and apart from the application and all other units. See [Unit Test Isolation](http://wiki.c2.com/?UnitTestIsolation).
 
 ## Non-SUT tests
 
@@ -88,7 +93,7 @@ A [test fixture](#test-fixture) that includes and installs the [SUT](#sut) and o
 
 ## Test fixture
 
-In automated testing, a test fixture is all the things we need to have in place in order to run a test and expect a particular outcome.<sup>[[cit.]](http://xunitpatterns.com/test%20fixture%20-%20xUnit.html)</sup> In the case of ORCA, that means a [BLT](#blt) project with all applicable company software packages in place and Drupal installed. [Read more in Getting Started.](getting-started.md#test-fixtures)
+In automated testing, a test fixture is all the things we need to have in place in order to run a test and expect a particular outcome.<sup>[[cit.]](http://xunitpatterns.com/test%20fixture%20-%20xUnit.html)</sup> In the case of ORCA, that means a [BLT](#blt) project with all applicable company software packages in place and Drupal installed. [Read more in Understanding ORCA.](understanding-orca.md#test-fixtures)
 
 ---
 
