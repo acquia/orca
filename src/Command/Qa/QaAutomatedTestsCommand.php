@@ -105,7 +105,7 @@ class QaAutomatedTestsCommand extends Command {
       ->setAliases(['test'])
       ->setDescription('Runs automated tests')
       ->addOption('sut', NULL, InputOption::VALUE_REQUIRED, 'The system under test (SUT) in the form of its package name, e.g., "drupal/example"')
-      ->addOption('sut-only', NULL, InputOption::VALUE_NONE, 'Run tests from only the system under test (SUT). Omit tests from all other Acquia packages')
+      ->addOption('sut-only', NULL, InputOption::VALUE_NONE, 'Run tests from only the system under test (SUT). Omit tests from all other company packages')
       ->addOption('behat', NULL, InputOption::VALUE_NONE, 'Run only PHPUnit tests')
       ->addOption('phpunit', NULL, InputOption::VALUE_NONE, 'Run only Behat tests')
       ->addOption('no-servers', NULL, InputOption::VALUE_NONE, "Don't run the ChromeDriver and web servers");

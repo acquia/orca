@@ -43,8 +43,10 @@ composer global require \
 # Install Travis command line client.
 gem install travis
 
-# Install ORCA.
-composer -d"$ORCA_ROOT" install
+# Download and install ORCA libraries if necessary. This provides compatibility
+# with the old method of installing ORCA via `git clone` rather than the newer
+# `composer create-project` approach.
+[[ -d "$ORCA_ROOT/vendor" ]] || composer -d"$ORCA_ROOT" install
 
 orca --version
 

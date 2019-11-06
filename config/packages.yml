@@ -1,5 +1,5 @@
 ---
-# An array of Acquia software package data. Each package datum is keyed by its
+# An array of company software package data. Each package datum is keyed by its
 # package name, i.e., the "name" property in its composer.json file, e.g.,
 # "drupal/example", and has a corresponding array value that may contain the
 # following key-value pairs:

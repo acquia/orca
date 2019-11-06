@@ -3,7 +3,7 @@
 namespace Acquia\Orca\Command\Fixture;
 
 use Acquia\Orca\Enum\StatusCode;
-use Acquia\Orca\Fixture\AcquiaExtensionEnabler;
+use Acquia\Orca\Fixture\CompanyExtensionEnabler;
 use Acquia\Orca\Fixture\Fixture;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -23,11 +23,11 @@ class FixtureEnableExtensionsCommand extends Command {
   protected static $defaultName = 'fixture:enable-extensions';
 
   /**
-   * The Acquia extension enabler.
+   * The company extension enabler.
    *
-   * @var \Acquia\Orca\Fixture\AcquiaExtensionEnabler
+   * @var \Acquia\Orca\Fixture\CompanyExtensionEnabler
    */
-  private $acquiaExtensionEnabler;
+  private $companyExtensionEnabler;
 
   /**
    * The fixture.
@@ -39,13 +39,13 @@ class FixtureEnableExtensionsCommand extends Command {
   /**
    * Constructs an instance.
    *
-   * @param \Acquia\Orca\Fixture\AcquiaExtensionEnabler $acquia_extension_enabler
-   *   The Acquia extension enabler.
+   * @param \Acquia\Orca\Fixture\CompanyExtensionEnabler $company_extension_enabler
+   *   The company extension enabler.
    * @param \Acquia\Orca\Fixture\Fixture $fixture
    *   The fixture.
    */
-  public function __construct(AcquiaExtensionEnabler $acquia_extension_enabler, Fixture $fixture) {
-    $this->acquiaExtensionEnabler = $acquia_extension_enabler;
+  public function __construct(CompanyExtensionEnabler $company_extension_enabler, Fixture $fixture) {
+    $this->companyExtensionEnabler = $company_extension_enabler;
     $this->fixture = $fixture;
     parent::__construct(self::$defaultName);
   }
@@ -56,7 +56,7 @@ class FixtureEnableExtensionsCommand extends Command {
   protected function configure() {
     $this
       ->setAliases(['enexts'])
-      ->setDescription('Enables all Acquia Drupal extensions');
+      ->setDescription('Enables all company Drupal extensions');
   }
 
   /**
@@ -69,7 +69,7 @@ class FixtureEnableExtensionsCommand extends Command {
     }
 
     try {
-      $this->acquiaExtensionEnabler->enable();
+      $this->companyExtensionEnabler->enable();
     }
     catch (\Exception $e) {
       $io = new SymfonyStyle($input, $output);
