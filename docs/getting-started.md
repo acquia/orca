@@ -38,17 +38,11 @@ ORCA can also be installed and run locally for testing and development. Follow t
     PARENT_DIR="$HOME/Projects"
     ```
 
-1. Clone ORCA and your package(s) each into the directory, e.g.:
+1. Install ORCA and clone your package(s) each into the directory, e.g.:
 
     ```bash
-    git clone git@github.com:acquia/orca.git "${PARENT_DIR}/orca"
+    composer create-project acquia/orca "${PARENT_DIR}/orca"
     git clone git@github.com:acquia/EXAMPLE.git "${PARENT_DIR}/EXAMPLE"
-    ```
-
-1. Install ORCA with Composer, e.g.:
-
-    ```bash
-    composer install --no-dev --working-dir="${PARENT_DIR}/orca"
     ```
 
 1. Optionally make the commandline executable globally-accessible...

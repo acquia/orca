@@ -44,10 +44,11 @@ env:
     # This may be the destination branch of a pull request or the nearest
     # ancestor of a topic branch.
     - ORCA_SUT_BRANCH=8.x-1.x
-    # Specify the version of ORCA to use. Use the master branch for the latest
-    # release, develop for Dev/HEAD, or a tag name (e.g., v1.0.0) for a specific
-    # release.
-    - ORCA_VERSION=master
+    # Specify the version of ORCA to use. Use dev-master to track the latest
+    # release, dev-develop to track Dev/HEAD, or any other Composer version
+    # string.
+    # @see https://getcomposer.org/doc/articles/versions.md
+    - ORCA_VERSION=dev-master
     # If your package isn't in ORCA's packages.yml or conflicts with details
     # that are, you can modify the active packages configuration at runtime by
     # uncommenting the following line and specifying your own alter file.
@@ -102,7 +103,7 @@ matrix:
 
 # Install ORCA and prepare the environment.
 before_install:
-  - git clone --branch ${ORCA_VERSION} --depth 1 https://github.com/acquia/orca.git ../orca
+  - composer create-project --no-dev acquia/orca ../orca "$ORCA_VERSION"
   - ../orca/bin/travis/before_install.sh
 
 # Create the test fixture and place the SUT.
