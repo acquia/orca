@@ -1,6 +1,10 @@
 ---
 language: php
 
+os: [ linux ]
+
+version: ~> 1.0
+
 php: "7.2"
 
 addons:
@@ -27,7 +31,7 @@ env:
     - ORCA_PACKAGES_CONFIG_ALTER=example/tests/packages_alter.yml
     - ORCA_SUT_DIR=${TRAVIS_BUILD_DIR}/../example
 
-matrix:
+jobs:
   fast_finish: true
   include:
     - { name: "Static code analysis", env: ORCA_JOB=STATIC_CODE_ANALYSIS }
