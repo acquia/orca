@@ -14,6 +14,7 @@ cd "$(dirname "$0")" || exit; source _includes.sh
 # Log the job on cron if telemetry is enabled.
 if [[ "$TRAVIS_EVENT_TYPE" = "cron" && "$ORCA_TELEMETRY_ENABLE" && "$ORCA_AMPLITUDE_API_KEY" && "$ORCA_AMPLITUDE_USER_ID" ]]; then
   orca internal:log-job
+  orca internal:log-job --simulate
 fi
 
 # Show ORCA's own current build status. A failure may signify an upstream issue
