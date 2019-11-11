@@ -16,8 +16,17 @@
 #
 # For advanced needs,
 # @see https://github.com/acquia/orca/blob/develop/docs/advanced-usage.md
+#
+# For all Travis CI build config options,
+# @see https://config.travis-ci.com/
 ---
 language: php
+
+os: linux
+
+# Activate build config validation.
+# @see https://docs.travis-ci.com/user/build-config-validation
+version: ~> 1.0
 
 # The lowest version of PHP supported by all of Drupal, Acquia, and ORCA itself.
 # @see https://www.drupal.org/docs/8/system-requirements/php-requirements
@@ -74,7 +83,7 @@ env:
 
 # Execution time is drastically reduced by splitting the build into multiple
 # concurrent jobs.
-matrix:
+jobs:
   # Mark the build as finished once the only remaining jobs are allowed to fail.
   fast_finish: true
   include:
