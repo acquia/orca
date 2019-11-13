@@ -49,6 +49,7 @@ These affect ORCA only as invoked via the Travis CI scripts.
 [README](README.md)
 | [Understanding ORCA](understanding-orca.md)
 | [Getting Started](getting-started.md)
+| [CLI Commands](commands.md)
 | **Advanced Usage**
 | [Project Glossary](glossary.md)
 | [FAQ](faq.md)
