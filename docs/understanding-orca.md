@@ -42,6 +42,7 @@ ORCA checks the SUT for low level construction defects using the following stati
 * [Composer normalize](https://github.com/localheinz/composer-normalize) checks `composer.json` files for consistent ordering and formatting.
 * [PHP Parallel Lint](https://github.com/JakubOnderka/PHP-Parallel-Lint) checks PHP files for syntax errors.
 * [Acquia Coding Standards for PHP](https://github.com/acquia/coding-standards-php) checks for coding standards and best practices compliance, checks for PHP cross-version compatibility with all supported language versions, and finds vulnerabilities and weaknesses related to security in PHP code.
+* [PHPLOC](https://github.com/sebastianbergmann/phploc) measures the size and analyzes the structure of a PHP project, including such low level metrics as cyclomatic complexity and dependencies. ([Example.](https://github.com/sebastianbergmann/phploc#usage-examples))
 * [PHP Mess Detector](https://phpmd.org/) looks for potential problems in PHP source code, such as possible bugs, suboptimal code, overcomplicated expressions, and unused parameters, methods, and properties.
 * The [Symfony YAML Linter](https://symfony.com/doc/current/components/yaml.html) checks YAML files for syntax errors.
 
