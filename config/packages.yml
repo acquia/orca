@@ -146,4 +146,6 @@ drupal/lightning_workflow:
       version: ~
       version_dev: ~
 
+drupal/mautic: []
+
 drupal/media_acquiadam: []
