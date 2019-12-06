@@ -340,7 +340,7 @@ class FixtureCreator {
       '--no-interaction',
       'acquia/blt-project',
     ];
-    if ($this->sut === 'acquia/blt' || $this->isDev) {
+    if ($this->sut->getPackageName() === 'acquia/blt' || $this->isDev) {
       $command[] = '--stability=dev';
     }
     else {
