@@ -339,11 +339,14 @@ class FixtureCreator {
       '--no-install',
       '--no-interaction',
       'acquia/blt-project',
-      $this->fixture->getPath(),
     ];
     if ($this->sut === 'acquia/blt' || $this->isDev) {
       $command[] = '--stability=dev';
     }
+    else {
+      $command[] = '--stability=alpha';
+    }
+    $command[] = $this->fixture->getPath();
     $this->processRunner->runOrcaVendorBin($command);
   }
 
@@ -412,6 +415,9 @@ class FixtureCreator {
     if ($this->drupalCoreVersion) {
       $additions[] = "drupal/core:{$this->drupalCoreVersion}";
     }
+
+    // Install Drupal core dev requirements.
+    $additions[] = 'drupal/core-dev';
 
     // Install requirements for deprecation checking.
     $additions[] = 'mglaman/phpstan-drupal-deprecations';
