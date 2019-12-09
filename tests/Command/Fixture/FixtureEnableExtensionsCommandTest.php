@@ -5,19 +5,19 @@ namespace Acquia\Orca\Tests\Command\Fixture;
 use Acquia\Orca\Command\Fixture\FixtureEnableExtensionsCommand;
 use Acquia\Orca\Enum\StatusCode;
 use Acquia\Orca\Exception\OrcaException;
-use Acquia\Orca\Fixture\AcquiaExtensionEnabler;
+use Acquia\Orca\Fixture\CompanyExtensionEnabler;
 use Acquia\Orca\Fixture\Fixture;
 use Acquia\Orca\Tests\Command\CommandTestBase;
 use Symfony\Component\Console\Command\Command;
 
 /**
- * @property \Prophecy\Prophecy\ObjectProphecy|AcquiaExtensionEnabler $acquiaModuleEnabler
+ * @property \Prophecy\Prophecy\ObjectProphecy|CompanyExtensionEnabler $companyExtensionEnabler
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Fixture\Fixture $fixture
  */
 class FixtureEnableExtensionsCommandTest extends CommandTestBase {
 
   protected function setUp() {
-    $this->acquiaModuleEnabler = $this->prophesize(AcquiaExtensionEnabler::class);
+    $this->companyExtensionEnabler = $this->prophesize(CompanyExtensionEnabler::class);
     $this->fixture = $this->prophesize(Fixture::class);
     $this->fixture->exists()
       ->willReturn(TRUE);
@@ -26,11 +26,11 @@ class FixtureEnableExtensionsCommandTest extends CommandTestBase {
   }
 
   protected function createCommand(): Command {
-    /** @var \Acquia\Orca\Fixture\AcquiaExtensionEnabler $acquia_extension_enabler */
-    $acquia_extension_enabler = $this->acquiaModuleEnabler->reveal();
+    /** @var \Acquia\Orca\Fixture\CompanyExtensionEnabler $company_extension_enabler */
+    $company_extension_enabler = $this->companyExtensionEnabler->reveal();
     /** @var \Acquia\Orca\Fixture\Fixture $fixture */
     $fixture = $this->fixture->reveal();
-    return new FixtureEnableExtensionsCommand($acquia_extension_enabler, $fixture);
+    return new FixtureEnableExtensionsCommand($company_extension_enabler, $fixture);
   }
 
   /**
@@ -41,11 +41,11 @@ class FixtureEnableExtensionsCommandTest extends CommandTestBase {
       ->exists()
       ->shouldBeCalled()
       ->willReturn($fixture_exists);
-    $this->acquiaModuleEnabler
+    $this->companyExtensionEnabler
       ->enable()
       ->shouldBeCalledTimes($install_called);
     if ($exception) {
-      $this->acquiaModuleEnabler
+      $this->companyExtensionEnabler
         ->enable()
         ->willThrow($exception);
     }

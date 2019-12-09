@@ -7,8 +7,7 @@
 #     before_script.sh
 #
 # DESCRIPTION
-#     Displays information about installed Composer packages and Drupal
-#     projects.
+#     Displays details about the fixture for debugging purposes.
 
 cd "$(dirname "$0")" || exit; source _includes.sh
 

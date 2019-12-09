@@ -30,6 +30,7 @@
 [README](README.md)
 | [Understanding ORCA](understanding-orca.md)
 | [Getting Started](getting-started.md)
+| [CLI Commands](commands.md)
 | [Advanced Usage](advanced-usage.md)
 | [Project Glossary](glossary.md)
 | [FAQ](faq.md)

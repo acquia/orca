@@ -16,8 +16,17 @@
 #
 # For advanced needs,
 # @see https://github.com/acquia/orca/blob/develop/docs/advanced-usage.md
+#
+# For all Travis CI build config options,
+# @see https://config.travis-ci.com/
 ---
 language: php
+
+os: linux
+
+# Activate build config validation.
+# @see https://docs.travis-ci.com/user/build-config-validation
+version: ~> 1.0
 
 # The lowest version of PHP supported by all of Drupal, Acquia, and ORCA itself.
 # @see https://www.drupal.org/docs/8/system-requirements/php-requirements
@@ -44,10 +53,11 @@ env:
     # This may be the destination branch of a pull request or the nearest
     # ancestor of a topic branch.
     - ORCA_SUT_BRANCH=8.x-1.x
-    # Specify the version of ORCA to use. Use the master branch for the latest
-    # release, develop for Dev/HEAD, or a tag name (e.g., v1.0.0) for a specific
-    # release.
-    - ORCA_VERSION=master
+    # Specify the version of ORCA to use. Use dev-master to track the latest
+    # release, dev-develop to track Dev/HEAD, or any other Composer version
+    # string.
+    # @see https://getcomposer.org/doc/articles/versions.md
+    - ORCA_VERSION=dev-master
     # If your package isn't in ORCA's packages.yml or conflicts with details
     # that are, you can modify the active packages configuration at runtime by
     # uncommenting the following line and specifying your own alter file.
@@ -59,6 +69,12 @@ env:
     # @see https://github.com/acquia/orca/blob/master/docs/advanced-usage.md#ORCA_FIXTURE_PROFILE
     # - ORCA_FIXTURE_PROFILE=example
     #
+    # Change the PHP Code Sniffer standard used for static analysis. Acceptable
+    # values are "AcquiaPHP", "AcquiaDrupalStrict", and
+    # "AcquiaDrupalTransitional". Defaults to "AcquiaDrupalTransitional".
+    # @see https://github.com/acquia/orca/blob/master/docs/advanced-usage.md#ORCA_PHPCS_STANDARD
+    # - ORCA_PHPCS_STANDARD=AcquiaDrupalTransitional
+    #
     # To enable telemetry with Amplitude on cron runs, uncomment the following
     # line and set ORCA_AMPLITUDE_API_KEY in your Travis CI repository settings:
     # @see https://github.com/acquia/orca/blob/master/docs/advanced-usage.md#ORCA_TELEMETRY_ENABLE
@@ -67,7 +83,7 @@ env:
 
 # Execution time is drastically reduced by splitting the build into multiple
 # concurrent jobs.
-matrix:
+jobs:
   # Mark the build as finished once the only remaining jobs are allowed to fail.
   fast_finish: true
   include:
@@ -96,7 +112,7 @@ matrix:
 
 # Install ORCA and prepare the environment.
 before_install:
-  - git clone --branch ${ORCA_VERSION} --depth 1 https://github.com/acquia/orca.git ../orca
+  - composer create-project --no-dev acquia/orca ../orca "$ORCA_VERSION"
   - ../orca/bin/travis/before_install.sh
 
 # Create the test fixture and place the SUT.
@@ -119,3 +135,36 @@ after_failure: ../orca/bin/travis/after_failure.sh
 
 # Perform final, post-script tasks.
 after_script: ../orca/bin/travis/after_script.sh
+
+# Get build notifications.
+# @see https://docs.travis-ci.com/user/notifications
+# notifications:
+#   slack:
+#     # @see https://docs.travis-ci.com/user/notifications#configuring-slack-notifications
+#     rooms:
+#       # Get this value from your Slack Travis CI app configuration and encrypt
+#       # it if your .travis.yml is stored in a public repository.
+#       # @see https://docs.travis-ci.com/user/notifications#configuring-slack-notifications
+#       # @see https://github.com/travis-ci/travis.rb#encrypt
+#       - secure: example_value_hdfgubdsifgudfbgs3453durghssecurestringidsuag34522irueg=
+#     # Limit to when the build changes from passing to failing or vice versa.
+#     on_success: change
+#     on_failure: change
+#     # Limit to the major version branches.
+#     if: branch = env(ORCA_SUT_BRANCH)
+#   email:
+#     # @see https://docs.travis-ci.com/user/notifications#configuring-email-notifications
+#     recipients:
+#       # Email distribution lists (groups) are preferable to individual addresses
+#       # so that personnel changes don't require corresponding code changes.
+#       # Though the online documentation doesn't explicitly mention it, this
+#       # value can also be encrypted if your .travis.yml is stored in a public
+#       # repository, e.g.:
+#       # @code travis encrypt username@example.com
+#       # @see https://github.com/travis-ci/travis.rb#encrypt
+#       - secure: example_value_hdfgubdsifgudfbgs3453durghssecurestringidsuag34522irueg=
+#     # Limit to when the build changes from passing to failing or vice versa.
+#     on_success: change
+#     on_failure: change
+#     # Limit to the major version branches.
+#     if: branch = env(ORCA_SUT_BRANCH)

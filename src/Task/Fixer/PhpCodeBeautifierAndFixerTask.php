@@ -2,6 +2,7 @@
 
 namespace Acquia\Orca\Task\Fixer;
 
+use Acquia\Orca\Enum\PhpcsStandard;
 use Acquia\Orca\Exception\TaskFailureException;
 use Acquia\Orca\Task\TaskBase;
 use Symfony\Component\Process\Exception\ProcessFailedException;
@@ -10,6 +11,13 @@ use Symfony\Component\Process\Exception\ProcessFailedException;
  * Automatically fixes coding standards violations.
  */
 class PhpCodeBeautifierAndFixerTask extends TaskBase {
+
+  /**
+   * The standard to use.
+   *
+   * @var string
+   */
+  private $standard = PhpcsStandard::DEFAULT;
 
   /**
    * {@inheritdoc}
@@ -29,22 +37,29 @@ class PhpCodeBeautifierAndFixerTask extends TaskBase {
    * {@inheritdoc}
    */
   public function execute(): void {
+    $this->phpcsConfigurator->prepareTemporaryConfig(new PhpcsStandard($this->standard));
     try {
-      $this->runPhpcbf();
+      $this->processRunner->runOrcaVendorBin([
+        'phpcbf',
+        realpath($this->getPath()),
+      ], $this->phpcsConfigurator->getTempDir());
     }
     catch (ProcessFailedException $e) {
       throw new TaskFailureException();
     }
+    finally {
+      $this->phpcsConfigurator->cleanupTemporaryConfig();
+    }
   }
 
   /**
-   * Runs phpcbf.
+   * Sets the standard to use.
+   *
+   * @param \Acquia\Orca\Enum\PhpcsStandard $standard
+   *   The PHPCS standard.
    */
-  public function runPhpcbf(): void {
-    $this->processRunner->runOrcaVendorBin([
-      'phpcbf',
-      realpath($this->getPath()),
-    ], "{$this->projectDir}/resources");
+  public function setStandard(PhpcsStandard $standard): void {
+    $this->standard = $standard;
   }
 
 }

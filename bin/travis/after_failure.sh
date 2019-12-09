@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 
 # NAME
-#     after_failure.sh - Display debugging information in case of build failure.
+#     after_failure.sh - Display debugging information.
 #
 # SYNOPSIS
 #     after_failure.sh
 #
 # DESCRIPTION
-#     Displays Drupal error log.
+#     Displays debugging information in case of failure.
 
 cd "$(dirname "$0")" || exit; source _includes.sh
 
