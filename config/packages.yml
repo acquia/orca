@@ -61,6 +61,8 @@ acquia/blt:
 acquia/coding-standards:
   type: phpcodesniffer-standard
   url: ../coding-standards-php
+  
+acquia/composer-scaffold: []
 
 drupal/cog:
   type: drupal-theme
