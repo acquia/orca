@@ -64,6 +64,7 @@ acquia/coding-standards:
   
 acquia/composer-scaffold:
   type: package
+  version: dev-master
 
 drupal/cog:
   type: drupal-theme
