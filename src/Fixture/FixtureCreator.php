@@ -29,6 +29,13 @@ class FixtureCreator {
   const DEFAULT_PROFILE = 'orca';
 
   /**
+   * The BLT package, if defined.
+   *
+   * @var \Acquia\Orca\Fixture\Package|null
+   */
+  private $blt;
+
+  /**
    * The Composer exit on patch failure flag.
    *
    * @var bool
@@ -200,6 +207,7 @@ class FixtureCreator {
    *   The Composer version guesser.
    */
   public function __construct(Filesystem $filesystem, Fixture $fixture, FixtureConfigurator $fixture_configurator, FixtureInspector $fixture_inspector, SiteInstaller $site_installer, SymfonyStyle $output, ProcessRunner $process_runner, PackageManager $package_manager, SubextensionManager $subextension_manager, VersionGuesser $version_guesser) {
+    $this->blt = $package_manager->getBlt();
     $this->filesystem = $filesystem;
     $this->fixture = $fixture;
     $this->fixtureConfigurator = $fixture_configurator;
@@ -331,6 +339,13 @@ class FixtureCreator {
    */
   private function createBltProject(): void {
     $this->output->section('Creating BLT project');
+    $stability_flag = '--stability=alpha';
+    if (($this->isDev || ($this->sut && $this->sut->getPackageName() === 'acquia/blt'))) {
+      $stability_flag = '--stability=dev';
+    }
+    $version = ($this->isDev)
+      ? $this->blt->getVersionDev($this->drupalCoreVersion)
+      : $this->blt->getVersionRecommended($this->drupalCoreVersion);
     $command = [
       'composer',
       'create-project',
@@ -338,15 +353,10 @@ class FixtureCreator {
       '--no-scripts',
       '--no-install',
       '--no-interaction',
-      'acquia/blt-project',
+      "acquia/blt-project:{$version}",
+      $stability_flag,
+      $this->fixture->getPath(),
     ];
-    if ($this->sut === 'acquia/blt' || $this->isDev) {
-      $command[] = '--stability=dev';
-    }
-    else {
-      $command[] = '--stability=alpha';
-    }
-    $command[] = $this->fixture->getPath();
     $this->processRunner->runOrcaVendorBin($command);
   }
 
@@ -416,8 +426,11 @@ class FixtureCreator {
       $additions[] = "drupal/core:{$this->drupalCoreVersion}";
     }
 
-    // Install Drupal core dev requirements.
-    $additions[] = 'drupal/core-dev';
+    // Install Drupal core dev requirements for Drupal 8.8 and later. (Before
+    // that BLT required webflo/drupal-core-require-dev.)
+    if ((float) $this->drupalCoreVersion >= 8.8) {
+      $additions[] = 'drupal/core-dev';
+    }
 
     // Install requirements for deprecation checking.
     $additions[] = 'mglaman/phpstan-drupal-deprecations';
