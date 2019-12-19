@@ -57,6 +57,16 @@ drupal/acsf: []
 
 acquia/blt:
   type: composer-plugin
+  core_matrix:
+    8.8.x:
+      version: 11.x
+      version_dev: 11.x-dev
+    8.7.x:
+      version: 10.x
+      version_dev: 10.x-dev
+    8.6.x:
+      version: 9.x
+      version_dev: 9.x-dev
 
 acquia/coding-standards:
   type: phpcodesniffer-standard
