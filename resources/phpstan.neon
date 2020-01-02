@@ -15,7 +15,7 @@ parameters:
     - %currentWorkingDirectory%/vendor/acquia
 
   excludes_analyse:
-    # @todo File an issue for this.
+    # @see DG-22629
     - %currentWorkingDirectory%/docroot/modules/contrib/acsf/tests/AcsfEventsTest.php
     - %currentWorkingDirectory%/docroot/modules/contrib/acsf/acsf_init/lib/cloud_hooks/common/pre-web-activate/000-acquia-deployment.php
 
@@ -25,14 +25,11 @@ parameters:
     - %currentWorkingDirectory%/docroot/modules/contrib/acquia_lift/tests/src/Unit/Service/Helper/HelpMessageHelperTest.php
     - %currentWorkingDirectory%/docroot/modules/contrib/acquia_lift/tests/src/Unit/Service/Helper/SettingsHelperTest.php
 
-    # @todo File an issue for this.
-    - %currentWorkingDirectory%/docroot/modules/contrib/devel/kint/kint/examples/*
+    # @see https://www.drupal.org/project/devel/issues/3104094
+    - %currentWorkingDirectory%/docroot/modules/contrib/devel/kint/kint/examples/overview.php
 
     # @see https://www.drupal.org/project/libraries/issues/3039243
-    - %currentWorkingDirectory%/docroot/modules/contrib/libraries/src/ExternalLibrary/Exception/InvalidLibraryDependencyException.php
     # @see https://www.drupal.org/project/libraries/issues/2882709
-    - %currentWorkingDirectory%/docroot/modules/contrib/libraries/src/ExternalLibrary/Utility/LibraryIdAccessorInterface.php
-    # @todo File an issue for this.
     - %currentWorkingDirectory%/docroot/modules/contrib/libraries/src/*
 
   ignoreErrors:
