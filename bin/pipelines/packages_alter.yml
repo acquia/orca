@@ -1,7 +1,7 @@
 ---
 acquia/lightning:
   type: drupal-profile
-  version: ~3.0
+  version: ~4.0
 
 # Let Lightning manage its own components.
 drupal/lightning_api: ~

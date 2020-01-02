@@ -58,7 +58,7 @@ drupal/acsf: []
 acquia/blt:
   type: composer-plugin
   core_matrix:
-    8.8.x:
+    '>=8.8.0':
       version: 11.x
       version_dev: 11.x-dev
     8.7.x:
@@ -80,7 +80,7 @@ acquia/drupal-spec-tool:
 
 drupal/lightning_api:
   core_matrix:
-    8.7.x:
+    8.7.x || 8.8.x:
       version: 4.x
       version_dev: 4.x-dev
     8.6.x:
@@ -98,6 +98,9 @@ drupal/lightning_api:
 
 drupal/lightning_core:
   core_matrix:
+    8.8.x:
+      version: 5.x
+      version_dev: 5.x-dev
     8.7.x:
       version: 4.x
       version_dev: 4.x-dev
@@ -116,7 +119,7 @@ drupal/lightning_core:
 
 drupal/lightning_layout:
   core_matrix:
-    8.7.x:
+    8.7.x || 8.8.x:
       version: 2.x
       version_dev: 2.x-dev
     8.6.x:
@@ -128,7 +131,7 @@ drupal/lightning_layout:
 
 drupal/lightning_media:
   core_matrix:
-    8.6.x || 8.7.x:
+    8.6.x || 8.7.x || 8.8.x:
       version: 3.x
       version_dev: 3.x-dev
     8.5.x:
@@ -143,7 +146,7 @@ drupal/lightning_media:
 
 drupal/lightning_workflow:
   core_matrix:
-    8.6.x || 8.7.x:
+    8.6.x || 8.7.x || 8.8.x:
       version: 3.x
       version_dev: 3.x-dev
     8.5.x:
