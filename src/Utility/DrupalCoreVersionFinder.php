@@ -114,7 +114,7 @@ class DrupalCoreVersionFinder {
    * @see \Acquia\Orca\Enum\DrupalCoreVersion::PREVIOUS_DEV
    */
   private function getPreviousDevVersion(): string {
-    $previous_minor_version = floatval($this->getCurrentMinorVersion()) - 0.1;
+    $previous_minor_version = (float) $this->getCurrentMinorVersion() - 0.1;
     return "{$previous_minor_version}.x-dev";
   }
 
@@ -171,7 +171,7 @@ class DrupalCoreVersionFinder {
    * @see \Acquia\Orca\Enum\DrupalCoreVersion::NEXT_DEV
    */
   private function getNextDevVersion(): string {
-    $previous_minor_version = floatval($this->getCurrentMinorVersion()) + 0.1;
+    $previous_minor_version = (float) $this->getCurrentMinorVersion() + 0.1;
     return "{$previous_minor_version}.x-dev";
   }
 
@@ -222,7 +222,7 @@ class DrupalCoreVersionFinder {
    *   The version string, e.g., "8.6".
    */
   private function getCurrentMinorVersion(): string {
-    return (string) floatval($this->getCurrentRecommendedRelease());
+    return (string) (float) $this->getCurrentRecommendedRelease();
   }
 
 }
