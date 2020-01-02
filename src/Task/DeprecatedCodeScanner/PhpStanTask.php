@@ -166,6 +166,7 @@ class PhpStanTask {
       $command[] = $this->getAndEnsurePath('docroot/modules/contrib');
       $command[] = $this->getAndEnsurePath('docroot/profiles/contrib');
       $command[] = $this->getAndEnsurePath('docroot/themes/contrib');
+      $command[] = $this->getAndEnsurePath('vendor/acquia');
     }
     return $command;
   }
