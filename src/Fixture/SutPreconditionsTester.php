@@ -58,7 +58,7 @@ class SutPreconditionsTester {
    */
   public function test(string $package_name): void {
     $sut = $this->packageManager->get($package_name);
-    $path = $this->fixture->getPath($sut->getRepositoryUrl());
+    $path = $this->fixture->getPath($sut->getRepositoryUrlRaw());
 
     if (!$this->filesystem->exists($path)) {
       throw new OrcaException(sprintf('SUT is absent from expected location: %s', $path));

@@ -42,7 +42,7 @@ class DebugPackagesCommandTest extends CommandTestBase {
     $package->getPackageName()->willReturn('Example 1', 'Example 2');
     $package->getType()->willReturn('drupal-module');
     $package->getInstallPathRelative()->willReturn('docroot/modules/contrib/example1', 'docroot/modules/contrib/example2');
-    $package->getRepositoryUrl()->willReturn('../example1', '../example2');
+    $package->getRepositoryUrlRaw()->willReturn('../example1', '../example2');
     $package->getVersionRecommended(NULL)->willReturn('~1.0');
     $package->getVersionDev(NULL)->willReturn('1.x-dev');
     $package->shouldGetEnabled()->willReturn(TRUE);
@@ -77,7 +77,7 @@ class DebugPackagesCommandTest extends CommandTestBase {
     $package->getPackageName()->willReturn('Example 1');
     $package->getType()->willReturn('drupal-module');
     $package->getInstallPathRelative()->willReturn('docroot/modules/contrib/example1');
-    $package->getRepositoryUrl()->willReturn('../example1');
+    $package->getRepositoryUrlRaw()->willReturn('../example1');
     $package->getVersionRecommended($version)
       ->shouldBeCalledOnce();
     $package->getVersionDev($version)

@@ -17,6 +17,8 @@ use Symfony\Component\Filesystem\Filesystem;
  */
 class SubextensionManagerTest extends TestCase {
 
+  private $projectDir = '../example';
+
   protected function setUp() {
     $this->configLoader = $this->prophesize(ConfigLoader::class);
     $this->filesystem = $this->prophesize(Filesystem::class);
@@ -39,7 +41,7 @@ class SubextensionManagerTest extends TestCase {
       ->willReturn([]);
     /** @var \Acquia\Orca\Fixture\PackageManager $package_manager */
     $package_manager = $this->packageManager->reveal();
-    $object = new SubextensionManager($config_loader, $filesystem, $fixture, $package_manager);
+    $object = new SubextensionManager($config_loader, $filesystem, $fixture, $package_manager, $this->projectDir);
 
     $this->assertInstanceOf(SubextensionManager::class, $object, 'Instantiated class.');
   }

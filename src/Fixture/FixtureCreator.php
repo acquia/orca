@@ -516,7 +516,7 @@ class FixtureCreator {
     foreach ($this->getLocalPackages() as $package) {
       $this->jsonConfigSource->addRepository($package->getPackageName(), [
         'type' => 'path',
-        'url' => $this->fixture->getPath($package->getRepositoryUrl()),
+        'url' => $this->fixture->getPath($package->getRepositoryUrlRaw()),
       ]);
     }
 
@@ -619,10 +619,12 @@ class FixtureCreator {
     }
 
     $sut_install_path = $this->sut->getInstallPathAbsolute();
+
     if (!file_exists($sut_install_path)) {
       throw new OrcaException('Failed to place SUT at correct path.');
     }
-    elseif (!is_link($sut_install_path)) {
+
+    if (!is_link($sut_install_path)) {
       $this->displayFailedSymlinkDebuggingInfo();
       throw new OrcaException('Failed to symlink SUT via local path repository.');
     }
@@ -634,40 +636,40 @@ class FixtureCreator {
   private function displayFailedSymlinkDebuggingInfo() {
     $this->output->section('Debugging info');
 
-    // Display some info about the SUT install path.
+    $this->output->comment('Display some info about the SUT install path.');
     $this->processRunner->runExecutable('stat', [
       $this->sut->getInstallPathAbsolute(),
     ]);
 
     $fixture_path = $this->fixture->getPath();
 
-    // See if Composer knows why it wasn't symlinked.
+    $this->output->comment("See if Composer knows why it wasn't symlinked.");
     $this->processRunner->runOrcaVendorBin([
       'composer',
       'why-not',
       $this->getLocalPackageString($this->sut),
     ], $fixture_path);
 
-    // See why Composer installed what it did.
+    $this->output->comment('See why Composer installed what it did.');
     $this->processRunner->runOrcaVendorBin([
       'composer',
       'why',
       $this->sut->getPackageName(),
     ], $fixture_path);
 
-    // Display the Git branches in the path repo.
+    $this->output->comment('Display the Git branches in the path repo.');
     $this->processRunner->git([
       'branch',
-    ], $this->sut->getRepositoryUrl());
+    ], $this->sut->getRepositoryUrlAbsolute());
 
-    // Display the fixture's composer.json.
+    $this->output->comment("Display the fixture's composer.json.");
     $this->processRunner->runExecutable('cat', [
       $this->fixture->getPath('composer.json'),
     ]);
 
-    // Display the SUT's composer.json.
+    $this->output->comment("Display the SUT's composer.json.");
     $this->processRunner->runExecutable('cat', [
-      $this->fixture->getPath("{$this->sut->getRepositoryUrl()}/composer.json"),
+      "{$this->sut->getRepositoryUrlAbsolute()}/composer.json",
     ]);
   }
 
@@ -726,7 +728,7 @@ class FixtureCreator {
       return FALSE;
     }
 
-    $path = $this->fixture->getPath($package->getRepositoryUrl());
+    $path = $this->fixture->getPath($package->getRepositoryUrlRaw());
     return $this->filesystem->exists($path);
   }
 
@@ -808,7 +810,7 @@ class FixtureCreator {
    *   The versions of the given package, e.g., "@dev" or "dev-8.x-1.x".
    */
   private function getLocalPackageVersion(Package $package): string {
-    $path = $this->fixture->getPath($package->getRepositoryUrl());
+    $path = $this->fixture->getPath($package->getRepositoryUrlRaw());
     $package_config = (array) new Config("{$path}/composer.json");
     $guess = $this->versionGuesser->guessVersion($package_config, $path);
     return (empty($guess['version'])) ? '@dev' : $guess['version'];
@@ -847,7 +849,7 @@ class FixtureCreator {
       foreach ($this->subextensionManager->getByParent($package) as $subextension) {
         $this->jsonConfigSource->addRepository($subextension->getPackageName(), [
           'type' => 'path',
-          'url' => $subextension->getRepositoryUrl(),
+          'url' => $subextension->getRepositoryUrlRaw(),
         ]);
       }
     }

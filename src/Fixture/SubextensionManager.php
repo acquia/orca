@@ -54,6 +54,13 @@ class SubextensionManager {
   private $subextensions = [];
 
   /**
+   * The ORCA project directory.
+   *
+   * @var string
+   */
+  private $projectDir;
+
+  /**
    * Constructs an instance.
    *
    * @param \Acquia\Orca\Utility\ConfigLoader $config_loader
@@ -64,13 +71,16 @@ class SubextensionManager {
    *   The fixture.
    * @param \Acquia\Orca\Fixture\PackageManager $package_manager
    *   The package manager.
+   * @param string $project_dir
+   *   The ORCA project directory.
    */
-  public function __construct(ConfigLoader $config_loader, Filesystem $filesystem, Fixture $fixture, PackageManager $package_manager) {
+  public function __construct(ConfigLoader $config_loader, Filesystem $filesystem, Fixture $fixture, PackageManager $package_manager, string $project_dir) {
     $this->configLoader = $config_loader;
     $this->filesystem = $filesystem;
     $this->fixture = $fixture;
     $this->alterData = $package_manager->getAlterData();
     $this->initializeTopLevelExtensions($package_manager);
+    $this->projectDir = $project_dir;
   }
 
   /**
@@ -148,7 +158,7 @@ class SubextensionManager {
         $package_data = array_replace($package_data, $alter_data);
       }
 
-      $subextensions[$name] = new Package($this->fixture, $name, $package_data);
+      $subextensions[$name] = new Package($package_data, $this->fixture, $name, $this->projectDir);
     }
 
     return $subextensions;
