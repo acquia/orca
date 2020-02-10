@@ -2,6 +2,7 @@
 
 1. [Configuring Travis CI](#configuring-travis-ci)
 1. [Local installation](#local-installation)
+1. [Making ORCA aware of your package](#making-orca-aware-of-your-package)
 1. [Running automated tests](#running-automated-tests)
     1. [PHPUnit](#phpunit)
     1. [Behat](#behat)
@@ -72,6 +73,25 @@ ORCA can also be installed and run locally for testing and development. Follow t
     ```
 
 Invoke ORCA from the terminal (`bin/orca`). Use the `--help` command option to learn more about the various commands or see how they're used in [`bin/travis/script.sh`](../bin/travis/script.sh). Use the `fixture:run-server` command to run the web server for local development.
+
+## Making ORCA aware of your package
+
+If your package isn't included in [the built-in list](../config/packages.yml), ORCA won't know about it, leading to errors like the following:
+
+```bash
+$ orca init --sut=drupal/example
+Error: Invalid value for "--sut" option: "drupal/example".
+```
+
+To make ORCA aware of your package you'll need to dynamically add it to the list using [environment variables](advanced-usage.md#ORCA_PACKAGES_CONFIG_ALTER). Doing this on Travis CI is covered in the `env.global` section of the [example Travis configuration](../example/.travis.yml). Locally, you must set the appropriate variable(s) in your terminal session. The assignments can be copied right from your `.travis.yml`. Just prefix them with the `export` command, e.g.:
+
+```bash
+export ORCA_PACKAGES_CONFIG_ALTER=../example/tests/packages_alter.yml
+# and/or...
+export ORCA_PACKAGES_CONFIG=../example/tests/packages.yml
+```
+
+Of course environment variables are ephemeral, so if you want them to persist across sessions, add them to your `.bashrc` or equivalent.
 
 ## Running automated tests
 
