@@ -8,16 +8,16 @@
     "packages": [
         {
             "name": "acquia/coding-standards",
-            "version": "v0.4.1",
+            "version": "v0.4.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/acquia/coding-standards-php.git",
-                "reference": "4281b9ec9613f3f1e43869ccf572ae6fb3c18d4c"
+                "reference": "319ef6711ca60cd6ccc40bbd4eaf176c62dd3c6e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/acquia/coding-standards-php/zipball/4281b9ec9613f3f1e43869ccf572ae6fb3c18d4c",
-                "reference": "4281b9ec9613f3f1e43869ccf572ae6fb3c18d4c",
+                "url": "https://api.github.com/repos/acquia/coding-standards-php/zipball/319ef6711ca60cd6ccc40bbd4eaf176c62dd3c6e",
+                "reference": "319ef6711ca60cd6ccc40bbd4eaf176c62dd3c6e",
                 "shasum": ""
             },
             "require": {
@@ -59,7 +59,7 @@
                 "phpcs",
                 "standards"
             ],
-            "time": "2019-09-06T19:51:25+00:00"
+            "time": "2020-02-12T15:16:30+00:00"
         },
         {
             "name": "behat/behat",
