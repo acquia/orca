@@ -976,15 +976,32 @@ class FixtureCreator {
   }
 
   /**
-   * Ensure that Drupal is correctly configured.
+   * Ensures that Drupal is correctly configured.
    */
   protected function ensureDrupalSettings(): void {
     $this->output->section('Ensuring Drupal settings');
-    $filename = $this->fixture->getPath('docroot/sites/default/settings/local.settings.php');
+    $this->ensureSettingsFile('ci.settings.php');
+    $this->ensureSettingsFile('local.settings.php');
+    $this->commitCodeChanges('Ensured Drupal settings');
+  }
+
+  /**
+   * Ensures that an individual settings file is correctly configured.
+   *
+   * @param string $filename
+   *   The filename without path to configure.
+   */
+  private function ensureSettingsFile(string $filename): void {
+    $path = $this->fixture->getPath("docroot/sites/default/settings/{$filename}");
+
+    if (!$this->filesystem->exists($path)) {
+      return;
+    }
+
     $id = '# ORCA settings.';
 
     // Return early if the settings are already present.
-    if (strpos(file_get_contents($filename), $id)) {
+    if (strpos(file_get_contents($path), $id)) {
       return;
     }
 
@@ -1030,8 +1047,7 @@ $settings['bootstrap_container_definition'] = [
 // @see https://www.drupal.org/project/drupal/issues/2031261
 $settings['cache']['bins']['config'] = 'cache.backend.memory';
 PHP;
-    file_put_contents($filename, $data, FILE_APPEND);
-    $this->commitCodeChanges('Ensured Drupal settings');
+    file_put_contents($path, $data, FILE_APPEND);
   }
 
   /**
