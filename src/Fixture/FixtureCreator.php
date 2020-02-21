@@ -980,23 +980,28 @@ class FixtureCreator {
    */
   protected function ensureDrupalSettings(): void {
     $this->output->section('Ensuring Drupal settings');
-    $this->ensureSettingsFile('ci.settings.php');
-    $this->ensureSettingsFile('local.settings.php');
+    $this->ensureCiSettingsFile();
+    $this->ensureLocalSettingsFile();
     $this->commitCodeChanges('Ensured Drupal settings');
   }
 
   /**
-   * Ensures that an individual settings file is correctly configured.
-   *
-   * @param string $filename
-   *   The filename without path to configure.
+   * Ensures that the CI settings file is correctly configured.
    */
-  private function ensureSettingsFile(string $filename): void {
-    $path = $this->fixture->getPath("docroot/sites/default/settings/{$filename}");
+  private function ensureCiSettingsFile(): void {
+    $path = $this->fixture->getPath('docroot/sites/default/settings/ci.settings.php');
 
-    if (!$this->filesystem->exists($path)) {
-      return;
-    }
+    $data = '<?php' . PHP_EOL . PHP_EOL;
+    $data .= $this->getSettings();
+
+    file_put_contents($path, $data, FILE_APPEND);
+  }
+
+  /**
+   * Ensures that the local settings file is correctly configured.
+   */
+  private function ensureLocalSettingsFile(): void {
+    $path = $this->fixture->getPath('docroot/sites/default/settings/local.settings.php');
 
     $id = '# ORCA settings.';
 
@@ -1006,16 +1011,29 @@ class FixtureCreator {
     }
 
     // Add the settings.
-    $data = "\n{$id}\n";
+    $data = PHP_EOL . $id . PHP_EOL;
+    $data .= $this->getSettings();
+    file_put_contents($path, $data, FILE_APPEND);
+  }
+
+  /**
+   * Gets the PHP code to add to the Drupal settings files.
+   *
+   * @return string
+   *   A string of PHP code.
+   */
+  private function getSettings(): string {
+    $data = '';
+
     if ($this->useSqlite) {
       $data .= <<<'PHP'
 $databases['default']['default']['database'] = dirname(DRUPAL_ROOT) . '/db.sqlite';
 $databases['default']['default']['driver'] = 'sqlite';
 unset($databases['default']['default']['namespace']);
-
 PHP;
     }
-    $data .= <<<'PHP'
+
+    $data .= PHP_EOL . PHP_EOL . <<<'PHP'
 // Override the definition of the service container used during Drupal's
 // bootstrapping process. This is needed so that the core db-tools.php script
 // can import database dumps properly. Without this, the destination database
@@ -1047,7 +1065,7 @@ $settings['bootstrap_container_definition'] = [
 // @see https://www.drupal.org/project/drupal/issues/2031261
 $settings['cache']['bins']['config'] = 'cache.backend.memory';
 PHP;
-    file_put_contents($path, $data, FILE_APPEND);
+    return $data . PHP_EOL;
   }
 
   /**
