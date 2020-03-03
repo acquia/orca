@@ -58,6 +58,9 @@ drupal/acsf: []
 acquia/blt:
   type: composer-plugin
   core_matrix:
+    '>=9.0.0':
+      version: 12.x
+      version_dev: 12.x-dev
     '>=8.8.0':
       version: 11.x
       version_dev: 11.x-dev
