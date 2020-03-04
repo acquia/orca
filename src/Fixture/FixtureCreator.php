@@ -1034,7 +1034,7 @@ PHP;
 
     // Also generate ci.settings.php, but don't inherit local settings for CI.
     $ciFilename = $this->fixture->getPath('docroot/sites/default/settings/ci.settings.php');
-    file_put_contents($ciFilename, $data);
+    file_put_contents($ciFilename, "<?php\n" . $data);
 
     $this->commitCodeChanges('Ensured Drupal settings');
   }
