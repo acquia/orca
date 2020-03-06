@@ -346,6 +346,9 @@ class FixtureCreator {
     $version = ($this->isDev)
       ? $this->blt->getVersionDev($this->drupalCoreVersion)
       : $this->blt->getVersionRecommended($this->drupalCoreVersion);
+    if ($this->sut && $this->sut->getPackageName() === 'acquia/blt') {
+      $version = 'dev-master';
+    }
     $command = [
       'composer',
       'create-project',
