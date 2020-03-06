@@ -414,13 +414,6 @@ class FixtureCreator {
       $additions[] = 'drush/drush:dev-master || 10.x-dev || 9.x-dev || 9.5.x-dev';
     }
 
-    // Add Drupal Console as a soft dependency akin to Drush.
-    $drupal_console_version = '~1.0';
-    if ($this->isDev) {
-      $drupal_console_version = 'dev-master';
-    }
-    $additions[] = "drupal/console:{$drupal_console_version}";
-
     // Install a specific version of Drupal core.
     if ($this->drupalCoreVersion) {
       $additions[] = "drupal/core:{$this->drupalCoreVersion}";
