@@ -428,7 +428,7 @@ class FixtureCreator {
 
     // Install Drupal core dev requirements for Drupal 8.8 and later. (Before
     // that BLT required webflo/drupal-core-require-dev.)
-    if ((float) $this->drupalCoreVersion >= 8.8) {
+    if (version_compare($this->drupalCoreVersion, 8.8, '>=')) {
       $additions[] = 'drupal/core-dev';
     }
 
