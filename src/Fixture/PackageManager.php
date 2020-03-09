@@ -182,7 +182,7 @@ class PackageManager {
         continue;
       }
 
-      $package = new Package($fixture, $package_name, $datum);
+      $package = new Package($datum, $fixture, $package_name, $this->projectDir);
       $this->packages[$package_name] = $package;
     }
     ksort($this->packages);
@@ -223,7 +223,7 @@ class PackageManager {
     // Otherwise get it from the default specification.
     $default_packages_yaml = "{$this->projectDir}/config/packages.yml";
     $data = $this->parser->parseFile($default_packages_yaml);
-    $this->blt = new Package($this->fixture, $package_name, $data[$package_name]);
+    $this->blt = new Package($data[$package_name], $this->fixture, $package_name, $this->projectDir);
   }
 
 }

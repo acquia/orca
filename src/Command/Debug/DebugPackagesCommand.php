@@ -172,7 +172,7 @@ class DebugPackagesCommand extends Command {
         $package->getPackageName(),
         $package->getType(),
         $package->getInstallPathRelative(),
-        $package->getRepositoryUrl(),
+        $package->getRepositoryUrlRaw(),
         $package->getVersionRecommended($this->coreVersion),
         $package->getVersionDev($this->coreVersion),
         $package->shouldGetEnabled() ? 'yes' : '',

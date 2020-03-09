@@ -15,6 +15,8 @@ use UnexpectedValueException;
  */
 class PackageTest extends TestCase {
 
+  private $projectDir = '../example';
+
   public function setUp() {
     $this->fixture = $this->prophesize(Fixture::class);
   }
@@ -28,7 +30,7 @@ class PackageTest extends TestCase {
     $this->assertInstanceOf(Package::class, $package, 'Instantiated class.');
     $this->assertEquals($package_name, $package->getPackageName(), 'Set/got package name.');
     $this->assertEquals($project_name, $package->getProjectName(), 'Set/got project name.');
-    $this->assertEquals($repository_url, $package->getRepositoryUrl(), 'Set/got repository URL.');
+    $this->assertEquals($repository_url, $package->getRepositoryUrlRaw(), 'Set/got repository URL.');
     $this->assertEquals($type, $package->getType(), 'Set/got type.');
     $this->assertEquals($version, $package->getVersionRecommended(), 'Set/got recommended version.');
     $this->assertEquals($dev_version, $package->getVersionDev(), 'Set/got dev version.');
@@ -388,7 +390,7 @@ class PackageTest extends TestCase {
   protected function createPackage($package_name, $data): Package {
     /** @var \Acquia\Orca\Fixture\Fixture $fixture */
     $fixture = $this->fixture->reveal();
-    return new Package($fixture, $package_name, $data);
+    return new Package($data, $fixture, $package_name, $this->projectDir);
   }
 
 }

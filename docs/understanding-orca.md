@@ -72,6 +72,7 @@ ORCA includes out-of-the-box support for Travis CI for continuous integration. T
 | Deprecated code scan |                                   |                 ✓                 |                                    |                                      |                                                           |                            |                              |                                                 |
 | Automated tests      |                                   |                                   |                  ✓                 |                   ✓                  |                             ✓                             |              ✓             |               ✓              |                        ✓                        |
 | Allow failure        |                                   |                                   |                                    |                                      |                                                           |              ✓             |               ✓              |                        ✓                        |
+
 See [Configuring Travis CI](getting-started.md#configuring-travis-ci).
 
 ---

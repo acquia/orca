@@ -39,13 +39,15 @@ class Package {
   private $packageName;
 
   /**
+   * The ORCA project directory.
+   *
+   * @var string
+   */
+  private $projectDir;
+
+  /**
    * Constructs an instance.
    *
-   * @param \Acquia\Orca\Fixture\Fixture $fixture
-   *   The fixture.
-   * @param string $package_name
-   *   The package name, corresponding to the "name" property in its
-   *   composer.json file, e.g., "drupal/example".
    * @param array $data
    *   An array of package data that may contain the following key-value pairs:
    *   - "type": (optional) The package type, corresponding to the "type"
@@ -70,14 +72,23 @@ class Package {
    *     both of the "version" and "version_dev" key-value pairs to be used when
    *     the corresponding Drupal core version constraint is satisfied. Mappings
    *     are processed in order, and the first match wins.
-   *     @see \Acquia\Orca\Tests\Fixture\PackageTest::testConditionalVersions
+   * @param \Acquia\Orca\Fixture\Fixture $fixture
+   *   The fixture.
+   * @param string $package_name
+   *   The package name, corresponding to the "name" property in its
+   *   composer.json file, e.g., "drupal/example".
+   * @param string $project_dir
+   *   The ORCA project directory.
+   *
+   * @see \Acquia\Orca\Tests\Fixture\PackageTest::testConditionalVersions
    *   - "enable": (internal) TRUE if the package is a Drupal module that should
    *     be automatically enabled or FALSE if not. Defaults to TRUE for modules.
    *     Always FALSE for anything else.
    */
-  public function __construct(Fixture $fixture, string $package_name, array $data) {
+  public function __construct(array $data, Fixture $fixture, string $package_name, string $project_dir) {
     $this->fixture = $fixture;
     $this->initializePackageName($package_name);
+    $this->projectDir = $project_dir;
     $this->data = $this->resolveData($data);
     $this->coreMatrix = $this->resolveCoreMatrix($this->data['core_matrix']);
     unset($this->data['core_matrix']);
@@ -211,18 +222,29 @@ class Package {
   }
 
   /**
-   * Gets the URL for the Composer path repository.
+   * Gets the URL for the Composer "path" repository exactly as specified.
    *
    * @return string
    *   The URL for the Composer path repository, e.g., "../example" or
    *   "/var/www/example/modules/submodule".
    */
-  public function getRepositoryUrl(): string {
+  public function getRepositoryUrlRaw(): string {
     if (!empty($this->data['url'])) {
       return $this->data['url'];
     }
 
     return "../{$this->getProjectName()}";
+  }
+
+  /**
+   * Gets the absolute URL for the Composer "path" repository.
+   *
+   * @return string
+   *   The absolute URL the Composer package is cloned at at, e.g.,
+   *   "/var/www/example".
+   */
+  public function getRepositoryUrlAbsolute(): string {
+    return "{$this->projectDir}/{$this->getRepositoryUrlRaw()}";
   }
 
   /**
