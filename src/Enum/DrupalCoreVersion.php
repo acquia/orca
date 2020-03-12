@@ -21,6 +21,8 @@ final class DrupalCoreVersion extends Enum {
 
   public const NEXT_DEV = 'NEXT_DEV';
 
+  public const D9_READINESS = 'D9_READINESS';
+
   /**
    * Provides help text for commands that accept Drupal core version input.
    *
@@ -35,6 +37,7 @@ final class DrupalCoreVersion extends Enum {
       sprintf('- %s: The current development version, e.g., "8.6.x-dev"', self::CURRENT_DEV),
       sprintf('- %s: The next release version if available, e.g., "8.7.0-beta2"', self::NEXT_RELEASE),
       sprintf('- %s: The next development version, e.g., "8.7.x-dev"', self::NEXT_DEV),
+      sprintf('- %s: The current development version of Drupal 9, e.g., "9.0.x-dev"', self::D9_READINESS),
     ];
   }
 

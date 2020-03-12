@@ -66,6 +66,9 @@ class DrupalCoreVersionFinder {
       case DrupalCoreVersion::NEXT_DEV:
         return $this->getNextDevVersion();
 
+      case DrupalCoreVersion::D9_READINESS:
+        return $this->getD9DevVersion();
+
       default:
         throw new \LogicException(sprintf('Unknown version. Update %s:%s.', __CLASS__, __FUNCTION__));
     }
@@ -97,17 +100,20 @@ class DrupalCoreVersionFinder {
    * @param string $minimum_stability
    *   The minimum stability. Available options (in order of stability) are
    *   dev, alpha, beta, RC, and stable.
+   * @param string $preferred_stability
+   *   The preferred stability. Available options (in order of stability) are
+   *   dev, alpha, beta, RC, and stable.
    *
    * @return string
    *   The version string.
    */
-  public function find(string $target_package_version = NULL, string $minimum_stability = 'stable'): string {
+  public function find(string $target_package_version = NULL, string $minimum_stability = 'stable', string $preferred_stability = 'stable'): string {
     $best_candidate = $this->getVersionSelector($minimum_stability)
-      ->findBestCandidate('drupal/core', $target_package_version);
+      ->findBestCandidate('drupal/core', $target_package_version, NULL, $preferred_stability);
     if (!$best_candidate) {
       throw new \RuntimeException(sprintf('No Drupal core version satisfies the given constraints: version=%s, minimum stability=%s', $target_package_version, $minimum_stability));
     }
-    return $best_candidate->getVersion();
+    return $best_candidate->getPrettyVersion();
   }
 
   /**
@@ -194,6 +200,18 @@ class DrupalCoreVersionFinder {
   private function getNextDevVersion(): string {
     $previous_minor_version = (float) $this->getCurrentMinorVersion() + 0.1;
     return "{$previous_minor_version}.x-dev";
+  }
+
+  /**
+   * Gets the next D9 dev version.
+   *
+   * @return string
+   *   The version string, e.g., "9.0.x-dev".
+   *
+   * @see \Acquia\Orca\Enum\DrupalCoreVersion::D9_READINESS
+   */
+  private function getD9DevVersion(): string {
+    return $this->find('~9', 'dev', 'dev');
   }
 
   /**
