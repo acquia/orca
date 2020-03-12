@@ -3,6 +3,7 @@
 namespace Acquia\Orca\Fixture;
 
 use Acquia\Orca\Exception\OrcaException;
+use Acquia\Orca\Utility\DrupalCoreVersionFinder;
 use Acquia\Orca\Utility\ProcessRunner;
 use Acquia\Orca\Utility\StatusTable;
 use Acquia\Orca\Utility\SutSettingsTrait;
@@ -15,6 +16,8 @@ use Composer\Package\PackageInterface;
 use Composer\Package\Version\VersionGuesser;
 use Composer\Package\Version\VersionSelector;
 use Composer\Repository\RepositoryFactory;
+use Composer\Semver\Comparator;
+use Composer\Semver\VersionParser;
 use Noodlehaus\Config;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Filesystem\Filesystem;
@@ -34,6 +37,13 @@ class FixtureCreator {
    * @var \Acquia\Orca\Fixture\Package|null
    */
   private $blt;
+
+  /**
+   * The Drupal core version finder.
+   *
+   * @var \Acquia\Orca\Utility\DrupalCoreVersionFinder
+   */
+  private $coreVersionFinder;
 
   /**
    * The Composer exit on patch failure flag.
@@ -183,8 +193,17 @@ class FixtureCreator {
   private $filesystem;
 
   /**
+   * The Semver version parser.
+   *
+   * @var \Composer\Semver\VersionParser
+   */
+  private $versionParser;
+
+  /**
    * Constructs an instance.
    *
+   * @param \Acquia\Orca\Utility\DrupalCoreVersionFinder $core_version_finder
+   *   The Drupal core version finder.
    * @param \Symfony\Component\Filesystem\Filesystem $filesystem
    *   The filesystem.
    * @param \Acquia\Orca\Fixture\Fixture $fixture
@@ -205,9 +224,12 @@ class FixtureCreator {
    *   The subextension manager.
    * @param \Composer\Package\Version\VersionGuesser $version_guesser
    *   The Composer version guesser.
+   * @param \Composer\Semver\VersionParser $version_parser
+   *   The Semver version parser.
    */
-  public function __construct(Filesystem $filesystem, Fixture $fixture, FixtureConfigurator $fixture_configurator, FixtureInspector $fixture_inspector, SiteInstaller $site_installer, SymfonyStyle $output, ProcessRunner $process_runner, PackageManager $package_manager, SubextensionManager $subextension_manager, VersionGuesser $version_guesser) {
+  public function __construct(DrupalCoreVersionFinder $core_version_finder, Filesystem $filesystem, Fixture $fixture, FixtureConfigurator $fixture_configurator, FixtureInspector $fixture_inspector, SiteInstaller $site_installer, SymfonyStyle $output, ProcessRunner $process_runner, PackageManager $package_manager, SubextensionManager $subextension_manager, VersionGuesser $version_guesser, VersionParser $version_parser) {
     $this->blt = $package_manager->getBlt();
+    $this->coreVersionFinder = $core_version_finder;
     $this->filesystem = $filesystem;
     $this->fixture = $fixture;
     $this->fixtureConfigurator = $fixture_configurator;
@@ -218,6 +240,7 @@ class FixtureCreator {
     $this->siteInstaller = $site_installer;
     $this->subextensionManager = $subextension_manager;
     $this->versionGuesser = $version_guesser;
+    $this->versionParser = $version_parser;
   }
 
   /**
@@ -409,8 +432,8 @@ class FixtureCreator {
 
     $additions = [];
 
-    // Install the dev version of Drush.
     if ($this->isDev) {
+      // Install the dev version of Drush.
       $additions[] = 'drush/drush:dev-master || 10.x-dev || 9.x-dev || 9.5.x-dev';
     }
 
@@ -419,9 +442,7 @@ class FixtureCreator {
       $additions[] = "drupal/core:{$this->drupalCoreVersion}";
     }
 
-    // Install Drupal core dev requirements for Drupal 8.8 and later. (Before
-    // that BLT required webflo/drupal-core-require-dev.)
-    if ((float) $this->drupalCoreVersion >= 8.8) {
+    if ($this->shouldRequireDrupalCoreDev()) {
       $additions[] = 'drupal/core-dev';
     }
 
@@ -442,6 +463,28 @@ class FixtureCreator {
     }
     $command = array_merge($command, $additions);
     $this->processRunner->runOrcaVendorBin($command, $fixture_path);
+  }
+
+  /**
+   * Determines whether or not to require drupal/core-dev.
+   *
+   * Require it for Drupal 8.8 and later. (Before that BLT required
+   * webflo/drupal-core-require-dev, which it supersedes.)
+   *
+   * @return bool
+   *   Returns TRUE if it should be required, or FALSE if not.
+   */
+  private function shouldRequireDrupalCoreDev(): bool {
+    try {
+      // Get the version if it's concrete as opposed to a range.
+      $version = $this->versionParser->normalize($this->drupalCoreVersion);
+    }
+    catch (\UnexpectedValueException $e) {
+      // The requested Drupal core version is a range. Get the best match.
+      $minimum_stability = $this->isDev ? 'dev' : 'stable';
+      $version = $this->coreVersionFinder->find($this->drupalCoreVersion, $minimum_stability);
+    }
+    return Comparator::greaterThanOrEqualTo($version, '8.8');
   }
 
   /**

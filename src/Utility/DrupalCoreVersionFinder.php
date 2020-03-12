@@ -90,6 +90,27 @@ class DrupalCoreVersionFinder {
   }
 
   /**
+   * Finds the Drupal core version matching the given criteria.
+   *
+   * @param string|null $target_package_version
+   *   The target package version.
+   * @param string $minimum_stability
+   *   The minimum stability. Available options (in order of stability) are
+   *   dev, alpha, beta, RC, and stable.
+   *
+   * @return string
+   *   The version string.
+   */
+  public function find(string $target_package_version = NULL, string $minimum_stability = 'stable'): string {
+    $best_candidate = $this->getVersionSelector($minimum_stability)
+      ->findBestCandidate('drupal/core', $target_package_version);
+    if (!$best_candidate) {
+      throw new \RuntimeException(sprintf('No Drupal core version satisfies the given constraints: version=%s, minimum stability=%s', $target_package_version, $minimum_stability));
+    }
+    return $best_candidate->getVersion();
+  }
+
+  /**
    * Gets the latest release from the previous minor version.
    *
    * @return string
@@ -101,7 +122,7 @@ class DrupalCoreVersionFinder {
     if ($this->previousMinorRelease) {
       return $this->previousMinorRelease;
     }
-    $this->previousMinorRelease = $this->getCoreVersion("<{$this->getCurrentMinorVersion()}");
+    $this->previousMinorRelease = $this->find("<{$this->getCurrentMinorVersion()}");
     return $this->previousMinorRelease;
   }
 
@@ -130,7 +151,7 @@ class DrupalCoreVersionFinder {
     if ($this->currentRecommendedRelease) {
       return $this->currentRecommendedRelease;
     }
-    $this->currentRecommendedRelease = $this->getCoreVersion();
+    $this->currentRecommendedRelease = $this->find();
     return $this->currentRecommendedRelease;
   }
 
@@ -158,7 +179,7 @@ class DrupalCoreVersionFinder {
     if ($this->nextRelease) {
       return $this->nextRelease;
     }
-    $this->nextRelease = $this->getCoreVersion(">{$this->getCurrentRecommendedRelease()}", 'alpha');
+    $this->nextRelease = $this->find(">{$this->getCurrentRecommendedRelease()}", 'alpha');
     return $this->nextRelease;
   }
 
@@ -173,27 +194,6 @@ class DrupalCoreVersionFinder {
   private function getNextDevVersion(): string {
     $previous_minor_version = (float) $this->getCurrentMinorVersion() + 0.1;
     return "{$previous_minor_version}.x-dev";
-  }
-
-  /**
-   * Gets the Drupal core version matching the given criteria.
-   *
-   * @param string|null $target_package_version
-   *   The target package version.
-   * @param string $minimum_stability
-   *   The minimum stability. Available options (in order of stability) are
-   *   dev, alpha, beta, RC, and stable.
-   *
-   * @return string
-   *   The version string.
-   */
-  private function getCoreVersion(string $target_package_version = NULL, string $minimum_stability = 'stable'): string {
-    $best_candidate = $this->getVersionSelector($minimum_stability)
-      ->findBestCandidate('drupal/core', $target_package_version);
-    if (!$best_candidate) {
-      throw new \RuntimeException(sprintf('No Drupal core version satisfies the given constraints: version=%s, minimum stability=%s', $target_package_version, $minimum_stability));
-    }
-    return $best_candidate->getVersion();
   }
 
   /**
