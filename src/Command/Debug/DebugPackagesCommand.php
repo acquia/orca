@@ -105,6 +105,7 @@ class DebugPackagesCommand extends Command {
     }
 
     (new Table($output))
+      ->setHeaderTitle("Drupal {$this->coreVersion}")
       ->setHeaders($this->getHeaders())
       ->setRows($this->getRows())
       ->render();
@@ -120,8 +121,8 @@ class DebugPackagesCommand extends Command {
    * @SuppressWarnings(PHPMD.StaticAccess)
    */
   private function handleCoreArgument($argument): void {
-    if (is_null($argument)) {
-      return;
+    if ($argument === NULL) {
+      $argument = '*';
     }
 
     if (!is_string($argument)) {

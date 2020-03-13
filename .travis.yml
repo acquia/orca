@@ -42,7 +42,10 @@ jobs:
     - { name: "Isolated test w/ dev package versions", env: ORCA_JOB=ISOLATED_DEV }
     - { name: "Integrated test w/ dev package versions", env: ORCA_JOB=INTEGRATED_DEV }
     - { name: "Integrated test w/ dev package versions & next minor dev version of Drupal core", env: ORCA_JOB=CORE_NEXT }
+    - { name: "D9 readiness test", php: "7.3", env: ORCA_JOB=D9_READINESS }
     - { name: "Custom job", env: ORCA_JOB=CUSTOM ORCA_CUSTOM_FIXTURE_INIT_ARGS="--help" ORCA_CUSTOM_TESTS_RUN_ARGS="--help" }
+  allow_failures:
+    - { php: "7.3", env: ORCA_JOB=D9_READINESS }
 
 before_install:
   - ../orca/bin/travis/self-test/before_install.sh

@@ -259,7 +259,7 @@ class FixtureInitCommandTest extends CommandTestBase {
 
   public function providerCoreOptionVersionParsing() {
     $error_message = 'Error: Invalid value for "--core" option: "%s".' . PHP_EOL
-      . 'Hint: Acceptable values are "PREVIOUS_RELEASE", "PREVIOUS_DEV", "CURRENT_RECOMMENDED", "CURRENT_DEV", "NEXT_RELEASE", "NEXT_DEV", or any version string Composer understands.' . PHP_EOL;
+      . 'Hint: Acceptable values are "PREVIOUS_RELEASE", "PREVIOUS_DEV", "CURRENT_RECOMMENDED", "CURRENT_DEV", "NEXT_RELEASE", "NEXT_DEV", "D9_READINESS", or any version string Composer understands.' . PHP_EOL;
     return [
       [StatusCode::OK, self::CORE_VALUE_LITERAL_PREVIOUS_RELEASE, ''],
       [StatusCode::OK, self::CORE_VALUE_LITERAL_CURRENT_RECOMMENDED, ''],

@@ -66,6 +66,9 @@ class DrupalCoreVersionFinder {
       case DrupalCoreVersion::NEXT_DEV:
         return $this->getNextDevVersion();
 
+      case DrupalCoreVersion::D9_READINESS:
+        return $this->getD9DevVersion();
+
       default:
         throw new \LogicException(sprintf('Unknown version. Update %s:%s.', __CLASS__, __FUNCTION__));
     }
@@ -90,6 +93,30 @@ class DrupalCoreVersionFinder {
   }
 
   /**
+   * Finds the Drupal core version matching the given criteria.
+   *
+   * @param string|null $target_package_version
+   *   The target package version.
+   * @param string $minimum_stability
+   *   The minimum stability. Available options (in order of stability) are
+   *   dev, alpha, beta, RC, and stable.
+   * @param string $preferred_stability
+   *   The preferred stability. Available options (in order of stability) are
+   *   dev, alpha, beta, RC, and stable.
+   *
+   * @return string
+   *   The version string.
+   */
+  public function find(string $target_package_version = NULL, string $minimum_stability = 'stable', string $preferred_stability = 'stable'): string {
+    $best_candidate = $this->getVersionSelector($minimum_stability)
+      ->findBestCandidate('drupal/core', $target_package_version, NULL, $preferred_stability);
+    if (!$best_candidate) {
+      throw new \RuntimeException(sprintf('No Drupal core version satisfies the given constraints: version=%s, minimum stability=%s', $target_package_version, $minimum_stability));
+    }
+    return $best_candidate->getPrettyVersion();
+  }
+
+  /**
    * Gets the latest release from the previous minor version.
    *
    * @return string
@@ -101,7 +128,7 @@ class DrupalCoreVersionFinder {
     if ($this->previousMinorRelease) {
       return $this->previousMinorRelease;
     }
-    $this->previousMinorRelease = $this->getCoreVersion("<{$this->getCurrentMinorVersion()}");
+    $this->previousMinorRelease = $this->find("<{$this->getCurrentMinorVersion()}");
     return $this->previousMinorRelease;
   }
 
@@ -130,7 +157,7 @@ class DrupalCoreVersionFinder {
     if ($this->currentRecommendedRelease) {
       return $this->currentRecommendedRelease;
     }
-    $this->currentRecommendedRelease = $this->getCoreVersion();
+    $this->currentRecommendedRelease = $this->find();
     return $this->currentRecommendedRelease;
   }
 
@@ -158,7 +185,7 @@ class DrupalCoreVersionFinder {
     if ($this->nextRelease) {
       return $this->nextRelease;
     }
-    $this->nextRelease = $this->getCoreVersion(">{$this->getCurrentRecommendedRelease()}", 'alpha');
+    $this->nextRelease = $this->find(">{$this->getCurrentRecommendedRelease()}", 'alpha');
     return $this->nextRelease;
   }
 
@@ -176,24 +203,15 @@ class DrupalCoreVersionFinder {
   }
 
   /**
-   * Gets the Drupal core version matching the given criteria.
-   *
-   * @param string|null $target_package_version
-   *   The target package version.
-   * @param string $minimum_stability
-   *   The minimum stability. Available options (in order of stability) are
-   *   dev, alpha, beta, RC, and stable.
+   * Gets the next D9 dev version.
    *
    * @return string
-   *   The version string.
+   *   The version string, e.g., "9.0.x-dev".
+   *
+   * @see \Acquia\Orca\Enum\DrupalCoreVersion::D9_READINESS
    */
-  private function getCoreVersion(string $target_package_version = NULL, string $minimum_stability = 'stable'): string {
-    $best_candidate = $this->getVersionSelector($minimum_stability)
-      ->findBestCandidate('drupal/core', $target_package_version);
-    if (!$best_candidate) {
-      throw new \RuntimeException(sprintf('No Drupal core version satisfies the given constraints: version=%s, minimum stability=%s', $target_package_version, $minimum_stability));
-    }
-    return $best_candidate->getVersion();
+  private function getD9DevVersion(): string {
+    return $this->find('~9', 'dev', 'dev');
   }
 
   /**
