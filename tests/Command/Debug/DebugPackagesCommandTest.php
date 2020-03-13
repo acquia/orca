@@ -10,7 +10,6 @@ use Acquia\Orca\Fixture\PackageManager;
 use Acquia\Orca\Tests\Command\CommandTestBase;
 use Acquia\Orca\Utility\DrupalCoreVersionFinder;
 use Composer\Semver\VersionParser;
-use Prophecy\Argument;
 use Symfony\Component\Console\Command\Command;
 
 /**
@@ -43,8 +42,8 @@ class DebugPackagesCommandTest extends CommandTestBase {
     $package->getType()->willReturn('drupal-module');
     $package->getInstallPathRelative()->willReturn('docroot/modules/contrib/example1', 'docroot/modules/contrib/example2');
     $package->getRepositoryUrlRaw()->willReturn('../example1', '../example2');
-    $package->getVersionRecommended(NULL)->willReturn('~1.0');
-    $package->getVersionDev(NULL)->willReturn('1.x-dev');
+    $package->getVersionRecommended('*')->willReturn('~1.0');
+    $package->getVersionDev('*')->willReturn('1.x-dev');
     $package->shouldGetEnabled()->willReturn(TRUE);
     $this->packageManager
       ->getAll()
@@ -53,14 +52,14 @@ class DebugPackagesCommandTest extends CommandTestBase {
 
     $this->executeCommand();
 
-    $this->assertEquals(ltrim("
-+-----------+---------------+----------------------------------+-------------+---------+-------------+--------+
+    $this->assertEquals(ltrim('
++-----------+---------------+--------------------- Drupal * ---+-------------+---------+-------------+--------+
 | Package   | type          | install_path                     | url         | version | version_dev | enable |
 +-----------+---------------+----------------------------------+-------------+---------+-------------+--------+
 | Example 1 | drupal-module | docroot/modules/contrib/example1 | ../example1 | ~1.0    | 1.x-dev     | yes    |
 | Example 2 | drupal-module | docroot/modules/contrib/example2 | ../example2 | ~1.0    | 1.x-dev     | yes    |
 +-----------+---------------+----------------------------------+-------------+---------+-------------+--------+
-"), $this->getDisplay(), 'Displayed correct output.');
+'), $this->getDisplay(), 'Displayed correct output.');
     $this->assertEquals(StatusCode::OK, $this->getStatusCode(), 'Returned correct status code.');
   }
 
@@ -70,26 +69,13 @@ class DebugPackagesCommandTest extends CommandTestBase {
   public function testValidArguments($argument) {
     $version = '8.7.0.0';
     $this->drupalCoreVersionFinder
-      ->get(Argument::any())
+      ->get(new DrupalCoreVersion($argument))
       ->shouldBeCalledOnce()
       ->willReturn($version);
-    $package = $this->prophesize(Package::class);
-    $package->getPackageName()->willReturn('Example 1');
-    $package->getType()->willReturn('drupal-module');
-    $package->getInstallPathRelative()->willReturn('docroot/modules/contrib/example1');
-    $package->getRepositoryUrlRaw()->willReturn('../example1');
-    $package->getVersionRecommended($version)
-      ->shouldBeCalledOnce();
-    $package->getVersionDev($version)
-      ->shouldBeCalledOnce();
-    $this->packageManager
-      ->getAll()
-      ->shouldBeCalledOnce()
-      ->willReturn([$package]);
-    $package->shouldGetEnabled()->willReturn(TRUE);
 
     $this->executeCommand(['core' => $argument]);
 
+    $this->assertContains(ltrim("- Drupal {$version} -"), $this->getDisplay(), 'Displayed correct output.');
     $this->assertEquals(StatusCode::OK, $this->getStatusCode(), 'Returned correct status code.');
   }
 
@@ -108,7 +94,7 @@ class DebugPackagesCommandTest extends CommandTestBase {
     $this->executeCommand(['core' => $version]);
 
     $error_message = sprintf('Error: Invalid value for "core" option: "%s".', $version) . PHP_EOL
-      . 'Hint: Acceptable values are "PREVIOUS_RELEASE", "PREVIOUS_DEV", "CURRENT_RECOMMENDED", "CURRENT_DEV", "NEXT_RELEASE", "NEXT_DEV", or any version string Composer understands.' . PHP_EOL;
+      . 'Hint: Acceptable values are "PREVIOUS_RELEASE", "PREVIOUS_DEV", "CURRENT_RECOMMENDED", "CURRENT_DEV", "NEXT_RELEASE", "NEXT_DEV", "D9_READINESS", or any version string Composer understands.' . PHP_EOL;
     $this->assertEquals($error_message, $this->getDisplay(), 'Displayed correct output.');
     $this->assertEquals(StatusCode::ERROR, $this->getStatusCode(), 'Returned correct status code.');
   }
