@@ -437,12 +437,14 @@ class FixtureCreator {
       $additions[] = 'drush/drush:dev-master || 10.x-dev || 9.x-dev || 9.5.x-dev';
     }
 
-    // Add Drupal Console as a soft dependency akin to Drush.
-    $drupal_console_version = '~1.0';
-    if ($this->isDev) {
-      $drupal_console_version = 'dev-master';
+    if ($this->shouldRequireDrupalConsole()) {
+      // Add Drupal Console as a soft dependency akin to Drush.
+      $drupal_console_version = '~1.0';
+      if ($this->isDev) {
+        $drupal_console_version = 'dev-master';
+      }
+      $additions[] = "drupal/console:{$drupal_console_version}";
     }
-    $additions[] = "drupal/console:{$drupal_console_version}";
 
     // Install a specific version of Drupal core.
     if ($this->drupalCoreVersion) {
@@ -473,6 +475,20 @@ class FixtureCreator {
   }
 
   /**
+   * Determines whether or not to require drupal/console.
+   *
+   * Only require it for Drupal 8. It's not compatible with Drupal 9 at the time
+   * of this writing.
+   *
+   * @return bool
+   *   Returns TRUE if it should be required, or FALSE if not.
+   */
+  private function shouldRequireDrupalConsole(): bool {
+    $version = $this->getResolvedDrupalCoreVersion();
+    return Comparator::lessThan($version, '9');
+  }
+
+  /**
    * Determines whether or not to require drupal/core-dev.
    *
    * Require it for Drupal 8.8 and later. (Before that BLT required
@@ -482,16 +498,28 @@ class FixtureCreator {
    *   Returns TRUE if it should be required, or FALSE if not.
    */
   private function shouldRequireDrupalCoreDev(): bool {
+    $version = $this->getResolvedDrupalCoreVersion();
+    return Comparator::greaterThanOrEqualTo($version, '8.8');
+  }
+
+  /**
+   * Gets the concrete version of Drupal core that will be installed.
+   *
+   * @return string
+   *   The best match for the requested version of Drupal core, accounting for
+   *   ranges.
+   */
+  private function getResolvedDrupalCoreVersion(): string {
     try {
       // Get the version if it's concrete as opposed to a range.
       $version = $this->versionParser->normalize($this->drupalCoreVersion);
     }
     catch (\UnexpectedValueException $e) {
       // The requested Drupal core version is a range. Get the best match.
-      $minimum_stability = $this->isDev ? 'dev' : 'stable';
-      $version = $this->coreVersionFinder->find($this->drupalCoreVersion, $minimum_stability);
+      $stability = $this->isDev ? 'dev' : 'stable';
+      $version = $this->coreVersionFinder->find($this->drupalCoreVersion, $stability, $stability);
     }
-    return Comparator::greaterThanOrEqualTo($version, '8.8');
+    return $version;
   }
 
   /**
