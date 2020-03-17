@@ -42,5 +42,6 @@ case "$ORCA_JOB" in
     eval "orca qa:automated-tests --sut=$ORCA_SUT_NAME $SUT_ONLY --phpunit"
     eval "orca qa:automated-tests --sut=$ORCA_SUT_NAME --sut-only --behat"
     ;;
+  "D9_READINESS") eval "orca qa:automated-tests --sut=$ORCA_SUT_NAME --sut-only" ;;
   "CUSTOM") eval "orca qa:automated-tests --sut=$ORCA_SUT_NAME ${ORCA_CUSTOM_TESTS_RUN_ARGS:=}" ;;
 esac
