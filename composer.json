@@ -22,12 +22,10 @@
         "hassankhan/config": "^2.1",
         "jakub-onderka/php-console-highlighter": "^0.4.0",
         "jakub-onderka/php-parallel-lint": "^1.0",
-        "mockery/mockery": "^1.2",
         "myclabs/php-enum": "^1.7",
         "oscarotero/env": "^1.2",
         "phploc/phploc": "^5.0",
         "phpmd/phpmd": "^2.6",
-        "phpunit/phpunit": "^6.5",
         "stecman/symfony-console-completion": "^0.10.1",
         "symfony/config": "^4.1",
         "symfony/console": "^4.1",
@@ -48,6 +46,7 @@
     },
     "require-dev": {
         "brainmaestro/composer-git-hooks": "^2.5",
+        "phpunit/phpunit": "^6.5",
         "sensiolabs/security-checker": "^5.0"
     },
     "config": {

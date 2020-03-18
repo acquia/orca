@@ -452,7 +452,7 @@ class FixtureCreator {
     }
 
     if ($this->shouldRequireDrupalCoreDev()) {
-      $additions[] = 'drupal/core-dev';
+      $additions[] = "drupal/core-dev:{$this->drupalCoreVersion}";
     }
 
     // Install requirements for deprecation checking.
