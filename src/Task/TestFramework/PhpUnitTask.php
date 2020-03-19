@@ -46,10 +46,18 @@ class PhpUnitTask extends TestFrameworkBase {
     $doc->load($path);
     $xpath = new \DOMXPath($doc);
 
+    $this->ensureSimpleTestDirectory();
     $this->setSimpletestSettings($path, $doc, $xpath);
     $this->enableDrupalTestTraits($path, $doc, $xpath);
     $this->disableSymfonyDeprecationsHelper($path, $doc, $xpath);
     $this->setMinkDriverArguments($path, $doc, $xpath);
+  }
+
+  /**
+   * Ensures that the Simpletest files directory exists.
+   */
+  private function ensureSimpleTestDirectory(): void {
+    $this->filesystem->mkdir($this->fixture->getPath('docroot/sites/simpletest'));
   }
 
   /**
