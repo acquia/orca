@@ -627,6 +627,12 @@ class FixtureCreator {
       'is-bare' => $this->isBare,
       'is-dev' => $this->isDev,
     ]);
+    $this->processRunner->runOrcaVendorBin([
+      'composer',
+      'update',
+      '--lock',
+    ], $this->fixture->getPath());
+
   }
 
   /**
