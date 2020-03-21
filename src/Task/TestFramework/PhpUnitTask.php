@@ -48,6 +48,7 @@ class PhpUnitTask extends TestFrameworkBase {
 
     $this->ensureSimpleTestDirectory();
     $this->setSimpletestSettings($path, $doc, $xpath);
+    $this->setTestSuite($path, $doc, $xpath);
     $this->enableDrupalTestTraits($path, $doc, $xpath);
     $this->disableSymfonyDeprecationsHelper($path, $doc, $xpath);
     $this->setMinkDriverArguments($path, $doc, $xpath);
@@ -78,6 +79,31 @@ class PhpUnitTask extends TestFrameworkBase {
       ->item(0)
       ->setAttribute('value', 'sqlite://localhost/sites/default/files/.ht.sqlite');
     $doc->save($path);
+  }
+
+  /**
+   * Sets TestSuite config in phpunit.xml.
+   *
+   * @param string $path
+   *   The path.
+   * @param \DOMDocument $doc
+   *   The DOM document.
+   * @param \DOMXPath $xpath
+   *   The XPath object.
+   */
+  private function setTestSuite(string $path, \DOMDocument $doc, \DOMXPath $xpath): void {
+    if (!$xpath->query('//phpunit/testsuites/testsuite[@name="sut"]')->length) {
+      $directory = $doc->createElement('directory', $this->getPath());
+      $exclude = $doc->createElement('exclude', $this->getPath() . '/vendor');
+      $testsuite = $doc->createElement('testsuite');
+      $testsuite->setAttribute('name', 'sut');
+      $testsuite->appendChild($directory);
+      $testsuite->appendChild($exclude);
+      $xpath->query('//phpunit/testsuites')
+        ->item(0)
+        ->appendChild($testsuite);
+      $doc->save($path);
+    }
   }
 
   /**
@@ -212,11 +238,11 @@ class PhpUnitTask extends TestFrameworkBase {
         '--debug',
         "--configuration={$this->fixture->getPath('docroot/core/phpunit.xml.dist')}",
         '--exclude-group=orca_ignore',
+        '--testsuite=sut',
       ];
       if ($this->isPublicTestsOnly()) {
         $command[] = '--group=orca_public';
       }
-      $command[] = $this->getPath();
       $this->processRunner->runFixtureVendorBin($command);
     }
     catch (ProcessFailedException $e) {
