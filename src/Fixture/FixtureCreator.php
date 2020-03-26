@@ -1173,8 +1173,8 @@ PHP;
   private function setUpFilesDirectories(): void {
     $this->output->section('Setting up files directories');
     $directories = [
-      $this->fixture->getPath('sites/all/files'),
-      $this->fixture->getPath('sites/default/files'),
+      $this->fixture->getPath('docroot/sites/all/files'),
+      $this->fixture->getPath('docroot/sites/default/files'),
       $this->fixture->getPath('files-private'),
     ];
     $this->processRunner->runExecutable('mkdir', array_merge([
