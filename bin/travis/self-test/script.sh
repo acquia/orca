@@ -9,7 +9,7 @@
 # DESCRIPTION
 #     Runs static code analysis and automated tests on ORCA itself.
 
-cd "$(dirname "$0")"; source ../_includes.sh
+cd "$(dirname "$0")"; source _includes.sh
 
 if [[ "$ORCA_JOB" = "STATIC_CODE_ANALYSIS" ]]; then
   (
@@ -20,4 +20,8 @@ if [[ "$ORCA_JOB" = "STATIC_CODE_ANALYSIS" ]]; then
     ./vendor/bin/phpunit
     ./vendor/bin/security-checker security:check
   )
+fi
+
+if [[ "$ORCA_JOB" = "LIVE_TEST" ]]; then
+  orca qa:automated-tests
 fi

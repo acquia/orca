@@ -27,7 +27,7 @@ env:
   global:
     - ORCA_SUT_NAME=drupal/example
     - ORCA_SUT_BRANCH=master
-    - ORCA_PACKAGES_CONFIG=tests/Fixture/packages.yml
+    - ORCA_PACKAGES_CONFIG=example/tests/packages.yml
     - ORCA_PACKAGES_CONFIG_ALTER=example/tests/packages_alter.yml
     - ORCA_SUT_DIR=${TRAVIS_BUILD_DIR}/../example
 
@@ -44,14 +44,18 @@ jobs:
     - { name: "Integrated test w/ dev package versions & next minor dev version of Drupal core", env: ORCA_JOB=CORE_NEXT }
     - { name: "D9 readiness test", php: "7.3", env: ORCA_JOB=D9_READINESS }
     - { name: "Custom job", env: ORCA_JOB=CUSTOM ORCA_CUSTOM_FIXTURE_INIT_ARGS="--help" ORCA_CUSTOM_TESTS_RUN_ARGS="--help" }
+    - { name: "Integrated live test", env: ORCA_JOB=LIVE_TEST }
   allow_failures:
     - { php: "7.3", env: ORCA_JOB=D9_READINESS }
+    - env: ORCA_JOB=LIVE_TEST
 
 before_install:
   - ../orca/bin/travis/self-test/before_install.sh
   - ../orca/bin/travis/before_install.sh
 
-install: ../orca/bin/travis/install.sh
+install:
+  - ../orca/bin/travis/self-test/install.sh
+  - ../orca/bin/travis/install.sh
 
 before_script: ../orca/bin/travis/before_script.sh
 

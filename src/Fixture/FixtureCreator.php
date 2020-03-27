@@ -459,6 +459,9 @@ class FixtureCreator {
     $additions[] = 'mglaman/phpstan-drupal-deprecations';
     $additions[] = 'nette/di:^3.0';
 
+    // Install requirement for Drupal testing.
+    $additions[] = 'weitzman/drupal-test-traits';
+
     // Require additional packages.
     $command = [
       'composer',
@@ -627,6 +630,12 @@ class FixtureCreator {
       'is-bare' => $this->isBare,
       'is-dev' => $this->isDev,
     ]);
+    $this->processRunner->runOrcaVendorBin([
+      'composer',
+      'update',
+      '--lock',
+    ], $this->fixture->getPath());
+
   }
 
   /**
@@ -1167,8 +1176,8 @@ PHP;
   private function setUpFilesDirectories(): void {
     $this->output->section('Setting up files directories');
     $directories = [
-      $this->fixture->getPath('sites/all/files'),
-      $this->fixture->getPath('sites/default/files'),
+      $this->fixture->getPath('docroot/sites/all/files'),
+      $this->fixture->getPath('docroot/sites/default/files'),
       $this->fixture->getPath('files-private'),
     ];
     $this->processRunner->runExecutable('mkdir', array_merge([

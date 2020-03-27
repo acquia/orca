@@ -46,10 +46,18 @@ class PhpUnitTask extends TestFrameworkBase {
     $doc->load($path);
     $xpath = new \DOMXPath($doc);
 
+    $this->ensureSimpleTestDirectory();
     $this->setSimpletestSettings($path, $doc, $xpath);
     $this->enableDrupalTestTraits($path, $doc, $xpath);
     $this->disableSymfonyDeprecationsHelper($path, $doc, $xpath);
     $this->setMinkDriverArguments($path, $doc, $xpath);
+  }
+
+  /**
+   * Ensures that the Simpletest files directory exists.
+   */
+  private function ensureSimpleTestDirectory(): void {
+    $this->filesystem->mkdir($this->fixture->getPath('docroot/sites/simpletest'));
   }
 
   /**
@@ -88,7 +96,7 @@ class PhpUnitTask extends TestFrameworkBase {
     // infrastructure.
     $xpath->query('//phpunit')
       ->item(0)
-      ->setAttribute('bootstrap', "{$this->projectDir}/vendor/weitzman/drupal-test-traits/src/bootstrap.php");
+      ->setAttribute('bootstrap', $this->fixture->getPath('vendor/weitzman/drupal-test-traits/src/bootstrap.php'));
 
     if (!$xpath->query('//phpunit/php/env[@name="DTT_BASE_URL"]')->length) {
       $element = $doc->createElement('env');
