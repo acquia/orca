@@ -44,8 +44,8 @@ drupal/acquia_connector:
   version_dev: 1.x-dev <2.0
 
 drupal/acquia_contenthub:
-  version: ~1.0
-  version_dev: 1.x-dev
+  version: ~2.0
+  version_dev: 2.x-dev
 
 drupal/acquia_lift:
   version: ~3.0
