@@ -33,6 +33,9 @@ version: ~> 1.0
 # @see https://docs.acquia.com/acquia-cloud/arch/tech-platform/
 php: "7.2"
 
+# Uncomment the following line to run Nightwatch tests in your package.
+# node_js: "lts/*"
+
 addons:
   # Chrome is used via ChromeDriver by PHPUnit and Behat.
   chrome: stable

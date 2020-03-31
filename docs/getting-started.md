@@ -97,7 +97,11 @@ Of course environment variables are ephemeral, so if you want them to persist ac
 
 ### PHPUnit
 
-ORCA has out-of-the-box support for [PHPUnit in Drupal](https://www.drupal.org/docs/8/phpunit) using core's configuration. Existing tests that work in Drupal should work in ORCA with no modification. [See a working example.](../example/tests/src/Unit/ExampleUnitTest.php)
+ORCA has out-of-the-box support for [PHPUnit in Drupal](https://www.drupal.org/docs/8/phpunit) using core's configuration. Existing tests that work in Drupal should work in ORCA without modification. [See a working example.](../example/tests/src/Unit/ExampleUnitTest.php)
+
+### Nightwatch.js
+
+ORCA has out-of-the-box support for [Nightwatch in Drupal](https://www.drupal.org/docs/8/testing/javascript-testing-using-nightwatch) using core's configuration. Existing tests that work in Drupal should work in ORCA without modification. [See a working example.](../example/tests/Drupal/Nightwatch/Tests/exampleTest.js)
 
 #### Behat
 

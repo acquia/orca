@@ -39,7 +39,13 @@ class ChromeDriverServer extends ServerBase {
    * @SuppressWarnings(PHPMD.StaticAccess)
    */
   protected function createProcess(): Process {
-    $command = "{$this->projectDir}/vendor/bin/chromedriver --port=4444 &";
+    $command = "{$this->projectDir}/vendor/bin/chromedriver \\
+      --disable-dev-shm-usage \\
+      --disable-extensions \\
+      --disable-gpu \\
+      --headless \\
+      --no-sandbox \\
+      --port=4444 &";
     return Process::fromShellCommandline($command);
   }
 

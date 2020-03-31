@@ -17,6 +17,12 @@ cd "$(dirname "$0")" || exit; source _includes.sh
 # Display the Google Chrome version.
 google-chrome-stable --version
 
+# Display the Node version.
+echo "$TRAVIS_NODE_VERSION"
+
+# Display the Yarn version.
+yarn --version
+
 # Disable Xdebug.
 phpenv config-rm xdebug.ini
 
