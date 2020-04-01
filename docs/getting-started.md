@@ -5,6 +5,7 @@
 1. [Making ORCA aware of your package](#making-orca-aware-of-your-package)
 1. [Running automated tests](#running-automated-tests)
     1. [PHPUnit](#phpunit)
+    1. [Nightwatch.js](#nightwatchjs)
     1. [Behat](#behat)
     1. [Tagging/grouping](#tagginggrouping)
 
@@ -101,7 +102,7 @@ ORCA has out-of-the-box support for [PHPUnit in Drupal](https://www.drupal.org/d
 
 ### Nightwatch.js
 
-ORCA has out-of-the-box support for [Nightwatch in Drupal](https://www.drupal.org/docs/8/testing/javascript-testing-using-nightwatch) using core's configuration. Existing tests that work in Drupal should work in ORCA without modification. [See a working example.](../example/tests/Drupal/Nightwatch/Tests/exampleTest.js)
+ORCA has out-of-the-box support for [Nightwatch in Drupal](https://www.drupal.org/docs/8/testing/javascript-testing-using-nightwatch) using core's configuration. Existing tests that work in Drupal should work in ORCA without modification. This means, among other things, that your tests must be tagged with your package's machine name in order to be discovered. At this time, only the SUT's Nightwatch tests are run. [See a working example.](../example/tests/Drupal/Nightwatch/Tests/exampleTest.js)
 
 #### Behat
 
@@ -116,7 +117,7 @@ For more information on using Behat with Drupal, see [the Behat website](http://
 
 ### Tagging/grouping
 
-ORCA uses tags (for Behat) and groups (for PHPUnit) to determine which tests to run when, as depicted in the table below:
+ORCA uses tags (for Behat) and groups (for PHPUnit) to determine which tests to run when, as depicted in the table below. Nightwatch testing does not currently respect these tags as it only ever runs the SUT's tests.
 
 <!-- https://www.tablesgenerator.com/markdown_tables -->
 

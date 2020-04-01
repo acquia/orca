@@ -8,6 +8,7 @@
 * [Integrated test](#integrated-test)
 * [Isolated test](#isolated-test)
 * [Isolated unit tests](#isolated-unit-tests)
+* [Nightwatch.js](#nightwatchjs)
 * [Non-SUT tests](#non-sut-tests)
 * [ORCA](#orca)
 * [ORCA internals](#orca-internals)
@@ -50,6 +51,10 @@ A test of the [SUT](#sut) in the absence of other non-required packages (i.e., i
 ## Isolated unit tests
 
 Unit tests that run "in isolation", i.e., separate and apart from the application and all other units. See [Unit Test Isolation](http://wiki.c2.com/?UnitTestIsolation).
+
+## Nightwatch.js
+
+An integrated, end-to-end testing solution for web applications and websites. [[Website]](https://nightwatchjs.org/) ORCA automatically runs Nightwatch tests in the SUT tagged with the package's machine name.
 
 ## Non-SUT tests
 
