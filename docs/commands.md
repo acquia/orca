@@ -1245,7 +1245,7 @@ Runs automated tests
 
 ### Usage
 
-* `qa:automated-tests [--sut SUT] [--sut-only] [--behat] [--phpunit] [--no-servers]`
+* `qa:automated-tests [--sut SUT] [--sut-only] [--phpunit] [--no-servers]`
 * `test`
 
 Runs automated tests
@@ -1270,18 +1270,9 @@ Run tests from only the system under test (SUT). Omit tests from all other compa
 * Is multiple: no
 * Default: `false`
 
-#### `--behat`
-
-Run only PHPUnit tests
-
-* Accept value: no
-* Is value required: no
-* Is multiple: no
-* Default: `false`
-
 #### `--phpunit`
 
-Run only Behat tests
+Run only PHPUnit tests
 
 * Accept value: no
 * Is value required: no

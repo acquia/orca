@@ -36,7 +36,7 @@ php: "7.2"
 node_js: "lts/*"
 
 addons:
-  # Chrome is used via ChromeDriver by PHPUnit and Behat.
+  # Chrome is used via ChromeDriver for web testing and browser automation.
   chrome: stable
 
 cache:
