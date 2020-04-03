@@ -6,7 +6,6 @@ use Acquia\Orca\Fixture\FixtureResetter;
 use Acquia\Orca\Fixture\PackageManager;
 use Acquia\Orca\Server\ServerStack;
 use Acquia\Orca\Task\TaskInterface;
-use Acquia\Orca\Task\TestFramework\BehatTask;
 use Acquia\Orca\Task\TestFramework\PhpUnitTask;
 use Acquia\Orca\Task\TestFramework\TestRunner;
 use Acquia\Orca\Utility\ProcessRunner;
@@ -15,7 +14,6 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
- * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Task\TestFramework\BehatTask $behat
  * @property \Prophecy\Prophecy\ObjectProphecy|\Symfony\Component\Filesystem\Filesystem $filesystem
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Fixture\FixtureResetter $fixtureResetter
  * @property \Prophecy\Prophecy\ObjectProphecy|\Symfony\Component\Console\Style\SymfonyStyle $output
@@ -31,7 +29,6 @@ class TestRunnerTest extends TestCase {
   private const STATUS_MESSAGE = 'Printing status message';
 
   protected function setUp() {
-    $this->behat = $this->prophesize(BehatTask::class);
     $this->filesystem = $this->prophesize(Filesystem::class);
     $this->fixtureResetter = $this->prophesize(FixtureResetter::class);
     $this->output = $this->prophesize(SymfonyStyle::class);
@@ -61,8 +58,6 @@ class TestRunnerTest extends TestCase {
   }
 
   private function createTestRunner(): TestRunner {
-    /** @var \Acquia\Orca\Task\TestFramework\BehatTask $behat */
-    $behat = $this->behat->reveal();
     /** @var \Symfony\Component\Filesystem\Filesystem $filesystem */
     $filesystem = $this->filesystem->reveal();
     /** @var \Acquia\Orca\Fixture\FixtureResetter $fixture_resetter */
@@ -77,7 +72,7 @@ class TestRunnerTest extends TestCase {
     $package_manager = $this->packageManager->reveal();
     /** @var \Acquia\Orca\Server\ServerStack $server_stack */
     $server_stack = $this->serverStack->reveal();
-    return new TestRunner($behat, $filesystem, $fixture_resetter, $output, $phpunit, $process_runner, $package_manager, $server_stack);
+    return new TestRunner($filesystem, $fixture_resetter, $output, $phpunit, $process_runner, $package_manager, $server_stack);
   }
 
 }
