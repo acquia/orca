@@ -8,7 +8,6 @@ use Acquia\Orca\Task\StaticAnalysisTool\ComposerValidateTask;
 use Acquia\Orca\Task\StaticAnalysisTool\PhpCodeSnifferTask;
 use Acquia\Orca\Task\StaticAnalysisTool\PhpLintTask;
 use Acquia\Orca\Task\StaticAnalysisTool\PhpMessDetectorTask;
-use Acquia\Orca\Task\TestFramework\BehatTask;
 use Acquia\Orca\Task\TestFramework\PhpUnitTask;
 use Acquia\Orca\Utility\ConfigFileOverrider;
 use Acquia\Orca\Utility\ProcessRunner;
@@ -43,7 +42,6 @@ class TasksTest extends TestCase {
 
   public function providerConstruction() {
     return [
-      [BehatTask::class],
       [ComposerValidateTask::class],
       [PhpCodeSnifferTask::class],
       [PhpLintTask::class],

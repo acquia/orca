@@ -33,8 +33,10 @@ version: ~> 1.0
 # @see https://docs.acquia.com/acquia-cloud/arch/tech-platform/
 php: "7.2"
 
+node_js: "lts/*"
+
 addons:
-  # Chrome is used via ChromeDriver by PHPUnit and Behat.
+  # Chrome is used via ChromeDriver for web testing and browser automation.
   chrome: stable
 
 cache:

@@ -25,13 +25,6 @@ class QaAutomatedTestsCommand extends Command {
   protected static $defaultName = 'qa:automated-tests';
 
   /**
-   * The "behat" command line option.
-   *
-   * @var string|string[]|bool|null
-   */
-  private $behat;
-
-  /**
    * The fixture.
    *
    * @var \Acquia\Orca\Fixture\Fixture
@@ -106,8 +99,7 @@ class QaAutomatedTestsCommand extends Command {
       ->setDescription('Runs automated tests')
       ->addOption('sut', NULL, InputOption::VALUE_REQUIRED, 'The system under test (SUT) in the form of its package name, e.g., "drupal/example"')
       ->addOption('sut-only', NULL, InputOption::VALUE_NONE, 'Run tests from only the system under test (SUT). Omit tests from all other company packages')
-      ->addOption('behat', NULL, InputOption::VALUE_NONE, 'Run only PHPUnit tests')
-      ->addOption('phpunit', NULL, InputOption::VALUE_NONE, 'Run only Behat tests')
+      ->addOption('phpunit', NULL, InputOption::VALUE_NONE, 'Run only PHPUnit tests')
       ->addOption('no-servers', NULL, InputOption::VALUE_NONE, "Don't run the ChromeDriver and web servers");
   }
 
@@ -115,7 +107,6 @@ class QaAutomatedTestsCommand extends Command {
    * {@inheritdoc}
    */
   public function execute(InputInterface $input, OutputInterface $output): int {
-    $this->behat = $input->getOption('behat');
     $this->noServers = $input->getOption('no-servers');
     $this->phpunit = $input->getOption('phpunit');
     $this->sut = $input->getOption('sut');
@@ -185,13 +176,6 @@ class QaAutomatedTestsCommand extends Command {
 
     if ($this->noServers) {
       $this->testRunner->setRunServers(FALSE);
-    }
-
-    if (!$this->behat && $this->phpunit) {
-      $this->testRunner->setRunBehat(FALSE);
-    }
-    if ($this->behat && !$this->phpunit) {
-      $this->testRunner->setRunPhpunit(FALSE);
     }
   }
 

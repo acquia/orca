@@ -18,10 +18,12 @@
 * [`st`](#fixturestatus)
 * [`status`](#fixturestatus)
 * [`test`](#qaautomated-tests)
+* [`vars`](#debugenv-vars)
 
 **debug:**
 
 * [`debug:core-versions`](#debugcore-versions)
+* [`debug:env-vars`](#debugenv-vars)
 * [`debug:packages`](#debugpackages)
 
 **fixture:**
@@ -286,6 +288,83 @@ Do not ask any interactive question
 * Is multiple: no
 * Default: `false`
 
+`debug:env-vars`
+----------------
+
+Displays ORCA environment variables
+
+### Usage
+
+* `debug:env-vars`
+* `vars`
+
+Displays ORCA environment variables
+
+### Options
+
+#### `--help|-h`
+
+Display this help message
+
+* Accept value: no
+* Is value required: no
+* Is multiple: no
+* Default: `false`
+
+#### `--quiet|-q`
+
+Do not output any message
+
+* Accept value: no
+* Is value required: no
+* Is multiple: no
+* Default: `false`
+
+#### `--verbose|-v|-vv|-vvv`
+
+Increase the verbosity of messages: 1 for normal output, 2 for more verbose output and 3 for debug
+
+* Accept value: no
+* Is value required: no
+* Is multiple: no
+* Default: `false`
+
+#### `--version|-V`
+
+Display this application version
+
+* Accept value: no
+* Is value required: no
+* Is multiple: no
+* Default: `false`
+
+#### `--ansi`
+
+Force ANSI output
+
+* Accept value: no
+* Is value required: no
+* Is multiple: no
+* Default: `false`
+
+#### `--no-ansi`
+
+Disable ANSI output
+
+* Accept value: no
+* Is value required: no
+* Is multiple: no
+* Default: `false`
+
+#### `--no-interaction|-n`
+
+Do not ask any interactive question
+
+* Accept value: no
+* Is value required: no
+* Is multiple: no
+* Default: `false`
+
 `debug:packages`
 ----------------
 
@@ -309,6 +388,7 @@ A Drupal core version to target:
 - CURRENT_DEV: The current development version, e.g., "8.6.x-dev"
 - NEXT_RELEASE: The next release version if available, e.g., "8.7.0-beta2"
 - NEXT_DEV: The next development version, e.g., "8.7.x-dev"
+- D9_READINESS: The current development version of Drupal 9, e.g., "9.0.x-dev"
 - Any version string Composer understands, see https://getcomposer.org/doc/articles/versions.md
 
 * Is required: no
@@ -602,6 +682,7 @@ Change the version of Drupal core installed:
 - CURRENT_DEV: The current development version, e.g., "8.6.x-dev"
 - NEXT_RELEASE: The next release version if available, e.g., "8.7.0-beta2"
 - NEXT_DEV: The next development version, e.g., "8.7.x-dev"
+- D9_READINESS: The current development version of Drupal 9, e.g., "9.0.x-dev"
 - Any version string Composer understands, see https://getcomposer.org/doc/articles/versions.md
 
 * Accept value: yes
@@ -1164,7 +1245,7 @@ Runs automated tests
 
 ### Usage
 
-* `qa:automated-tests [--sut SUT] [--sut-only] [--behat] [--phpunit] [--no-servers]`
+* `qa:automated-tests [--sut SUT] [--sut-only] [--phpunit] [--no-servers]`
 * `test`
 
 Runs automated tests
@@ -1189,18 +1270,9 @@ Run tests from only the system under test (SUT). Omit tests from all other compa
 * Is multiple: no
 * Default: `false`
 
-#### `--behat`
-
-Run only PHPUnit tests
-
-* Accept value: no
-* Is value required: no
-* Is multiple: no
-* Default: `false`
-
 #### `--phpunit`
 
-Run only Behat tests
+Run only PHPUnit tests
 
 * Accept value: no
 * Is value required: no

@@ -33,18 +33,27 @@ function assert_env_vars {
 ORCA_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 export ORCA_ROOT
 export ORCA_FIXTURE_DIR=${ORCA_FIXTURE_DIR:="$ORCA_ROOT/../orca-build"}
-export ORCA_SUT_DIR=${ORCA_SUT_DIR:=${TRAVIS_BUILD_DIR}}
 export ORCA_FIXTURE_PROFILE=${ORCA_FIXTURE_PROFILE:="orca"}
+export ORCA_SUT_DIR=${ORCA_SUT_DIR:=${TRAVIS_BUILD_DIR}}
+export ORCA_SUT_HAS_NIGHTWATCH_TESTS=$(cd "$ORCA_SUT_DIR"; find . -regex ".*/Nightwatch/.*" -name \*.js)
+export ORCA_SUT_MACHINE_NAME=${ORCA_SUT_NAME##*\/}
 export ORCA_TELEMETRY_ENABLE=${ORCA_TELEMETRY_ENABLE:="FALSE"}
 export ORCA_AMPLITUDE_USER_ID=${ORCA_AMPLITUDE_USER_ID:="$ORCA_SUT_NAME:$ORCA_SUT_BRANCH"}
+export ORCA_ENABLE_NIGHTWATCH=${ORCA_ENABLE_NIGHTWATCH:="TRUE"}
+export ORCA_YARN_DIR="${ORCA_FIXTURE_DIR}/docroot/core"
+export DRUPAL_NIGHTWATCH_IGNORE_DIRECTORIES="node_modules,vendor,.*,sites/*/files,sites/*/private,sites/simpletest"
+export DRUPAL_NIGHTWATCH_OUTPUT="sites/default/reports/nightwatch"
+export DRUPAL_NIGHTWATCH_SEARCH_DIRECTORY="../"
+export DRUPAL_TEST_BASE_URL="http://localhost:8080"
+export DRUPAL_TEST_CHROMEDRIVER_AUTOSTART="false"
+export DRUPAL_TEST_DB_URL="sqlite://localhost/sites/default/files/db.sqlite"
+export DRUPAL_TEST_WEBDRIVER_CHROME_ARGS="--disable-gpu --headless --no-sandbox"
+export DRUPAL_TEST_WEBDRIVER_HOSTNAME="localhost"
+export DRUPAL_TEST_WEBDRIVER_PORT="4444"
 
 # Override the available columns setting to prevent Drush output from wrapping
 # too narrowly.
 export COLUMNS=125
-
-# Correct Selenium URL for new versions of Chrome/ChromeDriver:
-# @see https://github.com/acquia/orca/pull/38
-export BEHAT_PARAMS='{"extensions":{"Behat\\MinkExtension":{"selenium2":{"wd_host":"http://127.0.0.1:4444","capabilities":{"chrome":{"switches":["--headless","--disable-gpu"]}}}}}}'
 
 # Add binary directories to PATH.
 export PATH="$HOME/.composer/vendor/bin:$PATH"

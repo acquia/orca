@@ -15,7 +15,6 @@
         "ext-json": "*",
         "ext-sqlite3": "*",
         "acquia/coding-standards": "^0.4.0",
-        "behat/behat": "^3.5",
         "composer/composer": "^1.7",
         "dealerdirect/phpcodesniffer-composer-installer": "^0.5",
         "ergebnis/composer-normalize": "^2.0.0",
@@ -38,7 +37,6 @@
         "symfony/process": "^4.1",
         "symfony/yaml": "^4.1",
         "vaimo/binary-chromedriver": "^5.0",
-        "weitzman/drupal-test-traits": "~1.0",
         "zumba/amplitude-php": "^1.0"
     },
     "conflict": {

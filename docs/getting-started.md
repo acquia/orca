@@ -5,7 +5,7 @@
 1. [Making ORCA aware of your package](#making-orca-aware-of-your-package)
 1. [Running automated tests](#running-automated-tests)
     1. [PHPUnit](#phpunit)
-    1. [Behat](#behat)
+    1. [Nightwatch.js](#nightwatchjs)
     1. [Tagging/grouping](#tagginggrouping)
 
 ## Configuring Travis CI
@@ -97,22 +97,15 @@ Of course environment variables are ephemeral, so if you want them to persist ac
 
 ### PHPUnit
 
-ORCA has out-of-the-box support for [PHPUnit in Drupal](https://www.drupal.org/docs/8/phpunit) using core's configuration. Existing tests that work in Drupal should work in ORCA with no modification. [See a working example.](../example/tests/src/Unit/ExampleUnitTest.php)
+ORCA has out-of-the-box support for [PHPUnit in Drupal](https://www.drupal.org/docs/8/phpunit) using core's configuration. Existing tests that work in Drupal should work in ORCA without modification. [See a working example.](../example/tests/src/Unit/ExampleUnitTest.php)
 
-#### Behat
+### Nightwatch.js
 
-Because Drupal core has no built-in support for Behat, special configuration is required for ORCA to run it:
-
-* Add a `behat.yml` in the root of your package repo to [configure your test profile](http://behat.org/en/latest/user_guide/configuration.html). (See [`example/behat.yml`](../example/behat.yml).)
-* Add your [feature context(s)](http://behat.org/en/latest/user_guide/context.html) to a designated directory, e.g., `tests/features/bootstrap`. (See [`example/tests/features/bootstrap/FeatureContext.php`](../example/tests/features/bootstrap/FeatureContext.php).)
-* Add your [feature files](http://behat.org/en/latest/user_guide/features_scenarios.html) to a designated directory, e.g., `tests/features`. (See [`example/tests/features`](../example/tests/features).)
-* Add the new classes to your Composer autoloader classmap so the deprecated code scanner can find them. (See [`example/composer.json`](../example/composer.json).)
-
-For more information on using Behat with Drupal, see [the Behat website](http://behat.org/) and [the Drupal Extension to Behat and Mink](https://behat-drupal-extension.readthedocs.io/). You might also find the [Drupal Spec Tool](https://github.com/acquia/drupal-spec-tool) interesting.
+ORCA has out-of-the-box support for [Nightwatch in Drupal](https://www.drupal.org/docs/8/testing/javascript-testing-using-nightwatch) using core's configuration. Existing tests that work in Drupal should work in ORCA without modification. This means, among other things, that your tests must be tagged with your package's machine name in order to be discovered. At this time, only the SUT's Nightwatch tests are run. [See a working example.](../example/tests/Drupal/Nightwatch/Tests/exampleTest.js)
 
 ### Tagging/grouping
 
-ORCA uses tags (for Behat) and groups (for PHPUnit) to determine which tests to run when, as depicted in the table below:
+ORCA uses groups for PHPUnit to determine which tests to run when, as depicted in the table below. Nightwatch testing only runs on the SUT and does not respect these tags at this time.
 
 <!-- https://www.tablesgenerator.com/markdown_tables -->
 
@@ -124,9 +117,9 @@ ORCA uses tags (for Behat) and groups (for PHPUnit) to determine which tests to 
 
 The default behavior is to run a test only when the package providing it is the SUT--not when it is merely included in another package's test fixture. Any test not designated public or ignored is so treated. Such tests are referred to as "private tests". This should be considered the correct choice for most tests--particularly for features that involve little or no risk of conflict with other company packages, including [isolated unit tests](glossary.md#isolated-unit-tests) by definition.
 
-Public PHPUnit tests (`orca_public`) are _always_ run, including when testing packages other than the one providing them. (Behat has proved a source of too much instability to inflict across the board, so the default Travis CI jobs _never_ run non-SUT Behat tests.) In Acquia's implementation, for example, a public PHPUnit test provided by Lightning API will also be run during tests of Acquia Lift, Acquia Purge, and the rest. Public tests thus lengthen builds for _all company packages_ and should be used judiciously. Reserve them for high value features with meaningful risk of being broken by other packages, and make them as fast as possible.
+Public PHPUnit tests (`orca_public`) are _always_ run, including when testing packages other than the one providing them. Acquia's implementation, for example, a public PHPUnit test provided by Lightning API will also be run during tests of Acquia Lift, Acquia Purge, and the rest. Public tests thus lengthen builds for _all company packages_ and should be used judiciously. Reserve them for high value features with meaningful risk of being broken by other packages, and make them as fast as possible.
 
-Ignored tests (`orca_ignore`) are "ignored" and _never_ run by ORCA. Tests should be ignored when they depend upon setup or preconditions that ORCA doesn't provide, such as a fixture with unique dependencies or a database populated by SQL dump. Once ignored, such tests can be scripted to run apart from ORCA after custom setup. In practice, it should rarely be necessary to ignore a test, as most setup and teardown can be accomplished through [PHPUnit template methods](https://phpunit.de/manual/6.5/en/fixtures.html) and [Behat hooks](http://behat.org/en/latest/user_guide/context/hooks.html).
+Ignored tests (`orca_ignore`) are "ignored" and _never_ run by ORCA. Tests should be ignored when they depend upon setup or preconditions that ORCA doesn't provide, such as a fixture with unique dependencies or a database populated by SQL dump. Once ignored, such tests can be scripted to run apart from ORCA after custom setup. In practice, it should rarely be necessary to ignore a test, as most setup and teardown can be accomplished through [PHPUnit template methods](https://phpunit.de/manual/6.5/en/fixtures.html).
 
 ---
 

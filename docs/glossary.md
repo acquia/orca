@@ -1,13 +1,13 @@
 # Project Glossary
 
 * [Bare fixture](#bare-fixture)
-* [Behat](#behat)
 * [BLT](#blt)
 * [Fixture](#test-fixture)
 * [Ignored tests](#ignored-tests)
 * [Integrated test](#integrated-test)
 * [Isolated test](#isolated-test)
 * [Isolated unit tests](#isolated-unit-tests)
+* [Nightwatch.js](#nightwatchjs)
 * [Non-SUT tests](#non-sut-tests)
 * [ORCA](#orca)
 * [ORCA internals](#orca-internals)
@@ -27,17 +27,13 @@
 
 A [test fixture](#test-fixture) that neither includes nor installs any [SUT](#sut) or other company packages (except of course for BLT which is the foundation of all fixtures).
 
-## Behat
-
-| 'bēhat | An open source Behavior-Driven Development framework for PHP. [[Website]](http://behat.org/) ORCA automatically runs [public](#public-tests) and [private](#private-tests) Behat tests in the SUT only using a `behat.yml` files found in its root directory if present. See also [ignored tests](#ignored-tests).
-
 ## BLT
 
 Build and Launch Tool: Acquia's toolset for automating Drupal 8 development, testing, and deployment. [[Website]](https://github.com/acquia/blt) Provides the foundation for an ORCA [test fixture](#test-fixture).
 
 ## Ignored tests
 
-Automated tests that ORCA "ignores" and never runs. These are designated with an `orca_ignore` tag ([Behat](#behat)) or group ([PHPUnit](#phpunit)). Tests should be "ignored" when they depend upon setup or preconditions that ORCA doesn't provide. They can then be scripted to run without ORCA after custom setup. [Read more in Designing automated tests: Tagging/grouping.](getting-started.md#tagginggrouping)
+Automated tests that ORCA "ignores" and never runs. These are designated with an `orca_ignore` group for [PHPUnit](#phpunit). Tests should be "ignored" when they depend upon setup or preconditions that ORCA doesn't provide. They can then be scripted to run without ORCA after custom setup. [Read more in Designing automated tests: Tagging/grouping.](getting-started.md#tagginggrouping)
 
 ## Integrated test
 
@@ -50,6 +46,10 @@ A test of the [SUT](#sut) in the absence of other non-required packages (i.e., i
 ## Isolated unit tests
 
 Unit tests that run "in isolation", i.e., separate and apart from the application and all other units. See [Unit Test Isolation](http://wiki.c2.com/?UnitTestIsolation).
+
+## Nightwatch.js
+
+An integrated, end-to-end testing solution for web applications and websites. [[Website]](https://nightwatchjs.org/) ORCA automatically runs Nightwatch tests in the SUT tagged with the package's machine name.
 
 ## Non-SUT tests
 
@@ -73,7 +73,7 @@ Automated tests that ORCA runs only when the package that provides them is the [
 
 ## Public tests
 
-Automated tests that ORCA runs regardless of whether or not the package that provides them is the [SUT](#sut). These are designated with an `orca_public` tag ([Behat](#behat)) or group ([PHPUnit](#phpunit)). Public tests should be limited to those covering features at the greatest risk of being broken by the presence or action of other company packages, and they should be as fast as possible since they will be run on all other company packages' builds. [Read more in Designing automated tests: Tagging/grouping.](getting-started.md#tagginggrouping)
+Automated tests that ORCA runs regardless of whether or not the package that provides them is the [SUT](#sut). These are designated with an `orca_public` group for [PHPUnit](#phpunit). Public tests should be limited to those covering features at the greatest risk of being broken by the presence or action of other company packages, and they should be as fast as possible since they will be run on all other company packages' builds. [Read more in Designing automated tests: Tagging/grouping.](getting-started.md#tagginggrouping)
 
 ## Standard fixture
 

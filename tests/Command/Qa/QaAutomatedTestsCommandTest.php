@@ -12,7 +12,6 @@ use Acquia\Orca\Tests\Command\CommandTestBase;
 use Symfony\Component\Console\Command\Command;
 
 /**
- * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Task\TestFramework\BehatTask $behat
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Server\ChromeDriverServer $chromedriver
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Utility\Clock $clock
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Fixture\Fixture $fixture
@@ -96,10 +95,7 @@ class QaAutomatedTestsCommandTest extends CommandTestBase {
   /**
    * @dataProvider providerFrameworkFlags
    */
-  public function testFrameworkFlags($args, $call_set_run_behat, $call_set_run_phpunit) {
-    $this->testRunner
-      ->setRunBehat(FALSE)
-      ->shouldBeCalledTimes($call_set_run_behat);
+  public function testFrameworkFlags($args, $call_set_run_phpunit) {
     $this->testRunner
       ->setRunPhpunit(FALSE)
       ->shouldBeCalledTimes($call_set_run_phpunit);
@@ -112,10 +108,8 @@ class QaAutomatedTestsCommandTest extends CommandTestBase {
 
   public function providerFrameworkFlags() {
     return [
-      [[], 0, 0],
-      [['--behat' => 1], 0, 1],
-      [['--phpunit' => 1], 1, 0],
-      [['--behat' => 1, '--phpunit' => 1], 0, 0],
+      [[], 0],
+      [['--phpunit' => 1], 0],
     ];
   }
 
