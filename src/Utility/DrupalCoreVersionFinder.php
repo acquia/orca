@@ -211,7 +211,7 @@ class DrupalCoreVersionFinder {
    * @see \Acquia\Orca\Enum\DrupalCoreVersion::D9_READINESS
    */
   private function getD9DevVersion(): string {
-    return $this->find('~9', 'dev', 'dev');
+    return $this->find('~9.0.0', 'dev', 'dev');
   }
 
   /**
