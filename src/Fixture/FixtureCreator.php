@@ -459,9 +459,6 @@ class FixtureCreator {
     $additions[] = 'mglaman/phpstan-drupal-deprecations';
     $additions[] = 'nette/di:^3.0';
 
-    // Install requirement for Drupal testing.
-    $additions[] = 'weitzman/drupal-test-traits';
-
     // Require additional packages.
     $command = [
       'composer',
