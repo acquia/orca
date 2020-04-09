@@ -85,6 +85,16 @@ drupal/cog:
 
 acquia/drupal-spec-tool:
   type: behat-extension
+  # The Drupal Spec Tool depends on drupal/drupal-driver, which was not
+  # compatible with Drupal 9 at the time of this writing.
+  # @see https://github.com/jhedstrom/DrupalDriver/issues/225
+  core_matrix:
+    '^8.7.0':
+      version: 3.x
+      version_dev: 3.x-dev
+    '*':
+      version: ~
+      version_dev: ~
 
 drupal/lightning_api:
   core_matrix:
