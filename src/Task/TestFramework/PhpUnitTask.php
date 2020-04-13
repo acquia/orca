@@ -92,13 +92,11 @@ class PhpUnitTask extends TestFrameworkBase {
    *   The XPath object.
    */
   private function setTestSuite(string $path, \DOMDocument $doc, \DOMXPath $xpath): void {
-    if (!$xpath->query('//phpunit/testsuites/testsuite[@name="sut"]')->length) {
+    if (!$xpath->query('//phpunit/testsuites/testsuite[@name="orca"]')->length) {
       $directory = $doc->createElement('directory', $this->getPath());
-      $exclude = $doc->createElement('exclude', $this->getPath() . '/vendor');
       $testsuite = $doc->createElement('testsuite');
-      $testsuite->setAttribute('name', 'sut');
+      $testsuite->setAttribute('name', 'orca');
       $testsuite->appendChild($directory);
-      $testsuite->appendChild($exclude);
       $xpath->query('//phpunit/testsuites')
         ->item(0)
         ->appendChild($testsuite);
@@ -238,7 +236,7 @@ class PhpUnitTask extends TestFrameworkBase {
         '--debug',
         "--configuration={$this->fixture->getPath('docroot/core/phpunit.xml.dist')}",
         '--exclude-group=orca_ignore',
-        '--testsuite=sut',
+        '--testsuite=orca',
       ];
       if ($this->isPublicTestsOnly()) {
         $command[] = '--group=orca_public';
