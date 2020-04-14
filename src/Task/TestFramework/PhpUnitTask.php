@@ -33,15 +33,17 @@ class PhpUnitTask extends TestFrameworkBase {
    * {@inheritdoc}
    */
   public function execute(): void {
+    $this->overrideConfig();
     $this->ensurePhpUnitConfig();
     $this->runPhpUnit();
+    $this->restoreConfig();
   }
 
   /**
    * Ensures that PHPUnit is properly configured.
    */
   private function ensurePhpUnitConfig() {
-    $path = $this->fixture->getPath('docroot/core/phpunit.xml.dist');
+    $path = $this->fixture->getPath('docroot/core/phpunit.xml');
     $doc = new \DOMDocument();
     $doc->load($path);
     $xpath = new \DOMXPath($doc);
@@ -92,18 +94,16 @@ class PhpUnitTask extends TestFrameworkBase {
    *   The XPath object.
    */
   private function setTestSuite(string $path, \DOMDocument $doc, \DOMXPath $xpath): void {
-    if (!$xpath->query('//phpunit/testsuites/testsuite[@name="orca"]')->length) {
-      $directory = $doc->createElement('directory', $this->getPath());
-      $exclude = $doc->createElement('exclude', $this->getPath() . '/vendor');
-      $testsuite = $doc->createElement('testsuite');
-      $testsuite->setAttribute('name', 'orca');
-      $testsuite->appendChild($directory);
-      $testsuite->appendChild($exclude);
-      $xpath->query('//phpunit/testsuites')
-        ->item(0)
-        ->appendChild($testsuite);
-      $doc->save($path);
-    }
+    $directory = $doc->createElement('directory', $this->getPath());
+    $exclude = $doc->createElement('exclude', "{$this->getPath()}/vendor");
+    $testsuite = $doc->createElement('testsuite');
+    $testsuite->setAttribute('name', 'orca');
+    $testsuite->appendChild($directory);
+    $testsuite->appendChild($exclude);
+    $xpath->query('//phpunit/testsuites')
+      ->item(0)
+      ->appendChild($testsuite);
+    $doc->save($path);
   }
 
   /**
@@ -236,7 +236,7 @@ class PhpUnitTask extends TestFrameworkBase {
         'phpunit',
         '--colors=always',
         '--debug',
-        "--configuration={$this->fixture->getPath('docroot/core/phpunit.xml.dist')}",
+        "--configuration={$this->fixture->getPath('docroot/core/phpunit.xml')}",
         '--exclude-group=orca_ignore',
         '--testsuite=orca',
       ];
@@ -248,6 +248,24 @@ class PhpUnitTask extends TestFrameworkBase {
     catch (ProcessFailedException $e) {
       throw new TaskFailureException();
     }
+  }
+
+  /**
+   * Overrides the active configuration.
+   */
+  public function overrideConfig(): void {
+    $this->configFileOverrider->setPaths(
+      $this->fixture->getPath('docroot/core/phpunit.xml.dist'),
+      $this->fixture->getPath('docroot/core/phpunit.xml')
+    );
+    $this->configFileOverrider->override();
+  }
+
+  /**
+   * Restores the previous configuration.
+   */
+  public function restoreConfig(): void {
+    $this->configFileOverrider->restore();
   }
 
 }
