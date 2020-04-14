@@ -216,12 +216,12 @@ class TestRunner {
    */
   private function execute(TestFrameworkInterface $framework, Package $package, bool $public): void {
     try {
+      $framework->limitToPublicTests($public);
+      $framework->setPath($package->getInstallPathAbsolute());
       $this->output->section("{$framework->statusMessage()} for {$package->getPackageName()}");
       $this->output->comment('Resetting test fixture');
       $this->fixtureResetter->reset();
       $this->output->comment('Running tests');
-      $framework->setPath($package->getInstallPathAbsolute());
-      $framework->limitToPublicTests($public);
       $framework->execute();
     }
     catch (TaskFailureException $e) {
