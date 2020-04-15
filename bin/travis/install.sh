@@ -27,7 +27,7 @@ case "$ORCA_JOB" in
   "CUSTOM") eval "orca fixture:init -f --sut=$ORCA_SUT_NAME --profile=$ORCA_FIXTURE_PROFILE ${ORCA_CUSTOM_FIXTURE_INIT_ARGS:=}" ;;
 esac
 
-if [[ "$ORCA_ENABLE_NIGHTWATCH" && "$ORCA_SUT_HAS_NIGHTWATCH_TESTS" && -d "$ORCA_YARN_DIR" ]]; then
+if [[ "$ORCA_ENABLE_NIGHTWATCH" = "TRUE" && "$ORCA_SUT_HAS_NIGHTWATCH_TESTS" = "TRUE" && -d "$ORCA_YARN_DIR" ]]; then
   (
     cd "$ORCA_YARN_DIR" || exit
     eval "yarn install"
