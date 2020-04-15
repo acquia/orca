@@ -41,7 +41,8 @@
 # example.
 
 drupal/acquia_connector:
-  version_dev: 1.x-dev <2.0
+  version: ~1
+  version_dev: ~1
 
 drupal/acquia_contenthub:
   core_matrix:
