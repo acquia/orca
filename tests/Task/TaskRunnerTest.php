@@ -6,7 +6,6 @@ use Acquia\Orca\Enum\StatusCode;
 use Acquia\Orca\Task\StaticAnalysisTool\PhpLintTask;
 use Acquia\Orca\Task\TaskInterface;
 use Acquia\Orca\Task\TaskRunner;
-use Acquia\Orca\Task\TestFramework\BehatTask;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
@@ -23,19 +22,16 @@ class TaskRunnerTest extends TestCase {
   public function testTaskRunner() {
     $output = $this->prophesize(SymfonyStyle::class);
     $output->section(self::STATUS_MESSAGE)
-      ->shouldBeCalledTimes(2);
+      ->shouldBeCalledTimes(1);
     $output->success('Passed')
       ->shouldBeCalledTimes(2);
     /** @var \Symfony\Component\Console\Style\SymfonyStyle $output */
     $output = $output->reveal();
-    /** @var \Acquia\Orca\Task\TestFramework\BehatTask $behat */
-    $behat = $this->setTaskExpectations(BehatTask::class);
     /** @var \Acquia\Orca\Task\StaticAnalysisTool\PhpLintTask $php_lint */
     $php_lint = $this->setTaskExpectations(PhpLintTask::class);
 
     $runner = new TaskRunner($output);
     $runner->setPath('foobar')
-      ->addTask($behat)
       ->addTask($php_lint)
       ->setPath(self::PATH);
     $status_code = $runner->run();

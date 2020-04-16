@@ -9,10 +9,5 @@
             "dev-master": "1.x-dev"
         }
     },
-    "autoload": {
-        "classmap": [
-            "tests/features/bootstrap/"
-        ]
-    },
     "minimum-stability": "dev"
 }

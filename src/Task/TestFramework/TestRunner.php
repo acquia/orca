@@ -20,13 +20,6 @@ class TestRunner {
   use SutSettingsTrait;
 
   /**
-   * The Behat task.
-   *
-   * @var \Acquia\Orca\Task\TestFramework\BehatTask
-   */
-  private $behat;
-
-  /**
    * A list of test failure descriptions.
    *
    * @var string[]
@@ -76,13 +69,6 @@ class TestRunner {
   private $packageManager;
 
   /**
-   * The run Behat flag.
-   *
-   * @var bool
-   */
-  private $runBehat = TRUE;
-
-  /**
    * The run PHPUnit flag.
    *
    * @var bool
@@ -106,8 +92,6 @@ class TestRunner {
   /**
    * Constructs an instance.
    *
-   * @param \Acquia\Orca\Task\TestFramework\BehatTask $behat
-   *   The Behat task.
    * @param \Symfony\Component\Filesystem\Filesystem $filesystem
    *   The filesystem.
    * @param \Acquia\Orca\Fixture\FixtureResetter $fixture_resetter
@@ -123,8 +107,7 @@ class TestRunner {
    * @param \Acquia\Orca\Server\ServerStack $server_stack
    *   The server stack.
    */
-  public function __construct(BehatTask $behat, Filesystem $filesystem, FixtureResetter $fixture_resetter, SymfonyStyle $output, PhpUnitTask $phpunit, ProcessRunner $process_runner, PackageManager $package_manager, ServerStack $server_stack) {
-    $this->behat = $behat;
+  public function __construct(Filesystem $filesystem, FixtureResetter $fixture_resetter, SymfonyStyle $output, PhpUnitTask $phpunit, ProcessRunner $process_runner, PackageManager $package_manager, ServerStack $server_stack) {
     $this->filesystem = $filesystem;
     $this->fixtureResetter = $fixture_resetter;
     $this->output = $output;
@@ -161,16 +144,6 @@ class TestRunner {
       throw new TaskFailureException();
     }
     $this->output->success('Tests passed');
-  }
-
-  /**
-   * Sets the run Behat flag.
-   *
-   * @param bool $run_behat
-   *   TRUE to run Behat or FALSE not to.
-   */
-  public function setRunBehat(bool $run_behat) {
-    $this->runBehat = $run_behat;
   }
 
   /**
@@ -243,12 +216,12 @@ class TestRunner {
    */
   private function execute(TestFrameworkInterface $framework, Package $package, bool $public): void {
     try {
+      $framework->limitToPublicTests($public);
+      $framework->setPath($package->getInstallPathAbsolute());
       $this->output->section("{$framework->statusMessage()} for {$package->getPackageName()}");
       $this->output->comment('Resetting test fixture');
       $this->fixtureResetter->reset();
       $this->output->comment('Running tests');
-      $framework->setPath($package->getInstallPathAbsolute());
-      $framework->limitToPublicTests($public);
       $framework->execute();
     }
     catch (TaskFailureException $e) {
@@ -276,9 +249,6 @@ class TestRunner {
     $frameworks = [];
     if ($this->runPhpunit) {
       $frameworks[] = $this->phpunit;
-    }
-    if ($this->runBehat) {
-      $frameworks[] = $this->behat;
     }
     return $frameworks;
   }

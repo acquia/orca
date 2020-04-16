@@ -41,7 +41,8 @@
 # example.
 
 drupal/acquia_connector:
-  version_dev: 1.x-dev <2.0
+  version: ~1
+  version_dev: ~1
 
 drupal/acquia_contenthub:
   core_matrix:
@@ -85,6 +86,16 @@ drupal/cog:
 
 acquia/drupal-spec-tool:
   type: behat-extension
+  # The Drupal Spec Tool depends on drupal/drupal-driver, which was not
+  # compatible with Drupal 9 at the time of this writing.
+  # @see https://github.com/jhedstrom/DrupalDriver/issues/225
+  core_matrix:
+    '^8.7.0':
+      version: 3.x
+      version_dev: 3.x-dev
+    '*':
+      version: ~
+      version_dev: ~
 
 drupal/lightning_api:
   core_matrix:
@@ -170,3 +181,13 @@ drupal/lightning_workflow:
 drupal/mautic: []
 
 drupal/media_acquiadam: []
+
+drupal/mysql56:
+  type: library
+  core_matrix:
+    '>=9.0.0':
+      version: '*'
+      version_dev: '*'
+    '*':
+      version: ~
+      version_dev: ~

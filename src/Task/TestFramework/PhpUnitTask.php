@@ -33,21 +33,24 @@ class PhpUnitTask extends TestFrameworkBase {
    * {@inheritdoc}
    */
   public function execute(): void {
+    $this->overrideConfig();
     $this->ensurePhpUnitConfig();
     $this->runPhpUnit();
+    $this->restoreConfig();
   }
 
   /**
    * Ensures that PHPUnit is properly configured.
    */
   private function ensurePhpUnitConfig() {
-    $path = $this->fixture->getPath('docroot/core/phpunit.xml.dist');
+    $path = $this->fixture->getPath('docroot/core/phpunit.xml');
     $doc = new \DOMDocument();
     $doc->load($path);
     $xpath = new \DOMXPath($doc);
 
     $this->ensureSimpleTestDirectory();
     $this->setSimpletestSettings($path, $doc, $xpath);
+    $this->setTestSuite($path, $doc, $xpath);
     $this->enableDrupalTestTraits($path, $doc, $xpath);
     $this->disableSymfonyDeprecationsHelper($path, $doc, $xpath);
     $this->setMinkDriverArguments($path, $doc, $xpath);
@@ -81,6 +84,29 @@ class PhpUnitTask extends TestFrameworkBase {
   }
 
   /**
+   * Sets TestSuite config in phpunit.xml.
+   *
+   * @param string $path
+   *   The path.
+   * @param \DOMDocument $doc
+   *   The DOM document.
+   * @param \DOMXPath $xpath
+   *   The XPath object.
+   */
+  private function setTestSuite(string $path, \DOMDocument $doc, \DOMXPath $xpath): void {
+    $directory = $doc->createElement('directory', $this->getPath());
+    $exclude = $doc->createElement('exclude', "{$this->getPath()}/vendor");
+    $testsuite = $doc->createElement('testsuite');
+    $testsuite->setAttribute('name', 'orca');
+    $testsuite->appendChild($directory);
+    $testsuite->appendChild($exclude);
+    $xpath->query('//phpunit/testsuites')
+      ->item(0)
+      ->appendChild($testsuite);
+    $doc->save($path);
+  }
+
+  /**
    * Sets PHPUnit environment variables so that Drupal Test Traits can work.
    *
    * @param string $path
@@ -96,7 +122,7 @@ class PhpUnitTask extends TestFrameworkBase {
     // infrastructure.
     $xpath->query('//phpunit')
       ->item(0)
-      ->setAttribute('bootstrap', $this->fixture->getPath('vendor/weitzman/drupal-test-traits/src/bootstrap.php'));
+      ->setAttribute('bootstrap', "{$this->projectDir}/vendor/weitzman/drupal-test-traits/src/bootstrap.php");
 
     if (!$xpath->query('//phpunit/php/env[@name="DTT_BASE_URL"]')->length) {
       $element = $doc->createElement('env');
@@ -210,18 +236,36 @@ class PhpUnitTask extends TestFrameworkBase {
         'phpunit',
         '--colors=always',
         '--debug',
-        "--configuration={$this->fixture->getPath('docroot/core/phpunit.xml.dist')}",
+        "--configuration={$this->fixture->getPath('docroot/core/phpunit.xml')}",
         '--exclude-group=orca_ignore',
+        '--testsuite=orca',
       ];
       if ($this->isPublicTestsOnly()) {
         $command[] = '--group=orca_public';
       }
-      $command[] = $this->getPath();
       $this->processRunner->runFixtureVendorBin($command);
     }
     catch (ProcessFailedException $e) {
       throw new TaskFailureException();
     }
+  }
+
+  /**
+   * Overrides the active configuration.
+   */
+  public function overrideConfig(): void {
+    $this->configFileOverrider->setPaths(
+      $this->fixture->getPath('docroot/core/phpunit.xml.dist'),
+      $this->fixture->getPath('docroot/core/phpunit.xml')
+    );
+    $this->configFileOverrider->override();
+  }
+
+  /**
+   * Restores the previous configuration.
+   */
+  public function restoreConfig(): void {
+    $this->configFileOverrider->restore();
   }
 
 }

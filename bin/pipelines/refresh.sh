@@ -26,7 +26,7 @@
 SITE="$1"
 TARGET_ENV="$2"
 
-cd "$(dirname "$0")/../../../";
+cd "$(dirname "$0")/../../../" || exit;
 
-./vendor/bin/drush @$SITE.$TARGET_ENV sql:query --file=db.sql
-./vendor/bin/drush @$SITE.$TARGET_ENV cache:rebuild
+./vendor/bin/drush "@${SITE}.${TARGET_ENV}" sql:query --file=db.sql
+./vendor/bin/drush "@{$SITE}.{$TARGET_ENV}" cache:rebuild

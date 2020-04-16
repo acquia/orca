@@ -9,7 +9,7 @@
 # DESCRIPTION
 #     Places an example SUT.
 
-cd "$(dirname "$0")"; source _includes.sh
+cd "$(dirname "$0")" || exit; source _includes.sh
 
 (
   cd ../../../
