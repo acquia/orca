@@ -41,25 +41,47 @@
 # example.
 
 drupal/acquia_connector:
-  version: ~1
-  version_dev: ~1
+  core_matrix:
+    '>=9':
+      version: 2.x
+      version_dev: 2.x-dev
+    '*':
+      version: 1.x
+      version_dev: 1.x
 
 drupal/acquia_contenthub:
   core_matrix:
-    '^8.8':
-      version: ~2.0
+    '>=8.8':
+      version: 2.x
       version_dev: 2.x-dev
+    '<8.8':
+      version: '2.11'
+      version_dev: '2.11'
+
+drupal/acquia_lift:
+  core_matrix:
+    '<9':
+      version: 3.x
+      version_dev: 3.x-dev
     '*':
       version: ~
       version_dev: ~
 
-drupal/acquia_lift:
-  version: ~3.0
-  version_dev: 3.x-dev
-
-drupal/acquia_purge: []
+drupal/acquia_purge:
+  core_matrix:
+    '<9':
+      version: 1.x
+      version_dev: 1.x-dev
+    '*':
+      version: ~
+      version_dev: ~
 
 drupal/acsf: []
+
+drupal/acquia_search_solr:
+  # This module will never support D8. It should be installable on D9 soon.
+  version: ~
+  version_dev: ~
 
 acquia/blt:
   type: composer-plugin
@@ -83,6 +105,13 @@ acquia/coding-standards:
 
 drupal/cog:
   type: drupal-theme
+  core_matrix:
+    '<9':
+      version: 1.x
+      version_dev: 1.x-dev
+    '*':
+      version: ~
+      version_dev: ~
 
 acquia/drupal-spec-tool:
   type: behat-extension
