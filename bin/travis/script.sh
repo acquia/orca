@@ -34,7 +34,7 @@ case "$ORCA_JOB" in
   "CUSTOM") eval "orca qa:automated-tests --sut=$ORCA_SUT_NAME ${ORCA_CUSTOM_TESTS_RUN_ARGS:=}" ;;
 esac
 
-if [[ "$ORCA_ENABLE_NIGHTWATCH" = "TRUE" && "$ORCA_SUT_HAS_NIGHTWATCH_TESTS" = "TRUE" && -d "$ORCA_YARN_DIR" ]]; then
+if [[ "$ORCA_ENABLE_NIGHTWATCH" = "TRUE" && "$ORCA_SUT_HAS_NIGHTWATCH_TESTS" && -d "$ORCA_YARN_DIR" ]]; then
   (
     cd "$ORCA_YARN_DIR" || exit
     orca fixture:run-server &
