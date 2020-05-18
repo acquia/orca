@@ -53,7 +53,9 @@ env:
     - ORCA_SUT_NAME=drupal/example
     # Specify the name of the nearest Git version branch, e.g., 1.x or 8.x-1.x.
     # This may be the destination branch of a pull request or the nearest
-    # ancestor of a topic branch.
+    # ancestor of a topic branch. ORCA will rename the checked out Git branch to
+    # this value to make Composer resolve dependencies correctly on pull
+    # requests and topic branches.
     - ORCA_SUT_BRANCH=8.x-1.x
     # Specify the version of ORCA to use. Use dev-master to track the latest
     # release, dev-develop to track Dev/HEAD, or any other Composer version
