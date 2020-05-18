@@ -32,9 +32,5 @@ parameters:
     # @see https://www.drupal.org/project/libraries/issues/2882709
     - %currentWorkingDirectory%/docroot/modules/contrib/libraries/src/*
 
-  ignoreErrors:
-    # @see https://github.com/acquia/orca/issues/27
-    - '#Call to deprecated method registerFile\(\) of class Doctrine\\Common\\Annotations\\AnnotationRegistry#'
-
 includes:
   - %currentWorkingDirectory%/vendor/mglaman/phpstan-drupal-deprecations/deprecation_testing.neon
