@@ -252,7 +252,7 @@ class FixtureCreator {
    *   In case of errors.
    */
   public function create(): void {
-    $this->createBltProject();
+    $this->createProject();
     $this->fixtureConfigurator->ensureGitConfig();
     $this->configureBltProject();
     $this->fixDefaultDependencies();
@@ -358,17 +358,23 @@ class FixtureCreator {
   }
 
   /**
-   * Creates a BLT project.
+   * Creates a project.
    */
-  private function createBltProject(): void {
-    $this->output->section('Creating BLT project');
+  private function createProject(): void {
+    $this->output->section('Creating project');
     $stability_flag = '--stability=alpha';
-    if (($this->isDev || ($this->sut && $this->sut->getPackageName() === 'acquia/blt'))) {
+    if (($this->isDev || ($this->sut && ($this->sut->getPackageName() === 'acquia/blt' || $this->sut->getPackageName() === 'acquia/drupal-recommended-project')))) {
       $stability_flag = '--stability=dev';
     }
     $version = ($this->isDev)
       ? $this->blt->getVersionDev($this->drupalCoreVersion)
       : $this->blt->getVersionRecommended($this->drupalCoreVersion);
+    $project_template = 'acquia/blt-project';
+    // Handle D9 differently, since BLT Project no longer exists.
+    if (version_compare($this->getResolvedDrupalCoreVersion(), 9, '>=')) {
+      $project_template = 'acquia/drupal-recommended-project';
+      $version = ($this->isDev) ? 'dev-master' : '^1';
+    }
     $command = [
       'composer',
       'create-project',
@@ -376,7 +382,7 @@ class FixtureCreator {
       '--no-scripts',
       '--no-install',
       '--no-interaction',
-      "acquia/blt-project:{$version}",
+      "{$project_template}:{$version}",
       $stability_flag,
       $this->fixture->getPath(),
     ];
