@@ -366,6 +366,7 @@ class FixtureCreator {
     if (($this->isDev || ($this->sut && ($this->sut->getPackageName() === 'acquia/blt' || $this->sut->getPackageName() === 'acquia/drupal-recommended-project')))) {
       $stability_flag = '--stability=dev';
     }
+    // Handle D8 fixtures (default).
     $version = ($this->isDev)
       ? $this->blt->getVersionDev($this->drupalCoreVersion)
       : $this->blt->getVersionRecommended($this->drupalCoreVersion);
@@ -375,6 +376,7 @@ class FixtureCreator {
       $project_template = 'acquia/drupal-recommended-project';
       $version = ($this->isDev) ? 'dev-master' : '^1';
     }
+    // Handle the very special case of ORCA running as part of acquia/drupal-recommended-project builds.
     if (getenv("ORCA_SUT_NAME") === 'acquia/drupal-recommended-project') {
       // Have to use some unique branch name or Composer won't check out the path repo.
       $version = 'dev-' . getenv("ORCA_SUT_BRANCH");
