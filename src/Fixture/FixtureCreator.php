@@ -377,7 +377,7 @@ class FixtureCreator {
     }
     if (getenv("ORCA_SUT_NAME") === 'acquia/drupal-recommended-project') {
       // Have to use some unique branch name or Composer won't check out the path repo.
-      $version = getenv("ORCA_SUT_BRANCH");
+      $version = 'dev-' . getenv("ORCA_SUT_BRANCH");
     }
     $command = [
       'composer',
