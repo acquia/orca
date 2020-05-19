@@ -11,8 +11,6 @@
 
 cd "$(dirname "$0")" || exit; source _includes.sh
 
-assert_env_vars
-
 [[ ! -d "$ORCA_FIXTURE_DIR" ]] || orca fixture:status
 
 # The Drupal installation profile is such a fundamental aspect of the fixture
