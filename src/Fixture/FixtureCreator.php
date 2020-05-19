@@ -375,9 +375,9 @@ class FixtureCreator {
       $project_template = 'acquia/drupal-recommended-project';
       $version = ($this->isDev) ? 'dev-master' : '^1';
     }
-    if ($this->sut->getPackageName() === 'acquia/drupal-recommended-project') {
+    if (getenv("ORCA_SUT_NAME") === 'acquia/drupal-recommended-project') {
       // Have to use some unique branch name or Composer won't check out the path repo.
-      $version = 'dev-bologna';
+      $version = getenv("ORCA_SUT_BRANCH");
     }
     $command = [
       'composer',
