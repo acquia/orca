@@ -456,7 +456,6 @@ class FixtureCreator {
     }
 
     // Install requirements for deprecation checking.
-    $additions[] = 'mglaman/phpstan-drupal-deprecations';
     $additions[] = 'nette/di:^3.0';
 
     // Require additional packages.
