@@ -55,7 +55,7 @@ class Package {
    *   - "install_path": (optional) The path the package gets installed at
    *     relative to the fixture root, e.g., docroot/modules/contrib/example.
    *     Used for Drupal subextensions. Defaults by "type" to match the
-   *     "installer-paths" patterns specified by BLT.
+   *     "installer-paths" patterns specified by the root Composer project.
    *   - "url": (optional) The path, absolute or relative to the fixture root,
    *     of a local clone of the package. Used for the "url" property of the
    *     Composer path repository used to symlink the system under test (SUT)

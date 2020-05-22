@@ -31,6 +31,8 @@ class FixtureCreator {
 
   const DEFAULT_PROFILE = 'orca';
 
+  const DEFAULT_PROJECT_TEMPLATE = 'acquia/blt-project';
+
   /**
    * The BLT package, if defined.
    *
@@ -151,6 +153,13 @@ class FixtureCreator {
   private $profile = self::DEFAULT_PROFILE;
 
   /**
+   * The project template.
+   *
+   * @var string
+   */
+  private $projectTemplate = self::DEFAULT_PROJECT_TEMPLATE;
+
+  /**
    * The site installer.
    *
    * @var \Acquia\Orca\Fixture\SiteInstaller
@@ -252,9 +261,9 @@ class FixtureCreator {
    *   In case of errors.
    */
   public function create(): void {
-    $this->createBltProject();
+    $this->createComposerProject();
     $this->fixtureConfigurator->ensureGitConfig();
-    $this->configureBltProject();
+    $this->configureComposerProject();
     $this->fixDefaultDependencies();
     $this->addAcquiaPackages();
     $this->addComposerExtraData();
@@ -338,6 +347,16 @@ class FixtureCreator {
   }
 
   /**
+   * Sets the Composer project template.
+   *
+   * @param string $project_template
+   *   The Composer project template, e.g., "drupal/drupal-recommended-project".
+   */
+  public function setProjectTemplate(string $project_template) {
+    $this->projectTemplate = $project_template;
+  }
+
+  /**
    * Sets the SQLite flag.
    *
    * @param bool $use_sqlite
@@ -358,17 +377,14 @@ class FixtureCreator {
   }
 
   /**
-   * Creates a BLT project.
+   * Creates a Composer project.
    */
-  private function createBltProject(): void {
-    $this->output->section('Creating BLT project');
+  private function createComposerProject(): void {
+    $this->output->section('Creating Composer project');
     $stability_flag = '--stability=alpha';
-    if (($this->isDev || ($this->sut && $this->sut->getPackageName() === 'acquia/blt'))) {
+    if ($this->isDev || $this->isProjectTemplateSut()) {
       $stability_flag = '--stability=dev';
     }
-    $version = ($this->isDev)
-      ? $this->blt->getVersionDev($this->drupalCoreVersion)
-      : $this->blt->getVersionRecommended($this->drupalCoreVersion);
     $command = [
       'composer',
       'create-project',
@@ -376,7 +392,7 @@ class FixtureCreator {
       '--no-scripts',
       '--no-install',
       '--no-interaction',
-      "acquia/blt-project:{$version}",
+      $this->getProjectTemplateString(),
       $stability_flag,
       $this->fixture->getPath(),
     ];
@@ -384,9 +400,43 @@ class FixtureCreator {
   }
 
   /**
-   * Configures the BLT project.
+   * Gets the project template package/constraint string.
+   *
+   * @return string
+   *   The project template package/constraint string, e.g.,
+   *   acquia/drupal-recommended-project or acquia/blt-project:12.x.
    */
-  private function configureBltProject(): void {
+  private function getProjectTemplateString(): string {
+    switch (TRUE) {
+      case $this->isProjectTemplateSut():
+        return "{$this->projectTemplate}:@dev";
+
+      case $this->projectTemplate === 'acquia/blt-project':
+        $version = ($this->isDev)
+          ? $this->blt->getVersionDev($this->drupalCoreVersion)
+          : $this->blt->getVersionRecommended($this->drupalCoreVersion);
+        return "{$this->projectTemplate}:{$version}";
+
+      default:
+        return $this->projectTemplate;
+    }
+  }
+
+  /**
+   * Determines whether or not the Composer project template is also the SUT.
+   *
+   * @return bool
+   *   Returns TRUE if the Composer project template is also the system under
+   *   test or FALSE if not.
+   */
+  private function isProjectTemplateSut(): bool {
+    return $this->sut && $this->sut->getPackageName() === $this->projectTemplate;
+  }
+
+  /**
+   * Configures the Composer project.
+   */
+  private function configureComposerProject(): void {
     $this->loadComposerJson();
 
     // Prevent errors later because "Source directory docroot/core has

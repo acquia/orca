@@ -117,7 +117,7 @@ class FixtureInitCommand extends Command {
     $this
       ->setAliases(['init'])
       ->setDescription('Creates the test fixture')
-      ->setHelp('Creates a BLT-based Drupal site build, includes the system under test using Composer, optionally includes all other company packages, and installs Drupal.')
+      ->setHelp('Creates a Drupal site build, includes the system under test using Composer, optionally includes all other company packages, and installs Drupal.')
 
       // Fundamental options.
       ->addOption('force', 'f', InputOption::VALUE_NONE, 'If the fixture already exists, remove it first without confirmation')
@@ -135,8 +135,9 @@ class FixtureInitCommand extends Command {
       ->addOption('profile', NULL, InputOption::VALUE_REQUIRED, 'The Drupal installation profile to use, e.g., "minimal". ("orca" is a pseudo-profile based on "minimal", with the Toolbar module enabled and Seven as the admin theme)', FixtureCreator::DEFAULT_PROFILE)
 
       // Uncommon options.
+      ->addOption('project-template', NULL, InputOption::VALUE_REQUIRED, 'The Composer project template used to create the fixture', FixtureCreator::DEFAULT_PROJECT_TEMPLATE)
       ->addOption('ignore-patch-failure', NULL, InputOption::VALUE_NONE, 'Do not exit on failure to apply Composer patches. (Useful for debugging failures)')
-      ->addOption('no-sqlite', NULL, InputOption::VALUE_NONE, 'Use the default BLT database includes instead of SQLite')
+      ->addOption('no-sqlite', NULL, InputOption::VALUE_NONE, 'Use the default database settings instead of SQLite')
       ->addOption('no-site-install', NULL, InputOption::VALUE_NONE, 'Do not install Drupal. Supersedes the "--profile" option')
       ->addOption('prefer-source', NULL, InputOption::VALUE_NONE, 'Force installation of non-company packages from sources when possible, including VCS information. (Company packages are always installed from source.) Useful for core and contrib work')
       ->addOption('symlink-all', NULL, InputOption::VALUE_NONE, 'Symlink all possible company packages via local path repository. Packages absent from the expected location will be installed normally');
@@ -166,6 +167,7 @@ class FixtureInitCommand extends Command {
     $this->setDev($input->getOption('dev'));
     $this->setPreferSource($input->getOption('prefer-source'));
     $this->setProfile($input->getOption('profile'));
+    $this->setProjectTemplate($input->getOption('project-template'));
     $this->setSiteInstall($input->getOption('no-site-install'));
     $this->setSqlite($input->getOption('no-sqlite'));
     $this->setSymlinkAll($symlink_all);
@@ -380,6 +382,18 @@ class FixtureInitCommand extends Command {
   private function setProfile($profile): void {
     if ($profile !== FixtureCreator::DEFAULT_PROFILE) {
       $this->fixtureCreator->setProfile($profile);
+    }
+  }
+
+  /**
+   * Sets the Composer project template.
+   *
+   * @param string|string[]|bool|null $project_template
+   *   The Composer project template, e.g., "drupal/drupal-recommended-project".
+   */
+  private function setProjectTemplate($project_template): void {
+    if ($project_template !== FixtureCreator::DEFAULT_PROJECT_TEMPLATE) {
+      $this->fixtureCreator->setProjectTemplate($project_template);
     }
   }
 

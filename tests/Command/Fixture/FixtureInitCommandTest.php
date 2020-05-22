@@ -23,7 +23,7 @@ use Symfony\Component\Console\Command\Command;
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Fixture\FixtureCreator $fixtureCreator
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Fixture\FixtureRemover $fixtureRemover
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Fixture\PackageManager $packageManager
- * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Fixture\SutPreconditionsTester sutPreconditionsTester
+ * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Fixture\SutPreconditionsTester $sutPreconditionsTester
  * @property \Prophecy\Prophecy\ObjectProphecy|\Composer\Semver\VersionParser $versionParser
  */
 class FixtureInitCommandTest extends CommandTestBase {
@@ -316,6 +316,28 @@ class FixtureInitCommandTest extends CommandTestBase {
       ->shouldBeCalledTimes(1);
 
     $this->executeCommand(['--prefer-source' => TRUE]);
+
+    $this->assertEquals('', $this->getDisplay(), 'Displayed correct output.');
+    $this->assertEquals(StatusCode::OK, $this->getStatusCode(), 'Returned correct status code.');
+  }
+
+  public function testProjectTemplateOption() {
+    $project_template = 'test/example';
+    $this->drupalCoreVersionFinder
+      ->get(new DrupalCoreVersion(DrupalCoreVersion::CURRENT_RECOMMENDED))
+      ->shouldBeCalledOnce()
+      ->willReturn(self::CORE_VALUE_LITERAL_CURRENT_RECOMMENDED);
+    $this->fixtureCreator
+      ->setCoreVersion(self::CORE_VALUE_LITERAL_CURRENT_RECOMMENDED)
+      ->shouldBeCalledTimes(1);
+    $this->fixtureCreator
+      ->setProjectTemplate($project_template)
+      ->shouldBeCalledTimes(1);
+    $this->fixtureCreator
+      ->create()
+      ->shouldBeCalledTimes(1);
+
+    $this->executeCommand(['--project-template' => $project_template]);
 
     $this->assertEquals('', $this->getDisplay(), 'Displayed correct output.');
     $this->assertEquals(StatusCode::OK, $this->getStatusCode(), 'Returned correct status code.');
