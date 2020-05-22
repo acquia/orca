@@ -11,8 +11,6 @@
 
 cd "$(dirname "$0")" || exit; source _includes.sh
 
-assert_env_vars
-
 case "$ORCA_JOB" in
   "STATIC_CODE_ANALYSIS") unset ORCA_ENABLE_NIGHTWATCH ;;
   "DEPRECATED_CODE_SCAN") orca debug:packages; eval "orca fixture:init -f --sut=$ORCA_SUT_NAME --sut-only --no-site-install"; unset ORCA_ENABLE_NIGHTWATCH ;;
