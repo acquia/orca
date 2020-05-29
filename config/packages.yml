@@ -68,8 +68,13 @@ drupal/acquia_lift:
       version_dev: ~
 
 drupal/acquia_purge:
-  version: 1.x
-  version_dev: 1.x-dev
+  core_matrix:
+    '<8.8.6':
+      version: "1.0"
+      version_dev: "1.0"
+    '*':
+      version: 1.x
+      version_dev: 1.x-dev
 
 drupal/acsf: []
 
