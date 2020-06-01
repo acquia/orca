@@ -676,6 +676,7 @@ class FixtureCreator {
       'is-sut-only' => $this->isSutOnly,
       'is-bare' => $this->isBare,
       'is-dev' => $this->isDev,
+      'project-template' => $this->projectTemplate,
     ]);
     $this->processRunner->runOrcaVendorBin([
       'composer',
