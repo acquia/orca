@@ -630,10 +630,10 @@ Creates the test fixture
 
 ### Usage
 
-* `fixture:init [-f|--force] [--sut SUT] [--sut-only] [--bare] [--core CORE] [--dev] [--profile PROFILE] [--ignore-patch-failure] [--no-sqlite] [--no-site-install] [--prefer-source] [--symlink-all]`
+* `fixture:init [-f|--force] [--sut SUT] [--sut-only] [--bare] [--core CORE] [--dev] [--profile PROFILE] [--project-template PROJECT-TEMPLATE] [--ignore-patch-failure] [--no-sqlite] [--no-site-install] [--prefer-source] [--symlink-all]`
 * `init`
 
-Creates a BLT-based Drupal site build, includes the system under test using Composer, optionally includes all other company packages, and installs Drupal.
+Creates a Drupal site build, includes the system under test using Composer, optionally includes all other company packages, and installs Drupal.
 
 ### Options
 
@@ -708,6 +708,15 @@ The Drupal installation profile to use, e.g., "minimal". ("orca" is a pseudo-pro
 * Is multiple: no
 * Default: `'orca'`
 
+#### `--project-template`
+
+The Composer project template used to create the fixture
+
+* Accept value: yes
+* Is value required: yes
+* Is multiple: no
+* Default: `'acquia/blt-project'`
+
 #### `--ignore-patch-failure`
 
 Do not exit on failure to apply Composer patches. (Useful for debugging failures)
@@ -719,7 +728,7 @@ Do not exit on failure to apply Composer patches. (Useful for debugging failures
 
 #### `--no-sqlite`
 
-Use the default BLT database includes instead of SQLite
+Use the default database settings instead of SQLite
 
 * Accept value: no
 * Is value required: no

@@ -32,6 +32,8 @@ ORCA_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 export ORCA_ROOT
 export ORCA_FIXTURE_DIR=${ORCA_FIXTURE_DIR:="$ORCA_ROOT/../orca-build"}
 export ORCA_FIXTURE_PROFILE=${ORCA_FIXTURE_PROFILE:="orca"}
+DEFAULT_PROJECT_TEMPLATE=$([[ "$ORCA_JOB" == "D9_READINESS" ]] && echo "acquia/drupal-recommended-project" || echo "acquia/blt-project")
+export ORCA_FIXTURE_PROJECT_TEMPLATE=${ORCA_FIXTURE_PROJECT_TEMPLATE:="$DEFAULT_PROJECT_TEMPLATE"}
 export ORCA_SUT_DIR=${ORCA_SUT_DIR:=${TRAVIS_BUILD_DIR}}
 ORCA_SUT_HAS_NIGHTWATCH_TESTS=$(cd "$ORCA_SUT_DIR"; find . -regex ".*/Nightwatch/.*" -name \*.js)
 export ORCA_SUT_HAS_NIGHTWATCH_TESTS

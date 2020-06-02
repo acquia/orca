@@ -23,7 +23,7 @@ use Symfony\Component\Console\Command\Command;
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Fixture\FixtureCreator $fixtureCreator
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Fixture\FixtureRemover $fixtureRemover
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Fixture\PackageManager $packageManager
- * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Fixture\SutPreconditionsTester sutPreconditionsTester
+ * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Fixture\SutPreconditionsTester $sutPreconditionsTester
  * @property \Prophecy\Prophecy\ObjectProphecy|\Composer\Semver\VersionParser $versionParser
  */
 class FixtureInitCommandTest extends CommandTestBase {
@@ -278,19 +278,10 @@ class FixtureInitCommandTest extends CommandTestBase {
    * @dataProvider providerIgnorePatchFailureOption
    */
   public function testIgnorePatchFailureOption($options, $num_calls) {
-    $this->drupalCoreVersionFinder
-      ->get(new DrupalCoreVersion(DrupalCoreVersion::CURRENT_RECOMMENDED))
-      ->shouldBeCalledOnce()
-      ->willReturn(self::CORE_VALUE_LITERAL_CURRENT_RECOMMENDED);
+    $this->setDefaultFixtureCreatorExpectations();
     $this->fixtureCreator
       ->setComposerExitOnPatchFailure(FALSE)
       ->shouldBeCalledTimes($num_calls);
-    $this->fixtureCreator
-      ->setCoreVersion(self::CORE_VALUE_LITERAL_CURRENT_RECOMMENDED)
-      ->shouldBeCalledTimes(1);
-    $this->fixtureCreator
-      ->create()
-      ->shouldBeCalledTimes(1);
 
     $this->executeCommand($options);
 
@@ -306,14 +297,8 @@ class FixtureInitCommandTest extends CommandTestBase {
   }
 
   public function testFixtureCreationFailure() {
+    $this->setDefaultFixtureCreatorExpectations();
     $exception_message = 'Failed to create fixture.';
-    $this->drupalCoreVersionFinder
-      ->get(new DrupalCoreVersion(DrupalCoreVersion::CURRENT_RECOMMENDED))
-      ->shouldBeCalledOnce()
-      ->willReturn(self::CORE_VALUE_LITERAL_CURRENT_RECOMMENDED);
-    $this->fixtureCreator
-      ->setCoreVersion(self::CORE_VALUE_LITERAL_CURRENT_RECOMMENDED)
-      ->shouldBeCalledTimes(1);
     $this->fixtureCreator
       ->create(Argument::any())
       ->willThrow(new OrcaException($exception_message));
@@ -325,6 +310,19 @@ class FixtureInitCommandTest extends CommandTestBase {
   }
 
   public function testPreferSourceOption() {
+    $this->setDefaultFixtureCreatorExpectations();
+    $this->fixtureCreator
+      ->setPreferSource(TRUE)
+      ->shouldBeCalledTimes(1);
+
+    $this->executeCommand(['--prefer-source' => TRUE]);
+
+    $this->assertEquals('', $this->getDisplay(), 'Displayed correct output.');
+    $this->assertEquals(StatusCode::OK, $this->getStatusCode(), 'Returned correct status code.');
+  }
+
+  public function testProjectTemplateOption() {
+    $project_template = 'test/example';
     $this->drupalCoreVersionFinder
       ->get(new DrupalCoreVersion(DrupalCoreVersion::CURRENT_RECOMMENDED))
       ->shouldBeCalledOnce()
@@ -333,13 +331,13 @@ class FixtureInitCommandTest extends CommandTestBase {
       ->setCoreVersion(self::CORE_VALUE_LITERAL_CURRENT_RECOMMENDED)
       ->shouldBeCalledTimes(1);
     $this->fixtureCreator
-      ->setPreferSource(TRUE)
+      ->setProjectTemplate($project_template)
       ->shouldBeCalledTimes(1);
     $this->fixtureCreator
       ->create()
       ->shouldBeCalledTimes(1);
 
-    $this->executeCommand(['--prefer-source' => TRUE]);
+    $this->executeCommand(['--project-template' => $project_template]);
 
     $this->assertEquals('', $this->getDisplay(), 'Displayed correct output.');
     $this->assertEquals(StatusCode::OK, $this->getStatusCode(), 'Returned correct status code.');
@@ -375,19 +373,10 @@ class FixtureInitCommandTest extends CommandTestBase {
    * @dataProvider providerSymlinkAllOption
    */
   public function testSymlinkAllOption($options, $num_calls) {
-    $this->drupalCoreVersionFinder
-      ->get(new DrupalCoreVersion(DrupalCoreVersion::CURRENT_RECOMMENDED))
-      ->shouldBeCalledOnce()
-      ->willReturn(self::CORE_VALUE_LITERAL_CURRENT_RECOMMENDED);
+    $this->setDefaultFixtureCreatorExpectations();
     $this->fixtureCreator
       ->setSymlinkAll(TRUE)
       ->shouldBeCalledTimes($num_calls);
-    $this->fixtureCreator
-      ->setCoreVersion(self::CORE_VALUE_LITERAL_CURRENT_RECOMMENDED)
-      ->shouldBeCalledTimes(1);
-    $this->fixtureCreator
-      ->create()
-      ->shouldBeCalledTimes(1);
 
     $this->executeCommand($options);
 
@@ -402,24 +391,35 @@ class FixtureInitCommandTest extends CommandTestBase {
     ];
   }
 
-  /**
-   * @dataProvider providerSymlinkAllOptionInvalid
-   */
-  public function testSymlinkAllOptionInvalid($options) {
+  public function testSymlinkAllOptionInvalid() {
     $this->fixtureCreator
       ->create()
       ->shouldNotBeCalled();
 
-    $this->executeCommand($options);
+    $this->executeCommand([
+      '--bare' => TRUE,
+      '--symlink-all' => TRUE,
+    ]);
 
     $this->assertEquals("Error: Cannot symlink all in a bare fixture.\n", $this->getDisplay(), 'Displayed correct output.');
     $this->assertEquals(StatusCode::ERROR, $this->getStatusCode(), 'Returned correct status code.');
   }
 
-  public function providerSymlinkAllOptionInvalid() {
-    return [
-      [['--bare' => TRUE, '--symlink-all' => TRUE]],
-    ];
+  private function setDefaultFixtureCreatorExpectations(): void {
+    $this->drupalCoreVersionFinder
+      ->get(new DrupalCoreVersion(DrupalCoreVersion::CURRENT_RECOMMENDED))
+      ->shouldBeCalledOnce()
+      ->willReturn(self::CORE_VALUE_LITERAL_CURRENT_RECOMMENDED);
+
+    $this->fixtureCreator
+      ->setCoreVersion(self::CORE_VALUE_LITERAL_CURRENT_RECOMMENDED)
+      ->shouldBeCalledOnce();
+    $this->fixtureCreator
+      ->create()
+      ->shouldBeCalledOnce();
+    $this->fixtureCreator
+      ->setPreferSource(TRUE)
+      ->shouldNotBeCalled();
   }
 
 }

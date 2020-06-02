@@ -105,6 +105,7 @@ class FixtureInspector {
     $overview[] = ['System under test (SUT)', $this->getSutNamePretty()];
     $overview[] = ['Fixture type', $this->getFixtureType()];
     $overview[] = ['Package stability', $this->getPackageStabilitySetting()];
+    $overview[] = ['Project template', $this->getProjectTemplate()];
     $overview[] = [
       'Install profile',
       $this->getDrushStatusField('install-profile'),
@@ -218,6 +219,23 @@ class FixtureInspector {
     }
 
     return $this->getComposerJson()->get($key) ? 'Dev/HEAD' : 'Stable';
+  }
+
+  /**
+   * Gets the Composer project template used to create the fixture.
+   *
+   * @return string
+   *   The project template package/constraint string, e.g.,
+   *   acquia/drupal-recommended-project or acquia/blt-project:12.x.
+   */
+  private function getProjectTemplate(): string {
+    $key = 'extra.orca.project-template';
+
+    if (!$this->getComposerJson()->has($key)) {
+      return 'Unknown';
+    }
+
+    return $this->getComposerJson()->get($key);
   }
 
   /**
