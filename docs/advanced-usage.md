@@ -44,6 +44,8 @@ These affect ORCA only as invoked via the Travis CI scripts.
 
 * <a name="ORCA_FIXTURE_PROFILE"></a>**`ORCA_FIXTURE_PROFILE`**: Change the Drupal installation profile ORCA installs in fixtures. Note: Changing this value will cause non-SUT automated tests to be skipped in all jobs to avoid failures from changing such a fundamental assumption.
 
+* <a name="ORCA_FIXTURE_PROJECT_TEMPLATE"></a>**`ORCA_FIXTURE_PROJECT_TEMPLATE`**: Change the Composer project template used to create the fixture.
+
 ---
 
 [README](README.md)
