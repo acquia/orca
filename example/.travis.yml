@@ -73,6 +73,12 @@ env:
     # @see https://github.com/acquia/orca/blob/master/docs/advanced-usage.md#ORCA_FIXTURE_PROFILE
     # - ORCA_FIXTURE_PROFILE=example
     #
+    # If your package is a Composer project template or requires a different
+    # one to test with, uncomment the following line and specify its Packagist
+    # name.
+    # @see https://github.com/acquia/orca/blob/master/docs/advanced-usage.md#ORCA_FIXTURE_PROJECT_TEMPLATE
+    # - ORCA_FIXTURE_PROJECT_TEMPLATE=acquia/drupal-minimal-project
+    #
     # Change the PHP Code Sniffer standard used for static analysis. Acceptable
     # values are "AcquiaPHP", "AcquiaDrupalStrict", and
     # "AcquiaDrupalTransitional". Defaults to "AcquiaDrupalTransitional".
