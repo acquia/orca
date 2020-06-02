@@ -105,8 +105,13 @@ acquia/coding-standards:
 
 drupal/cog:
   type: drupal-theme
-  version: ~
-  version_dev: ~
+  core_matrix:
+    '>=9.0.0':
+      version: ~
+      version_dev: ~
+    '*':
+      version: '*'
+      version_dev: '*'
 
 acquia/drupal-spec-tool:
   type: behat-extension
