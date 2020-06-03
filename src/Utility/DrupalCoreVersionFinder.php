@@ -154,11 +154,11 @@ class DrupalCoreVersionFinder {
    * @see \Acquia\Orca\Enum\DrupalCoreVersion::CURRENT_RECOMMENDED
    */
   private function getCurrentRecommendedRelease(): string {
-    if ($this->currentRecommendedRelease) {
-      return $this->currentRecommendedRelease;
-    }
-    $this->currentRecommendedRelease = $this->find();
-    return $this->currentRecommendedRelease;
+    // @todo This is hardcoded in order to prevent 8.8.x being dropped from the
+    //   version set when Drupal 9 is released, even though it continues to be
+    //   a supported version. This quirk of major version rollovers needs to be
+    //   solved before Drupal 10 comes out.
+    return "8.9.0";
   }
 
   /**
@@ -182,11 +182,10 @@ class DrupalCoreVersionFinder {
    * @see \Acquia\Orca\Enum\DrupalCoreVersion::NEXT_RELEASE
    */
   private function getNextRelease(): string {
-    if ($this->nextRelease) {
-      return $this->nextRelease;
-    }
-    $this->nextRelease = $this->find(">{$this->getCurrentRecommendedRelease()}", 'alpha');
-    return $this->nextRelease;
+    // @todo This is hardcoded in order to prevent 9.0.x from becoming the "next the
+    //   version" in the version set when Drupal 9 is released. This quirk of
+    //   major version rollovers needs to be solved before Drupal 10 comes out.
+    return "8.9.0";
   }
 
   /**
@@ -198,8 +197,11 @@ class DrupalCoreVersionFinder {
    * @see \Acquia\Orca\Enum\DrupalCoreVersion::NEXT_DEV
    */
   private function getNextDevVersion(): string {
-    $previous_minor_version = (float) $this->getCurrentMinorVersion() + 0.1;
-    return "{$previous_minor_version}.x-dev";
+    // @todo This is hardcoded in order to prevent 9.x-dev from becoming the
+    //   "next the dev version" in the version set when Drupal 9 is released.
+    //   This quirk of major version rollovers needs to be solved before Drupal
+    //   10 comes out.
+    return "8.9.x-dev";
   }
 
   /**
