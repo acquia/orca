@@ -7,7 +7,7 @@ use Acquia\Orca\Facade\ComposerFacade;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @property ComposerFacade|\Prophecy\Prophecy\ObjectProphecy $composer
+ * @property \Acquia\Orca\Facade\ComposerFacade|\Prophecy\Prophecy\ObjectProphecy $composer
  */
 class CodebaseCreatorTest extends TestCase {
 
@@ -15,16 +15,28 @@ class CodebaseCreatorTest extends TestCase {
     $this->composer = $this->prophesize(ComposerFacade::class);
   }
 
-  public function testInstantiation(): void {
-    $this->createComposerFacade();
+  private function createCodebaseCreator(): CodebaseCreator {
+    $composer = $this->composer->reveal();
+    return new CodebaseCreator($composer);
   }
 
-  private function createComposerFacade(): CodebaseCreator {
-    /** @var \Acquia\Orca\Facade\ComposerFacade $composer */
-    $composer = $this->composer->reveal();
-    $object = new CodebaseCreator($composer);
-    $this->assertInstanceOf(CodebaseCreator::class, $object, 'Instantiated class.');
-    return $object;
+  /**
+   * @dataProvider providerCreate
+   */
+  public function testCreate(string $project_template_string, string $stability, string $directory): void {
+    $this->composer
+      ->createProject($project_template_string, $stability, $directory)
+      ->shouldBeCalledOnce();
+
+    $creator = $this->createCodebaseCreator();
+    $creator->create($project_template_string, $stability, $directory);
+  }
+
+  public function providerCreate(): array {
+    return [
+      ['test/example-project1', 'alpha', '/var/www/orca-build1'],
+      ['test/example-project2', 'dev', '/var/www/orca-build2'],
+    ];
   }
 
 }
