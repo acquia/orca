@@ -208,7 +208,7 @@ class FixtureCreator {
     $project_template = $this->options->getProjectTemplate();
     switch (TRUE) {
       case $this->isSutProjectTemplate():
-        return "{$project_template}:@dev";
+        return "{$project_template}:dev-bologna";
 
       case $project_template === 'acquia/blt-project':
         $version = ($this->options->isDev())
@@ -595,13 +595,13 @@ class FixtureCreator {
       $dependencies = [$sut];
     }
     foreach ($dependencies as $package_name => &$package) {
-      // Omit packages that cannot be composer required.
+      // Omit packages that cannot be Composer required.
       if (!$package->shouldGetComposerRequired()) {
         unset($dependencies[$package_name]);
         continue;
       }
 
-      // Always symlink the SUT.
+      // Always symlink a Composer requirable SUT.
       if ($package === $sut) {
         $package = $this->getLocalPackageString($package);
         continue;

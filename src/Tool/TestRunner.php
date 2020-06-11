@@ -110,7 +110,7 @@ class TestRunner {
       $this->startServers();
     }
 
-    if ($this->sut) {
+    if ($this->sut && $this->sut->getPackageName() != 'acquia/drupal-recommended-project') {
       $this->runSutTests();
     }
     if (!$this->isSutOnly) {
