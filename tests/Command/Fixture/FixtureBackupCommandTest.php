@@ -4,32 +4,30 @@ namespace Acquia\Orca\Tests\Command\Fixture;
 
 use Acquia\Orca\Command\Fixture\FixtureBackupCommand;
 use Acquia\Orca\Enum\StatusCode;
+use Acquia\Orca\Facade\GitFacade;
 use Acquia\Orca\Fixture\Fixture;
-use Acquia\Orca\Fixture\FixtureBackupper;
 use Acquia\Orca\Tests\Command\CommandTestBase;
 use Symfony\Component\Console\Command\Command;
 
 /**
- * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Fixture\Fixture $fixture
- * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Fixture\FixtureBackupper $fixtureBackupper
+ * @property \Acquia\Orca\Facade\GitFacade|\Prophecy\Prophecy\ObjectProphecy $git
+ * @property \Acquia\Orca\Fixture\Fixture|\Prophecy\Prophecy\ObjectProphecy $fixture
  */
 class FixtureBackupCommandTest extends CommandTestBase {
 
-  protected function setUp() {
-    $this->fixtureBackupper = $this->prophesize(FixtureBackupper::class);
+  protected function setUp(): void {
     $this->fixture = $this->prophesize(Fixture::class);
     $this->fixture->exists()
       ->willReturn(TRUE);
     $this->fixture->getPath()
       ->willReturn(self::FIXTURE_ROOT);
+    $this->git = $this->prophesize(GitFacade::class);
   }
 
   protected function createCommand(): Command {
-    /** @var \Acquia\Orca\Fixture\FixtureBackupper $fixture_backupper */
-    $fixture_backupper = $this->fixtureBackupper->reveal();
-    /** @var \Acquia\Orca\Fixture\Fixture $fixture */
     $fixture = $this->fixture->reveal();
-    return new FixtureBackupCommand($fixture, $fixture_backupper);
+    $git = $this->git->reveal();
+    return new FixtureBackupCommand($fixture, $git);
   }
 
   /**
@@ -40,8 +38,8 @@ class FixtureBackupCommandTest extends CommandTestBase {
       ->exists()
       ->shouldBeCalled()
       ->willReturn($fixture_exists);
-    $this->fixtureBackupper
-      ->backup()
+    $this->git
+      ->backupFixtureState()
       ->shouldBeCalledTimes($remove_called);
 
     $this->executeCommand($args, $inputs);

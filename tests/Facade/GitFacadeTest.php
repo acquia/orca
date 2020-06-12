@@ -3,16 +3,22 @@
 namespace Acquia\Orca\Tests\Facade;
 
 use Acquia\Orca\Facade\GitFacade;
+use Acquia\Orca\Fixture\Fixture;
 use Acquia\Orca\Utility\ProcessRunner;
 use PHPUnit\Framework\TestCase;
+use Prophecy\Argument;
 
 /**
- * @property \Acquia\Orca\Utility\ProcessRunner|\Prophecy\Prophecy\ObjectProphecy $processRunner
+ * @property \Acquia\Orca\Utility\ProcessRunner|\Prophecy\Prophecy\ObjectProphecy
+ *   $processRunner
  */
 class GitFacadeTest extends TestCase {
 
   protected function setUp(): void {
     $this->processRunner = $this->prophesize(ProcessRunner::class);
+    $this->processRunner
+      ->git(Argument::any())
+      ->willReturn(0);
   }
 
   public function createGitFacade(): GitFacade {
@@ -20,10 +26,50 @@ class GitFacadeTest extends TestCase {
     return new GitFacade($process_runner);
   }
 
-  public function testInstantiation() {
-    $object = $this->createGitFacade();
+  public function testEnsureFixtureRepo(): void {
+    $this->processRunner
+      ->git(['init'])
+      ->shouldBeCalledOnce();
+    $this->processRunner
+      ->git(['config', 'user.name', 'ORCA'])
+      ->shouldBeCalledOnce();
+    $this->processRunner
+      ->git(['config', 'user.email', 'no-reply@acquia.com'])
+      ->shouldBeCalledOnce();
 
-    $this->assertInstanceOf(GitFacade::class, $object);
+    $git = $this->createGitFacade();
+
+    $git->ensureFixtureRepo();
+  }
+
+  public function testBackupFixtureState(): void {
+    // Ensure fixture repo.
+    $this->processRunner
+      ->git(['init'])
+      ->shouldBeCalledOnce();
+    $this->processRunner
+      ->git(['config', 'user.name', 'ORCA'])
+      ->shouldBeCalledOnce();
+    $this->processRunner
+      ->git(['config', 'user.email', 'no-reply@acquia.com'])
+      ->shouldBeCalledOnce();
+    // Perform backup operation itself.
+    $this->processRunner
+      ->git(['add', '--all'])
+      ->shouldBeCalledOnce();
+    $this->processRunner
+      ->gitCommit('Backed up the fixture.')
+      ->shouldBeCalledOnce();
+    $this->processRunner
+      ->git([
+        'tag',
+        '--force',
+        Fixture::FRESH_FIXTURE_GIT_TAG,
+      ])->shouldBeCalledOnce();
+
+    $git = $this->createGitFacade();
+
+    $git->backupFixtureState();
   }
 
 }

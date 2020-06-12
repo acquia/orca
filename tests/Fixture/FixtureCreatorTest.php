@@ -4,7 +4,6 @@ namespace Acquia\Orca\Tests\Fixture;
 
 use Acquia\Orca\Codebase\CodebaseCreator;
 use Acquia\Orca\Fixture\Fixture;
-use Acquia\Orca\Fixture\FixtureConfigurator;
 use Acquia\Orca\Fixture\FixtureCreator;
 use Acquia\Orca\Fixture\FixtureInspector;
 use Acquia\Orca\Fixture\Package;
@@ -21,7 +20,6 @@ use Symfony\Component\Filesystem\Filesystem;
 
 /**
  * @property \Acquia\Orca\Codebase\CodebaseCreator|\Prophecy\Prophecy\ObjectProphecy $codebaseCreator
- * @property \Acquia\Orca\Fixture\FixtureConfigurator|\Prophecy\Prophecy\ObjectProphecy $fixtureConfigurator
  * @property \Acquia\Orca\Fixture\FixtureInspector|\Prophecy\Prophecy\ObjectProphecy $fixtureInspector
  * @property \Acquia\Orca\Fixture\Fixture|\Prophecy\Prophecy\ObjectProphecy $fixture
  * @property \Acquia\Orca\Fixture\PackageManager|\Prophecy\Prophecy\ObjectProphecy $packageManager
@@ -41,7 +39,6 @@ class FixtureCreatorTest extends TestCase {
     $this->coreVersionFinder = $this->prophesize(DrupalCoreVersionFinder::class);
     $this->filesystem = $this->prophesize(Filesystem::class);
     $this->fixture = $this->prophesize(Fixture::class);
-    $this->fixtureConfigurator = $this->prophesize(FixtureConfigurator::class);
     $this->fixtureInspector = $this->prophesize(FixtureInspector::class);
     $this->packageManager = $this->prophesize(PackageManager::class);
     $this->packageManager
@@ -60,7 +57,6 @@ class FixtureCreatorTest extends TestCase {
     $core_version_finder = $this->coreVersionFinder->reveal();
     $filesystem = $this->filesystem->reveal();
     $fixture = $this->fixture->reveal();
-    $fixture_configurator = $this->fixtureConfigurator->reveal();
     $fixture_inspector = $this->fixtureInspector->reveal();
     $package_manager = $this->packageManager->reveal();
     $process_runner = $this->processRunner->reveal();
@@ -74,7 +70,6 @@ class FixtureCreatorTest extends TestCase {
       $core_version_finder,
       $filesystem,
       $fixture,
-      $fixture_configurator,
       $fixture_inspector,
       $site_installer,
       $symfony_style,

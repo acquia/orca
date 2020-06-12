@@ -3,6 +3,7 @@
 namespace Acquia\Orca\Codebase;
 
 use Acquia\Orca\Facade\ComposerFacade;
+use Acquia\Orca\Facade\GitFacade;
 
 /**
  * Creates the codebase component of a fixture.
@@ -17,13 +18,23 @@ class CodebaseCreator {
   private $composer;
 
   /**
+   * The Git facade.
+   *
+   * @var \Acquia\Orca\Facade\GitFacade
+   */
+  private $git;
+
+  /**
    * Constructs an instance.
    *
    * @param \Acquia\Orca\Facade\ComposerFacade $composer
    *   The Composer facade.
+   * @param \Acquia\Orca\Facade\GitFacade $git
+   *   The Git facade.
    */
-  public function __construct(ComposerFacade $composer) {
+  public function __construct(ComposerFacade $composer, GitFacade $git) {
     $this->composer = $composer;
+    $this->git = $git;
   }
 
   /**
@@ -39,6 +50,7 @@ class CodebaseCreator {
    */
   public function create(string $project_template_string, string $stability, string $directory): void {
     $this->composer->createProject($project_template_string, $stability, $directory);
+    $this->git->ensureFixtureRepo();
   }
 
 }

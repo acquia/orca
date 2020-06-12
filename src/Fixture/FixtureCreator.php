@@ -70,13 +70,6 @@ class FixtureCreator {
   private $fixture;
 
   /**
-   * The fixture configurator.
-   *
-   * @var \Acquia\Orca\Fixture\FixtureConfigurator
-   */
-  private $fixtureConfigurator;
-
-  /**
    * The fixture inspector.
    *
    * @var \Acquia\Orca\Fixture\FixtureInspector
@@ -227,8 +220,6 @@ class FixtureCreator {
    *   The filesystem.
    * @param \Acquia\Orca\Fixture\Fixture $fixture
    *   The fixture.
-   * @param \Acquia\Orca\Fixture\FixtureConfigurator $fixture_configurator
-   *   The fixture configurator.
    * @param \Acquia\Orca\Fixture\FixtureInspector $fixture_inspector
    *   The fixture inspector.
    * @param \Acquia\Orca\Fixture\SiteInstaller $site_installer
@@ -246,13 +237,12 @@ class FixtureCreator {
    * @param \Composer\Semver\VersionParser $version_parser
    *   The Semver version parser.
    */
-  public function __construct(CodebaseCreator $codebase_creator, DrupalCoreVersionFinder $core_version_finder, Filesystem $filesystem, Fixture $fixture, FixtureConfigurator $fixture_configurator, FixtureInspector $fixture_inspector, SiteInstaller $site_installer, SymfonyStyle $output, ProcessRunner $process_runner, PackageManager $package_manager, SubextensionManager $subextension_manager, VersionGuesser $version_guesser, VersionParser $version_parser) {
+  public function __construct(CodebaseCreator $codebase_creator, DrupalCoreVersionFinder $core_version_finder, Filesystem $filesystem, Fixture $fixture, FixtureInspector $fixture_inspector, SiteInstaller $site_installer, SymfonyStyle $output, ProcessRunner $process_runner, PackageManager $package_manager, SubextensionManager $subextension_manager, VersionGuesser $version_guesser, VersionParser $version_parser) {
     $this->blt = $package_manager->getBlt();
     $this->codebaseCreator = $codebase_creator;
     $this->coreVersionFinder = $core_version_finder;
     $this->filesystem = $filesystem;
     $this->fixture = $fixture;
-    $this->fixtureConfigurator = $fixture_configurator;
     $this->fixtureInspector = $fixture_inspector;
     $this->output = $output;
     $this->processRunner = $process_runner;
@@ -273,7 +263,6 @@ class FixtureCreator {
    */
   public function create(): void {
     $this->createComposerProject();
-    $this->fixtureConfigurator->ensureGitConfig();
     $this->configureComposerProject();
     $this->fixDefaultDependencies();
     $this->addAcquiaPackages();
@@ -283,7 +272,6 @@ class FixtureCreator {
     $this->installSite();
     $this->setUpFilesDirectories();
     $this->createAndCheckoutBackupTag();
-    $this->fixtureConfigurator->removeTemporaryLocalGitConfig();
     $this->displayStatus();
   }
 
