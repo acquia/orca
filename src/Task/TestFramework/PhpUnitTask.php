@@ -78,18 +78,7 @@ class PhpUnitTask extends TestFrameworkBase {
     $this->enableDrupalTestTraits();
     $this->disableSymfonyDeprecationsHelper();
     $this->setMinkDriverArguments();
-
-    // When dumping the XML document tree, PHP will encode all double quotes in
-    // the JSON string to &quot;, since the XML attribute value is itself
-    // enclosed in double quotes. There's no way to change this behavior, so we
-    // must do a string replacement in order to wrap the Mink driver arguments
-    // in single quotes.
-    // @see https://stackoverflow.com/questions/5473520/php-dom-and-single-quotes#5473718
-    $mink_arguments = $this->getMinkWebDriverArguments();
-    $search = sprintf('value="%s"', htmlentities($mink_arguments));
-    $replace = sprintf("value='%s'", $mink_arguments);
-    $xml = str_replace($search, $replace, $this->doc->saveXML());
-    file_put_contents($path, $xml);
+    $this->writeConfiguration($path);
   }
 
   /**
@@ -180,6 +169,28 @@ class PhpUnitTask extends TestFrameworkBase {
     // Create an <env> element containing a JSON array which will control how
     // the Mink driver interacts with Chromedriver.
     $this->setEnvironmentVariable('MINK_DRIVER_ARGS_WEBDRIVER', $this->getMinkWebDriverArguments());
+  }
+
+  /**
+   * Writes the PHPUnit configuration to disk.
+   *
+   * When dumping the XML document tree, PHP will encode all double quotes in
+   * the JSON string to &quot;, since the XML attribute value is itself
+   * enclosed in double quotes. There's no way to change this behavior, so we
+   * must do a string replacement in order to wrap the Mink driver arguments
+   * in single quotes.
+   *
+   * @param string $path
+   *   The path at which to write the configuration.
+   *
+   * @see https://stackoverflow.com/questions/5473520/php-dom-and-single-quotes#5473718
+   */
+  private function writeConfiguration(string $path): void {
+    $mink_arguments = $this->getMinkWebDriverArguments();
+    $search = sprintf('value="%s"', htmlentities($mink_arguments));
+    $replace = sprintf("value='%s'", $mink_arguments);
+    $xml = str_replace($search, $replace, $this->doc->saveXML());
+    file_put_contents($path, $xml);
   }
 
   /**
