@@ -15,6 +15,32 @@ class PhpUnitTask extends TestFrameworkBase {
   use SutSettingsTrait;
 
   /**
+   * The DOM document for the PHPUnit configuration file.
+   *
+   * @var \DOMDocument
+   */
+  private $doc;
+
+  /**
+   * The XPath helper for the DOM document.
+   *
+   * @var \DOMXPath
+   */
+  private $xpath;
+
+  /**
+   * Constructs an instance.
+   *
+   * @param mixed ...$arguments
+   *   Arguments to pass to the parent constructor.
+   */
+  public function __construct(...$arguments) {
+    parent::__construct(...$arguments);
+    $this->doc = new \DOMDocument();
+    $this->xpath = new \DOMXPath($this->doc);
+  }
+
+  /**
    * {@inheritdoc}
    */
   public function label(): string {
@@ -44,16 +70,14 @@ class PhpUnitTask extends TestFrameworkBase {
    */
   private function ensurePhpUnitConfig() {
     $path = $this->fixture->getPath('docroot/core/phpunit.xml');
-    $doc = new \DOMDocument();
-    $doc->load($path);
-    $xpath = new \DOMXPath($doc);
+    $this->doc->load($path);
 
     $this->ensureSimpleTestDirectory();
-    $this->setSimpletestSettings($doc, $xpath);
-    $this->setTestSuite($doc, $xpath);
-    $this->enableDrupalTestTraits($doc, $xpath);
-    $this->disableSymfonyDeprecationsHelper($doc, $xpath);
-    $this->setMinkDriverArguments($doc, $xpath);
+    $this->setSimpletestSettings();
+    $this->setTestSuite();
+    $this->enableDrupalTestTraits();
+    $this->disableSymfonyDeprecationsHelper();
+    $this->setMinkDriverArguments();
 
     // When dumping the XML document tree, PHP will encode all double quotes in
     // the JSON string to &quot;, since the XML attribute value is itself
@@ -64,7 +88,7 @@ class PhpUnitTask extends TestFrameworkBase {
     $mink_arguments = $this->getMinkWebDriverArguments();
     $search = sprintf('value="%s"', htmlentities($mink_arguments));
     $replace = sprintf("value='%s'", $mink_arguments);
-    $xml = str_replace($search, $replace, $doc->saveXML());
+    $xml = str_replace($search, $replace, $this->doc->saveXML());
     file_put_contents($path, $xml);
   }
 
@@ -77,71 +101,51 @@ class PhpUnitTask extends TestFrameworkBase {
 
   /**
    * Sets Simpletest settings.
-   *
-   * @param \DOMDocument $doc
-   *   The DOM document.
-   * @param \DOMXPath $xpath
-   *   The XPath object.
    */
-  private function setSimpletestSettings(\DOMDocument $doc, \DOMXPath $xpath): void {
-    $xpath->query('//phpunit/php/env[@name="SIMPLETEST_BASE_URL"]')
+  private function setSimpletestSettings(): void {
+    $this->xpath->query('//phpunit/php/env[@name="SIMPLETEST_BASE_URL"]')
       ->item(0)
       ->setAttribute('value', sprintf('http://%s', Fixture::WEB_ADDRESS));
-    $xpath->query('//phpunit/php/env[@name="SIMPLETEST_DB"]')
+    $this->xpath->query('//phpunit/php/env[@name="SIMPLETEST_DB"]')
       ->item(0)
       ->setAttribute('value', 'sqlite://localhost/sites/default/files/.ht.sqlite');
   }
 
   /**
    * Sets TestSuite config in phpunit.xml.
-   *
-   * @param \DOMDocument $doc
-   *   The DOM document.
-   * @param \DOMXPath $xpath
-   *   The XPath object.
    */
-  private function setTestSuite(\DOMDocument $doc, \DOMXPath $xpath): void {
-    $directory = $doc->createElement('directory', $this->getPath());
-    $exclude = $doc->createElement('exclude', "{$this->getPath()}/vendor");
-    $testsuite = $doc->createElement('testsuite');
+  private function setTestSuite(): void {
+    $directory = $this->doc->createElement('directory', $this->getPath());
+    $exclude = $this->doc->createElement('exclude', "{$this->getPath()}/vendor");
+    $testsuite = $this->doc->createElement('testsuite');
     $testsuite->setAttribute('name', 'orca');
     $testsuite->appendChild($directory);
     $testsuite->appendChild($exclude);
-    $xpath->query('//phpunit/testsuites')
+    $this->xpath->query('//phpunit/testsuites')
       ->item(0)
       ->appendChild($testsuite);
   }
 
   /**
    * Sets PHPUnit environment variables so that Drupal Test Traits can work.
-   *
-   * @param \DOMDocument $doc
-   *   The DOM document.
-   * @param \DOMXPath $xpath
-   *   The XPath object.
    */
-  private function enableDrupalTestTraits(\DOMDocument $doc, \DOMXPath $xpath): void {
+  private function enableDrupalTestTraits(): void {
     // The bootstrap script is located in ORCA's vendor directory, not the
     // fixture's, since ORCA controls the available test frameworks and
     // infrastructure.
-    $xpath->query('//phpunit')
+    $this->xpath->query('//phpunit')
       ->item(0)
       ->setAttribute('bootstrap', "{$this->projectDir}/vendor/weitzman/drupal-test-traits/src/bootstrap.php");
 
-    $this->setEnvironmentVariable('DTT_BASE_URL', sprintf('http://%s', Fixture::WEB_ADDRESS), $doc, $xpath);
-    $this->setEnvironmentVariable('DTT_MINK_DRIVER_ARGS', $this->getMinkWebDriverArguments(), $doc, $xpath);
+    $this->setEnvironmentVariable('DTT_BASE_URL', sprintf('http://%s', Fixture::WEB_ADDRESS));
+    $this->setEnvironmentVariable('DTT_MINK_DRIVER_ARGS', $this->getMinkWebDriverArguments());
   }
 
   /**
    * Disables the Symfony Deprecations Helper.
-   *
-   * @param \DOMDocument $doc
-   *   The DOM document.
-   * @param \DOMXPath $xpath
-   *   The XPath object.
    */
-  private function disableSymfonyDeprecationsHelper(\DOMDocument $doc, \DOMXPath $xpath): void {
-    $this->setEnvironmentVariable('SYMFONY_DEPRECATIONS_HELPER', 'disabled', $doc, $xpath);
+  private function disableSymfonyDeprecationsHelper(): void {
+    $this->setEnvironmentVariable('SYMFONY_DEPRECATIONS_HELPER', 'disabled');
   }
 
   /**
@@ -151,23 +155,19 @@ class PhpUnitTask extends TestFrameworkBase {
    *   The name of the variable to set.
    * @param string $value
    *   The value of the variable to set.
-   * @param \DOMDocument $document
-   *   The DOM document.
-   * @param \DOMXPath $xpath
-   *   The XPath object.
    */
-  private function setEnvironmentVariable(string $name, string $value, \DOMDocument $document, \DOMXPath $xpath): void {
-    $result = $xpath->query(sprintf('//phpunit/php/env[@name="%s"]', $name));
+  private function setEnvironmentVariable(string $name, string $value): void {
+    $result = $this->xpath->query(sprintf('//phpunit/php/env[@name="%s"]', $name));
 
     if ($result->length) {
       $element = $result->item(0);
       $element->setAttribute('value', $value);
     }
     else {
-      $element = $document->createElement('env');
+      $element = $this->doc->createElement('env');
       $element->setAttribute('name', $name);
       $element->setAttribute('value', $value);
-      $xpath->query('//phpunit/php')
+      $this->xpath->query('//phpunit/php')
         ->item(0)
         ->appendChild($element);
     }
@@ -175,16 +175,11 @@ class PhpUnitTask extends TestFrameworkBase {
 
   /**
    * Sets the mink driver arguments.
-   *
-   * @param \DOMDocument $doc
-   *   The DOM document.
-   * @param \DOMXPath $xpath
-   *   The XPath object.
    */
-  private function setMinkDriverArguments(\DOMDocument $doc, \DOMXPath $xpath): void {
+  private function setMinkDriverArguments(): void {
     // Create an <env> element containing a JSON array which will control how
     // the Mink driver interacts with Chromedriver.
-    $this->setEnvironmentVariable('MINK_DRIVER_ARGS_WEBDRIVER', $this->getMinkWebDriverArguments(), $doc, $xpath);
+    $this->setEnvironmentVariable('MINK_DRIVER_ARGS_WEBDRIVER', $this->getMinkWebDriverArguments());
   }
 
   /**
