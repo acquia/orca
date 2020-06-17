@@ -49,11 +49,23 @@ class PhpUnitTask extends TestFrameworkBase {
     $xpath = new \DOMXPath($doc);
 
     $this->ensureSimpleTestDirectory();
-    $this->setSimpletestSettings($path, $doc, $xpath);
-    $this->setTestSuite($path, $doc, $xpath);
-    $this->enableDrupalTestTraits($path, $doc, $xpath);
-    $this->disableSymfonyDeprecationsHelper($path, $doc, $xpath);
-    $this->setMinkDriverArguments($path, $doc, $xpath);
+    $this->setSimpletestSettings($doc, $xpath);
+    $this->setTestSuite($doc, $xpath);
+    $this->enableDrupalTestTraits($doc, $xpath);
+    $this->disableSymfonyDeprecationsHelper($doc, $xpath);
+    $this->setMinkDriverArguments($doc, $xpath);
+
+    // When dumping the XML document tree, PHP will encode all double quotes in
+    // the JSON string to &quot;, since the XML attribute value is itself
+    // enclosed in double quotes. There's no way to change this behavior, so we
+    // must do a string replacement in order to wrap the Mink driver arguments
+    // in single quotes.
+    // @see https://stackoverflow.com/questions/5473520/php-dom-and-single-quotes#5473718
+    $mink_arguments = $this->getMinkWebDriverArguments();
+    $search = sprintf('value="%s"', htmlentities($mink_arguments));
+    $replace = sprintf("value='%s'", $mink_arguments);
+    $xml = str_replace($search, $replace, $doc->saveXML());
+    file_put_contents($path, $xml);
   }
 
   /**
@@ -66,34 +78,29 @@ class PhpUnitTask extends TestFrameworkBase {
   /**
    * Sets Simpletest settings.
    *
-   * @param string $path
-   *   The path.
    * @param \DOMDocument $doc
    *   The DOM document.
    * @param \DOMXPath $xpath
    *   The XPath object.
    */
-  private function setSimpletestSettings(string $path, \DOMDocument $doc, \DOMXPath $xpath): void {
+  private function setSimpletestSettings(\DOMDocument $doc, \DOMXPath $xpath): void {
     $xpath->query('//phpunit/php/env[@name="SIMPLETEST_BASE_URL"]')
       ->item(0)
       ->setAttribute('value', sprintf('http://%s', Fixture::WEB_ADDRESS));
     $xpath->query('//phpunit/php/env[@name="SIMPLETEST_DB"]')
       ->item(0)
       ->setAttribute('value', 'sqlite://localhost/sites/default/files/.ht.sqlite');
-    $doc->save($path);
   }
 
   /**
    * Sets TestSuite config in phpunit.xml.
    *
-   * @param string $path
-   *   The path.
    * @param \DOMDocument $doc
    *   The DOM document.
    * @param \DOMXPath $xpath
    *   The XPath object.
    */
-  private function setTestSuite(string $path, \DOMDocument $doc, \DOMXPath $xpath): void {
+  private function setTestSuite(\DOMDocument $doc, \DOMXPath $xpath): void {
     $directory = $doc->createElement('directory', $this->getPath());
     $exclude = $doc->createElement('exclude', "{$this->getPath()}/vendor");
     $testsuite = $doc->createElement('testsuite');
@@ -103,20 +110,17 @@ class PhpUnitTask extends TestFrameworkBase {
     $xpath->query('//phpunit/testsuites')
       ->item(0)
       ->appendChild($testsuite);
-    $doc->save($path);
   }
 
   /**
    * Sets PHPUnit environment variables so that Drupal Test Traits can work.
    *
-   * @param string $path
-   *   The path.
    * @param \DOMDocument $doc
    *   The DOM document.
    * @param \DOMXPath $xpath
    *   The XPath object.
    */
-  private function enableDrupalTestTraits(string $path, \DOMDocument $doc, \DOMXPath $xpath): void {
+  private function enableDrupalTestTraits(\DOMDocument $doc, \DOMXPath $xpath): void {
     // The bootstrap script is located in ORCA's vendor directory, not the
     // fixture's, since ORCA controls the available test frameworks and
     // infrastructure.
@@ -126,25 +130,18 @@ class PhpUnitTask extends TestFrameworkBase {
 
     $this->setEnvironmentVariable('DTT_BASE_URL', sprintf('http://%s', Fixture::WEB_ADDRESS), $doc, $xpath);
     $this->setEnvironmentVariable('DTT_MINK_DRIVER_ARGS', $this->getMinkWebDriverArguments(), $doc, $xpath);
-    $this->saveConfiguration($path, $doc);
   }
 
   /**
    * Disables the Symfony Deprecations Helper.
    *
-   * @param string $path
-   *   The path.
    * @param \DOMDocument $doc
    *   The DOM document.
    * @param \DOMXPath $xpath
    *   The XPath object.
    */
-  private function disableSymfonyDeprecationsHelper(string $path, \DOMDocument $doc, \DOMXPath $xpath): void {
-    // Before Drupal 8.6, the tag in question was present and merely needed the
-    // value changed. Since Drupal 8.6, the tag in question has been commented
-    // out and must be re-created rather than modified directly.
+  private function disableSymfonyDeprecationsHelper(\DOMDocument $doc, \DOMXPath $xpath): void {
     $this->setEnvironmentVariable('SYMFONY_DEPRECATIONS_HELPER', 'disabled', $doc, $xpath);
-    $doc->save($path);
   }
 
   /**
@@ -179,42 +176,15 @@ class PhpUnitTask extends TestFrameworkBase {
   /**
    * Sets the mink driver arguments.
    *
-   * @param string $path
-   *   The path.
    * @param \DOMDocument $doc
    *   The DOM document.
    * @param \DOMXPath $xpath
    *   The XPath object.
    */
-  private function setMinkDriverArguments(string $path, \DOMDocument $doc, \DOMXPath $xpath): void {
+  private function setMinkDriverArguments(\DOMDocument $doc, \DOMXPath $xpath): void {
     // Create an <env> element containing a JSON array which will control how
     // the Mink driver interacts with Chromedriver.
     $this->setEnvironmentVariable('MINK_DRIVER_ARGS_WEBDRIVER', $this->getMinkWebDriverArguments(), $doc, $xpath);
-    $this->saveConfiguration($path, $doc);
-  }
-
-  /**
-   * Saves the PHPUnit configuration.
-   *
-   * When dumping the XML document tree, PHP will encode all double quotes in
-   * the JSON string to &quot;, since the XML attribute value is itself enclosed
-   * in double quotes. There's no way to change this behavior, so we must do a
-   * string replacement in order to wrap the Mink driver arguments in single
-   * quotes.
-   *
-   * @param string $path
-   *   The path where the configuration should be written.
-   * @param \DOMDocument $doc
-   *   The DOM document.
-   *
-   * @see https://stackoverflow.com/questions/5473520/php-dom-and-single-quotes#5473718
-   */
-  private function saveConfiguration(string $path, \DOMDocument $doc): void {
-    $mink_arguments = $this->getMinkWebDriverArguments();
-    $search = sprintf('value="%s"', htmlentities($mink_arguments));
-    $replace = sprintf("value='%s'", $mink_arguments);
-    $xml = str_replace($search, $replace, $doc->saveXML());
-    file_put_contents($path, $xml);
   }
 
   /**
