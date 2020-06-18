@@ -29,18 +29,6 @@ class PhpUnitTask extends TestFrameworkBase {
   private $xpath;
 
   /**
-   * Constructs an instance.
-   *
-   * @param mixed ...$arguments
-   *   Arguments to pass to the parent constructor.
-   */
-  public function __construct(...$arguments) {
-    parent::__construct(...$arguments);
-    $this->doc = new \DOMDocument();
-    $this->xpath = new \DOMXPath($this->doc);
-  }
-
-  /**
    * {@inheritdoc}
    */
   public function label(): string {
@@ -70,7 +58,9 @@ class PhpUnitTask extends TestFrameworkBase {
    */
   private function ensurePhpUnitConfig() {
     $path = $this->fixture->getPath('docroot/core/phpunit.xml');
+    $this->doc = new \DOMDocument($path);
     $this->doc->load($path);
+    $this->xpath = new \DOMXPath($this->doc);
 
     $this->ensureSimpleTestDirectory();
     $this->setSimpletestSettings();
