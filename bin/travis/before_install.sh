@@ -38,6 +38,9 @@ phpenv config-rm xdebug.ini
 # Install the PECL YAML parser for strict YAML parsing.
 yes | pecl install yaml
 
+# Display PHP information.
+php -i
+
 # Install Composer optimizations for faster builds.
 composer global require \
   hirak/prestissimo \
