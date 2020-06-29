@@ -52,7 +52,6 @@ class TestRunnerTest extends TestCase {
     $task->setPath(self::PATH)
       ->shouldBeCalledTimes(1);
     $task->execute()->shouldBeCalledTimes(1);
-    /** @var \Acquia\Orca\Task\TaskInterface $task */
     $task = $task->reveal();
     return $task;
   }

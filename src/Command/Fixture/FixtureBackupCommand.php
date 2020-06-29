@@ -3,8 +3,8 @@
 namespace Acquia\Orca\Command\Fixture;
 
 use Acquia\Orca\Enum\StatusCode;
+use Acquia\Orca\Facade\GitFacade;
 use Acquia\Orca\Fixture\Fixture;
-use Acquia\Orca\Fixture\FixtureBackupper;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -31,23 +31,23 @@ class FixtureBackupCommand extends Command {
   private $fixture;
 
   /**
-   * The fixture backupper.
+   * The Git facade.
    *
-   * @var \Acquia\Orca\Fixture\FixtureBackupper
+   * @var \Acquia\Orca\Facade\GitFacade
    */
-  private $fixtureBackupper;
+  private $git;
 
   /**
    * Constructs an instance.
    *
    * @param \Acquia\Orca\Fixture\Fixture $fixture
    *   The fixture.
-   * @param \Acquia\Orca\Fixture\FixtureBackupper $fixture_backupper
-   *   The fixture backupper.
+   * @param \Acquia\Orca\Facade\GitFacade $git
+   *   The Git facade.
    */
-  public function __construct(Fixture $fixture, FixtureBackupper $fixture_backupper) {
+  public function __construct(Fixture $fixture, GitFacade $git) {
     $this->fixture = $fixture;
-    $this->fixtureBackupper = $fixture_backupper;
+    $this->git = $git;
     parent::__construct(self::$defaultName);
   }
 
@@ -81,7 +81,7 @@ class FixtureBackupCommand extends Command {
       return StatusCode::USER_CANCEL;
     }
 
-    $this->fixtureBackupper->backup();
+    $this->git->backupFixtureState();
     return StatusCode::OK;
   }
 

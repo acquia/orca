@@ -2,6 +2,7 @@
 
 namespace Acquia\Orca\Fixture;
 
+use Acquia\Orca\Codebase\CodebaseCreator;
 use Acquia\Orca\Exception\OrcaException;
 use Acquia\Orca\Utility\DrupalCoreVersionFinder;
 use Acquia\Orca\Utility\ProcessRunner;
@@ -67,13 +68,6 @@ class FixtureCreator {
    * @var \Acquia\Orca\Fixture\Fixture
    */
   private $fixture;
-
-  /**
-   * The fixture configurator.
-   *
-   * @var \Acquia\Orca\Fixture\FixtureConfigurator
-   */
-  private $fixtureConfigurator;
 
   /**
    * The fixture inspector.
@@ -209,16 +203,23 @@ class FixtureCreator {
   private $versionParser;
 
   /**
+   * The codebase creator.
+   *
+   * @var \Acquia\Orca\Codebase\CodebaseCreator
+   */
+  private $codebaseCreator;
+
+  /**
    * Constructs an instance.
    *
+   * @param \Acquia\Orca\Codebase\CodebaseCreator $codebase_creator
+   *   The codebase creator.
    * @param \Acquia\Orca\Utility\DrupalCoreVersionFinder $core_version_finder
    *   The Drupal core version finder.
    * @param \Symfony\Component\Filesystem\Filesystem $filesystem
    *   The filesystem.
    * @param \Acquia\Orca\Fixture\Fixture $fixture
    *   The fixture.
-   * @param \Acquia\Orca\Fixture\FixtureConfigurator $fixture_configurator
-   *   The fixture configurator.
    * @param \Acquia\Orca\Fixture\FixtureInspector $fixture_inspector
    *   The fixture inspector.
    * @param \Acquia\Orca\Fixture\SiteInstaller $site_installer
@@ -236,12 +237,12 @@ class FixtureCreator {
    * @param \Composer\Semver\VersionParser $version_parser
    *   The Semver version parser.
    */
-  public function __construct(DrupalCoreVersionFinder $core_version_finder, Filesystem $filesystem, Fixture $fixture, FixtureConfigurator $fixture_configurator, FixtureInspector $fixture_inspector, SiteInstaller $site_installer, SymfonyStyle $output, ProcessRunner $process_runner, PackageManager $package_manager, SubextensionManager $subextension_manager, VersionGuesser $version_guesser, VersionParser $version_parser) {
+  public function __construct(CodebaseCreator $codebase_creator, DrupalCoreVersionFinder $core_version_finder, Filesystem $filesystem, Fixture $fixture, FixtureInspector $fixture_inspector, SiteInstaller $site_installer, SymfonyStyle $output, ProcessRunner $process_runner, PackageManager $package_manager, SubextensionManager $subextension_manager, VersionGuesser $version_guesser, VersionParser $version_parser) {
     $this->blt = $package_manager->getBlt();
+    $this->codebaseCreator = $codebase_creator;
     $this->coreVersionFinder = $core_version_finder;
     $this->filesystem = $filesystem;
     $this->fixture = $fixture;
-    $this->fixtureConfigurator = $fixture_configurator;
     $this->fixtureInspector = $fixture_inspector;
     $this->output = $output;
     $this->processRunner = $process_runner;
@@ -262,7 +263,6 @@ class FixtureCreator {
    */
   public function create(): void {
     $this->createComposerProject();
-    $this->fixtureConfigurator->ensureGitConfig();
     $this->configureComposerProject();
     $this->fixDefaultDependencies();
     $this->addAcquiaPackages();
@@ -272,7 +272,6 @@ class FixtureCreator {
     $this->installSite();
     $this->setUpFilesDirectories();
     $this->createAndCheckoutBackupTag();
-    $this->fixtureConfigurator->removeTemporaryLocalGitConfig();
     $this->displayStatus();
   }
 
@@ -381,22 +380,11 @@ class FixtureCreator {
    */
   private function createComposerProject(): void {
     $this->output->section('Creating Composer project');
-    $stability_flag = '--stability=alpha';
-    if ($this->isDev || $this->isProjectTemplateSut()) {
-      $stability_flag = '--stability=dev';
-    }
-    $command = [
-      'composer',
-      'create-project',
-      '--no-dev',
-      '--no-scripts',
-      '--no-install',
-      '--no-interaction',
+    $this->codebaseCreator->create(
       $this->getProjectTemplateString(),
-      $stability_flag,
-      $this->fixture->getPath(),
-    ];
-    $this->processRunner->runOrcaVendorBin($command);
+      $this->getProjectTemplateStability(),
+      $this->fixture->getPath()
+    );
   }
 
   /**
@@ -408,7 +396,7 @@ class FixtureCreator {
    */
   private function getProjectTemplateString(): string {
     switch (TRUE) {
-      case $this->isProjectTemplateSut():
+      case $this->isSutProjectTemplate():
         return "{$this->projectTemplate}:@dev";
 
       case $this->projectTemplate === 'acquia/blt-project':
@@ -423,13 +411,27 @@ class FixtureCreator {
   }
 
   /**
+   * Gets the project template stability.
+   *
+   * @return string
+   *   The project template stability.
+   */
+  private function getProjectTemplateStability(): string {
+    $stability = 'alpha';
+    if ($this->isDev || $this->isSutProjectTemplate()) {
+      $stability = 'dev';
+    }
+    return $stability;
+  }
+
+  /**
    * Determines whether or not the Composer project template is also the SUT.
    *
    * @return bool
    *   Returns TRUE if the Composer project template is also the system under
    *   test or FALSE if not.
    */
-  private function isProjectTemplateSut(): bool {
+  private function isSutProjectTemplate(): bool {
     return $this->sut && $this->sut->getPackageName() === $this->projectTemplate;
   }
 
