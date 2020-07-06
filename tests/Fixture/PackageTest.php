@@ -10,7 +10,8 @@ use Symfony\Component\OptionsResolver\Exception\UndefinedOptionsException;
 use UnexpectedValueException;
 
 /**
- * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Fixture\Fixture $fixture
+ * @property \Acquia\Orca\Fixture\Fixture|\Prophecy\Prophecy\ObjectProphecy $fixture
+ *
  * @covers \Acquia\Orca\Fixture\Package
  */
 class PackageTest extends TestCase {
@@ -22,23 +23,36 @@ class PackageTest extends TestCase {
   }
 
   /**
-   * @dataProvider providerConstruction
+   * @dataProvider providerConstructionAndGetters
+   *
+   * @covers \Acquia\Orca\Fixture\Package::__construct
+   * @covers \Acquia\Orca\Fixture\Package::getDrupalExtensionName
+   * @covers \Acquia\Orca\Fixture\Package::getInstallPathRelative
+   * @covers \Acquia\Orca\Fixture\Package::getPackageName
+   * @covers \Acquia\Orca\Fixture\Package::getProjectName
+   * @covers \Acquia\Orca\Fixture\Package::getRepositoryUrlRaw
+   * @covers \Acquia\Orca\Fixture\Package::getType
+   * @covers \Acquia\Orca\Fixture\Package::getVersion
+   * @covers \Acquia\Orca\Fixture\Package::getVersionDev
+   * @covers \Acquia\Orca\Fixture\Package::getVersionRecommended
+   * @covers \Acquia\Orca\Fixture\Package::getDrupalExtensionName
+   * @covers \Acquia\Orca\Fixture\Package::shouldGetEnabled
    */
-  public function testConstruction($data, $package_name, $project_name, $type, $repository_url, $version, $dev_version, $enable, $install_path) {
+  public function testConstructionAndGetters($data, $package_name, $project_name, $type, $repository_url, $version, $dev_version, $enable, $install_path) {
     $package = $this->createPackage($package_name, $data);
 
-    $this->assertInstanceOf(Package::class, $package, 'Instantiated class.');
+    $this->assertEquals($project_name, $package->getDrupalExtensionName(), 'Set/got Drupal extension name.');
+    $this->assertEquals($install_path, $package->getInstallPathRelative(), 'Set/got relative install path.');
     $this->assertEquals($package_name, $package->getPackageName(), 'Set/got package name.');
     $this->assertEquals($project_name, $package->getProjectName(), 'Set/got project name.');
     $this->assertEquals($repository_url, $package->getRepositoryUrlRaw(), 'Set/got repository URL.');
     $this->assertEquals($type, $package->getType(), 'Set/got type.');
-    $this->assertEquals($version, $package->getVersionRecommended(), 'Set/got recommended version.');
     $this->assertEquals($dev_version, $package->getVersionDev(), 'Set/got dev version.');
+    $this->assertEquals($version, $package->getVersionRecommended(), 'Set/got recommended version.');
     $this->assertEquals($enable, $package->shouldGetEnabled(), 'Determined whether or not should get enabled.');
-    $this->assertEquals($install_path, $package->getInstallPathRelative(), 'Got relative install path.');
   }
 
-  public function providerConstruction() {
+  public function providerConstructionAndGetters() {
     return [
       'Full specification' => [
         'drupal/example_library' => [
@@ -74,7 +88,7 @@ class PackageTest extends TestCase {
         TRUE,
         'docroot/modules/contrib/example_module',
       ],
-      'Module to not install' => [
+      'Module that should be enabled' => [
         'drupal/example_module' => [
           'version' => NULL,
           'version_dev' => NULL,
@@ -88,7 +102,7 @@ class PackageTest extends TestCase {
         TRUE,
         'docroot/modules/contrib/example_module',
       ],
-      'Module to not enable' => [
+      'Module that should not be enabled' => [
         'drupal/example_module' => [
           'enable' => FALSE,
         ],
@@ -106,6 +120,9 @@ class PackageTest extends TestCase {
 
   /**
    * @dataProvider providerConstructionError
+   *
+   * @covers \Acquia\Orca\Fixture\Package::initializePackageName
+   * @covers \Acquia\Orca\Fixture\Package::resolveData
    */
   public function testConstructionError($exception, $package_name, $data) {
     $this->expectException($exception);
@@ -127,6 +144,9 @@ class PackageTest extends TestCase {
 
   /**
    * @dataProvider providerInstallPathCalculation
+   *
+   * @covers \Acquia\Orca\Fixture\Package::getInstallPathRelative
+   * @covers \Acquia\Orca\Fixture\Package::getInstallPathAbsolute
    */
   public function testInstallPathCalculation($type, $relative_install_path) {
     $absolute_install_path = "/var/www/{$relative_install_path}";
@@ -160,6 +180,8 @@ class PackageTest extends TestCase {
 
   /**
    * @dataProvider providerConditionalVersions
+   *
+   * @covers \Acquia\Orca\Fixture\Package::getVersion
    */
   public function testConditionalVersions($data, $core_version, $version, $version_dev) {
     $package = $this->createPackage('drupal/example', $data);
@@ -347,6 +369,8 @@ class PackageTest extends TestCase {
 
   /**
    * @dataProvider providerCoreVersionMatching
+   *
+   * @covers \Acquia\Orca\Fixture\Package::resolveCoreMatrix
    */
   public function testCoreVersionMatching($expected_to_match, $provided, $required) {
     $package = $this->createPackage('drupal/example', [
