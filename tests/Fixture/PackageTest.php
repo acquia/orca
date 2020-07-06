@@ -16,7 +16,7 @@ use UnexpectedValueException;
  */
 class PackageTest extends TestCase {
 
-  private $projectDir = '../example';
+  private $projectDir = '/var/www/example';
 
   public function setUp() {
     $this->fixture = $this->prophesize(Fixture::class);
@@ -31,6 +31,7 @@ class PackageTest extends TestCase {
    * @covers \Acquia\Orca\Fixture\Package::getPackageName
    * @covers \Acquia\Orca\Fixture\Package::getProjectName
    * @covers \Acquia\Orca\Fixture\Package::getRepositoryUrlRaw
+   * @covers \Acquia\Orca\Fixture\Package::getRepositoryUrlAbsolute
    * @covers \Acquia\Orca\Fixture\Package::getType
    * @covers \Acquia\Orca\Fixture\Package::getVersion
    * @covers \Acquia\Orca\Fixture\Package::getVersionDev
@@ -38,14 +39,15 @@ class PackageTest extends TestCase {
    * @covers \Acquia\Orca\Fixture\Package::getDrupalExtensionName
    * @covers \Acquia\Orca\Fixture\Package::shouldGetEnabled
    */
-  public function testConstructionAndGetters($data, $package_name, $project_name, $type, $repository_url, $version, $dev_version, $enable, $install_path) {
+  public function testConstructionAndGetters($data, $package_name, $project_name, $type, $raw_repository_url, $absolute_repository_url, $version, $dev_version, $enable, $install_path) {
     $package = $this->createPackage($package_name, $data);
 
     $this->assertEquals($project_name, $package->getDrupalExtensionName(), 'Set/got Drupal extension name.');
     $this->assertEquals($install_path, $package->getInstallPathRelative(), 'Set/got relative install path.');
     $this->assertEquals($package_name, $package->getPackageName(), 'Set/got package name.');
     $this->assertEquals($project_name, $package->getProjectName(), 'Set/got project name.');
-    $this->assertEquals($repository_url, $package->getRepositoryUrlRaw(), 'Set/got repository URL.');
+    $this->assertEquals($raw_repository_url, $package->getRepositoryUrlRaw(), 'Set/got raw repository URL.');
+    $this->assertEquals($absolute_repository_url, $package->getRepositoryUrlAbsolute(), 'Set/got absolute repository URL.');
     $this->assertEquals($type, $package->getType(), 'Set/got type.');
     $this->assertEquals($dev_version, $package->getVersionDev(), 'Set/got dev version.');
     $this->assertEquals($version, $package->getVersionRecommended(), 'Set/got recommended version.');
@@ -72,6 +74,7 @@ class PackageTest extends TestCase {
         'example_library',
         'library',
         '/var/www/example_library',
+        '/var/www/example_library',
         '2.x',
         '2.x-dev',
         FALSE,
@@ -83,6 +86,7 @@ class PackageTest extends TestCase {
         'example_module',
         'drupal-module',
         '../example_module',
+        '/var/www/example_module',
         '*',
         '*@dev',
         TRUE,
@@ -97,6 +101,7 @@ class PackageTest extends TestCase {
         'example_module',
         'drupal-module',
         '../example_module',
+        '/var/www/example_module',
         NULL,
         NULL,
         TRUE,
@@ -110,6 +115,7 @@ class PackageTest extends TestCase {
         'example_module',
         'drupal-module',
         '../example_module',
+        '/var/www/example_module',
         '*',
         '*@dev',
         FALSE,

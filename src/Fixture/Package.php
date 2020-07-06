@@ -244,7 +244,20 @@ class Package {
    *   "/var/www/example".
    */
   public function getRepositoryUrlAbsolute(): string {
-    return "{$this->projectDir}/{$this->getRepositoryUrlRaw()}";
+    $path = "{$this->projectDir}/{$this->getRepositoryUrlRaw()}";
+    if (strpos($this->getRepositoryUrlRaw(), '/') === 0) {
+      $path = $this->getRepositoryUrlRaw();
+    }
+
+    // Approximate realpath() without requiring the path parts to exist yet.
+    // @todo This is a straight copy from \Acquia\Orca\Fixture\Fixture::getPath.
+    //   Refactor to eliminate duplication.
+    $patterns = ['~/{2,}~', '~/(\./)+~', '~([^/\.]+/(?R)*\.{2,}/)~', '~\.\./~'];
+    $replacements = ['/', '/', '', ''];
+    $path = preg_replace($patterns, $replacements, $path);
+
+    // Remove trailing slashes.
+    return rtrim($path, '/');
   }
 
   /**
