@@ -3,7 +3,7 @@
 namespace Acquia\Orca\Task\TestFramework;
 
 use Acquia\Orca\Exception\TaskFailureException;
-use Acquia\Orca\Fixture\Fixture;
+use Acquia\Orca\Server\WebServer;
 use Acquia\Orca\Utility\SutSettingsTrait;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 
@@ -84,7 +84,7 @@ class PhpUnitTask extends TestFrameworkBase {
   private function setSimpletestSettings(): void {
     $this->xpath->query('//phpunit/php/env[@name="SIMPLETEST_BASE_URL"]')
       ->item(0)
-      ->setAttribute('value', sprintf('http://%s', Fixture::WEB_ADDRESS));
+      ->setAttribute('value', sprintf('http://%s', WebServer::WEB_ADDRESS));
     $this->xpath->query('//phpunit/php/env[@name="SIMPLETEST_DB"]')
       ->item(0)
       ->setAttribute('value', 'sqlite://localhost/sites/default/files/.ht.sqlite');
@@ -114,9 +114,9 @@ class PhpUnitTask extends TestFrameworkBase {
     // infrastructure.
     $this->xpath->query('//phpunit')
       ->item(0)
-      ->setAttribute('bootstrap', "{$this->projectDir}/vendor/weitzman/drupal-test-traits/src/bootstrap.php");
+      ->setAttribute('bootstrap', $this->orca->getPath('vendor/weitzman/drupal-test-traits/src/bootstrap.php'));
 
-    $this->setEnvironmentVariable('DTT_BASE_URL', sprintf('http://%s', Fixture::WEB_ADDRESS));
+    $this->setEnvironmentVariable('DTT_BASE_URL', sprintf('http://%s', WebServer::WEB_ADDRESS));
     $this->setEnvironmentVariable('DTT_MINK_DRIVER_ARGS', $this->getMinkWebDriverArguments());
   }
 

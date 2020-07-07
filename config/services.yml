@@ -20,7 +20,6 @@ services:
       $amplitude_user_id: "%env(ORCA_AMPLITUDE_USER_ID)%"
       $default_phpcs_standard: "%env(ORCA_PHPCS_STANDARD)%"
       $fixture_dir: "%env(ORCA_FIXTURE_DIR)%"
-      $project_dir: "%kernel.project_dir%"
       $packages_config: "%env(ORCA_PACKAGES_CONFIG)%"
       $packages_config_alter: "%env(ORCA_PACKAGES_CONFIG_ALTER)%"
       $telemetry_is_enabled: "%env(bool:ORCA_TELEMETRY_ENABLE)%"
@@ -30,6 +29,14 @@ services:
     exclude: ../src/Kernel.php
     public: false
     resource: ../src
+
+  Acquia\Orca\Filesystem\FixturePathHandler:
+    arguments:
+      $base_path: "%env(ORCA_FIXTURE_DIR)%"
+
+  Acquia\Orca\Filesystem\OrcaPathHandler:
+    arguments:
+      $base_path: "%kernel.project_dir%"
 
   Composer\Config: ~
 

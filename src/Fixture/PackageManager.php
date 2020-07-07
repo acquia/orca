@@ -2,6 +2,8 @@
 
 namespace Acquia\Orca\Fixture;
 
+use Acquia\Orca\Filesystem\FixturePathHandler;
+use Acquia\Orca\Filesystem\OrcaPathHandler;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Yaml\Parser;
 
@@ -25,9 +27,9 @@ class PackageManager {
   private $blt;
 
   /**
-   * The fixture.
+   * The fixture path handler.
    *
-   * @var \Acquia\Orca\Fixture\Fixture
+   * @var \Acquia\Orca\Filesystem\FixturePathHandler
    */
   private $fixture;
 
@@ -37,6 +39,13 @@ class PackageManager {
    * @var \Symfony\Component\Filesystem\Filesystem
    */
   private $filesystem;
+
+  /**
+   * The ORCA path handler.
+   *
+   * @var \Acquia\Orca\Filesystem\OrcaPathHandler
+   */
+  private $orca;
 
   /**
    * All defined packages keyed by package name.
@@ -53,19 +62,14 @@ class PackageManager {
   private $parser;
 
   /**
-   * The ORCA project directory.
-   *
-   * @var string
-   */
-  private $projectDir;
-
-  /**
    * Constructs an instance.
    *
    * @param \Symfony\Component\Filesystem\Filesystem $filesystem
    *   The filesystem.
-   * @param \Acquia\Orca\Fixture\Fixture $fixture
-   *   The fixture.
+   * @param \Acquia\Orca\Filesystem\FixturePathHandler $fixture_path_handler
+   *   The fixture path handler.
+   * @param \Acquia\Orca\Filesystem\OrcaPathHandler $orca_path_handler
+   *   The ORCA path handler.
    * @param \Symfony\Component\Yaml\Parser $parser
    *   The YAML parser.
    * @param string $packages_config
@@ -75,15 +79,13 @@ class PackageManager {
    *   The path to an extra packages configuration file relative to the ORCA
    *   project directory whose contents will be merged into the main packages
    *   configuration.
-   * @param string $project_dir
-   *   The ORCA project directory.
    */
-  public function __construct(Filesystem $filesystem, Fixture $fixture, Parser $parser, string $packages_config, ?string $packages_config_alter, string $project_dir) {
+  public function __construct(Filesystem $filesystem, FixturePathHandler $fixture_path_handler, OrcaPathHandler $orca_path_handler, Parser $parser, string $packages_config, ?string $packages_config_alter) {
     $this->filesystem = $filesystem;
-    $this->fixture = $fixture;
+    $this->fixture = $fixture_path_handler;
+    $this->orca = $orca_path_handler;
     $this->parser = $parser;
-    $this->projectDir = $project_dir;
-    $this->initializePackages($fixture, $packages_config, $packages_config_alter);
+    $this->initializePackages($fixture_path_handler, $packages_config, $packages_config_alter);
   }
 
   /**
@@ -158,8 +160,8 @@ class PackageManager {
   /**
    * Initializes the packages.
    *
-   * @param \Acquia\Orca\Fixture\Fixture $fixture
-   *   The fixture.
+   * @param \Acquia\Orca\Filesystem\FixturePathHandler $fixture_path_handler
+   *   The fixture path handler.
    * @param string $packages_config
    *   The path to the packages configuration file relative to the ORCA project
    *   directory.
@@ -168,10 +170,11 @@ class PackageManager {
    *   project directory whose contents will be merged into the main packages
    *   configuration.
    */
-  private function initializePackages(Fixture $fixture, string $packages_config, ?string $packages_config_alter): void {
-    $data = $this->parseYamlFile("{$this->projectDir}/{$packages_config}");
+  private function initializePackages(FixturePathHandler $fixture_path_handler, string $packages_config, ?string $packages_config_alter): void {
+    $data = $this->parseYamlFile($this->orca->getPath($packages_config));
     if ($packages_config_alter) {
-      $this->alterData = $this->parseYamlFile("{$this->projectDir}/{$packages_config_alter}");
+      $alter_path = $this->orca->getPath($packages_config_alter);
+      $this->alterData = $this->parseYamlFile($alter_path);
       $data = array_merge($data, $this->alterData);
     }
     foreach ($data as $package_name => $datum) {
@@ -182,7 +185,7 @@ class PackageManager {
         continue;
       }
 
-      $package = new Package($datum, $fixture, $package_name, $this->projectDir);
+      $package = new Package($datum, $fixture_path_handler, $this->orca, $package_name);
       $this->packages[$package_name] = $package;
     }
     ksort($this->packages);
@@ -221,9 +224,9 @@ class PackageManager {
     }
 
     // Otherwise get it from the default specification.
-    $default_packages_yaml = "{$this->projectDir}/config/packages.yml";
+    $default_packages_yaml = $this->orca->getPath('config/packages.yml');
     $data = $this->parser->parseFile($default_packages_yaml);
-    $this->blt = new Package($data[$package_name], $this->fixture, $package_name, $this->projectDir);
+    $this->blt = new Package($data[$package_name], $this->fixture, $this->orca, $package_name);
   }
 
 }

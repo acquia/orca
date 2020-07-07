@@ -3,8 +3,8 @@
 namespace Acquia\Orca\Command\Fixture;
 
 use Acquia\Orca\Enum\StatusCode;
+use Acquia\Orca\Filesystem\FixturePathHandler;
 use Acquia\Orca\Fixture\CompanyExtensionEnabler;
-use Acquia\Orca\Fixture\Fixture;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -30,9 +30,9 @@ class FixtureEnableExtensionsCommand extends Command {
   private $companyExtensionEnabler;
 
   /**
-   * The fixture.
+   * The fixture path handler.
    *
-   * @var \Acquia\Orca\Fixture\Fixture
+   * @var \Acquia\Orca\Filesystem\FixturePathHandler
    */
   private $fixture;
 
@@ -41,12 +41,12 @@ class FixtureEnableExtensionsCommand extends Command {
    *
    * @param \Acquia\Orca\Fixture\CompanyExtensionEnabler $company_extension_enabler
    *   The company extension enabler.
-   * @param \Acquia\Orca\Fixture\Fixture $fixture
-   *   The fixture.
+   * @param \Acquia\Orca\Filesystem\FixturePathHandler $fixture_path_handler
+   *   The fixture path handler.
    */
-  public function __construct(CompanyExtensionEnabler $company_extension_enabler, Fixture $fixture) {
+  public function __construct(CompanyExtensionEnabler $company_extension_enabler, FixturePathHandler $fixture_path_handler) {
     $this->companyExtensionEnabler = $company_extension_enabler;
-    $this->fixture = $fixture;
+    $this->fixture = $fixture_path_handler;
     parent::__construct(self::$defaultName);
   }
 

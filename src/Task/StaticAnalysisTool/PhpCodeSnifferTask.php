@@ -76,7 +76,7 @@ class PhpCodeSnifferTask extends TaskBase {
   private function logResults(): void {
     $this->output->comment('Logging results...');
     $this->runPhpcsCommand([
-      sprintf('--report-file=%s/%s', $this->projectDir, self::JSON_LOG_PATH),
+      "--report-file={$this->orca->getPath( self::JSON_LOG_PATH)}",
     ]);
   }
 

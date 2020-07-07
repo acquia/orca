@@ -5,7 +5,7 @@ namespace Acquia\Orca\Tests\Command\Qa;
 use Acquia\Orca\Command\Qa\QaAutomatedTestsCommand;
 use Acquia\Orca\Enum\StatusCode;
 use Acquia\Orca\Exception\OrcaException;
-use Acquia\Orca\Fixture\Fixture;
+use Acquia\Orca\Filesystem\FixturePathHandler;
 use Acquia\Orca\Fixture\PackageManager;
 use Acquia\Orca\Task\TestFramework\TestRunner;
 use Acquia\Orca\Tests\Command\CommandTestBase;
@@ -14,7 +14,7 @@ use Symfony\Component\Console\Command\Command;
 /**
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Server\ChromeDriverServer $chromedriver
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Utility\Clock $clock
- * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Fixture\Fixture $fixture
+ * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Filesystem\FixturePathHandler $fixture
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Task\TestFramework\PhpUnitTask $phpunit
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Fixture\PackageManager $packageManager
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Task\TaskRunner $taskRunner
@@ -24,7 +24,7 @@ use Symfony\Component\Console\Command\Command;
 class QaAutomatedTestsCommandTest extends CommandTestBase {
 
   protected function setUp() {
-    $this->fixture = $this->prophesize(Fixture::class);
+    $this->fixture = $this->prophesize(FixturePathHandler::class);
     $this->fixture->exists()
       ->willReturn(TRUE);
     $this->fixture->getPath()
@@ -34,13 +34,12 @@ class QaAutomatedTestsCommandTest extends CommandTestBase {
   }
 
   protected function createCommand(): Command {
-    /** @var \Acquia\Orca\Fixture\Fixture $fixture */
-    $fixture = $this->fixture->reveal();
+    $fixture_path_handler = $this->fixture->reveal();
     /** @var \Acquia\Orca\Fixture\PackageManager $package_manager */
     $package_manager = $this->packageManager->reveal();
     /** @var \Acquia\Orca\Task\TestFramework\TestRunner $test_runner */
     $test_runner = $this->testRunner->reveal();
-    return new QaAutomatedTestsCommand($fixture, $package_manager, $test_runner);
+    return new QaAutomatedTestsCommand($fixture_path_handler, $package_manager, $test_runner);
   }
 
   /**

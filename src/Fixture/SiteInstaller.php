@@ -2,6 +2,8 @@
 
 namespace Acquia\Orca\Fixture;
 
+use Acquia\Orca\Filesystem\FixturePathHandler;
+use Acquia\Orca\Filesystem\OrcaPathHandler;
 use Acquia\Orca\Utility\ProcessRunner;
 use Noodlehaus\Config;
 use Noodlehaus\Writer\Yaml;
@@ -51,9 +53,9 @@ class SiteInstaller {
   private $filesystem;
 
   /**
-   * The fixture.
+   * The fixture path handler.
    *
-   * @var \Acquia\Orca\Fixture\Fixture
+   * @var \Acquia\Orca\Filesystem\FixturePathHandler
    */
   private $fixture;
 
@@ -86,11 +88,11 @@ class SiteInstaller {
   private $profile;
 
   /**
-   * The ORCA project directory.
+   * The ORCA path handler.
    *
-   * @var string
+   * @var \Acquia\Orca\Filesystem\OrcaPathHandler
    */
-  private $projectDir;
+  private $orca;
 
   /**
    * Constructs an instance.
@@ -99,22 +101,22 @@ class SiteInstaller {
    *   The company extension enabler.
    * @param \Symfony\Component\Filesystem\Filesystem $filesystem
    *   The filesystem.
-   * @param \Acquia\Orca\Fixture\Fixture $fixture
-   *   The fixture.
+   * @param \Acquia\Orca\Filesystem\FixturePathHandler $fixture_path_handler
+   *   The fixture path handler.
+   * @param \Acquia\Orca\Filesystem\OrcaPathHandler $orca_path_handler
+   *   The ORCA path handler.
    * @param \Acquia\Orca\Utility\ProcessRunner $process_runner
    *   The process runner.
-   * @param string $project_dir
-   *   The ORCA project directory.
    * @param \Symfony\Component\Console\Style\SymfonyStyle $output
    *   The output decorator.
    */
-  public function __construct(CompanyExtensionEnabler $company_extension_enabler, Filesystem $filesystem, Fixture $fixture, ProcessRunner $process_runner, string $project_dir, SymfonyStyle $output) {
+  public function __construct(CompanyExtensionEnabler $company_extension_enabler, Filesystem $filesystem, FixturePathHandler $fixture_path_handler, OrcaPathHandler $orca_path_handler, ProcessRunner $process_runner, SymfonyStyle $output) {
     $this->companyExtensionEnabler = $company_extension_enabler;
     $this->filesystem = $filesystem;
-    $this->fixture = $fixture;
+    $this->fixture = $fixture_path_handler;
+    $this->orca = $orca_path_handler;
     $this->output = $output;
     $this->processRunner = $process_runner;
-    $this->projectDir = $project_dir;
   }
 
   /**
@@ -171,7 +173,7 @@ class SiteInstaller {
    */
   private function backupBaseProfile(): void {
     $this->baseProfilePath = $this->fixture->getPath("docroot/core/profiles/{$this->baseProfile}");
-    $this->baseProfileBackupPath = "{$this->projectDir}/var/backup/{$this->baseProfile}-" . uniqid();
+    $this->baseProfileBackupPath = $this->orca->getPath("var/backup/{$this->baseProfile}-{uniqid()}");
     $this->filesystem->mirror($this->baseProfilePath, $this->baseProfileBackupPath);
   }
 

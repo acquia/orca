@@ -2,6 +2,8 @@
 
 namespace Acquia\Orca\Fixture;
 
+use Acquia\Orca\Filesystem\FixturePathHandler;
+use Acquia\Orca\Server\WebServer;
 use Acquia\Orca\Utility\ProcessRunner;
 use Noodlehaus\Config;
 use Noodlehaus\Parser\Json;
@@ -35,9 +37,9 @@ class FixtureInspector {
   private $drushStatus;
 
   /**
-   * The fixture.
+   * The fixture path handler.
    *
-   * @var \Acquia\Orca\Fixture\Fixture
+   * @var \Acquia\Orca\Filesystem\FixturePathHandler
    */
   private $fixture;
 
@@ -72,8 +74,8 @@ class FixtureInspector {
   /**
    * Constructs an instance.
    *
-   * @param \Acquia\Orca\Fixture\Fixture $fixture
-   *   The fixture.
+   * @param \Acquia\Orca\Filesystem\FixturePathHandler $fixture_path_handler
+   *   The fixture path handler.
    * @param \Symfony\Component\Console\Style\SymfonyStyle $output
    *   The output decorator.
    * @param \Acquia\Orca\Fixture\PackageManager $package_manager
@@ -83,8 +85,8 @@ class FixtureInspector {
    * @param \Acquia\Orca\Fixture\SubextensionManager $subextension_manager
    *   The subextension manager.
    */
-  public function __construct(Fixture $fixture, SymfonyStyle $output, PackageManager $package_manager, ProcessRunner $process_runner, SubextensionManager $subextension_manager) {
-    $this->fixture = $fixture;
+  public function __construct(FixturePathHandler $fixture_path_handler, SymfonyStyle $output, PackageManager $package_manager, ProcessRunner $process_runner, SubextensionManager $subextension_manager) {
+    $this->fixture = $fixture_path_handler;
     $this->output = $output;
     $this->packageManager = $package_manager;
     $this->processRunner = $process_runner;
@@ -101,7 +103,7 @@ class FixtureInspector {
     $overview = [];
 
     $overview[] = ['Fixture directory', $this->fixture->getPath()];
-    $overview[] = ['Site URI', sprintf('http://%s', Fixture::WEB_ADDRESS)];
+    $overview[] = ['Site URI', sprintf('http://%s', WebServer::WEB_ADDRESS)];
     $overview[] = ['System under test (SUT)', $this->getSutNamePretty()];
     $overview[] = ['Fixture type', $this->getFixtureType()];
     $overview[] = ['Package stability', $this->getPackageStabilitySetting()];

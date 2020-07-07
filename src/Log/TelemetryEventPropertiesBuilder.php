@@ -3,6 +3,7 @@
 namespace Acquia\Orca\Log;
 
 use Acquia\Orca\Enum\TelemetryEventName;
+use Acquia\Orca\Filesystem\OrcaPathHandler;
 use Acquia\Orca\Task\DeprecatedCodeScanner\PhpStanTask;
 use Acquia\Orca\Task\StaticAnalysisTool\PhpCodeSnifferTask;
 use Acquia\Orca\Task\StaticAnalysisTool\PhpLocTask;
@@ -28,11 +29,11 @@ class TelemetryEventPropertiesBuilder {
   private $filesystem;
 
   /**
-   * The ORCA project directory.
+   * The ORCA path handler.
    *
-   * @var string
+   * @var \Acquia\Orca\Filesystem\OrcaPathHandler
    */
-  private $projectDir;
+  private $orca;
 
   /**
    * The event properties.
@@ -48,13 +49,13 @@ class TelemetryEventPropertiesBuilder {
    *   The environment variables service.
    * @param \Symfony\Component\Filesystem\Filesystem $filesystem
    *   The filesystem.
-   * @param string $project_dir
-   *   The ORCA project directory.
+   * @param \Acquia\Orca\Filesystem\OrcaPathHandler $orca_path_handler
+   *   The ORCA path handler.
    */
-  public function __construct(\Env $env, Filesystem $filesystem, string $project_dir) {
+  public function __construct(\Env $env, Filesystem $filesystem, OrcaPathHandler $orca_path_handler) {
     $this->env = $env;
     $this->filesystem = $filesystem;
-    $this->projectDir = $project_dir;
+    $this->orca = $orca_path_handler;
   }
 
   /**
@@ -191,7 +192,7 @@ class TelemetryEventPropertiesBuilder {
    *   The project directory with sub-path appended.
    */
   public function getProjectPath(string $sub_path): string {
-    return "{$this->projectDir}/{$sub_path}";
+    return $this->orca->getPath($sub_path);
   }
 
 }

@@ -3,6 +3,7 @@
 namespace Acquia\Orca\Tests\Log;
 
 use Acquia\Orca\Enum\TelemetryEventName;
+use Acquia\Orca\Filesystem\OrcaPathHandler;
 use Acquia\Orca\Log\TelemetryEventPropertiesBuilder;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Filesystem;
@@ -10,14 +11,14 @@ use Symfony\Component\Filesystem\Filesystem;
 /**
  * @property \Prophecy\Prophecy\ObjectProphecy|\Env $env
  * @property \Prophecy\Prophecy\ObjectProphecy|\Symfony\Component\Filesystem\Filesystem $filesystem
+ * @property \Acquia\Orca\Filesystem\OrcaPathHandler|\Prophecy\Prophecy\ObjectProphecy $orca
  */
 class TelemetryEventPropertiesBuilderTest extends TestCase {
-
-  private $projectDir = '/var/www/orca';
 
   protected function setUp() {
     $this->env = $this->prophesize(\Env::class);
     $this->filesystem = $this->prophesize(Filesystem::class);
+    $this->orca = $this->prophesize(OrcaPathHandler::class);
   }
 
   protected function createTelemetryEventPropertiesBuilder(): TelemetryEventPropertiesBuilder {
@@ -25,7 +26,8 @@ class TelemetryEventPropertiesBuilderTest extends TestCase {
     $env = $this->env->reveal();
     /** @var \Symfony\Component\Filesystem\Filesystem $filesystem */
     $filesystem = $this->filesystem->reveal();
-    return new TelemetryEventPropertiesBuilder($env, $filesystem, $this->projectDir);
+    $orca_path_handler = $this->orca->reveal();
+    return new TelemetryEventPropertiesBuilder($env, $filesystem, $orca_path_handler);
   }
 
   public function testConstruction() {

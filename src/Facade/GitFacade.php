@@ -2,13 +2,14 @@
 
 namespace Acquia\Orca\Facade;
 
-use Acquia\Orca\Fixture\Fixture;
 use Acquia\Orca\Utility\ProcessRunner;
 
 /**
  * Provides a facade for encapsulating Git interactions against the fixture.
  */
 class GitFacade {
+
+  public const FRESH_FIXTURE_TAG = 'fresh-fixture';
 
   /**
    * The process runner.
@@ -60,7 +61,7 @@ class GitFacade {
     $this->processRunner->git([
       'tag',
       '--force',
-      Fixture::FRESH_FIXTURE_GIT_TAG,
+      self::FRESH_FIXTURE_TAG,
     ]);
   }
 

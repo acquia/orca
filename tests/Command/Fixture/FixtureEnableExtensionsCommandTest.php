@@ -5,31 +5,30 @@ namespace Acquia\Orca\Tests\Command\Fixture;
 use Acquia\Orca\Command\Fixture\FixtureEnableExtensionsCommand;
 use Acquia\Orca\Enum\StatusCode;
 use Acquia\Orca\Exception\OrcaException;
+use Acquia\Orca\Filesystem\FixturePathHandler;
 use Acquia\Orca\Fixture\CompanyExtensionEnabler;
-use Acquia\Orca\Fixture\Fixture;
 use Acquia\Orca\Tests\Command\CommandTestBase;
 use Symfony\Component\Console\Command\Command;
 
 /**
  * @property \Prophecy\Prophecy\ObjectProphecy|CompanyExtensionEnabler $companyExtensionEnabler
- * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Fixture\Fixture $fixture
+ * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Filesystem\FixturePathHandler $fixture_path_handler
  */
 class FixtureEnableExtensionsCommandTest extends CommandTestBase {
 
   protected function setUp() {
     $this->companyExtensionEnabler = $this->prophesize(CompanyExtensionEnabler::class);
-    $this->fixture = $this->prophesize(Fixture::class);
-    $this->fixture->exists()
+    $this->fixture_path_handler = $this->prophesize(FixturePathHandler::class);
+    $this->fixture_path_handler->exists()
       ->willReturn(TRUE);
-    $this->fixture->getPath()
+    $this->fixture_path_handler->getPath()
       ->willReturn(self::FIXTURE_ROOT);
   }
 
   protected function createCommand(): Command {
     /** @var \Acquia\Orca\Fixture\CompanyExtensionEnabler $company_extension_enabler */
     $company_extension_enabler = $this->companyExtensionEnabler->reveal();
-    /** @var \Acquia\Orca\Fixture\Fixture $fixture */
-    $fixture = $this->fixture->reveal();
+    $fixture = $this->fixture_path_handler->reveal();
     return new FixtureEnableExtensionsCommand($company_extension_enabler, $fixture);
   }
 
@@ -37,7 +36,7 @@ class FixtureEnableExtensionsCommandTest extends CommandTestBase {
    * @dataProvider providerCommand
    */
   public function testCommand($fixture_exists, $install_called, $exception, $status_code, $display) {
-    $this->fixture
+    $this->fixture_path_handler
       ->exists()
       ->shouldBeCalled()
       ->willReturn($fixture_exists);

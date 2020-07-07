@@ -5,7 +5,7 @@ namespace Acquia\Orca\Command\Fixture;
 use Acquia\Orca\Enum\DrupalCoreVersion;
 use Acquia\Orca\Enum\StatusCode;
 use Acquia\Orca\Exception\OrcaException;
-use Acquia\Orca\Fixture\Fixture;
+use Acquia\Orca\Filesystem\FixturePathHandler;
 use Acquia\Orca\Fixture\FixtureCreator;
 use Acquia\Orca\Fixture\FixtureRemover;
 use Acquia\Orca\Fixture\PackageManager;
@@ -38,9 +38,9 @@ class FixtureInitCommand extends Command {
   private $drupalCoreVersionFinder;
 
   /**
-   * The fixture.
+   * The fixture path handler.
    *
-   * @var \Acquia\Orca\Fixture\Fixture
+   * @var \Acquia\Orca\Filesystem\FixturePathHandler
    */
   private $fixture;
 
@@ -84,8 +84,8 @@ class FixtureInitCommand extends Command {
    *
    * @param \Acquia\Orca\Utility\DrupalCoreVersionFinder $drupal_core_version_finder
    *   The Drupal core version finder.
-   * @param \Acquia\Orca\Fixture\Fixture $fixture
-   *   The fixture.
+   * @param \Acquia\Orca\Filesystem\FixturePathHandler $fixture_path_handler
+   *   The fixture path handler.
    * @param \Acquia\Orca\Fixture\FixtureCreator $fixture_creator
    *   The fixture creator.
    * @param \Acquia\Orca\Fixture\FixtureRemover $fixture_remover
@@ -97,9 +97,9 @@ class FixtureInitCommand extends Command {
    * @param \Composer\Semver\VersionParser $version_parser
    *   The version parser.
    */
-  public function __construct(DrupalCoreVersionFinder $drupal_core_version_finder, Fixture $fixture, FixtureCreator $fixture_creator, FixtureRemover $fixture_remover, PackageManager $package_manager, SutPreconditionsTester $sut_preconditions_tester, VersionParser $version_parser) {
+  public function __construct(DrupalCoreVersionFinder $drupal_core_version_finder, FixturePathHandler $fixture_path_handler, FixtureCreator $fixture_creator, FixtureRemover $fixture_remover, PackageManager $package_manager, SutPreconditionsTester $sut_preconditions_tester, VersionParser $version_parser) {
     $this->drupalCoreVersionFinder = $drupal_core_version_finder;
-    $this->fixture = $fixture;
+    $this->fixture = $fixture_path_handler;
     $this->fixtureCreator = $fixture_creator;
     $this->fixtureRemover = $fixture_remover;
     $this->packageManager = $package_manager;

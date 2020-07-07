@@ -2,7 +2,8 @@
 
 namespace Acquia\Orca\Tests\Fixture;
 
-use Acquia\Orca\Fixture\Fixture;
+use Acquia\Orca\Filesystem\FixturePathHandler;
+use Acquia\Orca\Filesystem\OrcaPathHandler;
 use Acquia\Orca\Fixture\Package;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\OptionsResolver\Exception\InvalidOptionsException;
@@ -10,16 +11,16 @@ use Symfony\Component\OptionsResolver\Exception\UndefinedOptionsException;
 use UnexpectedValueException;
 
 /**
- * @property \Acquia\Orca\Fixture\Fixture|\Prophecy\Prophecy\ObjectProphecy $fixture
+ * @property \Acquia\Orca\Filesystem\FixturePathHandler|\Prophecy\Prophecy\ObjectProphecy $fixture
+ * @property \Acquia\Orca\Filesystem\OrcaPathHandler|\Prophecy\Prophecy\ObjectProphecy $orca
  *
  * @covers \Acquia\Orca\Fixture\Package
  */
 class PackageTest extends TestCase {
 
-  private $projectDir = '/var/www/example';
-
   public function setUp() {
-    $this->fixture = $this->prophesize(Fixture::class);
+    $this->fixture = $this->prophesize(FixturePathHandler::class);
+    $this->orca = $this->prophesize(OrcaPathHandler::class);
   }
 
   /**
@@ -31,7 +32,6 @@ class PackageTest extends TestCase {
    * @covers \Acquia\Orca\Fixture\Package::getPackageName
    * @covers \Acquia\Orca\Fixture\Package::getProjectName
    * @covers \Acquia\Orca\Fixture\Package::getRepositoryUrlRaw
-   * @covers \Acquia\Orca\Fixture\Package::getRepositoryUrlAbsolute
    * @covers \Acquia\Orca\Fixture\Package::getType
    * @covers \Acquia\Orca\Fixture\Package::getVersion
    * @covers \Acquia\Orca\Fixture\Package::getVersionDev
@@ -39,7 +39,7 @@ class PackageTest extends TestCase {
    * @covers \Acquia\Orca\Fixture\Package::getDrupalExtensionName
    * @covers \Acquia\Orca\Fixture\Package::shouldGetEnabled
    */
-  public function testConstructionAndGetters($data, $package_name, $project_name, $type, $raw_repository_url, $absolute_repository_url, $version, $dev_version, $enable, $install_path) {
+  public function testConstructionAndGetters($data, $package_name, $project_name, $type, $raw_repository_url, $version, $dev_version, $enable, $install_path) {
     $package = $this->createPackage($package_name, $data);
 
     $this->assertEquals($project_name, $package->getDrupalExtensionName(), 'Set/got Drupal extension name.');
@@ -47,7 +47,6 @@ class PackageTest extends TestCase {
     $this->assertEquals($package_name, $package->getPackageName(), 'Set/got package name.');
     $this->assertEquals($project_name, $package->getProjectName(), 'Set/got project name.');
     $this->assertEquals($raw_repository_url, $package->getRepositoryUrlRaw(), 'Set/got raw repository URL.');
-    $this->assertEquals($absolute_repository_url, $package->getRepositoryUrlAbsolute(), 'Set/got absolute repository URL.');
     $this->assertEquals($type, $package->getType(), 'Set/got type.');
     $this->assertEquals($dev_version, $package->getVersionDev(), 'Set/got dev version.');
     $this->assertEquals($version, $package->getVersionRecommended(), 'Set/got recommended version.');
@@ -74,7 +73,6 @@ class PackageTest extends TestCase {
         'example_library',
         'library',
         '/var/www/example_library',
-        '/var/www/example_library',
         '2.x',
         '2.x-dev',
         FALSE,
@@ -86,7 +84,6 @@ class PackageTest extends TestCase {
         'example_module',
         'drupal-module',
         '../example_module',
-        '/var/www/example_module',
         '*',
         '*@dev',
         TRUE,
@@ -101,7 +98,6 @@ class PackageTest extends TestCase {
         'example_module',
         'drupal-module',
         '../example_module',
-        '/var/www/example_module',
         NULL,
         NULL,
         TRUE,
@@ -115,7 +111,6 @@ class PackageTest extends TestCase {
         'example_module',
         'drupal-module',
         '../example_module',
-        '/var/www/example_module',
         '*',
         '*@dev',
         FALSE,
@@ -418,9 +413,9 @@ class PackageTest extends TestCase {
   }
 
   protected function createPackage($package_name, $data): Package {
-    /** @var \Acquia\Orca\Fixture\Fixture $fixture */
-    $fixture = $this->fixture->reveal();
-    return new Package($data, $fixture, $package_name, $this->projectDir);
+    $fixture_path_handler = $this->fixture->reveal();
+    $orca_path_handler = $this->orca->reveal();
+    return new Package($data, $fixture_path_handler, $orca_path_handler, $package_name);
   }
 
 }

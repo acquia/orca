@@ -3,7 +3,6 @@
 namespace Acquia\Orca\Tests\Facade;
 
 use Acquia\Orca\Facade\GitFacade;
-use Acquia\Orca\Fixture\Fixture;
 use Acquia\Orca\Utility\ProcessRunner;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
@@ -64,7 +63,7 @@ class GitFacadeTest extends TestCase {
       ->git([
         'tag',
         '--force',
-        Fixture::FRESH_FIXTURE_GIT_TAG,
+        GitFacade::FRESH_FIXTURE_TAG,
       ])->shouldBeCalledOnce();
 
     $git = $this->createGitFacade();

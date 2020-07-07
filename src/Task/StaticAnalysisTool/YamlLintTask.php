@@ -37,7 +37,7 @@ class YamlLintTask extends TaskBase {
     }
     try {
       $process = new Process(array_merge([
-        "{$this->projectDir}/bin/orca",
+        $this->orca->getPath('bin/orca'),
         'internal:lint-yaml',
       ], $yaml_files));
       $this->processRunner->run($process);

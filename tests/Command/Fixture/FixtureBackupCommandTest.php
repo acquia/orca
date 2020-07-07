@@ -5,18 +5,18 @@ namespace Acquia\Orca\Tests\Command\Fixture;
 use Acquia\Orca\Command\Fixture\FixtureBackupCommand;
 use Acquia\Orca\Enum\StatusCode;
 use Acquia\Orca\Facade\GitFacade;
-use Acquia\Orca\Fixture\Fixture;
+use Acquia\Orca\Filesystem\FixturePathHandler;
 use Acquia\Orca\Tests\Command\CommandTestBase;
 use Symfony\Component\Console\Command\Command;
 
 /**
  * @property \Acquia\Orca\Facade\GitFacade|\Prophecy\Prophecy\ObjectProphecy $git
- * @property \Acquia\Orca\Fixture\Fixture|\Prophecy\Prophecy\ObjectProphecy $fixture
+ * @property \Acquia\Orca\Filesystem\FixturePathHandler|\Prophecy\Prophecy\ObjectProphecy $fixture
  */
 class FixtureBackupCommandTest extends CommandTestBase {
 
   protected function setUp(): void {
-    $this->fixture = $this->prophesize(Fixture::class);
+    $this->fixture = $this->prophesize(FixturePathHandler::class);
     $this->fixture->exists()
       ->willReturn(TRUE);
     $this->fixture->getPath()

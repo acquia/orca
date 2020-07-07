@@ -2,6 +2,8 @@
 
 namespace Acquia\Orca\Fixture;
 
+use Acquia\Orca\Filesystem\FixturePathHandler;
+use Acquia\Orca\Filesystem\OrcaPathHandler;
 use Composer\Semver\VersionParser;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -25,11 +27,18 @@ class Package {
   private $data;
 
   /**
-   * The fixture.
+   * The fixture path handler.
    *
-   * @var \Acquia\Orca\Fixture\Fixture
+   * @var \Acquia\Orca\Filesystem\FixturePathHandler
    */
   private $fixture;
+
+  /**
+   * The ORCA path handler.
+   *
+   * @var \Acquia\Orca\Filesystem\OrcaPathHandler
+   */
+  private $orca;
 
   /**
    * The package name.
@@ -37,13 +46,6 @@ class Package {
    * @var string
    */
   private $packageName;
-
-  /**
-   * The ORCA project directory.
-   *
-   * @var string
-   */
-  private $projectDir;
 
   /**
    * Constructs an instance.
@@ -72,23 +74,23 @@ class Package {
    *     both of the "version" and "version_dev" key-value pairs to be used when
    *     the corresponding Drupal core version constraint is satisfied. Mappings
    *     are processed in order, and the first match wins.
-   * @param \Acquia\Orca\Fixture\Fixture $fixture
-   *   The fixture.
+   * @param \Acquia\Orca\Filesystem\FixturePathHandler $fixture_path_handler
+   *   The fixture path handler.
+   * @param \Acquia\Orca\Filesystem\OrcaPathHandler $orca_path_handler
+   *   The ORCA path handler.
    * @param string $package_name
    *   The package name, corresponding to the "name" property in its
    *   composer.json file, e.g., "drupal/example".
-   * @param string $project_dir
-   *   The ORCA project directory.
    *
    * @see \Acquia\Orca\Tests\Fixture\PackageTest::testConditionalVersions
    *   - "enable": (internal) TRUE if the package is a Drupal module that should
    *     be automatically enabled or FALSE if not. Defaults to TRUE for modules.
    *     Always FALSE for anything else.
    */
-  public function __construct(array $data, Fixture $fixture, string $package_name, string $project_dir) {
-    $this->fixture = $fixture;
+  public function __construct(array $data, FixturePathHandler $fixture_path_handler, OrcaPathHandler $orca_path_handler, string $package_name) {
+    $this->fixture = $fixture_path_handler;
     $this->initializePackageName($package_name);
-    $this->projectDir = $project_dir;
+    $this->orca = $orca_path_handler;
     $this->data = $this->resolveData($data);
     $this->coreMatrix = $this->resolveCoreMatrix($this->data['core_matrix']);
     unset($this->data['core_matrix']);
@@ -244,20 +246,7 @@ class Package {
    *   "/var/www/example".
    */
   public function getRepositoryUrlAbsolute(): string {
-    $path = "{$this->projectDir}/{$this->getRepositoryUrlRaw()}";
-    if (strpos($this->getRepositoryUrlRaw(), '/') === 0) {
-      $path = $this->getRepositoryUrlRaw();
-    }
-
-    // Approximate realpath() without requiring the path parts to exist yet.
-    // @todo This is a straight copy from \Acquia\Orca\Fixture\Fixture::getPath.
-    //   Refactor to eliminate duplication.
-    $patterns = ['~/{2,}~', '~/(\./)+~', '~([^/\.]+/(?R)*\.{2,}/)~', '~\.\./~'];
-    $replacements = ['/', '/', '', ''];
-    $path = preg_replace($patterns, $replacements, $path);
-
-    // Remove trailing slashes.
-    return rtrim($path, '/');
+    return $this->orca->getPath($this->getRepositoryUrlRaw());
   }
 
   /**

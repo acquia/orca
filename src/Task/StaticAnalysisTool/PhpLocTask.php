@@ -35,7 +35,7 @@ class PhpLocTask extends TaskBase {
       '--exclude=var',
       '--exclude=vendor',
       '--exclude=docroot',
-      sprintf('--log-json=%s/%s', $this->projectDir, self::JSON_LOG_PATH),
+      "--log-json={$this->orca->getPath(self::JSON_LOG_PATH)}",
       '.',
     ], $this->getPath());
   }

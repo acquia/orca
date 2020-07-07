@@ -3,7 +3,8 @@
 namespace Acquia\Orca\Task\DeprecatedCodeScanner;
 
 use Acquia\Orca\Enum\StatusCode;
-use Acquia\Orca\Fixture\Fixture;
+use Acquia\Orca\Filesystem\FixturePathHandler;
+use Acquia\Orca\Filesystem\OrcaPathHandler;
 use Acquia\Orca\Fixture\PackageManager;
 use Acquia\Orca\Log\TelemetryClient;
 use Acquia\Orca\Utility\ProcessRunner;
@@ -36,11 +37,18 @@ class PhpStanTask {
   private $filesystem;
 
   /**
-   * The fixture.
+   * The fixture path handler.
    *
-   * @var \Acquia\Orca\Fixture\Fixture
+   * @var \Acquia\Orca\Filesystem\FixturePathHandler
    */
   private $fixture;
+
+  /**
+   * The ORCA path handler.
+   *
+   * @var \Acquia\Orca\Filesystem\OrcaPathHandler
+   */
+  private $orca;
 
   /**
    * The process runner.
@@ -71,13 +79,6 @@ class PhpStanTask {
   private $sut;
 
   /**
-   * The ORCA project directory.
-   *
-   * @var string
-   */
-  private $projectDir;
-
-  /**
    * The output decorator.
    *
    * @var \Symfony\Component\Console\Style\SymfonyStyle
@@ -96,26 +97,26 @@ class PhpStanTask {
    *
    * @param \Symfony\Component\Filesystem\Filesystem $filesystem
    *   The filesystem.
-   * @param \Acquia\Orca\Fixture\Fixture $fixture
-   *   The fixture.
+   * @param \Acquia\Orca\Filesystem\FixturePathHandler $fixture_path_handler
+   *   The fixture path handler.
+   * @param \Acquia\Orca\Filesystem\OrcaPathHandler $orca_path_handler
+   *   The ORCA path handler.
    * @param \Symfony\Component\Console\Style\SymfonyStyle $output
    *   The output decorator.
    * @param \Acquia\Orca\Fixture\PackageManager $package_manager
    *   The package manager.
    * @param \Acquia\Orca\Utility\ProcessRunner $process_runner
    *   The process runner.
-   * @param string $project_dir
-   *   The ORCA project directory.
    * @param \Acquia\Orca\Log\TelemetryClient $telemetry_client
    *   The telemetry client.
    */
-  public function __construct(Filesystem $filesystem, Fixture $fixture, SymfonyStyle $output, PackageManager $package_manager, ProcessRunner $process_runner, string $project_dir, TelemetryClient $telemetry_client) {
+  public function __construct(Filesystem $filesystem, FixturePathHandler $fixture_path_handler, OrcaPathHandler $orca_path_handler, SymfonyStyle $output, PackageManager $package_manager, ProcessRunner $process_runner, TelemetryClient $telemetry_client) {
     $this->filesystem = $filesystem;
-    $this->fixture = $fixture;
+    $this->fixture = $fixture_path_handler;
+    $this->orca = $orca_path_handler;
     $this->output = $output;
     $this->packageManager = $package_manager;
     $this->processRunner = $process_runner;
-    $this->projectDir = $project_dir;
     $this->telemetryClient = $telemetry_client;
   }
 
@@ -157,7 +158,7 @@ class PhpStanTask {
     $command = [
       'phpstan',
       'analyse',
-      "--configuration={$this->projectDir}/resources/phpstan.neon",
+      "--configuration={$this->orca->getPath('resources/phpstan.neon')}",
     ];
     if ($this->sut) {
       $command[] = $this->sut->getInstallPathAbsolute();
@@ -204,7 +205,7 @@ class PhpStanTask {
     $this->output->comment('Logging results...');
 
     // Prepare the log file.
-    $file = $this->projectDir . '/' . self::JSON_LOG_PATH;
+    $file = $this->orca->getPath(self::JSON_LOG_PATH);
     $this->filesystem->remove($file);
 
     // Run the command.

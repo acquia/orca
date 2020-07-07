@@ -4,19 +4,19 @@ namespace Acquia\Orca\Tests\Command\Fixture;
 
 use Acquia\Orca\Command\Fixture\FixtureRunServerCommand;
 use Acquia\Orca\Enum\StatusCode;
-use Acquia\Orca\Fixture\Fixture;
+use Acquia\Orca\Filesystem\FixturePathHandler;
 use Acquia\Orca\Server\WebServer;
 use Acquia\Orca\Tests\Command\CommandTestBase;
 use Symfony\Component\Console\Command\Command;
 
 /**
- * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Fixture\Fixture $fixture
+ * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Filesystem\FixturePathHandler $fixture
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Server\WebServer $webServer
  */
 class FixtureRunServerCommandTest extends CommandTestBase {
 
   protected function setUp() {
-    $this->fixture = $this->prophesize(Fixture::class);
+    $this->fixture = $this->prophesize(FixturePathHandler::class);
     $this->fixture->getPath()
       ->willReturn(self::FIXTURE_ROOT);
     $this->fixture->getPath('docroot')
@@ -25,7 +25,6 @@ class FixtureRunServerCommandTest extends CommandTestBase {
   }
 
   protected function createCommand(): Command {
-    /** @var \Acquia\Orca\Fixture\Fixture $fixture */
     $fixture = $this->fixture->reveal();
     /** @var \Acquia\Orca\Server\WebServer $web_server */
     $web_server = $this->webServer->reveal();
@@ -56,7 +55,7 @@ class FixtureRunServerCommandTest extends CommandTestBase {
   public function providerCommand() {
     return [
       [FALSE, ['exists'], StatusCode::ERROR, sprintf("Error: No fixture exists at %s.\nHint: Use the \"fixture:init\" command to create one.\n", self::FIXTURE_ROOT)],
-      [TRUE, ['exists', 'start', 'wait'], StatusCode::OK, sprintf("Starting web server...\nListening on http://%s.\nDocument root is %s.\nPress Ctrl-C to quit.\n", Fixture::WEB_ADDRESS, self::FIXTURE_DOCROOT)],
+      [TRUE, ['exists', 'start', 'wait'], StatusCode::OK, sprintf("Starting web server...\nListening on http://%s.\nDocument root is %s.\nPress Ctrl-C to quit.\n", WebServer::WEB_ADDRESS, self::FIXTURE_DOCROOT)],
     ];
   }
 

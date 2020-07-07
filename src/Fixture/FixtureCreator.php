@@ -4,6 +4,8 @@ namespace Acquia\Orca\Fixture;
 
 use Acquia\Orca\Codebase\CodebaseCreator;
 use Acquia\Orca\Exception\OrcaException;
+use Acquia\Orca\Facade\GitFacade;
+use Acquia\Orca\Filesystem\FixturePathHandler;
 use Acquia\Orca\Utility\DrupalCoreVersionFinder;
 use Acquia\Orca\Utility\ProcessRunner;
 use Acquia\Orca\Utility\StatusTable;
@@ -63,9 +65,9 @@ class FixtureCreator {
   private $drupalCoreVersion;
 
   /**
-   * The fixture.
+   * The fixture path handler.
    *
-   * @var \Acquia\Orca\Fixture\Fixture
+   * @var \Acquia\Orca\Filesystem\FixturePathHandler
    */
   private $fixture;
 
@@ -218,8 +220,8 @@ class FixtureCreator {
    *   The Drupal core version finder.
    * @param \Symfony\Component\Filesystem\Filesystem $filesystem
    *   The filesystem.
-   * @param \Acquia\Orca\Fixture\Fixture $fixture
-   *   The fixture.
+   * @param \Acquia\Orca\Filesystem\FixturePathHandler $fixture_path_handler
+   *   The fixture path handler.
    * @param \Acquia\Orca\Fixture\FixtureInspector $fixture_inspector
    *   The fixture inspector.
    * @param \Acquia\Orca\Fixture\SiteInstaller $site_installer
@@ -237,12 +239,12 @@ class FixtureCreator {
    * @param \Composer\Semver\VersionParser $version_parser
    *   The Semver version parser.
    */
-  public function __construct(CodebaseCreator $codebase_creator, DrupalCoreVersionFinder $core_version_finder, Filesystem $filesystem, Fixture $fixture, FixtureInspector $fixture_inspector, SiteInstaller $site_installer, SymfonyStyle $output, ProcessRunner $process_runner, PackageManager $package_manager, SubextensionManager $subextension_manager, VersionGuesser $version_guesser, VersionParser $version_parser) {
+  public function __construct(CodebaseCreator $codebase_creator, DrupalCoreVersionFinder $core_version_finder, Filesystem $filesystem, FixturePathHandler $fixture_path_handler, FixtureInspector $fixture_inspector, SiteInstaller $site_installer, SymfonyStyle $output, ProcessRunner $process_runner, PackageManager $package_manager, SubextensionManager $subextension_manager, VersionGuesser $version_guesser, VersionParser $version_parser) {
     $this->blt = $package_manager->getBlt();
     $this->codebaseCreator = $codebase_creator;
     $this->coreVersionFinder = $core_version_finder;
     $this->filesystem = $filesystem;
-    $this->fixture = $fixture;
+    $this->fixture = $fixture_path_handler;
     $this->fixtureInspector = $fixture_inspector;
     $this->output = $output;
     $this->processRunner = $process_runner;
@@ -1246,11 +1248,11 @@ PHP;
     $this->output->section('Creating backup tag');
     $this->processRunner->git([
       'tag',
-      Fixture::FRESH_FIXTURE_GIT_TAG,
+      GitFacade::FRESH_FIXTURE_TAG,
     ]);
     $this->processRunner->git([
       'checkout',
-      Fixture::FRESH_FIXTURE_GIT_TAG,
+      GitFacade::FRESH_FIXTURE_TAG,
     ]);
   }
 

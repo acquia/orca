@@ -3,7 +3,8 @@
 namespace Acquia\Orca\Tests\Fixture;
 
 use Acquia\Orca\Codebase\CodebaseCreator;
-use Acquia\Orca\Fixture\Fixture;
+use Acquia\Orca\Filesystem\FixturePathHandler;
+use Acquia\Orca\Filesystem\OrcaPathHandler;
 use Acquia\Orca\Fixture\FixtureCreator;
 use Acquia\Orca\Fixture\FixtureInspector;
 use Acquia\Orca\Fixture\Package;
@@ -20,8 +21,9 @@ use Symfony\Component\Filesystem\Filesystem;
 
 /**
  * @property \Acquia\Orca\Codebase\CodebaseCreator|\Prophecy\Prophecy\ObjectProphecy $codebaseCreator
- * @property \Acquia\Orca\Fixture\FixtureInspector|\Prophecy\Prophecy\ObjectProphecy $fixtureInspector
- * @property \Acquia\Orca\Fixture\Fixture|\Prophecy\Prophecy\ObjectProphecy $fixture
+ * @property \Acquia\Orca\Filesystem\FixturePathHandlerInspector|\Prophecy\Prophecy\ObjectProphecy $fixtureInspector
+ * @property \Acquia\Orca\Filesystem\FixturePathHandler|\Prophecy\Prophecy\ObjectProphecy $fixture
+ * @property \Acquia\Orca\Filesystem\OrcaPathHandler|\Prophecy\Prophecy\ObjectProphecy $orca
  * @property \Acquia\Orca\Fixture\PackageManager|\Prophecy\Prophecy\ObjectProphecy $packageManager
  * @property \Acquia\Orca\Fixture\SiteInstaller|\Prophecy\Prophecy\ObjectProphecy $siteInstaller
  * @property \Acquia\Orca\Fixture\SubextensionManager|\Prophecy\Prophecy\ObjectProphecy $subextensionManager
@@ -38,12 +40,13 @@ class FixtureCreatorTest extends TestCase {
     $this->codebaseCreator = $this->prophesize(CodebaseCreator::class);
     $this->coreVersionFinder = $this->prophesize(DrupalCoreVersionFinder::class);
     $this->filesystem = $this->prophesize(Filesystem::class);
-    $this->fixture = $this->prophesize(Fixture::class);
+    $this->fixture = $this->prophesize(FixturePathHandler::class);
     $this->fixtureInspector = $this->prophesize(FixtureInspector::class);
+    $this->orca = $this->prophesize(OrcaPathHandler::class);
     $this->packageManager = $this->prophesize(PackageManager::class);
     $this->packageManager
       ->getBlt()
-      ->willReturn(new Package([], $this->fixture->reveal(), 'acquia/blt', '../blt'));
+      ->willReturn(new Package([], $this->fixture->reveal(), $this->orca->reveal(), 'acquia/blt'));
     $this->processRunner = $this->prophesize(ProcessRunner::class);
     $this->siteInstaller = $this->prophesize(SiteInstaller::class);
     $this->subextensionManager = $this->prophesize(SubextensionManager::class);

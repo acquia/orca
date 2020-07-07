@@ -3,7 +3,7 @@
 namespace Acquia\Orca\Command\Fixture;
 
 use Acquia\Orca\Enum\StatusCode;
-use Acquia\Orca\Fixture\Fixture;
+use Acquia\Orca\Filesystem\FixturePathHandler;
 use Acquia\Orca\Fixture\FixtureCreator;
 use Acquia\Orca\Fixture\SiteInstaller;
 use Symfony\Component\Console\Command\Command;
@@ -25,9 +25,9 @@ class FixtureInstallSiteCommand extends Command {
   protected static $defaultName = 'fixture:install-site';
 
   /**
-   * The fixture.
+   * The fixture path handler.
    *
-   * @var \Acquia\Orca\Fixture\Fixture
+   * @var \Acquia\Orca\Filesystem\FixturePathHandler
    */
   private $fixture;
 
@@ -41,13 +41,13 @@ class FixtureInstallSiteCommand extends Command {
   /**
    * Constructs an instance.
    *
-   * @param \Acquia\Orca\Fixture\Fixture $fixture
-   *   The fixture.
+   * @param \Acquia\Orca\Filesystem\FixturePathHandler $fixture_path_handler
+   *   The fixture path handler.
    * @param \Acquia\Orca\Fixture\SiteInstaller $site_installer
    *   The site installer.
    */
-  public function __construct(Fixture $fixture, SiteInstaller $site_installer) {
-    $this->fixture = $fixture;
+  public function __construct(FixturePathHandler $fixture_path_handler, SiteInstaller $site_installer) {
+    $this->fixture = $fixture_path_handler;
     $this->siteInstaller = $site_installer;
     parent::__construct(self::$defaultName);
   }

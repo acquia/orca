@@ -4,7 +4,7 @@ namespace Acquia\Orca\Command\Qa;
 
 use Acquia\Orca\Enum\StatusCode;
 use Acquia\Orca\Exception\OrcaException;
-use Acquia\Orca\Fixture\Fixture;
+use Acquia\Orca\Filesystem\FixturePathHandler;
 use Acquia\Orca\Fixture\PackageManager;
 use Acquia\Orca\Task\TestFramework\TestRunner;
 use Symfony\Component\Console\Command\Command;
@@ -25,9 +25,9 @@ class QaAutomatedTestsCommand extends Command {
   protected static $defaultName = 'qa:automated-tests';
 
   /**
-   * The fixture.
+   * The fixture path handler.
    *
-   * @var \Acquia\Orca\Fixture\Fixture
+   * @var \Acquia\Orca\Filesystem\FixturePathHandler
    */
   private $fixture;
 
@@ -76,15 +76,15 @@ class QaAutomatedTestsCommand extends Command {
   /**
    * Constructs an instance.
    *
-   * @param \Acquia\Orca\Fixture\Fixture $fixture
-   *   The fixture.
+   * @param \Acquia\Orca\Filesystem\FixturePathHandler $fixture_path_handler
+   *   The fixture path handler.
    * @param \Acquia\Orca\Fixture\PackageManager $package_manager
    *   The package manager.
    * @param \Acquia\Orca\Task\TestFramework\TestRunner $test_runner
    *   The test runner.
    */
-  public function __construct(Fixture $fixture, PackageManager $package_manager, TestRunner $test_runner) {
-    $this->fixture = $fixture;
+  public function __construct(FixturePathHandler $fixture_path_handler, PackageManager $package_manager, TestRunner $test_runner) {
+    $this->fixture = $fixture_path_handler;
     $this->packageManager = $package_manager;
     $this->testRunner = $test_runner;
     parent::__construct(self::$defaultName);

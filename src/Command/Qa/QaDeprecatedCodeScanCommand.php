@@ -3,7 +3,7 @@
 namespace Acquia\Orca\Command\Qa;
 
 use Acquia\Orca\Enum\StatusCode;
-use Acquia\Orca\Fixture\Fixture;
+use Acquia\Orca\Filesystem\FixturePathHandler;
 use Acquia\Orca\Fixture\PackageManager;
 use Acquia\Orca\Task\DeprecatedCodeScanner\PhpStanTask;
 use Acquia\Orca\Task\TaskRunner;
@@ -25,9 +25,9 @@ class QaDeprecatedCodeScanCommand extends Command {
   protected static $defaultName = 'qa:deprecated-code-scan';
 
   /**
-   * The fixture.
+   * The fixture path handler.
    *
-   * @var \Acquia\Orca\Fixture\Fixture
+   * @var \Acquia\Orca\Filesystem\FixturePathHandler
    */
   private $fixture;
 
@@ -69,8 +69,8 @@ class QaDeprecatedCodeScanCommand extends Command {
   /**
    * Constructs an instance.
    *
-   * @param \Acquia\Orca\Fixture\Fixture $fixture
-   *   The fixture.
+   * @param \Acquia\Orca\Filesystem\FixturePathHandler $fixture_path_handler
+   *   The fixture path handler.
    * @param \Acquia\Orca\Fixture\PackageManager $package_manager
    *   The package manager.
    * @param \Acquia\Orca\Task\DeprecatedCodeScanner\PhpStanTask $phpstan
@@ -78,8 +78,8 @@ class QaDeprecatedCodeScanCommand extends Command {
    * @param \Acquia\Orca\Task\TaskRunner $task_runner
    *   The task runner.
    */
-  public function __construct(Fixture $fixture, PackageManager $package_manager, PhpStanTask $phpstan, TaskRunner $task_runner) {
-    $this->fixture = $fixture;
+  public function __construct(FixturePathHandler $fixture_path_handler, PackageManager $package_manager, PhpStanTask $phpstan, TaskRunner $task_runner) {
+    $this->fixture = $fixture_path_handler;
     $this->packageManager = $package_manager;
     $this->phpstan = $phpstan;
     $this->taskRunner = clone($task_runner);

@@ -4,20 +4,20 @@ namespace Acquia\Orca\Tests\Command\Fixture;
 
 use Acquia\Orca\Command\Fixture\FixtureRmCommand;
 use Acquia\Orca\Enum\StatusCode;
-use Acquia\Orca\Fixture\Fixture;
+use Acquia\Orca\Filesystem\FixturePathHandler;
 use Acquia\Orca\Fixture\FixtureRemover;
 use Acquia\Orca\Tests\Command\CommandTestBase;
 use Symfony\Component\Console\Command\Command;
 
 /**
- * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Fixture\Fixture $fixture
+ * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Filesystem\FixturePathHandler $fixture
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Fixture\FixtureRemover $fixtureRemover
  */
 class FixtureRmCommandTest extends CommandTestBase {
 
   protected function setUp() {
     $this->fixtureRemover = $this->prophesize(FixtureRemover::class);
-    $this->fixture = $this->prophesize(Fixture::class);
+    $this->fixture = $this->prophesize(FixturePathHandler::class);
     $this->fixture->exists()
       ->willReturn(TRUE);
     $this->fixture->getPath()
@@ -27,9 +27,9 @@ class FixtureRmCommandTest extends CommandTestBase {
   protected function createCommand(): Command {
     /** @var \Acquia\Orca\Fixture\FixtureRemover $fixture_remover */
     $fixture_remover = $this->fixtureRemover->reveal();
-    /** @var \Acquia\Orca\Fixture\Fixture $fixture */
-    $fixture = $this->fixture->reveal();
-    return new FixtureRmCommand($fixture, $fixture_remover);
+    /** @var \Acquia\Orca\Filesystem\FixturePathHandler $fixture_path_handler */
+    $fixture_path_handler = $this->fixture->reveal();
+    return new FixtureRmCommand($fixture_path_handler, $fixture_remover);
   }
 
   /**

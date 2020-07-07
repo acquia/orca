@@ -2,7 +2,8 @@
 
 namespace Acquia\Orca\Tests\Task;
 
-use Acquia\Orca\Fixture\Fixture;
+use Acquia\Orca\Filesystem\FixturePathHandler;
+use Acquia\Orca\Filesystem\OrcaPathHandler;
 use Acquia\Orca\Task\PhpcsConfigurator;
 use Acquia\Orca\Task\StaticAnalysisTool\ComposerValidateTask;
 use Acquia\Orca\Task\StaticAnalysisTool\PhpCodeSnifferTask;
@@ -25,17 +26,16 @@ class TasksTest extends TestCase {
     $config_file_overrider = $this->prophesize(ConfigFileOverrider::class)->reveal();
     /** @var \Symfony\Component\Filesystem\Filesystem $filesystem */
     $filesystem = $this->prophesize(Filesystem::class)->reveal();
-    /** @var \Acquia\Orca\Fixture\Fixture $fixture */
-    $fixture = $this->prophesize(Fixture::class)->reveal();
+    $fixture = $this->prophesize(FixturePathHandler::class)->reveal();
+    $orca_path_handler = $this->prophesize(OrcaPathHandler::class)->reveal();
     /** @var \Symfony\Component\Console\Style\SymfonyStyle $output */
     $output = $this->prophesize(SymfonyStyle::class)->reveal();
     /** @var \Acquia\Orca\Task\PhpcsConfigurator $phpcs_configurator */
     $phpcs_configurator = $this->prophesize(PhpcsConfigurator::class)->reveal();
     /** @var \Acquia\Orca\Utility\ProcessRunner $process_runner */
     $process_runner = $this->prophesize(ProcessRunner::class)->reveal();
-    $project_dir = '/var/www/orca';
 
-    $object = new $class($config_file_overrider, $filesystem, $fixture, $output, $phpcs_configurator, $process_runner, $project_dir);
+    $object = new $class($config_file_overrider, $filesystem, $fixture, $orca_path_handler, $output, $phpcs_configurator, $process_runner);
 
     $this->assertInstanceOf($class, $object, sprintf('Successfully instantiated class: %s.', $class));
   }

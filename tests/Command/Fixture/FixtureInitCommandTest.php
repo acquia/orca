@@ -6,7 +6,7 @@ use Acquia\Orca\Command\Fixture\FixtureInitCommand;
 use Acquia\Orca\Enum\DrupalCoreVersion;
 use Acquia\Orca\Enum\StatusCode;
 use Acquia\Orca\Exception\OrcaException;
-use Acquia\Orca\Fixture\Fixture;
+use Acquia\Orca\Filesystem\FixturePathHandler;
 use Acquia\Orca\Fixture\FixtureCreator;
 use Acquia\Orca\Fixture\FixtureRemover;
 use Acquia\Orca\Fixture\PackageManager;
@@ -19,7 +19,7 @@ use Symfony\Component\Console\Command\Command;
 
 /**
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Utility\DrupalCoreVersionFinder $drupalCoreVersionFinder
- * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Fixture\Fixture $fixture
+ * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Filesystem\FixturePathHandler $fixture
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Fixture\FixtureCreator $fixtureCreator
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Fixture\FixtureRemover $fixtureRemover
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Fixture\PackageManager $packageManager
@@ -44,7 +44,7 @@ class FixtureInitCommandTest extends CommandTestBase {
     $this->drupalCoreVersionFinder = $this->prophesize(DrupalCoreVersionFinder::class);
     $this->fixtureCreator = $this->prophesize(FixtureCreator::class);
     $this->fixtureRemover = $this->prophesize(FixtureRemover::class);
-    $this->fixture = $this->prophesize(Fixture::class);
+    $this->fixture = $this->prophesize(FixturePathHandler::class);
     $this->fixture->exists()
       ->willReturn(FALSE);
     $this->fixture->getPath()
@@ -64,15 +64,15 @@ class FixtureInitCommandTest extends CommandTestBase {
     $fixture_creator = $this->fixtureCreator->reveal();
     /** @var \Acquia\Orca\Fixture\FixtureRemover $fixture_remover */
     $fixture_remover = $this->fixtureRemover->reveal();
-    /** @var \Acquia\Orca\Fixture\Fixture $fixture */
-    $fixture = $this->fixture->reveal();
+    /** @var \Acquia\Orca\Filesystem\FixturePathHandler $fixture_path_handler */
+    $fixture_path_handler = $this->fixture->reveal();
     /** @var \Acquia\Orca\Fixture\PackageManager $package_manager */
     $package_manager = $this->packageManager->reveal();
     /** @var \Acquia\Orca\Fixture\SutPreconditionsTester $sut_preconditions_tester */
     $sut_preconditions_tester = $this->sutPreconditionsTester->reveal();
     /** @var \Composer\Semver\VersionParser $version_parser */
     $version_parser = ($this->versionParser instanceof VersionParser) ? $this->versionParser : $this->versionParser->reveal();
-    return new FixtureInitCommand($drupal_core_version_finder, $fixture, $fixture_creator, $fixture_remover, $package_manager, $sut_preconditions_tester, $version_parser);
+    return new FixtureInitCommand($drupal_core_version_finder, $fixture_path_handler, $fixture_creator, $fixture_remover, $package_manager, $sut_preconditions_tester, $version_parser);
   }
 
   /**

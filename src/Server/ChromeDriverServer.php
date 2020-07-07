@@ -2,7 +2,8 @@
 
 namespace Acquia\Orca\Server;
 
-use Acquia\Orca\Fixture\Fixture;
+use Acquia\Orca\Filesystem\FixturePathHandler;
+use Acquia\Orca\Filesystem\OrcaPathHandler;
 use Acquia\Orca\Utility\ProcessRunner;
 use Symfony\Component\Process\Process;
 
@@ -12,25 +13,25 @@ use Symfony\Component\Process\Process;
 class ChromeDriverServer extends ServerBase {
 
   /**
-   * The ORCA project directory.
+   * The ORCA path handler.
    *
-   * @var string
+   * @var \Acquia\Orca\Filesystem\OrcaPathHandler
    */
-  private $projectDir;
+  private $orca;
 
   /**
    * Constructs an instance.
    *
-   * @param \Acquia\Orca\Fixture\Fixture $fixture
-   *   The fixture.
+   * @param \Acquia\Orca\Filesystem\FixturePathHandler $fixture_path_handler
+   *   The fixture path handler.
+   * @param \Acquia\Orca\Filesystem\OrcaPathHandler $orca_path_handler
+   *   The ORCA path handler.
    * @param \Acquia\Orca\Utility\ProcessRunner $process_runner
    *   The process runner.
-   * @param string $project_dir
-   *   The ORCA project directory.
    */
-  public function __construct(Fixture $fixture, ProcessRunner $process_runner, string $project_dir) {
-    parent::__construct($fixture, $process_runner);
-    $this->projectDir = $project_dir;
+  public function __construct(FixturePathHandler $fixture_path_handler, OrcaPathHandler $orca_path_handler, ProcessRunner $process_runner) {
+    parent::__construct($fixture_path_handler, $process_runner);
+    $this->orca = $orca_path_handler;
   }
 
   /**
@@ -39,7 +40,7 @@ class ChromeDriverServer extends ServerBase {
    * @SuppressWarnings(PHPMD.StaticAccess)
    */
   protected function createProcess(): Process {
-    $command = "{$this->projectDir}/vendor/bin/chromedriver \\
+    $command = $this->orca->getPath('vendor/bin/chromedriver') . " \\
       --disable-dev-shm-usage \\
       --disable-extensions \\
       --disable-gpu \\

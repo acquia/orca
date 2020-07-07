@@ -4,20 +4,20 @@ namespace Acquia\Orca\Tests\Command\Fixture;
 
 use Acquia\Orca\Command\Fixture\FixtureResetCommand;
 use Acquia\Orca\Enum\StatusCode;
-use Acquia\Orca\Fixture\Fixture;
+use Acquia\Orca\Filesystem\FixturePathHandler;
 use Acquia\Orca\Fixture\FixtureResetter;
 use Acquia\Orca\Tests\Command\CommandTestBase;
 use Symfony\Component\Console\Command\Command;
 
 /**
- * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Fixture\Fixture $fixture
+ * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Filesystem\FixturePathHandler $fixture
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Fixture\FixtureResetter $fixtureResetter
  */
 class FixtureResetCommandTest extends CommandTestBase {
 
   protected function setUp() {
     $this->fixtureResetter = $this->prophesize(FixtureResetter::class);
-    $this->fixture = $this->prophesize(Fixture::class);
+    $this->fixture = $this->prophesize(FixturePathHandler::class);
     $this->fixture->exists()
       ->willReturn(TRUE);
     $this->fixture->getPath()
@@ -27,9 +27,9 @@ class FixtureResetCommandTest extends CommandTestBase {
   protected function createCommand(): Command {
     /** @var \Acquia\Orca\Fixture\FixtureResetter $fixture_resetter */
     $fixture_resetter = $this->fixtureResetter->reveal();
-    /** @var \Acquia\Orca\Fixture\Fixture $fixture */
-    $fixture = $this->fixture->reveal();
-    return new FixtureResetCommand($fixture, $fixture_resetter);
+    /** @var \Acquia\Orca\Filesystem\FixturePathHandler $fixture_path_handler */
+    $fixture_path_handler = $this->fixture->reveal();
+    return new FixtureResetCommand($fixture_path_handler, $fixture_resetter);
   }
 
   /**

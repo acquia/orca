@@ -3,7 +3,7 @@
 namespace Acquia\Orca\Command\Fixture;
 
 use Acquia\Orca\Enum\StatusCode;
-use Acquia\Orca\Fixture\Fixture;
+use Acquia\Orca\Filesystem\FixturePathHandler;
 use Acquia\Orca\Fixture\FixtureInspector;
 use Acquia\Orca\Utility\StatusTable;
 use Symfony\Component\Console\Command\Command;
@@ -23,9 +23,9 @@ class FixtureStatusCommand extends Command {
   protected static $defaultName = 'fixture:status';
 
   /**
-   * The fixture.
+   * The fixture path handler.
    *
-   * @var \Acquia\Orca\Fixture\Fixture
+   * @var \Acquia\Orca\Filesystem\FixturePathHandler
    */
   private $fixture;
 
@@ -39,13 +39,13 @@ class FixtureStatusCommand extends Command {
   /**
    * Constructs an instance.
    *
-   * @param \Acquia\Orca\Fixture\Fixture $fixture
-   *   The fixture.
+   * @param \Acquia\Orca\Filesystem\FixturePathHandler $fixture_path_handler
+   *   The fixture path handler.
    * @param \Acquia\Orca\Fixture\FixtureInspector $fixture_inspector
    *   The fixture inspector.
    */
-  public function __construct(Fixture $fixture, FixtureInspector $fixture_inspector) {
-    $this->fixture = $fixture;
+  public function __construct(FixturePathHandler $fixture_path_handler, FixtureInspector $fixture_inspector) {
+    $this->fixture = $fixture_path_handler;
     $this->fixtureInspector = $fixture_inspector;
     parent::__construct(self::$defaultName);
   }

@@ -3,7 +3,7 @@
 namespace Acquia\Orca\Command\Fixture;
 
 use Acquia\Orca\Enum\StatusCode;
-use Acquia\Orca\Fixture\Fixture;
+use Acquia\Orca\Filesystem\FixturePathHandler;
 use Acquia\Orca\Server\WebServer;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -22,9 +22,9 @@ class FixtureRunServerCommand extends Command {
   protected static $defaultName = 'fixture:run-server';
 
   /**
-   * The fixture.
+   * The fixture path handler.
    *
-   * @var \Acquia\Orca\Fixture\Fixture
+   * @var \Acquia\Orca\Filesystem\FixturePathHandler
    */
   private $fixture;
 
@@ -38,13 +38,13 @@ class FixtureRunServerCommand extends Command {
   /**
    * Constructs an instance.
    *
-   * @param \Acquia\Orca\Fixture\Fixture $fixture
-   *   The fixture.
+   * @param \Acquia\Orca\Filesystem\FixturePathHandler $fixture_path_handler
+   *   The fixture path handler.
    * @param \Acquia\Orca\Server\WebServer $web_server
    *   The web server.
    */
-  public function __construct(Fixture $fixture, WebServer $web_server) {
-    $this->fixture = $fixture;
+  public function __construct(FixturePathHandler $fixture_path_handler, WebServer $web_server) {
+    $this->fixture = $fixture_path_handler;
     $this->webServer = $web_server;
     parent::__construct(self::$defaultName);
   }
@@ -73,7 +73,7 @@ class FixtureRunServerCommand extends Command {
     $output->writeln('Starting web server...');
     $this->webServer->start();
     $output->writeln([
-      sprintf('Listening on http://%s.', Fixture::WEB_ADDRESS),
+      sprintf('Listening on http://%s.', WebServer::WEB_ADDRESS),
       "Document root is {$this->fixture->getPath('docroot')}.",
       'Press Ctrl-C to quit.',
     ]);
