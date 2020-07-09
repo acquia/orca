@@ -23,6 +23,7 @@
 language: php
 
 os: linux
+dist: bionic
 
 # Activate build config validation.
 # @see https://docs.travis-ci.com/user/build-config-validation
@@ -32,8 +33,6 @@ version: ~> 1.0
 # @see https://www.drupal.org/docs/8/system-requirements/php-requirements
 # @see https://docs.acquia.com/acquia-cloud/arch/tech-platform/
 php: "7.2"
-
-node_js: "lts/*"
 
 addons:
   # Chrome is used via ChromeDriver for web testing and browser automation.
@@ -130,6 +129,8 @@ jobs:
 
 # Install ORCA and prepare the environment.
 before_install:
+  # Set Node.js to a version compatible with Drupal 9 + Nightwatch.js.
+  - nvm use 12.13.1
   - composer create-project --no-dev acquia/orca ../orca "$ORCA_VERSION"
   - ../orca/bin/travis/before_install.sh
 
