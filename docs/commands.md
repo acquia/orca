@@ -3,6 +3,8 @@
 * [`analyze`](#qastatic-analysis)
 * [`backup`](#fixturebackup)
 * [`core`](#debugcore-versions)
+* [`cov`](#reportcode-coverage)
+* [`coverage`](#reportcode-coverage)
 * [`deprecations`](#qadeprecated-code-scan)
 * [`enexts`](#fixtureenable-extensions)
 * [`fix`](#qafixer)
@@ -43,6 +45,10 @@
 * [`qa:deprecated-code-scan`](#qadeprecated-code-scan)
 * [`qa:fixer`](#qafixer)
 * [`qa:static-analysis`](#qastatic-analysis)
+
+**report:**
+
+* [`report:code-coverage`](#reportcode-coverage)
 
 `help`
 ------
@@ -1662,6 +1668,94 @@ Run the YAML Lint tool
 * Is value required: no
 * Is multiple: no
 * Default: `false`
+
+#### `--help|-h`
+
+Display this help message
+
+* Accept value: no
+* Is value required: no
+* Is multiple: no
+* Default: `false`
+
+#### `--quiet|-q`
+
+Do not output any message
+
+* Accept value: no
+* Is value required: no
+* Is multiple: no
+* Default: `false`
+
+#### `--verbose|-v|-vv|-vvv`
+
+Increase the verbosity of messages: 1 for normal output, 2 for more verbose output and 3 for debug
+
+* Accept value: no
+* Is value required: no
+* Is multiple: no
+* Default: `false`
+
+#### `--version|-V`
+
+Display this application version
+
+* Accept value: no
+* Is value required: no
+* Is multiple: no
+* Default: `false`
+
+#### `--ansi`
+
+Force ANSI output
+
+* Accept value: no
+* Is value required: no
+* Is multiple: no
+* Default: `false`
+
+#### `--no-ansi`
+
+Disable ANSI output
+
+* Accept value: no
+* Is value required: no
+* Is multiple: no
+* Default: `false`
+
+#### `--no-interaction|-n`
+
+Do not ask any interactive question
+
+* Accept value: no
+* Is value required: no
+* Is multiple: no
+* Default: `false`
+
+`report:code-coverage`
+----------------------
+
+Displays a code coverage report
+
+### Usage
+
+* `report:code-coverage <path>`
+* `coverage`
+* `cov`
+
+Displays a code coverage report
+
+### Arguments
+
+#### `path`
+
+The path to generate the report from
+
+* Is required: yes
+* Is array: no
+* Default: `NULL`
+
+### Options
 
 #### `--help|-h`
 
