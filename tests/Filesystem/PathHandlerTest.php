@@ -24,21 +24,44 @@ class PathHandlerTest extends TestCase {
     $this->basePath = $base_path;
     $this->filesystem
       ->exists($base_path)
+      ->shouldBeCalledOnce()
       ->willReturn($exists);
     $path_handler = $this->createPathHander();
 
     $return = $path_handler->exists();
 
-    $this->filesystem
-      ->exists($base_path)
-      ->shouldHaveBeenCalledTimes(1);
-    $this->assertEquals($exists, $return, 'Returned correct value.');
+    self::assertEquals($exists, $return, 'Returned correct value.');
   }
 
   public function providerExists() {
     return [
       ['/path-exists', TRUE],
       ['/no-path-there', FALSE],
+    ];
+  }
+
+  /**
+   * @covers \Acquia\Orca\Filesystem\AbstractPathHandler::exists
+   * @dataProvider providerExistsWithSubpath
+   */
+  public function testExistsWithSubpath($sub_path, $exists) {
+    $this->basePath = '/example';
+    $full_path = "{$this->basePath}/{$sub_path}";
+    $this->filesystem
+      ->exists($full_path)
+      ->shouldBeCalledOnce()
+      ->willReturn($exists);
+
+    $path_handler = $this->createPathHander();
+    $return = $path_handler->exists($sub_path);
+
+    self::assertEquals($exists, $return, 'Returned correct value.');
+  }
+
+  public function providerExistsWithSubpath() {
+    return [
+      ['path-exists', TRUE],
+      ['no-path-there', FALSE],
     ];
   }
 
@@ -51,7 +74,7 @@ class PathHandlerTest extends TestCase {
 
     $path_handler = $this->createPathHander();
 
-    $this->assertEquals($expected, $path_handler->getPath($sub_path), 'Resolved path.');
+    self::assertEquals($expected, $path_handler->getPath($sub_path), 'Resolved path.');
   }
 
   public function providerGetPath() {

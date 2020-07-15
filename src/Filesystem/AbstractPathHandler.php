@@ -37,8 +37,9 @@ abstract class AbstractPathHandler {
    * @return bool
    *   TRUE if the path exists on the filesystem or FALSE if not.
    */
-  public function exists(): bool {
-    return $this->filesystem->exists($this->getPath());
+  public function exists(?string $sub_path = ''): bool {
+    return $this->filesystem
+      ->exists($this->getPath($sub_path));
   }
 
   /**
