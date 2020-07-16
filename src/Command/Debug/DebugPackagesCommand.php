@@ -7,6 +7,7 @@ use Acquia\Orca\Enum\StatusCode;
 use Acquia\Orca\Fixture\PackageManager;
 use Acquia\Orca\Utility\DrupalCoreVersionFinder;
 use Composer\Semver\VersionParser;
+use InvalidArgumentException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputArgument;
@@ -96,7 +97,7 @@ class DebugPackagesCommand extends Command {
     try {
       $this->handleCoreArgument($argument);
     }
-    catch (\InvalidArgumentException $e) {
+    catch (InvalidArgumentException $e) {
       $output->writeln([
         sprintf('Error: Invalid value for "core" option: "%s".', $argument),
         sprintf('Hint: Acceptable values are "%s", or any version string Composer understands.', implode('", "', DrupalCoreVersion::values())),
@@ -126,7 +127,7 @@ class DebugPackagesCommand extends Command {
     }
 
     if (!is_string($argument)) {
-      throw new \InvalidArgumentException();
+      throw new InvalidArgumentException();
     }
 
     if (DrupalCoreVersion::isValid($argument)) {
@@ -138,7 +139,7 @@ class DebugPackagesCommand extends Command {
       $this->coreVersion = $argument;
     }
     catch (\UnexpectedValueException $e) {
-      throw new \InvalidArgumentException();
+      throw new InvalidArgumentException();
     }
   }
 

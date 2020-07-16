@@ -5,6 +5,7 @@ namespace Acquia\Orca\Fixture;
 use Acquia\Orca\Filesystem\FixturePathHandler;
 use Acquia\Orca\Filesystem\OrcaPathHandler;
 use Composer\Semver\VersionParser;
+use InvalidArgumentException;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -366,7 +367,7 @@ class Package {
     // Require a a full package name: "vendor/project". A simple test for a
     // forward slash will suffice.
     if (strpos($package_name, '/') === FALSE) {
-      throw new \InvalidArgumentException("Invalid package name: {$package_name}. Must take the form 'vendor/project'.");
+      throw new InvalidArgumentException("Invalid package name: {$package_name}. Must take the form 'vendor/project'.");
     }
     $this->packageName = $package_name;
   }

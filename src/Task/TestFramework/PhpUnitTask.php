@@ -5,6 +5,8 @@ namespace Acquia\Orca\Task\TestFramework;
 use Acquia\Orca\Exception\TaskFailureException;
 use Acquia\Orca\Server\WebServer;
 use Acquia\Orca\Utility\SutSettingsTrait;
+use DOMDocument;
+use DOMXPath;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 
 /**
@@ -58,9 +60,9 @@ class PhpUnitTask extends TestFrameworkBase {
    */
   private function ensurePhpUnitConfig() {
     $path = $this->fixture->getPath('docroot/core/phpunit.xml');
-    $this->doc = new \DOMDocument($path);
+    $this->doc = new DOMDocument($path);
     $this->doc->load($path);
-    $this->xpath = new \DOMXPath($this->doc);
+    $this->xpath = new DOMXPath($this->doc);
 
     $this->ensureSimpleTestDirectory();
     $this->setSimpletestSettings();
