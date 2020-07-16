@@ -124,8 +124,6 @@ jobs:
     - env: ORCA_JOB=ISOLATED_DEV
     - env: ORCA_JOB=INTEGRATED_DEV
     - env: ORCA_JOB=CORE_NEXT
-    # You may need to allow the D9 readiness job to fail in the short term.
-    - { php: "7.3", env: ORCA_JOB=D9_READINESS }
 
 # Install ORCA and prepare the environment.
 before_install:
