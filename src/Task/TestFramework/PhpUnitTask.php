@@ -225,6 +225,9 @@ class PhpUnitTask extends TestFrameworkBase {
         '--exclude-group=orca_ignore',
         '--testsuite=orca',
       ];
+      if ($this->shouldCollectCoverage()) {
+        $command[] = "--coverage-clover={$this->getCoveragePath()}/clover.xml";
+      }
       if ($this->isPublicTestsOnly()) {
         $command[] = '--group=orca_public';
       }
@@ -251,6 +254,31 @@ class PhpUnitTask extends TestFrameworkBase {
    */
   public function restoreConfig(): void {
     $this->configFileOverrider->restore();
+  }
+
+  /**
+   * Check if code coverage information should be collected.
+   *
+   * @return bool
+   *   TRUE if test coverage should be collected.
+   */
+  public function shouldCollectCoverage() : bool {
+    return filter_var(getenv('ORCA_COVERAGE_COLLECT'), \FILTER_VALIDATE_BOOLEAN, \FILTER_NULL_ON_FAILURE) === TRUE;
+  }
+
+  /**
+   * Gets the path for coverage files.
+   *
+   * @return string
+   *   The path for coverage files.
+   */
+  protected function getCoveragePath(): string {
+    if ($path = getenv('ORCA_COVERAGE_PATH')) {
+      return $path;
+    }
+    $subdir = explode(DIRECTORY_SEPARATOR, $this->getPath());
+    $subdir = end($subdir);
+    return "{$this->projectDir}/var/coverage/{$subdir}";
   }
 
 }

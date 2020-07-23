@@ -23,8 +23,10 @@ echo "$TRAVIS_NODE_VERSION"
 # Display the Yarn version.
 yarn --version
 
-# Disable Xdebug.
-phpenv config-rm xdebug.ini
+if [[ ! "$ORCA_COLLECT_COVERAGE" == "TRUE" ]]; then
+  # Disable Xdebug.
+  phpenv config-rm xdebug.ini
+fi
 
 {
   # Remove PHP memory limit.

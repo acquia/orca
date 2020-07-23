@@ -22,6 +22,10 @@ These affect ORCA in all contexts.
 
 * <a name="ORCA_TELEMETRY_ENABLE"></a>**`ORCA_TELEMETRY_ENABLE`**: Set to `TRUE` to enable telemetry with Amplitude. Requires [`ORCA_AMPLITUDE_API_KEY`](#ORCA_AMPLITUDE_API_KEY) and [`ORCA_AMPLITUDE_USER_ID`](#ORCA_AMPLITUDE_USER_ID) values. On Travis CI, only takes effect for cron events.
 
+* <a name="ORCA_COVERAGE_COLLECT"></a>**`ORCA_COVERAGE_COLLECT`**: Set to `TRUE` to enable code coverage collection with PHPUnit.
+
+* <a name="ORCA_COVERAGE_PATH"></a>**`ORCA_COVERAGE_PATH`**: Set to a path to store the clover coverage XML. If not supplied ORCA will attempt to use a reasonable default. Requires [`ORCA_COVERAGE_COLLECT`](#ORCA_COVERAGE_COLLECT).
+
 ### Travis CI scripts
 
 These affect ORCA only as invoked via the Travis CI scripts.
