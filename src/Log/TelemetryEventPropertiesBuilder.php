@@ -6,7 +6,7 @@ use Acquia\Orca\Enum\TelemetryEventName;
 use Acquia\Orca\Filesystem\OrcaPathHandler;
 use Acquia\Orca\Task\DeprecatedCodeScanner\PhpStanTask;
 use Acquia\Orca\Task\StaticAnalysisTool\PhpCodeSnifferTask;
-use Acquia\Orca\Task\StaticAnalysisTool\PhpLocTask;
+use Acquia\Orca\Task\StaticAnalysisTool\PhplocTask;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
@@ -131,10 +131,10 @@ class TelemetryEventPropertiesBuilder {
   }
 
   /**
-   * Adds PHP LOC results to the event properties.
+   * Adds PHPLOC results to the event properties.
    */
   private function addPhpLocResults(): void {
-    $data = $this->getJsonFileData(PhpLocTask::JSON_LOG_PATH);
+    $data = $this->getJsonFileData(PhplocTask::JSON_LOG_PATH);
 
     if (empty($data)) {
       return;

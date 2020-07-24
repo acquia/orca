@@ -1638,7 +1638,7 @@ Run the PHP Lint tool
 
 #### `--phploc`
 
-Run the PHP LOC tool
+Run the PHPLOC tool
 
 * Accept value: no
 * Is value required: no
