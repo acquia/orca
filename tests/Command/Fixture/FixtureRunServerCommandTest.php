@@ -26,7 +26,6 @@ class FixtureRunServerCommandTest extends CommandTestBase {
 
   protected function createCommand(): Command {
     $fixture = $this->fixture->reveal();
-    /** @var \Acquia\Orca\Server\WebServer $web_server */
     $web_server = $this->webServer->reveal();
     return new FixtureRunServerCommand($fixture, $web_server);
   }

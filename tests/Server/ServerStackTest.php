@@ -43,11 +43,8 @@ class ServerStackTest extends TestCase {
   }
 
   protected function createServerStack(): ServerStack {
-    /** @var \Acquia\Orca\Server\ChromeDriverServer $chrome_driver_server */
     $chrome_driver_server = $this->chromeDriverServer->reveal();
-    /** @var \Acquia\Orca\Utility\Clock $clock */
     $clock = $this->clock->reveal();
-    /** @var \Acquia\Orca\Server\WebServer $web_server */
     $web_server = $this->webServer->reveal();
     return new ServerStack($chrome_driver_server, $clock, $web_server);
   }

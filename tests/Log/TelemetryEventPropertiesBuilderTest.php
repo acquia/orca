@@ -22,9 +22,7 @@ class TelemetryEventPropertiesBuilderTest extends TestCase {
   }
 
   protected function createTelemetryEventPropertiesBuilder(): TelemetryEventPropertiesBuilder {
-    /** @var \Env $env */
     $env = $this->env->reveal();
-    /** @var \Symfony\Component\Filesystem\Filesystem $filesystem */
     $filesystem = $this->filesystem->reveal();
     $orca_path_handler = $this->orca->reveal();
     return new TelemetryEventPropertiesBuilder($env, $filesystem, $orca_path_handler);

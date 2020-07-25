@@ -32,11 +32,8 @@ class QaDeprecatedCodeScanCommandTest extends CommandTestBase {
 
   protected function createCommand(): Command {
     $fixture = $this->fixture->reveal();
-    /** @var \Acquia\Orca\Fixture\PackageManager $package_manager */
     $package_manager = $this->packageManager->reveal();
-    /** @var \Acquia\Orca\Task\DeprecatedCodeScanner\PhpStanTask $phpstan */
     $phpstan = $this->phpstan->reveal();
-    /** @var \Acquia\Orca\Task\TaskRunner $task_runner */
     $task_runner = $this->taskRunner->reveal();
     return new QaDeprecatedCodeScanCommand($fixture, $package_manager, $phpstan, $task_runner);
   }

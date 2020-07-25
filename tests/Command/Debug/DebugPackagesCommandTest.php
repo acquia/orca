@@ -30,13 +30,11 @@ class DebugPackagesCommandTest extends CommandTestBase {
 
   protected function createCommand(): Command {
     $drupal_core_version_finder = $this->drupalCoreVersionFinder->reveal();
-    /** @var \Acquia\Orca\Fixture\PackageManager $package_manager */
     $package_manager = $this->packageManager->reveal();
     return new DebugPackagesCommand($drupal_core_version_finder, $package_manager, $this->versionParser);
   }
 
   public function testBasicExecution() {
-    /** @var \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Fixture\Package $package */
     $package = $this->prophesize(Package::class);
     $package->getPackageName()->willReturn('Example 1', 'Example 2');
     $package->getType()->willReturn('drupal-module');

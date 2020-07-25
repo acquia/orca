@@ -28,9 +28,7 @@ class SubextensionManagerTest extends TestCase {
   }
 
   public function testConstruction() {
-    /** @var \Acquia\Orca\Utility\ConfigLoader $config_loader */
     $config_loader = $this->configLoader->reveal();
-    /** @var \Symfony\Component\Filesystem\Filesystem $filesystem */
     $filesystem = $this->filesystem->reveal();
     $fixture = $this->fixture->reveal();
     $orca_path_handler = $this->orca->reveal();
@@ -40,7 +38,6 @@ class SubextensionManagerTest extends TestCase {
     $this->packageManager
       ->getAll()
       ->willReturn([]);
-    /** @var \Acquia\Orca\Fixture\PackageManager $package_manager */
     $package_manager = $this->packageManager->reveal();
     $object = new SubextensionManager($config_loader, $filesystem, $fixture, $orca_path_handler, $package_manager);
 

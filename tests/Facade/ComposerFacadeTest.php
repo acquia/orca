@@ -25,10 +25,8 @@ class ComposerFacadeTest extends TestCase {
    * @dataProvider providerCreateProject
    */
   public function testCreateProject(string $project_template_string, string $stability, string $directory): void {
-    /** @var array $any_argument */
-    $any_argument = Argument::any();
     $this->processRunner
-      ->runOrcaVendorBin($any_argument)
+      ->runOrcaVendorBin(Argument::any())
       ->willReturn(0);
     $this->processRunner
       ->runOrcaVendorBin([

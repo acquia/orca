@@ -35,9 +35,7 @@ class QaAutomatedTestsCommandTest extends CommandTestBase {
 
   protected function createCommand(): Command {
     $fixture_path_handler = $this->fixture->reveal();
-    /** @var \Acquia\Orca\Fixture\PackageManager $package_manager */
     $package_manager = $this->packageManager->reveal();
-    /** @var \Acquia\Orca\Task\TestFramework\TestRunner $test_runner */
     $test_runner = $this->testRunner->reveal();
     return new QaAutomatedTestsCommand($fixture_path_handler, $package_manager, $test_runner);
   }

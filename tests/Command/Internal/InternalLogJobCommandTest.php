@@ -29,9 +29,7 @@ class InternalLogJobCommandTest extends CommandTestBase {
   }
 
   protected function createCommand(): Command {
-    /** @var \Acquia\Orca\Log\TelemetryClient $telemetry_client */
     $telemetry_client = $this->telemetryClient->reveal();
-    /** @var \Acquia\Orca\Log\TelemetryEventPropertiesBuilder $telemetry_event_builder */
     $telemetry_event_builder = $this->telemetryEventBuilder->reveal();
     return new InternalLogJobCommand($telemetry_client, $telemetry_event_builder);
   }

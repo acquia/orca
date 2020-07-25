@@ -113,11 +113,9 @@ class PackageManagerTest extends TestCase {
   }
 
   private function createPackageManager(): PackageManager {
-    /** @var \Symfony\Component\Filesystem\Filesystem $filesystem */
     $filesystem = $this->filesystem->reveal();
     $fixture_path_handler = $this->fixture->reveal();
     $orca_path_handler = $this->orca->reveal();
-    /** @var \Symfony\Component\Yaml\Parser $parser */
     $parser = $this->parser->reveal();
     $object = new PackageManager($filesystem, $fixture_path_handler, $orca_path_handler, $parser, self::PACKAGES_CONFIG_FILE, self::PACKAGES_CONFIG_ALTER_FILE);
     $this->assertInstanceOf(PackageManager::class, $object, 'Instantiated class.');

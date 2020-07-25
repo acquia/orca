@@ -22,17 +22,12 @@ class TasksTest extends TestCase {
    * @dataProvider providerConstruction
    */
   public function testConstruction($class) {
-    /** @var \Acquia\Orca\Utility\ConfigFileOverrider $config_file_overrider */
     $config_file_overrider = $this->prophesize(ConfigFileOverrider::class)->reveal();
-    /** @var \Symfony\Component\Filesystem\Filesystem $filesystem */
     $filesystem = $this->prophesize(Filesystem::class)->reveal();
     $fixture = $this->prophesize(FixturePathHandler::class)->reveal();
     $orca_path_handler = $this->prophesize(OrcaPathHandler::class)->reveal();
-    /** @var \Symfony\Component\Console\Style\SymfonyStyle $output */
     $output = $this->prophesize(SymfonyStyle::class)->reveal();
-    /** @var \Acquia\Orca\Task\PhpcsConfigurator $phpcs_configurator */
     $phpcs_configurator = $this->prophesize(PhpcsConfigurator::class)->reveal();
-    /** @var \Acquia\Orca\Utility\ProcessRunner $process_runner */
     $process_runner = $this->prophesize(ProcessRunner::class)->reveal();
 
     $object = new $class($config_file_overrider, $filesystem, $fixture, $orca_path_handler, $output, $phpcs_configurator, $process_runner);

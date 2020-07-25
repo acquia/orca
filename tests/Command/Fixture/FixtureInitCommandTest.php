@@ -58,19 +58,12 @@ class FixtureInitCommandTest extends CommandTestBase {
   }
 
   protected function createCommand(): Command {
-    /** @var \Acquia\Orca\Utility\DrupalCoreVersionFinder $drupal_core_version_finder */
     $drupal_core_version_finder = $this->drupalCoreVersionFinder->reveal();
-    /** @var \Acquia\Orca\Fixture\FixtureCreator $fixture_creator */
     $fixture_creator = $this->fixtureCreator->reveal();
-    /** @var \Acquia\Orca\Fixture\FixtureRemover $fixture_remover */
     $fixture_remover = $this->fixtureRemover->reveal();
-    /** @var \Acquia\Orca\Filesystem\FixturePathHandler $fixture_path_handler */
     $fixture_path_handler = $this->fixture->reveal();
-    /** @var \Acquia\Orca\Fixture\PackageManager $package_manager */
     $package_manager = $this->packageManager->reveal();
-    /** @var \Acquia\Orca\Fixture\SutPreconditionsTester $sut_preconditions_tester */
     $sut_preconditions_tester = $this->sutPreconditionsTester->reveal();
-    /** @var \Composer\Semver\VersionParser $version_parser */
     $version_parser = ($this->versionParser instanceof VersionParser) ? $this->versionParser : $this->versionParser->reveal();
     return new FixtureInitCommand($drupal_core_version_finder, $fixture_path_handler, $fixture_creator, $fixture_remover, $package_manager, $sut_preconditions_tester, $version_parser);
   }

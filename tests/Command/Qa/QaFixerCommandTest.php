@@ -32,13 +32,9 @@ class QaFixerCommandTest extends CommandTestBase {
   }
 
   protected function createCommand(): Command {
-    /** @var \Acquia\Orca\Task\Fixer\ComposerNormalizeTask $composer_normalize */
     $composer_normalize = $this->composerNormalize->reveal();
-    /** @var \Symfony\Component\Filesystem\Filesystem $filesystem */
     $filesystem = $this->filesystem->reveal();
-    /** @var \Acquia\Orca\Task\Fixer\PhpCodeBeautifierAndFixerTask $php_code_beautifier_and_fixer */
     $php_code_beautifier_and_fixer = $this->phpCodeBeautifierAndFixer->reveal();
-    /** @var \Acquia\Orca\Task\TaskRunner $task_runner */
     $task_runner = $this->taskRunner->reveal();
     return new QaFixerCommand($composer_normalize, $this->defaultPhpcsStandard, $filesystem, $php_code_beautifier_and_fixer, $task_runner);
   }

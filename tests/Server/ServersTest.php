@@ -13,7 +13,6 @@ class ServersTest extends TestCase {
 
   public function testConstruction() {
     $fixture = $this->prophesize(FixturePathHandler::class)->reveal();
-    /** @var \Acquia\Orca\Utility\ProcessRunner $process_runner */
     $process_runner = $this->prophesize(ProcessRunner::class)->reveal();
     $orca_path_handler = $this->prophesize(OrcaPathHandler::class)->reveal();
 

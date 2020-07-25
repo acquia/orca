@@ -44,21 +44,13 @@ class QaStaticAnalysisCommandTest extends CommandTestBase {
   }
 
   protected function createCommand(): Command {
-    /** @var \Acquia\Orca\Task\StaticAnalysisTool\ComposerValidateTask $composer_validate */
     $composer_validate = $this->composerValidate->reveal();
-    /** @var \Symfony\Component\Filesystem\Filesystem $filesystem */
     $filesystem = $this->filesystem->reveal();
-    /** @var \Acquia\Orca\Task\StaticAnalysisTool\PhpCodeSnifferTask $php_code_sniffer */
     $php_code_sniffer = $this->phpCodeSniffer->reveal();
-    /** @var \Acquia\Orca\Task\StaticAnalysisTool\PhpLintTask $phplint */
     $phplint = $this->phpLint->reveal();
-    /** @var \Acquia\Orca\Task\StaticAnalysisTool\PhplocTask $phploc */
     $phploc = $this->phploc->reveal();
-    /** @var \Acquia\Orca\Task\StaticAnalysisTool\PhpMessDetectorTask $php_mess_detector */
     $php_mess_detector = $this->phpMessDetector->reveal();
-    /** @var \Acquia\Orca\Task\TaskRunner $task_runner */
     $task_runner = $this->taskRunner->reveal();
-    /** @var \Acquia\Orca\Task\StaticAnalysisTool\YamlLintTask $yaml_lint */
     $yaml_lint = $this->yamlLint->reveal();
     return new QaStaticAnalysisCommand($composer_validate, $this->defaultPhpcsStandard, $filesystem, $php_code_sniffer, $phplint, $phploc, $php_mess_detector, $task_runner, $yaml_lint);
   }

@@ -27,7 +27,6 @@ class FixtureSiteInstallCommandTest extends CommandTestBase {
 
   protected function createCommand(): Command {
     $fixture = $this->fixture->reveal();
-    /** @var \Acquia\Orca\Fixture\SiteInstaller $site_installer */
     $site_installer = $this->siteInstaller->reveal();
     return new FixtureInstallSiteCommand($fixture, $site_installer);
   }

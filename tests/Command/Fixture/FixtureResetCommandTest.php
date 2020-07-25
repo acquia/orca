@@ -25,9 +25,7 @@ class FixtureResetCommandTest extends CommandTestBase {
   }
 
   protected function createCommand(): Command {
-    /** @var \Acquia\Orca\Fixture\FixtureResetter $fixture_resetter */
     $fixture_resetter = $this->fixtureResetter->reveal();
-    /** @var \Acquia\Orca\Filesystem\FixturePathHandler $fixture_path_handler */
     $fixture_path_handler = $this->fixture->reveal();
     return new FixtureResetCommand($fixture_path_handler, $fixture_resetter);
   }

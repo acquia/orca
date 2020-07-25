@@ -25,9 +25,7 @@ class FixtureStatusCommandTest extends CommandTestBase {
   }
 
   protected function createCommand(): Command {
-    /** @var \Acquia\Orca\Filesystem\FixturePathHandler $fixture_path_handler */
     $fixture_path_handler = $this->fixture->reveal();
-    /** @var \Acquia\Orca\Fixture\FixtureInspector $fixture_inspector */
     $fixture_inspector = $this->fixtureInspector->reveal();
     return new FixtureStatusCommand($fixture_path_handler, $fixture_inspector);
   }

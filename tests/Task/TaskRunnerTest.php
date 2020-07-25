@@ -25,9 +25,7 @@ class TaskRunnerTest extends TestCase {
       ->shouldBeCalledTimes(1);
     $output->success('Passed')
       ->shouldBeCalledTimes(2);
-    /** @var \Symfony\Component\Console\Style\SymfonyStyle $output */
     $output = $output->reveal();
-    /** @var \Acquia\Orca\Task\StaticAnalysisTool\PhpLintTask $phplint */
     $phplint = $this->setTaskExpectations(PhpLintTask::class);
 
     $runner = new TaskRunner($output);
@@ -51,7 +49,6 @@ class TaskRunnerTest extends TestCase {
       ->shouldBeCalledTimes(1)
       ->willReturn($task);
     $task->execute()->shouldBeCalledTimes(1);
-    /** @var \Acquia\Orca\Task\TaskInterface $task */
     $task = $task->reveal();
     return $task;
   }

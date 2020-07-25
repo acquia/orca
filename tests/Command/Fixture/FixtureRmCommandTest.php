@@ -25,9 +25,7 @@ class FixtureRmCommandTest extends CommandTestBase {
   }
 
   protected function createCommand(): Command {
-    /** @var \Acquia\Orca\Fixture\FixtureRemover $fixture_remover */
     $fixture_remover = $this->fixtureRemover->reveal();
-    /** @var \Acquia\Orca\Filesystem\FixturePathHandler $fixture_path_handler */
     $fixture_path_handler = $this->fixture->reveal();
     return new FixtureRmCommand($fixture_path_handler, $fixture_remover);
   }

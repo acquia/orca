@@ -26,7 +26,6 @@ class FixtureEnableExtensionsCommandTest extends CommandTestBase {
   }
 
   protected function createCommand(): Command {
-    /** @var \Acquia\Orca\Fixture\CompanyExtensionEnabler $company_extension_enabler */
     $company_extension_enabler = $this->companyExtensionEnabler->reveal();
     $fixture = $this->fixture_path_handler->reveal();
     return new FixtureEnableExtensionsCommand($company_extension_enabler, $fixture);
