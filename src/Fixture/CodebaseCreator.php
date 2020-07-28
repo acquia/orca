@@ -1,6 +1,6 @@
 <?php
 
-namespace Acquia\Orca\Codebase;
+namespace Acquia\Orca\Fixture;
 
 use Acquia\Orca\Facade\ComposerFacade;
 use Acquia\Orca\Facade\GitFacade;

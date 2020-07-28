@@ -4,6 +4,8 @@ namespace Acquia\Orca\Fixture;
 
 use Acquia\Orca\Facade\DrushFacade;
 use Acquia\Orca\Filesystem\FixturePathHandler;
+use Acquia\Orca\Package\Package;
+use Acquia\Orca\Package\PackageManager;
 use Acquia\Orca\Utility\ConfigLoader;
 use Acquia\Orca\Utility\ProcessRunner;
 use Acquia\Orca\Utility\SutSettingsTrait;
@@ -73,7 +75,7 @@ class CompanyExtensionEnabler {
   /**
    * The package manager.
    *
-   * @var \Acquia\Orca\Fixture\PackageManager
+   * @var \Acquia\Orca\Package\PackageManager
    */
   private $packageManager;
 
@@ -99,7 +101,7 @@ class CompanyExtensionEnabler {
    *   The output decorator.
    * @param \Acquia\Orca\Utility\ProcessRunner $process_runner
    *   The process runner.
-   * @param \Acquia\Orca\Fixture\PackageManager $package_manager
+   * @param \Acquia\Orca\Package\PackageManager $package_manager
    *   The package manager.
    * @param \Acquia\Orca\Fixture\SubextensionManager $subextension_manager
    *   The subextension manager.
@@ -218,7 +220,7 @@ class CompanyExtensionEnabler {
   /**
    * Determines whether or not a given packages should get enabled.
    *
-   * @param \Acquia\Orca\Fixture\Package $package
+   * @param \Acquia\Orca\Package\Package $package
    *   The package to consider.
    * @param string $extension_type
    *   The type of extension that should get enabled: ::TYPE_MODULE or

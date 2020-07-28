@@ -4,7 +4,7 @@ namespace Acquia\Orca\Tests\Fixture;
 
 use Acquia\Orca\Filesystem\FixturePathHandler;
 use Acquia\Orca\Filesystem\OrcaPathHandler;
-use Acquia\Orca\Fixture\Package;
+use Acquia\Orca\Package\Package;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\OptionsResolver\Exception\InvalidOptionsException;
 use Symfony\Component\OptionsResolver\Exception\UndefinedOptionsException;
@@ -13,8 +13,7 @@ use UnexpectedValueException;
 /**
  * @property \Acquia\Orca\Filesystem\FixturePathHandler|\Prophecy\Prophecy\ObjectProphecy $fixture
  * @property \Acquia\Orca\Filesystem\OrcaPathHandler|\Prophecy\Prophecy\ObjectProphecy $orca
- *
- * @covers \Acquia\Orca\Fixture\Package
+ * @coversDefaultClass \Acquia\Orca\Package\Package
  */
 class PackageTest extends TestCase {
 
@@ -26,18 +25,18 @@ class PackageTest extends TestCase {
   /**
    * @dataProvider providerConstructionAndGetters
    *
-   * @covers \Acquia\Orca\Fixture\Package::__construct
-   * @covers \Acquia\Orca\Fixture\Package::getDrupalExtensionName
-   * @covers \Acquia\Orca\Fixture\Package::getInstallPathRelative
-   * @covers \Acquia\Orca\Fixture\Package::getPackageName
-   * @covers \Acquia\Orca\Fixture\Package::getProjectName
-   * @covers \Acquia\Orca\Fixture\Package::getRepositoryUrlRaw
-   * @covers \Acquia\Orca\Fixture\Package::getType
-   * @covers \Acquia\Orca\Fixture\Package::getVersion
-   * @covers \Acquia\Orca\Fixture\Package::getVersionDev
-   * @covers \Acquia\Orca\Fixture\Package::getVersionRecommended
-   * @covers \Acquia\Orca\Fixture\Package::getDrupalExtensionName
-   * @covers \Acquia\Orca\Fixture\Package::shouldGetEnabled
+   * @covers ::__construct
+   * @covers ::getDrupalExtensionName
+   * @covers ::getInstallPathRelative
+   * @covers ::getPackageName
+   * @covers ::getProjectName
+   * @covers ::getRepositoryUrlRaw
+   * @covers ::getType
+   * @covers ::getVersion
+   * @covers ::getVersionDev
+   * @covers ::getVersionRecommended
+   * @covers ::getDrupalExtensionName
+   * @covers ::shouldGetEnabled
    */
   public function testConstructionAndGetters($data, $package_name, $project_name, $type, $raw_repository_url, $version, $dev_version, $enable, $install_path) {
     $package = $this->createPackage($package_name, $data);
@@ -122,8 +121,8 @@ class PackageTest extends TestCase {
   /**
    * @dataProvider providerConstructionError
    *
-   * @covers \Acquia\Orca\Fixture\Package::initializePackageName
-   * @covers \Acquia\Orca\Fixture\Package::resolveData
+   * @covers ::initializePackageName
+   * @covers ::resolveData
    */
   public function testConstructionError($exception, $package_name, $data) {
     $this->expectException($exception);
@@ -146,8 +145,8 @@ class PackageTest extends TestCase {
   /**
    * @dataProvider providerInstallPathCalculation
    *
-   * @covers \Acquia\Orca\Fixture\Package::getInstallPathRelative
-   * @covers \Acquia\Orca\Fixture\Package::getInstallPathAbsolute
+   * @covers ::getInstallPathRelative
+   * @covers ::getInstallPathAbsolute
    */
   public function testInstallPathCalculation($type, $relative_install_path) {
     $absolute_install_path = "/var/www/{$relative_install_path}";
@@ -161,8 +160,8 @@ class PackageTest extends TestCase {
 
     $package = $this->createPackage($package_name, $data);
 
-    $this->assertEquals($relative_install_path, $package->getInstallPathRelative());
-    $this->assertEquals($absolute_install_path, $package->getInstallPathAbsolute());
+    self::assertEquals($relative_install_path, $package->getInstallPathRelative());
+    self::assertEquals($absolute_install_path, $package->getInstallPathAbsolute());
   }
 
   public function providerInstallPathCalculation() {
@@ -182,13 +181,13 @@ class PackageTest extends TestCase {
   /**
    * @dataProvider providerConditionalVersions
    *
-   * @covers \Acquia\Orca\Fixture\Package::getVersion
+   * @covers ::getVersion
    */
   public function testConditionalVersions($data, $core_version, $version, $version_dev) {
     $package = $this->createPackage('drupal/example', $data);
 
-    $this->assertEquals($version, $package->getVersionRecommended($core_version), 'Got correct recommended version.');
-    $this->assertEquals($version_dev, $package->getVersionDev($core_version), 'Got correct dev version.');
+    self::assertEquals($version, $package->getVersionRecommended($core_version), 'Got correct recommended version.');
+    self::assertEquals($version_dev, $package->getVersionDev($core_version), 'Got correct dev version.');
   }
 
   public function providerConditionalVersions() {
@@ -371,7 +370,7 @@ class PackageTest extends TestCase {
   /**
    * @dataProvider providerCoreVersionMatching
    *
-   * @covers \Acquia\Orca\Fixture\Package::resolveCoreMatrix
+   * @covers ::resolveCoreMatrix
    */
   public function testCoreVersionMatching($expected_to_match, $provided, $required) {
     $package = $this->createPackage('drupal/example', [

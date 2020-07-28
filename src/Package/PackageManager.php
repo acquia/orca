@@ -1,6 +1,6 @@
 <?php
 
-namespace Acquia\Orca\Fixture;
+namespace Acquia\Orca\Package;
 
 use Acquia\Orca\Filesystem\FixturePathHandler;
 use Acquia\Orca\Filesystem\OrcaPathHandler;
@@ -24,7 +24,7 @@ class PackageManager {
   /**
    * The BLT package.
    *
-   * @var \Acquia\Orca\Fixture\Package|null
+   * @var \Acquia\Orca\Package\Package|null
    */
   private $blt;
 
@@ -52,7 +52,7 @@ class PackageManager {
   /**
    * All defined packages keyed by package name.
    *
-   * @var \Acquia\Orca\Fixture\Package[]
+   * @var \Acquia\Orca\Package\Package[]
    */
   private $packages = [];
 
@@ -109,7 +109,7 @@ class PackageManager {
    * @param string $package_name
    *   The package name.
    *
-   * @return \Acquia\Orca\Fixture\Package
+   * @return \Acquia\Orca\Package\Package
    *   The requested package.
    *
    * @throws \InvalidArgumentException
@@ -125,7 +125,7 @@ class PackageManager {
   /**
    * Gets an array of all packages.
    *
-   * @return \Acquia\Orca\Fixture\Package[]|string[]
+   * @return \Acquia\Orca\Package\Package[]|string[]
    *   An array of packages or package properties keyed by package name.
    */
   public function getAll(): array {
@@ -139,7 +139,7 @@ class PackageManager {
    * It must always be available by direct request, even if absent from the
    * active packages specification.
    *
-   * @return \Acquia\Orca\Fixture\Package
+   * @return \Acquia\Orca\Package\Package
    *   The BLT package.
    */
   public function getBlt(): Package {

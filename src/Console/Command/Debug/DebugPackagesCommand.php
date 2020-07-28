@@ -4,7 +4,7 @@ namespace Acquia\Orca\Console\Command\Debug;
 
 use Acquia\Orca\Enum\DrupalCoreVersion;
 use Acquia\Orca\Enum\StatusCode;
-use Acquia\Orca\Fixture\PackageManager;
+use Acquia\Orca\Package\PackageManager;
 use Acquia\Orca\Utility\DrupalCoreVersionFinder;
 use Composer\Semver\VersionParser;
 use InvalidArgumentException;
@@ -36,7 +36,7 @@ class DebugPackagesCommand extends Command {
   /**
    * The package manager.
    *
-   * @var \Acquia\Orca\Fixture\PackageManager
+   * @var \Acquia\Orca\Package\PackageManager
    */
   private $packageManager;
 
@@ -59,7 +59,7 @@ class DebugPackagesCommand extends Command {
    *
    * @param \Acquia\Orca\Utility\DrupalCoreVersionFinder $drupal_core_version_finder
    *   The Drupal core version finder.
-   * @param \Acquia\Orca\Fixture\PackageManager $package_manager
+   * @param \Acquia\Orca\Package\PackageManager $package_manager
    *   The package manager.
    * @param \Composer\Semver\VersionParser $version_parser
    *   The version parser.

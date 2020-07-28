@@ -2,10 +2,11 @@
 
 namespace Acquia\Orca\Fixture;
 
-use Acquia\Orca\Codebase\CodebaseCreator;
 use Acquia\Orca\Exception\OrcaException;
 use Acquia\Orca\Facade\GitFacade;
 use Acquia\Orca\Filesystem\FixturePathHandler;
+use Acquia\Orca\Package\Package;
+use Acquia\Orca\Package\PackageManager;
 use Acquia\Orca\Utility\DrupalCoreVersionFinder;
 use Acquia\Orca\Utility\ProcessRunner;
 use Acquia\Orca\Utility\StatusTable;
@@ -39,7 +40,7 @@ class FixtureCreator {
   /**
    * The BLT package, if defined.
    *
-   * @var \Acquia\Orca\Fixture\Package|null
+   * @var \Acquia\Orca\Package\Package|null
    */
   private $blt;
 
@@ -123,7 +124,7 @@ class FixtureCreator {
   /**
    * The package manager.
    *
-   * @var \Acquia\Orca\Fixture\PackageManager
+   * @var \Acquia\Orca\Package\PackageManager
    */
   private $packageManager;
 
@@ -207,14 +208,14 @@ class FixtureCreator {
   /**
    * The codebase creator.
    *
-   * @var \Acquia\Orca\Codebase\CodebaseCreator
+   * @var \Acquia\Orca\Fixture\CodebaseCreator
    */
   private $codebaseCreator;
 
   /**
    * Constructs an instance.
    *
-   * @param \Acquia\Orca\Codebase\CodebaseCreator $codebase_creator
+   * @param \Acquia\Orca\Fixture\CodebaseCreator $codebase_creator
    *   The codebase creator.
    * @param \Acquia\Orca\Utility\DrupalCoreVersionFinder $core_version_finder
    *   The Drupal core version finder.
@@ -230,7 +231,7 @@ class FixtureCreator {
    *   The output decorator.
    * @param \Acquia\Orca\Utility\ProcessRunner $process_runner
    *   The process runner.
-   * @param \Acquia\Orca\Fixture\PackageManager $package_manager
+   * @param \Acquia\Orca\Package\PackageManager $package_manager
    *   The package manager.
    * @param \Acquia\Orca\Fixture\SubextensionManager $subextension_manager
    *   The subextension manager.
@@ -654,7 +655,7 @@ class FixtureCreator {
   /**
    * Gets all local packages.
    *
-   * @return \Acquia\Orca\Fixture\Package[]
+   * @return \Acquia\Orca\Package\Package[]
    *   An associative array of local package objects keyed by their package
    *   names.
    */
@@ -849,7 +850,7 @@ class FixtureCreator {
   /**
    * Determines whether or not the given non-SUT package should be symlinked.
    *
-   * @param \Acquia\Orca\Fixture\Package $package
+   * @param \Acquia\Orca\Package\Package $package
    *   The package in question.
    *
    * @return bool
@@ -867,7 +868,7 @@ class FixtureCreator {
   /**
    * Gets the target version for the given package.
    *
-   * @param \Acquia\Orca\Fixture\Package $package
+   * @param \Acquia\Orca\Package\Package $package
    *   The package to get the target version for.
    *
    * @return string|null
@@ -882,7 +883,7 @@ class FixtureCreator {
   /**
    * Finds the latest available version for a given package.
    *
-   * @param \Acquia\Orca\Fixture\Package $package
+   * @param \Acquia\Orca\Package\Package $package
    *   The package to get the latest version for.
    *
    * @return \Composer\Package\PackageInterface
@@ -922,7 +923,7 @@ class FixtureCreator {
   /**
    * Gets the package string for a given local package..
    *
-   * @param \Acquia\Orca\Fixture\Package $package
+   * @param \Acquia\Orca\Package\Package $package
    *   The local package.
    *
    * @return string
@@ -935,7 +936,7 @@ class FixtureCreator {
   /**
    * Gets the version of a given local package.
    *
-   * @param \Acquia\Orca\Fixture\Package $package
+   * @param \Acquia\Orca\Package\Package $package
    *   The local package.
    *
    * @return string

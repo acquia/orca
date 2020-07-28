@@ -4,7 +4,7 @@ namespace Acquia\Orca\Console\Command\Qa;
 
 use Acquia\Orca\Enum\StatusCode;
 use Acquia\Orca\Filesystem\FixturePathHandler;
-use Acquia\Orca\Fixture\PackageManager;
+use Acquia\Orca\Package\PackageManager;
 use Acquia\Orca\Task\DeprecatedCodeScanner\PhpStanTask;
 use Acquia\Orca\Task\TaskRunner;
 use Symfony\Component\Console\Command\Command;
@@ -41,7 +41,7 @@ class QaDeprecatedCodeScanCommand extends Command {
   /**
    * The package manager.
    *
-   * @var \Acquia\Orca\Fixture\PackageManager
+   * @var \Acquia\Orca\Package\PackageManager
    */
   private $packageManager;
 
@@ -71,7 +71,7 @@ class QaDeprecatedCodeScanCommand extends Command {
    *
    * @param \Acquia\Orca\Filesystem\FixturePathHandler $fixture_path_handler
    *   The fixture path handler.
-   * @param \Acquia\Orca\Fixture\PackageManager $package_manager
+   * @param \Acquia\Orca\Package\PackageManager $package_manager
    *   The package manager.
    * @param \Acquia\Orca\Task\DeprecatedCodeScanner\PhpStanTask $phpstan
    *   The PhpStan task.

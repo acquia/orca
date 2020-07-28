@@ -2,15 +2,15 @@
 
 namespace Acquia\Orca\Tests\Fixture;
 
-use Acquia\Orca\Codebase\CodebaseCreator;
 use Acquia\Orca\Filesystem\FixturePathHandler;
 use Acquia\Orca\Filesystem\OrcaPathHandler;
+use Acquia\Orca\Fixture\CodebaseCreator;
 use Acquia\Orca\Fixture\FixtureCreator;
 use Acquia\Orca\Fixture\FixtureInspector;
-use Acquia\Orca\Fixture\Package;
-use Acquia\Orca\Fixture\PackageManager;
 use Acquia\Orca\Fixture\SiteInstaller;
 use Acquia\Orca\Fixture\SubextensionManager;
+use Acquia\Orca\Package\Package;
+use Acquia\Orca\Package\PackageManager;
 use Acquia\Orca\Utility\DrupalCoreVersionFinder;
 use Acquia\Orca\Utility\ProcessRunner;
 use Composer\Package\Version\VersionGuesser;
@@ -20,11 +20,11 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
- * @property \Acquia\Orca\Codebase\CodebaseCreator|\Prophecy\Prophecy\ObjectProphecy $codebaseCreator
+ * @property \Acquia\Orca\Fixture\CodebaseCreator|\Prophecy\Prophecy\ObjectProphecy $codebaseCreator
  * @property \Acquia\Orca\Filesystem\FixturePathHandlerInspector|\Prophecy\Prophecy\ObjectProphecy $fixtureInspector
  * @property \Acquia\Orca\Filesystem\FixturePathHandler|\Prophecy\Prophecy\ObjectProphecy $fixture
  * @property \Acquia\Orca\Filesystem\OrcaPathHandler|\Prophecy\Prophecy\ObjectProphecy $orca
- * @property \Acquia\Orca\Fixture\PackageManager|\Prophecy\Prophecy\ObjectProphecy $packageManager
+ * @property \Acquia\Orca\Package\PackageManager|\Prophecy\Prophecy\ObjectProphecy $packageManager
  * @property \Acquia\Orca\Fixture\SiteInstaller|\Prophecy\Prophecy\ObjectProphecy $siteInstaller
  * @property \Acquia\Orca\Fixture\SubextensionManager|\Prophecy\Prophecy\ObjectProphecy $subextensionManager
  * @property \Acquia\Orca\Utility\DrupalCoreVersionFinder|\Prophecy\Prophecy\ObjectProphecy $coreVersionFinder

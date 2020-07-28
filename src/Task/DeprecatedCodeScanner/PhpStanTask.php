@@ -5,8 +5,8 @@ namespace Acquia\Orca\Task\DeprecatedCodeScanner;
 use Acquia\Orca\Enum\StatusCode;
 use Acquia\Orca\Filesystem\FixturePathHandler;
 use Acquia\Orca\Filesystem\OrcaPathHandler;
-use Acquia\Orca\Fixture\PackageManager;
 use Acquia\Orca\Log\TelemetryClient;
+use Acquia\Orca\Package\PackageManager;
 use Acquia\Orca\Utility\ProcessRunner;
 use Acquia\Orca\Utility\SutSettingsTrait;
 use Symfony\Component\Console\Style\SymfonyStyle;
@@ -74,7 +74,7 @@ class PhpStanTask {
   /**
    * The SUT to scan.
    *
-   * @var \Acquia\Orca\Fixture\Package|null
+   * @var \Acquia\Orca\Package\Package|null
    */
   private $sut;
 
@@ -103,7 +103,7 @@ class PhpStanTask {
    *   The ORCA path handler.
    * @param \Symfony\Component\Console\Style\SymfonyStyle $output
    *   The output decorator.
-   * @param \Acquia\Orca\Fixture\PackageManager $package_manager
+   * @param \Acquia\Orca\Package\PackageManager $package_manager
    *   The package manager.
    * @param \Acquia\Orca\Utility\ProcessRunner $process_runner
    *   The process runner.

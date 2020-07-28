@@ -4,6 +4,7 @@ namespace Acquia\Orca\Fixture;
 
 use Acquia\Orca\Facade\DrushFacade;
 use Acquia\Orca\Filesystem\FixturePathHandler;
+use Acquia\Orca\Package\PackageManager;
 use Acquia\Orca\Server\WebServer;
 use Noodlehaus\Config;
 use Noodlehaus\Parser\Json;
@@ -60,7 +61,7 @@ class FixtureInspector {
   /**
    * The package manager.
    *
-   * @var \Acquia\Orca\Fixture\PackageManager
+   * @var \Acquia\Orca\Package\PackageManager
    */
   private $packageManager;
 
@@ -80,7 +81,7 @@ class FixtureInspector {
    *   The fixture path handler.
    * @param \Symfony\Component\Console\Style\SymfonyStyle $output
    *   The output decorator.
-   * @param \Acquia\Orca\Fixture\PackageManager $package_manager
+   * @param \Acquia\Orca\Package\PackageManager $package_manager
    *   The package manager.
    * @param \Acquia\Orca\Fixture\SubextensionManager $subextension_manager
    *   The subextension manager.

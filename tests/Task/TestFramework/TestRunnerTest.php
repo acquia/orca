@@ -3,7 +3,7 @@
 namespace Acquia\Orca\Tests\Task\TestFramework;
 
 use Acquia\Orca\Fixture\FixtureResetter;
-use Acquia\Orca\Fixture\PackageManager;
+use Acquia\Orca\Package\PackageManager;
 use Acquia\Orca\Server\ServerStack;
 use Acquia\Orca\Task\TaskInterface;
 use Acquia\Orca\Task\TestFramework\PhpUnitTask;
@@ -19,7 +19,7 @@ use Symfony\Component\Filesystem\Filesystem;
  * @property \Prophecy\Prophecy\ObjectProphecy|\Symfony\Component\Console\Style\SymfonyStyle $output
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Task\TestFramework\PhpUnitTask $phpunit
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Utility\ProcessRunner $processRunner
- * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Fixture\PackageManager $packageManager
+ * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Package\PackageManager $packageManager
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Server\ServerStack $serverStack
  */
 class TestRunnerTest extends TestCase {

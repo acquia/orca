@@ -5,7 +5,7 @@ namespace Acquia\Orca\Tests\Console\Command\Qa;
 use Acquia\Orca\Console\Command\Qa\QaDeprecatedCodeScanCommand;
 use Acquia\Orca\Enum\StatusCode;
 use Acquia\Orca\Filesystem\FixturePathHandler;
-use Acquia\Orca\Fixture\PackageManager;
+use Acquia\Orca\Package\PackageManager;
 use Acquia\Orca\Task\DeprecatedCodeScanner\PhpStanTask;
 use Acquia\Orca\Task\TaskRunner;
 use Acquia\Orca\Tests\Console\Command\CommandTestBase;
@@ -13,7 +13,7 @@ use Symfony\Component\Console\Command\Command;
 
 /**
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Filesystem\FixturePathHandler $fixture
- * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Fixture\PackageManager $packageManager
+ * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Package\PackageManager $packageManager
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Task\DeprecatedCodeScanner\PhpStanTask $phpstan
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Task\TaskRunner $taskRunner
  */

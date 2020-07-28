@@ -1,6 +1,6 @@
 <?php
 
-namespace Acquia\Orca\Fixture;
+namespace Acquia\Orca\Package;
 
 use Acquia\Orca\Filesystem\FixturePathHandler;
 use Acquia\Orca\Filesystem\OrcaPathHandler;
