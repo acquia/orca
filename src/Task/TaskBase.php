@@ -2,9 +2,11 @@
 
 namespace Acquia\Orca\Task;
 
-use Acquia\Orca\Fixture\Fixture;
+use Acquia\Orca\Filesystem\FixturePathHandler;
+use Acquia\Orca\Filesystem\OrcaPathHandler;
 use Acquia\Orca\Utility\ConfigFileOverrider;
 use Acquia\Orca\Utility\ProcessRunner;
+use LogicException;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Filesystem\Filesystem;
 
@@ -28,11 +30,18 @@ abstract class TaskBase implements TaskInterface {
   protected $filesystem;
 
   /**
-   * The fixture.
+   * The fixture path handler.
    *
-   * @var \Acquia\Orca\Fixture\Fixture
+   * @var \Acquia\Orca\Filesystem\FixturePathHandler
    */
   protected $fixture;
+
+  /**
+   * The ORCA path handler.
+   *
+   * @var \Acquia\Orca\Filesystem\OrcaPathHandler
+   */
+  protected $orca;
 
   /**
    * A filesystem path.
@@ -47,13 +56,6 @@ abstract class TaskBase implements TaskInterface {
    * @var \Acquia\Orca\Utility\ProcessRunner
    */
   protected $processRunner;
-
-  /**
-   * The ORCA project directory.
-   *
-   * @var string
-   */
-  protected $projectDir;
 
   /**
    * The output decorator.
@@ -76,21 +78,22 @@ abstract class TaskBase implements TaskInterface {
    *   The config file overrider.
    * @param \Symfony\Component\Filesystem\Filesystem $filesystem
    *   The filesystem.
-   * @param \Acquia\Orca\Fixture\Fixture $fixture
-   *   The fixture.
+   * @param \Acquia\Orca\Filesystem\FixturePathHandler $fixture_path_handler
+   *   The fixture path handler.
+   * @param \Acquia\Orca\Filesystem\OrcaPathHandler $orca_path_handler
+   *   The ORCA path handler.
    * @param \Symfony\Component\Console\Style\SymfonyStyle $output
    *   The output decorator.
    * @param \Acquia\Orca\Task\PhpcsConfigurator $phpcs_configurator
    *   The PHPCS configurator.
    * @param \Acquia\Orca\Utility\ProcessRunner $process_runner
    *   The process runner.
-   * @param string $project_dir
-   *   The ORCA project directory.
    */
-  public function __construct(ConfigFileOverrider $config_file_overrider, Filesystem $filesystem, Fixture $fixture, SymfonyStyle $output, PhpcsConfigurator $phpcs_configurator, ProcessRunner $process_runner, string $project_dir) {
+  public function __construct(ConfigFileOverrider $config_file_overrider, Filesystem $filesystem, FixturePathHandler $fixture_path_handler, OrcaPathHandler $orca_path_handler, SymfonyStyle $output, PhpcsConfigurator $phpcs_configurator, ProcessRunner $process_runner) {
     $this->configFileOverrider = $config_file_overrider;
     $this->filesystem = $filesystem;
-    $this->fixture = $fixture;
+    $this->fixture = $fixture_path_handler;
+    $this->orca = $orca_path_handler;
     $this->output = $output;
 
     // @todo The injection of this service in a base class like this constitutes
@@ -100,7 +103,6 @@ abstract class TaskBase implements TaskInterface {
     $this->phpcsConfigurator = $phpcs_configurator;
 
     $this->processRunner = $process_runner;
-    $this->projectDir = $project_dir;
   }
 
   /**
@@ -111,7 +113,7 @@ abstract class TaskBase implements TaskInterface {
    */
   public function getPath(): string {
     if (!$this->path) {
-      throw new \LogicException(sprintf('Path not set in %s:%s().', get_class($this), debug_backtrace()[1]['function']));
+      throw new LogicException(sprintf('Path not set in %s:%s().', get_class($this), debug_backtrace()[1]['function']));
     }
     return $this->path;
   }

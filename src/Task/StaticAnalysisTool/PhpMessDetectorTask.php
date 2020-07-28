@@ -40,7 +40,7 @@ class PhpMessDetectorTask extends TaskBase {
       'phpmd',
       '.',
       'text',
-      "{$this->projectDir}/phpmd.xml.dist",
+      $this->orca->getPath('phpmd.xml.dist'),
       // Emit output but don't fail builds.
       '--ignore-violations-on-exit',
     ], $this->getPath());
@@ -51,7 +51,7 @@ class PhpMessDetectorTask extends TaskBase {
    */
   public function overrideConfig(): void {
     $this->configFileOverrider->setPaths(
-      "{$this->projectDir}/phpmd.xml.dist",
+      $this->orca->getPath('phpmd.xml.dist'),
       "{$this->getPath()}/phpmd.xml"
     );
     $this->configFileOverrider->override();

@@ -23,6 +23,7 @@
 language: php
 
 os: linux
+dist: bionic
 
 # Activate build config validation.
 # @see https://docs.travis-ci.com/user/build-config-validation
@@ -32,8 +33,6 @@ version: ~> 1.0
 # @see https://www.drupal.org/docs/8/system-requirements/php-requirements
 # @see https://docs.acquia.com/acquia-cloud/arch/tech-platform/
 php: "7.2"
-
-node_js: "lts/*"
 
 addons:
   # Chrome is used via ChromeDriver for web testing and browser automation.
@@ -59,9 +58,14 @@ env:
     - ORCA_SUT_BRANCH=8.x-1.x
     # Specify the version of ORCA to use. Use dev-master to track the latest
     # release, dev-develop to track Dev/HEAD, or any other Composer version
-    # string.
+    # string. Since ORCA uses Semantic Versioning, the current major version
+    # branch is recommended in order to receive new features but not unexpected
+    # backward compatibility breaking changes.
     # @see https://getcomposer.org/doc/articles/versions.md
-    - ORCA_VERSION=dev-master
+    # @see https://semver.org/
+    # It is also recommended to watch ORCA releases.
+    # @see https://help.github.com/en/enterprise/2.20/user/github/receiving-notifications-about-activity-on-github/watching-and-unwatching-releases-for-a-repository
+    - ORCA_VERSION=^2
     # If your package isn't in ORCA's packages.yml or conflicts with details
     # that are, you can modify the active packages configuration at runtime by
     # uncommenting the following line and specifying your own alter file.
@@ -120,11 +124,11 @@ jobs:
     - env: ORCA_JOB=ISOLATED_DEV
     - env: ORCA_JOB=INTEGRATED_DEV
     - env: ORCA_JOB=CORE_NEXT
-    # You may need to allow the D9 readiness job to fail in the short term.
-    - { php: "7.3", env: ORCA_JOB=D9_READINESS }
 
 # Install ORCA and prepare the environment.
 before_install:
+  # Set Node.js to a version compatible with Drupal 9 + Nightwatch.js.
+  - nvm use 12.13.1
   - composer create-project --no-dev acquia/orca ../orca "$ORCA_VERSION"
   - ../orca/bin/travis/before_install.sh
 

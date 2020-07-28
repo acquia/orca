@@ -21,7 +21,6 @@ class TelemetryClientTest extends TestCase {
   }
 
   protected function createTelemetryClient(): TelemetryClient {
-    /** @var \Zumba\Amplitude\Amplitude $amplitude */
     $amplitude = $this->amplitude->reveal();
     return new TelemetryClient($amplitude, $this->telemetryIsEnabled, $this->amplitudeApiKey, $this->amplitudeUserId);
   }

@@ -7,25 +7,13 @@ use Composer\DependencyResolver\Pool;
 use Composer\IO\NullIO;
 use Composer\Package\Version\VersionSelector;
 use Composer\Repository\RepositoryFactory;
+use LogicException;
+use RuntimeException;
 
 /**
  * Finds a range of Drupal core versions.
  */
 class DrupalCoreVersionFinder {
-
-  /**
-   * The current recommended release.
-   *
-   * @var string
-   */
-  private $currentRecommendedRelease = '';
-
-  /**
-   * The next release.
-   *
-   * @var string
-   */
-  private $nextRelease = '';
 
   /**
    * The previous minor release.
@@ -70,7 +58,7 @@ class DrupalCoreVersionFinder {
         return $this->getD9DevVersion();
 
       default:
-        throw new \LogicException(sprintf('Unknown version. Update %s:%s.', __CLASS__, __FUNCTION__));
+        throw new LogicException(sprintf('Unknown version. Update %s:%s.', __CLASS__, __FUNCTION__));
     }
   }
 
@@ -87,7 +75,7 @@ class DrupalCoreVersionFinder {
     try {
       return $this->get($version);
     }
-    catch (\RuntimeException $e) {
+    catch (RuntimeException $e) {
       return '~';
     }
   }
@@ -111,7 +99,7 @@ class DrupalCoreVersionFinder {
     $best_candidate = $this->getVersionSelector($minimum_stability)
       ->findBestCandidate('drupal/core', $target_package_version, NULL, $preferred_stability);
     if (!$best_candidate) {
-      throw new \RuntimeException(sprintf('No Drupal core version satisfies the given constraints: version=%s, minimum stability=%s', $target_package_version, $minimum_stability));
+      throw new RuntimeException(sprintf('No Drupal core version satisfies the given constraints: version=%s, minimum stability=%s', $target_package_version, $minimum_stability));
     }
     return $best_candidate->getPrettyVersion();
   }

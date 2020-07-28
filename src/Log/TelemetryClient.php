@@ -29,7 +29,7 @@ class TelemetryClient {
    *   The Amplitude user ID, typically created by combining the SUT name and
    *   branch, e.g., "drupal/example:8.x-1.x".
    */
-  public function __construct(Amplitude $amplitude, ?bool $telemetry_is_enabled = FALSE, ?string $amplitude_api_key = NULL, ?string $amplitude_user_id = NULL) {
+  public function __construct(Amplitude $amplitude, bool $telemetry_is_enabled, ?string $amplitude_api_key = NULL, ?string $amplitude_user_id = NULL) {
     if (!$telemetry_is_enabled || !$amplitude_api_key || !$amplitude_user_id) {
       return;
     }

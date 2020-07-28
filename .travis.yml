@@ -2,12 +2,11 @@
 language: php
 
 os: [ linux ]
+dist: bionic
 
 version: ~> 1.0
 
 php: "7.2"
-
-node_js: "lts/*"
 
 addons:
   chrome: stable
@@ -48,10 +47,10 @@ jobs:
     - { name: "Custom job", env: ORCA_JOB=CUSTOM ORCA_CUSTOM_FIXTURE_INIT_ARGS="--help" ORCA_CUSTOM_TESTS_RUN_ARGS="--help" }
     - { name: "Integrated live test", env: ORCA_JOB=LIVE_TEST ORCA_ENABLE_NIGHTWATCH=FALSE }
   allow_failures:
-    - { php: "7.3", env: ORCA_JOB=D9_READINESS }
     - env: ORCA_JOB=LIVE_TEST ORCA_ENABLE_NIGHTWATCH=FALSE
 
 before_install:
+  - nvm use 12.13.1
   - ../orca/bin/travis/self-test/before_install.sh
   - ../orca/bin/travis/before_install.sh
 

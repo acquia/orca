@@ -2,19 +2,13 @@
 
 namespace Acquia\Orca\Fixture;
 
+use Acquia\Orca\Facade\GitFacade;
 use Acquia\Orca\Utility\ProcessRunner;
 
 /**
  * Resets the fixture.
  */
 class FixtureResetter {
-
-  /**
-   * The fixture.
-   *
-   * @var \Acquia\Orca\Fixture\Fixture
-   */
-  private $fixture;
 
   /**
    * The process runner.
@@ -26,13 +20,10 @@ class FixtureResetter {
   /**
    * Constructs an instance.
    *
-   * @param \Acquia\Orca\Fixture\Fixture $fixture
-   *   The fixture.
    * @param \Acquia\Orca\Utility\ProcessRunner $process_runner
    *   The process runner.
    */
-  public function __construct(Fixture $fixture, ProcessRunner $process_runner) {
-    $this->fixture = $fixture;
+  public function __construct(ProcessRunner $process_runner) {
     $this->processRunner = $process_runner;
   }
 
@@ -43,7 +34,7 @@ class FixtureResetter {
     $this->processRunner->git([
       'checkout',
       '--force',
-      Fixture::FRESH_FIXTURE_GIT_TAG,
+      GitFacade::FRESH_FIXTURE_TAG,
     ]);
     $this->processRunner->git(['clean', '--force', '-d']);
   }

@@ -3,6 +3,7 @@
 namespace Acquia\Orca\Task;
 
 use Acquia\Orca\Enum\PhpcsStandard;
+use Acquia\Orca\Filesystem\OrcaPathHandler;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
@@ -20,23 +21,23 @@ class PhpcsConfigurator {
   private $filesystem;
 
   /**
-   * The ORCA project directory.
+   * The ORCA path handler.
    *
-   * @var string
+   * @var \Acquia\Orca\Filesystem\OrcaPathHandler
    */
-  private $projectDir;
+  private $orca;
 
   /**
    * Constructs an instance.
    *
    * @param \Symfony\Component\Filesystem\Filesystem $filesystem
    *   The filesystem.
-   * @param string $project_dir
-   *   The ORCA project directory.
+   * @param \Acquia\Orca\Filesystem\OrcaPathHandler $orca_path_handler
+   *   The ORCA path handler.
    */
-  public function __construct(Filesystem $filesystem, string $project_dir) {
+  public function __construct(Filesystem $filesystem, OrcaPathHandler $orca_path_handler) {
     $this->filesystem = $filesystem;
-    $this->projectDir = $project_dir;
+    $this->orca = $orca_path_handler;
   }
 
   /**
@@ -78,7 +79,7 @@ class PhpcsConfigurator {
       return $this->tempDir;
     }
 
-    $path = sprintf('%s/var/cache/phpcs/%s', $this->projectDir, uniqid());
+    $path = $this->orca->getPath("var/cache/phpcs/{uniqid()}");
     $this->tempDir = $path;
     return $this->tempDir;
   }
@@ -90,7 +91,7 @@ class PhpcsConfigurator {
    *   The path to the config file template.
    */
   private function getConfigFileTemplate(): string {
-    return "{$this->projectDir}/resources/phpcs.xml";
+    return $this->orca->getPath('resources/phpcs.xml');
   }
 
   /**

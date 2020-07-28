@@ -130,7 +130,7 @@ class ComposerValidateTask extends TaskBase {
         $path,
         // The cwd must be the ORCA project directory in order for Composer to
         // find the "normalize" command.
-      ], $this->projectDir);
+      ], $this->orca->getPath());
     }
     catch (ProcessFailedException $e) {
       $this->failures = TRUE;

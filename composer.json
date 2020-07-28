@@ -85,6 +85,7 @@
             "@composer normalize"
         ],
         "cghooks": "cghooks --ansi",
+        "coverage": "phpunit --coverage-html var/coverage-report; open var/coverage-report/index.html",
         "phpcbf": "phpcbf",
         "phpcs": "phpcs -s --cache=var/cache/phpcs.json",
         "phplint": "parallel-lint --exclude vendor --ignore-fails .",

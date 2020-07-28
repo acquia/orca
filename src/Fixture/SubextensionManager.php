@@ -2,7 +2,10 @@
 
 namespace Acquia\Orca\Fixture;
 
+use Acquia\Orca\Filesystem\FixturePathHandler;
+use Acquia\Orca\Filesystem\OrcaPathHandler;
 use Acquia\Orca\Utility\ConfigLoader;
+use SplFileInfo;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
 
@@ -33,11 +36,18 @@ class SubextensionManager {
   private $filesystem;
 
   /**
-   * The fixture.
+   * The fixture path handler.
    *
-   * @var \Acquia\Orca\Fixture\Fixture
+   * @var \Acquia\Orca\Filesystem\FixturePathHandler
    */
   private $fixture;
+
+  /**
+   * The ORCA path handler.
+   *
+   * @var \Acquia\Orca\Filesystem\OrcaPathHandler
+   */
+  private $orca;
 
   /**
    * The top-level Acquia extensions.
@@ -54,33 +64,26 @@ class SubextensionManager {
   private $subextensions = [];
 
   /**
-   * The ORCA project directory.
-   *
-   * @var string
-   */
-  private $projectDir;
-
-  /**
    * Constructs an instance.
    *
    * @param \Acquia\Orca\Utility\ConfigLoader $config_loader
    *   The config loader.
    * @param \Symfony\Component\Filesystem\Filesystem $filesystem
    *   The filesystem.
-   * @param \Acquia\Orca\Fixture\Fixture $fixture
-   *   The fixture.
+   * @param \Acquia\Orca\Filesystem\FixturePathHandler $fixture_path_handler
+   *   The fixture path handler.
+   * @param \Acquia\Orca\Filesystem\OrcaPathHandler $orca_path_handler
+   *   The ORCA path handler.
    * @param \Acquia\Orca\Fixture\PackageManager $package_manager
    *   The package manager.
-   * @param string $project_dir
-   *   The ORCA project directory.
    */
-  public function __construct(ConfigLoader $config_loader, Filesystem $filesystem, Fixture $fixture, PackageManager $package_manager, string $project_dir) {
+  public function __construct(ConfigLoader $config_loader, Filesystem $filesystem, FixturePathHandler $fixture_path_handler, OrcaPathHandler $orca_path_handler, PackageManager $package_manager) {
     $this->configLoader = $config_loader;
     $this->filesystem = $filesystem;
-    $this->fixture = $fixture;
+    $this->fixture = $fixture_path_handler;
     $this->alterData = $package_manager->getAlterData();
     $this->initializeTopLevelExtensions($package_manager);
-    $this->projectDir = $project_dir;
+    $this->orca = $orca_path_handler;
   }
 
   /**
@@ -158,7 +161,7 @@ class SubextensionManager {
         $package_data = array_replace($package_data, $alter_data);
       }
 
-      $subextensions[$name] = new Package($package_data, $this->fixture, $name, $this->projectDir);
+      $subextensions[$name] = new Package($package_data, $this->fixture, $this->orca, $name);
     }
 
     return $subextensions;
@@ -193,7 +196,7 @@ class SubextensionManager {
         'vendor',
       ])
       ->name('composer.json')
-      ->filter(function (\SplFileInfo $file) {
+      ->filter(function (SplFileInfo $file) {
         return $this->isSubextensionComposerJson($file);
       });
   }
@@ -208,14 +211,14 @@ class SubextensionManager {
    *   TRUE if the given composer.json file belongs to a subextension or FALSE
    *   if not.
    */
-  private function isSubextensionComposerJson(\SplFileInfo $file): bool {
+  private function isSubextensionComposerJson(SplFileInfo $file): bool {
     try {
       $config = $this->configLoader->load($file->getPathname());
       $name = $config->get('name');
       if (!$name || strpos($name, '/') === FALSE) {
         return FALSE;
       }
-      list($vendor_name, $package_name) = explode('/', $name);
+      [$vendor_name, $package_name] = explode('/', $name);
     }
     catch (\Exception $e) {
       return FALSE;

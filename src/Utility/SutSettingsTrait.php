@@ -3,6 +3,7 @@
 namespace Acquia\Orca\Utility;
 
 use Acquia\Orca\Fixture\PackageManager;
+use LogicException;
 
 /**
  * Provides an interface for managing SUT-related settings.
@@ -44,7 +45,7 @@ trait SutSettingsTrait {
     }
 
     if (!$this->packageManager) {
-      throw new \LogicException(sprintf('%s requires a usable %s.', self::class, PackageManager::class));
+      throw new LogicException(sprintf('%s requires a usable %s.', self::class, PackageManager::class));
     }
 
     $this->sut = $this->packageManager->get($package_name);

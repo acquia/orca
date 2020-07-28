@@ -11,7 +11,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Task\StaticAnalysisTool\ComposerValidateTask $composerValidateTask
- * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Task\StaticAnalysisTool\PhpLintTask $phpLintTask
+ * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Task\StaticAnalysisTool\PhpLintTask $phplintTask
  */
 class TaskRunnerTest extends TestCase {
 
@@ -25,14 +25,12 @@ class TaskRunnerTest extends TestCase {
       ->shouldBeCalledTimes(1);
     $output->success('Passed')
       ->shouldBeCalledTimes(2);
-    /** @var \Symfony\Component\Console\Style\SymfonyStyle $output */
     $output = $output->reveal();
-    /** @var \Acquia\Orca\Task\StaticAnalysisTool\PhpLintTask $php_lint */
-    $php_lint = $this->setTaskExpectations(PhpLintTask::class);
+    $phplint = $this->setTaskExpectations(PhpLintTask::class);
 
     $runner = new TaskRunner($output);
     $runner->setPath('foobar')
-      ->addTask($php_lint)
+      ->addTask($phplint)
       ->setPath(self::PATH);
     $status_code = $runner->run();
     // Make sure tasks are reset on clone.
@@ -51,7 +49,6 @@ class TaskRunnerTest extends TestCase {
       ->shouldBeCalledTimes(1)
       ->willReturn($task);
     $task->execute()->shouldBeCalledTimes(1);
-    /** @var \Acquia\Orca\Task\TaskInterface $task */
     $task = $task->reveal();
     return $task;
   }

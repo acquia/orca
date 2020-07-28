@@ -2,7 +2,8 @@
 
 namespace Acquia\Orca\Utility;
 
-use Acquia\Orca\Fixture\Fixture;
+use Acquia\Orca\Filesystem\FixturePathHandler;
+use Acquia\Orca\Filesystem\OrcaPathHandler;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Exception\RuntimeException;
@@ -15,11 +16,18 @@ use Symfony\Component\Process\Process;
 class ProcessRunner {
 
   /**
-   * The fixture.
+   * The fixture path handler.
    *
-   * @var \Acquia\Orca\Fixture\Fixture
+   * @var \Acquia\Orca\Filesystem\FixturePathHandler
    */
   private $fixture;
+
+  /**
+   * The ORCA path handler.
+   *
+   * @var \Acquia\Orca\Filesystem\OrcaPathHandler
+   */
+  private $orca;
 
   /**
    * The output decorator.
@@ -29,26 +37,19 @@ class ProcessRunner {
   private $output;
 
   /**
-   * The ORCA project directory.
-   *
-   * @var string
-   */
-  private $projectDir;
-
-  /**
    * Constructs an instance.
    *
-   * @param \Acquia\Orca\Fixture\Fixture $fixture
-   *   The fixture.
+   * @param \Acquia\Orca\Filesystem\FixturePathHandler $fixture_path_handler
+   *   The fixture path handler.
    * @param \Symfony\Component\Console\Style\SymfonyStyle $output
    *   The output decorator.
-   * @param string $project_dir
-   *   The ORCA project directory.
+   * @param \Acquia\Orca\Filesystem\OrcaPathHandler $orca_path_handler
+   *   The ORCA path handler.
    */
-  public function __construct(Fixture $fixture, SymfonyStyle $output, string $project_dir) {
-    $this->fixture = $fixture;
+  public function __construct(FixturePathHandler $fixture_path_handler, SymfonyStyle $output, OrcaPathHandler $orca_path_handler) {
+    $this->fixture = $fixture_path_handler;
+    $this->orca = $orca_path_handler;
     $this->output = $output;
-    $this->projectDir = $project_dir;
   }
 
   /**
@@ -189,7 +190,7 @@ class ProcessRunner {
    *   The created process.
    */
   public function createOrcaVendorBinProcess(array $command): Process {
-    $command[0] = "{$this->projectDir}/vendor/bin/{$command[0]}";
+    $command[0] = $this->orca->getPath("vendor/bin/{$command[0]}");
     return $this->createVendorBinProcess($command);
   }
 

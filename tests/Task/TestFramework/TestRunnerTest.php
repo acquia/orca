@@ -52,25 +52,17 @@ class TestRunnerTest extends TestCase {
     $task->setPath(self::PATH)
       ->shouldBeCalledTimes(1);
     $task->execute()->shouldBeCalledTimes(1);
-    /** @var \Acquia\Orca\Task\TaskInterface $task */
     $task = $task->reveal();
     return $task;
   }
 
   private function createTestRunner(): TestRunner {
-    /** @var \Symfony\Component\Filesystem\Filesystem $filesystem */
     $filesystem = $this->filesystem->reveal();
-    /** @var \Acquia\Orca\Fixture\FixtureResetter $fixture_resetter */
     $fixture_resetter = $this->fixtureResetter->reveal();
-    /** @var \Symfony\Component\Console\Style\SymfonyStyle $output */
     $output = $this->output->reveal();
-    /** @var \Acquia\Orca\Task\TestFramework\PhpUnitTask $phpunit */
     $phpunit = $this->phpunit->reveal();
-    /** @var \Acquia\Orca\Utility\ProcessRunner $process_runner */
     $process_runner = $this->processRunner->reveal();
-    /** @var \Acquia\Orca\Fixture\PackageManager $package_manager */
     $package_manager = $this->packageManager->reveal();
-    /** @var \Acquia\Orca\Server\ServerStack $server_stack */
     $server_stack = $this->serverStack->reveal();
     return new TestRunner($filesystem, $fixture_resetter, $output, $phpunit, $process_runner, $package_manager, $server_stack);
   }
