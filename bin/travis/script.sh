@@ -19,7 +19,11 @@ cd "$(dirname "$0")" || exit; source _includes.sh
 [[ "$ORCA_FIXTURE_PROFILE" = "orca" ]] || SUT_ONLY="--sut-only"
 
 case "$ORCA_JOB" in
-  "STATIC_CODE_ANALYSIS") eval "orca qa:static-analysis $ORCA_SUT_DIR"; unset ORCA_ENABLE_NIGHTWATCH ;;
+  "STATIC_CODE_ANALYSIS")
+    eval "orca qa:static-analysis $ORCA_SUT_DIR"
+    eval "orca report:code-coverage $ORCA_SUT_DIR"
+    unset ORCA_ENABLE_NIGHTWATCH
+    ;;
   "DEPRECATED_CODE_SCAN") eval "orca qa:deprecated-code-scan --sut=$ORCA_SUT_NAME"; unset ORCA_ENABLE_NIGHTWATCH ;;
   "DEPRECATED_CODE_SCAN_CONTRIB") eval "orca qa:deprecated-code-scan --contrib"; unset ORCA_ENABLE_NIGHTWATCH ;;
   "ISOLATED_RECOMMENDED") eval "orca qa:automated-tests --sut=$ORCA_SUT_NAME --sut-only" ;;
