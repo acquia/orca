@@ -9,6 +9,7 @@ use Prophecy\Argument;
 
 /**
  * @property \Acquia\Orca\Utility\ProcessRunner|\Prophecy\Prophecy\ObjectProphecy $processRunner
+ * @coversDefaultClass \Acquia\Orca\Facade\ComposerFacade
  */
 class ComposerFacadeTest extends TestCase {
 
