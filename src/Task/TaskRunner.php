@@ -97,7 +97,6 @@ class TaskRunner {
       return StatusCode::ERROR;
     }
 
-    $this->output->success('Passed');
     return $status;
   }
 

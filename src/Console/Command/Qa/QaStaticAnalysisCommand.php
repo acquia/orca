@@ -5,6 +5,7 @@ namespace Acquia\Orca\Console\Command\Qa;
 use Acquia\Orca\Enum\PhpcsStandard;
 use Acquia\Orca\Enum\StatusCode;
 use Acquia\Orca\Task\StaticAnalysisTool\ComposerValidateTask;
+use Acquia\Orca\Task\StaticAnalysisTool\CoverageTask;
 use Acquia\Orca\Task\StaticAnalysisTool\PhpCodeSnifferTask;
 use Acquia\Orca\Task\StaticAnalysisTool\PhpLintTask;
 use Acquia\Orca\Task\StaticAnalysisTool\PhplocTask;
@@ -95,8 +96,17 @@ class QaStaticAnalysisCommand extends Command {
   private $defaultPhpcsStandard;
 
   /**
+   * The code coverage task.
+   *
+   * @var \Acquia\Orca\Task\StaticAnalysisTool\CoverageTask
+   */
+  private $coverage;
+
+  /**
    * Constructs an instance.
    *
+   * @param \Acquia\Orca\Task\StaticAnalysisTool\CoverageTask $coverage
+   *   The code coverage task.
    * @param \Acquia\Orca\Task\StaticAnalysisTool\ComposerValidateTask $composer_validate
    *   The Composer validate task.
    * @param string $default_phpcs_standard
@@ -116,8 +126,9 @@ class QaStaticAnalysisCommand extends Command {
    * @param \Acquia\Orca\Task\StaticAnalysisTool\YamlLintTask $yaml_lint
    *   The YAML lint task.
    */
-  public function __construct(ComposerValidateTask $composer_validate, string $default_phpcs_standard, Filesystem $filesystem, PhpCodeSnifferTask $php_code_sniffer, PhpLintTask $phplint, PhplocTask $phploc, PhpMessDetectorTask $php_mess_detector, TaskRunner $task_runner, YamlLintTask $yaml_lint) {
+  public function __construct(CoverageTask $coverage, ComposerValidateTask $composer_validate, string $default_phpcs_standard, Filesystem $filesystem, PhpCodeSnifferTask $php_code_sniffer, PhpLintTask $phplint, PhplocTask $phploc, PhpMessDetectorTask $php_mess_detector, TaskRunner $task_runner, YamlLintTask $yaml_lint) {
     $this->composerValidate = $composer_validate;
+    $this->coverage = $coverage;
     $this->defaultPhpcsStandard = $default_phpcs_standard;
     $this->filesystem = $filesystem;
     $this->phpCodeSniffer = $php_code_sniffer;
@@ -139,6 +150,7 @@ class QaStaticAnalysisCommand extends Command {
       ->setHelp('Tools can be specified individually or in combination. If none are specified, all will be run.')
       ->addArgument('path', InputArgument::REQUIRED, 'The path to analyze')
       ->addOption('composer', NULL, InputOption::VALUE_NONE, 'Run the Composer validation tool')
+      ->addOption('coverage', NULL, InputOption::VALUE_NONE, 'Run the code coverage estimator. Implies "--phploc"')
       ->addOption('phpcs', NULL, InputOption::VALUE_NONE, 'Run the PHP Code Sniffer tool')
       ->addOption('phpcs-standard', NULL, InputOption::VALUE_REQUIRED, implode(PHP_EOL, array_merge(
         ['Change the PHPCS standard used:'],
@@ -162,6 +174,7 @@ class QaStaticAnalysisCommand extends Command {
     try {
       $this->configureTaskRunner($input);
     }
+    // Catch an invalid command option value.
     catch (UnexpectedValueException $e) {
       $output->writeln($e->getMessage());
       return StatusCode::ERROR;
@@ -179,13 +192,14 @@ class QaStaticAnalysisCommand extends Command {
    */
   private function configureTaskRunner(InputInterface $input) {
     $composer = $input->getOption('composer');
+    $coverage = $input->getOption('coverage');
     $phpcs = $input->getOption('phpcs');
     $phplint = $input->getOption('phplint');
     $phploc = $input->getOption('phploc');
     $phpmd = $input->getOption('phpmd');
     $yamllint = $input->getOption('yamllint');
     // If NO tasks are specified, they are ALL implied.
-    $all = !$composer && !$phpcs && !$phplint && !$phploc && !$phpmd && !$yamllint;
+    $all = !$composer && !$coverage && !$phpcs && !$phplint && !$phploc && !$phpmd && !$yamllint;
 
     if ($all || $composer) {
       $this->taskRunner->addTask($this->composerValidate);
@@ -194,8 +208,11 @@ class QaStaticAnalysisCommand extends Command {
       $this->phpCodeSniffer->setStandard($this->getStandard($input));
       $this->taskRunner->addTask($this->phpCodeSniffer);
     }
-    if ($all || $phploc) {
+    if ($all || $phploc || $coverage) {
       $this->taskRunner->addTask($this->phploc);
+    }
+    if ($all || $coverage) {
+      $this->taskRunner->addTask($this->coverage);
     }
     if ($all || $phplint) {
       $this->taskRunner->addTask($this->phplint);
