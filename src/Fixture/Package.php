@@ -219,6 +219,9 @@ class Package {
       case 'drupal-theme':
         return "docroot/themes/contrib/{$this->getProjectName()}";
 
+      case 'project-template':
+        return ".";
+
       default:
         return "vendor/{$this->getPackageName()}";
     }

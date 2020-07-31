@@ -399,7 +399,7 @@ class FixtureCreator {
   private function getProjectTemplateString(): string {
     switch (TRUE) {
       case $this->isSutProjectTemplate():
-        return "{$this->projectTemplate}:@dev";
+        return "{$this->projectTemplate}:dev-bologna";
 
       case $this->projectTemplate === 'acquia/blt-project':
         $version = ($this->isDev)
@@ -819,6 +819,12 @@ class FixtureCreator {
       $dependencies = [$this->sut];
     }
     foreach ($dependencies as $package_name => &$package) {
+      // Don't try to require the SUT if it's a project template.
+      if ($package == $this->sut && $this->isProjectTemplateSut()) {
+        unset($dependencies[$package_name]);
+        continue;
+      }
+
       // Always symlink the SUT.
       if ($package == $this->sut) {
         $package = $this->getLocalPackageString($package);
