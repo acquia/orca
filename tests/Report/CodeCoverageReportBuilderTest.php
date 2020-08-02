@@ -7,7 +7,7 @@ use Acquia\Orca\Exception\FileNotFoundException as OrcaFileNotFoundException;
 use Acquia\Orca\Exception\ParseError;
 use Acquia\Orca\Filesystem\FinderFactory;
 use Acquia\Orca\Filesystem\OrcaPathHandler;
-use Acquia\Orca\Report\CodeCoverageReportBuilder;
+use Acquia\Orca\Task\CodeCoverageReportBuilder;
 use Acquia\Orca\Task\StaticAnalysisTool\PhplocTask;
 use Acquia\Orca\Utility\ConfigLoader;
 use ArrayIterator;
@@ -22,13 +22,15 @@ use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 
 /**
- * @property \ArrayIterator $classIterator
- * @property \Noodlehaus\Config|\Prophecy\Prophecy\ObjectProphecy $config
- * @property \Acquia\Orca\Utility\ConfigLoader|\Prophecy\Prophecy\ObjectProphecy $configLoader
- * @property \Prophecy\Prophecy\ObjectProphecy|\Symfony\Component\Finder\Finder $finder
  * @property \Acquia\Orca\Filesystem\FinderFactory|\Prophecy\Prophecy\ObjectProphecy $finderFactory
  * @property \Acquia\Orca\Filesystem\OrcaPathHandler|\Prophecy\Prophecy\ObjectProphecy $orca
- * @coversDefaultClass \Acquia\Orca\Report\CodeCoverageReportBuilder
+ * @property \Acquia\Orca\Utility\ConfigLoader|\Prophecy\Prophecy\ObjectProphecy $configLoader
+ * @property \ArrayIterator $phpIterator
+ * @property \ArrayIterator $testIterator
+ * @property \Noodlehaus\Config|\Prophecy\Prophecy\ObjectProphecy $config
+ * @property \Symfony\Component\Finder\Finder|\Prophecy\Prophecy\ObjectProphecy $phpFinder
+ * @property \Symfony\Component\Finder\Finder|\Prophecy\Prophecy\ObjectProphecy $testFinder
+ * @coversDefaultClass \Acquia\Orca\Task\CodeCoverageReportBuilder
  */
 class CodeCoverageReportBuilderTest extends TestCase {
 
@@ -94,25 +96,42 @@ class CodeCoverageReportBuilderTest extends TestCase {
   protected function setUp(): void {
     $this->configLoader = $this->prophesize(ConfigLoader::class);
     $this->config = $this->prophesize(Config::class);
-    $this->finder = $this->prophesize(Finder::class);
-    $this->finder
-      ->in(Argument::any())
-      ->willReturn($this->finder);
-    $this->finder
-      ->name(Argument::any())
-      ->willReturn($this->finder);
-    $this->finder
-      ->notPath(Argument::any())
-      ->willReturn($this->finder);
-    $this->finder
-      ->contains(Argument::any())
-      ->willReturn($this->finder);
+
     $this->finderFactory = $this->prophesize(FinderFactory::class);
-    $this->classIterator = new ArrayIterator([]);
+
     $this->orca = $this->prophesize(OrcaPathHandler::class);
     $this->orca
       ->getPath(PhplocTask::JSON_LOG_PATH)
       ->willReturnArgument();
+
+    $this->phpFinder = $this->prophesize(Finder::class);
+    $this->phpFinder
+      ->in(Argument::any())
+      ->willReturn($this->phpFinder);
+    $this->phpFinder
+      ->name(Argument::any())
+      ->willReturn($this->phpFinder);
+    $this->phpFinder
+      ->notPath(Argument::any())
+      ->willReturn($this->phpFinder);
+    $php_file = $this->prophesize(SplFileInfo::class);
+    $this->phpIterator = new ArrayIterator([$php_file->reveal()]);
+
+    $this->testFinder = $this->prophesize(Finder::class);
+    $this->testFinder
+      ->in(Argument::any())
+      ->willReturn($this->testFinder);
+    $this->testFinder
+      ->name(Argument::any())
+      ->willReturn($this->testFinder);
+    $this->testFinder
+      ->notPath(Argument::any())
+      ->willReturn($this->testFinder);
+    $this->testFinder
+      ->contains(Argument::any())
+      ->willReturn($this->testFinder);
+    $test_file = $this->prophesize(SplFileInfo::class);
+    $this->testIterator = new ArrayIterator([$test_file->reveal()]);
   }
 
   /**
@@ -120,21 +139,21 @@ class CodeCoverageReportBuilderTest extends TestCase {
    */
   public function testHappyPath(string $path, int $assertions, int $complexity, string $score): void {
     $this->phplocData['ccn'] = $complexity;
-    $this->finder
+    $this->testFinder
       ->in($path)
       ->shouldBeCalledOnce()
-      ->willReturn($this->finder);
-    $this->finder
+      ->willReturn($this->testFinder);
+    $this->testFinder
       ->name('*Test.php')
       ->shouldBeCalledOnce()
-      ->willReturn($this->finder);
+      ->willReturn($this->testFinder);
     $file_info = $this->prophesize(SplFileInfo::class);
     $file_info
       ->getContents()
       ->willReturn('self::assertTrue(TRUE);');
     $file_info = $file_info->reveal();
     $files = array_fill(0, $assertions, $file_info);
-    $this->classIterator = new ArrayIterator($files);
+    $this->testIterator = new ArrayIterator($files);
     $builder = $this->createBuilder();
 
     $report = $builder->build($path);
@@ -162,12 +181,20 @@ class CodeCoverageReportBuilderTest extends TestCase {
 
   public function testPathDoesNotExistOrIsNotDirectory(): void {
     $message = 'Example message';
-    $this->finder
+    $this->testFinder
       ->in(self::DEFAULT_PATH)
       ->willThrow(new FinderDirectoryNotFoundException($message));
     $this->expectException(OrcaDirectoryNotFoundException::class);
     $this->expectExceptionMessage($message);
 
+    $builder = $this->createBuilder();
+
+    $builder->build(self::DEFAULT_PATH);
+  }
+
+  public function testNoFilesFoundToScan(): void {
+    $this->phpIterator = new ArrayIterator([]);
+    $this->expectException(OrcaFileNotFoundException::class);
     $builder = $this->createBuilder();
 
     $builder->build(self::DEFAULT_PATH);
@@ -210,13 +237,20 @@ class CodeCoverageReportBuilderTest extends TestCase {
       ->load(Argument::any())
       ->willReturn($config);
     $config_loader = $this->configLoader->reveal();
-    $this->finder
+    $this->phpFinder
       ->getIterator()
-      ->willReturn($this->classIterator);
-    $finder = $this->finder->reveal();
+      ->willReturn($this->phpIterator);
+    $php_finder = $this->phpFinder->reveal();
+    $this->testFinder
+      ->getIterator()
+      ->willReturn($this->testIterator);
+    $test_finder = $this->testFinder->reveal();
     $this->finderFactory
       ->create()
-      ->willReturn($finder);
+      ->willReturn(
+        $php_finder,
+        $test_finder
+      );
     $finder_factory = $this->finderFactory->reveal();
     $orca_path_handler = $this->orca->reveal();
     return new CodeCoverageReportBuilder($config_loader, $finder_factory, $orca_path_handler);
