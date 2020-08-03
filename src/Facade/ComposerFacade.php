@@ -4,6 +4,7 @@ namespace Acquia\Orca\Facade;
 
 use Acquia\Orca\Filesystem\FixturePathHandler;
 use Acquia\Orca\Utility\ProcessRunner;
+use InvalidArgumentException;
 
 /**
  * Provides a facade for encapsulating Composer interactions.
@@ -69,6 +70,9 @@ class ComposerFacade {
    *   A list of package machine names, e.g., "vendor/package".
    */
   public function removePackages(array $packages): void {
+    if (empty($packages)) {
+      throw new InvalidArgumentException('No packages provided to remove.');
+    }
     $this->runComposer([
       'remove',
       '--no-update',
@@ -82,6 +86,9 @@ class ComposerFacade {
    *   A list of package machine names, e.g., "vendor/package".
    */
   public function requirePackages(array $packages): void {
+    if (empty($packages)) {
+      throw new InvalidArgumentException('No packages provided to remove.');
+    }
     $this->runComposer([
       'require',
       '--no-interaction',

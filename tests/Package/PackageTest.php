@@ -1,6 +1,6 @@
 <?php
 
-namespace Acquia\Orca\Tests\Fixture;
+namespace Acquia\Orca\Tests\Package;
 
 use Acquia\Orca\Filesystem\FixturePathHandler;
 use Acquia\Orca\Filesystem\OrcaPathHandler;
@@ -30,29 +30,41 @@ class PackageTest extends TestCase {
    * @covers ::getInstallPathRelative
    * @covers ::getPackageName
    * @covers ::getProjectName
+   * @covers ::getRepositoryUrlAbsolute
    * @covers ::getRepositoryUrlRaw
    * @covers ::getType
    * @covers ::getVersion
    * @covers ::getVersionDev
    * @covers ::getVersionRecommended
-   * @covers ::getDrupalExtensionName
+   * @covers ::isDrupalExtension
+   * @covers ::isDrupalModule
+   * @covers ::isDrupalTheme
    * @covers ::shouldGetEnabled
    */
-  public function testConstructionAndGetters($data, $package_name, $project_name, $type, $raw_repository_url, $version, $dev_version, $enable, $install_path) {
+  public function testConstructionAndGetters($data, $package_name, $project_name, $type, $raw_repository_url, $install_path, $version, $dev_version, $is_extension, $is_module, $is_theme, $enable): void {
+    $absolute_repository_url = "/var/www/{$raw_repository_url}";
+    $this->orca
+      ->getPath($raw_repository_url)
+      ->willReturn($absolute_repository_url);
+
     $package = $this->createPackage($package_name, $data);
 
-    $this->assertEquals($project_name, $package->getDrupalExtensionName(), 'Set/got Drupal extension name.');
-    $this->assertEquals($install_path, $package->getInstallPathRelative(), 'Set/got relative install path.');
-    $this->assertEquals($package_name, $package->getPackageName(), 'Set/got package name.');
-    $this->assertEquals($project_name, $package->getProjectName(), 'Set/got project name.');
-    $this->assertEquals($raw_repository_url, $package->getRepositoryUrlRaw(), 'Set/got raw repository URL.');
-    $this->assertEquals($type, $package->getType(), 'Set/got type.');
-    $this->assertEquals($dev_version, $package->getVersionDev(), 'Set/got dev version.');
-    $this->assertEquals($version, $package->getVersionRecommended(), 'Set/got recommended version.');
-    $this->assertEquals($enable, $package->shouldGetEnabled(), 'Determined whether or not should get enabled.');
+    self::assertEquals($project_name, $package->getDrupalExtensionName(), 'Set/got Drupal extension name.');
+    self::assertEquals($install_path, $package->getInstallPathRelative(), 'Set/got relative install path.');
+    self::assertEquals($package_name, $package->getPackageName(), 'Set/got package name.');
+    self::assertEquals($project_name, $package->getProjectName(), 'Set/got project name.');
+    self::assertEquals($absolute_repository_url, $package->getRepositoryUrlAbsolute(), 'Calculated absolute repository URL.');
+    self::assertEquals($raw_repository_url, $package->getRepositoryUrlRaw(), 'Set/got raw repository URL.');
+    self::assertEquals($type, $package->getType(), 'Set/got type.');
+    self::assertEquals($dev_version, $package->getVersionDev(), 'Set/got dev version.');
+    self::assertEquals($version, $package->getVersionRecommended(), 'Set/got recommended version.');
+    self::assertEquals($is_extension, $package->isDrupalExtension(), 'Determined whether or not is Drupal extensions.');
+    self::assertEquals($is_module, $package->isDrupalModule(), 'Determined whether or not is Drupal extensions.');
+    self::assertEquals($is_theme, $package->isDrupalTheme(), 'Determined whether or not is Drupal extensions.');
+    self::assertEquals($enable, $package->shouldGetEnabled(), 'Determined whether or not should get enabled.');
   }
 
-  public function providerConstructionAndGetters() {
+  public function providerConstructionAndGetters(): array {
     return [
       'Full specification' => [
         'drupal/example_library' => [
@@ -72,10 +84,13 @@ class PackageTest extends TestCase {
         'example_library',
         'library',
         '/var/www/example_library',
+        'custom/path/to/example_library',
         '2.x',
         '2.x-dev',
         FALSE,
-        'custom/path/to/example_library',
+        FALSE,
+        FALSE,
+        FALSE,
       ],
       'Minimum specification/default values' => [
         'drupal/example_module' => [],
@@ -83,10 +98,13 @@ class PackageTest extends TestCase {
         'example_module',
         'drupal-module',
         '../example_module',
+        'docroot/modules/contrib/example_module',
         '*',
         '*@dev',
         TRUE,
-        'docroot/modules/contrib/example_module',
+        TRUE,
+        FALSE,
+        TRUE,
       ],
       'Module that should be enabled' => [
         'drupal/example_module' => [
@@ -97,10 +115,13 @@ class PackageTest extends TestCase {
         'example_module',
         'drupal-module',
         '../example_module',
+        'docroot/modules/contrib/example_module',
         NULL,
         NULL,
         TRUE,
-        'docroot/modules/contrib/example_module',
+        TRUE,
+        FALSE,
+        TRUE,
       ],
       'Module that should not be enabled' => [
         'drupal/example_module' => [
@@ -110,10 +131,29 @@ class PackageTest extends TestCase {
         'example_module',
         'drupal-module',
         '../example_module',
+        'docroot/modules/contrib/example_module',
         '*',
         '*@dev',
+        TRUE,
+        TRUE,
         FALSE,
-        'docroot/modules/contrib/example_module',
+        FALSE,
+      ],
+      'Theme' => [
+        'drupal/example_theme' => [
+          'type' => 'drupal-theme',
+        ],
+        'drupal/example_theme',
+        'example_theme',
+        'drupal-theme',
+        '../example_theme',
+        'docroot/themes/contrib/example_theme',
+        '*',
+        '*@dev',
+        TRUE,
+        FALSE,
+        TRUE,
+        TRUE,
       ],
     ];
   }
@@ -124,13 +164,13 @@ class PackageTest extends TestCase {
    * @covers ::initializePackageName
    * @covers ::resolveData
    */
-  public function testConstructionError($exception, $package_name, $data) {
+  public function testConstructionError($exception, $package_name, $data): void {
     $this->expectException($exception);
 
     $this->createPackage($package_name, $data);
   }
 
-  public function providerConstructionError() {
+  public function providerConstructionError(): array {
     return [
       'Invalid package name: missing forward slash' => [\InvalidArgumentException::class, 'incomplete', []],
       'Invalid "core_matrix" value: non-array' => [InvalidOptionsException::class, 'drupal/example', ['core_matrix' => 'invalid']],
@@ -148,7 +188,7 @@ class PackageTest extends TestCase {
    * @covers ::getInstallPathRelative
    * @covers ::getInstallPathAbsolute
    */
-  public function testInstallPathCalculation($type, $relative_install_path) {
+  public function testInstallPathCalculation($type, $relative_install_path): void {
     $absolute_install_path = "/var/www/{$relative_install_path}";
     $this->fixture
       ->getPath($relative_install_path)
@@ -164,7 +204,7 @@ class PackageTest extends TestCase {
     self::assertEquals($absolute_install_path, $package->getInstallPathAbsolute());
   }
 
-  public function providerInstallPathCalculation() {
+  public function providerInstallPathCalculation(): array {
     return [
       ['bower-asset', 'docroot/libraries/example'],
       ['drupal-core', 'docroot/core'],
@@ -183,14 +223,14 @@ class PackageTest extends TestCase {
    *
    * @covers ::getVersion
    */
-  public function testConditionalVersions($data, $core_version, $version, $version_dev) {
+  public function testConditionalVersions($data, $core_version, $version, $version_dev): void {
     $package = $this->createPackage('drupal/example', $data);
 
     self::assertEquals($version, $package->getVersionRecommended($core_version), 'Got correct recommended version.');
     self::assertEquals($version_dev, $package->getVersionDev($core_version), 'Got correct dev version.');
   }
 
-  public function providerConditionalVersions() {
+  public function providerConditionalVersions(): array {
     return [
       'Empty (defaults), no core version' => [
         [],
@@ -372,7 +412,7 @@ class PackageTest extends TestCase {
    *
    * @covers ::resolveCoreMatrix
    */
-  public function testCoreVersionMatching($expected_to_match, $provided, $required) {
+  public function testCoreVersionMatching($expected_to_match, $provided, $required): void {
     $package = $this->createPackage('drupal/example', [
       'core_matrix' => [
         $required => [
@@ -384,12 +424,12 @@ class PackageTest extends TestCase {
     // The version from the core matrix (2.x) will only be returned if the
     // provided core version matches the requirement, so it serves as a good
     // test of a match.
-    $is_match = $package->getVersionRecommended($provided) == '2.x';
+    $is_match = $package->getVersionRecommended($provided) === '2.x';
 
-    $this->assertEquals($expected_to_match, $is_match);
+    self::assertEquals($expected_to_match, $is_match);
   }
 
-  public function providerCoreVersionMatching() {
+  public function providerCoreVersionMatching(): array {
     return [
       // Matches.
       [TRUE, '8.7.0', '8.7.0'],

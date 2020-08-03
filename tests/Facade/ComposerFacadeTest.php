@@ -5,6 +5,7 @@ namespace Acquia\Orca\Tests\Facade;
 use Acquia\Orca\Facade\ComposerFacade;
 use Acquia\Orca\Filesystem\FixturePathHandler;
 use Acquia\Orca\Utility\ProcessRunner;
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 
@@ -77,13 +78,16 @@ class ComposerFacadeTest extends TestCase {
   }
 
   public function testRemovePackagesEmptyArray(): void {
-    self::markTestIncomplete();
+    $this->expectException(InvalidArgumentException::class);
+    $composer = $this->createComposerFacade();
+
+    $composer->removePackages([]);
   }
 
   /**
    * @dataProvider providerPackageList
    */
-  public function testRequire(array $packages): void {
+  public function testRequirePackages(array $packages): void {
     $this->processRunner
       ->runOrcaVendorBin(array_merge([
         'composer',
@@ -94,6 +98,13 @@ class ComposerFacadeTest extends TestCase {
     $composer = $this->createComposerFacade();
 
     $composer->requirePackages($packages);
+  }
+
+  public function testRequirePackagesEmptyArray(): void {
+    $this->expectException(InvalidArgumentException::class);
+    $composer = $this->createComposerFacade();
+
+    $composer->requirePackages([]);
   }
 
   public function testUpdateLockFile(): void {
