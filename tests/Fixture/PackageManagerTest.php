@@ -4,15 +4,15 @@ namespace Acquia\Orca\Tests\Fixture;
 
 use Acquia\Orca\Filesystem\FixturePathHandler;
 use Acquia\Orca\Filesystem\OrcaPathHandler;
-use Acquia\Orca\Fixture\Package;
-use Acquia\Orca\Fixture\PackageManager;
+use Acquia\Orca\Package\Package;
+use Acquia\Orca\Package\PackageManager;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Yaml\Parser;
 
 /**
- * @covers \Acquia\Orca\Fixture\PackageManager
+ * @covers \Acquia\Orca\Package\PackageManager
  *
  * @property \Acquia\Orca\Filesystem\OrcaPathHandler|\Prophecy\Prophecy\ObjectProphecy $orca
  * @property \Prophecy\Prophecy\ObjectProphecy|\Symfony\Component\Filesystem\Filesystem $filesystem

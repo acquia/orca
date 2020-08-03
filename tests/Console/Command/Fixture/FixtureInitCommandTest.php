@@ -9,8 +9,8 @@ use Acquia\Orca\Exception\OrcaException;
 use Acquia\Orca\Filesystem\FixturePathHandler;
 use Acquia\Orca\Fixture\FixtureCreator;
 use Acquia\Orca\Fixture\FixtureRemover;
-use Acquia\Orca\Fixture\PackageManager;
 use Acquia\Orca\Fixture\SutPreconditionsTester;
+use Acquia\Orca\Package\PackageManager;
 use Acquia\Orca\Tests\Console\Command\CommandTestBase;
 use Acquia\Orca\Utility\DrupalCoreVersionFinder;
 use Composer\Semver\VersionParser;
@@ -22,7 +22,7 @@ use Symfony\Component\Console\Command\Command;
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Filesystem\FixturePathHandler $fixture
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Fixture\FixtureCreator $fixtureCreator
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Fixture\FixtureRemover $fixtureRemover
- * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Fixture\PackageManager $packageManager
+ * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Package\PackageManager $packageManager
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Fixture\SutPreconditionsTester $sutPreconditionsTester
  * @property \Prophecy\Prophecy\ObjectProphecy|\Composer\Semver\VersionParser $versionParser
  */

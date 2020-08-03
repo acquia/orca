@@ -1,10 +1,10 @@
 <?php
 
-namespace Acquia\Orca\Tests\Codebase;
+namespace Acquia\Orca\Tests\Fixture;
 
-use Acquia\Orca\Codebase\CodebaseCreator;
 use Acquia\Orca\Facade\ComposerFacade;
 use Acquia\Orca\Facade\GitFacade;
+use Acquia\Orca\Fixture\CodebaseCreator;
 use PHPUnit\Framework\TestCase;
 
 /**

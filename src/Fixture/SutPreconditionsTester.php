@@ -4,6 +4,7 @@ namespace Acquia\Orca\Fixture;
 
 use Acquia\Orca\Exception\OrcaException;
 use Acquia\Orca\Filesystem\FixturePathHandler;
+use Acquia\Orca\Package\PackageManager;
 use Composer\Json\JsonFile;
 use Symfony\Component\Filesystem\Filesystem;
 
@@ -29,7 +30,7 @@ class SutPreconditionsTester {
   /**
    * The package manager.
    *
-   * @var \Acquia\Orca\Fixture\PackageManager
+   * @var \Acquia\Orca\Package\PackageManager
    */
   private $packageManager;
 
@@ -40,7 +41,7 @@ class SutPreconditionsTester {
    *   The filesystem.
    * @param \Acquia\Orca\Filesystem\FixturePathHandler $fixture_path_handler
    *   The fixture path handler.
-   * @param \Acquia\Orca\Fixture\PackageManager $package_manager
+   * @param \Acquia\Orca\Package\PackageManager $package_manager
    *   The package manager.
    */
   public function __construct(Filesystem $filesystem, FixturePathHandler $fixture_path_handler, PackageManager $package_manager) {

@@ -2,10 +2,12 @@
 
 namespace Acquia\Orca\Fixture;
 
-use Acquia\Orca\Codebase\CodebaseCreator;
 use Acquia\Orca\Exception\OrcaException;
+use Acquia\Orca\Facade\ComposerFacade;
 use Acquia\Orca\Facade\GitFacade;
 use Acquia\Orca\Filesystem\FixturePathHandler;
+use Acquia\Orca\Package\Package;
+use Acquia\Orca\Package\PackageManager;
 use Acquia\Orca\Utility\DrupalCoreVersionFinder;
 use Acquia\Orca\Utility\ProcessRunner;
 use Acquia\Orca\Utility\StatusTable;
@@ -39,9 +41,16 @@ class FixtureCreator {
   /**
    * The BLT package, if defined.
    *
-   * @var \Acquia\Orca\Fixture\Package|null
+   * @var \Acquia\Orca\Package\Package|null
    */
   private $blt;
+
+  /**
+   * The Composer facade.
+   *
+   * @var \Acquia\Orca\Facade\ComposerFacade
+   */
+  private $composer;
 
   /**
    * The Drupal core version finder.
@@ -123,7 +132,7 @@ class FixtureCreator {
   /**
    * The package manager.
    *
-   * @var \Acquia\Orca\Fixture\PackageManager
+   * @var \Acquia\Orca\Package\PackageManager
    */
   private $packageManager;
 
@@ -207,15 +216,17 @@ class FixtureCreator {
   /**
    * The codebase creator.
    *
-   * @var \Acquia\Orca\Codebase\CodebaseCreator
+   * @var \Acquia\Orca\Fixture\CodebaseCreator
    */
   private $codebaseCreator;
 
   /**
    * Constructs an instance.
    *
-   * @param \Acquia\Orca\Codebase\CodebaseCreator $codebase_creator
+   * @param \Acquia\Orca\Fixture\CodebaseCreator $codebase_creator
    *   The codebase creator.
+   * @param \Acquia\Orca\Facade\ComposerFacade $composer_facade
+   *   The Composer facade.
    * @param \Acquia\Orca\Utility\DrupalCoreVersionFinder $core_version_finder
    *   The Drupal core version finder.
    * @param \Symfony\Component\Filesystem\Filesystem $filesystem
@@ -230,7 +241,7 @@ class FixtureCreator {
    *   The output decorator.
    * @param \Acquia\Orca\Utility\ProcessRunner $process_runner
    *   The process runner.
-   * @param \Acquia\Orca\Fixture\PackageManager $package_manager
+   * @param \Acquia\Orca\Package\PackageManager $package_manager
    *   The package manager.
    * @param \Acquia\Orca\Fixture\SubextensionManager $subextension_manager
    *   The subextension manager.
@@ -239,9 +250,10 @@ class FixtureCreator {
    * @param \Composer\Semver\VersionParser $version_parser
    *   The Semver version parser.
    */
-  public function __construct(CodebaseCreator $codebase_creator, DrupalCoreVersionFinder $core_version_finder, Filesystem $filesystem, FixturePathHandler $fixture_path_handler, FixtureInspector $fixture_inspector, SiteInstaller $site_installer, SymfonyStyle $output, ProcessRunner $process_runner, PackageManager $package_manager, SubextensionManager $subextension_manager, VersionGuesser $version_guesser, VersionParser $version_parser) {
+  public function __construct(CodebaseCreator $codebase_creator, ComposerFacade $composer_facade, DrupalCoreVersionFinder $core_version_finder, Filesystem $filesystem, FixturePathHandler $fixture_path_handler, FixtureInspector $fixture_inspector, SiteInstaller $site_installer, SymfonyStyle $output, ProcessRunner $process_runner, PackageManager $package_manager, SubextensionManager $subextension_manager, VersionGuesser $version_guesser, VersionParser $version_parser) {
     $this->blt = $package_manager->getBlt();
     $this->codebaseCreator = $codebase_creator;
+    $this->composer = $composer_facade;
     $this->coreVersionFinder = $core_version_finder;
     $this->filesystem = $filesystem;
     $this->fixture = $fixture_path_handler;
@@ -469,20 +481,12 @@ class FixtureCreator {
     $fixture_path = $this->fixture->getPath();
 
     // Remove unwanted packages.
-    $this->processRunner->runOrcaVendorBin(array_merge(
-      [
-        'composer',
-        'remove',
-        '--no-update',
-        // The Lightning profile requirement conflicts with individual Lightning
-        // component requirements--namely, it prevents them from being symlinked
-        // via a local "path" repository.
-        'acquia/lightning',
-      ],
-      // Other company packages are only conditionally required later and should
-      // in no case be included up-front.
-      $this->getUnwantedPackageList()
-    ), $fixture_path);
+    $packages = $this->getUnwantedPackageList();
+    // The Lightning profile requirement conflicts with individual Lightning
+    // component requirements--namely, it prevents them from being symlinked
+    // via a local "path" repository.
+    array_unshift($packages, 'acquia/lightning');
+    $this->composer->removePackages($packages);
 
     $additions = [];
 
@@ -654,7 +658,7 @@ class FixtureCreator {
   /**
    * Gets all local packages.
    *
-   * @return \Acquia\Orca\Fixture\Package[]
+   * @return \Acquia\Orca\Package\Package[]
    *   An associative array of local package objects keyed by their package
    *   names.
    */
@@ -682,12 +686,7 @@ class FixtureCreator {
       'is-dev' => $this->isDev,
       'project-template' => $this->projectTemplate,
     ]);
-    $this->processRunner->runOrcaVendorBin([
-      'composer',
-      'update',
-      '--lock',
-    ], $this->fixture->getPath());
-
+    $this->composer->updateLockFile();
   }
 
   /**
@@ -849,7 +848,7 @@ class FixtureCreator {
   /**
    * Determines whether or not the given non-SUT package should be symlinked.
    *
-   * @param \Acquia\Orca\Fixture\Package $package
+   * @param \Acquia\Orca\Package\Package $package
    *   The package in question.
    *
    * @return bool
@@ -867,7 +866,7 @@ class FixtureCreator {
   /**
    * Gets the target version for the given package.
    *
-   * @param \Acquia\Orca\Fixture\Package $package
+   * @param \Acquia\Orca\Package\Package $package
    *   The package to get the target version for.
    *
    * @return string|null
@@ -882,7 +881,7 @@ class FixtureCreator {
   /**
    * Finds the latest available version for a given package.
    *
-   * @param \Acquia\Orca\Fixture\Package $package
+   * @param \Acquia\Orca\Package\Package $package
    *   The package to get the latest version for.
    *
    * @return \Composer\Package\PackageInterface
@@ -922,7 +921,7 @@ class FixtureCreator {
   /**
    * Gets the package string for a given local package..
    *
-   * @param \Acquia\Orca\Fixture\Package $package
+   * @param \Acquia\Orca\Package\Package $package
    *   The local package.
    *
    * @return string
@@ -935,7 +934,7 @@ class FixtureCreator {
   /**
    * Gets the version of a given local package.
    *
-   * @param \Acquia\Orca\Fixture\Package $package
+   * @param \Acquia\Orca\Package\Package $package
    *   The local package.
    *
    * @return string
@@ -1056,11 +1055,7 @@ class FixtureCreator {
       }
     }
     asort($subextensions);
-    $this->processRunner->runOrcaVendorBin(array_merge([
-      'composer',
-      'require',
-      '--no-interaction',
-    ], $subextensions), $this->fixture->getPath());
+    $this->composer->requirePackages($subextensions);
   }
 
   /**

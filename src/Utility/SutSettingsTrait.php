@@ -2,7 +2,7 @@
 
 namespace Acquia\Orca\Utility;
 
-use Acquia\Orca\Fixture\PackageManager;
+use Acquia\Orca\Package\PackageManager;
 use LogicException;
 
 /**
@@ -20,14 +20,14 @@ trait SutSettingsTrait {
   /**
    * The package manager.
    *
-   * @var \Acquia\Orca\Fixture\PackageManager|null
+   * @var \Acquia\Orca\Package\PackageManager|null
    */
   private $packageManager;
 
   /**
    * The SUT.
    *
-   * @var \Acquia\Orca\Fixture\Package|null
+   * @var \Acquia\Orca\Package\Package|null
    */
   private $sut;
 

@@ -4,8 +4,8 @@ namespace Acquia\Orca\Tests\Task\DeprecatedCodeScanner;
 
 use Acquia\Orca\Filesystem\FixturePathHandler;
 use Acquia\Orca\Filesystem\OrcaPathHandler;
-use Acquia\Orca\Fixture\PackageManager;
 use Acquia\Orca\Log\TelemetryClient;
+use Acquia\Orca\Package\PackageManager;
 use Acquia\Orca\Task\DeprecatedCodeScanner\PhpStanTask;
 use Acquia\Orca\Utility\ProcessRunner;
 use PHPUnit\Framework\TestCase;
@@ -14,7 +14,7 @@ use Symfony\Component\Filesystem\Filesystem;
 
 /**
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Filesystem\FixturePathHandler $fixture
- * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Fixture\PackageManager $packageManager
+ * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Package\PackageManager $packageManager
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Utility\ProcessRunner $processRunner
  */
 class PhpStanTaskTest extends TestCase {

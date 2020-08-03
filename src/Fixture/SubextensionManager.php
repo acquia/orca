@@ -4,6 +4,8 @@ namespace Acquia\Orca\Fixture;
 
 use Acquia\Orca\Filesystem\FixturePathHandler;
 use Acquia\Orca\Filesystem\OrcaPathHandler;
+use Acquia\Orca\Package\Package;
+use Acquia\Orca\Package\PackageManager;
 use Acquia\Orca\Utility\ConfigLoader;
 use SplFileInfo;
 use Symfony\Component\Filesystem\Filesystem;
@@ -52,14 +54,14 @@ class SubextensionManager {
   /**
    * The top-level Acquia extensions.
    *
-   * @var \Acquia\Orca\Fixture\Package[]
+   * @var \Acquia\Orca\Package\Package[]
    */
   private $topLevelExtensions;
 
   /**
    * The subextensions found in the fixture.
    *
-   * @var \Acquia\Orca\Fixture\Package[]
+   * @var \Acquia\Orca\Package\Package[]
    */
   private $subextensions = [];
 
@@ -74,7 +76,7 @@ class SubextensionManager {
    *   The fixture path handler.
    * @param \Acquia\Orca\Filesystem\OrcaPathHandler $orca_path_handler
    *   The ORCA path handler.
-   * @param \Acquia\Orca\Fixture\PackageManager $package_manager
+   * @param \Acquia\Orca\Package\PackageManager $package_manager
    *   The package manager.
    */
   public function __construct(ConfigLoader $config_loader, Filesystem $filesystem, FixturePathHandler $fixture_path_handler, OrcaPathHandler $orca_path_handler, PackageManager $package_manager) {
@@ -89,7 +91,7 @@ class SubextensionManager {
   /**
    * Initializes the top level extensions.
    *
-   * @param \Acquia\Orca\Fixture\PackageManager $package_manager
+   * @param \Acquia\Orca\Package\PackageManager $package_manager
    *   The package manager.
    */
   public function initializeTopLevelExtensions(PackageManager $package_manager): void {
@@ -104,7 +106,7 @@ class SubextensionManager {
   /**
    * Gets an array of all company subextensions.
    *
-   * @return \Acquia\Orca\Fixture\Package[]
+   * @return \Acquia\Orca\Package\Package[]
    *   An indexed array of package objects.
    */
   public function getAll(): array {
@@ -120,10 +122,10 @@ class SubextensionManager {
   /**
    * Gets an array of subextensions of a given parent.
    *
-   * @param \Acquia\Orca\Fixture\Package $package
+   * @param \Acquia\Orca\Package\Package $package
    *   The package to search for subextensions.
    *
-   * @return \Acquia\Orca\Fixture\Package[]
+   * @return \Acquia\Orca\Package\Package[]
    *   An indexed array of package objects.
    */
   public function getByParent(Package $package): array {
