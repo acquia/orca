@@ -2,7 +2,10 @@
 
 namespace Acquia\Orca\Fixture;
 
+use Acquia\Orca\Facade\DrushFacade;
 use Acquia\Orca\Filesystem\FixturePathHandler;
+use Acquia\Orca\Package\Package;
+use Acquia\Orca\Package\PackageManager;
 use Acquia\Orca\Utility\ConfigLoader;
 use Acquia\Orca\Utility\ProcessRunner;
 use Acquia\Orca\Utility\SutSettingsTrait;
@@ -26,6 +29,13 @@ class CompanyExtensionEnabler {
    * @var \Acquia\Orca\Utility\ConfigLoader
    */
   private $configLoader;
+
+  /**
+   * The Drush facade.
+   *
+   * @var \Acquia\Orca\Facade\DrushFacade
+   */
+  private $drush;
 
   /**
    * The filesystem.
@@ -65,7 +75,7 @@ class CompanyExtensionEnabler {
   /**
    * The package manager.
    *
-   * @var \Acquia\Orca\Fixture\PackageManager
+   * @var \Acquia\Orca\Package\PackageManager
    */
   private $packageManager;
 
@@ -81,6 +91,8 @@ class CompanyExtensionEnabler {
    *
    * @param \Acquia\Orca\Utility\ConfigLoader $config_loader
    *   The config loader.
+   * @param \Acquia\Orca\Facade\DrushFacade $drush_facade
+   *   The Drush facade.
    * @param \Symfony\Component\Filesystem\Filesystem $filesystem
    *   The filesystem.
    * @param \Acquia\Orca\Filesystem\FixturePathHandler $fixture_path_handler
@@ -89,13 +101,14 @@ class CompanyExtensionEnabler {
    *   The output decorator.
    * @param \Acquia\Orca\Utility\ProcessRunner $process_runner
    *   The process runner.
-   * @param \Acquia\Orca\Fixture\PackageManager $package_manager
+   * @param \Acquia\Orca\Package\PackageManager $package_manager
    *   The package manager.
    * @param \Acquia\Orca\Fixture\SubextensionManager $subextension_manager
    *   The subextension manager.
    */
-  public function __construct(ConfigLoader $config_loader, Filesystem $filesystem, FixturePathHandler $fixture_path_handler, SymfonyStyle $output, ProcessRunner $process_runner, PackageManager $package_manager, SubextensionManager $subextension_manager) {
+  public function __construct(ConfigLoader $config_loader, DrushFacade $drush_facade, Filesystem $filesystem, FixturePathHandler $fixture_path_handler, SymfonyStyle $output, ProcessRunner $process_runner, PackageManager $package_manager, SubextensionManager $subextension_manager) {
     $this->configLoader = $config_loader;
+    $this->drush = $drush_facade;
     $this->filesystem = $filesystem;
     $this->fixture = $fixture_path_handler;
     $this->output = $output;
@@ -149,15 +162,11 @@ class CompanyExtensionEnabler {
    * Enables the company modules.
    */
   private function enableModules(): void {
-    $module_list = $this->getCompanyExtensionList(self::TYPE_MODULE);
-    if (!$module_list) {
+    $modules = $this->getCompanyExtensionList(self::TYPE_MODULE);
+    if (!$modules) {
       return;
     }
-    $this->processRunner->runFixtureVendorBin(array_merge([
-      'drush',
-      'pm:enable',
-      '--yes',
-    ], $module_list));
+    $this->drush->enableModules($modules);
   }
 
   /**
@@ -168,11 +177,7 @@ class CompanyExtensionEnabler {
     if (!$theme_list) {
       return;
     }
-    $this->processRunner->runFixtureVendorBin([
-      'drush',
-      'theme:enable',
-      implode(',', $theme_list),
-    ]);
+    $this->drush->enableThemes($theme_list);
   }
 
   /**
@@ -215,7 +220,7 @@ class CompanyExtensionEnabler {
   /**
    * Determines whether or not a given packages should get enabled.
    *
-   * @param \Acquia\Orca\Fixture\Package $package
+   * @param \Acquia\Orca\Package\Package $package
    *   The package to consider.
    * @param string $extension_type
    *   The type of extension that should get enabled: ::TYPE_MODULE or

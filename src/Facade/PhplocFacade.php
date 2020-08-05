@@ -13,6 +13,13 @@ class PhplocFacade {
   public const JSON_LOG_PATH = 'var/log/phploc.json';
 
   /**
+   * PHP filename extensions as PHPLOC expects them.
+   *
+   * @see \Acquia\Orca\Task\CodeCoverageReportBuilder::PHP_NAME_PATTERNS
+   */
+  private const PHP_EXTENSIONS = '*.php,*.module,*.theme,*.inc,*.install,*.profile,*.engine';
+
+  /**
    * The process runner.
    *
    * @var \Acquia\Orca\Utility\ProcessRunner
@@ -48,7 +55,7 @@ class PhplocFacade {
   public function execute(string $path): void {
     $this->processRunner->runOrcaVendorBin([
       'phploc',
-      '--names=*.php,*.module,*.theme,*.inc,*.install,*.profile,*.engine',
+      '--names=' . self::PHP_EXTENSIONS,
       '--exclude=tests',
       '--exclude=var',
       '--exclude=vendor',

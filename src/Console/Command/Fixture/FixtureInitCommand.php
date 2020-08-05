@@ -8,8 +8,8 @@ use Acquia\Orca\Exception\OrcaException;
 use Acquia\Orca\Filesystem\FixturePathHandler;
 use Acquia\Orca\Fixture\FixtureCreator;
 use Acquia\Orca\Fixture\FixtureRemover;
-use Acquia\Orca\Fixture\PackageManager;
 use Acquia\Orca\Fixture\SutPreconditionsTester;
+use Acquia\Orca\Package\PackageManager;
 use Acquia\Orca\Utility\DrupalCoreVersionFinder;
 use Composer\Semver\VersionParser;
 use Symfony\Component\Console\Command\Command;
@@ -61,7 +61,7 @@ class FixtureInitCommand extends Command {
   /**
    * The package manager.
    *
-   * @var \Acquia\Orca\Fixture\PackageManager
+   * @var \Acquia\Orca\Package\PackageManager
    */
   private $packageManager;
 
@@ -90,7 +90,7 @@ class FixtureInitCommand extends Command {
    *   The fixture creator.
    * @param \Acquia\Orca\Fixture\FixtureRemover $fixture_remover
    *   The fixture remover.
-   * @param \Acquia\Orca\Fixture\PackageManager $package_manager
+   * @param \Acquia\Orca\Package\PackageManager $package_manager
    *   The package manager.
    * @param \Acquia\Orca\Fixture\SutPreconditionsTester $sut_preconditions_tester
    *   The SUT preconditions tester.

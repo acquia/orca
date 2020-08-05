@@ -4,8 +4,8 @@ namespace Acquia\Orca\Task\TestFramework;
 
 use Acquia\Orca\Exception\TaskFailureException;
 use Acquia\Orca\Fixture\FixtureResetter;
-use Acquia\Orca\Fixture\Package;
-use Acquia\Orca\Fixture\PackageManager;
+use Acquia\Orca\Package\Package;
+use Acquia\Orca\Package\PackageManager;
 use Acquia\Orca\Server\ServerStack;
 use Acquia\Orca\Utility\ProcessRunner;
 use Acquia\Orca\Utility\SutSettingsTrait;
@@ -64,7 +64,7 @@ class TestRunner {
   /**
    * The package manager.
    *
-   * @var \Acquia\Orca\Fixture\PackageManager
+   * @var \Acquia\Orca\Package\PackageManager
    */
   private $packageManager;
 
@@ -102,7 +102,7 @@ class TestRunner {
    *   The PHPUnit task.
    * @param \Acquia\Orca\Utility\ProcessRunner $process_runner
    *   The process runner.
-   * @param \Acquia\Orca\Fixture\PackageManager $package_manager
+   * @param \Acquia\Orca\Package\PackageManager $package_manager
    *   The package manager.
    * @param \Acquia\Orca\Server\ServerStack $server_stack
    *   The server stack.
@@ -209,7 +209,7 @@ class TestRunner {
    *
    * @param \Acquia\Orca\Task\TestFramework\TestFrameworkInterface $framework
    *   The test framework to execute.
-   * @param \Acquia\Orca\Fixture\Package $package
+   * @param \Acquia\Orca\Package\Package $package
    *   The package to test.
    * @param bool $public
    *   TRUE to limit to public tests or FALSE not to.

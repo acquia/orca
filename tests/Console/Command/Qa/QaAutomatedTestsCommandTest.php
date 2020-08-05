@@ -6,7 +6,7 @@ use Acquia\Orca\Console\Command\Qa\QaAutomatedTestsCommand;
 use Acquia\Orca\Enum\StatusCode;
 use Acquia\Orca\Exception\OrcaException;
 use Acquia\Orca\Filesystem\FixturePathHandler;
-use Acquia\Orca\Fixture\PackageManager;
+use Acquia\Orca\Package\PackageManager;
 use Acquia\Orca\Task\TestFramework\TestRunner;
 use Acquia\Orca\Tests\Console\Command\CommandTestBase;
 use Symfony\Component\Console\Command\Command;
@@ -16,7 +16,7 @@ use Symfony\Component\Console\Command\Command;
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Utility\Clock $clock
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Filesystem\FixturePathHandler $fixture
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Task\TestFramework\PhpUnitTask $phpunit
- * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Fixture\PackageManager $packageManager
+ * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Package\PackageManager $packageManager
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Task\TaskRunner $taskRunner
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Task\TestFramework\TestRunner $testRunner
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Server\WebServer $webServer

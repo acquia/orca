@@ -2,9 +2,10 @@
 
 namespace Acquia\Orca\Fixture;
 
+use Acquia\Orca\Facade\DrushFacade;
 use Acquia\Orca\Filesystem\FixturePathHandler;
+use Acquia\Orca\Package\PackageManager;
 use Acquia\Orca\Server\WebServer;
-use Acquia\Orca\Utility\ProcessRunner;
 use Noodlehaus\Config;
 use Noodlehaus\Parser\Json;
 use Symfony\Component\Console\Helper\TableSeparator;
@@ -30,6 +31,13 @@ class FixtureInspector {
   private $composerLock;
 
   /**
+   * The Drush facade.
+   *
+   * @var \Acquia\Orca\Facade\DrushFacade
+   */
+  private $drush;
+
+  /**
    * The Drush core status data.
    *
    * @var array|null
@@ -53,16 +61,9 @@ class FixtureInspector {
   /**
    * The package manager.
    *
-   * @var \Acquia\Orca\Fixture\PackageManager
+   * @var \Acquia\Orca\Package\PackageManager
    */
   private $packageManager;
-
-  /**
-   * The process runner.
-   *
-   * @var \Acquia\Orca\Utility\ProcessRunner
-   */
-  private $processRunner;
 
   /**
    * The subextension manager.
@@ -74,22 +75,22 @@ class FixtureInspector {
   /**
    * Constructs an instance.
    *
+   * @param \Acquia\Orca\Facade\DrushFacade $drush
+   *   The Drush facade.
    * @param \Acquia\Orca\Filesystem\FixturePathHandler $fixture_path_handler
    *   The fixture path handler.
    * @param \Symfony\Component\Console\Style\SymfonyStyle $output
    *   The output decorator.
-   * @param \Acquia\Orca\Fixture\PackageManager $package_manager
+   * @param \Acquia\Orca\Package\PackageManager $package_manager
    *   The package manager.
-   * @param \Acquia\Orca\Utility\ProcessRunner $process_runner
-   *   The process runner.
    * @param \Acquia\Orca\Fixture\SubextensionManager $subextension_manager
    *   The subextension manager.
    */
-  public function __construct(FixturePathHandler $fixture_path_handler, SymfonyStyle $output, PackageManager $package_manager, ProcessRunner $process_runner, SubextensionManager $subextension_manager) {
+  public function __construct(DrushFacade $drush, FixturePathHandler $fixture_path_handler, SymfonyStyle $output, PackageManager $package_manager, SubextensionManager $subextension_manager) {
+    $this->drush = $drush;
     $this->fixture = $fixture_path_handler;
     $this->output = $output;
     $this->packageManager = $package_manager;
-    $this->processRunner = $process_runner;
     $this->subextensionManager = $subextension_manager;
   }
 
@@ -268,19 +269,7 @@ class FixtureInspector {
       return $this->drushStatus;
     }
 
-    $process = $this->processRunner->createFixtureVendorBinProcess([
-      'drush',
-      'core:status',
-      '--format=json',
-    ]);
-    $process->run();
-    $data = json_decode($process->getOutput(), TRUE);
-
-    if (json_last_error()) {
-      $this->drushStatus = [];
-    }
-
-    $this->drushStatus = $data;
+    $this->drushStatus = $this->drush->getDrushStatus();
 
     if (!is_array($this->drushStatus)) {
       $this->output->warning('Could not retrieve Drush status info. Some fixture details, denoted with an exclamation mark (!), are unavailable.');

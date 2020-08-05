@@ -2,15 +2,14 @@
 
 namespace Acquia\Orca\Fixture;
 
+use Acquia\Orca\Facade\DrushFacade;
 use Acquia\Orca\Filesystem\FixturePathHandler;
 use Acquia\Orca\Filesystem\OrcaPathHandler;
-use Acquia\Orca\Utility\ProcessRunner;
 use Noodlehaus\Config;
 use Noodlehaus\Writer\Yaml;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
-use Symfony\Component\Process\Exception\ProcessFailedException;
 
 /**
  * Installs a site and enables company extensions.
@@ -46,6 +45,13 @@ class SiteInstaller {
   private $companyExtensionEnabler;
 
   /**
+   * The Drush facade.
+   *
+   * @var \Acquia\Orca\Facade\DrushFacade
+   */
+  private $drush;
+
+  /**
    * The filesystem.
    *
    * @var \Symfony\Component\Filesystem\Filesystem
@@ -74,13 +80,6 @@ class SiteInstaller {
   private $output;
 
   /**
-   * The process runner.
-   *
-   * @var \Acquia\Orca\Utility\ProcessRunner
-   */
-  private $processRunner;
-
-  /**
    * The profile to install.
    *
    * @var string|null
@@ -99,24 +98,24 @@ class SiteInstaller {
    *
    * @param \Acquia\Orca\Fixture\CompanyExtensionEnabler $company_extension_enabler
    *   The company extension enabler.
+   * @param \Acquia\Orca\Facade\DrushFacade $drush
+   *   The Drush facade.
    * @param \Symfony\Component\Filesystem\Filesystem $filesystem
    *   The filesystem.
    * @param \Acquia\Orca\Filesystem\FixturePathHandler $fixture_path_handler
    *   The fixture path handler.
    * @param \Acquia\Orca\Filesystem\OrcaPathHandler $orca_path_handler
    *   The ORCA path handler.
-   * @param \Acquia\Orca\Utility\ProcessRunner $process_runner
-   *   The process runner.
    * @param \Symfony\Component\Console\Style\SymfonyStyle $output
    *   The output decorator.
    */
-  public function __construct(CompanyExtensionEnabler $company_extension_enabler, Filesystem $filesystem, FixturePathHandler $fixture_path_handler, OrcaPathHandler $orca_path_handler, ProcessRunner $process_runner, SymfonyStyle $output) {
+  public function __construct(CompanyExtensionEnabler $company_extension_enabler, DrushFacade $drush, Filesystem $filesystem, FixturePathHandler $fixture_path_handler, OrcaPathHandler $orca_path_handler, SymfonyStyle $output) {
     $this->companyExtensionEnabler = $company_extension_enabler;
+    $this->drush = $drush;
     $this->filesystem = $filesystem;
     $this->fixture = $fixture_path_handler;
     $this->orca = $orca_path_handler;
     $this->output = $output;
-    $this->processRunner = $process_runner;
   }
 
   /**
@@ -250,19 +249,7 @@ class SiteInstaller {
    */
   private function installDrupal(): void {
     $this->output->section('Installing Drupal');
-    $this->processRunner->runFixtureVendorBin([
-      'drush',
-      'site:install',
-      $this->profile,
-      "install_configure_form.update_status_module='[FALSE,FALSE]'",
-      'install_configure_form.enable_update_status_module=NULL',
-      '--site-name=ORCA',
-      '--account-name=admin',
-      '--account-pass=admin',
-      '--no-interaction',
-      '--verbose',
-      '--ansi',
-    ]);
+    $this->drush->installDrupal($this->profile);
   }
 
   /**
@@ -290,18 +277,7 @@ class SiteInstaller {
       return;
     }
 
-    try {
-      $this->processRunner->runFixtureVendorBin([
-        'drush',
-        'config:set',
-        'node.settings',
-        'use_admin_theme',
-        TRUE,
-      ]);
-    }
-    catch (ProcessFailedException $e) {
-      // Swallow an irrelevant exception in case node.settings doesn't exist.
-    }
+    $this->drush->setNodeFormsUseAdminTheme();
   }
 
 }

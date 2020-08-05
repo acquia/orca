@@ -1,6 +1,6 @@
 <?php
 
-namespace Acquia\Orca\Report;
+namespace Acquia\Orca\Task;
 
 use Acquia\Orca\Exception\DirectoryNotFoundException;
 use Acquia\Orca\Exception\FileNotFoundException as OrcaFileNotFoundException;
@@ -19,6 +19,27 @@ use Symfony\Component\Finder\Exception\DirectoryNotFoundException as FinderDirec
  */
 class CodeCoverageReportBuilder {
 
+  private const FINDER_PATH_EXCLUSIONS = [
+    '@docroot/.*@',
+    '@var/.*@',
+    '@vendor/.*@',
+  ];
+
+  /**
+   * PHP filename extensions as Finder expects them.
+   *
+   * @see \Acquia\Orca\Facade\PhplocFacade::PHP_EXTENSIONS
+   */
+  private const PHP_NAME_PATTERNS = [
+    '*.php',
+    '*.module',
+    '*.theme',
+    '*.inc',
+    '*.install',
+    '*.profile',
+    '*.engine',
+  ];
+
   /**
    * The config loader.
    *
@@ -27,11 +48,11 @@ class CodeCoverageReportBuilder {
   private $configLoader;
 
   /**
-   * The finder.
+   * The Finder factory.
    *
-   * @var \Symfony\Component\Finder\Finder
+   * @var \Acquia\Orca\Filesystem\FinderFactory
    */
-  private $finder;
+  private $finderFactory;
 
   /**
    * The ORCA path handler.
@@ -76,7 +97,7 @@ class CodeCoverageReportBuilder {
    */
   public function __construct(ConfigLoader $config_loader, FinderFactory $finder_factory, OrcaPathHandler $orca_path_handler) {
     $this->configLoader = $config_loader;
-    $this->finder = $finder_factory->create();
+    $this->finderFactory = $finder_factory;
     $this->orca = $orca_path_handler;
   }
 
@@ -97,8 +118,26 @@ class CodeCoverageReportBuilder {
    */
   public function build(string $path): array {
     $this->path = $path;
+    $this->ensurePreconditions();
     $this->compileData();
     return $this->buildTable();
+  }
+
+  /**
+   * Ensures that the preconditions are met.
+   *
+   * @throws \Acquia\Orca\Exception\FileNotFoundException
+   *   In case no files are found to scan.
+   */
+  private function ensurePreconditions(): void {
+    $finder = $this->finderFactory->create();
+    $php = $finder
+      ->in($this->path)
+      ->name(self::PHP_NAME_PATTERNS)
+      ->notPath(self::FINDER_PATH_EXCLUSIONS);
+    if (!iterator_count($php)) {
+      throw new OrcaFileNotFoundException('No files found to scan');
+    }
   }
 
   /**
@@ -142,15 +181,12 @@ class CodeCoverageReportBuilder {
    *   In case of missing directory or non-directory path.
    */
   private function getTestsData(): void {
+    $finder = $this->finderFactory->create();
     try {
-      $classes = $this->finder
+      $classes = $finder
         ->in($this->path)
         ->name('*Test.php')
-        ->notPath([
-          '@docroot/.*@',
-          '@var/.*@',
-          '@vendor/.*@',
-        ])
+        ->notPath(self::FINDER_PATH_EXCLUSIONS)
         ->contains('public function test');
     }
     catch (FinderDirectoryNotFoundException $e) {

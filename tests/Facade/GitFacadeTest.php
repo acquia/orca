@@ -8,8 +8,8 @@ use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 
 /**
- * @property \Acquia\Orca\Utility\ProcessRunner|\Prophecy\Prophecy\ObjectProphecy
- *   $processRunner
+ * @property \Acquia\Orca\Utility\ProcessRunner|\Prophecy\Prophecy\ObjectProphecy $processRunner
+ * @coversDefaultClass \Acquia\Orca\Facade\GitFacade
  */
 class GitFacadeTest extends TestCase {
 
@@ -66,7 +66,7 @@ class GitFacadeTest extends TestCase {
     $git->backupFixtureState();
   }
 
-  public function createGitFacade(): GitFacade {
+  private function createGitFacade(): GitFacade {
     $process_runner = $this->processRunner->reveal();
     return new GitFacade($process_runner);
   }

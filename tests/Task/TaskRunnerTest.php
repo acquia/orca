@@ -23,8 +23,6 @@ class TaskRunnerTest extends TestCase {
     $output = $this->prophesize(SymfonyStyle::class);
     $output->section(self::STATUS_MESSAGE)
       ->shouldBeCalledTimes(1);
-    $output->success('Passed')
-      ->shouldBeCalledTimes(2);
     $output = $output->reveal();
     $phplint = $this->setTaskExpectations(PhpLintTask::class);
 

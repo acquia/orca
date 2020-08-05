@@ -33,7 +33,7 @@ Build and Launch Tool: Acquia's toolset for automating Drupal 8 development, tes
 
 ## Ignored tests
 
-Automated tests that ORCA "ignores" and never runs. These are designated with an `orca_ignore` group for [PHPUnit](#phpunit). Tests should be "ignored" when they depend upon setup or preconditions that ORCA doesn't provide. They can then be scripted to run without ORCA after custom setup. [Read more in Designing automated tests: Tagging/grouping.](getting-started.md#tagginggrouping)
+Automated tests that ORCA "ignores" and never runs. These are designated with an `orca_ignore` group for [PHPUnit](#phpunit). Tests should be "ignored" when they depend upon setup or preconditions that ORCA doesn't provide. They can then be scripted to run without ORCA after custom setup. [Read more in Running automated tests: Tagging/grouping.](getting-started.md#tagginggrouping)
 
 ## Integrated test
 
@@ -69,11 +69,11 @@ A programmer-oriented testing framework used by Drupal. [[Website]](https://phpu
 
 ## Private tests
 
-Automated tests that ORCA runs only when the package that provides them is the [SUT](#sut). Any test that is not designated [public](#public-tests) or [ignored](#ignored-tests) is automatically treated as private. [Read more in Designing automated tests: Tagging/grouping.](getting-started.md#tagginggrouping)
+Automated tests that ORCA runs only when the package that provides them is the [SUT](#sut). Any test that is not designated [public](#public-tests) or [ignored](#ignored-tests) is automatically treated as private. [Read more in Running automated tests: Tagging/grouping.](getting-started.md#tagginggrouping)
 
 ## Public tests
 
-Automated tests that ORCA runs regardless of whether or not the package that provides them is the [SUT](#sut). These are designated with an `orca_public` group for [PHPUnit](#phpunit). Public tests should be limited to those covering features at the greatest risk of being broken by the presence or action of other company packages, and they should be as fast as possible since they will be run on all other company packages' builds. [Read more in Designing automated tests: Tagging/grouping.](getting-started.md#tagginggrouping)
+Automated tests that ORCA runs regardless of whether or not the package that provides them is the [SUT](#sut). These are designated with an `orca_public` group for [PHPUnit](#phpunit). Public tests should be limited to those covering features at the greatest risk of being broken by the presence or action of other company packages, and they should be as fast as possible since they will be run on all other company packages' builds. [Read more in Running automated tests: Tagging/grouping.](getting-started.md#tagginggrouping)
 
 ## Standard fixture
 
