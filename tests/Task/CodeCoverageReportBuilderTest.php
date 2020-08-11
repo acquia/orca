@@ -1,6 +1,6 @@
 <?php
 
-namespace Acquia\Orca\Tests\Report;
+namespace Acquia\Orca\Tests\Task;
 
 use Acquia\Orca\Exception\DirectoryNotFoundException as OrcaDirectoryNotFoundException;
 use Acquia\Orca\Exception\FileNotFoundException as OrcaFileNotFoundException;
