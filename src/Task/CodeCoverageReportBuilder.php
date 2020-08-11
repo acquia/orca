@@ -233,7 +233,7 @@ class CodeCoverageReportBuilder {
       return 0;
     }
 
-    return number_format($assertions / $complexity, 1);
+    return number_format($assertions / $complexity, 2);
   }
 
 }

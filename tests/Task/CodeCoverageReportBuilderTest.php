@@ -168,14 +168,15 @@ class CodeCoverageReportBuilderTest extends TestCase {
 
   public function providerHappyPath(): array {
     return [
-      ['test/example', 100, 100, '1.0'],
-      ['test/example', 200, 100, '2.0'],
-      ['test/example', 100, 200, '0.5'],
-      ['test/example', 100, 1, '100.0'],
-      ['test/example', 33, 375, '0.1'],
-      ['test/example', 0, 100, '0.0'],
-      ['test/example', 100, 0, '0.0'],
-      ['lorem/ipsum', 1, 1, '1.0'],
+      ['test/example', 100, 100, '1.00'],
+      ['test/example', 200, 100, '2.00'],
+      ['test/example', 100, 200, '0.50'],
+      ['test/example', 100, 1, '100.00'],
+      ['test/example', 0, 100, '0.00'],
+      ['test/example', 100, 0, '0.00'],
+      ['test/example', 33, 375, '0.09'],
+      ['test/example', 161, 387, '0.42'],
+      ['lorem/ipsum', 1, 1, '1.00'],
     ];
   }
 
