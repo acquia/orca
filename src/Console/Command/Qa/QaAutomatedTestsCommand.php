@@ -46,13 +46,6 @@ class QaAutomatedTestsCommand extends Command {
   private $packageManager;
 
   /**
-   * The "phpunit" command line option.
-   *
-   * @var string|string[]|bool|null
-   */
-  private $phpunit;
-
-  /**
    * The "sut" command line option.
    *
    * @var string|string[]|bool|null
@@ -108,7 +101,6 @@ class QaAutomatedTestsCommand extends Command {
    */
   public function execute(InputInterface $input, OutputInterface $output): int {
     $this->noServers = $input->getOption('no-servers');
-    $this->phpunit = $input->getOption('phpunit');
     $this->sut = $input->getOption('sut');
     $this->sutOnly = $input->getOption('sut-only');
 

@@ -5,6 +5,7 @@ namespace Acquia\Orca\Console\Command\Fixture;
 use Acquia\Orca\Enum\StatusCode;
 use Acquia\Orca\Filesystem\FixturePathHandler;
 use Acquia\Orca\Fixture\CompanyExtensionEnabler;
+use Exception;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -71,7 +72,7 @@ class FixtureEnableExtensionsCommand extends Command {
     try {
       $this->companyExtensionEnabler->enable();
     }
-    catch (\Exception $e) {
+    catch (Exception $e) {
       $io = new SymfonyStyle($input, $output);
       $io->error($e->getMessage());
       return StatusCode::ERROR;

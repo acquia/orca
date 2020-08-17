@@ -7,7 +7,6 @@ use Acquia\Orca\Fixture\FixtureResetter;
 use Acquia\Orca\Package\Package;
 use Acquia\Orca\Package\PackageManager;
 use Acquia\Orca\Server\ServerStack;
-use Acquia\Orca\Utility\ProcessRunner;
 use Acquia\Orca\Utility\SutSettingsTrait;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Filesystem\Filesystem;
@@ -55,20 +54,6 @@ class TestRunner {
   private $phpunit;
 
   /**
-   * The process runner.
-   *
-   * @var \Acquia\Orca\Utility\ProcessRunner
-   */
-  private $processRunner;
-
-  /**
-   * The package manager.
-   *
-   * @var \Acquia\Orca\Package\PackageManager
-   */
-  private $packageManager;
-
-  /**
    * The run PHPUnit flag.
    *
    * @var bool
@@ -100,19 +85,16 @@ class TestRunner {
    *   The output decorator.
    * @param \Acquia\Orca\Task\TestFramework\PhpUnitTask $phpunit
    *   The PHPUnit task.
-   * @param \Acquia\Orca\Utility\ProcessRunner $process_runner
-   *   The process runner.
    * @param \Acquia\Orca\Package\PackageManager $package_manager
    *   The package manager.
    * @param \Acquia\Orca\Server\ServerStack $server_stack
    *   The server stack.
    */
-  public function __construct(Filesystem $filesystem, FixtureResetter $fixture_resetter, SymfonyStyle $output, PhpUnitTask $phpunit, ProcessRunner $process_runner, PackageManager $package_manager, ServerStack $server_stack) {
+  public function __construct(Filesystem $filesystem, FixtureResetter $fixture_resetter, SymfonyStyle $output, PhpUnitTask $phpunit, PackageManager $package_manager, ServerStack $server_stack) {
     $this->filesystem = $filesystem;
     $this->fixtureResetter = $fixture_resetter;
     $this->output = $output;
     $this->phpunit = $phpunit;
-    $this->processRunner = $process_runner;
     $this->packageManager = $package_manager;
     $this->serverStack = $server_stack;
   }

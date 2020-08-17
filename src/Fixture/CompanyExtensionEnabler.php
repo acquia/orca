@@ -7,7 +7,6 @@ use Acquia\Orca\Filesystem\FixturePathHandler;
 use Acquia\Orca\Package\Package;
 use Acquia\Orca\Package\PackageManager;
 use Acquia\Orca\Utility\ConfigLoader;
-use Acquia\Orca\Utility\ProcessRunner;
 use Acquia\Orca\Utility\SutSettingsTrait;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Filesystem\Filesystem;
@@ -66,20 +65,6 @@ class CompanyExtensionEnabler {
   private $output;
 
   /**
-   * The process runner.
-   *
-   * @var \Acquia\Orca\Utility\ProcessRunner
-   */
-  private $processRunner;
-
-  /**
-   * The package manager.
-   *
-   * @var \Acquia\Orca\Package\PackageManager
-   */
-  private $packageManager;
-
-  /**
    * The subextension manager.
    *
    * @var \Acquia\Orca\Fixture\SubextensionManager
@@ -99,20 +84,17 @@ class CompanyExtensionEnabler {
    *   The fixture path handler.
    * @param \Symfony\Component\Console\Style\SymfonyStyle $output
    *   The output decorator.
-   * @param \Acquia\Orca\Utility\ProcessRunner $process_runner
-   *   The process runner.
    * @param \Acquia\Orca\Package\PackageManager $package_manager
    *   The package manager.
    * @param \Acquia\Orca\Fixture\SubextensionManager $subextension_manager
    *   The subextension manager.
    */
-  public function __construct(ConfigLoader $config_loader, DrushFacade $drush_facade, Filesystem $filesystem, FixturePathHandler $fixture_path_handler, SymfonyStyle $output, ProcessRunner $process_runner, PackageManager $package_manager, SubextensionManager $subextension_manager) {
+  public function __construct(ConfigLoader $config_loader, DrushFacade $drush_facade, Filesystem $filesystem, FixturePathHandler $fixture_path_handler, SymfonyStyle $output, PackageManager $package_manager, SubextensionManager $subextension_manager) {
     $this->configLoader = $config_loader;
     $this->drush = $drush_facade;
     $this->filesystem = $filesystem;
     $this->fixture = $fixture_path_handler;
     $this->output = $output;
-    $this->processRunner = $process_runner;
     $this->packageManager = $package_manager;
     $this->subextensionManager = $subextension_manager;
   }

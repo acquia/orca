@@ -32,7 +32,7 @@ class TasksTest extends TestCase {
 
     $object = new $class($config_file_overrider, $filesystem, $fixture, $orca_path_handler, $output, $phpcs_configurator, $process_runner);
 
-    $this->assertInstanceOf($class, $object, sprintf('Successfully instantiated class: %s.', $class));
+    self::assertInstanceOf($class, $object, sprintf('Successfully instantiated class: %s.', $class));
   }
 
   public function providerConstruction() {

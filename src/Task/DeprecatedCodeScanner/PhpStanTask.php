@@ -72,13 +72,6 @@ class PhpStanTask {
   private $status = StatusCode::OK;
 
   /**
-   * The SUT to scan.
-   *
-   * @var \Acquia\Orca\Package\Package|null
-   */
-  private $sut;
-
-  /**
    * The output decorator.
    *
    * @var \Symfony\Component\Console\Style\SymfonyStyle

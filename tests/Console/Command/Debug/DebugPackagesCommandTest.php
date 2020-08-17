@@ -50,7 +50,7 @@ class DebugPackagesCommandTest extends CommandTestBase {
 
     $this->executeCommand();
 
-    $this->assertEquals(ltrim('
+    self::assertEquals(ltrim('
 +-----------+---------------+--------------------- Drupal * ---+-------------+---------+-------------+--------+
 | Package   | type          | install_path                     | url         | version | version_dev | enable |
 +-----------+---------------+----------------------------------+-------------+---------+-------------+--------+
@@ -58,7 +58,7 @@ class DebugPackagesCommandTest extends CommandTestBase {
 | Example 2 | drupal-module | docroot/modules/contrib/example2 | ../example2 | ~1.0    | 1.x-dev     | yes    |
 +-----------+---------------+----------------------------------+-------------+---------+-------------+--------+
 '), $this->getDisplay(), 'Displayed correct output.');
-    $this->assertEquals(StatusCode::OK, $this->getStatusCode(), 'Returned correct status code.');
+    self::assertEquals(StatusCode::OK, $this->getStatusCode(), 'Returned correct status code.');
   }
 
   /**
@@ -73,8 +73,8 @@ class DebugPackagesCommandTest extends CommandTestBase {
 
     $this->executeCommand(['core' => $argument]);
 
-    $this->assertContains(ltrim("- Drupal {$version} -"), $this->getDisplay(), 'Displayed correct output.');
-    $this->assertEquals(StatusCode::OK, $this->getStatusCode(), 'Returned correct status code.');
+    self::assertContains(ltrim("- Drupal {$version} -"), $this->getDisplay(), 'Displayed correct output.');
+    self::assertEquals(StatusCode::OK, $this->getStatusCode(), 'Returned correct status code.');
   }
 
   public function providerValidArguments() {
@@ -93,8 +93,8 @@ class DebugPackagesCommandTest extends CommandTestBase {
 
     $error_message = sprintf('Error: Invalid value for "core" option: "%s".', $version) . PHP_EOL
       . 'Hint: Acceptable values are "PREVIOUS_RELEASE", "PREVIOUS_DEV", "CURRENT_RECOMMENDED", "CURRENT_DEV", "NEXT_RELEASE", "NEXT_DEV", "D9_READINESS", or any version string Composer understands.' . PHP_EOL;
-    $this->assertEquals($error_message, $this->getDisplay(), 'Displayed correct output.');
-    $this->assertEquals(StatusCode::ERROR, $this->getStatusCode(), 'Returned correct status code.');
+    self::assertEquals($error_message, $this->getDisplay(), 'Displayed correct output.');
+    self::assertEquals(StatusCode::ERROR, $this->getStatusCode(), 'Returned correct status code.');
   }
 
   public function providerInvalidArguments() {

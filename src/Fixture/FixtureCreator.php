@@ -26,6 +26,7 @@ use Composer\Semver\VersionParser;
 use Noodlehaus\Config;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Filesystem\Filesystem;
+use UnexpectedValueException;
 
 /**
  * Creates a fixture.
@@ -128,13 +129,6 @@ class FixtureCreator {
    * @var \Symfony\Component\Console\Style\SymfonyStyle
    */
   private $output;
-
-  /**
-   * The package manager.
-   *
-   * @var \Acquia\Orca\Package\PackageManager
-   */
-  private $packageManager;
 
   /**
    * The prefer source flag.
@@ -572,7 +566,7 @@ class FixtureCreator {
       // Get the version if it's concrete as opposed to a range.
       $version = $this->versionParser->normalize($this->drupalCoreVersion);
     }
-    catch (\UnexpectedValueException $e) {
+    catch (UnexpectedValueException $e) {
       // The requested Drupal core version is a range. Get the best match.
       $stability = $this->isDev ? 'dev' : 'stable';
       $version = $this->coreVersionFinder->find($this->drupalCoreVersion, $stability, $stability);
@@ -665,7 +659,7 @@ class FixtureCreator {
   private function getLocalPackages(): array {
     $packages = [];
     foreach ($this->packageManager->getAll() as $package_name => $package) {
-      $is_sut = $package == $this->sut;
+      $is_sut = $package === $this->sut;
       if (!$is_sut && !$this->symlinkAll) {
         continue;
       }
@@ -819,7 +813,7 @@ class FixtureCreator {
     }
     foreach ($dependencies as $package_name => &$package) {
       // Always symlink the SUT.
-      if ($package == $this->sut) {
+      if ($package === $this->sut) {
         $package = $this->getLocalPackageString($package);
         continue;
       }

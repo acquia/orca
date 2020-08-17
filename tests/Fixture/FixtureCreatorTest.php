@@ -92,7 +92,7 @@ class FixtureCreatorTest extends TestCase {
   public function testInstantiation(): void {
     $creator = $this->createFixtureCreator();
 
-    $this->assertInstanceOf(FixtureCreator::class, $creator, 'Initialized class.');
+    self::assertInstanceOf(FixtureCreator::class, $creator, 'Initialized class.');
   }
 
 }

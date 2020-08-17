@@ -7,6 +7,7 @@ use Acquia\Orca\Filesystem\OrcaPathHandler;
 use Acquia\Orca\Task\DeprecatedCodeScanner\PhpStanTask;
 use Acquia\Orca\Task\StaticAnalysisTool\PhpCodeSnifferTask;
 use Acquia\Orca\Task\StaticAnalysisTool\PhplocTask;
+use Env;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
@@ -52,7 +53,7 @@ class TelemetryEventPropertiesBuilder {
    * @param \Acquia\Orca\Filesystem\OrcaPathHandler $orca_path_handler
    *   The ORCA path handler.
    */
-  public function __construct(\Env $env, Filesystem $filesystem, OrcaPathHandler $orca_path_handler) {
+  public function __construct(Env $env, Filesystem $filesystem, OrcaPathHandler $orca_path_handler) {
     $this->env = $env;
     $this->filesystem = $filesystem;
     $this->orca = $orca_path_handler;

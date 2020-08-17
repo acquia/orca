@@ -19,7 +19,7 @@ class TaskRunnerTest extends TestCase {
 
   private const STATUS_MESSAGE = 'Printing status message';
 
-  public function testTaskRunner() {
+  public function testTaskRunner(): void {
     $output = $this->prophesize(SymfonyStyle::class);
     $output->section(self::STATUS_MESSAGE)
       ->shouldBeCalledTimes(1);
@@ -34,8 +34,8 @@ class TaskRunnerTest extends TestCase {
     // Make sure tasks are reset on clone.
     (clone($runner))->run();
 
-    $this->assertInstanceOf(TaskRunner::class, $runner, 'Instantiated class.');
-    $this->assertEquals(StatusCode::OK, $status_code, 'Returned a "success" status code.');
+    self::assertInstanceOf(TaskRunner::class, $runner, 'Instantiated class.');
+    self::assertEquals(StatusCode::OK, $status_code, 'Returned a "success" status code.');
   }
 
   protected function setTaskExpectations($class): TaskInterface {

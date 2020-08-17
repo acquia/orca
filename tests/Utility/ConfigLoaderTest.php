@@ -12,8 +12,8 @@ class ConfigLoaderTest extends TestCase {
     $loader = new ConfigLoader();
     $config = $loader->load([]);
 
-    $this->assertInstanceOf(ConfigLoader::class, $loader, 'Instantiated class.');
-    $this->assertInstanceOf(Config::class, $config, 'Returned config object.');
+    self::assertInstanceOf(ConfigLoader::class, $loader, 'Instantiated class.');
+    self::assertInstanceOf(Config::class, $config, 'Returned config object.');
   }
 
 }

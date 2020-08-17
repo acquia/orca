@@ -5,9 +5,11 @@ namespace Acquia\Orca\Tests\Package;
 use Acquia\Orca\Filesystem\FixturePathHandler;
 use Acquia\Orca\Filesystem\OrcaPathHandler;
 use Acquia\Orca\Package\Package;
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\OptionsResolver\Exception\InvalidOptionsException;
 use Symfony\Component\OptionsResolver\Exception\UndefinedOptionsException;
+use TypeError;
 use UnexpectedValueException;
 
 /**
@@ -172,12 +174,12 @@ class PackageTest extends TestCase {
 
   public function providerConstructionError(): array {
     return [
-      'Invalid package name: missing forward slash' => [\InvalidArgumentException::class, 'incomplete', []],
+      'Invalid package name: missing forward slash' => [InvalidArgumentException::class, 'incomplete', []],
       'Invalid "core_matrix" value: non-array' => [InvalidOptionsException::class, 'drupal/example', ['core_matrix' => 'invalid']],
       'Invalid "enable" value: non-boolean' => [InvalidOptionsException::class, 'drupal/example', ['enable' => 'invalid']],
       'Unexpected root property' => [UndefinedOptionsException::class, 'drupal/example', ['unexpected' => '']],
       'Invalid "core_matrix" constraint' => [UnexpectedValueException::class, 'drupal/example', ['core_matrix' => ['invalid' => '']]],
-      'Invalid "core_matrix" property: non-array' => [\TypeError::class, 'drupal/example', ['core_matrix' => ['8.7.x' => '']]],
+      'Invalid "core_matrix" property: non-array' => [TypeError::class, 'drupal/example', ['core_matrix' => ['8.7.x' => '']]],
       'Unexpected "core_matrix" property' => [UndefinedOptionsException::class, 'drupal/example', ['core_matrix' => ['8.7.x' => ['unexpected' => '']]]],
     ];
   }

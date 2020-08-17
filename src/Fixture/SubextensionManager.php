@@ -7,6 +7,7 @@ use Acquia\Orca\Filesystem\OrcaPathHandler;
 use Acquia\Orca\Package\Package;
 use Acquia\Orca\Package\PackageManager;
 use Acquia\Orca\Utility\ConfigLoader;
+use Exception;
 use SplFileInfo;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
@@ -136,7 +137,7 @@ class SubextensionManager {
       try {
         $config = $this->configLoader->load($file->getPathname());
       }
-      catch (\Exception $e) {
+      catch (Exception $e) {
         continue;
       }
 
@@ -222,7 +223,7 @@ class SubextensionManager {
       }
       [$vendor_name, $package_name] = explode('/', $name);
     }
-    catch (\Exception $e) {
+    catch (Exception $e) {
       return FALSE;
     }
 

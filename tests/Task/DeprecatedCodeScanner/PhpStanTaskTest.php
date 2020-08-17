@@ -30,7 +30,7 @@ class PhpStanTaskTest extends TestCase {
 
     $task = new PhpStanTask($filesystem, $fixture, $orca_path_handler, $output, $package_manager, $process_runner, $telemetry_client);
 
-    $this->assertInstanceOf(PhpStanTask::class, $task, 'Instantiated class.');
+    self::assertInstanceOf(PhpStanTask::class, $task, 'Instantiated class.');
   }
 
 }

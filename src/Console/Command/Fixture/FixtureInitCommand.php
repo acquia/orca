@@ -17,6 +17,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use UnexpectedValueException;
 
 /**
  * Provides a command.
@@ -270,7 +271,7 @@ class FixtureInitCommand extends Command {
       $this->versionParser->parseConstraints($core);
       return TRUE;
     }
-    catch (\UnexpectedValueException $e) {
+    catch (UnexpectedValueException $e) {
       return FALSE;
     }
   }

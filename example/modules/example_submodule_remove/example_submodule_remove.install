@@ -12,5 +12,5 @@
  *   If run.
  */
 function hook_example_submodule_remove_install() {
-  throw new \Exception('Failed to remove submodule example_submodule_remove via ORCA_PACKAGES_CONFIG_ALTER.');
+  throw new Exception('Failed to remove submodule example_submodule_remove via ORCA_PACKAGES_CONFIG_ALTER.');
 }

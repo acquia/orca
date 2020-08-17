@@ -1,7 +1,8 @@
 <?php
 
-namespace Acquia\Orca\Log;
+namespace Acquia\Orca\Tests\Log;
 
+use Acquia\Orca\Log\TelemetryClient;
 use PHPUnit\Framework\TestCase;
 use Zumba\Amplitude\Amplitude;
 
@@ -28,7 +29,7 @@ class TelemetryClientTest extends TestCase {
   /**
    * @dataProvider providerTelemetryClient
    */
-  public function testTelemetryClient($times_called, $is_enabled, $api_key, $user_id) {
+  public function testTelemetryClient($times_called, $is_enabled, $api_key, $user_id): void {
     $this->telemetryIsEnabled = $is_enabled;
     $this->amplitudeApiKey = $api_key;
     $this->amplitudeUserId = $user_id;
@@ -39,13 +40,13 @@ class TelemetryClientTest extends TestCase {
     $event_properties = ['key' => 'value'];
     $this->amplitude
       ->logEvent($event_type, $event_properties)
-      ->shouldBecalledTimes($times_called);
+      ->shouldBeCalledTimes($times_called);
 
     $client = $this->createTelemetryClient();
     $client->logEvent($event_type, $event_properties);
     $is_ready = $client->isReady();
 
-    $this->assertEquals($is_enabled, $is_ready, 'Correctly set enabled/state state.');
+    self::assertEquals($is_enabled, $is_ready, 'Correctly set enabled/state state.');
   }
 
   public function providerTelemetryClient() {

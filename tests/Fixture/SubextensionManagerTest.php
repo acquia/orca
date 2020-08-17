@@ -41,7 +41,7 @@ class SubextensionManagerTest extends TestCase {
     $package_manager = $this->packageManager->reveal();
     $object = new SubextensionManager($config_loader, $filesystem, $fixture, $orca_path_handler, $package_manager);
 
-    $this->assertInstanceOf(SubextensionManager::class, $object, 'Instantiated class.');
+    self::assertInstanceOf(SubextensionManager::class, $object, 'Instantiated class.');
   }
 
 }

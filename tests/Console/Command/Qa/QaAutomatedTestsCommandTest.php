@@ -72,8 +72,8 @@ class QaAutomatedTestsCommandTest extends CommandTestBase {
 
     $this->executeCommand($args);
 
-    $this->assertEquals($display, $this->getDisplay(), 'Displayed correct output.');
-    $this->assertEquals($status_code, $this->getStatusCode(), 'Returned correct status code.');
+    self::assertEquals($display, $this->getDisplay(), 'Displayed correct output.');
+    self::assertEquals($status_code, $this->getStatusCode(), 'Returned correct status code.');
   }
 
   public function providerCommand() {

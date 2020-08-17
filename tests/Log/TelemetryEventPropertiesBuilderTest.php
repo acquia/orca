@@ -5,6 +5,7 @@ namespace Acquia\Orca\Tests\Log;
 use Acquia\Orca\Enum\TelemetryEventName;
 use Acquia\Orca\Filesystem\OrcaPathHandler;
 use Acquia\Orca\Log\TelemetryEventPropertiesBuilder;
+use Env;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Filesystem;
 
@@ -16,7 +17,7 @@ use Symfony\Component\Filesystem\Filesystem;
 class TelemetryEventPropertiesBuilderTest extends TestCase {
 
   protected function setUp() {
-    $this->env = $this->prophesize(\Env::class);
+    $this->env = $this->prophesize(Env::class);
     $this->filesystem = $this->prophesize(Filesystem::class);
     $this->orca = $this->prophesize(OrcaPathHandler::class);
   }
@@ -31,7 +32,7 @@ class TelemetryEventPropertiesBuilderTest extends TestCase {
   public function testConstruction() {
     $builder = $this->createTelemetryEventPropertiesBuilder();
 
-    $this->assertEquals(TelemetryEventPropertiesBuilder::class, get_class($builder), 'Instantiated class.');
+    self::assertEquals(TelemetryEventPropertiesBuilder::class, get_class($builder), 'Instantiated class.');
   }
 
   public function testBuildingTestEvent() {
@@ -39,7 +40,7 @@ class TelemetryEventPropertiesBuilderTest extends TestCase {
 
     $event = $builder->build(new TelemetryEventName(TelemetryEventName::TEST));
 
-    $this->assertEquals(['example' => TRUE], $event, 'Built TEST event.');
+    self::assertEquals(['example' => TRUE], $event, 'Built TEST event.');
   }
 
 }

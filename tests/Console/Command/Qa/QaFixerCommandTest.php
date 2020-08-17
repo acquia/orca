@@ -66,8 +66,8 @@ class QaFixerCommandTest extends CommandTestBase {
 
     $this->executeCommand(['path' => self::SUT_PATH]);
 
-    $this->assertEquals($display, $this->getDisplay(), 'Displayed correct output.');
-    $this->assertEquals($status_code, $this->getStatusCode(), 'Returned correct status code.');
+    self::assertEquals($display, $this->getDisplay(), 'Displayed correct output.');
+    self::assertEquals($status_code, $this->getStatusCode(), 'Returned correct status code.');
   }
 
   public function providerCommand() {
@@ -102,8 +102,8 @@ class QaFixerCommandTest extends CommandTestBase {
 
     $this->executeCommand($args);
 
-    $this->assertEquals('', $this->getDisplay(), 'Displayed correct output.');
-    $this->assertEquals(StatusCode::OK, $this->getStatusCode(), 'Returned correct status code.');
+    self::assertEquals('', $this->getDisplay(), 'Displayed correct output.');
+    self::assertEquals(StatusCode::OK, $this->getStatusCode(), 'Returned correct status code.');
   }
 
   public function providerTaskFiltering() {
@@ -140,8 +140,8 @@ class QaFixerCommandTest extends CommandTestBase {
 
     $this->executeCommand($args);
 
-    $this->assertEquals('', $this->getDisplay(), 'Displayed correct output.');
-    $this->assertEquals(StatusCode::OK, $this->getStatusCode(), 'Returned correct status code.');
+    self::assertEquals('', $this->getDisplay(), 'Displayed correct output.');
+    self::assertEquals(StatusCode::OK, $this->getStatusCode(), 'Returned correct status code.');
   }
 
   public function providerPhpcsStandardOption() {
@@ -183,8 +183,8 @@ class QaFixerCommandTest extends CommandTestBase {
 
     $this->executeCommand($args);
 
-    $this->assertEquals('', $this->getDisplay(), 'Displayed correct output.');
-    $this->assertEquals(StatusCode::OK, $this->getStatusCode(), 'Returned correct status code.');
+    self::assertEquals('', $this->getDisplay(), 'Displayed correct output.');
+    self::assertEquals(StatusCode::OK, $this->getStatusCode(), 'Returned correct status code.');
   }
 
   public function providerPhpcsStandardEnvVar() {
@@ -212,8 +212,8 @@ class QaFixerCommandTest extends CommandTestBase {
 
     $this->executeCommand($args);
 
-    $this->assertEquals($display, $this->getDisplay(), 'Displayed correct output.');
-    $this->assertEquals(StatusCode::ERROR, $this->getStatusCode(), 'Returned correct status code.');
+    self::assertEquals($display, $this->getDisplay(), 'Displayed correct output.');
+    self::assertEquals(StatusCode::ERROR, $this->getStatusCode(), 'Returned correct status code.');
   }
 
   public function providerInvalidPhpcsStandard() {

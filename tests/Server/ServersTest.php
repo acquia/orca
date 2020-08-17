@@ -19,8 +19,8 @@ class ServersTest extends TestCase {
     $chrome_driver_server = new ChromeDriverServer($fixture, $orca_path_handler, $process_runner);
     $web_server = new WebServer($fixture, $process_runner);
 
-    $this->assertInstanceOf(ChromeDriverServer::class, $chrome_driver_server, 'Instantiated ChromeDriverServer class.');
-    $this->assertInstanceOf(WebServer::class, $web_server, 'Instantiated WebServer class.');
+    self::assertInstanceOf(ChromeDriverServer::class, $chrome_driver_server, 'Instantiated ChromeDriverServer class.');
+    self::assertInstanceOf(WebServer::class, $web_server, 'Instantiated WebServer class.');
   }
 
 }

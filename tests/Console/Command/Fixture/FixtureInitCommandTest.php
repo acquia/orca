@@ -52,7 +52,7 @@ class FixtureInitCommandTest extends CommandTestBase {
     $this->packageManager = $this->prophesize(PackageManager::class);
     $this->packageManager
       ->exists(Argument::any())
-      ->wilLReturn(TRUE);
+      ->willReturn(TRUE);
     $this->sutPreconditionsTester = $this->prophesize(SutPreconditionsTester::class);
     $this->versionParser = $this->prophesize(VersionParser::class);
   }
@@ -122,8 +122,8 @@ class FixtureInitCommandTest extends CommandTestBase {
 
     $this->executeCommand($args);
 
-    $this->assertEquals($display, $this->getDisplay(), 'Displayed correct output.');
-    $this->assertEquals($status_code, $this->getStatusCode(), 'Returned correct status code.');
+    self::assertEquals($display, $this->getDisplay(), 'Displayed correct output.');
+    self::assertEquals($status_code, $this->getStatusCode(), 'Returned correct status code.');
   }
 
   public function providerCommand() {
@@ -151,8 +151,8 @@ class FixtureInitCommandTest extends CommandTestBase {
 
     $this->executeCommand();
 
-    $this->assertEquals('', $this->getDisplay(), 'Displayed correct output.');
-    $this->assertEquals(StatusCode::OK, $this->getStatusCode(), 'Returned correct status code.');
+    self::assertEquals('', $this->getDisplay(), 'Displayed correct output.');
+    self::assertEquals(StatusCode::OK, $this->getStatusCode(), 'Returned correct status code.');
   }
 
   public function testBareOption() {
@@ -172,8 +172,8 @@ class FixtureInitCommandTest extends CommandTestBase {
 
     $this->executeCommand(['--bare' => TRUE]);
 
-    $this->assertEquals('', $this->getDisplay(), 'Displayed correct output.');
-    $this->assertEquals(StatusCode::OK, $this->getStatusCode(), 'Returned correct status code.');
+    self::assertEquals('', $this->getDisplay(), 'Displayed correct output.');
+    self::assertEquals(StatusCode::OK, $this->getStatusCode(), 'Returned correct status code.');
   }
 
   /**
@@ -186,8 +186,8 @@ class FixtureInitCommandTest extends CommandTestBase {
 
     $this->executeCommand($options);
 
-    $this->assertEquals("Error: Cannot create a bare fixture with a SUT.\n", $this->getDisplay(), 'Displayed correct output.');
-    $this->assertEquals(StatusCode::ERROR, $this->getStatusCode(), 'Returned correct status code.');
+    self::assertEquals("Error: Cannot create a bare fixture with a SUT.\n", $this->getDisplay(), 'Displayed correct output.');
+    self::assertEquals(StatusCode::ERROR, $this->getStatusCode(), 'Returned correct status code.');
   }
 
   public function providerBareOptionInvalidProvider() {
@@ -217,8 +217,8 @@ class FixtureInitCommandTest extends CommandTestBase {
 
     $this->executeCommand($options);
 
-    $this->assertEquals('', $this->getDisplay(), 'Displayed correct output.');
-    $this->assertEquals(StatusCode::OK, $this->getStatusCode(), 'Returned correct status code.');
+    self::assertEquals('', $this->getDisplay(), 'Displayed correct output.');
+    self::assertEquals(StatusCode::OK, $this->getStatusCode(), 'Returned correct status code.');
   }
 
   public function providerCoreOption() {
@@ -246,8 +246,8 @@ class FixtureInitCommandTest extends CommandTestBase {
       '--core' => $value,
     ]);
 
-    $this->assertEquals($status_code, $this->getStatusCode(), 'Returned correct status code.');
-    $this->assertEquals($display, $this->getDisplay(), 'Displayed correct output.');
+    self::assertEquals($status_code, $this->getStatusCode(), 'Returned correct status code.');
+    self::assertEquals($display, $this->getDisplay(), 'Displayed correct output.');
   }
 
   public function providerCoreOptionVersionParsing() {
@@ -278,8 +278,8 @@ class FixtureInitCommandTest extends CommandTestBase {
 
     $this->executeCommand($options);
 
-    $this->assertEquals('', $this->getDisplay(), 'Displayed correct output.');
-    $this->assertEquals(StatusCode::OK, $this->getStatusCode(), 'Returned correct status code.');
+    self::assertEquals('', $this->getDisplay(), 'Displayed correct output.');
+    self::assertEquals(StatusCode::OK, $this->getStatusCode(), 'Returned correct status code.');
   }
 
   public function providerIgnorePatchFailureOption() {
@@ -298,8 +298,8 @@ class FixtureInitCommandTest extends CommandTestBase {
 
     $this->executeCommand();
 
-    $this->assertEquals(StatusCode::ERROR, $this->getStatusCode(), 'Returned correct status code.');
-    $this->assertContains("[ERROR] {$exception_message}", $this->getDisplay(), 'Displayed correct output.');
+    self::assertEquals(StatusCode::ERROR, $this->getStatusCode(), 'Returned correct status code.');
+    self::assertContains("[ERROR] {$exception_message}", $this->getDisplay(), 'Displayed correct output.');
   }
 
   public function testPreferSourceOption() {
@@ -310,8 +310,8 @@ class FixtureInitCommandTest extends CommandTestBase {
 
     $this->executeCommand(['--prefer-source' => TRUE]);
 
-    $this->assertEquals('', $this->getDisplay(), 'Displayed correct output.');
-    $this->assertEquals(StatusCode::OK, $this->getStatusCode(), 'Returned correct status code.');
+    self::assertEquals('', $this->getDisplay(), 'Displayed correct output.');
+    self::assertEquals(StatusCode::OK, $this->getStatusCode(), 'Returned correct status code.');
   }
 
   public function testProjectTemplateOption() {
@@ -332,8 +332,8 @@ class FixtureInitCommandTest extends CommandTestBase {
 
     $this->executeCommand(['--project-template' => $project_template]);
 
-    $this->assertEquals('', $this->getDisplay(), 'Displayed correct output.');
-    $this->assertEquals(StatusCode::OK, $this->getStatusCode(), 'Returned correct status code.');
+    self::assertEquals('', $this->getDisplay(), 'Displayed correct output.');
+    self::assertEquals(StatusCode::OK, $this->getStatusCode(), 'Returned correct status code.');
   }
 
   public function testSutPreconditionTestFailure() {
@@ -358,8 +358,8 @@ class FixtureInitCommandTest extends CommandTestBase {
       '--sut' => $sut_name,
     ]);
 
-    $this->assertEquals(StatusCode::ERROR, $this->getStatusCode(), 'Returned correct status code.');
-    $this->assertContains("[ERROR] {$exception_message}", $this->getDisplay(), 'Displayed correct output.');
+    self::assertEquals(StatusCode::ERROR, $this->getStatusCode(), 'Returned correct status code.');
+    self::assertContains("[ERROR] {$exception_message}", $this->getDisplay(), 'Displayed correct output.');
   }
 
   /**
@@ -373,8 +373,8 @@ class FixtureInitCommandTest extends CommandTestBase {
 
     $this->executeCommand($options);
 
-    $this->assertEquals('', $this->getDisplay(), 'Displayed correct output.');
-    $this->assertEquals(StatusCode::OK, $this->getStatusCode(), 'Returned correct status code.');
+    self::assertEquals('', $this->getDisplay(), 'Displayed correct output.');
+    self::assertEquals(StatusCode::OK, $this->getStatusCode(), 'Returned correct status code.');
   }
 
   public function providerSymlinkAllOption() {
@@ -394,8 +394,8 @@ class FixtureInitCommandTest extends CommandTestBase {
       '--symlink-all' => TRUE,
     ]);
 
-    $this->assertEquals("Error: Cannot symlink all in a bare fixture.\n", $this->getDisplay(), 'Displayed correct output.');
-    $this->assertEquals(StatusCode::ERROR, $this->getStatusCode(), 'Returned correct status code.');
+    self::assertEquals("Error: Cannot symlink all in a bare fixture.\n", $this->getDisplay(), 'Displayed correct output.');
+    self::assertEquals(StatusCode::ERROR, $this->getStatusCode(), 'Returned correct status code.');
   }
 
   private function setDefaultFixtureCreatorExpectations(): void {

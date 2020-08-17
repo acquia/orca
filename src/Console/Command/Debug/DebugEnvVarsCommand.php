@@ -3,6 +3,7 @@
 namespace Acquia\Orca\Console\Command\Debug;
 
 use Acquia\Orca\Enum\StatusCode;
+use Env;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputInterface;
@@ -97,7 +98,7 @@ class DebugEnvVarsCommand extends Command {
     foreach (self::VARS as $var) {
       $rows[] = [
         $var,
-        \Env::get($var) ?: '~',
+        Env::get($var) ?: '~',
       ];
     }
     return $rows;

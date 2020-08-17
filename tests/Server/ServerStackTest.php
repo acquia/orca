@@ -39,7 +39,7 @@ class ServerStackTest extends TestCase {
     $servers->start();
     $servers->stop();
 
-    $this->assertInstanceOf(ServerStack::class, $servers, 'Instantiated class.');
+    self::assertInstanceOf(ServerStack::class, $servers, 'Instantiated class.');
   }
 
   protected function createServerStack(): ServerStack {

@@ -12,11 +12,11 @@ class DebugEnvVarsCommandTest extends CommandTestBase {
   public function testBasicExecution() {
     $this->executeCommand();
 
-    $this->assertContains('+--', $this->getDisplay());
-    $this->assertContains('| Variable ', $this->getDisplay());
-    $this->assertContains('| Value ', $this->getDisplay());
-    $this->assertContains('| ORCA_', $this->getDisplay());
-    $this->assertEquals(StatusCode::OK, $this->getStatusCode(), 'Returned correct status code.');
+    self::assertContains('+--', $this->getDisplay());
+    self::assertContains('| Variable ', $this->getDisplay());
+    self::assertContains('| Value ', $this->getDisplay());
+    self::assertContains('| ORCA_', $this->getDisplay());
+    self::assertEquals(StatusCode::OK, $this->getStatusCode(), 'Returned correct status code.');
   }
 
   /**

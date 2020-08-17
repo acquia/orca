@@ -6,6 +6,7 @@ use Acquia\Orca\Filesystem\FixturePathHandler;
 use Acquia\Orca\Filesystem\OrcaPathHandler;
 use Acquia\Orca\Package\Package;
 use Acquia\Orca\Package\PackageManager;
+use InvalidArgumentException;
 use LogicException;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
@@ -86,7 +87,7 @@ class PackageManagerTest extends TestCase {
   }
 
   public function testRequestingNonExistentPackage(): void {
-    $this->expectException(\InvalidArgumentException::class);
+    $this->expectException(InvalidArgumentException::class);
     $this->expectExceptionMessage('No such package: nonexistent/package');
 
     $manager = $this->createPackageManager();

@@ -41,7 +41,7 @@ class TestRunnerTest extends TestCase {
   public function testTaskRunner() {
     $runner = $this->createTestRunner();
 
-    $this->assertInstanceOf(TestRunner::class, $runner, 'Instantiated class.');
+    self::assertInstanceOf(TestRunner::class, $runner, 'Instantiated class.');
   }
 
   protected function setTaskExpectations($class): TaskInterface {
@@ -61,10 +61,9 @@ class TestRunnerTest extends TestCase {
     $fixture_resetter = $this->fixtureResetter->reveal();
     $output = $this->output->reveal();
     $phpunit = $this->phpunit->reveal();
-    $process_runner = $this->processRunner->reveal();
     $package_manager = $this->packageManager->reveal();
     $server_stack = $this->serverStack->reveal();
-    return new TestRunner($filesystem, $fixture_resetter, $output, $phpunit, $process_runner, $package_manager, $server_stack);
+    return new TestRunner($filesystem, $fixture_resetter, $output, $phpunit, $package_manager, $server_stack);
   }
 
 }

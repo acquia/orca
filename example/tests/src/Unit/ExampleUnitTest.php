@@ -13,7 +13,7 @@ class ExampleUnitTest extends TestCase {
    * Demonstrates designating a test to run only during own builds.
    */
   public function testPrivatePseudoGroup() {
-    $this->assertTrue(TRUE, 'Performed private test.');
+    self::assertTrue(TRUE, 'Performed private test.');
   }
 
   /**
@@ -22,7 +22,7 @@ class ExampleUnitTest extends TestCase {
    * @group orca_public
    */
   public function testPublicGroup() {
-    $this->assertTrue(TRUE, 'Performed public test.');
+    self::assertTrue(TRUE, 'Performed public test.');
   }
 
   /**
@@ -31,7 +31,7 @@ class ExampleUnitTest extends TestCase {
    * @group orca_ignore
    */
   public function testIgnoreGroup() {
-    $this->fail('Ran ignored test.');
+    self::fail('Ran ignored test.');
   }
 
 }

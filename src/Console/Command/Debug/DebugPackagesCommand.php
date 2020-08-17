@@ -13,6 +13,7 @@ use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use UnexpectedValueException;
 
 /**
  * Provides a command.
@@ -138,7 +139,7 @@ class DebugPackagesCommand extends Command {
       $this->versionParser->parseConstraints($argument);
       $this->coreVersion = $argument;
     }
-    catch (\UnexpectedValueException $e) {
+    catch (UnexpectedValueException $e) {
       throw new InvalidArgumentException();
     }
   }
