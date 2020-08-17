@@ -38,6 +38,16 @@ class TestRunnerTest extends TestCase {
     $this->serverStack = $this->prophesize(ServerStack::class);
   }
 
+  private function createTestRunner(): TestRunner {
+    $filesystem = $this->filesystem->reveal();
+    $fixture_resetter = $this->fixtureResetter->reveal();
+    $output = $this->output->reveal();
+    $phpunit = $this->phpunit->reveal();
+    $package_manager = $this->packageManager->reveal();
+    $server_stack = $this->serverStack->reveal();
+    return new TestRunner($filesystem, $fixture_resetter, $output, $phpunit, $package_manager, $server_stack);
+  }
+
   public function testTaskRunner() {
     $runner = $this->createTestRunner();
 
@@ -54,16 +64,6 @@ class TestRunnerTest extends TestCase {
     $task->execute()->shouldBeCalledTimes(1);
     $task = $task->reveal();
     return $task;
-  }
-
-  private function createTestRunner(): TestRunner {
-    $filesystem = $this->filesystem->reveal();
-    $fixture_resetter = $this->fixtureResetter->reveal();
-    $output = $this->output->reveal();
-    $phpunit = $this->phpunit->reveal();
-    $package_manager = $this->packageManager->reveal();
-    $server_stack = $this->serverStack->reveal();
-    return new TestRunner($filesystem, $fixture_resetter, $output, $phpunit, $package_manager, $server_stack);
   }
 
 }

@@ -51,6 +51,11 @@ class DrushFacadeTest extends TestCase {
     $this->processRunner = $this->prophesize(ProcessRunner::class);
   }
 
+  private function createDrushFacade(): DrushFacade {
+    $process_runner = $this->processRunner->reveal();
+    return new DrushFacade($process_runner);
+  }
+
   /**
    * @dataProvider providerEnableExtensions
    */
@@ -198,11 +203,6 @@ class DrushFacadeTest extends TestCase {
     $facade->setNodeFormsUseAdminTheme();
 
     self::assertTrue(TRUE, 'Drush error was suppressed.');
-  }
-
-  private function createDrushFacade(): DrushFacade {
-    $process_runner = $this->processRunner->reveal();
-    return new DrushFacade($process_runner);
   }
 
 }

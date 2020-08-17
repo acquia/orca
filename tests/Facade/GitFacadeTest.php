@@ -20,6 +20,11 @@ class GitFacadeTest extends TestCase {
       ->willReturn(0);
   }
 
+  private function createGitFacade(): GitFacade {
+    $process_runner = $this->processRunner->reveal();
+    return new GitFacade($process_runner);
+  }
+
   public function testEnsureFixtureRepo(): void {
     $this->processRunner
       ->git(['init'])
@@ -64,11 +69,6 @@ class GitFacadeTest extends TestCase {
     $git = $this->createGitFacade();
 
     $git->backupFixtureState();
-  }
-
-  private function createGitFacade(): GitFacade {
-    $process_runner = $this->processRunner->reveal();
-    return new GitFacade($process_runner);
   }
 
 }

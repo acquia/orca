@@ -76,6 +76,14 @@ class PackageManagerTest extends TestCase {
       ->willReturn(self::PACKAGES_DATA_ALTER);
   }
 
+  private function createPackageManager(): PackageManager {
+    $filesystem = $this->filesystem->reveal();
+    $fixture_path_handler = $this->fixture->reveal();
+    $orca_path_handler = $this->orca->reveal();
+    $parser = $this->parser->reveal();
+    return new PackageManager($filesystem, $fixture_path_handler, $orca_path_handler, $parser, self::PACKAGES_CONFIG_FILE, self::PACKAGES_CONFIG_ALTER_FILE);
+  }
+
   public function testConstructionAndGetters(): void {
     $manager = $this->createPackageManager();
     $all_packages = $manager->getAll();
@@ -135,14 +143,6 @@ class PackageManagerTest extends TestCase {
 
     $manager = $this->createPackageManager();
     $manager->getAlterData();
-  }
-
-  private function createPackageManager(): PackageManager {
-    $filesystem = $this->filesystem->reveal();
-    $fixture_path_handler = $this->fixture->reveal();
-    $orca_path_handler = $this->orca->reveal();
-    $parser = $this->parser->reveal();
-    return new PackageManager($filesystem, $fixture_path_handler, $orca_path_handler, $parser, self::PACKAGES_CONFIG_FILE, self::PACKAGES_CONFIG_ALTER_FILE);
   }
 
 }

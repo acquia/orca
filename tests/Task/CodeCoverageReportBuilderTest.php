@@ -134,6 +134,34 @@ class CodeCoverageReportBuilderTest extends TestCase {
     $this->testIterator = new ArrayIterator([$test_file->reveal()]);
   }
 
+  private function createBuilder(): CodeCoverageReportBuilder {
+    $this->config
+      ->all()
+      ->willReturn($this->phplocData);
+    $config = $this->config->reveal();
+    $this->configLoader
+      ->load(Argument::any())
+      ->willReturn($config);
+    $config_loader = $this->configLoader->reveal();
+    $this->phpFinder
+      ->getIterator()
+      ->willReturn($this->phpIterator);
+    $php_finder = $this->phpFinder->reveal();
+    $this->testFinder
+      ->getIterator()
+      ->willReturn($this->testIterator);
+    $test_finder = $this->testFinder->reveal();
+    $this->finderFactory
+      ->create()
+      ->willReturn(
+        $php_finder,
+        $test_finder
+      );
+    $finder_factory = $this->finderFactory->reveal();
+    $orca_path_handler = $this->orca->reveal();
+    return new CodeCoverageReportBuilder($config_loader, $finder_factory, $orca_path_handler);
+  }
+
   /**
    * @dataProvider providerHappyPath
    */
@@ -227,34 +255,6 @@ class CodeCoverageReportBuilderTest extends TestCase {
     $builder = $this->createBuilder();
 
     $builder->build(self::DEFAULT_PATH);
-  }
-
-  private function createBuilder(): CodeCoverageReportBuilder {
-    $this->config
-      ->all()
-      ->willReturn($this->phplocData);
-    $config = $this->config->reveal();
-    $this->configLoader
-      ->load(Argument::any())
-      ->willReturn($config);
-    $config_loader = $this->configLoader->reveal();
-    $this->phpFinder
-      ->getIterator()
-      ->willReturn($this->phpIterator);
-    $php_finder = $this->phpFinder->reveal();
-    $this->testFinder
-      ->getIterator()
-      ->willReturn($this->testIterator);
-    $test_finder = $this->testFinder->reveal();
-    $this->finderFactory
-      ->create()
-      ->willReturn(
-        $php_finder,
-        $test_finder
-      );
-    $finder_factory = $this->finderFactory->reveal();
-    $orca_path_handler = $this->orca->reveal();
-    return new CodeCoverageReportBuilder($config_loader, $finder_factory, $orca_path_handler);
   }
 
 }
