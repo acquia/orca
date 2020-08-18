@@ -26,6 +26,12 @@ class PhplocFacadeTest extends TestCase {
       ->willReturn(0);
   }
 
+  private function createPhplocFacade(): PhplocFacade {
+    $orca_path_handler = $this->orca->reveal();
+    $process_runner = $this->processRunner->reveal();
+    return new PhplocFacade($orca_path_handler, $process_runner);
+  }
+
   /**
    * @dataProvider dataProviderCommand
    */
@@ -52,12 +58,6 @@ class PhplocFacadeTest extends TestCase {
       ['/var/www'],
       ['/test/example'],
     ];
-  }
-
-  public function createPhplocFacade(): PhplocFacade {
-    $orca_path_handler = $this->orca->reveal();
-    $process_runner = $this->processRunner->reveal();
-    return new PhplocFacade($orca_path_handler, $process_runner);
   }
 
 }

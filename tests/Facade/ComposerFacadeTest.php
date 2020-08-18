@@ -29,6 +29,12 @@ class ComposerFacadeTest extends TestCase {
       ->willReturn(0);
   }
 
+  private function createComposerFacade(): ComposerFacade {
+    $fixture_path_handler = $this->fixturePathHandler->reveal();
+    $process_runner = $this->processRunner->reveal();
+    return new ComposerFacade($fixture_path_handler, $process_runner);
+  }
+
   /**
    * @dataProvider providerCreateProject
    */
@@ -126,12 +132,6 @@ class ComposerFacadeTest extends TestCase {
       [['test1/example1'], ['test2/example2']],
       [['test2/example2'], ['test3/example3'], ['test4/example4']],
     ];
-  }
-
-  public function createComposerFacade(): ComposerFacade {
-    $fixture_path_handler = $this->fixturePathHandler->reveal();
-    $process_runner = $this->processRunner->reveal();
-    return new ComposerFacade($fixture_path_handler, $process_runner);
   }
 
 }

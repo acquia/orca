@@ -58,7 +58,7 @@ class FixtureCreatorTest extends TestCase {
     $this->versionParser = $this->prophesize(VersionParser::class);
   }
 
-  public function createFixtureCreator(): FixtureCreator {
+  private function createFixtureCreator(): FixtureCreator {
     $codebase_creator = $this->codebaseCreator->reveal();
     $composer_facade = $this->composer->reveal();
     $core_version_finder = $this->coreVersionFinder->reveal();

@@ -15,6 +15,11 @@ class PhplocTaskTest extends TestCase {
     $this->phploc = $this->prophesize(PhplocFacade::class);
   }
 
+  private function createPhplocTask(): PhplocTask {
+    $phploc_facade = $this->phploc->reveal();
+    return new PhplocTask($phploc_facade);
+  }
+
   /**
    * @dataProvider providerTask
    */
@@ -38,11 +43,6 @@ class PhplocTaskTest extends TestCase {
       ['/var/www'],
       ['/test/example'],
     ];
-  }
-
-  public function createPhplocTask(): PhplocTask {
-    $phploc_facade = $this->phploc->reveal();
-    return new PhplocTask($phploc_facade);
   }
 
 }
