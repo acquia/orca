@@ -2,10 +2,10 @@
 
 namespace Acquia\Orca\Console\Command\Internal;
 
-use Acquia\Orca\Enum\StatusCode;
-use Acquia\Orca\Enum\TelemetryEventName;
-use Acquia\Orca\Log\TelemetryClient;
-use Acquia\Orca\Log\TelemetryEventPropertiesBuilder;
+use Acquia\Orca\Console\Helper\StatusCode;
+use Acquia\Orca\Helper\Log\TelemetryClient;
+use Acquia\Orca\Helper\Log\TelemetryEventName;
+use Acquia\Orca\Helper\Log\TelemetryEventPropertiesBuilder;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -26,23 +26,23 @@ class InternalLogJobCommand extends Command {
   /**
    * The telemetry event properties builder.
    *
-   * @var \Acquia\Orca\Log\TelemetryEventPropertiesBuilder
+   * @var \Acquia\Orca\Helper\Log\TelemetryEventPropertiesBuilder
    */
   private $telemetryEventPropertiesBuilder;
 
   /**
    * The telemetry client.
    *
-   * @var \Acquia\Orca\Log\TelemetryClient
+   * @var \Acquia\Orca\Helper\Log\TelemetryClient
    */
   private $telemetryClient;
 
   /**
    * Constructs an instance.
    *
-   * @param \Acquia\Orca\Log\TelemetryClient $telemetry_client
+   * @param \Acquia\Orca\Helper\Log\TelemetryClient $telemetry_client
    *   The telemetry client.
-   * @param \Acquia\Orca\Log\TelemetryEventPropertiesBuilder $telemetry_event_properties_builder
+   * @param \Acquia\Orca\Helper\Log\TelemetryEventPropertiesBuilder $telemetry_event_properties_builder
    *   The telemetry event builder.
    */
   public function __construct(TelemetryClient $telemetry_client, TelemetryEventPropertiesBuilder $telemetry_event_properties_builder) {
@@ -96,7 +96,7 @@ class InternalLogJobCommand extends Command {
    * @param bool $test_option
    *   The "--test" option value.
    *
-   * @return \Acquia\Orca\Enum\TelemetryEventName
+   * @return \Acquia\Orca\Helper\Log\TelemetryEventName
    *   The telemetry event name.
    */
   protected function getEventName(bool $test_option): TelemetryEventName {

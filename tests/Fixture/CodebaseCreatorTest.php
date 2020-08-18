@@ -2,20 +2,20 @@
 
 namespace Acquia\Orca\Tests\Fixture;
 
-use Acquia\Orca\Composer\ComposerFacade;
+use Acquia\Orca\Composer\Composer;
 use Acquia\Orca\Fixture\CodebaseCreator;
-use Acquia\Orca\Git\GitFacade;
+use Acquia\Orca\Git\Git;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @property \Acquia\Orca\Composer\ComposerFacade|\Prophecy\Prophecy\ObjectProphecy $composer
- * @property \Acquia\Orca\Git\GitFacade|\Prophecy\Prophecy\ObjectProphecy $git
+ * @property \Acquia\Orca\Composer\Composer|\Prophecy\Prophecy\ObjectProphecy $composer
+ * @property \Acquia\Orca\Git\Git|\Prophecy\Prophecy\ObjectProphecy $git
  */
 class CodebaseCreatorTest extends TestCase {
 
   protected function setUp(): void {
-    $this->composer = $this->prophesize(ComposerFacade::class);
-    $this->git = $this->prophesize(GitFacade::class);
+    $this->composer = $this->prophesize(Composer::class);
+    $this->git = $this->prophesize(Git::class);
   }
 
   private function createCodebaseCreator(): CodebaseCreator {

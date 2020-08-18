@@ -2,11 +2,11 @@
 
 namespace Acquia\Orca\Console\Command\Qa;
 
-use Acquia\Orca\Enum\StatusCode;
-use Acquia\Orca\Filesystem\FixturePathHandler;
+use Acquia\Orca\Console\Helper\StatusCode;
+use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
+use Acquia\Orca\Helper\Task\TaskRunner;
 use Acquia\Orca\Package\PackageManager;
-use Acquia\Orca\Task\DeprecatedCodeScanner\PhpStanTask;
-use Acquia\Orca\Task\TaskRunner;
+use Acquia\Orca\Tool\Phpstan\PhpstanTask;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -27,7 +27,7 @@ class QaDeprecatedCodeScanCommand extends Command {
   /**
    * The fixture path handler.
    *
-   * @var \Acquia\Orca\Filesystem\FixturePathHandler
+   * @var \Acquia\Orca\Helper\Filesystem\FixturePathHandler
    */
   private $fixture;
 
@@ -48,7 +48,7 @@ class QaDeprecatedCodeScanCommand extends Command {
   /**
    * The PhpStan task.
    *
-   * @var \Acquia\Orca\Task\DeprecatedCodeScanner\PhpStanTask
+   * @var \Acquia\Orca\Tool\Phpstan\PhpstanTask
    */
   private $phpstan;
 
@@ -62,23 +62,23 @@ class QaDeprecatedCodeScanCommand extends Command {
   /**
    * The task runner.
    *
-   * @var \Acquia\Orca\Task\TaskRunner
+   * @var \Acquia\Orca\Helper\Task\TaskRunner
    */
   private $taskRunner;
 
   /**
    * Constructs an instance.
    *
-   * @param \Acquia\Orca\Filesystem\FixturePathHandler $fixture_path_handler
+   * @param \Acquia\Orca\Helper\Filesystem\FixturePathHandler $fixture_path_handler
    *   The fixture path handler.
    * @param \Acquia\Orca\Package\PackageManager $package_manager
    *   The package manager.
-   * @param \Acquia\Orca\Task\DeprecatedCodeScanner\PhpStanTask $phpstan
+   * @param \Acquia\Orca\Tool\Phpstan\PhpstanTask $phpstan
    *   The PhpStan task.
-   * @param \Acquia\Orca\Task\TaskRunner $task_runner
+   * @param \Acquia\Orca\Helper\Task\TaskRunner $task_runner
    *   The task runner.
    */
-  public function __construct(FixturePathHandler $fixture_path_handler, PackageManager $package_manager, PhpStanTask $phpstan, TaskRunner $task_runner) {
+  public function __construct(FixturePathHandler $fixture_path_handler, PackageManager $package_manager, PhpstanTask $phpstan, TaskRunner $task_runner) {
     $this->fixture = $fixture_path_handler;
     $this->packageManager = $package_manager;
     $this->phpstan = $phpstan;

@@ -2,8 +2,8 @@
 
 namespace Acquia\Orca\Package;
 
-use Acquia\Orca\Filesystem\FixturePathHandler;
-use Acquia\Orca\Filesystem\OrcaPathHandler;
+use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
+use Acquia\Orca\Helper\Filesystem\OrcaPathHandler;
 use Composer\Semver\VersionParser;
 use InvalidArgumentException;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -30,14 +30,14 @@ class Package {
   /**
    * The fixture path handler.
    *
-   * @var \Acquia\Orca\Filesystem\FixturePathHandler
+   * @var \Acquia\Orca\Helper\Filesystem\FixturePathHandler
    */
   private $fixture;
 
   /**
    * The ORCA path handler.
    *
-   * @var \Acquia\Orca\Filesystem\OrcaPathHandler
+   * @var \Acquia\Orca\Helper\Filesystem\OrcaPathHandler
    */
   private $orca;
 
@@ -75,9 +75,9 @@ class Package {
    *     both of the "version" and "version_dev" key-value pairs to be used when
    *     the corresponding Drupal core version constraint is satisfied. Mappings
    *     are processed in order, and the first match wins.
-   * @param \Acquia\Orca\Filesystem\FixturePathHandler $fixture_path_handler
+   * @param \Acquia\Orca\Helper\Filesystem\FixturePathHandler $fixture_path_handler
    *   The fixture path handler.
-   * @param \Acquia\Orca\Filesystem\OrcaPathHandler $orca_path_handler
+   * @param \Acquia\Orca\Helper\Filesystem\OrcaPathHandler $orca_path_handler
    *   The ORCA path handler.
    * @param string $package_name
    *   The package name, corresponding to the "name" property in its

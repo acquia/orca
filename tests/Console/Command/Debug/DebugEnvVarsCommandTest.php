@@ -3,7 +3,7 @@
 namespace Acquia\Orca\Tests\Console\Command\Debug;
 
 use Acquia\Orca\Console\Command\Debug\DebugEnvVarsCommand;
-use Acquia\Orca\Enum\StatusCode;
+use Acquia\Orca\Console\Helper\StatusCode;
 use Acquia\Orca\Tests\Console\Command\CommandTestBase;
 use Symfony\Component\Console\Command\Command;
 

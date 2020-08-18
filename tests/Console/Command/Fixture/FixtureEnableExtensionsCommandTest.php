@@ -3,16 +3,16 @@
 namespace Acquia\Orca\Tests\Console\Command\Fixture;
 
 use Acquia\Orca\Console\Command\Fixture\FixtureEnableExtensionsCommand;
-use Acquia\Orca\Enum\StatusCode;
-use Acquia\Orca\Exception\OrcaException;
-use Acquia\Orca\Filesystem\FixturePathHandler;
+use Acquia\Orca\Console\Helper\StatusCode;
 use Acquia\Orca\Fixture\CompanyExtensionEnabler;
+use Acquia\Orca\Helper\Exception\OrcaException;
+use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
 use Acquia\Orca\Tests\Console\Command\CommandTestBase;
 use Symfony\Component\Console\Command\Command;
 
 /**
  * @property \Prophecy\Prophecy\ObjectProphecy|CompanyExtensionEnabler $companyExtensionEnabler
- * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Filesystem\FixturePathHandler $fixture_path_handler
+ * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Helper\Filesystem\FixturePathHandler $fixture_path_handler
  */
 class FixtureEnableExtensionsCommandTest extends CommandTestBase {
 

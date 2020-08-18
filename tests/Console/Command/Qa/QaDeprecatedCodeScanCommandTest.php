@@ -3,19 +3,19 @@
 namespace Acquia\Orca\Tests\Console\Command\Qa;
 
 use Acquia\Orca\Console\Command\Qa\QaDeprecatedCodeScanCommand;
-use Acquia\Orca\Enum\StatusCode;
-use Acquia\Orca\Filesystem\FixturePathHandler;
+use Acquia\Orca\Console\Helper\StatusCode;
+use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
+use Acquia\Orca\Helper\Task\TaskRunner;
 use Acquia\Orca\Package\PackageManager;
-use Acquia\Orca\Task\DeprecatedCodeScanner\PhpStanTask;
-use Acquia\Orca\Task\TaskRunner;
 use Acquia\Orca\Tests\Console\Command\CommandTestBase;
+use Acquia\Orca\Tool\Phpstan\PhpstanTask;
 use Symfony\Component\Console\Command\Command;
 
 /**
- * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Filesystem\FixturePathHandler $fixture
+ * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Helper\Filesystem\FixturePathHandler $fixture
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Package\PackageManager $packageManager
- * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Task\DeprecatedCodeScanner\PhpStanTask $phpstan
- * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Task\TaskRunner $taskRunner
+ * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Tool\Phpstan\PhpstanTask $phpstan
+ * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Helper\Task\TaskRunner $taskRunner
  */
 class QaDeprecatedCodeScanCommandTest extends CommandTestBase {
 
@@ -26,7 +26,7 @@ class QaDeprecatedCodeScanCommandTest extends CommandTestBase {
     $this->fixture->getPath()
       ->willReturn(self::FIXTURE_ROOT);
     $this->packageManager = $this->prophesize(PackageManager::class);
-    $this->phpstan = $this->prophesize(PhpStanTask::class);
+    $this->phpstan = $this->prophesize(PhpstanTask::class);
     $this->taskRunner = $this->prophesize(TaskRunner::class);
   }
 

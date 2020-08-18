@@ -2,8 +2,8 @@
 
 namespace Acquia\Orca\Fixture;
 
-use Acquia\Orca\Drush\DrushFacade;
-use Acquia\Orca\Filesystem\FixturePathHandler;
+use Acquia\Orca\Drush\Drush;
+use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
 use Acquia\Orca\Package\PackageManager;
 use Acquia\Orca\Server\WebServer;
 use Noodlehaus\Config;
@@ -33,7 +33,7 @@ class FixtureInspector {
   /**
    * The Drush facade.
    *
-   * @var \Acquia\Orca\Drush\DrushFacade
+   * @var \Acquia\Orca\Drush\Drush
    */
   private $drush;
 
@@ -47,7 +47,7 @@ class FixtureInspector {
   /**
    * The fixture path handler.
    *
-   * @var \Acquia\Orca\Filesystem\FixturePathHandler
+   * @var \Acquia\Orca\Helper\Filesystem\FixturePathHandler
    */
   private $fixture;
 
@@ -75,9 +75,9 @@ class FixtureInspector {
   /**
    * Constructs an instance.
    *
-   * @param \Acquia\Orca\Drush\DrushFacade $drush
+   * @param \Acquia\Orca\Drush\Drush $drush
    *   The Drush facade.
-   * @param \Acquia\Orca\Filesystem\FixturePathHandler $fixture_path_handler
+   * @param \Acquia\Orca\Helper\Filesystem\FixturePathHandler $fixture_path_handler
    *   The fixture path handler.
    * @param \Symfony\Component\Console\Style\SymfonyStyle $output
    *   The output decorator.
@@ -86,7 +86,7 @@ class FixtureInspector {
    * @param \Acquia\Orca\Fixture\SubextensionManager $subextension_manager
    *   The subextension manager.
    */
-  public function __construct(DrushFacade $drush, FixturePathHandler $fixture_path_handler, SymfonyStyle $output, PackageManager $package_manager, SubextensionManager $subextension_manager) {
+  public function __construct(Drush $drush, FixturePathHandler $fixture_path_handler, SymfonyStyle $output, PackageManager $package_manager, SubextensionManager $subextension_manager) {
     $this->drush = $drush;
     $this->fixture = $fixture_path_handler;
     $this->output = $output;

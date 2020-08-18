@@ -2,9 +2,9 @@
 
 namespace Acquia\Orca\Console\Command\Debug;
 
+use Acquia\Orca\Console\Helper\StatusCode;
 use Acquia\Orca\Drupal\DrupalCoreVersion;
 use Acquia\Orca\Drupal\DrupalCoreVersionFinder;
-use Acquia\Orca\Enum\StatusCode;
 use Acquia\Orca\Package\PackageManager;
 use Composer\Semver\VersionParser;
 use InvalidArgumentException;

@@ -2,7 +2,7 @@
 
 namespace Acquia\Orca\Console\Command\Debug;
 
-use Acquia\Orca\Enum\StatusCode;
+use Acquia\Orca\Console\Helper\StatusCode;
 use Env;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\Table;

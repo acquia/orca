@@ -30,11 +30,11 @@ services:
     public: false
     resource: ../src
 
-  Acquia\Orca\Filesystem\FixturePathHandler:
+  Acquia\Orca\Helper\Filesystem\FixturePathHandler:
     arguments:
       $base_path: "%env(ORCA_FIXTURE_DIR)%"
 
-  Acquia\Orca\Filesystem\OrcaPathHandler:
+  Acquia\Orca\Helper\Filesystem\OrcaPathHandler:
     arguments:
       $base_path: "%kernel.project_dir%"
 

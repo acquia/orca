@@ -2,10 +2,10 @@
 
 namespace Acquia\Orca\Console\Command\Debug;
 
+use Acquia\Orca\Console\Helper\StatusCode;
 use Acquia\Orca\Console\Helper\StatusTable;
 use Acquia\Orca\Drupal\DrupalCoreVersion;
 use Acquia\Orca\Drupal\DrupalCoreVersionFinder;
-use Acquia\Orca\Enum\StatusCode;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;

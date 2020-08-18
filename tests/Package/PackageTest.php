@@ -2,8 +2,8 @@
 
 namespace Acquia\Orca\Tests\Package;
 
-use Acquia\Orca\Filesystem\FixturePathHandler;
-use Acquia\Orca\Filesystem\OrcaPathHandler;
+use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
+use Acquia\Orca\Helper\Filesystem\OrcaPathHandler;
 use Acquia\Orca\Package\Package;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
@@ -13,8 +13,8 @@ use TypeError;
 use UnexpectedValueException;
 
 /**
- * @property \Acquia\Orca\Filesystem\FixturePathHandler|\Prophecy\Prophecy\ObjectProphecy $fixture
- * @property \Acquia\Orca\Filesystem\OrcaPathHandler|\Prophecy\Prophecy\ObjectProphecy $orca
+ * @property \Acquia\Orca\Helper\Filesystem\FixturePathHandler|\Prophecy\Prophecy\ObjectProphecy $fixture
+ * @property \Acquia\Orca\Helper\Filesystem\OrcaPathHandler|\Prophecy\Prophecy\ObjectProphecy $orca
  * @coversDefaultClass \Acquia\Orca\Package\Package
  */
 class PackageTest extends TestCase {

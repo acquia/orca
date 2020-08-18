@@ -2,8 +2,8 @@
 
 namespace Acquia\Orca\Package;
 
-use Acquia\Orca\Filesystem\FixturePathHandler;
-use Acquia\Orca\Filesystem\OrcaPathHandler;
+use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
+use Acquia\Orca\Helper\Filesystem\OrcaPathHandler;
 use InvalidArgumentException;
 use LogicException;
 use Symfony\Component\Filesystem\Filesystem;
@@ -31,7 +31,7 @@ class PackageManager {
   /**
    * The fixture path handler.
    *
-   * @var \Acquia\Orca\Filesystem\FixturePathHandler
+   * @var \Acquia\Orca\Helper\Filesystem\FixturePathHandler
    */
   private $fixture;
 
@@ -45,7 +45,7 @@ class PackageManager {
   /**
    * The ORCA path handler.
    *
-   * @var \Acquia\Orca\Filesystem\OrcaPathHandler
+   * @var \Acquia\Orca\Helper\Filesystem\OrcaPathHandler
    */
   private $orca;
 
@@ -68,9 +68,9 @@ class PackageManager {
    *
    * @param \Symfony\Component\Filesystem\Filesystem $filesystem
    *   The filesystem.
-   * @param \Acquia\Orca\Filesystem\FixturePathHandler $fixture_path_handler
+   * @param \Acquia\Orca\Helper\Filesystem\FixturePathHandler $fixture_path_handler
    *   The fixture path handler.
-   * @param \Acquia\Orca\Filesystem\OrcaPathHandler $orca_path_handler
+   * @param \Acquia\Orca\Helper\Filesystem\OrcaPathHandler $orca_path_handler
    *   The ORCA path handler.
    * @param \Symfony\Component\Yaml\Parser $parser
    *   The YAML parser.
@@ -162,7 +162,7 @@ class PackageManager {
   /**
    * Initializes the packages.
    *
-   * @param \Acquia\Orca\Filesystem\FixturePathHandler $fixture_path_handler
+   * @param \Acquia\Orca\Helper\Filesystem\FixturePathHandler $fixture_path_handler
    *   The fixture path handler.
    * @param string $packages_config
    *   The path to the packages configuration file relative to the ORCA project

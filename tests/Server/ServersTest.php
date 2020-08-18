@@ -2,11 +2,11 @@
 
 namespace Acquia\Orca\Tests\Server;
 
-use Acquia\Orca\Filesystem\FixturePathHandler;
-use Acquia\Orca\Filesystem\OrcaPathHandler;
+use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
+use Acquia\Orca\Helper\Filesystem\OrcaPathHandler;
+use Acquia\Orca\Helper\Process\ProcessRunner;
 use Acquia\Orca\Server\ChromeDriverServer;
 use Acquia\Orca\Server\WebServer;
-use Acquia\Orca\Utility\ProcessRunner;
 use PHPUnit\Framework\TestCase;
 
 class ServersTest extends TestCase {

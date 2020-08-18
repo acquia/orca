@@ -2,16 +2,16 @@
 
 namespace Acquia\Orca\Fixture;
 
-use Acquia\Orca\Composer\ComposerFacade;
+use Acquia\Orca\Composer\Composer;
 use Acquia\Orca\Console\Helper\StatusTable;
 use Acquia\Orca\Drupal\DrupalCoreVersionFinder;
-use Acquia\Orca\Exception\OrcaException;
-use Acquia\Orca\Filesystem\FixturePathHandler;
-use Acquia\Orca\Git\GitFacade;
+use Acquia\Orca\Git\Git;
+use Acquia\Orca\Helper\Exception\OrcaException;
+use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
+use Acquia\Orca\Helper\Process\ProcessRunner;
+use Acquia\Orca\Helper\SutSettingsTrait;
 use Acquia\Orca\Package\Package;
 use Acquia\Orca\Package\PackageManager;
-use Acquia\Orca\Utility\ProcessRunner;
-use Acquia\Orca\Utility\SutSettingsTrait;
 use Composer\Config\JsonConfigSource;
 use Composer\DependencyResolver\Pool;
 use Composer\Factory;
@@ -49,7 +49,7 @@ class FixtureCreator {
   /**
    * The Composer facade.
    *
-   * @var \Acquia\Orca\Composer\ComposerFacade
+   * @var \Acquia\Orca\Composer\Composer
    */
   private $composer;
 
@@ -77,7 +77,7 @@ class FixtureCreator {
   /**
    * The fixture path handler.
    *
-   * @var \Acquia\Orca\Filesystem\FixturePathHandler
+   * @var \Acquia\Orca\Helper\Filesystem\FixturePathHandler
    */
   private $fixture;
 
@@ -140,7 +140,7 @@ class FixtureCreator {
   /**
    * The process runner.
    *
-   * @var \Acquia\Orca\Utility\ProcessRunner
+   * @var \Acquia\Orca\Helper\Process\ProcessRunner
    */
   private $processRunner;
 
@@ -219,13 +219,13 @@ class FixtureCreator {
    *
    * @param \Acquia\Orca\Fixture\CodebaseCreator $codebase_creator
    *   The codebase creator.
-   * @param \Acquia\Orca\Composer\ComposerFacade $composer_facade
+   * @param \Acquia\Orca\Composer\Composer $composer
    *   The Composer facade.
    * @param \Acquia\Orca\Drupal\DrupalCoreVersionFinder $core_version_finder
    *   The Drupal core version finder.
    * @param \Symfony\Component\Filesystem\Filesystem $filesystem
    *   The filesystem.
-   * @param \Acquia\Orca\Filesystem\FixturePathHandler $fixture_path_handler
+   * @param \Acquia\Orca\Helper\Filesystem\FixturePathHandler $fixture_path_handler
    *   The fixture path handler.
    * @param \Acquia\Orca\Fixture\FixtureInspector $fixture_inspector
    *   The fixture inspector.
@@ -233,7 +233,7 @@ class FixtureCreator {
    *   The site installer.
    * @param \Symfony\Component\Console\Style\SymfonyStyle $output
    *   The output decorator.
-   * @param \Acquia\Orca\Utility\ProcessRunner $process_runner
+   * @param \Acquia\Orca\Helper\Process\ProcessRunner $process_runner
    *   The process runner.
    * @param \Acquia\Orca\Package\PackageManager $package_manager
    *   The package manager.
@@ -244,10 +244,10 @@ class FixtureCreator {
    * @param \Composer\Semver\VersionParser $version_parser
    *   The Semver version parser.
    */
-  public function __construct(CodebaseCreator $codebase_creator, ComposerFacade $composer_facade, DrupalCoreVersionFinder $core_version_finder, Filesystem $filesystem, FixturePathHandler $fixture_path_handler, FixtureInspector $fixture_inspector, SiteInstaller $site_installer, SymfonyStyle $output, ProcessRunner $process_runner, PackageManager $package_manager, SubextensionManager $subextension_manager, VersionGuesser $version_guesser, VersionParser $version_parser) {
+  public function __construct(CodebaseCreator $codebase_creator, Composer $composer, DrupalCoreVersionFinder $core_version_finder, Filesystem $filesystem, FixturePathHandler $fixture_path_handler, FixtureInspector $fixture_inspector, SiteInstaller $site_installer, SymfonyStyle $output, ProcessRunner $process_runner, PackageManager $package_manager, SubextensionManager $subextension_manager, VersionGuesser $version_guesser, VersionParser $version_parser) {
     $this->blt = $package_manager->getBlt();
     $this->codebaseCreator = $codebase_creator;
-    $this->composer = $composer_facade;
+    $this->composer = $composer;
     $this->coreVersionFinder = $core_version_finder;
     $this->filesystem = $filesystem;
     $this->fixture = $fixture_path_handler;
@@ -264,7 +264,7 @@ class FixtureCreator {
   /**
    * Creates the fixture.
    *
-   * @throws \Acquia\Orca\Exception\OrcaException
+   * @throws \Acquia\Orca\Helper\Exception\OrcaException
    *   If the SUT isn't properly installed.
    * @throws \Exception
    *   In case of errors.
@@ -593,7 +593,7 @@ class FixtureCreator {
   /**
    * Adds company packages to the codebase.
    *
-   * @throws \Acquia\Orca\Exception\OrcaException
+   * @throws \Acquia\Orca\Helper\Exception\OrcaException
    *   If the SUT isn't properly installed.
    */
   private function addAcquiaPackages(): void {
@@ -610,7 +610,7 @@ class FixtureCreator {
   /**
    * Adds the top-level company packages to composer.json.
    *
-   * @throws \Acquia\Orca\Exception\OrcaException
+   * @throws \Acquia\Orca\Helper\Exception\OrcaException
    *   If the SUT isn't properly installed.
    */
   private function addTopLevelAcquiaPackages(): void {
@@ -718,7 +718,7 @@ class FixtureCreator {
   /**
    * Requires the top-level company packages via Composer.
    *
-   * @throws \Acquia\Orca\Exception\OrcaException
+   * @throws \Acquia\Orca\Helper\Exception\OrcaException
    */
   private function composerRequireTopLevelCompanyPackages(): void {
     $command = [
@@ -736,7 +736,7 @@ class FixtureCreator {
   /**
    * Verifies that the SUT was correctly placed.
    *
-   * @throws \Acquia\Orca\Exception\OrcaException
+   * @throws \Acquia\Orca\Helper\Exception\OrcaException
    */
   private function verifySut(): void {
     if (!$this->sut) {
@@ -804,7 +804,7 @@ class FixtureCreator {
    * @return string[]
    *   The list of Composer dependency strings for company packages.
    *
-   * @throws \Acquia\Orca\Exception\OrcaException
+   * @throws \Acquia\Orca\Helper\Exception\OrcaException
    */
   private function getCompanyPackageDependencies(): array {
     $dependencies = ($this->symlinkAll) ? $this->getLocalPackages() : $this->packageManager->getAll();
@@ -881,7 +881,7 @@ class FixtureCreator {
    * @return \Composer\Package\PackageInterface
    *   The package for the latest version.
    *
-   * @throws \Acquia\Orca\Exception\OrcaException
+   * @throws \Acquia\Orca\Helper\Exception\OrcaException
    *   In case no version can be found.
    */
   private function findLatestVersion(Package $package): PackageInterface {
@@ -1237,11 +1237,11 @@ PHP;
     $this->output->section('Creating backup tag');
     $this->processRunner->git([
       'tag',
-      GitFacade::FRESH_FIXTURE_TAG,
+      Git::FRESH_FIXTURE_TAG,
     ]);
     $this->processRunner->git([
       'checkout',
-      GitFacade::FRESH_FIXTURE_TAG,
+      Git::FRESH_FIXTURE_TAG,
     ]);
   }
 

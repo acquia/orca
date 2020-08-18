@@ -2,15 +2,15 @@
 
 namespace Acquia\Orca\Tests\Server;
 
+use Acquia\Orca\Helper\Clock;
 use Acquia\Orca\Server\ChromeDriverServer;
 use Acquia\Orca\Server\ServerStack;
 use Acquia\Orca\Server\WebServer;
-use Acquia\Orca\Utility\Clock;
 use PHPUnit\Framework\TestCase;
 
 /**
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Server\ChromeDriverServer $chromeDriverServer
- * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Utility\Clock $clock
+ * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Helper\Clock $clock
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Server\WebServer $webServer
  */
 class ServerStackTest extends TestCase {

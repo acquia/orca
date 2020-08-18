@@ -2,9 +2,9 @@
 
 namespace Acquia\Orca\Fixture;
 
-use Acquia\Orca\Drush\DrushFacade;
-use Acquia\Orca\Filesystem\FixturePathHandler;
-use Acquia\Orca\Filesystem\OrcaPathHandler;
+use Acquia\Orca\Drush\Drush;
+use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
+use Acquia\Orca\Helper\Filesystem\OrcaPathHandler;
 use Noodlehaus\Config;
 use Noodlehaus\Writer\Yaml;
 use Symfony\Component\Console\Style\SymfonyStyle;
@@ -47,7 +47,7 @@ class SiteInstaller {
   /**
    * The Drush facade.
    *
-   * @var \Acquia\Orca\Drush\DrushFacade
+   * @var \Acquia\Orca\Drush\Drush
    */
   private $drush;
 
@@ -61,7 +61,7 @@ class SiteInstaller {
   /**
    * The fixture path handler.
    *
-   * @var \Acquia\Orca\Filesystem\FixturePathHandler
+   * @var \Acquia\Orca\Helper\Filesystem\FixturePathHandler
    */
   private $fixture;
 
@@ -89,7 +89,7 @@ class SiteInstaller {
   /**
    * The ORCA path handler.
    *
-   * @var \Acquia\Orca\Filesystem\OrcaPathHandler
+   * @var \Acquia\Orca\Helper\Filesystem\OrcaPathHandler
    */
   private $orca;
 
@@ -98,18 +98,18 @@ class SiteInstaller {
    *
    * @param \Acquia\Orca\Fixture\CompanyExtensionEnabler $company_extension_enabler
    *   The company extension enabler.
-   * @param \Acquia\Orca\Drush\DrushFacade $drush
+   * @param \Acquia\Orca\Drush\Drush $drush
    *   The Drush facade.
    * @param \Symfony\Component\Filesystem\Filesystem $filesystem
    *   The filesystem.
-   * @param \Acquia\Orca\Filesystem\FixturePathHandler $fixture_path_handler
+   * @param \Acquia\Orca\Helper\Filesystem\FixturePathHandler $fixture_path_handler
    *   The fixture path handler.
-   * @param \Acquia\Orca\Filesystem\OrcaPathHandler $orca_path_handler
+   * @param \Acquia\Orca\Helper\Filesystem\OrcaPathHandler $orca_path_handler
    *   The ORCA path handler.
    * @param \Symfony\Component\Console\Style\SymfonyStyle $output
    *   The output decorator.
    */
-  public function __construct(CompanyExtensionEnabler $company_extension_enabler, DrushFacade $drush, Filesystem $filesystem, FixturePathHandler $fixture_path_handler, OrcaPathHandler $orca_path_handler, SymfonyStyle $output) {
+  public function __construct(CompanyExtensionEnabler $company_extension_enabler, Drush $drush, Filesystem $filesystem, FixturePathHandler $fixture_path_handler, OrcaPathHandler $orca_path_handler, SymfonyStyle $output) {
     $this->companyExtensionEnabler = $company_extension_enabler;
     $this->drush = $drush;
     $this->filesystem = $filesystem;

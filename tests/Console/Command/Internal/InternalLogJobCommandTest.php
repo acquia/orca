@@ -3,17 +3,17 @@
 namespace Acquia\Orca\Tests\Console\Command\Internal;
 
 use Acquia\Orca\Console\Command\Internal\InternalLogJobCommand;
-use Acquia\Orca\Enum\StatusCode;
-use Acquia\Orca\Enum\TelemetryEventName;
-use Acquia\Orca\Log\TelemetryClient;
-use Acquia\Orca\Log\TelemetryEventPropertiesBuilder;
+use Acquia\Orca\Console\Helper\StatusCode;
+use Acquia\Orca\Helper\Log\TelemetryClient;
+use Acquia\Orca\Helper\Log\TelemetryEventName;
+use Acquia\Orca\Helper\Log\TelemetryEventPropertiesBuilder;
 use Acquia\Orca\Tests\Console\Command\CommandTestBase;
 use Prophecy\Argument;
 use Symfony\Component\Console\Command\Command;
 
 /**
- * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Log\TelemetryClient $telemetryClient
- * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Log\TelemetryEventPropertiesBuilder $telemetryEventBuilder
+ * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Helper\Log\TelemetryClient $telemetryClient
+ * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Helper\Log\TelemetryEventPropertiesBuilder $telemetryEventBuilder
  */
 class InternalLogJobCommandTest extends CommandTestBase {
 

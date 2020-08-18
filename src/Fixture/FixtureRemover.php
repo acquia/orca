@@ -2,8 +2,8 @@
 
 namespace Acquia\Orca\Fixture;
 
-use Acquia\Orca\Filesystem\FixturePathHandler;
-use Acquia\Orca\Utility\ProcessRunner;
+use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
+use Acquia\Orca\Helper\Process\ProcessRunner;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Filesystem\Filesystem;
 
@@ -22,7 +22,7 @@ class FixtureRemover {
   /**
    * The fixture path handler.
    *
-   * @var \Acquia\Orca\Filesystem\FixturePathHandler
+   * @var \Acquia\Orca\Helper\Filesystem\FixturePathHandler
    */
   private $fixture;
 
@@ -36,7 +36,7 @@ class FixtureRemover {
   /**
    * The process runner.
    *
-   * @var \Acquia\Orca\Utility\ProcessRunner
+   * @var \Acquia\Orca\Helper\Process\ProcessRunner
    */
   private $processRunner;
 
@@ -45,11 +45,11 @@ class FixtureRemover {
    *
    * @param \Symfony\Component\Filesystem\Filesystem $filesystem
    *   The filesystem.
-   * @param \Acquia\Orca\Filesystem\FixturePathHandler $fixture_path_handler
+   * @param \Acquia\Orca\Helper\Filesystem\FixturePathHandler $fixture_path_handler
    *   The fixture path handler.
    * @param \Symfony\Component\Console\Style\SymfonyStyle $output
    *   The output decorator.
-   * @param \Acquia\Orca\Utility\ProcessRunner $process_runner
+   * @param \Acquia\Orca\Helper\Process\ProcessRunner $process_runner
    *   The process runner.
    */
   public function __construct(Filesystem $filesystem, FixturePathHandler $fixture_path_handler, SymfonyStyle $output, ProcessRunner $process_runner) {

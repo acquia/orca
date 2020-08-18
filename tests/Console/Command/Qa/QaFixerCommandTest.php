@@ -3,20 +3,20 @@
 namespace Acquia\Orca\Tests\Console\Command\Qa;
 
 use Acquia\Orca\Console\Command\Qa\QaFixerCommand;
-use Acquia\Orca\Enum\PhpcsStandard;
-use Acquia\Orca\Enum\StatusCode;
-use Acquia\Orca\Task\Fixer\ComposerNormalizeTask;
-use Acquia\Orca\Task\Fixer\PhpCodeBeautifierAndFixerTask;
-use Acquia\Orca\Task\TaskRunner;
+use Acquia\Orca\Console\Helper\StatusCode;
+use Acquia\Orca\Helper\Task\TaskRunner;
 use Acquia\Orca\Tests\Console\Command\CommandTestBase;
+use Acquia\Orca\Tool\ComposerNormalize\ComposerNormalizeTask;
+use Acquia\Orca\Tool\Helper\PhpcsStandard;
+use Acquia\Orca\Tool\Phpcbf\PhpcbfTask;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
- * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Task\Fixer\ComposerNormalizeTask composerNormalize
+ * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Tool\ComposerNormalize\ComposerNormalizeTask composerNormalize
  * @property \Prophecy\Prophecy\ObjectProphecy|\Symfony\Component\Filesystem\Filesystem $filesystem
- * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Task\Fixer\PhpCodeBeautifierAndFixerTask phpCodeBeautifierAndFixer
- * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Task\TaskRunner $taskRunner
+ * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Tool\Phpcbf\PhpcbfTask phpCodeBeautifierAndFixer
+ * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Helper\Task\TaskRunner $taskRunner
  */
 class QaFixerCommandTest extends CommandTestBase {
 
@@ -27,7 +27,7 @@ class QaFixerCommandTest extends CommandTestBase {
   protected function setUp() {
     $this->composerNormalize = $this->prophesize(ComposerNormalizeTask::class);
     $this->filesystem = $this->prophesize(Filesystem::class);
-    $this->phpCodeBeautifierAndFixer = $this->prophesize(PhpCodeBeautifierAndFixerTask::class);
+    $this->phpCodeBeautifierAndFixer = $this->prophesize(PhpcbfTask::class);
     $this->taskRunner = $this->prophesize(TaskRunner::class);
   }
 

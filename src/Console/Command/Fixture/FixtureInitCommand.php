@@ -2,14 +2,14 @@
 
 namespace Acquia\Orca\Console\Command\Fixture;
 
+use Acquia\Orca\Console\Helper\StatusCode;
 use Acquia\Orca\Drupal\DrupalCoreVersion;
 use Acquia\Orca\Drupal\DrupalCoreVersionFinder;
-use Acquia\Orca\Enum\StatusCode;
-use Acquia\Orca\Exception\OrcaException;
-use Acquia\Orca\Filesystem\FixturePathHandler;
 use Acquia\Orca\Fixture\FixtureCreator;
 use Acquia\Orca\Fixture\FixtureRemover;
 use Acquia\Orca\Fixture\SutPreconditionsTester;
+use Acquia\Orca\Helper\Exception\OrcaException;
+use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
 use Acquia\Orca\Package\PackageManager;
 use Composer\Semver\VersionParser;
 use Symfony\Component\Console\Command\Command;
@@ -41,7 +41,7 @@ class FixtureInitCommand extends Command {
   /**
    * The fixture path handler.
    *
-   * @var \Acquia\Orca\Filesystem\FixturePathHandler
+   * @var \Acquia\Orca\Helper\Filesystem\FixturePathHandler
    */
   private $fixture;
 
@@ -85,7 +85,7 @@ class FixtureInitCommand extends Command {
    *
    * @param \Acquia\Orca\Drupal\DrupalCoreVersionFinder $drupal_core_version_finder
    *   The Drupal core version finder.
-   * @param \Acquia\Orca\Filesystem\FixturePathHandler $fixture_path_handler
+   * @param \Acquia\Orca\Helper\Filesystem\FixturePathHandler $fixture_path_handler
    *   The fixture path handler.
    * @param \Acquia\Orca\Fixture\FixtureCreator $fixture_creator
    *   The fixture creator.
@@ -440,7 +440,7 @@ class FixtureInitCommand extends Command {
    * @param string|string[]|bool|null $sut
    *   The SUT.
    *
-   * @throws \Acquia\Orca\Exception\OrcaException
+   * @throws \Acquia\Orca\Helper\Exception\OrcaException
    *   If preconditions are not satisfied.
    */
   private function testPreconditions($sut) {
