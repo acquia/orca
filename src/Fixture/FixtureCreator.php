@@ -2,15 +2,15 @@
 
 namespace Acquia\Orca\Fixture;
 
+use Acquia\Orca\Composer\ComposerFacade;
+use Acquia\Orca\Console\Helper\StatusTable;
+use Acquia\Orca\Drupal\DrupalCoreVersionFinder;
 use Acquia\Orca\Exception\OrcaException;
-use Acquia\Orca\Facade\ComposerFacade;
-use Acquia\Orca\Facade\GitFacade;
 use Acquia\Orca\Filesystem\FixturePathHandler;
+use Acquia\Orca\Git\GitFacade;
 use Acquia\Orca\Package\Package;
 use Acquia\Orca\Package\PackageManager;
-use Acquia\Orca\Utility\DrupalCoreVersionFinder;
 use Acquia\Orca\Utility\ProcessRunner;
-use Acquia\Orca\Utility\StatusTable;
 use Acquia\Orca\Utility\SutSettingsTrait;
 use Composer\Config\JsonConfigSource;
 use Composer\DependencyResolver\Pool;
@@ -49,14 +49,14 @@ class FixtureCreator {
   /**
    * The Composer facade.
    *
-   * @var \Acquia\Orca\Facade\ComposerFacade
+   * @var \Acquia\Orca\Composer\ComposerFacade
    */
   private $composer;
 
   /**
    * The Drupal core version finder.
    *
-   * @var \Acquia\Orca\Utility\DrupalCoreVersionFinder
+   * @var \Acquia\Orca\Drupal\DrupalCoreVersionFinder
    */
   private $coreVersionFinder;
 
@@ -219,9 +219,9 @@ class FixtureCreator {
    *
    * @param \Acquia\Orca\Fixture\CodebaseCreator $codebase_creator
    *   The codebase creator.
-   * @param \Acquia\Orca\Facade\ComposerFacade $composer_facade
+   * @param \Acquia\Orca\Composer\ComposerFacade $composer_facade
    *   The Composer facade.
-   * @param \Acquia\Orca\Utility\DrupalCoreVersionFinder $core_version_finder
+   * @param \Acquia\Orca\Drupal\DrupalCoreVersionFinder $core_version_finder
    *   The Drupal core version finder.
    * @param \Symfony\Component\Filesystem\Filesystem $filesystem
    *   The filesystem.

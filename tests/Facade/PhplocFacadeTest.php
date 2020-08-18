@@ -2,8 +2,8 @@
 
 namespace Acquia\Orca\Tests\Facade;
 
-use Acquia\Orca\Facade\PhplocFacade;
 use Acquia\Orca\Filesystem\OrcaPathHandler;
+use Acquia\Orca\Task\PhplocFacade;
 use Acquia\Orca\Utility\ProcessRunner;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
@@ -11,7 +11,7 @@ use Prophecy\Argument;
 /**
  * @property \Acquia\Orca\Filesystem\OrcaPathHandler|\Prophecy\Prophecy\ObjectProphecy $orca
  * @property \Acquia\Orca\Utility\ProcessRunner|\Prophecy\Prophecy\ObjectProphecy $processRunner
- * @coversDefaultClass \Acquia\Orca\Facade\PhplocFacade
+ * @coversDefaultClass \Acquia\Orca\Task\PhplocFacade
  */
 class PhplocFacadeTest extends TestCase {
 

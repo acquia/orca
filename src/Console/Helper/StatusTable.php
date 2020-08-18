@@ -1,6 +1,6 @@
 <?php
 
-namespace Acquia\Orca\Utility;
+namespace Acquia\Orca\Console\Helper;
 
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Helper\TableStyle;

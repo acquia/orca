@@ -1,8 +1,7 @@
 <?php
 
-namespace Acquia\Orca\Utility;
+namespace Acquia\Orca\Drupal;
 
-use Acquia\Orca\Enum\DrupalCoreVersion;
 use Composer\DependencyResolver\Pool;
 use Composer\IO\NullIO;
 use Composer\Package\Version\VersionSelector;
@@ -25,7 +24,7 @@ class DrupalCoreVersionFinder {
   /**
    * Gets the Drupal core version for a given constant.
    *
-   * @param \Acquia\Orca\Enum\DrupalCoreVersion $version
+   * @param \Acquia\Orca\Drupal\DrupalCoreVersion $version
    *   The Drupal core version constant.
    *
    * @return string
@@ -65,7 +64,7 @@ class DrupalCoreVersionFinder {
   /**
    * Gets a formatted form of the Drupal core version for a given constant.
    *
-   * @param \Acquia\Orca\Enum\DrupalCoreVersion $version
+   * @param \Acquia\Orca\Drupal\DrupalCoreVersion $version
    *   The Drupal core version constant.
    *
    * @return string

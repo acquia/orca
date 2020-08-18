@@ -1,6 +1,6 @@
 <?php
 
-namespace Acquia\Orca\Facade;
+namespace Acquia\Orca\Composer;
 
 use Acquia\Orca\Filesystem\FixturePathHandler;
 use Acquia\Orca\Utility\ProcessRunner;

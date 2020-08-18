@@ -2,7 +2,7 @@
 
 namespace Acquia\Orca\Fixture;
 
-use Acquia\Orca\Facade\GitFacade;
+use Acquia\Orca\Git\GitFacade;
 use Acquia\Orca\Utility\ProcessRunner;
 
 /**

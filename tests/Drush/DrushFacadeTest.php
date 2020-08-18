@@ -1,9 +1,9 @@
 <?php
 
-namespace Acquia\Orca\Tests\Facade;
+namespace Acquia\Orca\Tests\Drush;
 
+use Acquia\Orca\Drush\DrushFacade;
 use Acquia\Orca\Exception\ParseError;
-use Acquia\Orca\Facade\DrushFacade;
 use Acquia\Orca\Utility\ProcessRunner;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
@@ -12,7 +12,7 @@ use Symfony\Component\Process\Process;
 
 /**
  * @property \Acquia\Orca\Utility\ProcessRunner|\Prophecy\Prophecy\ObjectProphecy $processRunner
- * @coversDefaultClass \Acquia\Orca\Facade\DrushFacade
+ * @coversDefaultClass \Acquia\Orca\Drush\DrushFacade
  */
 class DrushFacadeTest extends TestCase {
 

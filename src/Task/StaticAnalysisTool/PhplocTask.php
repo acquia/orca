@@ -2,7 +2,7 @@
 
 namespace Acquia\Orca\Task\StaticAnalysisTool;
 
-use Acquia\Orca\Facade\PhplocFacade;
+use Acquia\Orca\Task\PhplocFacade;
 use Acquia\Orca\Task\TaskInterface;
 
 /**
@@ -15,7 +15,7 @@ class PhplocTask implements TaskInterface {
   /**
    * The PHPLOC facade.
    *
-   * @var \Acquia\Orca\Facade\PhplocFacade
+   * @var \Acquia\Orca\Task\PhplocFacade
    */
   private $phploc;
 
@@ -29,7 +29,7 @@ class PhplocTask implements TaskInterface {
   /**
    * Constructs an instance.
    *
-   * @param \Acquia\Orca\Facade\PhplocFacade $phploc_facade
+   * @param \Acquia\Orca\Task\PhplocFacade $phploc_facade
    *   The PHPLOC facade.
    */
   public function __construct(PhplocFacade $phploc_facade) {

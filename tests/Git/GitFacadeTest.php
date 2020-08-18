@@ -1,15 +1,15 @@
 <?php
 
-namespace Acquia\Orca\Tests\Facade;
+namespace Acquia\Orca\Tests\Git;
 
-use Acquia\Orca\Facade\GitFacade;
+use Acquia\Orca\Git\GitFacade;
 use Acquia\Orca\Utility\ProcessRunner;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 
 /**
  * @property \Acquia\Orca\Utility\ProcessRunner|\Prophecy\Prophecy\ObjectProphecy $processRunner
- * @coversDefaultClass \Acquia\Orca\Facade\GitFacade
+ * @coversDefaultClass \Acquia\Orca\Git\GitFacade
  */
 class GitFacadeTest extends TestCase {
 

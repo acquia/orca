@@ -3,7 +3,8 @@
 namespace Acquia\Orca\Tests\Console\Command\Fixture;
 
 use Acquia\Orca\Console\Command\Fixture\FixtureInitCommand;
-use Acquia\Orca\Enum\DrupalCoreVersion;
+use Acquia\Orca\Drupal\DrupalCoreVersion;
+use Acquia\Orca\Drupal\DrupalCoreVersionFinder;
 use Acquia\Orca\Enum\StatusCode;
 use Acquia\Orca\Exception\OrcaException;
 use Acquia\Orca\Filesystem\FixturePathHandler;
@@ -12,13 +13,12 @@ use Acquia\Orca\Fixture\FixtureRemover;
 use Acquia\Orca\Fixture\SutPreconditionsTester;
 use Acquia\Orca\Package\PackageManager;
 use Acquia\Orca\Tests\Console\Command\CommandTestBase;
-use Acquia\Orca\Utility\DrupalCoreVersionFinder;
 use Composer\Semver\VersionParser;
 use Prophecy\Argument;
 use Symfony\Component\Console\Command\Command;
 
 /**
- * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Utility\DrupalCoreVersionFinder $drupalCoreVersionFinder
+ * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Drupal\DrupalCoreVersionFinder $drupalCoreVersionFinder
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Filesystem\FixturePathHandler $fixture
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Fixture\FixtureCreator $fixtureCreator
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Fixture\FixtureRemover $fixtureRemover

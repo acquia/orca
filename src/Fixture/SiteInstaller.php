@@ -2,7 +2,7 @@
 
 namespace Acquia\Orca\Fixture;
 
-use Acquia\Orca\Facade\DrushFacade;
+use Acquia\Orca\Drush\DrushFacade;
 use Acquia\Orca\Filesystem\FixturePathHandler;
 use Acquia\Orca\Filesystem\OrcaPathHandler;
 use Noodlehaus\Config;
@@ -47,7 +47,7 @@ class SiteInstaller {
   /**
    * The Drush facade.
    *
-   * @var \Acquia\Orca\Facade\DrushFacade
+   * @var \Acquia\Orca\Drush\DrushFacade
    */
   private $drush;
 
@@ -98,7 +98,7 @@ class SiteInstaller {
    *
    * @param \Acquia\Orca\Fixture\CompanyExtensionEnabler $company_extension_enabler
    *   The company extension enabler.
-   * @param \Acquia\Orca\Facade\DrushFacade $drush
+   * @param \Acquia\Orca\Drush\DrushFacade $drush
    *   The Drush facade.
    * @param \Symfony\Component\Filesystem\Filesystem $filesystem
    *   The filesystem.

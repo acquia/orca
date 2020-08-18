@@ -2,10 +2,10 @@
 
 namespace Acquia\Orca\Task\StaticAnalysisTool;
 
+use Acquia\Orca\Console\Helper\StatusTable;
 use Acquia\Orca\Exception\FileNotFoundException;
 use Acquia\Orca\Task\CodeCoverageReportBuilder;
 use Acquia\Orca\Task\TaskInterface;
-use Acquia\Orca\Utility\StatusTable;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**

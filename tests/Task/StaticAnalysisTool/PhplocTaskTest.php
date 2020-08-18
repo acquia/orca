@@ -2,12 +2,12 @@
 
 namespace Acquia\Orca\Tests\Task\StaticAnalysisTool;
 
-use Acquia\Orca\Facade\PhplocFacade;
+use Acquia\Orca\Task\PhplocFacade;
 use Acquia\Orca\Task\StaticAnalysisTool\PhplocTask;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @property \Acquia\Orca\Facade\PhplocFacade|\Prophecy\Prophecy\ObjectProphecy $phploc
+ * @property \Acquia\Orca\Task\PhplocFacade|\Prophecy\Prophecy\ObjectProphecy $phploc
  */
 class PhplocTaskTest extends TestCase {
 

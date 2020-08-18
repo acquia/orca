@@ -2,7 +2,8 @@
 
 namespace Acquia\Orca\Tests\Fixture;
 
-use Acquia\Orca\Facade\ComposerFacade;
+use Acquia\Orca\Composer\ComposerFacade;
+use Acquia\Orca\Drupal\DrupalCoreVersionFinder;
 use Acquia\Orca\Filesystem\FixturePathHandler;
 use Acquia\Orca\Filesystem\OrcaPathHandler;
 use Acquia\Orca\Fixture\CodebaseCreator;
@@ -12,7 +13,6 @@ use Acquia\Orca\Fixture\SiteInstaller;
 use Acquia\Orca\Fixture\SubextensionManager;
 use Acquia\Orca\Package\Package;
 use Acquia\Orca\Package\PackageManager;
-use Acquia\Orca\Utility\DrupalCoreVersionFinder;
 use Acquia\Orca\Utility\ProcessRunner;
 use Composer\Package\Version\VersionGuesser;
 use Composer\Semver\VersionParser;
@@ -21,7 +21,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
- * @property \Acquia\Orca\Facade\ComposerFacade|\Prophecy\Prophecy\ObjectProphecy $composer
+ * @property \Acquia\Orca\Composer\ComposerFacade|\Prophecy\Prophecy\ObjectProphecy $composer
  * @property \Acquia\Orca\Fixture\FixtureInspector|\Prophecy\Prophecy\ObjectProphecy $fixtureInspector
  * @property \Acquia\Orca\Filesystem\FixturePathHandler|\Prophecy\Prophecy\ObjectProphecy $fixture
  * @property \Acquia\Orca\Filesystem\OrcaPathHandler|\Prophecy\Prophecy\ObjectProphecy $orca
@@ -29,7 +29,7 @@ use Symfony\Component\Filesystem\Filesystem;
  * @property \Acquia\Orca\Fixture\SiteInstaller|\Prophecy\Prophecy\ObjectProphecy $siteInstaller
  * @property \Acquia\Orca\Fixture\SubextensionManager|\Prophecy\Prophecy\ObjectProphecy $subextensionManager
  * @property \Acquia\Orca\Package\PackageManager|\Prophecy\Prophecy\ObjectProphecy $packageManager
- * @property \Acquia\Orca\Utility\DrupalCoreVersionFinder|\Prophecy\Prophecy\ObjectProphecy $coreVersionFinder
+ * @property \Acquia\Orca\Drupal\DrupalCoreVersionFinder|\Prophecy\Prophecy\ObjectProphecy $coreVersionFinder
  * @property \Acquia\Orca\Utility\ProcessRunner|\Prophecy\Prophecy\ObjectProphecy $processRunner
  * @property \Composer\Package\Version\VersionGuesser|\Prophecy\Prophecy\ObjectProphecy $versionGuesser
  * @property \Composer\Semver\VersionParser|\Prophecy\Prophecy\ObjectProphecy $versionParser

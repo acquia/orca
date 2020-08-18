@@ -1,8 +1,8 @@
 <?php
 
-namespace Acquia\Orca\Tests\Facade;
+namespace Acquia\Orca\Tests\Composer;
 
-use Acquia\Orca\Facade\ComposerFacade;
+use Acquia\Orca\Composer\ComposerFacade;
 use Acquia\Orca\Filesystem\FixturePathHandler;
 use Acquia\Orca\Utility\ProcessRunner;
 use InvalidArgumentException;
@@ -12,7 +12,7 @@ use Prophecy\Argument;
 /**
  * @property \Acquia\Orca\Filesystem\FixturePathHandler|\Prophecy\Prophecy\ObjectProphecy $fixturePathHandler
  * @property \Acquia\Orca\Utility\ProcessRunner|\Prophecy\Prophecy\ObjectProphecy $processRunner
- * @coversDefaultClass \Acquia\Orca\Facade\ComposerFacade
+ * @coversDefaultClass \Acquia\Orca\Composer\ComposerFacade
  */
 class ComposerFacadeTest extends TestCase {
 

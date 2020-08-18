@@ -1,6 +1,6 @@
 <?php
 
-namespace Acquia\Orca\Facade;
+namespace Acquia\Orca\Task;
 
 use Acquia\Orca\Filesystem\OrcaPathHandler;
 use Acquia\Orca\Utility\ProcessRunner;

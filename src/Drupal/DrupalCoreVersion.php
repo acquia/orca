@@ -1,6 +1,6 @@
 <?php
 
-namespace Acquia\Orca\Enum;
+namespace Acquia\Orca\Drupal;
 
 use MyCLabs\Enum\Enum;
 

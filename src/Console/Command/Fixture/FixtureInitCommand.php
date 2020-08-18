@@ -2,7 +2,8 @@
 
 namespace Acquia\Orca\Console\Command\Fixture;
 
-use Acquia\Orca\Enum\DrupalCoreVersion;
+use Acquia\Orca\Drupal\DrupalCoreVersion;
+use Acquia\Orca\Drupal\DrupalCoreVersionFinder;
 use Acquia\Orca\Enum\StatusCode;
 use Acquia\Orca\Exception\OrcaException;
 use Acquia\Orca\Filesystem\FixturePathHandler;
@@ -10,7 +11,6 @@ use Acquia\Orca\Fixture\FixtureCreator;
 use Acquia\Orca\Fixture\FixtureRemover;
 use Acquia\Orca\Fixture\SutPreconditionsTester;
 use Acquia\Orca\Package\PackageManager;
-use Acquia\Orca\Utility\DrupalCoreVersionFinder;
 use Composer\Semver\VersionParser;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -34,7 +34,7 @@ class FixtureInitCommand extends Command {
   /**
    * The Drupal core version finder.
    *
-   * @var \Acquia\Orca\Utility\DrupalCoreVersionFinder
+   * @var \Acquia\Orca\Drupal\DrupalCoreVersionFinder
    */
   private $drupalCoreVersionFinder;
 
@@ -83,7 +83,7 @@ class FixtureInitCommand extends Command {
   /**
    * Constructs an instance.
    *
-   * @param \Acquia\Orca\Utility\DrupalCoreVersionFinder $drupal_core_version_finder
+   * @param \Acquia\Orca\Drupal\DrupalCoreVersionFinder $drupal_core_version_finder
    *   The Drupal core version finder.
    * @param \Acquia\Orca\Filesystem\FixturePathHandler $fixture_path_handler
    *   The fixture path handler.

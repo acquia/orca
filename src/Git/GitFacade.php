@@ -1,6 +1,6 @@
 <?php
 
-namespace Acquia\Orca\Facade;
+namespace Acquia\Orca\Git;
 
 use Acquia\Orca\Utility\ProcessRunner;
 

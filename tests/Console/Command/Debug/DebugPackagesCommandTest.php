@@ -3,17 +3,17 @@
 namespace Acquia\Orca\Tests\Console\Command\Debug;
 
 use Acquia\Orca\Console\Command\Debug\DebugPackagesCommand;
-use Acquia\Orca\Enum\DrupalCoreVersion;
+use Acquia\Orca\Drupal\DrupalCoreVersion;
+use Acquia\Orca\Drupal\DrupalCoreVersionFinder;
 use Acquia\Orca\Enum\StatusCode;
 use Acquia\Orca\Package\Package;
 use Acquia\Orca\Package\PackageManager;
 use Acquia\Orca\Tests\Console\Command\CommandTestBase;
-use Acquia\Orca\Utility\DrupalCoreVersionFinder;
 use Composer\Semver\VersionParser;
 use Symfony\Component\Console\Command\Command;
 
 /**
- * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Utility\DrupalCoreVersionFinder $drupalCoreVersionFinder
+ * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Drupal\DrupalCoreVersionFinder $drupalCoreVersionFinder
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Package\PackageManager $packageManager
  * @property \Prophecy\Prophecy\ObjectProphecy|\Composer\Semver\VersionParser $versionParser
  */

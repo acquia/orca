@@ -4,13 +4,13 @@ namespace Acquia\Orca\Tests\Console\Command\Fixture;
 
 use Acquia\Orca\Console\Command\Fixture\FixtureBackupCommand;
 use Acquia\Orca\Enum\StatusCode;
-use Acquia\Orca\Facade\GitFacade;
 use Acquia\Orca\Filesystem\FixturePathHandler;
+use Acquia\Orca\Git\GitFacade;
 use Acquia\Orca\Tests\Console\Command\CommandTestBase;
 use Symfony\Component\Console\Command\Command;
 
 /**
- * @property \Acquia\Orca\Facade\GitFacade|\Prophecy\Prophecy\ObjectProphecy $git
+ * @property \Acquia\Orca\Git\GitFacade|\Prophecy\Prophecy\ObjectProphecy $git
  * @property \Acquia\Orca\Filesystem\FixturePathHandler|\Prophecy\Prophecy\ObjectProphecy $fixture
  */
 class FixtureBackupCommandTest extends CommandTestBase {

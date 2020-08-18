@@ -2,10 +2,10 @@
 
 namespace Acquia\Orca\Console\Command\Debug;
 
-use Acquia\Orca\Enum\DrupalCoreVersion;
+use Acquia\Orca\Console\Helper\StatusTable;
+use Acquia\Orca\Drupal\DrupalCoreVersion;
+use Acquia\Orca\Drupal\DrupalCoreVersionFinder;
 use Acquia\Orca\Enum\StatusCode;
-use Acquia\Orca\Utility\DrupalCoreVersionFinder;
-use Acquia\Orca\Utility\StatusTable;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -25,14 +25,14 @@ class DebugCoreVersionsCommand extends Command {
   /**
    * The Drupal core version finder.
    *
-   * @var \Acquia\Orca\Utility\DrupalCoreVersionFinder
+   * @var \Acquia\Orca\Drupal\DrupalCoreVersionFinder
    */
   private $drupalCoreVersionFinder;
 
   /**
    * Constructs an instance.
    *
-   * @param \Acquia\Orca\Utility\DrupalCoreVersionFinder $drupal_core_version_finder
+   * @param \Acquia\Orca\Drupal\DrupalCoreVersionFinder $drupal_core_version_finder
    *   The Drupal core version finder.
    */
   public function __construct(DrupalCoreVersionFinder $drupal_core_version_finder) {

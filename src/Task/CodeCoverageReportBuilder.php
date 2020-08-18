@@ -28,7 +28,7 @@ class CodeCoverageReportBuilder {
   /**
    * PHP filename extensions as Finder expects them.
    *
-   * @see \Acquia\Orca\Facade\PhplocFacade::PHP_EXTENSIONS
+   * @see \Acquia\Orca\Task\PhplocFacade::PHP_EXTENSIONS
    */
   private const PHP_NAME_PATTERNS = [
     '*.php',
@@ -111,7 +111,7 @@ class CodeCoverageReportBuilder {
    *   The report data as multidimensional array suitable for
    *   StatusTable::setRows().
    *
-   * @see \Acquia\Orca\Utility\StatusTable::setRows()
+   * @see \Acquia\Orca\Console\Helper\StatusTable::setRows()
    *
    * @throws \Exception
    *   In case of errors.

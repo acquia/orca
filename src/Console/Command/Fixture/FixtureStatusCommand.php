@@ -2,10 +2,10 @@
 
 namespace Acquia\Orca\Console\Command\Fixture;
 
+use Acquia\Orca\Console\Helper\StatusTable;
 use Acquia\Orca\Enum\StatusCode;
 use Acquia\Orca\Filesystem\FixturePathHandler;
 use Acquia\Orca\Fixture\FixtureInspector;
-use Acquia\Orca\Utility\StatusTable;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;

@@ -2,7 +2,7 @@
 
 namespace Acquia\Orca\Fixture;
 
-use Acquia\Orca\Facade\DrushFacade;
+use Acquia\Orca\Drush\DrushFacade;
 use Acquia\Orca\Filesystem\FixturePathHandler;
 use Acquia\Orca\Package\Package;
 use Acquia\Orca\Package\PackageManager;
@@ -32,7 +32,7 @@ class CompanyExtensionEnabler {
   /**
    * The Drush facade.
    *
-   * @var \Acquia\Orca\Facade\DrushFacade
+   * @var \Acquia\Orca\Drush\DrushFacade
    */
   private $drush;
 
@@ -76,7 +76,7 @@ class CompanyExtensionEnabler {
    *
    * @param \Acquia\Orca\Utility\ConfigLoader $config_loader
    *   The config loader.
-   * @param \Acquia\Orca\Facade\DrushFacade $drush_facade
+   * @param \Acquia\Orca\Drush\DrushFacade $drush_facade
    *   The Drush facade.
    * @param \Symfony\Component\Filesystem\Filesystem $filesystem
    *   The filesystem.

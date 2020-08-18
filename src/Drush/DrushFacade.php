@@ -1,6 +1,6 @@
 <?php
 
-namespace Acquia\Orca\Facade;
+namespace Acquia\Orca\Drush;
 
 use Acquia\Orca\Exception\ParseError;
 use Acquia\Orca\Utility\ProcessRunner;

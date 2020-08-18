@@ -2,7 +2,7 @@
 
 namespace Acquia\Orca\Fixture;
 
-use Acquia\Orca\Facade\DrushFacade;
+use Acquia\Orca\Drush\DrushFacade;
 use Acquia\Orca\Filesystem\FixturePathHandler;
 use Acquia\Orca\Package\PackageManager;
 use Acquia\Orca\Server\WebServer;
@@ -33,7 +33,7 @@ class FixtureInspector {
   /**
    * The Drush facade.
    *
-   * @var \Acquia\Orca\Facade\DrushFacade
+   * @var \Acquia\Orca\Drush\DrushFacade
    */
   private $drush;
 
@@ -75,7 +75,7 @@ class FixtureInspector {
   /**
    * Constructs an instance.
    *
-   * @param \Acquia\Orca\Facade\DrushFacade $drush
+   * @param \Acquia\Orca\Drush\DrushFacade $drush
    *   The Drush facade.
    * @param \Acquia\Orca\Filesystem\FixturePathHandler $fixture_path_handler
    *   The fixture path handler.
