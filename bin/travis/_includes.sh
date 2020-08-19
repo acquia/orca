@@ -20,6 +20,13 @@ function assert {
   fi
 }
 
+# Outputs a formatted warning message.
+function notice {
+  CYAN="\e[34m"
+  NO_COLOR="\033[0m"
+  printf "\n%bNotice: %b%b\n" "$CYAN" "$1" "$NO_COLOR"
+}
+
 # Assert that necessary environment variables are set.
 if [[ "$ORCA_JOB" != "DEPRECATED_CODE_SCAN_CONTRIB" ]]; then
   assert "$ORCA_SUT_NAME" "Missing required ORCA_SUT_NAME environment variable.\nHint: ORCA_SUT_NAME=drupal/example"
@@ -30,6 +37,7 @@ if [[ ! "$TRAVIS" && "$ORCA_JOB" = "STATIC_CODE_ANALYSIS" ]]; then assert "$ORCA
 # Set environment variables.
 ORCA_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 export ORCA_ROOT
+export ORCA_COVERAGE_CLOVER_PATH=${ORCA_COVERAGE_CLOVER_PATH:="$HOME/build/logs/clover.xml"}
 export ORCA_FIXTURE_DIR=${ORCA_FIXTURE_DIR:="$ORCA_ROOT/../orca-build"}
 export ORCA_FIXTURE_PROFILE=${ORCA_FIXTURE_PROFILE:="orca"}
 DEFAULT_PROJECT_TEMPLATE=$([[ "$ORCA_JOB" == "D9_READINESS" ]] && echo "acquia/drupal-recommended-project" || echo "acquia/blt-project")

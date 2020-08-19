@@ -23,6 +23,7 @@ case "$ORCA_JOB" in
   "DEPRECATED_CODE_SCAN") eval "orca qa:deprecated-code-scan --sut=$ORCA_SUT_NAME"; unset ORCA_ENABLE_NIGHTWATCH ;;
   "DEPRECATED_CODE_SCAN_CONTRIB") eval "orca qa:deprecated-code-scan --contrib"; unset ORCA_ENABLE_NIGHTWATCH ;;
   "ISOLATED_RECOMMENDED") eval "orca qa:automated-tests --sut=$ORCA_SUT_NAME --sut-only" ;;
+  "ISOLATED_RECOMMENDED_COVERAGE") eval "orca qa:automated-tests --sut=$ORCA_SUT_NAME --sut-only --phpunit" ;;
   "INTEGRATED_RECOMMENDED") eval "orca qa:automated-tests --sut=$ORCA_SUT_NAME $SUT_ONLY" ;;
   "CORE_PREVIOUS") eval "orca qa:automated-tests --sut=$ORCA_SUT_NAME $SUT_ONLY" ;;
   "ISOLATED_DEV") eval "orca qa:automated-tests --sut=$ORCA_SUT_NAME --sut-only" ;;

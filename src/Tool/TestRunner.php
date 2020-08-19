@@ -205,6 +205,9 @@ class TestRunner {
       $this->output->comment('Resetting test fixture');
       $this->fixtureResetter->reset();
       $this->output->comment('Running tests');
+      if ($this->sut && $this->isSutOnly) {
+        $framework->generateCodeCoverage(TRUE);
+      }
       $framework->execute();
     }
     catch (TaskFailureException $e) {

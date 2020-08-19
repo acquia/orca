@@ -22,6 +22,7 @@ class TasksTest extends TestCase {
    * @dataProvider providerConstruction
    */
   public function testConstruction($class): void {
+    $clover_coverage_path = '/var/coverage/clover.xml';
     $config_file_overrider = $this->prophesize(ConfigFileOverrider::class)->reveal();
     $filesystem = $this->prophesize(Filesystem::class)->reveal();
     $fixture = $this->prophesize(FixturePathHandler::class)->reveal();
@@ -30,7 +31,7 @@ class TasksTest extends TestCase {
     $phpcs_configurator = $this->prophesize(PhpcsConfigurator::class)->reveal();
     $process_runner = $this->prophesize(ProcessRunner::class)->reveal();
 
-    $object = new $class($config_file_overrider, $filesystem, $fixture, $orca_path_handler, $output, $phpcs_configurator, $process_runner);
+    $object = new $class($clover_coverage_path, $config_file_overrider, $filesystem, $fixture, $orca_path_handler, $output, $phpcs_configurator, $process_runner);
 
     self::assertInstanceOf($class, $object, sprintf('Successfully instantiated class: %s.', $class));
   }
