@@ -225,13 +225,13 @@ class PhpUnitTask extends TestFrameworkBase {
       if ($this->isToGenerateCodeCoverage()) {
         $command[] = "--coverage-clover={$this->cloverCoveragePath}";
       }
-      $command += [
+      $command = array_merge($command, [
         '--colors=always',
         '--debug',
         "--configuration={$this->fixture->getPath('docroot/core/phpunit.xml')}",
         '--exclude-group=orca_ignore',
         '--testsuite=orca',
-      ];
+      ]);
       if ($this->isPublicTestsOnly()) {
         $command[] = '--group=orca_public';
       }
