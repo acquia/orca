@@ -48,7 +48,7 @@ class TestRunnerTest extends TestCase {
     return new TestRunner($filesystem, $fixture_resetter, $output, $phpunit, $package_manager, $server_stack);
   }
 
-  public function testTaskRunner() {
+  public function testTaskRunner(): void {
     $runner = $this->createTestRunner();
 
     self::assertInstanceOf(TestRunner::class, $runner, 'Instantiated class.');

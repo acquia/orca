@@ -79,7 +79,7 @@ class PhpcsConfigurator {
       return $this->tempDir;
     }
 
-    $path = $this->orca->getPath("var/cache/phpcs/{uniqid()}");
+    $path = $this->orca->getPath('var/cache/phpcs/{uniqid()}');
     $this->tempDir = $path;
     return $this->tempDir;
   }

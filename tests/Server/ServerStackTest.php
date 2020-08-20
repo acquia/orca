@@ -21,7 +21,14 @@ class ServerStackTest extends TestCase {
     $this->webServer = $this->prophesize(WebServer::class);
   }
 
-  public function testServerStack() {
+  protected function createServerStack(): ServerStack {
+    $chrome_driver_server = $this->chromeDriverServer->reveal();
+    $clock = $this->clock->reveal();
+    $web_server = $this->webServer->reveal();
+    return new ServerStack($chrome_driver_server, $clock, $web_server);
+  }
+
+  public function testServerStack(): void {
     $this->webServer
       ->start()
       ->shouldBeCalledTimes(1);
@@ -40,13 +47,6 @@ class ServerStackTest extends TestCase {
     $servers->stop();
 
     self::assertInstanceOf(ServerStack::class, $servers, 'Instantiated class.');
-  }
-
-  protected function createServerStack(): ServerStack {
-    $chrome_driver_server = $this->chromeDriverServer->reveal();
-    $clock = $this->clock->reveal();
-    $web_server = $this->webServer->reveal();
-    return new ServerStack($chrome_driver_server, $clock, $web_server);
   }
 
 }

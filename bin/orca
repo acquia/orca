@@ -6,4 +6,4 @@
  * ORCA command line executable.
  */
 
-require 'orca.php';
+require __DIR__ . '/orca.php';

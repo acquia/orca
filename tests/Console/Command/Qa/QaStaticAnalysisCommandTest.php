@@ -72,6 +72,19 @@ class QaStaticAnalysisCommandTest extends CommandTestBase {
     $this->yamlLint = $this->prophesize(YamlLintTask::class);
   }
 
+  protected function createCommand(): Command {
+    $composer_validate = $this->composerValidate->reveal();
+    $coverage = $this->coverage->reveal();
+    $filesystem = $this->filesystem->reveal();
+    $php_code_sniffer = $this->phpCodeSniffer->reveal();
+    $phplint = $this->phpLint->reveal();
+    $phploc = $this->phploc->reveal();
+    $php_mess_detector = $this->phpMessDetector->reveal();
+    $task_runner = $this->taskRunner->reveal();
+    $yaml_lint = $this->yamlLint->reveal();
+    return new QaStaticAnalysisCommand($coverage, $composer_validate, $this->defaultPhpcsStandard, $filesystem, $php_code_sniffer, $phplint, $phploc, $php_mess_detector, $task_runner, $yaml_lint);
+  }
+
   /**
    * @covers ::__construct
    * @covers ::configure
@@ -95,6 +108,7 @@ class QaStaticAnalysisCommandTest extends CommandTestBase {
 
   /**
    * @dataProvider providerOptions
+   *
    * @covers ::configure
    */
   public function testOptions(string $name, $default): void {
@@ -247,7 +261,7 @@ class QaStaticAnalysisCommandTest extends CommandTestBase {
     self::assertTrue(TRUE);
   }
 
-  public function providerCoverageOptionSpecialCaseTaskFiltering() {
+  public function providerCoverageOptionSpecialCaseTaskFiltering(): array {
     return [
       [['--coverage' => 1]],
       [['--coverage' => 1, '--phploc' => 1]],
@@ -354,7 +368,7 @@ class QaStaticAnalysisCommandTest extends CommandTestBase {
     ];
   }
 
-  public function testCoverageNoFilesToScan() {
+  public function testCoverageNoFilesToScan(): void {
     $this->coverage
       ->execute()
       ->willThrow(FileNotFoundException::class);
@@ -362,19 +376,6 @@ class QaStaticAnalysisCommandTest extends CommandTestBase {
     $this->executeCommand(['path' => self::SUT_PATH]);
 
     self::assertEquals(StatusCode::OK, $this->getStatusCode(), 'Returned correct status code.');
-  }
-
-  protected function createCommand(): Command {
-    $composer_validate = $this->composerValidate->reveal();
-    $coverage = $this->coverage->reveal();
-    $filesystem = $this->filesystem->reveal();
-    $php_code_sniffer = $this->phpCodeSniffer->reveal();
-    $phplint = $this->phpLint->reveal();
-    $phploc = $this->phploc->reveal();
-    $php_mess_detector = $this->phpMessDetector->reveal();
-    $task_runner = $this->taskRunner->reveal();
-    $yaml_lint = $this->yamlLint->reveal();
-    return new QaStaticAnalysisCommand($coverage, $composer_validate, $this->defaultPhpcsStandard, $filesystem, $php_code_sniffer, $phplint, $phploc, $php_mess_detector, $task_runner, $yaml_lint);
   }
 
 }

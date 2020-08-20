@@ -27,7 +27,7 @@ class SubextensionManagerTest extends TestCase {
     $this->packageManager = $this->prophesize(PackageManager::class);
   }
 
-  public function testConstruction() {
+  public function testConstruction(): void {
     $config_loader = $this->configLoader->reveal();
     $filesystem = $this->filesystem->reveal();
     $fixture = $this->fixture->reveal();

@@ -135,7 +135,7 @@ class TestRunner {
    * @param bool $run_phpunit
    *   TRUE to run PHPUnit or FALSE not to.
    */
-  public function setRunPhpunit(bool $run_phpunit) {
+  public function setRunPhpunit(bool $run_phpunit): void {
     $this->runPhpunit = $run_phpunit;
   }
 

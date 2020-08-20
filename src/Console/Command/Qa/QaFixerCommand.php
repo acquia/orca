@@ -129,7 +129,7 @@ class QaFixerCommand extends Command {
    * @param \Symfony\Component\Console\Input\InputInterface $input
    *   The command input.
    */
-  private function configureTaskRunner(InputInterface $input) {
+  private function configureTaskRunner(InputInterface $input): void {
     $composer = $input->getOption('composer');
     $phpcbf = $input->getOption('phpcbf');
     $all = !$composer && !$phpcbf;

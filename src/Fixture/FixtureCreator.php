@@ -35,9 +35,9 @@ class FixtureCreator {
 
   use SutSettingsTrait;
 
-  const DEFAULT_PROFILE = 'orca';
+  public const DEFAULT_PROFILE = 'orca';
 
-  const DEFAULT_PROJECT_TEMPLATE = 'acquia/blt-project';
+  public const DEFAULT_PROJECT_TEMPLATE = 'acquia/blt-project';
 
   /**
    * The BLT package, if defined.
@@ -359,7 +359,7 @@ class FixtureCreator {
    * @param string $project_template
    *   The Composer project template, e.g., "drupal/drupal-recommended-project".
    */
-  public function setProjectTemplate(string $project_template) {
+  public function setProjectTemplate(string $project_template): void {
     $this->projectTemplate = $project_template;
   }
 
@@ -758,7 +758,7 @@ class FixtureCreator {
   /**
    * Displays debugging info about a failure to symlink the SUT.
    */
-  private function displayFailedSymlinkDebuggingInfo() {
+  private function displayFailedSymlinkDebuggingInfo(): void {
     $this->output->section('Debugging info');
 
     $this->output->comment('Display some info about the SUT install path.');

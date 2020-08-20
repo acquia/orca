@@ -17,10 +17,15 @@ class PathHandlerTest extends TestCase {
     $this->filesystem = $this->prophesize(Filesystem::class);
   }
 
+  protected function createPathHander() {
+    $filesystem = $this->filesystem->reveal();
+    return new class($filesystem, $this->basePath) extends AbstractPathHandler {};
+  }
+
   /**
    * @dataProvider providerExists
    */
-  public function testExists($base_path, $exists) {
+  public function testExists($base_path, $exists): void {
     $this->basePath = $base_path;
     $this->filesystem
       ->exists($base_path)
@@ -33,7 +38,7 @@ class PathHandlerTest extends TestCase {
     self::assertEquals($exists, $return, 'Returned correct value.');
   }
 
-  public function providerExists() {
+  public function providerExists(): array {
     return [
       ['/path-exists', TRUE],
       ['/no-path-there', FALSE],
@@ -44,7 +49,7 @@ class PathHandlerTest extends TestCase {
    * @covers \Acquia\Orca\Helper\Filesystem\AbstractPathHandler::exists
    * @dataProvider providerExistsWithSubpath
    */
-  public function testExistsWithSubpath($sub_path, $exists) {
+  public function testExistsWithSubpath($sub_path, $exists): void {
     $this->basePath = '/example';
     $full_path = "{$this->basePath}/{$sub_path}";
     $this->filesystem
@@ -58,7 +63,7 @@ class PathHandlerTest extends TestCase {
     self::assertEquals($exists, $return, 'Returned correct value.');
   }
 
-  public function providerExistsWithSubpath() {
+  public function providerExistsWithSubpath(): array {
     return [
       ['path-exists', TRUE],
       ['no-path-there', FALSE],
@@ -69,7 +74,7 @@ class PathHandlerTest extends TestCase {
    * @dataProvider providerGetPath
    * @covers \Acquia\Orca\Helper\Filesystem\AbstractPathHandler::getPath
    */
-  public function testGetPath($base_path, $sub_path, $expected) {
+  public function testGetPath($base_path, $sub_path, $expected): void {
     $this->basePath = $base_path;
 
     $path_handler = $this->createPathHander();
@@ -77,7 +82,7 @@ class PathHandlerTest extends TestCase {
     self::assertEquals($expected, $path_handler->getPath($sub_path), 'Resolved path.');
   }
 
-  public function providerGetPath() {
+  public function providerGetPath(): array {
     return [
       ['/var/www/orca-build', NULL, '/var/www/orca-build'],
       ['/var/www/orca-build', 'lorem/ipsum/dolor/sit/amet', '/var/www/orca-build/lorem/ipsum/dolor/sit/amet'],
@@ -87,11 +92,6 @@ class PathHandlerTest extends TestCase {
       ['/lorem/ipsum', 'dolor/sit/amet/', '/lorem/ipsum/dolor/sit/amet'],
       ['///lorem///ipsum///', NULL, '/lorem/ipsum'],
     ];
-  }
-
-  protected function createPathHander() {
-    $filesystem = $this->filesystem->reveal();
-    return new class($filesystem, $this->basePath) extends AbstractPathHandler {};
   }
 
 }

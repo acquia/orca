@@ -102,7 +102,7 @@ class ConfigFileOverrider {
   /**
    * Backs up the contents of a preexisting destination file.
    */
-  private function backupDestFile() {
+  private function backupDestFile(): void {
     $this->destBackup = file_get_contents($this->destPath);
   }
 

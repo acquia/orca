@@ -73,7 +73,7 @@ class SutPreconditionsTester {
 
     $data = $composer_json->read();
 
-    $actual_name = isset($data['name']) ? $data['name'] : NULL;
+    $actual_name = $data['name'] ?? NULL;
     $expected_name = $sut->getPackageName();
     if ($actual_name !== $expected_name) {
       throw new OrcaException(sprintf(

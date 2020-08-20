@@ -34,7 +34,7 @@ class FixtureEnableExtensionsCommandTest extends CommandTestBase {
   /**
    * @dataProvider providerCommand
    */
-  public function testCommand($fixture_exists, $install_called, $exception, $status_code, $display) {
+  public function testCommand($fixture_exists, $install_called, $exception, $status_code, $display): void {
     $this->fixture_path_handler
       ->exists()
       ->shouldBeCalled()
@@ -54,7 +54,7 @@ class FixtureEnableExtensionsCommandTest extends CommandTestBase {
     self::assertEquals($status_code, $this->getStatusCode(), 'Returned correct status code.');
   }
 
-  public function providerCommand() {
+  public function providerCommand(): array {
     return [
       [FALSE, 0, FALSE, StatusCode::ERROR, sprintf("Error: No fixture exists at %s.\n", self::FIXTURE_ROOT)],
       [TRUE, 1, new OrcaException('Oops.'), StatusCode::ERROR, "\n [ERROR] Oops.                                                                  \n\n"],

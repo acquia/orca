@@ -34,10 +34,13 @@ abstract class AbstractPathHandler {
   /**
    * Determines whether or not the path exists.
    *
+   * @param string|null $sub_path
+   *   A sub-path to append.
+   *
    * @return bool
    *   TRUE if the path exists on the filesystem or FALSE if not.
    */
-  public function exists(?string $sub_path = ''): bool {
+  public function exists(?string $sub_path = NULL): bool {
     return $this->filesystem
       ->exists($this->getPath($sub_path));
   }
@@ -46,12 +49,12 @@ abstract class AbstractPathHandler {
    * Gets the base path with an optional sub-path appended.
    *
    * @param string|null $sub_path
-   *   (Optional) A sub-path to append.
+   *   A sub-path to append.
    *
    * @return string
    *   The base path with sub-path appended if provided.
    */
-  public function getPath(?string $sub_path = ''): string {
+  public function getPath(?string $sub_path = NULL): string {
     $path = $this->basePath;
 
     // Append optional sub-path.

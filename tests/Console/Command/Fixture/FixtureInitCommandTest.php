@@ -71,7 +71,7 @@ class FixtureInitCommandTest extends CommandTestBase {
   /**
    * @dataProvider providerCommand
    */
-  public function testCommand($fixture_exists, $args, $methods_called, $drupal_core_version, $status_code, $display) {
+  public function testCommand($fixture_exists, $args, $methods_called, $drupal_core_version, $status_code, $display): void {
     $this->packageManager
       ->exists(@$args['--sut'])
       ->shouldBeCalledTimes((int) in_array('PackageManager::exists', $methods_called))
@@ -126,7 +126,7 @@ class FixtureInitCommandTest extends CommandTestBase {
     self::assertEquals($status_code, $this->getStatusCode(), 'Returned correct status code.');
   }
 
-  public function providerCommand() {
+  public function providerCommand(): array {
     return [
       [TRUE, [], ['Fixture::exists', 'getCurrentRecommendedVersion', 'setCoreVersion'], NULL, StatusCode::ERROR, sprintf("Error: Fixture already exists at %s.\nHint: Use the \"--force\" option to remove it and proceed.\n", self::FIXTURE_ROOT)],
       [TRUE, ['-f' => TRUE], ['Fixture::exists', 'remove', 'create', 'getCurrentRecommendedVersion', 'setCoreVersion'], NULL, StatusCode::OK, ''],
@@ -142,7 +142,7 @@ class FixtureInitCommandTest extends CommandTestBase {
     ];
   }
 
-  public function testNoOptions() {
+  public function testNoOptions(): void {
     $this->drupalCoreVersionFinder
       ->get(new DrupalCoreVersion(DrupalCoreVersion::CURRENT_RECOMMENDED))
       ->shouldBeCalledOnce()
@@ -155,7 +155,7 @@ class FixtureInitCommandTest extends CommandTestBase {
     self::assertEquals(StatusCode::OK, $this->getStatusCode(), 'Returned correct status code.');
   }
 
-  public function testBareOption() {
+  public function testBareOption(): void {
     $this->drupalCoreVersionFinder
       ->get(new DrupalCoreVersion(DrupalCoreVersion::CURRENT_RECOMMENDED))
       ->shouldBeCalledOnce()
@@ -179,7 +179,7 @@ class FixtureInitCommandTest extends CommandTestBase {
   /**
    * @dataProvider providerBareOptionInvalidProvider
    */
-  public function testBareOptionInvalid($options) {
+  public function testBareOptionInvalid($options): void {
     $this->fixtureCreator
       ->create()
       ->shouldNotBeCalled();
@@ -190,7 +190,7 @@ class FixtureInitCommandTest extends CommandTestBase {
     self::assertEquals(StatusCode::ERROR, $this->getStatusCode(), 'Returned correct status code.');
   }
 
-  public function providerBareOptionInvalidProvider() {
+  public function providerBareOptionInvalidProvider(): array {
     return [
       [['--bare' => TRUE, '--sut' => 'drupal/example']],
       [['--bare' => TRUE, '--sut' => 'drupal/example', '--sut-only' => TRUE]],
@@ -200,7 +200,7 @@ class FixtureInitCommandTest extends CommandTestBase {
   /**
    * @dataProvider providerCoreOption
    */
-  public function testCoreOption($value, $finder_calls, $options, $set_version) {
+  public function testCoreOption($value, $finder_calls, $options, $set_version): void {
     $this->drupalCoreVersionFinder
       ->get($value)
       ->shouldBeCalledTimes($finder_calls)
@@ -221,7 +221,7 @@ class FixtureInitCommandTest extends CommandTestBase {
     self::assertEquals(StatusCode::OK, $this->getStatusCode(), 'Returned correct status code.');
   }
 
-  public function providerCoreOption() {
+  public function providerCoreOption(): array {
     return [
       [new DrupalCoreVersion(DrupalCoreVersion::PREVIOUS_RELEASE), 1, ['--core' => DrupalCoreVersion::PREVIOUS_RELEASE], self::CORE_VALUE_LITERAL_PREVIOUS_RELEASE],
       [new DrupalCoreVersion(DrupalCoreVersion::PREVIOUS_DEV), 1, ['--core' => DrupalCoreVersion::PREVIOUS_DEV], self::CORE_VALUE_LITERAL_PREVIOUS_DEV],
@@ -239,7 +239,7 @@ class FixtureInitCommandTest extends CommandTestBase {
   /**
    * @dataProvider providerCoreOptionVersionParsing
    */
-  public function testCoreOptionVersionParsing($status_code, $value, $display) {
+  public function testCoreOptionVersionParsing($status_code, $value, $display): void {
     $this->versionParser = new VersionParser();
 
     $this->executeCommand([
@@ -250,7 +250,7 @@ class FixtureInitCommandTest extends CommandTestBase {
     self::assertEquals($display, $this->getDisplay(), 'Displayed correct output.');
   }
 
-  public function providerCoreOptionVersionParsing() {
+  public function providerCoreOptionVersionParsing(): array {
     $error_message = 'Error: Invalid value for "--core" option: "%s".' . PHP_EOL
       . 'Hint: Acceptable values are "PREVIOUS_RELEASE", "PREVIOUS_DEV", "CURRENT_RECOMMENDED", "CURRENT_DEV", "NEXT_RELEASE", "NEXT_DEV", "D9_READINESS", or any version string Composer understands.' . PHP_EOL;
     return [
@@ -270,7 +270,7 @@ class FixtureInitCommandTest extends CommandTestBase {
   /**
    * @dataProvider providerIgnorePatchFailureOption
    */
-  public function testIgnorePatchFailureOption($options, $num_calls) {
+  public function testIgnorePatchFailureOption($options, $num_calls): void {
     $this->setDefaultFixtureCreatorExpectations();
     $this->fixtureCreator
       ->setComposerExitOnPatchFailure(FALSE)
@@ -282,14 +282,14 @@ class FixtureInitCommandTest extends CommandTestBase {
     self::assertEquals(StatusCode::OK, $this->getStatusCode(), 'Returned correct status code.');
   }
 
-  public function providerIgnorePatchFailureOption() {
+  public function providerIgnorePatchFailureOption(): array {
     return [
       [['--ignore-patch-failure' => TRUE], 1],
       [[], 0],
     ];
   }
 
-  public function testFixtureCreationFailure() {
+  public function testFixtureCreationFailure(): void {
     $this->setDefaultFixtureCreatorExpectations();
     $exception_message = 'Failed to create fixture.';
     $this->fixtureCreator
@@ -302,7 +302,7 @@ class FixtureInitCommandTest extends CommandTestBase {
     self::assertContains("[ERROR] {$exception_message}", $this->getDisplay(), 'Displayed correct output.');
   }
 
-  public function testPreferSourceOption() {
+  public function testPreferSourceOption(): void {
     $this->setDefaultFixtureCreatorExpectations();
     $this->fixtureCreator
       ->setPreferSource(TRUE)
@@ -314,7 +314,7 @@ class FixtureInitCommandTest extends CommandTestBase {
     self::assertEquals(StatusCode::OK, $this->getStatusCode(), 'Returned correct status code.');
   }
 
-  public function testProjectTemplateOption() {
+  public function testProjectTemplateOption(): void {
     $project_template = 'test/example';
     $this->drupalCoreVersionFinder
       ->get(new DrupalCoreVersion(DrupalCoreVersion::CURRENT_RECOMMENDED))
@@ -336,7 +336,7 @@ class FixtureInitCommandTest extends CommandTestBase {
     self::assertEquals(StatusCode::OK, $this->getStatusCode(), 'Returned correct status code.');
   }
 
-  public function testSutPreconditionTestFailure() {
+  public function testSutPreconditionTestFailure(): void {
     $sut_name = 'drupal/example';
     $exception_message = 'Failed to create fixture.';
 
@@ -365,7 +365,7 @@ class FixtureInitCommandTest extends CommandTestBase {
   /**
    * @dataProvider providerSymlinkAllOption
    */
-  public function testSymlinkAllOption($options, $num_calls) {
+  public function testSymlinkAllOption($options, $num_calls): void {
     $this->setDefaultFixtureCreatorExpectations();
     $this->fixtureCreator
       ->setSymlinkAll(TRUE)
@@ -377,14 +377,14 @@ class FixtureInitCommandTest extends CommandTestBase {
     self::assertEquals(StatusCode::OK, $this->getStatusCode(), 'Returned correct status code.');
   }
 
-  public function providerSymlinkAllOption() {
+  public function providerSymlinkAllOption(): array {
     return [
       [['--symlink-all' => TRUE], 1],
       [[], 0],
     ];
   }
 
-  public function testSymlinkAllOptionInvalid() {
+  public function testSymlinkAllOptionInvalid(): void {
     $this->fixtureCreator
       ->create()
       ->shouldNotBeCalled();

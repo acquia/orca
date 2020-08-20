@@ -11,7 +11,7 @@ use PHPUnit\Framework\TestCase;
 
 class ServersTest extends TestCase {
 
-  public function testConstruction() {
+  public function testConstruction(): void {
     $fixture = $this->prophesize(FixturePathHandler::class)->reveal();
     $process_runner = $this->prophesize(ProcessRunner::class)->reveal();
     $orca_path_handler = $this->prophesize(OrcaPathHandler::class)->reveal();

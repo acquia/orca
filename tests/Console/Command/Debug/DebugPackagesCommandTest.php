@@ -34,7 +34,7 @@ class DebugPackagesCommandTest extends CommandTestBase {
     return new DebugPackagesCommand($drupal_core_version_finder, $package_manager, $this->versionParser);
   }
 
-  public function testBasicExecution() {
+  public function testBasicExecution(): void {
     $package = $this->prophesize(Package::class);
     $package->getPackageName()->willReturn('Example 1', 'Example 2');
     $package->getType()->willReturn('drupal-module');
@@ -64,7 +64,7 @@ class DebugPackagesCommandTest extends CommandTestBase {
   /**
    * @dataProvider providerValidArguments
    */
-  public function testValidArguments($argument) {
+  public function testValidArguments($argument): void {
     $version = '8.7.0.0';
     $this->drupalCoreVersionFinder
       ->get(new DrupalCoreVersion($argument))
@@ -77,9 +77,9 @@ class DebugPackagesCommandTest extends CommandTestBase {
     self::assertEquals(StatusCode::OK, $this->getStatusCode(), 'Returned correct status code.');
   }
 
-  public function providerValidArguments() {
+  public function providerValidArguments(): array {
     $versions = DrupalCoreVersion::keys();
-    array_walk($versions, function (&$value) {
+    array_walk($versions, static function (&$value) {
       $value = [$value];
     });
     return $versions;
@@ -88,7 +88,7 @@ class DebugPackagesCommandTest extends CommandTestBase {
   /**
    * @dataProvider providerInvalidArguments
    */
-  public function testInvalidArguments($version) {
+  public function testInvalidArguments($version): void {
     $this->executeCommand(['core' => $version]);
 
     $error_message = sprintf('Error: Invalid value for "core" option: "%s".', $version) . PHP_EOL
@@ -97,7 +97,7 @@ class DebugPackagesCommandTest extends CommandTestBase {
     self::assertEquals(StatusCode::ERROR, $this->getStatusCode(), 'Returned correct status code.');
   }
 
-  public function providerInvalidArguments() {
+  public function providerInvalidArguments(): array {
     return [
       ['invalid'],
       [FALSE],

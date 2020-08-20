@@ -23,7 +23,7 @@ class PhplocTaskTest extends TestCase {
   /**
    * @dataProvider providerTask
    */
-  public function testTask(string $path) {
+  public function testTask(string $path): void {
     $this->phploc
       ->execute($path)
       ->shouldBeCalledOnce();
@@ -38,7 +38,7 @@ class PhplocTaskTest extends TestCase {
     self::assertTrue($provides_status_message, 'Provides a status message.');
   }
 
-  public function providerTask() {
+  public function providerTask(): array {
     return [
       ['/var/www'],
       ['/test/example'],

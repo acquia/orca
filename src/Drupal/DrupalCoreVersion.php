@@ -29,7 +29,7 @@ final class DrupalCoreVersion extends Enum {
    * @return array
    *   An array of lines.
    */
-  public static function commandHelp() {
+  public static function commandHelp(): array {
     return [
       sprintf('- %s: The latest release of the previous minor version, e.g., "8.5.14" if the current minor version is 8.6', self::PREVIOUS_RELEASE),
       sprintf('- %s: The development version of the previous minor version, e.g., "8.5.x-dev"', self::PREVIOUS_DEV),

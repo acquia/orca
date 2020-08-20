@@ -125,7 +125,7 @@ class ProcessRunner {
   public function createExecutableProcess(array $command): Process {
     $command[0] = (new ExecutableFinder())->find($command[0]);
 
-    if (is_null($command[0])) {
+    if ($command[0] === NULL) {
       throw new RuntimeException(sprintf('Could not find executable: %s.', $command[0]));
     }
 

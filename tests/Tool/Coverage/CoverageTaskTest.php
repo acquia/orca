@@ -21,6 +21,12 @@ class CoverageTaskTest extends TestCase {
     $this->symfonyOutput = $this->prophesize(OutputInterface::class);
   }
 
+  protected function createTask(): CoverageTask {
+    $coverage_report_builder = $this->builder->reveal();
+    $output = $this->symfonyOutput->reveal();
+    return new CoverageTask($coverage_report_builder, $output);
+  }
+
   /**
    * @dataProvider providerTask
    */
@@ -58,12 +64,6 @@ class CoverageTaskTest extends TestCase {
     $task = $this->createTask();
 
     $task->execute();
-  }
-
-  protected function createTask(): CoverageTask {
-    $coverage_report_builder = $this->builder->reveal();
-    $output = $this->symfonyOutput->reveal();
-    return new CoverageTask($coverage_report_builder, $output);
   }
 
 }

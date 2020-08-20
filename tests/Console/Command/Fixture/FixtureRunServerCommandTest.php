@@ -33,7 +33,7 @@ class FixtureRunServerCommandTest extends CommandTestBase {
   /**
    * @dataProvider providerCommand
    */
-  public function testCommand($fixture_exists, $methods_called, $status_code, $display) {
+  public function testCommand($fixture_exists, $methods_called, $status_code, $display): void {
     $this->fixture
       ->exists()
       ->shouldBeCalledTimes((int) in_array('exists', $methods_called))
@@ -51,7 +51,7 @@ class FixtureRunServerCommandTest extends CommandTestBase {
     self::assertEquals($status_code, $this->getStatusCode(), 'Returned correct status code.');
   }
 
-  public function providerCommand() {
+  public function providerCommand(): array {
     return [
       [FALSE, ['exists'], StatusCode::ERROR, sprintf("Error: No fixture exists at %s.\nHint: Use the \"fixture:init\" command to create one.\n", self::FIXTURE_ROOT)],
       [TRUE, ['exists', 'start', 'wait'], StatusCode::OK, sprintf("Starting web server...\nListening on http://%s.\nDocument root is %s.\nPress Ctrl-C to quit.\n", WebServer::WEB_ADDRESS, self::FIXTURE_DOCROOT)],

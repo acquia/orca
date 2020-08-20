@@ -33,7 +33,7 @@ class FixtureStatusCommandTest extends CommandTestBase {
   /**
    * @dataProvider providerCommand
    */
-  public function testCommand($fixture_exists, $get_overview_called, $status_code, $display) {
+  public function testCommand($fixture_exists, $get_overview_called, $status_code, $display): void {
     $this->fixture
       ->exists()
       ->shouldBeCalled()
@@ -52,7 +52,7 @@ class FixtureStatusCommandTest extends CommandTestBase {
     self::assertEquals($status_code, $this->getStatusCode(), 'Returned correct status code.');
   }
 
-  public function providerCommand() {
+  public function providerCommand(): array {
     return [
       [FALSE, 0, StatusCode::ERROR, sprintf("Error: No fixture exists at %s.\n", self::FIXTURE_ROOT)],
       [TRUE, 1, StatusCode::OK, "\n Key one : Value one \n Key two : Value two \n\n"],

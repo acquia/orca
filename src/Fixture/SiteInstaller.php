@@ -229,7 +229,7 @@ class SiteInstaller {
       ]);
     /** @var \SplFileInfo $file */
     foreach ($files as $file) {
-      $target_pathname = str_replace("/standard/config/install", "/{$this->baseProfile}/config/optional", $file->getPathname());
+      $target_pathname = str_replace('/standard/config/install', "/{$this->baseProfile}/config/optional", $file->getPathname());
       $this->filesystem->copy($file->getPathname(), $target_pathname, TRUE);
     }
   }

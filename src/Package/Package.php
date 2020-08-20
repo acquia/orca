@@ -364,7 +364,7 @@ class Package {
    *   In case of an invalid package name.
    */
   private function initializePackageName(string $package_name): void {
-    // Require a a full package name: "vendor/project". A simple test for a
+    // Require a full package name: "vendor/project". A simple test for a
     // forward slash will suffice.
     if (strpos($package_name, '/') === FALSE) {
       throw new InvalidArgumentException("Invalid package name: {$package_name}. Must take the form 'vendor/project'.");

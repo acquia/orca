@@ -9,7 +9,14 @@ use Symfony\Component\Console\Command\Command;
 
 class DebugEnvVarsCommandTest extends CommandTestBase {
 
-  public function testBasicExecution() {
+  /**
+   * {@inheritdoc}
+   */
+  protected function createCommand(): Command {
+    return new DebugEnvVarsCommand();
+  }
+
+  public function testBasicExecution(): void {
     $this->executeCommand();
 
     self::assertContains('+--', $this->getDisplay());
@@ -17,13 +24,6 @@ class DebugEnvVarsCommandTest extends CommandTestBase {
     self::assertContains('| Value ', $this->getDisplay());
     self::assertContains('| ORCA_', $this->getDisplay());
     self::assertEquals(StatusCode::OK, $this->getStatusCode(), 'Returned correct status code.');
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  protected function createCommand(): Command {
-    return new DebugEnvVarsCommand();
   }
 
 }

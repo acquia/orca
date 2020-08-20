@@ -18,15 +18,15 @@ class Kernel extends BaseKernel {
   /**
    * {@inheritdoc}
    */
-  public function getCacheDir() {
-    return $this->getProjectDir() . '/var/cache';
+  public function getCacheDir(): string {
+    return "{$this->getProjectDir()}/var/cache";
   }
 
   /**
    * {@inheritdoc}
    */
-  public function getLogDir() {
-    return $this->getProjectDir() . '/var/log';
+  public function getLogDir(): string {
+    return "{$this->getProjectDir()}/var/log";
   }
 
   /**
@@ -38,9 +38,11 @@ class Kernel extends BaseKernel {
 
   /**
    * {@inheritdoc}
+   *
+   * @throws \Exception
    */
   public function registerContainerConfiguration(LoaderInterface $loader): void {
-    $loader->load($this->getProjectDir() . '/config/services.yml');
+    $loader->load("{$this->getProjectDir()}/config/services.yml");
   }
 
   /**
@@ -53,6 +55,8 @@ class Kernel extends BaseKernel {
 
   /**
    * Creates a collecting compiler pass.
+   *
+   * @SuppressWarnings(PHPMD.UndefinedVariable)
    */
   private function createCollectingCompilerPass(): CompilerPassInterface {
     return new class implements CompilerPassInterface {
@@ -60,7 +64,7 @@ class Kernel extends BaseKernel {
       /**
        * {@inheritdoc}
        */
-      public function process(ContainerBuilder $container_builder) {
+      public function process(ContainerBuilder $container_builder): void {
         $app_definition = $container_builder->findDefinition(Application::class);
 
         foreach ($container_builder->getDefinitions() as $definition) {
@@ -84,7 +88,8 @@ class Kernel extends BaseKernel {
    *   The fixture directory.
    */
   protected function getFixtureDir(): string {
-    return realpath("{$this->getProjectDir()}/..") . '/orca-build';
+    /* @noinspection RealpathInStreamContextInspection */
+    return realpath("{$this->getProjectDir()}/../orca-build");
   }
 
 }

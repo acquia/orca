@@ -53,7 +53,7 @@ class YamlLintTask extends TaskBase {
    * @return string[]
    *   An indexed array of YAML file paths.
    */
-  private function getYamlFiles() {
+  private function getYamlFiles(): array {
     $files = [];
     $iterator = (new Finder())
       ->files()

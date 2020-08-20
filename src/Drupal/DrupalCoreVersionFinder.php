@@ -145,7 +145,7 @@ class DrupalCoreVersionFinder {
     //   version set when Drupal 9 is released, even though it continues to be
     //   a supported version. This quirk of major version rollovers needs to be
     //   solved before Drupal 10 comes out.
-    return "8.9.0";
+    return '8.9.0';
   }
 
   /**
@@ -172,7 +172,7 @@ class DrupalCoreVersionFinder {
     // @todo This is hardcoded in order to prevent 9.0.x from becoming the "next the
     //   version" in the version set when Drupal 9 is released. This quirk of
     //   major version rollovers needs to be solved before Drupal 10 comes out.
-    return "8.9.0";
+    return '8.9.0';
   }
 
   /**
@@ -188,7 +188,7 @@ class DrupalCoreVersionFinder {
     //   "next the dev version" in the version set when Drupal 9 is released.
     //   This quirk of major version rollovers needs to be solved before Drupal
     //   10 comes out.
-    return "8.9.x-dev";
+    return '8.9.x-dev';
   }
 
   /**

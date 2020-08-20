@@ -29,13 +29,13 @@ class TelemetryEventPropertiesBuilderTest extends TestCase {
     return new TelemetryEventPropertiesBuilder($env, $filesystem, $orca_path_handler);
   }
 
-  public function testConstruction() {
+  public function testConstruction(): void {
     $builder = $this->createTelemetryEventPropertiesBuilder();
 
     self::assertEquals(TelemetryEventPropertiesBuilder::class, get_class($builder), 'Instantiated class.');
   }
 
-  public function testBuildingTestEvent() {
+  public function testBuildingTestEvent(): void {
     $builder = $this->createTelemetryEventPropertiesBuilder();
 
     $event = $builder->build(new TelemetryEventName(TelemetryEventName::TEST));

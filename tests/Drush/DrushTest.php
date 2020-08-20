@@ -89,7 +89,7 @@ class DrushTest extends TestCase {
     $drush->enableThemes($themes);
   }
 
-  public function providerEnableExtensions() {
+  public function providerEnableExtensions(): array {
     return [
       [['test', 'example'], 'test,example'],
       [['example', 'test'], 'example,test'],

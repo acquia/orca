@@ -172,10 +172,10 @@ class FixtureInspector {
   /**
    * Gets the composer.json config.
    *
-   * @return \Noodlehaus\Config|null
-   *   The composer.json config if available or NULL if not.
+   * @return \Noodlehaus\Config
+   *   The composer.json config.
    */
-  private function getComposerJson() {
+  private function getComposerJson(): Config {
     if (!$this->composerJson) {
       $this->composerJson = new Config($this->fixture->getPath('composer.json'));
     }
@@ -265,7 +265,7 @@ class FixtureInspector {
    *   The retrieved status data if available, or an empty array if not.
    */
   private function getDrushStatusJson(): array {
-    if (!is_null($this->drushStatus)) {
+    if ($this->drushStatus !== NULL) {
       return $this->drushStatus;
     }
 
@@ -325,10 +325,10 @@ class FixtureInspector {
   /**
    * Gets the composer.lock config.
    *
-   * @return \Noodlehaus\Config|null
-   *   The composer.lock config if available or NULL if not.
+   * @return \Noodlehaus\Config
+   *   The composer.lock config.
    */
-  private function getComposerLock() {
+  private function getComposerLock(): Config {
     if (!$this->composerLock) {
       $this->composerLock = new Config($this->fixture->getPath('composer.lock'), new Json());
     }

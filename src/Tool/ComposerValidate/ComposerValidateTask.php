@@ -65,7 +65,7 @@ class ComposerValidateTask extends TaskBase {
    * @return \Symfony\Component\Finder\Finder
    *   A Finder query for all module info files.
    */
-  private function getFiles() {
+  private function getFiles(): Finder {
     return (new Finder())
       ->files()
       ->followLinks()
@@ -83,7 +83,7 @@ class ComposerValidateTask extends TaskBase {
    * @throws \Acquia\Orca\Helper\Exception\OrcaException
    *   If there is no corresponding composer.json file.
    */
-  private function checkForMissingComposerJson(SplFileInfo $info_file) {
+  private function checkForMissingComposerJson(SplFileInfo $info_file): void {
     $composer_json = str_replace($info_file->getFilename(), 'composer.json', $info_file->getPathname());
     if (!$this->filesystem->exists($composer_json)) {
       $this->failures = TRUE;

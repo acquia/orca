@@ -23,7 +23,7 @@ final class PhpcsStandard extends Enum {
    * @return array
    *   An array of lines.
    */
-  public static function commandHelp() {
+  public static function commandHelp(): array {
     return [
       sprintf('- %s: Contains sniffs applicable to all PHP projects', self::ACQUIA_PHP),
       sprintf('- %s: Recommended for new Drupal projects and teams familiar with Drupal coding standards', self::ACQUIA_DRUPAL_STRICT),

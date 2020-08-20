@@ -53,7 +53,7 @@ class ComposerNormalizeTask extends TaskBase {
    * @return \Symfony\Component\Finder\Finder
    *   A Finder query for all module info files.
    */
-  private function getFiles() {
+  private function getFiles(): Finder {
     return (new Finder())
       ->files()
       ->followLinks()

@@ -43,7 +43,7 @@ class QaAutomatedTestsCommandTest extends CommandTestBase {
   /**
    * @dataProvider providerCommand
    */
-  public function testCommand($fixture_exists, $args, $methods_called, $exception, $status_code, $display) {
+  public function testCommand($fixture_exists, $args, $methods_called, $exception, $status_code, $display): void {
     $this->packageManager
       ->exists(@$args['--sut'])
       ->shouldBeCalledTimes((int) in_array('PackageManager::exists', $methods_called))
@@ -76,7 +76,7 @@ class QaAutomatedTestsCommandTest extends CommandTestBase {
     self::assertEquals($status_code, $this->getStatusCode(), 'Returned correct status code.');
   }
 
-  public function providerCommand() {
+  public function providerCommand(): array {
     return [
       [FALSE, [], ['Fixture::exists'], 0, StatusCode::ERROR, sprintf("Error: No fixture exists at %s.\nHint: Use the \"fixture:init\" command to create one.\n", self::FIXTURE_ROOT)],
       [TRUE, [], ['Fixture::exists', 'run'], 0, StatusCode::OK, ''],
@@ -92,7 +92,7 @@ class QaAutomatedTestsCommandTest extends CommandTestBase {
   /**
    * @dataProvider providerFrameworkFlags
    */
-  public function testFrameworkFlags($args, $call_set_run_phpunit) {
+  public function testFrameworkFlags($args, $call_set_run_phpunit): void {
     $this->testRunner
       ->setRunPhpunit(FALSE)
       ->shouldBeCalledTimes($call_set_run_phpunit);
@@ -103,7 +103,7 @@ class QaAutomatedTestsCommandTest extends CommandTestBase {
     $this->executeCommand($args);
   }
 
-  public function providerFrameworkFlags() {
+  public function providerFrameworkFlags(): array {
     return [
       [[], 0],
       [['--phpunit' => 1], 0],

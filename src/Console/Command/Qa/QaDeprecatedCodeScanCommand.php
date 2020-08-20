@@ -142,7 +142,7 @@ class QaDeprecatedCodeScanCommand extends Command {
   private function isValidInput(OutputInterface $output): bool {
     if (!$this->sut && !$this->contrib) {
       $output->writeln([
-        "Error: Nothing to do.",
+        'Error: Nothing to do.',
         'Hint: Use the "--sut" and "--contrib" options to specify what to scan.',
       ]);
       return FALSE;

@@ -21,7 +21,7 @@ class TasksTest extends TestCase {
   /**
    * @dataProvider providerConstruction
    */
-  public function testConstruction($class) {
+  public function testConstruction($class): void {
     $config_file_overrider = $this->prophesize(ConfigFileOverrider::class)->reveal();
     $filesystem = $this->prophesize(Filesystem::class)->reveal();
     $fixture = $this->prophesize(FixturePathHandler::class)->reveal();
@@ -35,7 +35,7 @@ class TasksTest extends TestCase {
     self::assertInstanceOf($class, $object, sprintf('Successfully instantiated class: %s.', $class));
   }
 
-  public function providerConstruction() {
+  public function providerConstruction(): array {
     return [
       [ComposerValidateTask::class],
       [PhpcsTask::class],

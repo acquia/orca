@@ -190,7 +190,7 @@ class QaStaticAnalysisCommand extends Command {
    * @param \Symfony\Component\Console\Input\InputInterface $input
    *   The command input.
    */
-  private function configureTaskRunner(InputInterface $input) {
+  private function configureTaskRunner(InputInterface $input): void {
     $composer = $input->getOption('composer');
     $coverage = $input->getOption('coverage');
     $phpcs = $input->getOption('phpcs');

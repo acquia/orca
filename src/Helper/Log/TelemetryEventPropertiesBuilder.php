@@ -185,13 +185,13 @@ class TelemetryEventPropertiesBuilder {
   /**
    * Gets the ORCA project directory with a sub-path appended.
    *
-   * @param string $sub_path
+   * @param string|null $sub_path
    *   A sub-path to append.
    *
    * @return string
    *   The project directory with sub-path appended.
    */
-  public function getProjectPath(string $sub_path): string {
+  public function getProjectPath(?string $sub_path = NULL): string {
     return $this->orca->getPath($sub_path);
   }
 

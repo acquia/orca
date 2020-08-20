@@ -49,7 +49,7 @@ class TelemetryClientTest extends TestCase {
     self::assertEquals($is_enabled, $is_ready, 'Correctly set enabled/state state.');
   }
 
-  public function providerTelemetryClient() {
+  public function providerTelemetryClient(): array {
     return [
       [1, TRUE, 'apikey1', 'drupal/example'],
       [0, FALSE, 'apikey', 'drupal/example'],

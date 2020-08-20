@@ -24,6 +24,12 @@ class PackageTest extends TestCase {
     $this->orca = $this->prophesize(OrcaPathHandler::class);
   }
 
+  protected function createPackage($package_name, $data): Package {
+    $fixture_path_handler = $this->fixture->reveal();
+    $orca_path_handler = $this->orca->reveal();
+    return new Package($data, $fixture_path_handler, $orca_path_handler, $package_name);
+  }
+
   /**
    * @dataProvider providerConstructionAndGetters
    *
@@ -181,42 +187,6 @@ class PackageTest extends TestCase {
       'Invalid "core_matrix" constraint' => [UnexpectedValueException::class, 'drupal/example', ['core_matrix' => ['invalid' => '']]],
       'Invalid "core_matrix" property: non-array' => [TypeError::class, 'drupal/example', ['core_matrix' => ['8.7.x' => '']]],
       'Unexpected "core_matrix" property' => [UndefinedOptionsException::class, 'drupal/example', ['core_matrix' => ['8.7.x' => ['unexpected' => '']]]],
-    ];
-  }
-
-  /**
-   * @dataProvider providerInstallPathCalculation
-   *
-   * @covers ::getInstallPathRelative
-   * @covers ::getInstallPathAbsolute
-   */
-  public function testInstallPathCalculation($type, $relative_install_path): void {
-    $absolute_install_path = "/var/www/{$relative_install_path}";
-    $this->fixture
-      ->getPath($relative_install_path)
-      ->willReturn($absolute_install_path);
-    $package_name = 'drupal/example';
-    $data = [
-      'type' => $type,
-    ];
-
-    $package = $this->createPackage($package_name, $data);
-
-    self::assertEquals($relative_install_path, $package->getInstallPathRelative());
-    self::assertEquals($absolute_install_path, $package->getInstallPathAbsolute());
-  }
-
-  public function providerInstallPathCalculation(): array {
-    return [
-      ['bower-asset', 'docroot/libraries/example'],
-      ['drupal-core', 'docroot/core'],
-      ['drupal-drush', 'drush/Commands/example'],
-      ['drupal-library', 'docroot/libraries/example'],
-      ['drupal-module', 'docroot/modules/contrib/example'],
-      ['drupal-profile', 'docroot/profiles/contrib/example'],
-      ['drupal-theme', 'docroot/themes/contrib/example'],
-      ['npm-asset', 'docroot/libraries/example'],
-      ['something-nonstandard', 'vendor/drupal/example'],
     ];
   }
 
@@ -453,10 +423,40 @@ class PackageTest extends TestCase {
     ];
   }
 
-  protected function createPackage($package_name, $data): Package {
-    $fixture_path_handler = $this->fixture->reveal();
-    $orca_path_handler = $this->orca->reveal();
-    return new Package($data, $fixture_path_handler, $orca_path_handler, $package_name);
+  /**
+   * @dataProvider providerInstallPathCalculation
+   *
+   * @covers ::getInstallPathRelative
+   * @covers ::getInstallPathAbsolute
+   */
+  public function testInstallPathCalculation($type, $relative_install_path): void {
+    $absolute_install_path = "/var/www/{$relative_install_path}";
+    $this->fixture
+      ->getPath($relative_install_path)
+      ->willReturn($absolute_install_path);
+    $package_name = 'drupal/example';
+    $data = [
+      'type' => $type,
+    ];
+
+    $package = $this->createPackage($package_name, $data);
+
+    self::assertEquals($relative_install_path, $package->getInstallPathRelative());
+    self::assertEquals($absolute_install_path, $package->getInstallPathAbsolute());
+  }
+
+  public function providerInstallPathCalculation(): array {
+    return [
+      ['bower-asset', 'docroot/libraries/example'],
+      ['drupal-core', 'docroot/core'],
+      ['drupal-drush', 'drush/Commands/example'],
+      ['drupal-library', 'docroot/libraries/example'],
+      ['drupal-module', 'docroot/modules/contrib/example'],
+      ['drupal-profile', 'docroot/profiles/contrib/example'],
+      ['drupal-theme', 'docroot/themes/contrib/example'],
+      ['npm-asset', 'docroot/libraries/example'],
+      ['something-nonstandard', 'vendor/drupal/example'],
+    ];
   }
 
 }

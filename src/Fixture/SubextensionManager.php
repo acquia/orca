@@ -143,7 +143,7 @@ class SubextensionManager {
 
       $name = $config->get('name');
 
-      if (array_key_exists($name, $this->alterData) && is_null($this->alterData[$name])) {
+      if (array_key_exists($name, $this->alterData) && $this->alterData[$name] === NULL) {
         continue;
       }
 

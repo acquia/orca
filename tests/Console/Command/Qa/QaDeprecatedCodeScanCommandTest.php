@@ -41,7 +41,7 @@ class QaDeprecatedCodeScanCommandTest extends CommandTestBase {
   /**
    * @dataProvider providerCommand
    */
-  public function testCommand($fixture_exists, $args, $methods_called, $status_code, $display) {
+  public function testCommand($fixture_exists, $args, $methods_called, $status_code, $display): void {
     $this->packageManager
       ->exists(@$args['--sut'])
       ->shouldBeCalledTimes((int) in_array('PackageManager::exists', $methods_called))
@@ -67,7 +67,7 @@ class QaDeprecatedCodeScanCommandTest extends CommandTestBase {
     self::assertEquals($status_code, $this->getStatusCode(), 'Returned correct status code.');
   }
 
-  public function providerCommand() {
+  public function providerCommand(): array {
     return [
       [TRUE, [], [], StatusCode::ERROR, "Error: Nothing to do.\nHint: Use the \"--sut\" and \"--contrib\" options to specify what to scan.\n"],
       [FALSE, ['--sut' => self::VALID_PACKAGE], ['PackageManager::exists', 'Fixture::exists'], StatusCode::ERROR, sprintf("Error: No fixture exists at %s.\nHint: Use the \"fixture:init\" command to create one.\n", self::FIXTURE_ROOT)],

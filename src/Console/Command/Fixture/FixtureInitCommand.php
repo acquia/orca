@@ -404,7 +404,7 @@ class FixtureInitCommand extends Command {
    * @param string|string[]|bool|null $no_site_install
    *   The no-site-install flag.
    */
-  private function setSiteInstall($no_site_install) {
+  private function setSiteInstall($no_site_install): void {
     if ($no_site_install) {
       $this->fixtureCreator->setInstallSite(FALSE);
     }
@@ -443,7 +443,7 @@ class FixtureInitCommand extends Command {
    * @throws \Acquia\Orca\Helper\Exception\OrcaException
    *   If preconditions are not satisfied.
    */
-  private function testPreconditions($sut) {
+  private function testPreconditions($sut): void {
     if ($sut) {
       $this->sutPreconditionsTester->test($sut);
     }

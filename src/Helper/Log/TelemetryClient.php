@@ -43,7 +43,7 @@ class TelemetryClient {
    * @return bool
    *   TRUE if telemetry is ready or FALSE if not.
    */
-  public function isReady() {
+  public function isReady(): bool {
     return (bool) $this->amplitude;
   }
 

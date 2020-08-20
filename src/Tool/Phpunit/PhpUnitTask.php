@@ -59,7 +59,7 @@ class PhpUnitTask extends TestFrameworkBase {
   /**
    * Ensures that PHPUnit is properly configured.
    */
-  private function ensurePhpUnitConfig() {
+  private function ensurePhpUnitConfig(): void {
     $path = $this->fixture->getPath('docroot/core/phpunit.xml');
     $this->doc = new DOMDocument($path);
     $this->doc->load($path);

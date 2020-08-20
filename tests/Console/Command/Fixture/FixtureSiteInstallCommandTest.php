@@ -34,7 +34,7 @@ class FixtureSiteInstallCommandTest extends CommandTestBase {
   /**
    * @dataProvider providerCommand
    */
-  public function testCommand($fixture_exists, $args, $inputs, $install_called, $profile, $status_code, $display) {
+  public function testCommand($fixture_exists, $args, $inputs, $install_called, $profile, $status_code, $display): void {
     $this->fixture
       ->exists()
       ->shouldBeCalled()
@@ -49,7 +49,7 @@ class FixtureSiteInstallCommandTest extends CommandTestBase {
     self::assertEquals($status_code, $this->getStatusCode(), 'Returned correct status code.');
   }
 
-  public function providerCommand() {
+  public function providerCommand(): array {
     return [
       [FALSE, [], [], 0, FixtureCreator::DEFAULT_PROFILE, StatusCode::ERROR, sprintf("Error: No fixture exists at %s.\n", self::FIXTURE_ROOT)],
       [TRUE, [], ['n'], 0, FixtureCreator::DEFAULT_PROFILE, StatusCode::USER_CANCEL, 'Are you sure you want to drop all tables in the database and install a fresh site at /var/www/orca-build? '],

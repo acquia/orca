@@ -19,7 +19,7 @@ use Symfony\Component\Filesystem\Filesystem;
  */
 class PhpStanTaskTest extends TestCase {
 
-  public function testTaskRunner() {
+  public function testTaskRunner(): void {
     $filesystem = $this->prophesize(Filesystem::class)->reveal();
     $fixture = $this->prophesize(FixturePathHandler::class)->reveal();
     $orca_path_handler = $this->prophesize(OrcaPathHandler::class)->reveal();

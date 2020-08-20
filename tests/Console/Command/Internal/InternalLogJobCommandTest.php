@@ -34,7 +34,7 @@ class InternalLogJobCommandTest extends CommandTestBase {
     return new InternalLogJobCommand($telemetry_client, $telemetry_event_builder);
   }
 
-  public function testHappyPath() {
+  public function testHappyPath(): void {
     $this->telemetryClient
       ->isReady()
       ->shouldBeCalledTimes(1);
@@ -54,7 +54,7 @@ class InternalLogJobCommandTest extends CommandTestBase {
     self::assertEquals(StatusCode::OK, $this->getStatusCode(), 'Returned correct status code.');
   }
 
-  public function testWithTelemetryDisabled() {
+  public function testWithTelemetryDisabled(): void {
     $this->telemetryClient
       ->isReady()
       ->shouldBeCalledTimes(1)
@@ -67,7 +67,7 @@ class InternalLogJobCommandTest extends CommandTestBase {
     self::assertEquals(StatusCode::OK, $this->getStatusCode(), 'Returned correct status code.');
   }
 
-  public function testSimulateOption() {
+  public function testSimulateOption(): void {
     $properties = ['test' => 'example'];
     $this->telemetryEventBuilder
       ->build(TelemetryEventName::TRAVIS_CI_JOB())
@@ -82,7 +82,7 @@ class InternalLogJobCommandTest extends CommandTestBase {
     self::assertEquals(StatusCode::OK, $this->getStatusCode(), 'Returned correct status code.');
   }
 
-  public function testTestOption() {
+  public function testTestOption(): void {
     $this->telemetryClient
       ->isReady()
       ->shouldBeCalledTimes(1);
