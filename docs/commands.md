@@ -3,11 +3,10 @@
 * [`analyze`](#qastatic-analysis)
 * [`backup`](#fixturebackup)
 * [`core`](#debugcore-versions)
-* [`cov`](#reportcode-coverage)
-* [`coverage`](#reportcode-coverage)
 * [`deprecations`](#qadeprecated-code-scan)
 * [`enexts`](#fixtureenable-extensions)
 * [`fix`](#qafixer)
+* [`guess`](#debugguess-version)
 * [`help`](#help)
 * [`init`](#fixtureinit)
 * [`list`](#list)
@@ -26,6 +25,7 @@
 
 * [`debug:core-versions`](#debugcore-versions)
 * [`debug:env-vars`](#debugenv-vars)
+* [`debug:guess-version`](#debugguess-version)
 * [`debug:packages`](#debugpackages)
 
 **fixture:**
@@ -45,10 +45,6 @@
 * [`qa:deprecated-code-scan`](#qadeprecated-code-scan)
 * [`qa:fixer`](#qafixer)
 * [`qa:static-analysis`](#qastatic-analysis)
-
-**report:**
-
-* [`report:code-coverage`](#reportcode-coverage)
 
 `help`
 ------
@@ -305,6 +301,93 @@ Displays ORCA environment variables
 * `vars`
 
 Displays ORCA environment variables
+
+### Options
+
+#### `--help|-h`
+
+Display this help message
+
+* Accept value: no
+* Is value required: no
+* Is multiple: no
+* Default: `false`
+
+#### `--quiet|-q`
+
+Do not output any message
+
+* Accept value: no
+* Is value required: no
+* Is multiple: no
+* Default: `false`
+
+#### `--verbose|-v|-vv|-vvv`
+
+Increase the verbosity of messages: 1 for normal output, 2 for more verbose output and 3 for debug
+
+* Accept value: no
+* Is value required: no
+* Is multiple: no
+* Default: `false`
+
+#### `--version|-V`
+
+Display this application version
+
+* Accept value: no
+* Is value required: no
+* Is multiple: no
+* Default: `false`
+
+#### `--ansi`
+
+Force ANSI output
+
+* Accept value: no
+* Is value required: no
+* Is multiple: no
+* Default: `false`
+
+#### `--no-ansi`
+
+Disable ANSI output
+
+* Accept value: no
+* Is value required: no
+* Is multiple: no
+* Default: `false`
+
+#### `--no-interaction|-n`
+
+Do not ask any interactive question
+
+* Accept value: no
+* Is value required: no
+* Is multiple: no
+* Default: `false`
+
+`debug:guess-version`
+---------------------
+
+Displays ORCA environment variables
+
+### Usage
+
+* `debug:guess-version <path>`
+* `guess`
+
+Displays ORCA environment variables
+
+### Arguments
+
+#### `path`
+
+The path to guess the version for
+
+* Is required: yes
+* Is array: no
+* Default: `NULL`
 
 ### Options
 
@@ -1586,7 +1669,7 @@ Runs static analysis tools
 
 ### Usage
 
-* `qa:static-analysis [--composer] [--phpcs] [--phpcs-standard PHPCS-STANDARD] [--phplint] [--phploc] [--phpmd] [--yamllint] [--] <path>`
+* `qa:static-analysis [--composer] [--coverage] [--phpcs] [--phpcs-standard PHPCS-STANDARD] [--phplint] [--phploc] [--phpmd] [--yamllint] [--] <path>`
 * `analyze`
 
 Tools can be specified individually or in combination. If none are specified, all will be run.
@@ -1606,6 +1689,15 @@ The path to analyze
 #### `--composer`
 
 Run the Composer validation tool
+
+* Accept value: no
+* Is value required: no
+* Is multiple: no
+* Default: `false`
+
+#### `--coverage`
+
+Run the code coverage estimator. Implies "--phploc"
 
 * Accept value: no
 * Is value required: no
@@ -1731,7 +1823,6 @@ Do not ask any interactive question
 * Is value required: no
 * Is multiple: no
 * Default: `false`
-
 `report:code-coverage`
 ----------------------
 
