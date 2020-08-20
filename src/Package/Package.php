@@ -251,6 +251,16 @@ class Package {
   }
 
   /**
+   * Determines whether or not the Composer "path" repository exists.
+   *
+   * @return bool
+   *   Returns TRUE if the repository exists or FALSE if not.
+   */
+  public function repositoryExists(): bool {
+    return $this->orca->exists($this->getRepositoryUrlRaw());
+  }
+
+  /**
    * Gets the package type.
    *
    * @return string

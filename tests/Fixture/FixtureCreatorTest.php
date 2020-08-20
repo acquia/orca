@@ -18,7 +18,6 @@ use Composer\Package\Version\VersionGuesser;
 use Composer\Semver\VersionParser;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Style\SymfonyStyle;
-use Symfony\Component\Filesystem\Filesystem;
 
 /**
  * @property \Acquia\Orca\Composer\Composer|\Prophecy\Prophecy\ObjectProphecy $composer
@@ -34,15 +33,13 @@ use Symfony\Component\Filesystem\Filesystem;
  * @property \Composer\Package\Version\VersionGuesser|\Prophecy\Prophecy\ObjectProphecy $versionGuesser
  * @property \Composer\Semver\VersionParser|\Prophecy\Prophecy\ObjectProphecy $versionParser
  * @property \Symfony\Component\Console\Style\SymfonyStyle|\Prophecy\Prophecy\ObjectProphecy $output
- * @property \Symfony\Component\Filesystem\Filesystem|\Prophecy\Prophecy\ObjectProphecy $filesystem
  */
 class FixtureCreatorTest extends TestCase {
 
-  protected function setUp() {
+  protected function setUp(): void {
     $this->codebaseCreator = $this->prophesize(CodebaseCreator::class);
     $this->composer = $this->prophesize(Composer::class);
     $this->coreVersionFinder = $this->prophesize(DrupalCoreVersionFinder::class);
-    $this->filesystem = $this->prophesize(Filesystem::class);
     $this->fixture = $this->prophesize(FixturePathHandler::class);
     $this->fixtureInspector = $this->prophesize(FixtureInspector::class);
     $this->orca = $this->prophesize(OrcaPathHandler::class);
@@ -62,7 +59,6 @@ class FixtureCreatorTest extends TestCase {
     $codebase_creator = $this->codebaseCreator->reveal();
     $composer_facade = $this->composer->reveal();
     $core_version_finder = $this->coreVersionFinder->reveal();
-    $filesystem = $this->filesystem->reveal();
     $fixture = $this->fixture->reveal();
     $fixture_inspector = $this->fixtureInspector->reveal();
     $package_manager = $this->packageManager->reveal();
@@ -76,7 +72,6 @@ class FixtureCreatorTest extends TestCase {
       $codebase_creator,
       $composer_facade,
       $core_version_finder,
-      $filesystem,
       $fixture,
       $fixture_inspector,
       $site_installer,

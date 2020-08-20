@@ -424,6 +424,32 @@ class PackageTest extends TestCase {
   }
 
   /**
+   * @dataProvider providerExists
+   *
+   * @covers ::repositoryExists
+   */
+  public function testExists($url, $expected): void {
+    $package = $this->createPackage('drupal/example', [
+      'url' => $url,
+    ]);
+    $this->orca
+      ->exists($url)
+      ->shouldBeCalledOnce()
+      ->willReturn($expected);
+
+    $actual = $package->repositoryExists();
+
+    self::assertEquals($expected, $actual);
+  }
+
+  public function providerExists(): array {
+    return [
+      ['lorem', TRUE],
+      ['ipsum', FALSE],
+    ];
+  }
+
+  /**
    * @dataProvider providerInstallPathCalculation
    *
    * @covers ::getInstallPathRelative

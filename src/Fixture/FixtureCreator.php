@@ -25,7 +25,6 @@ use Composer\Semver\Comparator;
 use Composer\Semver\VersionParser;
 use Noodlehaus\Config;
 use Symfony\Component\Console\Style\SymfonyStyle;
-use Symfony\Component\Filesystem\Filesystem;
 use UnexpectedValueException;
 
 /**
@@ -194,13 +193,6 @@ class FixtureCreator {
   private $versionGuesser;
 
   /**
-   * The filesystem.
-   *
-   * @var \Symfony\Component\Filesystem\Filesystem
-   */
-  private $filesystem;
-
-  /**
    * The Semver version parser.
    *
    * @var \Composer\Semver\VersionParser
@@ -223,8 +215,6 @@ class FixtureCreator {
    *   The Composer facade.
    * @param \Acquia\Orca\Drupal\DrupalCoreVersionFinder $core_version_finder
    *   The Drupal core version finder.
-   * @param \Symfony\Component\Filesystem\Filesystem $filesystem
-   *   The filesystem.
    * @param \Acquia\Orca\Helper\Filesystem\FixturePathHandler $fixture_path_handler
    *   The fixture path handler.
    * @param \Acquia\Orca\Fixture\FixtureInspector $fixture_inspector
@@ -244,12 +234,11 @@ class FixtureCreator {
    * @param \Composer\Semver\VersionParser $version_parser
    *   The Semver version parser.
    */
-  public function __construct(CodebaseCreator $codebase_creator, Composer $composer, DrupalCoreVersionFinder $core_version_finder, Filesystem $filesystem, FixturePathHandler $fixture_path_handler, FixtureInspector $fixture_inspector, SiteInstaller $site_installer, SymfonyStyle $output, ProcessRunner $process_runner, PackageManager $package_manager, SubextensionManager $subextension_manager, VersionGuesser $version_guesser, VersionParser $version_parser) {
+  public function __construct(CodebaseCreator $codebase_creator, Composer $composer, DrupalCoreVersionFinder $core_version_finder, FixturePathHandler $fixture_path_handler, FixtureInspector $fixture_inspector, SiteInstaller $site_installer, SymfonyStyle $output, ProcessRunner $process_runner, PackageManager $package_manager, SubextensionManager $subextension_manager, VersionGuesser $version_guesser, VersionParser $version_parser) {
     $this->blt = $package_manager->getBlt();
     $this->codebaseCreator = $codebase_creator;
     $this->composer = $composer;
     $this->coreVersionFinder = $core_version_finder;
-    $this->filesystem = $filesystem;
     $this->fixture = $fixture_path_handler;
     $this->fixtureInspector = $fixture_inspector;
     $this->output = $output;
@@ -637,6 +626,11 @@ class FixtureCreator {
     $this->jsonConfigSource->removeProperty('repositories');
 
     foreach ($this->getLocalPackages() as $package) {
+      // Only create repositories for packages that are present locally.
+      if ($package !== $this->sut && !$this->shouldSymlinkNonSut($package)) {
+        continue;
+      }
+
       $this->jsonConfigSource->addRepository($package->getPackageName(), [
         'type' => 'path',
         'url' => $this->fixture->getPath($package->getRepositoryUrlRaw()),
@@ -853,8 +847,7 @@ class FixtureCreator {
       return FALSE;
     }
 
-    $path = $this->fixture->getPath($package->getRepositoryUrlRaw());
-    return $this->filesystem->exists($path);
+    return $package->repositoryExists();
   }
 
   /**
