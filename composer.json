@@ -90,7 +90,8 @@
         "phpcs": "phpcs -s --cache=var/cache/phpcs.json",
         "phplint": "parallel-lint --exclude vendor --ignore-fails .",
         "phpmd": "phpmd . text phpmd.xml.dist --ignore-violations-on-exit",
-        "phpunit": "phpunit"
+        "phpunit": "phpunit",
+        "update-docs": "./bin/orca --format=md > docs/commands.md"
     },
     "support": {
         "issues": "https://github.com/acquia/orca/issues",
