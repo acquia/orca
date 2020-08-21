@@ -18,12 +18,10 @@ use Composer\Factory;
 use Composer\IO\NullIO;
 use Composer\Json\JsonFile;
 use Composer\Package\PackageInterface;
-use Composer\Package\Version\VersionGuesser;
 use Composer\Package\Version\VersionSelector;
 use Composer\Repository\RepositoryFactory;
 use Composer\Semver\Comparator;
 use Composer\Semver\VersionParser;
-use Noodlehaus\Config;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use UnexpectedValueException;
 
@@ -186,13 +184,6 @@ class FixtureCreator {
   private $useSqlite = TRUE;
 
   /**
-   * The Composer version guesser.
-   *
-   * @var \Composer\Package\Version\VersionGuesser
-   */
-  private $versionGuesser;
-
-  /**
    * The Semver version parser.
    *
    * @var \Composer\Semver\VersionParser
@@ -229,12 +220,10 @@ class FixtureCreator {
    *   The package manager.
    * @param \Acquia\Orca\Fixture\SubextensionManager $subextension_manager
    *   The subextension manager.
-   * @param \Composer\Package\Version\VersionGuesser $version_guesser
-   *   The Composer version guesser.
    * @param \Composer\Semver\VersionParser $version_parser
    *   The Semver version parser.
    */
-  public function __construct(CodebaseCreator $codebase_creator, Composer $composer, DrupalCoreVersionFinder $core_version_finder, FixturePathHandler $fixture_path_handler, FixtureInspector $fixture_inspector, SiteInstaller $site_installer, SymfonyStyle $output, ProcessRunner $process_runner, PackageManager $package_manager, SubextensionManager $subextension_manager, VersionGuesser $version_guesser, VersionParser $version_parser) {
+  public function __construct(CodebaseCreator $codebase_creator, Composer $composer, DrupalCoreVersionFinder $core_version_finder, FixturePathHandler $fixture_path_handler, FixtureInspector $fixture_inspector, SiteInstaller $site_installer, SymfonyStyle $output, ProcessRunner $process_runner, PackageManager $package_manager, SubextensionManager $subextension_manager, VersionParser $version_parser) {
     $this->blt = $package_manager->getBlt();
     $this->codebaseCreator = $codebase_creator;
     $this->composer = $composer;
@@ -246,7 +235,6 @@ class FixtureCreator {
     $this->packageManager = $package_manager;
     $this->siteInstaller = $site_installer;
     $this->subextensionManager = $subextension_manager;
-    $this->versionGuesser = $version_guesser;
     $this->versionParser = $version_parser;
   }
 
@@ -928,10 +916,8 @@ class FixtureCreator {
    *   The versions of the given package, e.g., "@dev" or "dev-8.x-1.x".
    */
   private function getLocalPackageVersion(Package $package): string {
-    $path = $this->fixture->getPath($package->getRepositoryUrlRaw());
-    $package_config = (array) new Config("{$path}/composer.json");
-    $guess = $this->versionGuesser->guessVersion($package_config, $path);
-    return (empty($guess['version'])) ? '@dev' : $guess['version'];
+    $path = $package->getRepositoryUrlAbsolute();
+    return $this->composer->guessVersion($path);
   }
 
   /**
