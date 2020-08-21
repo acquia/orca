@@ -46,7 +46,7 @@ class DebugGuessVersionCommand extends Command {
   protected function configure(): void {
     $this
       ->setAliases(['guess'])
-      ->setDescription('Displays ORCA environment variables')
+      ->setDescription('Gets the version Composer guesses for a given path repository')
       ->addArgument('path', InputArgument::REQUIRED, 'The path to guess the version for');
   }
 
