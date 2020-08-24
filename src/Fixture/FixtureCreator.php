@@ -728,6 +728,7 @@ class FixtureCreator {
     $sut_install_path = $this->sut->getInstallPathAbsolute();
 
     if (!file_exists($sut_install_path)) {
+      $this->displayFailedPlaceDebuggingInfo();
       throw new OrcaException('Failed to place SUT at correct path.');
     }
 
@@ -735,6 +736,16 @@ class FixtureCreator {
       $this->displayFailedSymlinkDebuggingInfo();
       throw new OrcaException('Failed to symlink SUT via local path repository.');
     }
+  }
+
+  /**
+   * Displays debugging info about a failure to place the SUT.
+   */
+  private function displayFailedPlaceDebuggingInfo(): void {
+    $this->output->section('Debugging info');
+    $this->output->comment('Package type is ' . $this->sut->getType());
+    $this->output->comment('Expected install location based on this package type is ' . $this->sut->getInstallPathRelative());
+    $this->output->comment('You can modify the package type via a packages alter: https://github.com/acquia/orca/blob/develop/docs/advanced-usage.md#command-line-application');
   }
 
   /**
