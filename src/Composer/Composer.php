@@ -8,11 +8,14 @@ use Acquia\Orca\Helper\Exception\OrcaException;
 use Acquia\Orca\Helper\Exception\ParseError;
 use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
 use Acquia\Orca\Helper\Process\ProcessRunner;
+use Composer\Package\Loader\ValidatingArrayLoader;
 use Composer\Package\Version\VersionGuesser;
+use Composer\Semver\VersionParser;
 use Exception;
 use InvalidArgumentException;
 use Noodlehaus\Exception\FileNotFoundException as NoodlehausFileNotFoundExceptionAlias;
 use Noodlehaus\Exception\ParseException;
+use UnexpectedValueException;
 
 /**
  * Provides a facade for encapsulating Composer interactions.
@@ -124,6 +127,39 @@ class Composer {
     $guess = $this->versionGuesser
       ->guessVersion($package_config, $path);
     return (empty($guess['version'])) ? '@dev' : $guess['version'];
+  }
+
+  /**
+   * Determines whether or not a given version constraint is valid.
+   *
+   * @param string $version
+   *   The version to test.
+   *
+   * @return bool
+   *   TRUE if it is valid or FALSE if not.
+   */
+  public function isValidVersionConstraint(string $version): bool {
+    try {
+      $parser = new VersionParser();
+      $parser->parseConstraints($version);
+    }
+    catch (UnexpectedValueException $e) {
+      return FALSE;
+    }
+    return TRUE;
+  }
+
+  /**
+   * Determines whether or not a given name is a valid Composer package name.
+   *
+   * @param string $name
+   *   The name to test.
+   *
+   * @return bool
+   *   TRUE if it's valid or FALSE if not.
+   */
+  public static function isValidPackageName(string $name): bool {
+    return !ValidatingArrayLoader::hasPackageNamingError($name);
   }
 
   /**

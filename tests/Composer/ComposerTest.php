@@ -82,6 +82,7 @@ class ComposerTest extends TestCase {
 
   /**
    * @dataProvider providerGuessVersion
+   *
    * @covers ::guessVersion
    */
   public function testGuessVersion($path, $guess, $expected): void {
@@ -129,11 +130,56 @@ class ComposerTest extends TestCase {
     $composer->guessVersion($path);
   }
 
-  public function providerGuessVersionWithException() {
+  public function providerGuessVersionWithException(): array {
     return [
       [new NoodlehausFileNotFoundExceptionAlias(''), new OrcaFileNotFoundExceptionAlias('No such file: /path/composer.json')],
       [new ParseException(['message' => '']), new ParseError('Cannot parse /path/composer.json')],
       [new Exception(''), new OrcaException('Unknown error guessing version at /path')],
+    ];
+  }
+
+  /**
+   * @dataProvider providerIsValidPackageName
+   *
+   * @covers ::isValidPackageName
+   */
+  public function testIsValidPackageName($expected, $name): void {
+    self::assertEquals($expected, Composer::isValidPackageName($name));
+  }
+
+  public function providerIsValidPackageName(): array {
+    return [
+      [TRUE, 'test/example'],
+      [TRUE, 'lorem_ipsum/dolor_sit'],
+      [TRUE, 'lorem-ipsum/dolor-sit'],
+      [FALSE, ''],
+      [FALSE, '/'],
+      [FALSE, 'ab'],
+      [FALSE, 'test/example '],
+      [FALSE, 'test / example'],
+      [FALSE, '_test/example_'],
+    ];
+  }
+
+  /**
+   * @dataProvider providerIsValidVersionConstraint
+   */
+  public function testIsValidConstraint($expected, $version): void {
+    $composer = $this->createComposer();
+
+    $actual = $composer->isValidVersionConstraint($version);
+
+    self::assertEquals($expected, $actual, 'Correctly determined validity of version constraint.');
+  }
+
+  public function providerIsValidVersionConstraint(): array {
+    return [
+      [TRUE, '^1.0'],
+      [TRUE, '~1.0'],
+      [TRUE, '>=1.0'],
+      [TRUE, 'dev-topic-branch'],
+      [FALSE, 'garbage'],
+      [FALSE, '1.0.x-garbage'],
     ];
   }
 

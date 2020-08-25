@@ -1027,6 +1027,11 @@ class FixtureCreator {
         $subextensions[] = "{$package_name}:{$version}";
       }
     }
+
+    if (!$subextensions) {
+      return;
+    }
+
     asort($subextensions);
     $this->composer->requirePackages($subextensions);
   }
