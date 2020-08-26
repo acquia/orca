@@ -4,415 +4,126 @@ namespace Acquia\Orca\Tests\Console\Command\Fixture;
 
 use Acquia\Orca\Console\Command\Fixture\FixtureInitCommand;
 use Acquia\Orca\Console\Helper\StatusCode;
-use Acquia\Orca\Drupal\DrupalCoreVersion;
-use Acquia\Orca\Drupal\DrupalCoreVersionFinder;
 use Acquia\Orca\Fixture\FixtureCreator;
+use Acquia\Orca\Fixture\FixtureOptions;
+use Acquia\Orca\Fixture\FixtureOptionsFactory;
 use Acquia\Orca\Fixture\FixtureRemover;
 use Acquia\Orca\Fixture\SutPreconditionsTester;
 use Acquia\Orca\Helper\Exception\OrcaException;
+use Acquia\Orca\Helper\Exception\OrcaInvalidArgumentException;
 use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
-use Acquia\Orca\Package\PackageManager;
 use Acquia\Orca\Tests\Console\Command\CommandTestBase;
-use Composer\Semver\VersionParser;
 use Prophecy\Argument;
 use Symfony\Component\Console\Command\Command;
 
 /**
- * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Drupal\DrupalCoreVersionFinder $drupalCoreVersionFinder
- * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Helper\Filesystem\FixturePathHandler $fixture
- * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Fixture\FixtureCreator $fixtureCreator
- * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Fixture\FixtureRemover $fixtureRemover
- * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Package\PackageManager $packageManager
- * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Fixture\SutPreconditionsTester $sutPreconditionsTester
- * @property \Prophecy\Prophecy\ObjectProphecy|\Composer\Semver\VersionParser $versionParser
+ * @property \Acquia\Orca\Fixture\FixtureCreator|\Prophecy\Prophecy\ObjectProphecy $fixtureCreator
+ * @property \Acquia\Orca\Fixture\FixtureOptionsFactory|\Prophecy\Prophecy\ObjectProphecy $fixtureOptionsFactory
+ * @property \Acquia\Orca\Fixture\FixtureOptions|\Prophecy\Prophecy\ObjectProphecy $fixtureOptions
+ * @property \Acquia\Orca\Fixture\FixtureRemover|\Prophecy\Prophecy\ObjectProphecy $fixtureRemover
+ * @property \Acquia\Orca\Fixture\SutPreconditionsTester|\Prophecy\Prophecy\ObjectProphecy $sutPreconditionsTester
+ * @property \Acquia\Orca\Helper\Filesystem\FixturePathHandler|\Prophecy\Prophecy\ObjectProphecy $fixture
+ *
+ * @coversDefaultClass \Acquia\Orca\Console\Command\Fixture\FixtureInitCommand
  */
 class FixtureInitCommandTest extends CommandTestBase {
 
-  private const CORE_VALUE_LITERAL_PREVIOUS_RELEASE = '8.5.14.0';
-
-  private const CORE_VALUE_LITERAL_PREVIOUS_DEV = '8.5.x-dev';
-
-  private const CORE_VALUE_LITERAL_CURRENT_RECOMMENDED = '8.6.14.0';
-
-  private const CORE_VALUE_LITERAL_CURRENT_DEV = '8.6.x-dev';
-
-  private const CORE_VALUE_LITERAL_NEXT_RELEASE = '8.7.0.0-beta2';
-
-  private const CORE_VALUE_LITERAL_NEXT_DEV = '8.7.x-dev';
-
-  protected function setUp() {
-    $this->drupalCoreVersionFinder = $this->prophesize(DrupalCoreVersionFinder::class);
+  protected function setUp(): void {
     $this->fixtureCreator = $this->prophesize(FixtureCreator::class);
+    $this->fixtureOptions = $this->prophesize(FixtureOptions::class);
+    $this->fixtureOptionsFactory = $this->prophesize(FixtureOptionsFactory::class);
     $this->fixtureRemover = $this->prophesize(FixtureRemover::class);
     $this->fixture = $this->prophesize(FixturePathHandler::class);
     $this->fixture->exists()
       ->willReturn(FALSE);
     $this->fixture->getPath()
       ->willReturn(self::FIXTURE_ROOT);
-    $this->packageManager = $this->prophesize(PackageManager::class);
-    $this->packageManager
-      ->exists(Argument::any())
-      ->willReturn(TRUE);
     $this->sutPreconditionsTester = $this->prophesize(SutPreconditionsTester::class);
-    $this->versionParser = $this->prophesize(VersionParser::class);
   }
 
   protected function createCommand(): Command {
-    $drupal_core_version_finder = $this->drupalCoreVersionFinder->reveal();
     $fixture_creator = $this->fixtureCreator->reveal();
     $fixture_remover = $this->fixtureRemover->reveal();
     $fixture_path_handler = $this->fixture->reveal();
-    $package_manager = $this->packageManager->reveal();
+    $fixture_options_factory = $this->fixtureOptionsFactory->reveal();
     $sut_preconditions_tester = $this->sutPreconditionsTester->reveal();
-    $version_parser = ($this->versionParser instanceof VersionParser) ? $this->versionParser : $this->versionParser->reveal();
-    return new FixtureInitCommand($drupal_core_version_finder, $fixture_path_handler, $fixture_creator, $fixture_remover, $package_manager, $sut_preconditions_tester, $version_parser);
+    return new FixtureInitCommand($fixture_options_factory, $fixture_path_handler, $fixture_creator, $fixture_remover, $sut_preconditions_tester);
   }
 
   /**
-   * @dataProvider providerCommand
+   * @covers ::__construct
+   * @covers ::configure
    */
-  public function testCommand($fixture_exists, $args, $methods_called, $drupal_core_version, $status_code, $display): void {
-    $this->packageManager
-      ->exists(@$args['--sut'])
-      ->shouldBeCalledTimes((int) in_array('PackageManager::exists', $methods_called))
-      ->willReturn(@$args['--sut'] === self::VALID_PACKAGE);
-    $this->fixture
-      ->exists()
-      ->shouldBeCalledTimes((int) in_array('Fixture::exists', $methods_called))
-      ->willReturn($fixture_exists);
-    $this->fixtureRemover
-      ->remove()
-      ->shouldBeCalledTimes((int) in_array('remove', $methods_called));
-    $this->drupalCoreVersionFinder
-      ->get(new DrupalCoreVersion(DrupalCoreVersion::PREVIOUS_DEV))
-      ->shouldBeCalledTimes((int) in_array('getPreviousMinorVersion', $methods_called))
-      ->willReturn($drupal_core_version);
-    $this->drupalCoreVersionFinder
-      ->get(new DrupalCoreVersion(DrupalCoreVersion::CURRENT_RECOMMENDED))
-      ->shouldBeCalledTimes((int) in_array('getCurrentRecommendedVersion', $methods_called))
-      ->willReturn(self::CORE_VALUE_LITERAL_CURRENT_RECOMMENDED);
-    $this->drupalCoreVersionFinder
-      ->get(new DrupalCoreVersion(DrupalCoreVersion::CURRENT_DEV))
-      ->shouldBeCalledTimes((int) in_array('getCurrentDevVersion', $methods_called))
-      ->willReturn($drupal_core_version);
-    $this->fixtureCreator
-      ->setSut(@$args['--sut'])
-      ->shouldBeCalledTimes((int) in_array('setSut', $methods_called));
-    $this->fixtureCreator
-      ->setSutOnly(TRUE)
-      ->shouldBeCalledTimes((int) in_array('setSutOnly', $methods_called));
-    $this->fixtureCreator
-      ->setDev(TRUE)
-      ->shouldBeCalledTimes((int) in_array('setDev', $methods_called));
-    $this->fixtureCreator
-      ->setCoreVersion($drupal_core_version ?: self::CORE_VALUE_LITERAL_CURRENT_RECOMMENDED)
-      ->shouldBeCalledTimes((int) in_array('setCoreVersion', $methods_called));
-    $this->fixtureCreator
-      ->setSqlite(FALSE)
-      ->shouldBeCalledTimes((int) in_array('setSqlite', $methods_called));
-    $this->fixtureCreator
-      ->setProfile((@$args['--profile']) ?: 'minimal')
-      ->shouldBeCalledTimes((int) in_array('setProfile', $methods_called));
-    $this->fixtureCreator
-      ->setInstallSite(FALSE)
-      ->shouldBeCalledTimes((int) in_array('setInstallSite', $methods_called));
-    $this->fixtureCreator
-      ->create()
-      ->shouldBeCalledTimes((int) in_array('create', $methods_called));
+  public function testBasicConfiguration(): void {
+    $command = $this->createCommand();
 
-    $this->executeCommand($args);
+    $definition = $command->getDefinition();
+    $arguments = $definition->getArguments();
+    $options = $definition->getOptions();
 
-    self::assertEquals($display, $this->getDisplay(), 'Displayed correct output.');
-    self::assertEquals($status_code, $this->getStatusCode(), 'Returned correct status code.');
+    self::assertEquals('fixture:init', $command->getName(), 'Set correct name.');
+    self::assertEquals(['init'], $command->getAliases(), 'Set correct aliases.');
+    self::assertNotEmpty($command->getDescription(), 'Set a description.');
+    self::assertEquals([], array_keys($arguments), 'Set correct arguments.');
+    self::assertEquals([
+      'force',
+      'sut',
+      'sut-only',
+      'bare',
+      'core',
+      'dev',
+      'profile',
+      'project-template',
+      'ignore-patch-failure',
+      'no-sqlite',
+      'no-site-install',
+      'prefer-source',
+      'symlink-all',
+    ], array_keys($options), 'Set correct options.');
+    self::assertEquals('f', $options['force']->getShortcut(), 'Set shortcut for force option.');
   }
 
-  public function providerCommand(): array {
-    return [
-      [TRUE, [], ['Fixture::exists', 'getCurrentRecommendedVersion', 'setCoreVersion'], NULL, StatusCode::ERROR, sprintf("Error: Fixture already exists at %s.\nHint: Use the \"--force\" option to remove it and proceed.\n", self::FIXTURE_ROOT)],
-      [TRUE, ['-f' => TRUE], ['Fixture::exists', 'remove', 'create', 'getCurrentRecommendedVersion', 'setCoreVersion'], NULL, StatusCode::OK, ''],
-      [FALSE, [], ['Fixture::exists', 'create', 'getCurrentRecommendedVersion', 'setCoreVersion'], NULL, StatusCode::OK, ''],
-      [FALSE, ['--sut' => self::INVALID_PACKAGE], ['PackageManager::exists'], NULL, StatusCode::ERROR, sprintf("Error: Invalid value for \"--sut\" option: \"%s\".\n", self::INVALID_PACKAGE)],
-      [FALSE, ['--sut' => self::VALID_PACKAGE], ['PackageManager::exists', 'Fixture::exists', 'getCurrentRecommendedVersion', 'setCoreVersion', 'setSut', 'create'], NULL, StatusCode::OK, ''],
-      [FALSE, ['--sut' => self::VALID_PACKAGE, '--sut-only' => TRUE], ['PackageManager::exists', 'Fixture::exists', 'getCurrentRecommendedVersion', 'setCoreVersion', 'setSut', 'setSutOnly', 'create'], NULL, StatusCode::OK, ''],
-      [FALSE, ['--dev' => TRUE], ['Fixture::exists', 'setDev', 'getCurrentRecommendedVersion', 'setCoreVersion', 'create'], self::CORE_VALUE_LITERAL_CURRENT_RECOMMENDED, StatusCode::OK, ''],
-      [FALSE, ['--no-site-install' => TRUE], ['Fixture::exists', 'getCurrentRecommendedVersion', 'setCoreVersion', 'setInstallSite', 'create'], NULL, StatusCode::OK, ''],
-      [FALSE, ['--no-sqlite' => TRUE], ['Fixture::exists', 'getCurrentRecommendedVersion', 'setCoreVersion', 'setSqlite', 'create'], NULL, StatusCode::OK, ''],
-      [FALSE, ['--profile' => 'lightning'], ['Fixture::exists', 'getCurrentRecommendedVersion', 'setCoreVersion', 'setProfile', 'create'], NULL, StatusCode::OK, ''],
-      [FALSE, ['--sut-only' => TRUE], [], NULL, StatusCode::ERROR, "Error: Cannot create a SUT-only fixture without a SUT.\nHint: Use the \"--sut\" option to specify the SUT.\n"],
-    ];
-  }
-
-  public function testNoOptions(): void {
-    $this->drupalCoreVersionFinder
-      ->get(new DrupalCoreVersion(DrupalCoreVersion::CURRENT_RECOMMENDED))
-      ->shouldBeCalledOnce()
-      ->willReturn(self::CORE_VALUE_LITERAL_CURRENT_RECOMMENDED);
-    $this->versionParser = new VersionParser();
-
-    $this->executeCommand();
-
-    self::assertEquals('', $this->getDisplay(), 'Displayed correct output.');
-    self::assertEquals(StatusCode::OK, $this->getStatusCode(), 'Returned correct status code.');
-  }
-
-  public function testBareOption(): void {
-    $this->drupalCoreVersionFinder
-      ->get(new DrupalCoreVersion(DrupalCoreVersion::CURRENT_RECOMMENDED))
-      ->shouldBeCalledOnce()
-      ->willReturn(self::CORE_VALUE_LITERAL_CURRENT_RECOMMENDED);
-    $this->fixtureCreator
-      ->setBare(TRUE)
-      ->shouldBeCalledTimes(1);
-    $this->fixtureCreator
-      ->setCoreVersion(self::CORE_VALUE_LITERAL_CURRENT_RECOMMENDED)
-      ->shouldBeCalledTimes(1);
-    $this->fixtureCreator
-      ->create()
-      ->shouldBeCalledTimes(1);
-
-    $this->executeCommand(['--bare' => TRUE]);
-
-    self::assertEquals('', $this->getDisplay(), 'Displayed correct output.');
-    self::assertEquals(StatusCode::OK, $this->getStatusCode(), 'Returned correct status code.');
-  }
-
-  /**
-   * @dataProvider providerBareOptionInvalidProvider
-   */
-  public function testBareOptionInvalid($options): void {
-    $this->fixtureCreator
-      ->create()
-      ->shouldNotBeCalled();
-
-    $this->executeCommand($options);
-
-    self::assertEquals("Error: Cannot create a bare fixture with a SUT.\n", $this->getDisplay(), 'Displayed correct output.');
-    self::assertEquals(StatusCode::ERROR, $this->getStatusCode(), 'Returned correct status code.');
-  }
-
-  public function providerBareOptionInvalidProvider(): array {
-    return [
-      [['--bare' => TRUE, '--sut' => 'drupal/example']],
-      [['--bare' => TRUE, '--sut' => 'drupal/example', '--sut-only' => TRUE]],
-    ];
-  }
-
-  /**
-   * @dataProvider providerCoreOption
-   */
-  public function testCoreOption($value, $finder_calls, $options, $set_version): void {
-    $this->drupalCoreVersionFinder
-      ->get($value)
-      ->shouldBeCalledTimes($finder_calls)
-      ->willReturn($set_version);
-    $this->fixtureCreator
-      ->setDev(TRUE)
-      ->shouldBeCalledTimes((int) isset($options['--dev']));
-    $this->fixtureCreator
-      ->setCoreVersion($set_version)
-      ->shouldBeCalledTimes(1);
-    $this->fixtureCreator
-      ->create()
-      ->shouldBeCalledTimes(1);
-
-    $this->executeCommand($options);
-
-    self::assertEquals('', $this->getDisplay(), 'Displayed correct output.');
-    self::assertEquals(StatusCode::OK, $this->getStatusCode(), 'Returned correct status code.');
-  }
-
-  public function providerCoreOption(): array {
-    return [
-      [new DrupalCoreVersion(DrupalCoreVersion::PREVIOUS_RELEASE), 1, ['--core' => DrupalCoreVersion::PREVIOUS_RELEASE], self::CORE_VALUE_LITERAL_PREVIOUS_RELEASE],
-      [new DrupalCoreVersion(DrupalCoreVersion::PREVIOUS_DEV), 1, ['--core' => DrupalCoreVersion::PREVIOUS_DEV], self::CORE_VALUE_LITERAL_PREVIOUS_DEV],
-      [new DrupalCoreVersion(DrupalCoreVersion::CURRENT_RECOMMENDED), 1, ['--core' => DrupalCoreVersion::CURRENT_RECOMMENDED], self::CORE_VALUE_LITERAL_CURRENT_RECOMMENDED],
-      [new DrupalCoreVersion(DrupalCoreVersion::CURRENT_DEV), 1, ['--core' => DrupalCoreVersion::CURRENT_DEV], self::CORE_VALUE_LITERAL_CURRENT_DEV],
-      [new DrupalCoreVersion(DrupalCoreVersion::NEXT_RELEASE), 1, ['--core' => DrupalCoreVersion::NEXT_RELEASE], self::CORE_VALUE_LITERAL_NEXT_RELEASE],
-      [new DrupalCoreVersion(DrupalCoreVersion::NEXT_DEV), 1, ['--core' => DrupalCoreVersion::NEXT_DEV], self::CORE_VALUE_LITERAL_NEXT_DEV],
-      [self::CORE_VALUE_LITERAL_PREVIOUS_RELEASE, 0, ['--core' => self::CORE_VALUE_LITERAL_PREVIOUS_RELEASE], self::CORE_VALUE_LITERAL_PREVIOUS_RELEASE],
-      [self::CORE_VALUE_LITERAL_CURRENT_RECOMMENDED, 0, ['--core' => self::CORE_VALUE_LITERAL_CURRENT_RECOMMENDED], self::CORE_VALUE_LITERAL_CURRENT_RECOMMENDED],
-      [self::CORE_VALUE_LITERAL_CURRENT_DEV, 0, ['--core' => self::CORE_VALUE_LITERAL_CURRENT_DEV], self::CORE_VALUE_LITERAL_CURRENT_DEV],
-      [self::CORE_VALUE_LITERAL_NEXT_RELEASE, 0, ['--core' => self::CORE_VALUE_LITERAL_NEXT_RELEASE], self::CORE_VALUE_LITERAL_NEXT_RELEASE],
-    ];
-  }
-
-  /**
-   * @dataProvider providerCoreOptionVersionParsing
-   */
-  public function testCoreOptionVersionParsing($status_code, $value, $display): void {
-    $this->versionParser = new VersionParser();
-
-    $this->executeCommand([
-      '--core' => $value,
-    ]);
-
-    self::assertEquals($status_code, $this->getStatusCode(), 'Returned correct status code.');
-    self::assertEquals($display, $this->getDisplay(), 'Displayed correct output.');
-  }
-
-  public function providerCoreOptionVersionParsing(): array {
-    $error_message = 'Error: Invalid value for "--core" option: "%s".' . PHP_EOL
-      . 'Hint: Acceptable values are "PREVIOUS_RELEASE", "PREVIOUS_DEV", "CURRENT_RECOMMENDED", "CURRENT_DEV", "NEXT_RELEASE", "NEXT_DEV", "D9_READINESS", or any version string Composer understands.' . PHP_EOL;
-    return [
-      [StatusCode::OK, self::CORE_VALUE_LITERAL_PREVIOUS_RELEASE, ''],
-      [StatusCode::OK, self::CORE_VALUE_LITERAL_CURRENT_RECOMMENDED, ''],
-      [StatusCode::OK, self::CORE_VALUE_LITERAL_CURRENT_DEV, ''],
-      [StatusCode::OK, self::CORE_VALUE_LITERAL_NEXT_RELEASE, ''],
-      [StatusCode::OK, '^1.0', ''],
-      [StatusCode::OK, '~1.0', ''],
-      [StatusCode::OK, '>=1.0', ''],
-      [StatusCode::OK, 'dev-topic-branch', ''],
-      [StatusCode::ERROR, 'garbage', sprintf($error_message, 'garbage')],
-      [StatusCode::ERROR, '1.0.x-garbage', sprintf($error_message, '1.0.x-garbage')],
-    ];
-  }
-
-  /**
-   * @dataProvider providerIgnorePatchFailureOption
-   */
-  public function testIgnorePatchFailureOption($options, $num_calls): void {
-    $this->setDefaultFixtureCreatorExpectations();
-    $this->fixtureCreator
-      ->setComposerExitOnPatchFailure(FALSE)
-      ->shouldBeCalledTimes($num_calls);
-
-    $this->executeCommand($options);
-
-    self::assertEquals('', $this->getDisplay(), 'Displayed correct output.');
-    self::assertEquals(StatusCode::OK, $this->getStatusCode(), 'Returned correct status code.');
-  }
-
-  public function providerIgnorePatchFailureOption(): array {
-    return [
-      [['--ignore-patch-failure' => TRUE], 1],
-      [[], 0],
-    ];
-  }
-
-  public function testFixtureCreationFailure(): void {
-    $this->setDefaultFixtureCreatorExpectations();
-    $exception_message = 'Failed to create fixture.';
+  public function testSuccess(): void {
+    $this->fixtureOptionsFactory
+      ->create(Argument::any())
+      ->willReturn($this->fixtureOptions->reveal());
     $this->fixtureCreator
       ->create(Argument::any())
-      ->willThrow(new OrcaException($exception_message));
+      ->shouldBeCalledOnce();
+
+    $this->executeCommand();
+
+    self::assertEquals(StatusCode::OK, $this->getStatusCode(), 'Returned correct status code.');
+    self::assertEquals('', $this->getDisplay(), 'Displayed correct output.');
+  }
+
+  public function testFailure(): void {
+    $message = 'Failed to create fixture.';
+    $this->fixtureOptionsFactory
+      ->create(Argument::any())
+      ->willReturn($this->fixtureOptions->reveal());
+    $this->fixtureCreator
+      ->create(Argument::any())
+      ->shouldBeCalledOnce()
+      ->willThrow(new OrcaException($message));
 
     $this->executeCommand();
 
     self::assertEquals(StatusCode::ERROR, $this->getStatusCode(), 'Returned correct status code.');
-    self::assertContains("[ERROR] {$exception_message}", $this->getDisplay(), 'Displayed correct output.');
+    self::assertContains("[ERROR] {$message}", $this->getDisplay(), 'Displayed correct output.');
   }
 
-  public function testPreferSourceOption(): void {
-    $this->setDefaultFixtureCreatorExpectations();
-    $this->fixtureCreator
-      ->setPreferSource(TRUE)
-      ->shouldBeCalledTimes(1);
-
-    $this->executeCommand(['--prefer-source' => TRUE]);
-
-    self::assertEquals('', $this->getDisplay(), 'Displayed correct output.');
-    self::assertEquals(StatusCode::OK, $this->getStatusCode(), 'Returned correct status code.');
-  }
-
-  public function testProjectTemplateOption(): void {
-    $project_template = 'test/example';
-    $this->drupalCoreVersionFinder
-      ->get(new DrupalCoreVersion(DrupalCoreVersion::CURRENT_RECOMMENDED))
+  public function testInvalidOptions(): void {
+    $message = 'Invalid options';
+    $this->fixtureOptionsFactory
+      ->create(Argument::any())
       ->shouldBeCalledOnce()
-      ->willReturn(self::CORE_VALUE_LITERAL_CURRENT_RECOMMENDED);
-    $this->fixtureCreator
-      ->setCoreVersion(self::CORE_VALUE_LITERAL_CURRENT_RECOMMENDED)
-      ->shouldBeCalledTimes(1);
-    $this->fixtureCreator
-      ->setProjectTemplate($project_template)
-      ->shouldBeCalledTimes(1);
-    $this->fixtureCreator
-      ->create()
-      ->shouldBeCalledTimes(1);
+      ->willThrow(new OrcaInvalidArgumentException($message));
 
-    $this->executeCommand(['--project-template' => $project_template]);
-
-    self::assertEquals('', $this->getDisplay(), 'Displayed correct output.');
-    self::assertEquals(StatusCode::OK, $this->getStatusCode(), 'Returned correct status code.');
-  }
-
-  public function testSutPreconditionTestFailure(): void {
-    $sut_name = 'drupal/example';
-    $exception_message = 'Failed to create fixture.';
-
-    $this->drupalCoreVersionFinder
-      ->get(new DrupalCoreVersion(DrupalCoreVersion::CURRENT_RECOMMENDED))
-      ->shouldBeCalledOnce()
-      ->willReturn(self::CORE_VALUE_LITERAL_CURRENT_RECOMMENDED);
-    $this->fixture->exists()
-      ->willReturn(TRUE);
-    $this->fixtureRemover
-      ->remove()
-      ->shouldNotBeCalled();
-    $this->sutPreconditionsTester
-      ->test($sut_name)
-      ->willThrow(new OrcaException($exception_message));
-
-    $this->executeCommand([
-      '--force' => TRUE,
-      '--sut' => $sut_name,
-    ]);
+    $this->executeCommand();
 
     self::assertEquals(StatusCode::ERROR, $this->getStatusCode(), 'Returned correct status code.');
-    self::assertContains("[ERROR] {$exception_message}", $this->getDisplay(), 'Displayed correct output.');
-  }
-
-  /**
-   * @dataProvider providerSymlinkAllOption
-   */
-  public function testSymlinkAllOption($options, $num_calls): void {
-    $this->setDefaultFixtureCreatorExpectations();
-    $this->fixtureCreator
-      ->setSymlinkAll(TRUE)
-      ->shouldBeCalledTimes($num_calls);
-
-    $this->executeCommand($options);
-
-    self::assertEquals('', $this->getDisplay(), 'Displayed correct output.');
-    self::assertEquals(StatusCode::OK, $this->getStatusCode(), 'Returned correct status code.');
-  }
-
-  public function providerSymlinkAllOption(): array {
-    return [
-      [['--symlink-all' => TRUE], 1],
-      [[], 0],
-    ];
-  }
-
-  public function testSymlinkAllOptionInvalid(): void {
-    $this->fixtureCreator
-      ->create()
-      ->shouldNotBeCalled();
-
-    $this->executeCommand([
-      '--bare' => TRUE,
-      '--symlink-all' => TRUE,
-    ]);
-
-    self::assertEquals("Error: Cannot symlink all in a bare fixture.\n", $this->getDisplay(), 'Displayed correct output.');
-    self::assertEquals(StatusCode::ERROR, $this->getStatusCode(), 'Returned correct status code.');
-  }
-
-  private function setDefaultFixtureCreatorExpectations(): void {
-    $this->drupalCoreVersionFinder
-      ->get(new DrupalCoreVersion(DrupalCoreVersion::CURRENT_RECOMMENDED))
-      ->shouldBeCalledOnce()
-      ->willReturn(self::CORE_VALUE_LITERAL_CURRENT_RECOMMENDED);
-
-    $this->fixtureCreator
-      ->setCoreVersion(self::CORE_VALUE_LITERAL_CURRENT_RECOMMENDED)
-      ->shouldBeCalledOnce();
-    $this->fixtureCreator
-      ->create()
-      ->shouldBeCalledOnce();
-    $this->fixtureCreator
-      ->setPreferSource(TRUE)
-      ->shouldNotBeCalled();
+    self::assertEquals("Error: {$message}" . PHP_EOL, $this->getDisplay(), 'Displayed correct output.');
   }
 
 }

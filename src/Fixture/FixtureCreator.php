@@ -9,7 +9,6 @@ use Acquia\Orca\Git\Git;
 use Acquia\Orca\Helper\Exception\OrcaException;
 use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
 use Acquia\Orca\Helper\Process\ProcessRunner;
-use Acquia\Orca\Helper\SutSettingsTrait;
 use Acquia\Orca\Package\Package;
 use Acquia\Orca\Package\PackageManager;
 use Composer\Config\JsonConfigSource;
@@ -29,8 +28,6 @@ use UnexpectedValueException;
  * Creates a fixture.
  */
 class FixtureCreator {
-
-  use SutSettingsTrait;
 
   public const DEFAULT_PROFILE = 'orca';
 
@@ -58,20 +55,6 @@ class FixtureCreator {
   private $coreVersionFinder;
 
   /**
-   * The Composer exit on patch failure flag.
-   *
-   * @var bool
-   */
-  private $composerExitOnPatchFailure = TRUE;
-
-  /**
-   * The Drupal core version override.
-   *
-   * @var string|null
-   */
-  private $drupalCoreVersion;
-
-  /**
    * The fixture path handler.
    *
    * @var \Acquia\Orca\Helper\Filesystem\FixturePathHandler
@@ -84,27 +67,6 @@ class FixtureCreator {
    * @var \Acquia\Orca\Fixture\FixtureInspector
    */
   private $fixtureInspector;
-
-  /**
-   * The install site flag.
-   *
-   * @var bool
-   */
-  private $installSite = TRUE;
-
-  /**
-   * The bare flag.
-   *
-   * @var bool
-   */
-  private $isBare = FALSE;
-
-  /**
-   * The dev flag.
-   *
-   * @var bool
-   */
-  private $isDev = FALSE;
 
   /**
    * The Composer API for the fixture's composer.json.
@@ -121,6 +83,13 @@ class FixtureCreator {
   private $jsonConfigDataBackup = [];
 
   /**
+   * The fixture options.
+   *
+   * @var \Acquia\Orca\Fixture\FixtureOptions
+   */
+  private $options;
+
+  /**
    * The output decorator.
    *
    * @var \Symfony\Component\Console\Style\SymfonyStyle
@@ -128,11 +97,11 @@ class FixtureCreator {
   private $output;
 
   /**
-   * The prefer source flag.
+   * The package manager.
    *
-   * @var bool
+   * @var \Acquia\Orca\Package\PackageManager
    */
-  private $preferSource = FALSE;
+  private $packageManager;
 
   /**
    * The process runner.
@@ -140,20 +109,6 @@ class FixtureCreator {
    * @var \Acquia\Orca\Helper\Process\ProcessRunner
    */
   private $processRunner;
-
-  /**
-   * The installation profile.
-   *
-   * @var string
-   */
-  private $profile = self::DEFAULT_PROFILE;
-
-  /**
-   * The project template.
-   *
-   * @var string
-   */
-  private $projectTemplate = self::DEFAULT_PROJECT_TEMPLATE;
 
   /**
    * The site installer.
@@ -168,20 +123,6 @@ class FixtureCreator {
    * @var \Acquia\Orca\Fixture\SubextensionManager
    */
   private $subextensionManager;
-
-  /**
-   * The symlink all flag.
-   *
-   * @var bool
-   */
-  private $symlinkAll = FALSE;
-
-  /**
-   * The SQLite flag.
-   *
-   * @var bool
-   */
-  private $useSqlite = TRUE;
 
   /**
    * The Semver version parser.
@@ -241,12 +182,14 @@ class FixtureCreator {
   /**
    * Creates the fixture.
    *
+   * @param \Acquia\Orca\Fixture\FixtureOptions $fixture_options
+   *   The fixture options.
+   *
    * @throws \Acquia\Orca\Helper\Exception\OrcaException
-   *   If the SUT isn't properly installed.
    * @throws \Exception
-   *   In case of errors.
    */
-  public function create(): void {
+  public function create(FixtureOptions $fixture_options): void {
+    $this->options = $fixture_options;
     $this->createComposerProject();
     $this->configureComposerProject();
     $this->fixDefaultDependencies();
@@ -258,106 +201,6 @@ class FixtureCreator {
     $this->setUpFilesDirectories();
     $this->createAndCheckoutBackupTag();
     $this->displayStatus();
-  }
-
-  /**
-   * Sets the bare flag.
-   *
-   * @param bool $is_bare
-   *   TRUE for bare or FALSE otherwise.
-   */
-  public function setBare(bool $is_bare): void {
-    $this->isBare = $is_bare;
-  }
-
-  /**
-   * Sets the Composer exit on patch failure flag.
-   *
-   * @param bool $exit
-   *   TRUE to exit on Composer patch failure or FALSE not to.
-   */
-  public function setComposerExitOnPatchFailure(bool $exit): void {
-    $this->composerExitOnPatchFailure = $exit;
-  }
-
-  /**
-   * Sets the Drupal core version to install.
-   *
-   * @param string $version
-   *   The version string, e.g., "8.6.0".
-   */
-  public function setCoreVersion(string $version): void {
-    $this->drupalCoreVersion = $version;
-  }
-
-  /**
-   * Sets the dev flag.
-   *
-   * @param bool $is_dev
-   *   TRUE for dev or FALSE for not.
-   */
-  public function setDev(bool $is_dev): void {
-    $this->isDev = $is_dev;
-  }
-
-  /**
-   * Sets the install site flag.
-   *
-   * @param bool $install_site
-   *   TRUE to install the site or FALSE not to.
-   */
-  public function setInstallSite(bool $install_site): void {
-    $this->installSite = $install_site;
-  }
-
-  /**
-   * Sets the prefer source flag.
-   *
-   * @param bool $prefer_source
-   *   TRUE to prefer source, or FALSE not to.
-   */
-  public function setPreferSource(bool $prefer_source): void {
-    $this->preferSource = $prefer_source;
-  }
-
-  /**
-   * Sets the installation profile.
-   *
-   * @param string $profile
-   *   The installation profile machine name, e.g., "minimal".
-   */
-  public function setProfile(string $profile): void {
-    $this->profile = $profile;
-  }
-
-  /**
-   * Sets the Composer project template.
-   *
-   * @param string $project_template
-   *   The Composer project template, e.g., "drupal/drupal-recommended-project".
-   */
-  public function setProjectTemplate(string $project_template): void {
-    $this->projectTemplate = $project_template;
-  }
-
-  /**
-   * Sets the SQLite flag.
-   *
-   * @param bool $use_sqlite
-   *   TRUE to use SQLite or FALSE not to.
-   */
-  public function setSqlite(bool $use_sqlite): void {
-    $this->useSqlite = $use_sqlite;
-  }
-
-  /**
-   * Sets the symlink all flag.
-   *
-   * @param bool $symlink_all
-   *   TRUE to symlink all company packages or FALSE not to.
-   */
-  public function setSymlinkAll(bool $symlink_all): void {
-    $this->symlinkAll = $symlink_all;
   }
 
   /**
@@ -380,18 +223,19 @@ class FixtureCreator {
    *   acquia/drupal-recommended-project or acquia/blt-project:12.x.
    */
   private function getProjectTemplateString(): string {
+    $project_template = $this->options->getProjectTemplate();
     switch (TRUE) {
       case $this->isSutProjectTemplate():
-        return "{$this->projectTemplate}:@dev";
+        return "{$project_template}:@dev";
 
-      case $this->projectTemplate === 'acquia/blt-project':
-        $version = ($this->isDev)
-          ? $this->blt->getVersionDev($this->drupalCoreVersion)
-          : $this->blt->getVersionRecommended($this->drupalCoreVersion);
-        return "{$this->projectTemplate}:{$version}";
+      case $project_template === 'acquia/blt-project':
+        $version = ($this->options->isDev())
+          ? $this->blt->getVersionDev($this->options->getCore())
+          : $this->blt->getVersionRecommended($this->options->getCore());
+        return "{$project_template}:{$version}";
 
       default:
-        return $this->projectTemplate;
+        return $project_template;
     }
   }
 
@@ -403,7 +247,7 @@ class FixtureCreator {
    */
   private function getProjectTemplateStability(): string {
     $stability = 'alpha';
-    if ($this->isDev || $this->isSutProjectTemplate()) {
+    if ($this->options->isDev() || $this->isSutProjectTemplate()) {
       $stability = 'dev';
     }
     return $stability;
@@ -417,7 +261,13 @@ class FixtureCreator {
    *   test or FALSE if not.
    */
   private function isSutProjectTemplate(): bool {
-    return $this->sut && $this->sut->getPackageName() === $this->projectTemplate;
+    if (!$this->options->hasSut()) {
+      return FALSE;
+    }
+    /* @noinspection NullPointerExceptionInspection */
+    $sut_name = $this->options->getSut()->getPackageName();
+    $project_template = $this->options->getProjectTemplate();
+    return $sut_name === $project_template;
   }
 
   /**
@@ -432,7 +282,7 @@ class FixtureCreator {
     // @see https://drupal.stackexchange.com/questions/273859
     $this->jsonConfigSource->addConfigSetting('discard-changes', TRUE);
 
-    $this->jsonConfigSource->addProperty('extra.composer-exit-on-patch-failure', $this->composerExitOnPatchFailure);
+    $this->jsonConfigSource->addProperty('extra.composer-exit-on-patch-failure', !$this->options->ignorePatchFailure());
   }
 
   /**
@@ -461,7 +311,7 @@ class FixtureCreator {
 
     $additions = [];
 
-    if ($this->isDev) {
+    if ($this->options->isDev()) {
       // Install the dev version of Drush.
       $additions[] = 'drush/drush:dev-master || 10.x-dev || 9.x-dev || 9.5.x-dev';
     }
@@ -469,19 +319,19 @@ class FixtureCreator {
     if ($this->shouldRequireDrupalConsole()) {
       // Add Drupal Console as a soft dependency akin to Drush.
       $drupal_console_version = '~1.0';
-      if ($this->isDev) {
+      if ($this->options->isDev()) {
         $drupal_console_version = 'dev-master';
       }
       $additions[] = "drupal/console:{$drupal_console_version}";
     }
 
     // Install a specific version of Drupal core.
-    if ($this->drupalCoreVersion) {
-      $additions[] = "drupal/core:{$this->drupalCoreVersion}";
+    if ($this->options->getCore()) {
+      $additions[] = "drupal/core:{$this->options->getCore()}";
     }
 
     if ($this->shouldRequireDrupalCoreDev()) {
-      $additions[] = "drupal/core-dev:{$this->drupalCoreVersion}";
+      $additions[] = "drupal/core-dev:{$this->options->getCore()}";
     }
 
     // Install requirements for deprecation checking.
@@ -493,10 +343,10 @@ class FixtureCreator {
       'composer',
       'require',
     ];
-    if ($this->preferSource) {
+    if ($this->options->preferSource()) {
       $command[] = '--prefer-source';
     }
-    if (!$this->isBare) {
+    if (!$this->options->isBare()) {
       $command[] = '--no-update';
     }
     $command = array_merge($command, $additions);
@@ -539,14 +389,15 @@ class FixtureCreator {
    *   ranges.
    */
   private function getResolvedDrupalCoreVersion(): string {
+    $core = $this->options->getCore();
     try {
       // Get the version if it's concrete as opposed to a range.
-      $version = $this->versionParser->normalize($this->drupalCoreVersion);
+      $version = $this->versionParser->normalize($core);
     }
     catch (UnexpectedValueException $e) {
       // The requested Drupal core version is a range. Get the best match.
-      $stability = $this->isDev ? 'dev' : 'stable';
-      $version = $this->coreVersionFinder->find($this->drupalCoreVersion, $stability, $stability);
+      $stability = $this->options->isDev() ? 'dev' : 'stable';
+      $version = $this->coreVersionFinder->find($core, $stability, $stability);
     }
     return $version;
   }
@@ -559,7 +410,7 @@ class FixtureCreator {
    */
   private function getUnwantedPackageList(): array {
     $packages = $this->packageManager->getAll();
-    if ($this->isBare || $this->isSutOnly) {
+    if ($this->options->isBare() || $this->options->isSutOnly()) {
       // Don't remove BLT because it won't be replaced in a bare or SUT-only
       // fixture, and a fixture cannot be successfully built without it.
       unset($packages['acquia/blt']);
@@ -574,7 +425,7 @@ class FixtureCreator {
    *   If the SUT isn't properly installed.
    */
   private function addAcquiaPackages(): void {
-    if ($this->isBare) {
+    if ($this->options->isBare()) {
       return;
     }
 
@@ -605,7 +456,7 @@ class FixtureCreator {
    * to take effect.
    */
   private function addPathRepositories(): void {
-    if (!$this->sut && !$this->symlinkAll) {
+    if (!$this->options->hasSut() && !$this->options->symlinkAll()) {
       return;
     }
 
@@ -615,7 +466,7 @@ class FixtureCreator {
 
     foreach ($this->getLocalPackages() as $package) {
       // Only create repositories for packages that are present locally.
-      if ($package !== $this->sut && !$this->shouldSymlinkNonSut($package)) {
+      if ($package !== $this->options->getSut() && !$this->shouldSymlinkNonSut($package)) {
         continue;
       }
 
@@ -641,8 +492,8 @@ class FixtureCreator {
   private function getLocalPackages(): array {
     $packages = [];
     foreach ($this->packageManager->getAll() as $package_name => $package) {
-      $is_sut = $package === $this->sut;
-      if (!$is_sut && !$this->symlinkAll) {
+      $is_sut = $package === $this->options->getSut();
+      if (!$is_sut && !$this->options->symlinkAll()) {
         continue;
       }
 
@@ -656,11 +507,11 @@ class FixtureCreator {
    */
   private function addComposerExtraData(): void {
     $this->jsonConfigSource->addProperty('extra.orca', [
-      'sut' => ($this->sut) ? $this->sut->getPackageName() : NULL,
-      'is-sut-only' => $this->isSutOnly,
-      'is-bare' => $this->isBare,
-      'is-dev' => $this->isDev,
-      'project-template' => $this->projectTemplate,
+      'sut' => ($this->options->hasSut()) ? $this->options->getSut()->getPackageName() : NULL,
+      'is-sut-only' => $this->options->isSutOnly(),
+      'is-bare' => $this->options->isBare(),
+      'is-dev' => $this->options->isDev(),
+      'project-template' => $this->options->getProjectTemplate(),
     ]);
     $this->composer->updateLockFile();
   }
@@ -708,7 +559,7 @@ class FixtureCreator {
       'require',
       '--no-interaction',
     ];
-    if ($this->preferSource) {
+    if ($this->options->preferSource()) {
       $command[] = '--prefer-source';
     }
     $command = array_merge($command, $this->getCompanyPackageDependencies());
@@ -721,11 +572,12 @@ class FixtureCreator {
    * @throws \Acquia\Orca\Helper\Exception\OrcaException
    */
   private function verifySut(): void {
-    if (!$this->sut) {
+    if (!$this->options->hasSut()) {
       return;
     }
 
-    $sut_install_path = $this->sut->getInstallPathAbsolute();
+    /* @noinspection NullPointerExceptionInspection */
+    $sut_install_path = $this->options->getSut()->getInstallPathAbsolute();
 
     if (!file_exists($sut_install_path)) {
       throw new OrcaException('Failed to place SUT at correct path.');
@@ -742,10 +594,12 @@ class FixtureCreator {
    */
   private function displayFailedSymlinkDebuggingInfo(): void {
     $this->output->section('Debugging info');
+    /* @var Package $sut */
+    $sut = $this->options->getSut();
 
     $this->output->comment('Display some info about the SUT install path.');
     $this->processRunner->runExecutable('stat', [
-      $this->sut->getInstallPathAbsolute(),
+      $sut->getInstallPathAbsolute(),
     ]);
 
     $fixture_path = $this->fixture->getPath();
@@ -754,20 +608,20 @@ class FixtureCreator {
     $this->processRunner->runOrcaVendorBin([
       'composer',
       'why-not',
-      $this->getLocalPackageString($this->sut),
+      $this->getLocalPackageString($sut),
     ], $fixture_path);
 
     $this->output->comment('See why Composer installed what it did.');
     $this->processRunner->runOrcaVendorBin([
       'composer',
       'why',
-      $this->sut->getPackageName(),
+      $sut->getPackageName(),
     ], $fixture_path);
 
     $this->output->comment('Display the Git branches in the path repo.');
     $this->processRunner->git([
       'branch',
-    ], $this->sut->getRepositoryUrlAbsolute());
+    ], $sut->getRepositoryUrlAbsolute());
 
     $this->output->comment("Display the fixture's composer.json.");
     $this->processRunner->runExecutable('cat', [
@@ -776,7 +630,7 @@ class FixtureCreator {
 
     $this->output->comment("Display the SUT's composer.json.");
     $this->processRunner->runExecutable('cat', [
-      "{$this->sut->getRepositoryUrlAbsolute()}/composer.json",
+      "{$sut->getRepositoryUrlAbsolute()}/composer.json",
     ]);
   }
 
@@ -789,13 +643,14 @@ class FixtureCreator {
    * @throws \Acquia\Orca\Helper\Exception\OrcaException
    */
   private function getCompanyPackageDependencies(): array {
-    $dependencies = ($this->symlinkAll) ? $this->getLocalPackages() : $this->packageManager->getAll();
-    if ($this->isSutOnly) {
-      $dependencies = [$this->sut];
+    $dependencies = ($this->options->symlinkAll()) ? $this->getLocalPackages() : $this->packageManager->getAll();
+    $sut = $this->options->getSut();
+    if ($this->options->isSutOnly()) {
+      $dependencies = [$sut];
     }
     foreach ($dependencies as $package_name => &$package) {
       // Always symlink the SUT.
-      if ($package === $this->sut) {
+      if ($package === $sut) {
         $package = $this->getLocalPackageString($package);
         continue;
       }
@@ -831,7 +686,7 @@ class FixtureCreator {
    *   TRUE if the given package should be symlinked or FALSE if not.
    */
   private function shouldSymlinkNonSut(Package $package): bool {
-    if (!$this->symlinkAll) {
+    if (!$this->options->symlinkAll()) {
       return FALSE;
     }
 
@@ -848,9 +703,9 @@ class FixtureCreator {
    *   The target version if available or NULL if not.
    */
   private function getTargetVersion(Package $package): ?string {
-    return ($this->isDev)
-      ? $package->getVersionDev($this->drupalCoreVersion)
-      : $package->getVersionRecommended($this->drupalCoreVersion);
+    return ($this->options->isDev())
+      ? $package->getVersionDev($this->options->getCore())
+      : $package->getVersionRecommended($this->options->getCore());
   }
 
   /**
@@ -873,7 +728,7 @@ class FixtureCreator {
       'url' => 'https://packages.drupal.org/8',
     ]);
 
-    $stability = ($this->isDev) ? 'dev' : 'alpha';
+    $stability = ($this->options->isDev()) ? 'dev' : 'alpha';
 
     $pool = new Pool($stability);
     $pool->addRepository($packagist);
@@ -1130,7 +985,7 @@ class FixtureCreator {
   private function getSettings(): string {
     $data = '';
 
-    if ($this->useSqlite) {
+    if ($this->options->useSqlite()) {
       $data .= <<<'PHP'
 $databases['default']['default']['database'] = dirname(DRUPAL_ROOT) . '/db.sqlite';
 $databases['default']['default']['driver'] = 'sqlite';
@@ -1181,12 +1036,12 @@ PHP;
    * @throws \Exception
    */
   private function installSite(): void {
-    if (!$this->installSite) {
+    if (!$this->options->installSite()) {
       return;
     }
 
     $this->output->section('Installing site');
-    $this->siteInstaller->install($this->profile);
+    $this->siteInstaller->install($this->options->getProfile());
     $this->commitCodeChanges('Installed site.');
   }
 

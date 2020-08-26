@@ -149,6 +149,9 @@ class FixtureOptions {
       if ($value === NULL) {
         return TRUE;
       }
+      if (DrupalCoreVersion::isValidKey($value)) {
+        return TRUE;
+      }
       return $this->composer->isValidVersionConstraint($value);
     };
   }
