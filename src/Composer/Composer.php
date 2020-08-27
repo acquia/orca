@@ -150,7 +150,7 @@ class Composer {
    */
   public function requirePackages(array $packages): void {
     if (empty($packages)) {
-      throw new InvalidArgumentException('No packages provided to remove.');
+      throw new InvalidArgumentException('No packages provided to require.');
     }
     $this->runComposer([
       'require',
