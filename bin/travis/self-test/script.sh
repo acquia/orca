@@ -9,7 +9,7 @@
 # DESCRIPTION
 #     Runs static code analysis and automated tests on ORCA itself.
 
-cd "$(dirname "$0")" || exit; source ../_includes.sh
+cd "$(dirname "$0")" || exit; source _includes.sh
 
 cd ../../../
 
