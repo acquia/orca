@@ -78,7 +78,7 @@ class FixtureOptionsTest extends TestCase {
     self::assertFalse($options->symlinkAll(), 'Set/got default "symlink-all" option.');
     self::assertEquals($core, $options->getCore(), 'Set/got default "core" option.');
     self::assertNull($options->getProfile(), 'Set/got default "profile" option.');
-    self::assertNull($options->getProjectTemplate(), 'Set/got default "project-template" option.');
+    self::assertEquals('acquia/drupal-recommended-project', $options->getProjectTemplate(), 'Set/got default "project-template" option.');
     self::assertNull($options->getSut(), 'Set/got default "sut" option.');
     self::assertTrue($options->installSite(), 'Set/got default "no-site-install" option.');
     self::assertTrue($options->useSqlite(), 'Set/got default "no-sqlite" option.');
@@ -266,8 +266,12 @@ class FixtureOptionsTest extends TestCase {
       ->willReturn($expected);
 
     $options = $this->createFixtureOptions(['core' => $version]);
+    // Call once to test essential functionality.
+    $core = $options->getCore();
+    // Call again to test value caching.
+    $options->getCore();
 
-    self::assertEquals($expected, $options->getCore(), 'Accepted valid "core" constant option.');
+    self::assertEquals($expected, $core, 'Accepted valid "core" constant option.');
   }
 
   public function providerCoreConstantValid(): array {
@@ -277,6 +281,39 @@ class FixtureOptionsTest extends TestCase {
       $array[] = [$value];
     }
     return $array;
+  }
+
+  /**
+   * @dataProvider providerCoreResolvedRange
+   *
+   * @covers ::getCoreResolved
+   * @covers ::resolve
+   */
+  public function testCoreResolvedRange($core, $dev, $stability): void {
+    $this->drupalCoreVersionFinder
+      ->find($core, $stability, $stability)
+      ->shouldBeCalledOnce()
+      ->willReturn('string');
+
+    $options = $this->createFixtureOptions([
+      'core' => $core,
+      'dev' => $dev,
+    ]);
+    // Call once to test essential functionality.
+    $options->getCoreResolved();
+    // Call again to test value caching.
+    $options->getCoreResolved();
+  }
+
+  public function providerCoreResolvedRange(): array {
+    return [
+      ['~8', FALSE, 'stable'],
+      ['8.0.0@dev', FALSE, 'stable'],
+      ['8.0.x-dev', FALSE, 'stable'],
+      ['>8 <9', FALSE, 'stable'],
+      ['~9', FALSE, 'stable'],
+      ['~9', TRUE, 'dev'],
+    ];
   }
 
   /**
@@ -347,22 +384,14 @@ class FixtureOptionsTest extends TestCase {
   }
 
   /**
-   * @dataProvider providerProjectTemplateValid
-   *
    * @covers ::isValidProjectTemplateValue
    * @covers ::resolve
    */
-  public function testProjectTemplateValid($name): void {
+  public function testProjectTemplateValid(): void {
+    $name = 'test/example';
     $options = $this->createFixtureOptions(['project-template' => $name]);
 
     self::assertEquals($name, $options->getProjectTemplate(), 'Accepted valid "project-template" option.');
-  }
-
-  public function providerProjectTemplateValid(): array {
-    return [
-      [NULL],
-      ['test/example'],
-    ];
   }
 
   /**
@@ -373,6 +402,34 @@ class FixtureOptionsTest extends TestCase {
     $this->expectException(OrcaInvalidArgumentException::class);
 
     $this->createFixtureOptions(['project-template' => 'invalid']);
+  }
+
+  /**
+   * @dataProvider providerProjectTemplateSelectionByCoreVersion
+   *
+   * @covers ::getCoreResolved
+   * @covers ::getProjectTemplate
+   * @covers ::resolve
+   */
+  public function testProjectTemplateSelectionByCoreVersion($core, $expected): void {
+    $this->drupalCoreVersionFinder
+      ->find($core, Argument::any(), Argument::any())
+      ->willReturnArgument();
+
+    $options = $this->createFixtureOptions(['core' => $core]);
+
+    self::assertEquals($expected, $options->getProjectTemplate(), 'Selected correct project template for core version.');
+  }
+
+  public function providerProjectTemplateSelectionByCoreVersion(): array {
+    return [
+      ['8.0.0@dev', 'acquia/blt-project'],
+      ['8.0.x-dev', 'acquia/blt-project'],
+      ['8.0.0', 'acquia/blt-project'],
+      ['8.0.x-dev', 'acquia/blt-project'],
+      ['9.0.0', 'acquia/drupal-recommended-project'],
+      ['9.0.0@dev', 'acquia/drupal-recommended-project'],
+    ];
   }
 
   /**

@@ -82,8 +82,8 @@ class DrupalCoreVersionFinder {
   /**
    * Finds the Drupal core version matching the given criteria.
    *
-   * @param string|null $target_package_version
-   *   The target package version.
+   * @param string|null $target_core_version
+   *   The target core version.
    * @param string $minimum_stability
    *   The minimum stability. Available options (in order of stability) are
    *   dev, alpha, beta, RC, and stable.
@@ -94,11 +94,11 @@ class DrupalCoreVersionFinder {
    * @return string
    *   The version string.
    */
-  public function find(string $target_package_version = NULL, string $minimum_stability = 'stable', string $preferred_stability = 'stable'): string {
+  public function find(string $target_core_version = NULL, string $minimum_stability = 'stable', string $preferred_stability = 'stable'): string {
     $best_candidate = $this->getVersionSelector($minimum_stability)
-      ->findBestCandidate('drupal/core', $target_package_version, NULL, $preferred_stability);
+      ->findBestCandidate('drupal/core', $target_core_version, NULL, $preferred_stability);
     if (!$best_candidate) {
-      throw new RuntimeException(sprintf('No Drupal core version satisfies the given constraints: version=%s, minimum stability=%s', $target_package_version, $minimum_stability));
+      throw new RuntimeException(sprintf('No Drupal core version satisfies the given constraints: version=%s, minimum stability=%s', $target_core_version, $minimum_stability));
     }
     return $best_candidate->getPrettyVersion();
   }

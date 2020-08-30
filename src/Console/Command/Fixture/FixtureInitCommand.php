@@ -114,7 +114,7 @@ class FixtureInitCommand extends Command {
       ->addOption('profile', NULL, InputOption::VALUE_REQUIRED, 'The Drupal installation profile to use, e.g., "minimal". ("orca" is a pseudo-profile based on "minimal", with the Toolbar module enabled and Seven as the admin theme)', FixtureCreator::DEFAULT_PROFILE)
 
       // Uncommon options.
-      ->addOption('project-template', NULL, InputOption::VALUE_REQUIRED, 'The Composer project template used to create the fixture', FixtureCreator::DEFAULT_PROJECT_TEMPLATE)
+      ->addOption('project-template', NULL, InputOption::VALUE_REQUIRED, 'The Composer project template used to create the fixture')
       ->addOption('ignore-patch-failure', NULL, InputOption::VALUE_NONE, 'Do not exit on failure to apply Composer patches. (Useful for debugging failures)')
       ->addOption('no-sqlite', NULL, InputOption::VALUE_NONE, 'Use the default database settings instead of SQLite')
       ->addOption('no-site-install', NULL, InputOption::VALUE_NONE, 'Do not install Drupal. Supersedes the "--profile" option')

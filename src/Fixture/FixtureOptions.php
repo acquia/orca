@@ -9,9 +9,12 @@ use Acquia\Orca\Helper\Exception\OrcaInvalidArgumentException;
 use Acquia\Orca\Package\Package;
 use Acquia\Orca\Package\PackageManager;
 use Closure;
+use Composer\Semver\Comparator;
+use Composer\Semver\VersionParser;
 use Symfony\Component\OptionsResolver\Exception\InvalidOptionsException;
 use Symfony\Component\OptionsResolver\Exception\UndefinedOptionsException;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use UnexpectedValueException;
 
 /**
  * Encapsulates fixture options.
@@ -24,6 +27,13 @@ class FixtureOptions {
    * @var \Acquia\Orca\Composer\Composer
    */
   private $composer;
+
+  /**
+   * The resolved core version.
+   *
+   * @var string
+   */
+  private $coreResolved = '';
 
   /**
    * The Drupal Core version finder.
@@ -279,11 +289,50 @@ class FixtureOptions {
   /**
    * Gets the Composer project template package name.
    *
-   * @return string|null
+   * @return string
    *   The package name.
    */
-  public function getProjectTemplate(): ?string {
+  public function getProjectTemplate(): string {
+    if ($this->options['project-template']) {
+      return $this->options['project-template'];
+    }
+    if (Comparator::lessThan($this->getCoreResolved(), '9')) {
+      $this->options['project-template'] = 'acquia/blt-project';
+      return $this->options['project-template'];
+    }
+    $this->options['project-template'] = 'acquia/drupal-recommended-project';
     return $this->options['project-template'];
+  }
+
+  /**
+   * Gets the exact, resolved version of Drupal core.
+   *
+   * @return string
+   *   The best match for the current version of Drupal core, accounting for
+   *   ranges.
+   */
+  public function getCoreResolved(): string {
+    if ($this->coreResolved) {
+      return $this->coreResolved;
+    }
+    $core = $this->getCore();
+    try {
+      // Get the version if it's exact as opposed to a range.
+      $parser = new VersionParser();
+      $version = $parser->normalize($core);
+      // Catch dev versions being treated as exact instead of ranges.
+      if (strpos($version, 'dev') !== FALSE) {
+        throw new UnexpectedValueException('Version is a dev version.');
+      }
+    }
+    catch (UnexpectedValueException $e) {
+      // The core version is a range. Get the best match.
+      $stability = $this->isDev() ? 'dev' : 'stable';
+      $version = $this->drupalCoreVersionFinder
+        ->find($core, $stability, $stability);
+    }
+    $this->coreResolved = $version;
+    return $version;
   }
 
   /**
