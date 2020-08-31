@@ -22,7 +22,6 @@ use Composer\Repository\RepositoryFactory;
 use Composer\Semver\Comparator;
 use Composer\Semver\VersionParser;
 use Symfony\Component\Console\Style\SymfonyStyle;
-use UnexpectedValueException;
 
 /**
  * Creates a fixture.
@@ -30,8 +29,6 @@ use UnexpectedValueException;
 class FixtureCreator {
 
   public const DEFAULT_PROFILE = 'orca';
-
-  public const DEFAULT_PROJECT_TEMPLATE = 'acquia/blt-project';
 
   /**
    * The BLT package, if defined.
@@ -363,7 +360,7 @@ class FixtureCreator {
    *   Returns TRUE if it should be required, or FALSE if not.
    */
   private function shouldRequireDrupalConsole(): bool {
-    $version = $this->getResolvedDrupalCoreVersion();
+    $version = $this->options->getCoreResolved();
     return Comparator::lessThan($version, '9');
   }
 
@@ -377,29 +374,8 @@ class FixtureCreator {
    *   Returns TRUE if it should be required, or FALSE if not.
    */
   private function shouldRequireDrupalCoreDev(): bool {
-    $version = $this->getResolvedDrupalCoreVersion();
+    $version = $this->options->getCoreResolved();
     return Comparator::greaterThanOrEqualTo($version, '8.8');
-  }
-
-  /**
-   * Gets the concrete version of Drupal core that will be installed.
-   *
-   * @return string
-   *   The best match for the requested version of Drupal core, accounting for
-   *   ranges.
-   */
-  private function getResolvedDrupalCoreVersion(): string {
-    $core = $this->options->getCore();
-    try {
-      // Get the version if it's concrete as opposed to a range.
-      $version = $this->versionParser->normalize($core);
-    }
-    catch (UnexpectedValueException $e) {
-      // The requested Drupal core version is a range. Get the best match.
-      $stability = $this->options->isDev() ? 'dev' : 'stable';
-      $version = $this->coreVersionFinder->find($core, $stability, $stability);
-    }
-    return $version;
   }
 
   /**
