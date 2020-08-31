@@ -25,6 +25,11 @@ abstract class AbstractPathHandler {
 
   /**
    * Constructs an instance.
+   *
+   * @param \Symfony\Component\Filesystem\Filesystem $filesystem
+   *   The filesystem.
+   * @param string $base_path
+   *   The base path.
    */
   public function __construct(Filesystem $filesystem, string $base_path) {
     $this->filesystem = $filesystem;
