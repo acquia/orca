@@ -4,7 +4,6 @@ namespace Acquia\Orca\Fixture;
 
 use Acquia\Orca\Composer\Composer;
 use Acquia\Orca\Console\Helper\StatusTable;
-use Acquia\Orca\Drupal\DrupalCoreVersionFinder;
 use Acquia\Orca\Git\Git;
 use Acquia\Orca\Helper\Exception\OrcaException;
 use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
@@ -20,7 +19,6 @@ use Composer\Package\PackageInterface;
 use Composer\Package\Version\VersionSelector;
 use Composer\Repository\RepositoryFactory;
 use Composer\Semver\Comparator;
-use Composer\Semver\VersionParser;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
@@ -43,13 +41,6 @@ class FixtureCreator {
    * @var \Acquia\Orca\Composer\Composer
    */
   private $composer;
-
-  /**
-   * The Drupal core version finder.
-   *
-   * @var \Acquia\Orca\Drupal\DrupalCoreVersionFinder
-   */
-  private $coreVersionFinder;
 
   /**
    * The fixture path handler.
@@ -122,13 +113,6 @@ class FixtureCreator {
   private $subextensionManager;
 
   /**
-   * The Semver version parser.
-   *
-   * @var \Composer\Semver\VersionParser
-   */
-  private $versionParser;
-
-  /**
    * The codebase creator.
    *
    * @var \Acquia\Orca\Fixture\CodebaseCreator
@@ -142,8 +126,6 @@ class FixtureCreator {
    *   The codebase creator.
    * @param \Acquia\Orca\Composer\Composer $composer
    *   The Composer facade.
-   * @param \Acquia\Orca\Drupal\DrupalCoreVersionFinder $core_version_finder
-   *   The Drupal core version finder.
    * @param \Acquia\Orca\Helper\Filesystem\FixturePathHandler $fixture_path_handler
    *   The fixture path handler.
    * @param \Acquia\Orca\Fixture\FixtureInspector $fixture_inspector
@@ -158,14 +140,11 @@ class FixtureCreator {
    *   The package manager.
    * @param \Acquia\Orca\Fixture\SubextensionManager $subextension_manager
    *   The subextension manager.
-   * @param \Composer\Semver\VersionParser $version_parser
-   *   The Semver version parser.
    */
-  public function __construct(CodebaseCreator $codebase_creator, Composer $composer, DrupalCoreVersionFinder $core_version_finder, FixturePathHandler $fixture_path_handler, FixtureInspector $fixture_inspector, SiteInstaller $site_installer, SymfonyStyle $output, ProcessRunner $process_runner, PackageManager $package_manager, SubextensionManager $subextension_manager, VersionParser $version_parser) {
+  public function __construct(CodebaseCreator $codebase_creator, Composer $composer, FixturePathHandler $fixture_path_handler, FixtureInspector $fixture_inspector, SiteInstaller $site_installer, SymfonyStyle $output, ProcessRunner $process_runner, PackageManager $package_manager, SubextensionManager $subextension_manager) {
     $this->blt = $package_manager->getBlt();
     $this->codebaseCreator = $codebase_creator;
     $this->composer = $composer;
-    $this->coreVersionFinder = $core_version_finder;
     $this->fixture = $fixture_path_handler;
     $this->fixtureInspector = $fixture_inspector;
     $this->output = $output;
@@ -173,7 +152,6 @@ class FixtureCreator {
     $this->packageManager = $package_manager;
     $this->siteInstaller = $site_installer;
     $this->subextensionManager = $subextension_manager;
-    $this->versionParser = $version_parser;
   }
 
   /**
