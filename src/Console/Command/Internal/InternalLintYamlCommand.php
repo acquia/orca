@@ -6,6 +6,8 @@ use Symfony\Component\Yaml\Command\LintCommand;
 
 /**
  * Provides a command.
+ *
+ * @codeCoverageIgnore
  */
 class InternalLintYamlCommand extends LintCommand {
 
@@ -19,7 +21,7 @@ class InternalLintYamlCommand extends LintCommand {
   /**
    * {@inheritdoc}
    */
-  protected function configure() {
+  protected function configure(): void {
     parent::configure();
     $this->setHidden(TRUE);
   }
