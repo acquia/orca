@@ -24,9 +24,6 @@ class DebugGuessVersionCommandTest extends CommandTestBase {
     $this->composer = $this->prophesize(Composer::class);
   }
 
-  /**
-   * {@inheritdoc}
-   */
   protected function createCommand(): Command {
     $composer = $this->composer->reveal();
     return new DebugGuessVersionCommand($composer);

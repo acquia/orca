@@ -43,7 +43,7 @@ class DebugCoreVersionsCommand extends Command {
   /**
    * {@inheritdoc}
    */
-  protected function configure() {
+  protected function configure(): void {
     $this
       ->setAliases(['core'])
       ->setDescription('Provides an overview of Drupal Core versions');
