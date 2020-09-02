@@ -9,12 +9,12 @@
 # DESCRIPTION
 #     Places an example SUT.
 
-cd "$(dirname "$0")" || exit; source ../_includes.sh
+cd "$(dirname "$0")" || exit 1; source ../_includes.sh
 
 (
   cd ../../../
   cp -R example ../
-  cd ../example || exit
+  cd ../example || exit 1
   git init
   git add --all
   git commit --message="Initial commit."

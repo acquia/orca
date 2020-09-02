@@ -12,7 +12,7 @@ These affect ORCA in all contexts.
 
 * <a name="ORCA_AMPLITUDE_USER_ID"></a>**`ORCA_AMPLITUDE_USER_ID`**: Set the Amplitude user ID for telemetry events (see also [`ORCA_TELEMETRY_ENABLE`](#ORCA_TELEMETRY_ENABLE)). Defaults to `$ORCA_SUT_NAME:$ORCA_SUT_BRANCH`, e.g., `drupal/example:8.x-1.x`, on Travis CI.
 
-* <a name="ORCA_COVERAGE_CLOVER_PATH"></a>**`ORCA_COVERAGE_CLOVER_PATH`**: Change the path where ORCA saves PHPUnit test coverage Clover XML file.
+* <a name="ORCA_COVERAGE_CLOVER"></a>**`ORCA_COVERAGE_CLOVER`**: Change the path where ORCA saves the PHPUnit test coverage Clover XML file.
 
 * <a name="ORCA_FIXTURE_DIR"></a>**`ORCA_FIXTURE_DIR`**: Change the directory ORCA uses for test fixtures. Acceptable values are any valid, local directory reference, e.g., `/var/www/example`, or `../example`.
 

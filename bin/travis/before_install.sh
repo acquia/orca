@@ -24,7 +24,7 @@ echo "$TRAVIS_NODE_VERSION"
 yarn --version
 
 # Disable Xdebug except on code coverage jobs.
-[[ "$ORCA_JOB" = "ISOLATED_RECOMMENDED_COVERAGE" ]] || phpenv config-rm xdebug.ini
+[[ "$ORCA_COVERALLS_ENABLE" == TRUE ]] || phpenv config-rm xdebug.ini
 
 {
   # Remove PHP memory limit.
@@ -36,7 +36,6 @@ yarn --version
 } >> "$HOME/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini"
 
 # Install the PECL YAML parser for strict YAML parsing.
-pecl channel-update pecl.php.net
 yes | pecl install yaml
 
 # Display PHP information.

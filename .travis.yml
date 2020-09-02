@@ -31,8 +31,7 @@ env:
     - ORCA_PACKAGES_CONFIG=example/tests/packages.yml
     - ORCA_PACKAGES_CONFIG_ALTER=example/tests/packages_alter.yml
     - ORCA_SUT_DIR=${TRAVIS_BUILD_DIR}/../example
-    - ORCA_COVERALLS_ENABLE=TRUE
-    - ORCA_SELF_TEST_COVERAGE=$HOME/build/logs/clover-self.xml
+    - ORCA_SELF_TEST_COVERAGE_CLOVER=$HOME/build/logs/clover-self.xml
 
 jobs:
   fast_finish: true
@@ -40,7 +39,7 @@ jobs:
     - { name: "Static code analysis", env: ORCA_JOB=STATIC_CODE_ANALYSIS }
     - { name: "Deprecated code scan", env: ORCA_JOB=DEPRECATED_CODE_SCAN }
     - { name: "Isolated test w/ recommended package versions", env: ORCA_JOB=ISOLATED_RECOMMENDED }
-    - { name: "Isolated test w/ recommended package versions and code coverage", env: ORCA_JOB=ISOLATED_RECOMMENDED_COVERAGE }
+    - { name: "Isolated test w/ recommended package versions and code coverage", env: ORCA_JOB=ISOLATED_RECOMMENDED ORCA_COVERALLS_ENABLE=TRUE }
     - { name: "Integrated test w/ recommended package versions", env: ORCA_JOB=INTEGRATED_RECOMMENDED }
     - { name: "Integrated test w/ recommended package versions & previous minor release of Drupal core", env: ORCA_JOB=CORE_PREVIOUS }
     - { name: "Isolated test w/ dev package versions", env: ORCA_JOB=ISOLATED_DEV }
@@ -69,10 +68,10 @@ script:
 
 after_script:
   - ../orca/bin/travis/before_cache.sh
+  - ../orca/bin/travis/self-test/after_success.sh
+  - unset ORCA_COVERALLS_ENABLE
   - ../orca/bin/travis/after_success.sh
   - ../orca/bin/travis/after_failure.sh
-  - ../orca/bin/travis/self-test/after_script.sh
-  - unset ORCA_COVERALLS_ENABLE
   - ../orca/bin/travis/after_script.sh
 
 notifications:

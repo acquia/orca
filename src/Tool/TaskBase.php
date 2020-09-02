@@ -21,7 +21,7 @@ abstract class TaskBase implements TaskInterface {
    *
    * @var string
    */
-  protected $cloverCoveragePath;
+  protected $cloverCoverage;
 
   /**
    * The config file overrider.
@@ -52,6 +52,13 @@ abstract class TaskBase implements TaskInterface {
   protected $orca;
 
   /**
+   * The output decorator.
+   *
+   * @var \Symfony\Component\Console\Output\OutputInterface
+   */
+  protected $output;
+
+  /**
    * A filesystem path.
    *
    * @var string
@@ -66,13 +73,6 @@ abstract class TaskBase implements TaskInterface {
   protected $processRunner;
 
   /**
-   * The output decorator.
-   *
-   * @var \Symfony\Component\Console\Output\OutputInterface
-   */
-  protected $output;
-
-  /**
    * The PHPCS configurator.
    *
    * @var \Acquia\Orca\Tool\Phpcs\PhpcsConfigurator
@@ -82,7 +82,7 @@ abstract class TaskBase implements TaskInterface {
   /**
    * Constructs an instance.
    *
-   * @param string $clover_coverage_path
+   * @param string $clover_coverage
    *   The Clover coverage XML path.
    * @param \Acquia\Orca\Helper\Config\ConfigFileOverrider $config_file_overrider
    *   The config file overrider.
@@ -99,18 +99,18 @@ abstract class TaskBase implements TaskInterface {
    * @param \Acquia\Orca\Helper\Process\ProcessRunner $process_runner
    *   The process runner.
    */
-  public function __construct(string $clover_coverage_path, ConfigFileOverrider $config_file_overrider, Filesystem $filesystem, FixturePathHandler $fixture_path_handler, OrcaPathHandler $orca_path_handler, SymfonyStyle $output, PhpcsConfigurator $phpcs_configurator, ProcessRunner $process_runner) {
+  public function __construct(string $clover_coverage, ConfigFileOverrider $config_file_overrider, Filesystem $filesystem, FixturePathHandler $fixture_path_handler, OrcaPathHandler $orca_path_handler, SymfonyStyle $output, PhpcsConfigurator $phpcs_configurator, ProcessRunner $process_runner) {
     $this->configFileOverrider = $config_file_overrider;
     $this->filesystem = $filesystem;
     $this->fixture = $fixture_path_handler;
     $this->orca = $orca_path_handler;
     $this->output = $output;
 
-    // @todo The injection of this service in a base class like this constitutes
-    //   a violation of the interface segregation principle because not all of
-    //   its children use it. This is an indication for refactoring to use
-    //   composition instead of inheritance.
-    $this->cloverCoveragePath = $clover_coverage_path;
+    // @todo The injection of these services in a base class like this
+    //   constitutes a violation of the interface segregation principle because
+    //   not all of its its children use them. This is an indication for
+    //   refactoring to use some form of composition instead of inheritance.
+    $this->cloverCoverage = $clover_coverage;
     $this->phpcsConfigurator = $phpcs_configurator;
 
     $this->processRunner = $process_runner;

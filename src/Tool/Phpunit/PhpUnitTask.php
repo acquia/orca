@@ -223,7 +223,7 @@ class PhpUnitTask extends TestFrameworkBase {
         '--verbose',
       ];
       if ($this->isToGenerateCodeCoverage()) {
-        $command[] = "--coverage-clover={$this->cloverCoveragePath}";
+        $command[] = "--coverage-clover={$this->cloverCoverage}";
       }
       $command = array_merge($command, [
         '--colors=always',

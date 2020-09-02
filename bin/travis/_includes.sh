@@ -37,7 +37,7 @@ if [[ ! "$TRAVIS" && "$ORCA_JOB" = "STATIC_CODE_ANALYSIS" ]]; then assert "$ORCA
 # Set environment variables.
 ORCA_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 export ORCA_ROOT
-export ORCA_COVERAGE_CLOVER_PATH=${ORCA_COVERAGE_CLOVER_PATH:="$HOME/build/logs/clover.xml"}
+export ORCA_COVERAGE_CLOVER=${ORCA_COVERAGE_CLOVER:="$HOME/build/logs/clover.xml"}
 export ORCA_FIXTURE_DIR=${ORCA_FIXTURE_DIR:="$ORCA_ROOT/../orca-build"}
 export ORCA_FIXTURE_PROFILE=${ORCA_FIXTURE_PROFILE:="orca"}
 DEFAULT_PROJECT_TEMPLATE=$([[ "$ORCA_JOB" == "D9_READINESS" ]] && echo "acquia/drupal-recommended-project" || echo "acquia/blt-project")
