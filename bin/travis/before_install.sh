@@ -23,8 +23,8 @@ echo "$TRAVIS_NODE_VERSION"
 # Display the Yarn version.
 yarn --version
 
-# Disable Xdebug.
-phpenv config-rm xdebug.ini
+# Disable Xdebug except on code coverage jobs.
+[[ "$ORCA_COVERALLS_ENABLE" == TRUE ]] || phpenv config-rm xdebug.ini
 
 {
   # Remove PHP memory limit.

@@ -15,10 +15,34 @@ abstract class TestFrameworkBase extends TaskBase implements TestFrameworkInterf
   private $isPublicTestsOnly = TRUE;
 
   /**
+   * Whether or not to generate code coverage.
+   *
+   * @var bool
+   */
+  private $isToGenerateCodeCoverage = FALSE;
+
+  /**
+   * {@inheritdoc}
+   */
+  public function generateCodeCoverage(bool $generate): void {
+    $this->isToGenerateCodeCoverage = $generate;
+  }
+
+  /**
    * {@inheritdoc}
    */
   public function limitToPublicTests(bool $limit): void {
     $this->isPublicTestsOnly = $limit;
+  }
+
+  /**
+   * Determines whether or not to generate code coverage.
+   *
+   * @return bool
+   *   TRUE to generate code coverage or FALSE not to.
+   */
+  protected function isToGenerateCodeCoverage(): bool {
+    return $this->isToGenerateCodeCoverage;
   }
 
   /**

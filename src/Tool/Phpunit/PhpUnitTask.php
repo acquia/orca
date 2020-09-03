@@ -220,19 +220,25 @@ class PhpUnitTask extends TestFrameworkBase {
     try {
       $command = [
         'phpunit',
+        '--verbose',
+      ];
+      if ($this->isToGenerateCodeCoverage()) {
+        $command[] = "--coverage-clover={$this->cloverCoverage}";
+      }
+      $command = array_merge($command, [
         '--colors=always',
         '--debug',
         "--configuration={$this->fixture->getPath('docroot/core/phpunit.xml')}",
         '--exclude-group=orca_ignore',
         '--testsuite=orca',
-      ];
+      ]);
       if ($this->isPublicTestsOnly()) {
         $command[] = '--group=orca_public';
       }
       $this->processRunner->runFixtureVendorBin($command);
     }
     catch (ProcessFailedException $e) {
-      throw new TaskFailureException();
+      throw new TaskFailureException($e->getMessage());
     }
   }
 

@@ -9,13 +9,15 @@
 # DESCRIPTION
 #     Places an example SUT.
 
-cd "$(dirname "$0")" || exit; source _includes.sh
+cd "$(dirname "$0")" || exit 1; source ../_includes.sh
 
 (
   cd ../../../
   cp -R example ../
-  git -C ../example init
-  git -C ../example add --all
-  git -C ../example commit --message="Initial commit."
-  git -C ../example branch --move master feature/example
+  cd ../example || exit 1
+  git init
+  git add --all
+  git commit --message="Initial commit."
+  git branch --move master feature/example
+  git remote add origin git@github.com:example/example.git
 )
