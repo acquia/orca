@@ -1,6 +1,7 @@
 # Frequently Asked Questions
 
 * [Composer](#composer)
+* [Coveralls](#coveralls)
 * [Drupal](#drupal)
 
 ## Composer
@@ -12,6 +13,14 @@ ORCA doesn't install dev dependencies because Composer provides no means of doin
 1. For conditional functionality (i.e., behavior that manifests only in the presence of dependencies, such as optional Drupal modules), move the functionality into a submodule and require those conditions in its `composer.json`. ORCA will automatically discover the submodule and install the dependencies with Composer. This design may be considered an expression of [the Common Reuse Principle (CRP) of package cohesion](https://en.wikipedia.org/wiki/Package_principles#Principles_of_package_cohesion), in which sense the "no dev dependencies" limitation actually encourages good system design.
 
 1. Simply "ignore" tests with unique dependencies and run them apart from ORCA. See [Running automated tests](getting-started.md#tagginggrouping).
+
+## Coveralls
+
+### How do I add my GitHub repository to Coveralls?
+
+1. [Sign in to Coveralls](https://coveralls.io/authorize/github) with your GitHub account.
+1. Click the "Add Repos" menu link.
+1. Click the !["Add your repository to Coveralls"](images/coveralls-button.png) button next to your repository.
 
 ## Drupal
 

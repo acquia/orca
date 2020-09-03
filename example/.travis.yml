@@ -111,6 +111,7 @@ jobs:
     # To send PHPUnit test coverage data to Coveralls (coveralls.io), configure
     # your GitHub repository and uncomment the following line. The job on the
     # line immediately before is otherwise identical and can be removed.
+    # @see https://github.com/acquia/orca/blob/develop/docs/faq.md#coveralls
     # @see https://github.com/acquia/orca/blob/master/docs/advanced-usage.md#ORCA_COVERALLS_ENABLE
     # - { name: "Isolated test w/ recommended package versions and code coverage", env: ORCA_JOB=ISOLATED_RECOMMENDED ORCA_COVERALLS_ENABLE=TRUE }
     - { name: "Integrated test w/ recommended package versions", env: ORCA_JOB=INTEGRATED_RECOMMENDED }
