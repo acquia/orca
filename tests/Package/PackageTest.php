@@ -41,15 +41,15 @@ class PackageTest extends TestCase {
    * @covers ::getRepositoryUrlAbsolute
    * @covers ::getRepositoryUrlRaw
    * @covers ::getType
-   * @covers ::getVersion
    * @covers ::getVersionDev
    * @covers ::getVersionRecommended
    * @covers ::isDrupalExtension
    * @covers ::isDrupalModule
    * @covers ::isDrupalTheme
+   * @covers ::shouldGetComposerRequired
    * @covers ::shouldGetEnabled
    */
-  public function testConstructionAndGetters($data, $package_name, $project_name, $type, $raw_repository_url, $install_path, $version, $dev_version, $is_extension, $is_module, $is_theme, $enable): void {
+  public function testConstructionAndGetters($data, $package_name, $project_name, $drupal_extension_name, $type, $raw_repository_url, $install_path, $version, $dev_version, $is_extension, $is_module, $is_theme, $is_project_template, $enable, $require): void {
     $absolute_repository_url = "/var/www/{$raw_repository_url}";
     $this->orca
       ->getPath($raw_repository_url)
@@ -57,7 +57,7 @@ class PackageTest extends TestCase {
 
     $package = $this->createPackage($package_name, $data);
 
-    self::assertEquals($project_name, $package->getDrupalExtensionName(), 'Set/got Drupal extension name.');
+    self::assertEquals($drupal_extension_name, $package->getDrupalExtensionName(), 'Set/got Drupal extension name.');
     self::assertEquals($install_path, $package->getInstallPathRelative(), 'Set/got relative install path.');
     self::assertEquals($package_name, $package->getPackageName(), 'Set/got package name.');
     self::assertEquals($project_name, $package->getProjectName(), 'Set/got project name.');
@@ -69,6 +69,8 @@ class PackageTest extends TestCase {
     self::assertEquals($is_extension, $package->isDrupalExtension(), 'Determined whether or not is Drupal extensions.');
     self::assertEquals($is_module, $package->isDrupalModule(), 'Determined whether or not is Drupal extensions.');
     self::assertEquals($is_theme, $package->isDrupalTheme(), 'Determined whether or not is Drupal extensions.');
+    self::assertEquals($is_project_template, $package->isProjectTemplate(), 'Determined whether or not is a project template.');
+    self::assertEquals($require, $package->shouldGetComposerRequired(), 'Determined whether or not should get required with Composer.');
     self::assertEquals($enable, $package->shouldGetEnabled(), 'Determined whether or not should get enabled.');
   }
 
@@ -90,6 +92,7 @@ class PackageTest extends TestCase {
         ],
         'drupal/example_library',
         'example_library',
+        NULL,
         'library',
         '/var/www/example_library',
         'custom/path/to/example_library',
@@ -99,10 +102,13 @@ class PackageTest extends TestCase {
         FALSE,
         FALSE,
         FALSE,
+        FALSE,
+        TRUE,
       ],
       'Minimum specification/default values' => [
         'drupal/example_module' => [],
         'drupal/example_module',
+        'example_module',
         'example_module',
         'drupal-module',
         '../example_module',
@@ -112,6 +118,8 @@ class PackageTest extends TestCase {
         TRUE,
         TRUE,
         FALSE,
+        FALSE,
+        TRUE,
         TRUE,
       ],
       'Module that should be enabled' => [
@@ -121,6 +129,7 @@ class PackageTest extends TestCase {
         ],
         'drupal/example_module',
         'example_module',
+        'example_module',
         'drupal-module',
         '../example_module',
         'docroot/modules/contrib/example_module',
@@ -129,6 +138,8 @@ class PackageTest extends TestCase {
         TRUE,
         TRUE,
         FALSE,
+        FALSE,
+        TRUE,
         TRUE,
       ],
       'Module that should not be enabled' => [
@@ -136,6 +147,7 @@ class PackageTest extends TestCase {
           'enable' => FALSE,
         ],
         'drupal/example_module',
+        'example_module',
         'example_module',
         'drupal-module',
         '../example_module',
@@ -146,12 +158,15 @@ class PackageTest extends TestCase {
         TRUE,
         FALSE,
         FALSE,
+        FALSE,
+        TRUE,
       ],
       'Theme' => [
         'drupal/example_theme' => [
           'type' => 'drupal-theme',
         ],
         'drupal/example_theme',
+        'example_theme',
         'example_theme',
         'drupal-theme',
         '../example_theme',
@@ -161,9 +176,38 @@ class PackageTest extends TestCase {
         TRUE,
         FALSE,
         TRUE,
+        FALSE,
+        TRUE,
         TRUE,
       ],
     ];
+  }
+
+  public function testProjectTemplate(): void {
+    $data = [
+      'type' => 'project-template',
+    ];
+    $this->orca
+      ->getPath('../drupal-project')
+      ->willReturn('/var/www/drupal-project');
+
+    $package = $this->createPackage('example/drupal-project', $data);
+
+    self::assertEquals(NULL, $package->getDrupalExtensionName(), 'Set/got Drupal extension name.');
+    self::assertEquals('.', $package->getInstallPathRelative(), 'Set/got relative install path.');
+    self::assertEquals('example/drupal-project', $package->getPackageName(), 'Set/got package name.');
+    self::assertEquals('drupal-project', $package->getProjectName(), 'Set/got project name.');
+    self::assertEquals('/var/www/drupal-project', $package->getRepositoryUrlAbsolute(), 'Calculated absolute repository URL.');
+    self::assertEquals('../drupal-project', $package->getRepositoryUrlRaw(), 'Set/got raw repository URL.');
+    self::assertEquals('project-template', $package->getType(), 'Set/got type.');
+    self::assertEquals('*@dev', $package->getVersionDev(), 'Set/got dev version.');
+    self::assertEquals('*', $package->getVersionRecommended(), 'Set/got recommended version.');
+    self::assertEquals(FALSE, $package->isDrupalExtension(), 'Determined whether or not is Drupal extensions.');
+    self::assertEquals(FALSE, $package->isDrupalModule(), 'Determined whether or not is Drupal extensions.');
+    self::assertEquals(FALSE, $package->isDrupalTheme(), 'Determined whether or not is Drupal extensions.');
+    self::assertEquals(TRUE, $package->isProjectTemplate(), 'Determined whether or not is Drupal extensions.');
+    self::assertEquals(FALSE, $package->shouldGetComposerRequired(), 'Determined whether or not should get required via Composer.');
+    self::assertEquals(FALSE, $package->shouldGetEnabled(), 'Determined whether or not should get enabled.');
   }
 
   /**

@@ -162,11 +162,16 @@ class Package {
   /**
    * Gets the Drupal extension machine name.
    *
-   * @return string
-   *   The Drupal extension machine name suitable for use with Drush, for
-   *   example.
+   * Suitable for use with Drush, for example.
+   *
+   * @return string|null
+   *   The Drupal extension machine name if available or NULL if not.
    */
-  public function getDrupalExtensionName(): string {
+  public function getDrupalExtensionName(): ?string {
+    if (!$this->isDrupalExtension()) {
+      return NULL;
+    }
+
     // Project names may include a namespace.
     // @see https://www.drupal.org/project/project_composer/issues/3064900
     $name_parts = explode('-', $this->getProjectName());
@@ -218,6 +223,9 @@ class Package {
 
       case 'drupal-theme':
         return "docroot/themes/contrib/{$this->getProjectName()}";
+
+      case 'project-template':
+        return '.';
 
       default:
         return "vendor/{$this->getPackageName()}";
@@ -350,6 +358,16 @@ class Package {
   }
 
   /**
+   * Determines whether the package is a project template.
+   *
+   * @return bool
+   *   Returns TRUE if it is, or FALSE if not.
+   */
+  public function isProjectTemplate(): bool {
+    return $this->getType() === 'project-template';
+  }
+
+  /**
    * Determines whether the package is a Drupal module that should get enabled.
    *
    * @return bool
@@ -362,6 +380,20 @@ class Package {
     }
 
     return $this->data['enable'];
+  }
+
+  /**
+   * Determines whether the package should get required with Composer.
+   *
+   * @return bool
+   *   TRUE if the package should get required with Composer or FALSE if not.
+   */
+  public function shouldGetComposerRequired(): bool {
+    if ($this->isProjectTemplate()) {
+      return FALSE;
+    }
+
+    return TRUE;
   }
 
   /**

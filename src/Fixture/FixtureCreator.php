@@ -232,10 +232,9 @@ class FixtureCreator {
     if (!$this->options->hasSut()) {
       return FALSE;
     }
+
     /* @noinspection NullPointerExceptionInspection */
-    $sut_name = $this->options->getSut()->getPackageName();
-    $project_template = $this->options->getProjectTemplate();
-    return $sut_name === $project_template;
+    return $this->options->getSut()->isProjectTemplate();
   }
 
   /**
