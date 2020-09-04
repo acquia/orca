@@ -9,7 +9,10 @@
 # DESCRIPTION
 #     Runs static code analysis and automated tests on ORCA itself.
 
-cd "$(dirname "$0")/../../../" || exit 1; source _includes.sh
+cd "$(dirname "$0")" || exit 1; source ../_includes.sh
+
+cd ../../../ || exit 1
+
 
 if [[ "$ORCA_JOB" = "STATIC_CODE_ANALYSIS" ]]; then
   ./vendor/bin/phpcs
