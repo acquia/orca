@@ -17,7 +17,7 @@
 #    $ sed -i '' '/^[[:blank:]]*#/d;s/#.*//' .travis.yml
 #
 # For advanced needs,
-# @see https://github.com/acquia/orca/blob/develop/docs/advanced-usage.md
+# @see https://github.com/acquia/orca/blob/master/docs/advanced-usage.md
 #
 # For all Travis CI build config options,
 # @see https://config.travis-ci.com/
@@ -110,10 +110,17 @@ jobs:
     - { name: "Isolated test w/ recommended package versions", env: ORCA_JOB=ISOLATED_RECOMMENDED }
     # To send PHPUnit test coverage data to Coveralls (coveralls.io), configure
     # your GitHub repository and uncomment the following line. The job on the
-    # line immediately before is otherwise identical and can be removed.
-    # @see https://github.com/acquia/orca/blob/develop/docs/faq.md#coveralls
+    # line immediately before is otherwise identical and can be removed. Note:
+    # this setting implies ORCA_COVERAGE_ENABLE, which need not be set
+    # separately.
+    # @see https://github.com/acquia/orca/blob/master/docs/faq.md#coveralls
     # @see https://github.com/acquia/orca/blob/master/docs/advanced-usage.md#ORCA_COVERALLS_ENABLE
+    # @see https://github.com/acquia/orca/blob/master/docs/advanced-usage.md#ORCA_COVERAGE_ENABLE
     # - { name: "Isolated test w/ recommended package versions and code coverage", env: ORCA_JOB=ISOLATED_RECOMMENDED ORCA_COVERALLS_ENABLE=TRUE }
+    #
+    # To generate test coverage data to send somewhere other than Coveralls, use
+    # the ORCA_COVERAGE_ENABLE variable instead.
+    # - { name: "Isolated test w/ recommended package versions and code coverage", env: ORCA_JOB=ISOLATED_RECOMMENDED ORCA_COVERAGE_ENABLE=TRUE }
     - { name: "Integrated test w/ recommended package versions", env: ORCA_JOB=INTEGRATED_RECOMMENDED }
     - { name: "Integrated test w/ recommended package versions & previous minor release of Drupal core", env: ORCA_JOB=CORE_PREVIOUS }
     - { name: "Isolated test w/ dev package versions", env: ORCA_JOB=ISOLATED_DEV }

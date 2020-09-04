@@ -28,7 +28,9 @@ These affect ORCA in all contexts.
 
 These affect ORCA only as invoked via the Travis CI scripts.
 
-* <a name="ORCA_COVERALLS_ENABLE"></a>**`ORCA_COVERALLS_ENABLE`**: Set to `TRUE` to send test coverage data to [Coveralls](https://coveralls.io/) on the isolated/recommended job. Requires that you [add your repository to Coveralls](https://docs.travis-ci.com/user/coveralls/#1-add-your-repository-to-coveralls). It is recommended to [enable notifications](https://docs.coveralls.io/coveralls-notifications).
+* <a name="ORCA_COVERAGE_ENABLE"></a>**`ORCA_COVERAGE_ENABLE`**: Set to `TRUE` to generate test coverage data without automatically sending it to [Coveralls](https://coveralls.io/). The resulting Clover file will be saved at the location set in [`ORCA_COVERAGE_CLOVER`](#ORCA_COVERAGE_CLOVER). Test coverage generation greatly increases build times, so only enable it on one job--all that makes sense anyway. Note: This setting is implied by [`ORCA_COVERALLS_ENABLE`](#ORCA_COVERALLS_ENABLE) and need not be enabled if that is.
+
+* <a name="ORCA_COVERALLS_ENABLE"></a>**`ORCA_COVERALLS_ENABLE`**: Set to `TRUE` to send test coverage data to [Coveralls](https://coveralls.io/) on the isolated/recommended job. Requires that you [add your repository to Coveralls](https://github.com/acquia/orca/blob/master/docs/faq.md#how-do-i-add-my-github-repository-to-coveralls). It is recommended to [enable notifications](https://docs.coveralls.io/coveralls-notifications). Test coverage generation greatly increases build times, so only enable it on one job--all that makes sense anyway. Note: [`ORCA_COVERAGE_ENABLE`](#ORCA_COVERAGE_ENABLE) is implied by this setting and need not be enabled if this is.
 
 * <a name="ORCA_CUSTOM_FIXTURE_INIT_ARGS"></a>**`ORCA_CUSTOM_FIXTURE_INIT_ARGS`**: Add command-line arguments to `fixture:init` invocation in the [`install`](../bin/travis/install.sh) build phase of a custom job. Example:
 

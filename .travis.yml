@@ -69,6 +69,7 @@ script:
 after_script:
   - ../orca/bin/travis/before_cache.sh
   - ../orca/bin/travis/self-test/after_success.sh
+  - unset ORCA_COVERAGE_ENABLE
   - unset ORCA_COVERALLS_ENABLE
   - ../orca/bin/travis/after_success.sh
   - ../orca/bin/travis/after_failure.sh

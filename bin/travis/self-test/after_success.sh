@@ -11,10 +11,10 @@
 
 cd "$(dirname "$0")" || exit 1; source ../_includes.sh
 
-cd ../../../; pwd
+cd ../../../ || exit 1
 
-# Simulate sending test coverage data to Coveralls (coveralls.io).
-if [[ "$ORCA_COVERALLS_ENABLE" = TRUE ]]; then
+# Send test coverage data to Coveralls (coveralls.io).
+if [[ "$ORCA_COVERAGE_ENABLE" == TRUE && "$ORCA_COVERALLS_ENABLE" == TRUE ]]; then
   # shellcheck disable=SC1004
   eval 'php-coveralls -vv \
     --coverage_clover="$ORCA_SELF_TEST_COVERAGE_CLOVER" \
