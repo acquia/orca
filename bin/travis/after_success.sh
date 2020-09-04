@@ -12,9 +12,9 @@
 cd "$(dirname "$0")" || exit 1; source _includes.sh
 
 # Send test coverage data to Coveralls (coveralls.io) if enabled.
-if [[ "$ORCA_COVERALLS_ENABLE" = TRUE ]]; then
+if [[ "$ORCA_COVERAGE_ENABLE" == TRUE && "$ORCA_COVERALLS_ENABLE" == TRUE ]]; then
   (
-    cd "$ORCA_SUT_DIR" || exit
+    cd "$ORCA_SUT_DIR" || exit 1
     # shellcheck disable=SC1004
     eval 'php-coveralls -vv \
       --coverage_clover="$ORCA_COVERAGE_CLOVER" \
