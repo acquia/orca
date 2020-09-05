@@ -8,6 +8,7 @@ use Acquia\Orca\Helper\Exception\OrcaException;
 use Acquia\Orca\Helper\Exception\ParseError;
 use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
 use Acquia\Orca\Helper\Process\ProcessRunner;
+use Acquia\Orca\Package\Package;
 use Composer\Package\Loader\ValidatingArrayLoader;
 use Composer\Package\Version\VersionGuesser;
 use Composer\Semver\VersionParser;
@@ -84,12 +85,40 @@ class Composer {
     $this->processRunner->runOrcaVendorBin([
       'composer',
       'create-project',
+      "--stability={$stability}",
       '--no-dev',
       '--no-scripts',
       '--no-install',
       '--no-interaction',
-      "--stability={$stability}",
       $project_template_string,
+      $directory,
+    ]);
+  }
+
+  /**
+   * Creates a project from a given package's local path repository.
+   *
+   * @param \Acquia\Orca\Package\Package $package
+   *   The package in question.
+   * @param string $directory
+   *   The directory to create the project at.
+   *
+   * @throws \Acquia\Orca\Helper\Exception\FileNotFoundException
+   * @throws \Acquia\Orca\Helper\Exception\OrcaException
+   * @throws \Acquia\Orca\Helper\Exception\ParseError
+   */
+  public function createProjectFromPackage(Package $package, string $directory): void {
+    $version = $this->guessVersion($package->getRepositoryUrlAbsolute());
+    $this->processRunner->runOrcaVendorBin([
+      'composer',
+      'create-project',
+      '--stability=dev',
+      "--repository={$package->getRepositoryUrlAbsolute()}",
+      '--no-dev',
+      '--no-scripts',
+      '--no-install',
+      '--no-interaction',
+      "{$package->getPackageName()}:{$version}",
       $directory,
     ]);
   }

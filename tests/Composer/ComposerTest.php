@@ -9,6 +9,7 @@ use Acquia\Orca\Helper\Exception\OrcaException;
 use Acquia\Orca\Helper\Exception\ParseError;
 use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
 use Acquia\Orca\Helper\Process\ProcessRunner;
+use Acquia\Orca\Package\Package;
 use Composer\Package\Version\VersionGuesser;
 use Exception;
 use InvalidArgumentException;
@@ -59,11 +60,11 @@ class ComposerTest extends TestCase {
       ->runOrcaVendorBin([
         'composer',
         'create-project',
+        "--stability={$stability}",
         '--no-dev',
         '--no-scripts',
         '--no-install',
         '--no-interaction',
-        "--stability={$stability}",
         $project_template_string,
         $directory,
       ])
@@ -77,6 +78,50 @@ class ComposerTest extends TestCase {
     return [
       ['test/example-project1', 'alpha', '/var/www/orca-build1'],
       ['test/example-project2', 'dev', '/var/www/orca-build2'],
+    ];
+  }
+
+  /**
+   * @dataProvider providerCreateProjectFromPackage
+   */
+  public function testCreateProjectFromPackage($package_name, $repository_url, $version_guess, $directory): void {
+    $package = $this->prophesize(Package::class);
+    $package->getPackageName()
+      ->willReturn($package_name);
+    $package->getRepositoryUrlAbsolute()
+      ->willReturn($repository_url);
+    // @todo These ridiculous acrobatics required to mock version guessing
+    //   indicates that the Composer class is doing too much. Extract a version
+    //   guessing into a separate class.
+    $this->configLoader
+      ->load(Argument::any())
+      ->willReturn(new Config([]));
+    $this->versionGuesser
+      ->guessVersion(Argument::any(), $repository_url)
+      ->willReturn(['version' => $version_guess]);
+    $this->processRunner
+      ->runOrcaVendorBin([
+        'composer',
+        'create-project',
+        '--stability=dev',
+        "--repository={$repository_url}",
+        '--no-dev',
+        '--no-scripts',
+        '--no-install',
+        '--no-interaction',
+        "{$package_name}:{$version_guess}",
+        $directory,
+      ])
+      ->shouldBeCalledOnce();
+
+    $composer = $this->createComposer();
+    $composer->createProjectFromPackage($package->reveal(), $directory);
+  }
+
+  public function providerCreateProjectFromPackage(): array {
+    return [
+      ['example/drupal-recommended-project', '/var/www/drupal-recommended-project', 'dev-develop', '/var/www/orca-build1'],
+      ['example/drupal-minimal-project', '/var/www/drupal-minimal-project', '9999999-dev', '/var/www/orca-build2'],
     ];
   }
 
