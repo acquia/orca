@@ -168,7 +168,7 @@ class FixtureCreator {
     $this->createComposerProject();
     $this->configureComposerProject();
     $this->fixDefaultDependencies();
-    $this->addAcquiaPackages();
+    $this->addCompanyPackages();
     $this->addComposerExtraData();
     $this->installCloudHooks();
     $this->ensureDrupalSettings();
@@ -378,7 +378,7 @@ class FixtureCreator {
    * @throws \Acquia\Orca\Helper\Exception\OrcaException
    *   If the SUT isn't properly installed.
    */
-  private function addAcquiaPackages(): void {
+  private function addCompanyPackages(): void {
     if ($this->options->isBare()) {
       return;
     }
