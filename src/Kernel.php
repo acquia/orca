@@ -89,7 +89,7 @@ class Kernel extends BaseKernel {
    */
   protected function getFixtureDir(): string {
     /* @noinspection RealpathInStreamContextInspection */
-    return realpath("{$this->getProjectDir()}/../orca-build");
+    return realpath("{$this->getProjectDir()}/..") . '/orca-build';
   }
 
 }
