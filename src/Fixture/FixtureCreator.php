@@ -183,11 +183,7 @@ class FixtureCreator {
    */
   private function createComposerProject(): void {
     $this->output->section('Creating Composer project');
-    $this->codebaseCreator->create(
-      $this->getProjectTemplateString(),
-      $this->getProjectTemplateStability(),
-      $this->fixture->getPath()
-    );
+    $this->codebaseCreator->create($this->options, $this->getProjectTemplateString());
   }
 
   /**
@@ -212,20 +208,6 @@ class FixtureCreator {
       default:
         return $project_template;
     }
-  }
-
-  /**
-   * Gets the project template stability.
-   *
-   * @return string
-   *   The project template stability.
-   */
-  private function getProjectTemplateStability(): string {
-    $stability = 'alpha';
-    if ($this->options->isDev() || $this->isSutProjectTemplate()) {
-      $stability = 'dev';
-    }
-    return $stability;
   }
 
   /**
@@ -603,16 +585,15 @@ class FixtureCreator {
       $dependencies = [$sut];
     }
     foreach ($dependencies as $package_name => &$package) {
-      // Always symlink the SUT.
-      if ($package === $sut) {
-        $package = $this->getLocalPackageString($package);
+      // Omit packages that cannot be composer required.
+      if (!$package->shouldGetComposerRequired()) {
+        unset($dependencies[$package_name]);
         continue;
       }
 
-      // Omit packages that are non-installable per their specification.
-      $package_is_installable = $this->getTargetVersion($package);
-      if (!$package_is_installable) {
-        unset($dependencies[$package_name]);
+      // Always symlink the SUT.
+      if ($package === $sut) {
+        $package = $this->getLocalPackageString($package);
         continue;
       }
 

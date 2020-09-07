@@ -2,6 +2,7 @@
 
 namespace Acquia\Orca\Composer;
 
+use Acquia\Orca\Fixture\FixtureOptions;
 use Acquia\Orca\Helper\Config\ConfigLoader;
 use Acquia\Orca\Helper\Exception\FileNotFoundException as OrcaFileNotFoundException;
 use Acquia\Orca\Helper\Exception\OrcaException;
@@ -31,11 +32,18 @@ class Composer {
   private $configLoader;
 
   /**
-   * The fixture path.
+   * The fixture path handler.
    *
-   * @var string
+   * @var \Acquia\Orca\Helper\Filesystem\FixturePathHandler
    */
   private $fixture;
+
+  /**
+   * The fixture options.
+   *
+   * @var \Acquia\Orca\Fixture\FixtureOptions
+   */
+  private $options;
 
   /**
    * The process runner.
@@ -65,9 +73,64 @@ class Composer {
    */
   public function __construct(ConfigLoader $config_loader, FixturePathHandler $fixture_path_handler, ProcessRunner $process_runner, VersionGuesser $version_guesser) {
     $this->configLoader = $config_loader;
-    $this->fixture = $fixture_path_handler->getPath();
+    $this->fixture = $fixture_path_handler;
     $this->processRunner = $process_runner;
     $this->versionGuesser = $version_guesser;
+  }
+
+  /**
+   * Creates the Composer project.
+   *
+   * @param \Acquia\Orca\Fixture\FixtureOptions $options
+   *   The fixture options.
+   */
+  public function createProjectNew(FixtureOptions $options): void {
+    $this->options = $options;
+
+    $stability = 'alpha';
+    if ($options->isDev()) {
+      $stability = 'dev';
+    }
+
+    $this->processRunner->runOrcaVendorBin([
+      'composer',
+      'create-project',
+      '--no-dev',
+      '--no-scripts',
+      '--no-install',
+      '--no-interaction',
+      "--stability={$stability}",
+      $this->getProjectTemplateString(),
+      $this->fixture->getPath(),
+    ]);
+  }
+
+  /**
+   * Gets the project template string for requiring with Composer.
+   *
+   * @return string
+   *   The project template string.
+   *
+   * @throws \Acquia\Orca\Helper\Exception\FileNotFoundException
+   * @throws \Acquia\Orca\Helper\Exception\OrcaException
+   * @throws \Acquia\Orca\Helper\Exception\ParseError
+   */
+  private function getProjectTemplateString(): string {
+    $project_template = $this->options->getProjectTemplate();
+
+    if (!$this->options->hasSut()) {
+      return $project_template;
+    }
+
+    /* @var \Acquia\Orca\Package\Package $sut */
+    $sut = $this->options->getSut();
+
+    if (!$sut->isProjectTemplate()) {
+      return $project_template;
+    }
+
+    $version = $this->guessVersion($sut->getRepositoryUrlAbsolute());
+    return "{$project_template}:{$version}";
   }
 
   /**
@@ -78,10 +141,8 @@ class Composer {
    *   version constraint, e.g., "vendor/package" or "vendor/package:^1".
    * @param string $stability
    *   The stability flag, e.g., "alpha" or "dev".
-   * @param string $directory
-   *   The directory to create the project at.
    */
-  public function createProject(string $project_template_string, string $stability, string $directory): void {
+  public function createProject(string $project_template_string, string $stability): void {
     $this->processRunner->runOrcaVendorBin([
       'composer',
       'create-project',
@@ -91,7 +152,7 @@ class Composer {
       '--no-install',
       '--no-interaction',
       $project_template_string,
-      $directory,
+      $this->fixture->getPath(),
     ]);
   }
 
@@ -100,14 +161,12 @@ class Composer {
    *
    * @param \Acquia\Orca\Package\Package $package
    *   The package in question.
-   * @param string $directory
-   *   The directory to create the project at.
    *
    * @throws \Acquia\Orca\Helper\Exception\FileNotFoundException
    * @throws \Acquia\Orca\Helper\Exception\OrcaException
    * @throws \Acquia\Orca\Helper\Exception\ParseError
    */
-  public function createProjectFromPackage(Package $package, string $directory): void {
+  public function createProjectFromPackage(Package $package): void {
     $version = $this->guessVersion($package->getRepositoryUrlAbsolute());
     $this->processRunner->runOrcaVendorBin([
       'composer',
@@ -119,7 +178,7 @@ class Composer {
       '--no-install',
       '--no-interaction',
       "{$package->getPackageName()}:{$version}",
-      $directory,
+      $this->fixture->getPath(),
     ]);
   }
 
@@ -167,7 +226,7 @@ class Composer {
    * @return bool
    *   TRUE if it is valid or FALSE if not.
    */
-  public function isValidVersionConstraint(string $version): bool {
+  public static function isValidVersionConstraint(string $version): bool {
     try {
       $parser = new VersionParser();
       $parser->parseConstraints($version);
@@ -245,7 +304,7 @@ class Composer {
     array_unshift($command, 'composer');
     $command = array_merge($command, $args);
     $this->processRunner
-      ->runOrcaVendorBin($command, $this->fixture);
+      ->runOrcaVendorBin($command, $this->fixture->getPath());
   }
 
 }

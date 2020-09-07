@@ -2,7 +2,6 @@
 
 namespace Acquia\Orca\Tests\Fixture;
 
-use Acquia\Orca\Composer\Composer;
 use Acquia\Orca\Drupal\DrupalCoreVersion;
 use Acquia\Orca\Drupal\DrupalCoreVersionFinder;
 use Acquia\Orca\Fixture\FixtureOptions;
@@ -13,7 +12,6 @@ use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 
 /**
- * @property \Acquia\Orca\Composer\Composer|\Prophecy\Prophecy\ObjectProphecy $composer
  * @property \Acquia\Orca\Drupal\DrupalCoreVersionFinder|\Prophecy\Prophecy\ObjectProphecy $drupalCoreVersionFinder
  * @property \Acquia\Orca\Package\PackageManager|\Prophecy\Prophecy\ObjectProphecy $packageManager
  *
@@ -22,10 +20,6 @@ use Prophecy\Argument;
 class FixtureOptionsTest extends TestCase {
 
   public function setUp(): void {
-    $this->composer = $this->prophesize(Composer::class);
-    $this->composer
-      ->isValidVersionConstraint(Argument::any())
-      ->willReturn(TRUE);
     $this->drupalCoreVersionFinder = $this->prophesize(DrupalCoreVersionFinder::class);
     $this->packageManager = $this->prophesize(PackageManager::class);
     $this->packageManager
@@ -34,10 +28,9 @@ class FixtureOptionsTest extends TestCase {
   }
 
   private function createFixtureOptions(array $options): FixtureOptions {
-    $composer = $this->composer->reveal();
     $drupal_core_version_finder = $this->drupalCoreVersionFinder->reveal();
     $package_manager = $this->packageManager->reveal();
-    return new FixtureOptions($composer, $drupal_core_version_finder, $package_manager, $options);
+    return new FixtureOptions($drupal_core_version_finder, $package_manager, $options);
   }
 
   /**
@@ -241,13 +234,9 @@ class FixtureOptionsTest extends TestCase {
    * @covers ::resolve
    */
   public function testCoreRawConstraintInvalid(): void {
-    $version = 'invalid';
-    $this->composer
-      ->isValidVersionConstraint($version)
-      ->willReturn(FALSE);
     $this->expectException(OrcaInvalidArgumentException::class);
 
-    $this->createFixtureOptions(['core' => $version]);
+    $this->createFixtureOptions(['core' => 'invalid']);
   }
 
   /**

@@ -22,13 +22,6 @@ use UnexpectedValueException;
 class FixtureOptions {
 
   /**
-   * The Composer facade.
-   *
-   * @var \Acquia\Orca\Composer\Composer
-   */
-  private $composer;
-
-  /**
    * The resolved core version.
    *
    * @var string
@@ -59,8 +52,6 @@ class FixtureOptions {
   /**
    * Constructs an instance.
    *
-   * @param \Acquia\Orca\Composer\Composer $composer
-   *   The Composer facade.
    * @param \Acquia\Orca\Drupal\DrupalCoreVersionFinder $drupal_core_version_finder
    *   The Drupal core version finder.
    * @param \Acquia\Orca\Package\PackageManager $package_manager
@@ -70,8 +61,7 @@ class FixtureOptions {
    *
    * @throws \Acquia\Orca\Helper\Exception\OrcaInvalidArgumentException
    */
-  public function __construct(Composer $composer, DrupalCoreVersionFinder $drupal_core_version_finder, PackageManager $package_manager, array $options) {
-    $this->composer = $composer;
+  public function __construct(DrupalCoreVersionFinder $drupal_core_version_finder, PackageManager $package_manager, array $options) {
     $this->drupalCoreVersionFinder = $drupal_core_version_finder;
     $this->packageManager = $package_manager;
     $this->resolve($options);
@@ -155,14 +145,14 @@ class FixtureOptions {
    *   The validation function.
    */
   private function isValidCoreValue(): Closure {
-    return function ($value): bool {
+    return static function ($value): bool {
       if ($value === NULL) {
         return TRUE;
       }
       if (DrupalCoreVersion::isValidKey($value)) {
         return TRUE;
       }
-      return $this->composer->isValidVersionConstraint($value);
+      return Composer::isValidVersionConstraint($value);
     };
   }
 
