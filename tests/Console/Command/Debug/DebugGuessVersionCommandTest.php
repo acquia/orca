@@ -2,7 +2,7 @@
 
 namespace Acquia\Orca\Tests\Console\Command\Debug;
 
-use Acquia\Orca\Composer\Composer;
+use Acquia\Orca\Composer\VersionGuesser;
 use Acquia\Orca\Console\Command\Debug\DebugGuessVersionCommand;
 use Acquia\Orca\Console\Helper\StatusCode;
 use Acquia\Orca\Helper\Exception\FileNotFoundException;
@@ -13,7 +13,7 @@ use Prophecy\Argument;
 use Symfony\Component\Console\Command\Command;
 
 /**
- * @property \Acquia\Orca\Composer\Composer|\Prophecy\Prophecy\ObjectProphecy $composer
+ * @property \Acquia\Orca\Composer\VersionGuesser|\Prophecy\Prophecy\ObjectProphecy $versionGuesser
  * @coversDefaultClass \Acquia\Orca\Console\Command\Debug\DebugGuessVersionCommand
  */
 class DebugGuessVersionCommandTest extends CommandTestBase {
@@ -21,12 +21,12 @@ class DebugGuessVersionCommandTest extends CommandTestBase {
   private const SUT_PATH = '/var/www/example';
 
   protected function setUp(): void {
-    $this->composer = $this->prophesize(Composer::class);
+    $this->versionGuesser = $this->prophesize(VersionGuesser::class);
   }
 
   protected function createCommand(): Command {
-    $composer = $this->composer->reveal();
-    return new DebugGuessVersionCommand($composer);
+    $version_guesser = $this->versionGuesser->reveal();
+    return new DebugGuessVersionCommand($version_guesser);
   }
 
   /**
@@ -53,7 +53,7 @@ class DebugGuessVersionCommandTest extends CommandTestBase {
    * @dataProvider providerExecution
    */
   public function testExecution($version): void {
-    $this->composer
+    $this->versionGuesser
       ->guessVersion(self::SUT_PATH)
       ->shouldBeCalledOnce()
       ->willReturn($version);
@@ -75,7 +75,7 @@ class DebugGuessVersionCommandTest extends CommandTestBase {
    * @dataProvider providerExecutionWithException
    */
   public function testExecutionWithException($exception): void {
-    $this->composer
+    $this->versionGuesser
       ->guessVersion(Argument::any())
       ->shouldBeCalledOnce()
       ->willThrow($exception);

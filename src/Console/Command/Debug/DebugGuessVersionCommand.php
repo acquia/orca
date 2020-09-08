@@ -2,7 +2,7 @@
 
 namespace Acquia\Orca\Console\Command\Debug;
 
-use Acquia\Orca\Composer\Composer;
+use Acquia\Orca\Composer\VersionGuesser;
 use Acquia\Orca\Console\Helper\StatusCode;
 use Acquia\Orca\Helper\Exception\OrcaException;
 use Symfony\Component\Console\Command\Command;
@@ -23,21 +23,21 @@ class DebugGuessVersionCommand extends Command {
   protected static $defaultName = 'debug:guess-version';
 
   /**
-   * The Composer facade.
+   * The version guesser.
    *
-   * @var \Acquia\Orca\Composer\Composer
+   * @var \Composer\Package\Version\VersionGuesser
    */
-  private $composer;
+  private $versionGuesser;
 
   /**
    * Constructs an instance.
    *
-   * @param \Acquia\Orca\Composer\Composer $composer
-   *   The Composer facade.
+   * @param \Acquia\Orca\Composer\VersionGuesser $version_guesser
+   *   The version guesser.
    */
-  public function __construct(Composer $composer) {
+  public function __construct(VersionGuesser $version_guesser) {
     parent::__construct(self::$defaultName);
-    $this->composer = $composer;
+    $this->versionGuesser = $version_guesser;
   }
 
   /**
@@ -59,7 +59,7 @@ class DebugGuessVersionCommand extends Command {
     $path = $input->getArgument('path');
 
     try {
-      $guess = $this->composer->guessVersion($path);
+      $guess = $this->versionGuesser->guessVersion($path);
     }
     catch (OrcaException $e) {
       $output->writeln("Error: {$e->getMessage()}");

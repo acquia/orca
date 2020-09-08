@@ -3,6 +3,7 @@
 namespace Acquia\Orca\Tests\Fixture;
 
 use Acquia\Orca\Composer\Composer;
+use Acquia\Orca\Composer\VersionGuesser;
 use Acquia\Orca\Fixture\CodebaseCreator;
 use Acquia\Orca\Fixture\FixtureCreator;
 use Acquia\Orca\Fixture\FixtureInspector;
@@ -18,14 +19,15 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
  * @property \Acquia\Orca\Composer\Composer|\Prophecy\Prophecy\ObjectProphecy $composer
- * @property \Acquia\Orca\Fixture\FixtureInspector|\Prophecy\Prophecy\ObjectProphecy $fixtureInspector
- * @property \Acquia\Orca\Helper\Filesystem\FixturePathHandler|\Prophecy\Prophecy\ObjectProphecy $fixture
- * @property \Acquia\Orca\Helper\Filesystem\OrcaPathHandler|\Prophecy\Prophecy\ObjectProphecy $orca
+ * @property \Acquia\Orca\Composer\VersionGuesser|\Prophecy\Prophecy\ObjectProphecy $versionGuesser
  * @property \Acquia\Orca\Fixture\CodebaseCreator|\Prophecy\Prophecy\ObjectProphecy $codebaseCreator
+ * @property \Acquia\Orca\Fixture\FixtureInspector|\Prophecy\Prophecy\ObjectProphecy $fixtureInspector
  * @property \Acquia\Orca\Fixture\SiteInstaller|\Prophecy\Prophecy\ObjectProphecy $siteInstaller
  * @property \Acquia\Orca\Fixture\SubextensionManager|\Prophecy\Prophecy\ObjectProphecy $subextensionManager
- * @property \Acquia\Orca\Package\PackageManager|\Prophecy\Prophecy\ObjectProphecy $packageManager
+ * @property \Acquia\Orca\Helper\Filesystem\FixturePathHandler|\Prophecy\Prophecy\ObjectProphecy $fixture
+ * @property \Acquia\Orca\Helper\Filesystem\OrcaPathHandler|\Prophecy\Prophecy\ObjectProphecy $orca
  * @property \Acquia\Orca\Helper\Process\ProcessRunner|\Prophecy\Prophecy\ObjectProphecy $processRunner
+ * @property \Acquia\Orca\Package\PackageManager|\Prophecy\Prophecy\ObjectProphecy $packageManager
  * @property \Symfony\Component\Console\Style\SymfonyStyle|\Prophecy\Prophecy\ObjectProphecy $output
  */
 class FixtureCreatorTest extends TestCase {
@@ -43,6 +45,7 @@ class FixtureCreatorTest extends TestCase {
     $this->processRunner = $this->prophesize(ProcessRunner::class);
     $this->siteInstaller = $this->prophesize(SiteInstaller::class);
     $this->subextensionManager = $this->prophesize(SubextensionManager::class);
+    $this->versionGuesser = $this->prophesize(VersionGuesser::class);
     $this->output = $this->prophesize(SymfonyStyle::class);
   }
 
@@ -55,8 +58,9 @@ class FixtureCreatorTest extends TestCase {
     $process_runner = $this->processRunner->reveal();
     $site_installer = $this->siteInstaller->reveal();
     $subextension_manager = $this->subextensionManager->reveal();
+    $version_guesser = $this->versionGuesser->reveal();
     $output = $this->output->reveal();
-    return new FixtureCreator($codebase_creator, $composer_facade, $fixture, $fixture_inspector, $site_installer, $output, $process_runner, $package_manager, $subextension_manager);
+    return new FixtureCreator($codebase_creator, $composer_facade, $fixture, $fixture_inspector, $site_installer, $output, $process_runner, $package_manager, $subextension_manager, $version_guesser);
   }
 
   public function testInstantiation(): void {

@@ -3,6 +3,7 @@
 namespace Acquia\Orca\Fixture;
 
 use Acquia\Orca\Composer\Composer;
+use Acquia\Orca\Composer\VersionGuesser;
 use Acquia\Orca\Console\Helper\StatusTable;
 use Acquia\Orca\Git\Git;
 use Acquia\Orca\Helper\Exception\OrcaException;
@@ -113,6 +114,13 @@ class FixtureCreator {
   private $subextensionManager;
 
   /**
+   * The version guesser.
+   *
+   * @var \Acquia\Orca\Composer\VersionGuesser
+   */
+  private $versionGuesser;
+
+  /**
    * The codebase creator.
    *
    * @var \Acquia\Orca\Fixture\CodebaseCreator
@@ -140,8 +148,10 @@ class FixtureCreator {
    *   The package manager.
    * @param \Acquia\Orca\Fixture\SubextensionManager $subextension_manager
    *   The subextension manager.
+   * @param \Acquia\Orca\Composer\VersionGuesser $version_guesser
+   *   The version guesser.
    */
-  public function __construct(CodebaseCreator $codebase_creator, Composer $composer, FixturePathHandler $fixture_path_handler, FixtureInspector $fixture_inspector, SiteInstaller $site_installer, SymfonyStyle $output, ProcessRunner $process_runner, PackageManager $package_manager, SubextensionManager $subextension_manager) {
+  public function __construct(CodebaseCreator $codebase_creator, Composer $composer, FixturePathHandler $fixture_path_handler, FixtureInspector $fixture_inspector, SiteInstaller $site_installer, SymfonyStyle $output, ProcessRunner $process_runner, PackageManager $package_manager, SubextensionManager $subextension_manager, VersionGuesser $version_guesser) {
     $this->blt = $package_manager->getBlt();
     $this->codebaseCreator = $codebase_creator;
     $this->composer = $composer;
@@ -152,6 +162,7 @@ class FixtureCreator {
     $this->packageManager = $package_manager;
     $this->siteInstaller = $site_installer;
     $this->subextensionManager = $subextension_manager;
+    $this->versionGuesser = $version_guesser;
   }
 
   /**
@@ -707,7 +718,7 @@ class FixtureCreator {
    */
   private function getLocalPackageVersion(Package $package): string {
     $path = $package->getRepositoryUrlAbsolute();
-    return $this->composer->guessVersion($path);
+    return $this->versionGuesser->guessVersion($path);
   }
 
   /**

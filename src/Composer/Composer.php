@@ -4,19 +4,12 @@ namespace Acquia\Orca\Composer;
 
 use Acquia\Orca\Fixture\FixtureOptions;
 use Acquia\Orca\Helper\Config\ConfigLoader;
-use Acquia\Orca\Helper\Exception\FileNotFoundException as OrcaFileNotFoundException;
-use Acquia\Orca\Helper\Exception\OrcaException;
-use Acquia\Orca\Helper\Exception\ParseError;
 use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
 use Acquia\Orca\Helper\Process\ProcessRunner;
 use Acquia\Orca\Package\Package;
 use Composer\Package\Loader\ValidatingArrayLoader;
-use Composer\Package\Version\VersionGuesser;
 use Composer\Semver\VersionParser;
-use Exception;
 use InvalidArgumentException;
-use Noodlehaus\Exception\FileNotFoundException as NoodlehausFileNotFoundExceptionAlias;
-use Noodlehaus\Exception\ParseException;
 use UnexpectedValueException;
 
 /**
@@ -55,7 +48,7 @@ class Composer {
   /**
    * The version guesser.
    *
-   * @var \Composer\Package\Version\VersionGuesser
+   * @var \Acquia\Orca\Composer\VersionGuesser
    */
   private $versionGuesser;
 
@@ -68,7 +61,7 @@ class Composer {
    *   The fixture path handler.
    * @param \Acquia\Orca\Helper\Process\ProcessRunner $process_runner
    *   The process runner.
-   * @param \Composer\Package\Version\VersionGuesser $version_guesser
+   * @param \Acquia\Orca\Composer\VersionGuesser $version_guesser
    *   The version guesser.
    */
   public function __construct(ConfigLoader $config_loader, FixturePathHandler $fixture_path_handler, ProcessRunner $process_runner, VersionGuesser $version_guesser) {
@@ -129,7 +122,7 @@ class Composer {
       return $project_template;
     }
 
-    $version = $this->guessVersion($sut->getRepositoryUrlAbsolute());
+    $version = $this->versionGuesser->guessVersion($sut->getRepositoryUrlAbsolute());
     return "{$project_template}:{$version}";
   }
 
@@ -167,7 +160,7 @@ class Composer {
    * @throws \Acquia\Orca\Helper\Exception\ParseError
    */
   public function createProjectFromPackage(Package $package): void {
-    $version = $this->guessVersion($package->getRepositoryUrlAbsolute());
+    $version = $this->versionGuesser->guessVersion($package->getRepositoryUrlAbsolute());
     $this->processRunner->runOrcaVendorBin([
       'composer',
       'create-project',
@@ -180,41 +173,6 @@ class Composer {
       "{$package->getPackageName()}:{$version}",
       $this->fixture->getPath(),
     ]);
-  }
-
-  /**
-   * Guesses the version of a local package.
-   *
-   * @param string $path
-   *   The path to the package to guess.
-   *
-   * @return string
-   *   The guessed version string.
-   *
-   * @throws \Acquia\Orca\Helper\Exception\FileNotFoundException
-   * @throws \Acquia\Orca\Helper\Exception\OrcaException
-   * @throws \Acquia\Orca\Helper\Exception\ParseError
-   */
-  public function guessVersion(string $path): string {
-    try {
-      $composer_json_path = "{$path}/composer.json";
-      $package_config = $this->configLoader
-        ->load($composer_json_path)
-        ->all();
-    }
-    catch (NoodlehausFileNotFoundExceptionAlias $e) {
-      throw new OrcaFileNotFoundException("No such file: {$composer_json_path}");
-    }
-    catch (ParseException $e) {
-      throw new ParseError("Cannot parse {$composer_json_path}");
-    }
-    catch (Exception $e) {
-      throw new OrcaException("Unknown error guessing version at {$path}");
-    }
-
-    $guess = $this->versionGuesser
-      ->guessVersion($package_config, $path);
-    return (empty($guess['version'])) ? '@dev' : $guess['version'];
   }
 
   /**
