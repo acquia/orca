@@ -25,20 +25,6 @@ class CodebaseCreator {
   private $git;
 
   /**
-   * The fixture path handler.
-   *
-   * @var \Acquia\Orca\Helper\Filesystem\FixturePathHandler
-   */
-  private $fixture;
-
-  /**
-   * The fixture options.
-   *
-   * @var \Acquia\Orca\Fixture\FixtureOptions
-   */
-  private $options;
-
-  /**
    * Constructs an instance.
    *
    * @param \Acquia\Orca\Composer\Composer $composer
@@ -54,30 +40,38 @@ class CodebaseCreator {
   /**
    * Creates the codebase.
    *
-   * @param \Acquia\Orca\Fixture\FixtureOptions $fixture_options
+   * @param \Acquia\Orca\Fixture\FixtureOptions $options
    *   The fixture options.
-   * @param string $project_template_string
-   *   The Composer project template string to use, optionally including a
-   *   version constraint, e.g., "vendor/package" or "vendor/package:^1".
+   *
+   * @throws \Acquia\Orca\Helper\Exception\OrcaException
    */
-  public function create(FixtureOptions $fixture_options, string $project_template_string): void {
-    $this->options = $fixture_options;
-    $this->createProject($project_template_string);
+  public function create(FixtureOptions $options): void {
+    $this->createProject($options);
     $this->git->ensureFixtureRepo();
   }
 
   /**
    * Creates the Composer project.
    *
-   * @param string $project_template_string
-   *   The project tempalte string.
+   * @param \Acquia\Orca\Fixture\FixtureOptions $options
+   *   The fixture options.
+   *
+   * @throws \Acquia\Orca\Helper\Exception\OrcaException
    */
-  private function createProject(string $project_template_string): void {
-    $stability = 'alpha';
-    if ($this->options->isDev()) {
-      $stability = 'dev';
+  private function createProject(FixtureOptions $options): void {
+    if (!$options->hasSut()) {
+      $this->composer->createProject($options);
+      return;
     }
-    $this->composer->createProject($project_template_string, $stability);
+
+    /* @var \Acquia\Orca\Package\Package $sut */
+    $sut = $options->getSut();
+    if (!$sut->isProjectTemplate()) {
+      $this->composer->createProject($options);
+      return;
+    }
+
+    $this->composer->createProjectFromPackage($sut);
   }
 
 }

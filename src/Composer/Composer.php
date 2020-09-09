@@ -3,10 +3,10 @@
 namespace Acquia\Orca\Composer;
 
 use Acquia\Orca\Fixture\FixtureOptions;
-use Acquia\Orca\Helper\Config\ConfigLoader;
 use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
 use Acquia\Orca\Helper\Process\ProcessRunner;
 use Acquia\Orca\Package\Package;
+use Acquia\Orca\Package\PackageManager;
 use Composer\Package\Loader\ValidatingArrayLoader;
 use Composer\Semver\VersionParser;
 use InvalidArgumentException;
@@ -16,13 +16,6 @@ use UnexpectedValueException;
  * Provides a facade for encapsulating Composer interactions.
  */
 class Composer {
-
-  /**
-   * The config loader.
-   *
-   * @var \Acquia\Orca\Helper\Config\ConfigLoader
-   */
-  private $configLoader;
 
   /**
    * The fixture path handler.
@@ -37,6 +30,13 @@ class Composer {
    * @var \Acquia\Orca\Fixture\FixtureOptions
    */
   private $options;
+
+  /**
+   * The package manager.
+   *
+   * @var \Acquia\Orca\Package\PackageManager
+   */
+  private $packageManager;
 
   /**
    * The process runner.
@@ -55,18 +55,18 @@ class Composer {
   /**
    * Constructs an instance.
    *
-   * @param \Acquia\Orca\Helper\Config\ConfigLoader $config_loader
-   *   The config loader.
    * @param \Acquia\Orca\Helper\Filesystem\FixturePathHandler $fixture_path_handler
    *   The fixture path handler.
+   * @param \Acquia\Orca\Package\PackageManager $package_manager
+   *   The package manager.
    * @param \Acquia\Orca\Helper\Process\ProcessRunner $process_runner
    *   The process runner.
    * @param \Acquia\Orca\Composer\VersionGuesser $version_guesser
    *   The version guesser.
    */
-  public function __construct(ConfigLoader $config_loader, FixturePathHandler $fixture_path_handler, ProcessRunner $process_runner, VersionGuesser $version_guesser) {
-    $this->configLoader = $config_loader;
+  public function __construct(FixturePathHandler $fixture_path_handler, PackageManager $package_manager, ProcessRunner $process_runner, VersionGuesser $version_guesser) {
     $this->fixture = $fixture_path_handler;
+    $this->packageManager = $package_manager;
     $this->processRunner = $process_runner;
     $this->versionGuesser = $version_guesser;
   }
@@ -77,7 +77,7 @@ class Composer {
    * @param \Acquia\Orca\Fixture\FixtureOptions $options
    *   The fixture options.
    */
-  public function createProjectNew(FixtureOptions $options): void {
+  public function createProject(FixtureOptions $options): void {
     $this->options = $options;
 
     $stability = 'alpha';
@@ -88,11 +88,11 @@ class Composer {
     $this->processRunner->runOrcaVendorBin([
       'composer',
       'create-project',
+      "--stability={$stability}",
       '--no-dev',
       '--no-scripts',
       '--no-install',
       '--no-interaction',
-      "--stability={$stability}",
       $this->getProjectTemplateString(),
       $this->fixture->getPath(),
     ]);
@@ -122,31 +122,26 @@ class Composer {
       return $project_template;
     }
 
+    if ($project_template === 'acquia/blt-project') {
+      return $project_template . ':' . $this->getBltProjectVersion();
+    }
+
     $version = $this->versionGuesser->guessVersion($sut->getRepositoryUrlAbsolute());
-    return "{$project_template}:{$version}";
+    return $project_template . ':' . $version;
   }
 
   /**
-   * Creates the Composer project.
+   * Gets the blt-project version to use for project creation.
    *
-   * @param string $project_template_string
-   *   The Composer project template string to use, optionally including a
-   *   version constraint, e.g., "vendor/package" or "vendor/package:^1".
-   * @param string $stability
-   *   The stability flag, e.g., "alpha" or "dev".
+   * @return string
+   *   The version string.
    */
-  public function createProject(string $project_template_string, string $stability): void {
-    $this->processRunner->runOrcaVendorBin([
-      'composer',
-      'create-project',
-      "--stability={$stability}",
-      '--no-dev',
-      '--no-scripts',
-      '--no-install',
-      '--no-interaction',
-      $project_template_string,
-      $this->fixture->getPath(),
-    ]);
+  private function getBltProjectVersion(): string {
+    $blt = $this->packageManager->getBlt();
+    if ($this->options->isDev()) {
+      return $blt->getVersionDev($this->options->getCore());
+    }
+    return $blt->getVersionRecommended($this->options->getCore());
   }
 
   /**
@@ -161,11 +156,18 @@ class Composer {
    */
   public function createProjectFromPackage(Package $package): void {
     $version = $this->versionGuesser->guessVersion($package->getRepositoryUrlAbsolute());
+    $repository = json_encode([
+      'type' => 'path',
+      'url' => $package->getRepositoryUrlAbsolute(),
+      'options' => [
+        'symlink' => FALSE,
+      ],
+    ]);
     $this->processRunner->runOrcaVendorBin([
       'composer',
       'create-project',
       '--stability=dev',
-      "--repository={$package->getRepositoryUrlAbsolute()}",
+      "--repository={$repository}",
       '--no-dev',
       '--no-scripts',
       '--no-install',

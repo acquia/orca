@@ -6,21 +6,18 @@ use Acquia\Orca\Composer\Composer;
 use Acquia\Orca\Composer\VersionGuesser;
 use Acquia\Orca\Drupal\DrupalCoreVersionFinder;
 use Acquia\Orca\Fixture\FixtureOptions;
-use Acquia\Orca\Helper\Config\ConfigLoader;
 use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
 use Acquia\Orca\Helper\Filesystem\OrcaPathHandler;
 use Acquia\Orca\Helper\Process\ProcessRunner;
 use Acquia\Orca\Package\Package;
 use Acquia\Orca\Package\PackageManager;
 use InvalidArgumentException;
-use Noodlehaus\Config;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 
 /**
  * @property \Acquia\Orca\Composer\VersionGuesser|\Prophecy\Prophecy\ObjectProphecy $versionGuesser
  * @property \Acquia\Orca\Drupal\DrupalCoreVersionFinder|\Prophecy\Prophecy\ObjectProphecy $drupalCoreVersionFinder
- * @property \Acquia\Orca\Helper\Config\ConfigLoader|\Prophecy\Prophecy\ObjectProphecy $configLoader
  * @property \Acquia\Orca\Helper\Filesystem\FixturePathHandler|\Prophecy\Prophecy\ObjectProphecy $fixture
  * @property \Acquia\Orca\Helper\Filesystem\OrcaPathHandler|\Prophecy\Prophecy\ObjectProphecy $orca
  * @property \Acquia\Orca\Helper\Process\ProcessRunner|\Prophecy\Prophecy\ObjectProphecy $processRunner
@@ -32,7 +29,6 @@ class ComposerTest extends TestCase {
   private const FIXTURE_PATH = '/var/www/orca-build';
 
   protected function setUp(): void {
-    $this->configLoader = $this->prophesize(ConfigLoader::class);
     $this->drupalCoreVersionFinder = $this->prophesize(DrupalCoreVersionFinder::class);
     $this->fixture = $this->prophesize(FixturePathHandler::class);
     $this->fixture
@@ -47,15 +43,18 @@ class ComposerTest extends TestCase {
     $this->processRunner
       ->runOrcaVendorBin(Argument::any(), self::FIXTURE_PATH)
       ->willReturn(0);
+    $this->processRunner
+      ->runOrcaVendorBin(Argument::any())
+      ->willReturn(0);
     $this->versionGuesser = $this->prophesize(VersionGuesser::class);
   }
 
   private function createComposer(): Composer {
-    $config_loader = $this->configLoader->reveal();
     $fixture_path_handler = $this->fixture->reveal();
+    $package_manager = $this->packageManager->reveal();
     $process_runner = $this->processRunner->reveal();
     $version_guesser = $this->versionGuesser->reveal();
-    return new Composer($config_loader, $fixture_path_handler, $process_runner, $version_guesser);
+    return new Composer($fixture_path_handler, $package_manager, $process_runner, $version_guesser);
   }
 
   private function createFixtureOptions($options): FixtureOptions {
@@ -71,30 +70,30 @@ class ComposerTest extends TestCase {
   }
 
   /**
-   * @dataProvider providerCreateProjectNew
+   * @dataProvider providerCreateProjectWithoutSut
    */
-  public function testCreateProjectNew($options, $stability, $project_template_string): void {
+  public function testCreateProjectWithoutSut($options, $stability, $project_template_string): void {
     $options = $this->createFixtureOptions($options);
 
     $this->processRunner
       ->runOrcaVendorBin([
         'composer',
         'create-project',
+        "--stability={$stability}",
         '--no-dev',
         '--no-scripts',
         '--no-install',
         '--no-interaction',
-        "--stability={$stability}",
         $project_template_string,
         self::FIXTURE_PATH,
       ])
       ->shouldBeCalledOnce();
     $composer = $this->createComposer();
 
-    $composer->createProjectNew($options);
+    $composer->createProject($options);
   }
 
-  public function providerCreateProjectNew(): array {
+  public function providerCreateProjectWithoutSut(): array {
     return [
       'Arbitrary project template/recommended stability' => [
         'options' => [
@@ -125,7 +124,7 @@ class ComposerTest extends TestCase {
     ];
   }
 
-  public function testCreateProjectFromSut(): void {
+  public function testCreateProjectWithProjectTemplateSut(): void {
     $project_template = 'test/example';
     $guess = '9999999-dev';
     $package = $this->createPackage([
@@ -137,9 +136,6 @@ class ComposerTest extends TestCase {
     $this->packageManager
       ->get($project_template)
       ->willReturn($package);
-    $this->configLoader
-      ->load(Argument::any())
-      ->willReturn(new Config([]));
     $this->versionGuesser
       ->guessVersion(Argument::any())
       ->willReturn($guess);
@@ -151,71 +147,89 @@ class ComposerTest extends TestCase {
       ->runOrcaVendorBin([
         'composer',
         'create-project',
+        '--stability=alpha',
         '--no-dev',
         '--no-scripts',
         '--no-install',
         '--no-interaction',
-        "--stability=alpha",
         "{$project_template}:{$guess}",
         self::FIXTURE_PATH,
       ])
       ->shouldBeCalledOnce();
     $composer = $this->createComposer();
 
-    $composer->createProjectNew($options);
+    $composer->createProject($options);
   }
 
-  public function testCreateProjectBlt(): void {
-    $project_template = 'acquia/blt-project';
-    $guess = '9999999-dev';
-    $package = $this->createPackage([
-      'type' => 'project-template',
-    ], $project_template);
+  public function testCreateProjectWithNonProjectTemplateSut(): void {
+    $package_name = 'test/example';
+    $package = $this->createPackage([], $package_name);
     $this->packageManager
-      ->exists($project_template)
+      ->exists($package_name)
       ->willReturn(TRUE);
     $this->packageManager
-      ->get($project_template)
+      ->get($package_name)
       ->willReturn($package);
-    $this->orca
-      ->getPath(Argument::any())
-      ->willReturnArgument();
-    $this->configLoader
-      ->load(Argument::any())
-      ->willReturn(new Config([]));
-    $this->versionGuesser
-      ->guessVersion(Argument::any())
-      ->willReturn($guess);
+    $this->drupalCoreVersionFinder
+      ->get(Argument::any())
+      ->willReturn('1.0.0');
+    $project_template = 'test/example-project';
     $options = $this->createFixtureOptions([
       'project-template' => $project_template,
-      'sut' => $project_template,
+      'sut' => $package_name,
     ]);
     $this->processRunner
       ->runOrcaVendorBin([
         'composer',
         'create-project',
+        "--stability=alpha",
         '--no-dev',
         '--no-scripts',
         '--no-install',
         '--no-interaction',
-        "--stability=alpha",
-        "{$project_template}:{$guess}",
+        $project_template,
         self::FIXTURE_PATH,
       ])
       ->shouldBeCalledOnce();
     $composer = $this->createComposer();
 
-    $composer->createProjectNew($options);
+    $composer->createProject($options);
   }
 
   /**
-   * @dataProvider providerCreateProject
+   * @dataProvider providerCreateProjectBlt
+   * @covers ::createProject
+   * @covers ::getBltProjectVersion
+   * @covers ::getProjectTemplateString
    */
-  public function testCreateProject(string $project_template_string, string $stability, string $directory): void {
-    $this->fixture
-      ->getPath()
-      ->shouldBeCalledOnce()
-      ->willReturn($directory);
+  public function testCreateProjectBlt($is_dev, $stability, $version): void {
+    $blt = $this->prophesize(Package::class);
+    $blt->isProjectTemplate()
+      ->willReturn(TRUE);
+    $blt->getVersionDev(Argument::any())
+      ->shouldBeCalledTimes((bool) $is_dev)
+      ->willReturn($version);
+    $blt->getVersionRecommended(Argument::any())
+      ->shouldBeCalledTimes(!$is_dev)
+      ->willReturn($version);
+    $this->packageManager
+      ->exists(Argument::any())
+      ->willReturn(TRUE);
+    $this->packageManager
+      ->get(Argument::any())
+      ->willReturn($blt);
+    $this->packageManager
+      ->getBlt()
+      ->willReturn($blt);
+    $this->drupalCoreVersionFinder
+      ->get(Argument::any())
+      ->willReturn($version);
+    $project_template = 'acquia/blt-project';
+    $options = $this->createFixtureOptions([
+      'dev' => $is_dev,
+      'project-template' => $project_template,
+      'sut' => $project_template,
+    ]);
     $this->processRunner
       ->runOrcaVendorBin([
         'composer',
@@ -225,19 +239,56 @@ class ComposerTest extends TestCase {
         '--no-scripts',
         '--no-install',
         '--no-interaction',
-        $project_template_string,
+        "{$project_template}:{$version}",
+        self::FIXTURE_PATH,
+      ])
+      ->shouldBeCalledOnce();
+    $composer = $this->createComposer();
+
+    $composer->createProject($options);
+  }
+
+  public function providerCreateProjectBlt(): array {
+    return [
+      ['is_dev' => TRUE, 'stability' => 'dev', 'version' => '1.x-dev'],
+      ['is_dev' => FALSE, 'stability' => 'alpha', 'version' => '1.x'],
+    ];
+  }
+
+  /**
+   * @dataProvider providerCreateProject
+   */
+  public function testCreateProject(string $project_template, $is_dev, string $stability, string $directory): void {
+    $this->fixture
+      ->getPath()
+      ->shouldBeCalledOnce()
+      ->willReturn($directory);
+    $options = $this->createFixtureOptions([
+      'dev' => $is_dev,
+      'project-template' => $project_template,
+    ]);
+    $this->processRunner
+      ->runOrcaVendorBin([
+        'composer',
+        'create-project',
+        "--stability={$stability}",
+        '--no-dev',
+        '--no-scripts',
+        '--no-install',
+        '--no-interaction',
+        $project_template,
         $directory,
       ])
       ->shouldBeCalledOnce();
 
     $composer = $this->createComposer();
-    $composer->createProject($project_template_string, $stability);
+    $composer->createProject($options);
   }
 
   public function providerCreateProject(): array {
     return [
-      ['test/example-project1', 'alpha', '/var/www/orca-build1'],
-      ['test/example-project2', 'dev', '/var/www/orca-build2'],
+      ['test/example1', FALSE, 'alpha', '/var/www/orca-build1'],
+      ['test/example2', TRUE, 'dev', '/var/www/orca-build2'],
     ];
   }
 
@@ -257,12 +308,19 @@ class ComposerTest extends TestCase {
       ->getPath()
       ->shouldBeCalledOnce()
       ->willReturn($directory);
+    $repository = json_encode([
+      'type' => 'path',
+      'url' => $repository_url,
+      'options' => [
+        'symlink' => FALSE,
+      ],
+    ]);
     $this->processRunner
       ->runOrcaVendorBin([
         'composer',
         'create-project',
         '--stability=dev',
-        "--repository={$repository_url}",
+        "--repository={$repository}",
         '--no-dev',
         '--no-scripts',
         '--no-install',
