@@ -194,47 +194,7 @@ class FixtureCreator {
    */
   private function createComposerProject(): void {
     $this->output->section('Creating Composer project');
-    $this->codebaseCreator->create($this->options, $this->getProjectTemplateString());
-  }
-
-  /**
-   * Gets the project template package/constraint string.
-   *
-   * @return string
-   *   The project template package/constraint string, e.g.,
-   *   acquia/drupal-recommended-project or acquia/blt-project:12.x.
-   */
-  private function getProjectTemplateString(): string {
-    $project_template = $this->options->getProjectTemplate();
-    switch (TRUE) {
-      case $this->isSutProjectTemplate():
-        return "{$project_template}:dev-bologna";
-
-      case $project_template === 'acquia/blt-project':
-        $version = ($this->options->isDev())
-          ? $this->blt->getVersionDev($this->options->getCore())
-          : $this->blt->getVersionRecommended($this->options->getCore());
-        return "{$project_template}:{$version}";
-
-      default:
-        return $project_template;
-    }
-  }
-
-  /**
-   * Determines whether or not the Composer project template is also the SUT.
-   *
-   * @return bool
-   *   Returns TRUE if the Composer project template is also the system under
-   *   test or FALSE if not.
-   */
-  private function isSutProjectTemplate(): bool {
-    if (!$this->options->hasSut()) {
-      return FALSE;
-    }
-
-    /* @noinspection NullPointerExceptionInspection */
-    return $this->options->getSut()->isProjectTemplate();
+    $this->codebaseCreator->create($this->options);
   }
 
   /**
@@ -522,11 +482,16 @@ class FixtureCreator {
       return;
     }
 
-    /* @noinspection NullPointerExceptionInspection */
-    $sut_install_path = $this->options->getSut()->getInstallPathAbsolute();
+    /* @var \Acquia\Orca\Package\Package $sut */
+    $sut = $this->options->getSut();
 
+    $sut_install_path = $sut->getInstallPathAbsolute();
     if (!file_exists($sut_install_path)) {
       throw new OrcaException('Failed to place SUT at correct path.');
+    }
+
+    if (!$sut->shouldGetComposerRequired()) {
+      return;
     }
 
     if (!is_link($sut_install_path)) {
