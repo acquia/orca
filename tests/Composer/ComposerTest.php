@@ -84,6 +84,9 @@ class ComposerTest extends TestCase {
 
   /**
    * @dataProvider providerCreateProjectWithoutSut
+   *
+   * @covers ::createProject
+   * @covers ::getProjectTemplateString
    */
   public function testCreateProjectWithoutSut($options, $stability, $project_template_string): void {
     $options = $this->createFixtureOptions($options);
@@ -128,6 +131,11 @@ class ComposerTest extends TestCase {
     ];
   }
 
+  /**
+   * @covers ::createProject
+   * @covers ::getProjectTemplateString
+   * @covers ::guessSutTemplateString
+   */
   public function testCreateProjectWithProjectTemplateSut(): void {
     $project_template = 'test/example';
     $guess = '9999999-dev';
@@ -165,6 +173,10 @@ class ComposerTest extends TestCase {
     $composer->createProject($options);
   }
 
+  /**
+   * @covers ::createProject
+   * @covers ::getProjectTemplateString
+   */
   public function testCreateProjectWithNonProjectTemplateSut(): void {
     $package_name = 'test/example';
     $package = $this->createPackage([], $package_name);
@@ -203,8 +215,9 @@ class ComposerTest extends TestCase {
   /**
    * @dataProvider providerCreateProjectBlt
    * @covers ::createProject
-   * @covers ::getBltProjectVersion
+   * @covers ::getBltProjectTemplateString
    * @covers ::getProjectTemplateString
+   * @covers ::guessSutTemplateString
    */
   public function testCreateProjectBlt($options, $stability, $version, $should_guess_version, $should_ask_version_dev, $should_ask_version_recommended, $project_template_string): void {
     $core_version = '8.9.x';
@@ -301,43 +314,6 @@ class ComposerTest extends TestCase {
         'should_ask_version_recommended' => TRUE,
         'project_template_string' => 'acquia/blt-project:1.x',
       ],
-    ];
-  }
-
-  /**
-   * @dataProvider providerCreateProject
-   */
-  public function testCreateProject(string $project_template, $is_dev, string $stability, string $directory): void {
-    $this->fixture
-      ->getPath()
-      ->shouldBeCalledOnce()
-      ->willReturn($directory);
-    $options = $this->createFixtureOptions([
-      'dev' => $is_dev,
-      'project-template' => $project_template,
-    ]);
-    $this->processRunner
-      ->runOrcaVendorBin([
-        'composer',
-        'create-project',
-        "--stability={$stability}",
-        '--no-dev',
-        '--no-scripts',
-        '--no-install',
-        '--no-interaction',
-        $project_template,
-        $directory,
-      ])
-      ->shouldBeCalledOnce();
-
-    $composer = $this->createComposer();
-    $composer->createProject($options);
-  }
-
-  public function providerCreateProject(): array {
-    return [
-      ['test/example1', FALSE, 'alpha', '/var/www/orca-build1'],
-      ['test/example2', TRUE, 'dev', '/var/www/orca-build2'],
     ];
   }
 

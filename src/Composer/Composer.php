@@ -103,50 +103,52 @@ class Composer {
    *
    * @return string
    *   The project template string.
-   *
-   * @throws \Acquia\Orca\Helper\Exception\FileNotFoundException
-   * @throws \Acquia\Orca\Helper\Exception\OrcaException
-   * @throws \Acquia\Orca\Helper\Exception\ParseError
    */
   private function getProjectTemplateString(): string {
     $project_template = $this->options->getProjectTemplate();
-
     $sut = $this->options->getSut();
-    $project_template_is_blt_project = $project_template === 'acquia/blt-project';
-    if ($sut && $project_template_is_blt_project) {
-      $version = $this->versionGuesser
-        ->guessVersion($sut->getRepositoryUrlAbsolute());
-      return $project_template . ':' . $version;
+
+    // The project template is the SUT.
+    if ($sut && $sut->isProjectTemplate()) {
+      return $this->guessSutTemplateString();
     }
 
-    if ($project_template_is_blt_project) {
-      return $project_template . ':' . $this->getBltProjectVersion();
+    // The project template is BLT project.
+    if ($project_template === 'acquia/blt-project') {
+      return $this->getBltProjectTemplateString();
     }
 
-    if (!$this->options->hasSut()) {
-      return $project_template;
-    }
-
-    if (!$sut->isProjectTemplate()) {
-      return $project_template;
-    }
-
-    $version = $this->versionGuesser->guessVersion($sut->getRepositoryUrlAbsolute());
-    return $project_template . ':' . $version;
+    return $project_template;
   }
 
   /**
-   * Gets the blt-project version to use for project creation.
+   * Gets the project template string based on Composer's guess of its version.
    *
    * @return string
-   *   The version string.
+   *   The project template string.
    */
-  private function getBltProjectVersion(): string {
+  private function guessSutTemplateString(): string {
+    /* @var \Acquia\Orca\Package\Package $sut */
+    $sut = $this->options->getSut();
+
+    $version = $this->versionGuesser
+      ->guessVersion($sut->getRepositoryUrlAbsolute());
+    return $this->options->getProjectTemplate() . ':' . $version;
+  }
+
+  /**
+   * Gets the project template string for BLT project.
+   *
+   * @return string
+   *   The project template string.
+   */
+  private function getBltProjectTemplateString(): string {
+    $project_template = $this->options->getProjectTemplate();
     $blt = $this->packageManager->getBlt();
     if ($this->options->isDev()) {
-      return $blt->getVersionDev($this->options->getCore());
+      return $project_template . ':' . $blt->getVersionDev($this->options->getCore());
     }
-    return $blt->getVersionRecommended($this->options->getCore());
+    return $project_template . ':' . $blt->getVersionRecommended($this->options->getCore());
   }
 
   /**
