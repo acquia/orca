@@ -111,19 +111,24 @@ class Composer {
   private function getProjectTemplateString(): string {
     $project_template = $this->options->getProjectTemplate();
 
+    $sut = $this->options->getSut();
+    $project_template_is_blt_project = $project_template === 'acquia/blt-project';
+    if ($sut && $project_template_is_blt_project) {
+      $version = $this->versionGuesser
+        ->guessVersion($sut->getRepositoryUrlAbsolute());
+      return $project_template . ':' . $version;
+    }
+
+    if ($project_template_is_blt_project) {
+      return $project_template . ':' . $this->getBltProjectVersion();
+    }
+
     if (!$this->options->hasSut()) {
       return $project_template;
     }
 
-    /* @var \Acquia\Orca\Package\Package $sut */
-    $sut = $this->options->getSut();
-
     if (!$sut->isProjectTemplate()) {
       return $project_template;
-    }
-
-    if ($project_template === 'acquia/blt-project') {
-      return $project_template . ':' . $this->getBltProjectVersion();
     }
 
     $version = $this->versionGuesser->guessVersion($sut->getRepositoryUrlAbsolute());

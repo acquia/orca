@@ -22,13 +22,23 @@ use Prophecy\Argument;
  * @property \Acquia\Orca\Helper\Filesystem\OrcaPathHandler|\Prophecy\Prophecy\ObjectProphecy $orca
  * @property \Acquia\Orca\Helper\Process\ProcessRunner|\Prophecy\Prophecy\ObjectProphecy $processRunner
  * @property \Acquia\Orca\Package\PackageManager|\Prophecy\Prophecy\ObjectProphecy $packageManager
+ * @property \Acquia\Orca\Package\Package|\Prophecy\Prophecy\ObjectProphecy $blt
  * @coversDefaultClass \Acquia\Orca\Composer\Composer
  */
 class ComposerTest extends TestCase {
 
   private const FIXTURE_PATH = '/var/www/orca-build';
 
+  private const PACKAGE_ABSOLUTE_PATH = '/var/www/example';
+
   protected function setUp(): void {
+    $this->blt = $this->prophesize(Package::class);
+    $this->blt->getPackageName()
+      ->willReturn('acquia/blt-project');
+    $this->blt->isProjectTemplate()
+      ->willReturn(TRUE);
+    $this->blt->getRepositoryUrlAbsolute()
+      ->willReturn(self::PACKAGE_ABSOLUTE_PATH);
     $this->drupalCoreVersionFinder = $this->prophesize(DrupalCoreVersionFinder::class);
     $this->fixture = $this->prophesize(FixturePathHandler::class);
     $this->fixture
@@ -39,6 +49,9 @@ class ComposerTest extends TestCase {
       ->getPath(Argument::any())
       ->willReturnArgument();
     $this->packageManager = $this->prophesize(PackageManager::class);
+    $this->packageManager
+      ->exists('acquia/blt-project')
+      ->willReturn(TRUE);
     $this->processRunner = $this->prophesize(ProcessRunner::class);
     $this->processRunner
       ->runOrcaVendorBin(Argument::any(), self::FIXTURE_PATH)
@@ -111,15 +124,6 @@ class ComposerTest extends TestCase {
         ],
         'stability' => 'dev',
         'project_template_string' => 'test/example2',
-      ],
-
-      'BLT project/dev stability' => [
-        'options' => [
-          'project-template' => 'acquia/blt-project',
-          'dev' => TRUE,
-        ],
-        'stability' => 'dev',
-        'project_template_string' => 'acquia/blt-project',
       ],
     ];
   }
@@ -202,19 +206,15 @@ class ComposerTest extends TestCase {
    * @covers ::getBltProjectVersion
    * @covers ::getProjectTemplateString
    */
-  public function testCreateProjectBlt($is_dev, $stability, $version): void {
-    $blt = $this->prophesize(Package::class);
-    $blt->isProjectTemplate()
-      ->willReturn(TRUE);
-    $blt->getVersionDev(Argument::any())
-      ->shouldBeCalledTimes((bool) $is_dev)
+  public function testCreateProjectBlt($options, $stability, $version, $should_guess_version, $should_ask_version_dev, $should_ask_version_recommended, $project_template_string): void {
+    $core_version = '8.9.x';
+    $this->blt->getVersionDev($core_version)
+      ->shouldBeCalledTimes((int) $should_ask_version_dev)
       ->willReturn($version);
-    $blt->getVersionRecommended(Argument::any())
-      ->shouldBeCalledTimes(!$is_dev)
+    $this->blt->getVersionRecommended($core_version)
+      ->shouldBeCalledTimes((int) $should_ask_version_recommended)
       ->willReturn($version);
-    $this->packageManager
-      ->exists(Argument::any())
-      ->willReturn(TRUE);
+    $blt = $this->blt->reveal();
     $this->packageManager
       ->get(Argument::any())
       ->willReturn($blt);
@@ -223,13 +223,12 @@ class ComposerTest extends TestCase {
       ->willReturn($blt);
     $this->drupalCoreVersionFinder
       ->get(Argument::any())
+      ->willReturn($core_version);
+    $this->versionGuesser
+      ->guessVersion(Argument::any())
+      ->shouldBeCalledTimes((int) $should_guess_version)
       ->willReturn($version);
-    $project_template = 'acquia/blt-project';
-    $options = $this->createFixtureOptions([
-      'dev' => $is_dev,
-      'project-template' => $project_template,
-      'sut' => $project_template,
-    ]);
+    $options = $this->createFixtureOptions($options);
     $this->processRunner
       ->runOrcaVendorBin([
         'composer',
@@ -239,7 +238,7 @@ class ComposerTest extends TestCase {
         '--no-scripts',
         '--no-install',
         '--no-interaction',
-        "{$project_template}:{$version}",
+        $project_template_string,
         self::FIXTURE_PATH,
       ])
       ->shouldBeCalledOnce();
@@ -250,8 +249,58 @@ class ComposerTest extends TestCase {
 
   public function providerCreateProjectBlt(): array {
     return [
-      ['is_dev' => TRUE, 'stability' => 'dev', 'version' => '1.x-dev'],
-      ['is_dev' => FALSE, 'stability' => 'alpha', 'version' => '1.x'],
+      'BLT project as SUT, dev fixture' => [
+        'options' => [
+          'dev' => TRUE,
+          'project-template' => 'acquia/blt-project',
+          'sut' => 'acquia/blt-project',
+        ],
+        'stability' => 'dev',
+        'version' => '9999999-dev',
+        'should_guess_version' => TRUE,
+        'should_ask_version_dev' => FALSE,
+        'should_ask_version_recommended' => FALSE,
+        'project_template_string' => 'acquia/blt-project:9999999-dev',
+      ],
+
+      'BLT project as SUT, stable fixture' => [
+        'options' => [
+          'dev' => FALSE,
+          'project-template' => 'acquia/blt-project',
+          'sut' => 'acquia/blt-project',
+        ],
+        'stability' => 'alpha',
+        'version' => '9999999-dev',
+        'should_guess_version' => TRUE,
+        'should_ask_version_dev' => FALSE,
+        'should_ask_version_recommended' => FALSE,
+        'project_template_string' => 'acquia/blt-project:9999999-dev',
+      ],
+
+      'BLT project as non-SUT, dev fixture' => [
+        'options' => [
+          'dev' => TRUE,
+          'project-template' => 'acquia/blt-project',
+        ],
+        'stability' => 'dev',
+        'version' => '1.x',
+        'should_guess_version' => FALSE,
+        'should_ask_version_dev' => TRUE,
+        'should_ask_version_recommended' => FALSE,
+        'project_template_string' => 'acquia/blt-project:1.x',
+      ],
+
+      'BLT project as non-SUT, stable fixture' => [
+        'options' => [
+          'project-template' => 'acquia/blt-project',
+        ],
+        'stability' => 'alpha',
+        'version' => '1.x',
+        'should_guess_version' => FALSE,
+        'should_ask_version_dev' => FALSE,
+        'should_ask_version_recommended' => TRUE,
+        'project_template_string' => 'acquia/blt-project:1.x',
+      ],
     ];
   }
 
