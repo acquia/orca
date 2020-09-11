@@ -2,9 +2,9 @@
 
 namespace Acquia\Orca\Server;
 
-use Acquia\Orca\Filesystem\FixturePathHandler;
-use Acquia\Orca\Filesystem\OrcaPathHandler;
-use Acquia\Orca\Utility\ProcessRunner;
+use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
+use Acquia\Orca\Helper\Filesystem\OrcaPathHandler;
+use Acquia\Orca\Helper\Process\ProcessRunner;
 use Symfony\Component\Process\Process;
 
 /**
@@ -15,18 +15,18 @@ class ChromeDriverServer extends ServerBase {
   /**
    * The ORCA path handler.
    *
-   * @var \Acquia\Orca\Filesystem\OrcaPathHandler
+   * @var \Acquia\Orca\Helper\Filesystem\OrcaPathHandler
    */
   private $orca;
 
   /**
    * Constructs an instance.
    *
-   * @param \Acquia\Orca\Filesystem\FixturePathHandler $fixture_path_handler
+   * @param \Acquia\Orca\Helper\Filesystem\FixturePathHandler $fixture_path_handler
    *   The fixture path handler.
-   * @param \Acquia\Orca\Filesystem\OrcaPathHandler $orca_path_handler
+   * @param \Acquia\Orca\Helper\Filesystem\OrcaPathHandler $orca_path_handler
    *   The ORCA path handler.
-   * @param \Acquia\Orca\Utility\ProcessRunner $process_runner
+   * @param \Acquia\Orca\Helper\Process\ProcessRunner $process_runner
    *   The process runner.
    */
   public function __construct(FixturePathHandler $fixture_path_handler, OrcaPathHandler $orca_path_handler, ProcessRunner $process_runner) {

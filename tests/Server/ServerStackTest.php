@@ -2,15 +2,15 @@
 
 namespace Acquia\Orca\Tests\Server;
 
+use Acquia\Orca\Helper\Clock;
 use Acquia\Orca\Server\ChromeDriverServer;
 use Acquia\Orca\Server\ServerStack;
 use Acquia\Orca\Server\WebServer;
-use Acquia\Orca\Utility\Clock;
 use PHPUnit\Framework\TestCase;
 
 /**
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Server\ChromeDriverServer $chromeDriverServer
- * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Utility\Clock $clock
+ * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Helper\Clock $clock
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Server\WebServer $webServer
  */
 class ServerStackTest extends TestCase {
@@ -21,7 +21,14 @@ class ServerStackTest extends TestCase {
     $this->webServer = $this->prophesize(WebServer::class);
   }
 
-  public function testServerStack() {
+  protected function createServerStack(): ServerStack {
+    $chrome_driver_server = $this->chromeDriverServer->reveal();
+    $clock = $this->clock->reveal();
+    $web_server = $this->webServer->reveal();
+    return new ServerStack($chrome_driver_server, $clock, $web_server);
+  }
+
+  public function testServerStack(): void {
     $this->webServer
       ->start()
       ->shouldBeCalledTimes(1);
@@ -39,14 +46,7 @@ class ServerStackTest extends TestCase {
     $servers->start();
     $servers->stop();
 
-    $this->assertInstanceOf(ServerStack::class, $servers, 'Instantiated class.');
-  }
-
-  protected function createServerStack(): ServerStack {
-    $chrome_driver_server = $this->chromeDriverServer->reveal();
-    $clock = $this->clock->reveal();
-    $web_server = $this->webServer->reveal();
-    return new ServerStack($chrome_driver_server, $clock, $web_server);
+    self::assertInstanceOf(ServerStack::class, $servers, 'Instantiated class.');
   }
 
 }

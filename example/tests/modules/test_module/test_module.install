@@ -12,5 +12,5 @@
  *   If run.
  */
 function hook_test_module_install() {
-  throw new \Exception('Failed to exclude test module from subextension enable.');
+  throw new Exception('Failed to exclude test module from subextension enable.');
 }

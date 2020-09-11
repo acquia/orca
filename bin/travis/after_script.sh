@@ -9,7 +9,7 @@
 # DESCRIPTION
 #     Conditionally logs the job and displays upstream ORCA status.
 
-cd "$(dirname "$0")" || exit; source _includes.sh
+cd "$(dirname "$0")" || exit 1; source _includes.sh
 
 # Log the job on cron if telemetry is enabled.
 if [[ "$TRAVIS_EVENT_TYPE" = "cron" && "$ORCA_TELEMETRY_ENABLE" = "TRUE" && "$ORCA_AMPLITUDE_API_KEY" && "$ORCA_AMPLITUDE_USER_ID" ]]; then
@@ -17,6 +17,8 @@ if [[ "$TRAVIS_EVENT_TYPE" = "cron" && "$ORCA_TELEMETRY_ENABLE" = "TRUE" && "$OR
 fi
 if [[ "$ORCA_TELEMETRY_ENABLE" = "TRUE" ]]; then
   orca internal:log-job --simulate
+else
+  notice "No telemetry data sent."
 fi
 
 # Show ORCA's own current build status. A failure may signify an upstream issue

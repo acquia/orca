@@ -3,17 +3,17 @@
 namespace Acquia\Orca\Tests\Console\Command\Internal;
 
 use Acquia\Orca\Console\Command\Internal\InternalLogJobCommand;
-use Acquia\Orca\Enum\StatusCode;
-use Acquia\Orca\Enum\TelemetryEventName;
-use Acquia\Orca\Log\TelemetryClient;
-use Acquia\Orca\Log\TelemetryEventPropertiesBuilder;
+use Acquia\Orca\Console\Helper\StatusCode;
+use Acquia\Orca\Helper\Log\TelemetryClient;
+use Acquia\Orca\Helper\Log\TelemetryEventName;
+use Acquia\Orca\Helper\Log\TelemetryEventPropertiesBuilder;
 use Acquia\Orca\Tests\Console\Command\CommandTestBase;
 use Prophecy\Argument;
 use Symfony\Component\Console\Command\Command;
 
 /**
- * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Log\TelemetryClient $telemetryClient
- * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Log\TelemetryEventPropertiesBuilder $telemetryEventBuilder
+ * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Helper\Log\TelemetryClient $telemetryClient
+ * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Helper\Log\TelemetryEventPropertiesBuilder $telemetryEventBuilder
  */
 class InternalLogJobCommandTest extends CommandTestBase {
 
@@ -34,7 +34,7 @@ class InternalLogJobCommandTest extends CommandTestBase {
     return new InternalLogJobCommand($telemetry_client, $telemetry_event_builder);
   }
 
-  public function testHappyPath() {
+  public function testHappyPath(): void {
     $this->telemetryClient
       ->isReady()
       ->shouldBeCalledTimes(1);
@@ -50,11 +50,11 @@ class InternalLogJobCommandTest extends CommandTestBase {
 
     $this->executeCommand();
 
-    $this->assertEquals('', $this->getDisplay(), 'Displayed correct output.');
-    $this->assertEquals(StatusCode::OK, $this->getStatusCode(), 'Returned correct status code.');
+    self::assertEquals('', $this->getDisplay(), 'Displayed correct output.');
+    self::assertEquals(StatusCode::OK, $this->getStatusCode(), 'Returned correct status code.');
   }
 
-  public function testWithTelemetryDisabled() {
+  public function testWithTelemetryDisabled(): void {
     $this->telemetryClient
       ->isReady()
       ->shouldBeCalledTimes(1)
@@ -62,12 +62,12 @@ class InternalLogJobCommandTest extends CommandTestBase {
 
     $this->executeCommand();
 
-    $this->assertEquals('Notice: Nothing logged. Telemetry is disabled.' . PHP_EOL .
+    self::assertEquals('Notice: Nothing logged. Telemetry is disabled.' . PHP_EOL .
       'Hint: https://github.com/acquia/orca/blob/master/docs/advanced-usage.md#ORCA_TELEMETRY_ENABLE' . PHP_EOL, $this->getDisplay(), 'Displayed correct output.');
-    $this->assertEquals(StatusCode::OK, $this->getStatusCode(), 'Returned correct status code.');
+    self::assertEquals(StatusCode::OK, $this->getStatusCode(), 'Returned correct status code.');
   }
 
-  public function testSimulateOption() {
+  public function testSimulateOption(): void {
     $properties = ['test' => 'example'];
     $this->telemetryEventBuilder
       ->build(TelemetryEventName::TRAVIS_CI_JOB())
@@ -78,11 +78,11 @@ class InternalLogJobCommandTest extends CommandTestBase {
 
     $this->executeCommand(['--simulate' => TRUE]);
 
-    $this->assertEquals(print_r($properties, TRUE), $this->getDisplay(), 'Displayed correct output.');
-    $this->assertEquals(StatusCode::OK, $this->getStatusCode(), 'Returned correct status code.');
+    self::assertEquals(print_r($properties, TRUE), $this->getDisplay(), 'Displayed correct output.');
+    self::assertEquals(StatusCode::OK, $this->getStatusCode(), 'Returned correct status code.');
   }
 
-  public function testTestOption() {
+  public function testTestOption(): void {
     $this->telemetryClient
       ->isReady()
       ->shouldBeCalledTimes(1);
@@ -98,8 +98,8 @@ class InternalLogJobCommandTest extends CommandTestBase {
 
     $this->executeCommand(['--test' => TRUE]);
 
-    $this->assertEquals('', $this->getDisplay(), 'Displayed correct output.');
-    $this->assertEquals(StatusCode::OK, $this->getStatusCode(), 'Returned correct status code.');
+    self::assertEquals('', $this->getDisplay(), 'Displayed correct output.');
+    self::assertEquals(StatusCode::OK, $this->getStatusCode(), 'Returned correct status code.');
   }
 
 }

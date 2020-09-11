@@ -2,8 +2,8 @@
 
 namespace Acquia\Orca\Server;
 
-use Acquia\Orca\Filesystem\FixturePathHandler;
-use Acquia\Orca\Utility\ProcessRunner;
+use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
+use Acquia\Orca\Helper\Process\ProcessRunner;
 use Symfony\Component\Process\Process;
 
 /**
@@ -14,7 +14,7 @@ abstract class ServerBase implements ServerInterface {
   /**
    * The fixture path handler.
    *
-   * @var \Acquia\Orca\Filesystem\FixturePathHandler
+   * @var \Acquia\Orca\Helper\Filesystem\FixturePathHandler
    */
   private $fixture;
 
@@ -28,16 +28,16 @@ abstract class ServerBase implements ServerInterface {
   /**
    * The process runner.
    *
-   * @var \Acquia\Orca\Utility\ProcessRunner
+   * @var \Acquia\Orca\Helper\Process\ProcessRunner
    */
   private $processRunner;
 
   /**
    * Constructs an instance.
    *
-   * @param \Acquia\Orca\Filesystem\FixturePathHandler $fixture_path_handler
+   * @param \Acquia\Orca\Helper\Filesystem\FixturePathHandler $fixture_path_handler
    *   The fixture path handler.
-   * @param \Acquia\Orca\Utility\ProcessRunner $process_runner
+   * @param \Acquia\Orca\Helper\Process\ProcessRunner $process_runner
    *   The process runner.
    */
   public function __construct(FixturePathHandler $fixture_path_handler, ProcessRunner $process_runner) {
@@ -89,7 +89,7 @@ abstract class ServerBase implements ServerInterface {
   /**
    * Gets the fixture.
    *
-   * @return \Acquia\Orca\Filesystem\FixturePathHandler
+   * @return \Acquia\Orca\Helper\Filesystem\FixturePathHandler
    *   The fixture path handler.
    */
   protected function getFixture(): FixturePathHandler {
@@ -99,7 +99,7 @@ abstract class ServerBase implements ServerInterface {
   /**
    * Gets the process runner.
    *
-   * @return \Acquia\Orca\Utility\ProcessRunner
+   * @return \Acquia\Orca\Helper\Process\ProcessRunner
    *   The process runner.
    */
   protected function getProcessRunner(): ProcessRunner {

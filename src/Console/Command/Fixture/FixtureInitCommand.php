@@ -2,16 +2,15 @@
 
 namespace Acquia\Orca\Console\Command\Fixture;
 
-use Acquia\Orca\Enum\DrupalCoreVersion;
-use Acquia\Orca\Enum\StatusCode;
-use Acquia\Orca\Exception\OrcaException;
-use Acquia\Orca\Filesystem\FixturePathHandler;
+use Acquia\Orca\Console\Helper\StatusCode;
+use Acquia\Orca\Drupal\DrupalCoreVersion;
 use Acquia\Orca\Fixture\FixtureCreator;
+use Acquia\Orca\Fixture\FixtureOptionsFactory;
 use Acquia\Orca\Fixture\FixtureRemover;
 use Acquia\Orca\Fixture\SutPreconditionsTester;
-use Acquia\Orca\Package\PackageManager;
-use Acquia\Orca\Utility\DrupalCoreVersionFinder;
-use Composer\Semver\VersionParser;
+use Acquia\Orca\Helper\Exception\OrcaException;
+use Acquia\Orca\Helper\Exception\OrcaInvalidArgumentException;
+use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -31,16 +30,9 @@ class FixtureInitCommand extends Command {
   protected static $defaultName = 'fixture:init';
 
   /**
-   * The Drupal core version finder.
-   *
-   * @var \Acquia\Orca\Utility\DrupalCoreVersionFinder
-   */
-  private $drupalCoreVersionFinder;
-
-  /**
    * The fixture path handler.
    *
-   * @var \Acquia\Orca\Filesystem\FixturePathHandler
+   * @var \Acquia\Orca\Helper\Filesystem\FixturePathHandler
    */
   private $fixture;
 
@@ -52,18 +44,18 @@ class FixtureInitCommand extends Command {
   private $fixtureCreator;
 
   /**
+   * The fixture options factory.
+   *
+   * @var \Acquia\Orca\Fixture\FixtureOptionsFactory
+   */
+  private $fixtureOptionsFactory;
+
+  /**
    * The fixture remover.
    *
    * @var \Acquia\Orca\Fixture\FixtureRemover
    */
   private $fixtureRemover;
-
-  /**
-   * The package manager.
-   *
-   * @var \Acquia\Orca\Package\PackageManager
-   */
-  private $packageManager;
 
   /**
    * The SUT preconditions tester.
@@ -73,38 +65,25 @@ class FixtureInitCommand extends Command {
   private $sutPreconditionsTester;
 
   /**
-   * The version parser.
-   *
-   * @var \Composer\Semver\VersionParser
-   */
-  private $versionParser;
-
-  /**
    * Constructs an instance.
    *
-   * @param \Acquia\Orca\Utility\DrupalCoreVersionFinder $drupal_core_version_finder
-   *   The Drupal core version finder.
-   * @param \Acquia\Orca\Filesystem\FixturePathHandler $fixture_path_handler
+   * @param \Acquia\Orca\Fixture\FixtureOptionsFactory $fixture_options_factory
+   *   The fixture options factory.
+   * @param \Acquia\Orca\Helper\Filesystem\FixturePathHandler $fixture_path_handler
    *   The fixture path handler.
    * @param \Acquia\Orca\Fixture\FixtureCreator $fixture_creator
    *   The fixture creator.
    * @param \Acquia\Orca\Fixture\FixtureRemover $fixture_remover
    *   The fixture remover.
-   * @param \Acquia\Orca\Package\PackageManager $package_manager
-   *   The package manager.
    * @param \Acquia\Orca\Fixture\SutPreconditionsTester $sut_preconditions_tester
    *   The SUT preconditions tester.
-   * @param \Composer\Semver\VersionParser $version_parser
-   *   The version parser.
    */
-  public function __construct(DrupalCoreVersionFinder $drupal_core_version_finder, FixturePathHandler $fixture_path_handler, FixtureCreator $fixture_creator, FixtureRemover $fixture_remover, PackageManager $package_manager, SutPreconditionsTester $sut_preconditions_tester, VersionParser $version_parser) {
-    $this->drupalCoreVersionFinder = $drupal_core_version_finder;
+  public function __construct(FixtureOptionsFactory $fixture_options_factory, FixturePathHandler $fixture_path_handler, FixtureCreator $fixture_creator, FixtureRemover $fixture_remover, SutPreconditionsTester $sut_preconditions_tester) {
     $this->fixture = $fixture_path_handler;
     $this->fixtureCreator = $fixture_creator;
+    $this->fixtureOptionsFactory = $fixture_options_factory;
     $this->fixtureRemover = $fixture_remover;
-    $this->packageManager = $package_manager;
     $this->sutPreconditionsTester = $sut_preconditions_tester;
-    $this->versionParser = $version_parser;
     parent::__construct(self::$defaultName);
   }
 
@@ -113,7 +92,7 @@ class FixtureInitCommand extends Command {
    *
    * @SuppressWarnings(PHPMD.StaticAccess)
    */
-  protected function configure() {
+  protected function configure(): void {
     $this
       ->setAliases(['init'])
       ->setDescription('Creates the test fixture')
@@ -135,7 +114,7 @@ class FixtureInitCommand extends Command {
       ->addOption('profile', NULL, InputOption::VALUE_REQUIRED, 'The Drupal installation profile to use, e.g., "minimal". ("orca" is a pseudo-profile based on "minimal", with the Toolbar module enabled and Seven as the admin theme)', FixtureCreator::DEFAULT_PROFILE)
 
       // Uncommon options.
-      ->addOption('project-template', NULL, InputOption::VALUE_REQUIRED, 'The Composer project template used to create the fixture', FixtureCreator::DEFAULT_PROJECT_TEMPLATE)
+      ->addOption('project-template', NULL, InputOption::VALUE_REQUIRED, 'The Composer project template used to create the fixture')
       ->addOption('ignore-patch-failure', NULL, InputOption::VALUE_NONE, 'Do not exit on failure to apply Composer patches. (Useful for debugging failures)')
       ->addOption('no-sqlite', NULL, InputOption::VALUE_NONE, 'Use the default database settings instead of SQLite')
       ->addOption('no-site-install', NULL, InputOption::VALUE_NONE, 'Do not install Drupal. Supersedes the "--profile" option')
@@ -149,31 +128,31 @@ class FixtureInitCommand extends Command {
    * @throws \Exception
    */
   public function execute(InputInterface $input, OutputInterface $output): int {
-    $bare = $input->getOption('bare');
-    $sut = $input->getOption('sut');
-    $sut_only = $input->getOption('sut-only');
-    $core = $input->getOption('core');
-    $symlink_all = $input->getOption('symlink-all');
-
-    if (!$this->isValidInput($sut, $sut_only, $bare, $core, $symlink_all, $output)) {
+    try {
+      $options = $this->fixtureOptionsFactory
+        ->create([
+          'bare' => $input->getOption('bare'),
+          'core' => $input->getOption('core'),
+          'dev' => $input->getOption('dev'),
+          'force' => $input->getOption('force'),
+          'ignore-patch-failure' => $input->getOption('ignore-patch-failure'),
+          'no-site-install' => $input->getOption('no-site-install'),
+          'no-sqlite' => $input->getOption('no-sqlite'),
+          'prefer-source' => $input->getOption('prefer-source'),
+          'profile' => $input->getOption('profile'),
+          'project-template' => $input->getOption('project-template'),
+          'sut' => $input->getOption('sut'),
+          'sut-only' => $input->getOption('sut-only'),
+          'symlink-all' => $input->getOption('symlink-all'),
+        ]);
+    }
+    catch (OrcaInvalidArgumentException $e) {
+      $output->writeln("Error: {$e->getMessage()}");
       return StatusCode::ERROR;
     }
 
-    $this->setSut($sut);
-    $this->setSutOnly($sut_only);
-    $this->setBare($bare);
-    $this->setComposerExitOnPatchFailure($input->getOption('ignore-patch-failure'));
-    $this->setCore($core, $input->getOption('dev'));
-    $this->setDev($input->getOption('dev'));
-    $this->setPreferSource($input->getOption('prefer-source'));
-    $this->setProfile($input->getOption('profile'));
-    $this->setProjectTemplate($input->getOption('project-template'));
-    $this->setSiteInstall($input->getOption('no-site-install'));
-    $this->setSqlite($input->getOption('no-sqlite'));
-    $this->setSymlinkAll($symlink_all);
-
     try {
-      $this->testPreconditions($sut);
+      $this->testPreconditions($input->getOption('sut'));
       if ($this->fixture->exists()) {
         if (!$input->getOption('force')) {
           $output->writeln([
@@ -184,7 +163,7 @@ class FixtureInitCommand extends Command {
         }
         $this->fixtureRemover->remove();
       }
-      $this->fixtureCreator->create();
+      $this->fixtureCreator->create($options);
     }
     catch (OrcaException $e) {
       (new SymfonyStyle($input, $output))
@@ -196,253 +175,15 @@ class FixtureInitCommand extends Command {
   }
 
   /**
-   * Determines whether or not the command input is valid.
-   *
-   * @param string|string[]|bool|null $sut
-   *   The "sut" option value.
-   * @param string|string[]|bool|null $sut_only
-   *   The "sut-only" option value.
-   * @param string|string[]|bool|null $bare
-   *   The "bare" option value.
-   * @param string|string[]|bool|null $core
-   *   The "core" option value.
-   * @param string|string[]|bool|null $symlink_all
-   *   The "symlink-all" option value.
-   * @param \Symfony\Component\Console\Output\OutputInterface $output
-   *   The output decorator.
-   *
-   * @return bool
-   *   TRUE if the command input is valid or FALSE if not.
-   *
-   * @SuppressWarnings(PHPMD.StaticAccess)
-   */
-  private function isValidInput($sut, $sut_only, $bare, $core, $symlink_all, OutputInterface $output): bool {
-    if ($bare && $sut) {
-      $output->writeln('Error: Cannot create a bare fixture with a SUT.');
-      return FALSE;
-    }
-
-    if ($bare && $symlink_all) {
-      $output->writeln('Error: Cannot symlink all in a bare fixture.');
-      return FALSE;
-    }
-
-    if ($core && !$this->isValidCoreValue($core)) {
-      $output->writeln([
-        sprintf('Error: Invalid value for "--core" option: "%s".', $core),
-        sprintf('Hint: Acceptable values are "%s", or any version string Composer understands.', implode('", "', DrupalCoreVersion::values())),
-      ]);
-      return FALSE;
-    }
-
-    if ($sut_only && !$sut) {
-      $output->writeln([
-        'Error: Cannot create a SUT-only fixture without a SUT.',
-        'Hint: Use the "--sut" option to specify the SUT.',
-      ]);
-      return FALSE;
-    }
-
-    if ($sut && !$this->packageManager->exists($sut)) {
-      $output->writeln(sprintf('Error: Invalid value for "--sut" option: "%s".', $sut));
-      return FALSE;
-    }
-
-    return TRUE;
-  }
-
-  /**
-   * Determines whether or not the given "core" option value is valid.
-   *
-   * @param string|string[]|bool|null $core
-   *   The "core" option value.
-   *
-   * @return bool
-   *   TRUE if the value is valid or FALSE if not.
-   *
-   * @SuppressWarnings(PHPMD.StaticAccess)
-   */
-  private function isValidCoreValue($core): bool {
-    if (DrupalCoreVersion::isValid($core)) {
-      return TRUE;
-    }
-    try {
-      $this->versionParser->parseConstraints($core);
-      return TRUE;
-    }
-    catch (\UnexpectedValueException $e) {
-      return FALSE;
-    }
-  }
-
-  /**
-   * Sets the SUT.
-   *
-   * @param string|string[]|bool|null $sut
-   *   The SUT.
-   */
-  private function setSut($sut): void {
-    if ($sut) {
-      $this->fixtureCreator->setSut($sut);
-    }
-  }
-
-  /**
-   * Sets the SUT-only flag.
-   *
-   * @param string|string[]|bool|null $sut_only
-   *   The SUT-only flag.
-   */
-  private function setSutOnly($sut_only): void {
-    if ($sut_only) {
-      $this->fixtureCreator->setSutOnly(TRUE);
-    }
-  }
-
-  /**
-   * Sets the bare flag.
-   *
-   * @param string|string[]|bool|null $bare
-   *   The bare flag.
-   */
-  private function setBare($bare): void {
-    if ($bare) {
-      $this->fixtureCreator->setBare(TRUE);
-    }
-  }
-
-  /**
-   * Sets the dev flag.
-   *
-   * @param string|string[]|bool|null $dev
-   *   The dev flag.
-   */
-  private function setDev($dev): void {
-    if ($dev) {
-      $this->fixtureCreator->setDev($dev);
-    }
-  }
-
-  /**
-   * Sets the Composer exit on failure flag.
-   *
-   * @param string|string[]|bool|null $ignore
-   *   The ignore-patch-failure flag.
-   */
-  private function setComposerExitOnPatchFailure($ignore): void {
-    if ($ignore) {
-      $this->fixtureCreator->setComposerExitOnPatchFailure(FALSE);
-    }
-  }
-
-  /**
-   * Sets the Drupal core version.
-   *
-   * @param string|string[]|bool|null $version
-   *   The version string.
-   * @param string|string[]|bool|null $dev
-   *   The dev flag.
-   *
-   * @SuppressWarnings(PHPMD.StaticAccess)
-   */
-  private function setCore($version, $dev): void {
-    if ($dev && !$version) {
-      $version = DrupalCoreVersion::CURRENT_DEV;
-    }
-
-    if (!$version) {
-      return;
-    }
-
-    if (DrupalCoreVersion::isValidKey($version)) {
-      $version = $this->drupalCoreVersionFinder->get(new DrupalCoreVersion($version));
-    }
-
-    $this->fixtureCreator->setCoreVersion($version);
-  }
-
-  /**
-   * Sets the prefer source flag.
-   *
-   * @param string|string[]|bool|null $prefer_source
-   *   The prefer-source flag.
-   */
-  private function setPreferSource($prefer_source): void {
-    if ($prefer_source) {
-      $this->fixtureCreator->setPreferSource($prefer_source);
-    }
-  }
-
-  /**
-   * Sets the installation profile.
-   *
-   * @param string|string[]|bool|null $profile
-   *   The installation profile.
-   */
-  private function setProfile($profile): void {
-    if ($profile !== FixtureCreator::DEFAULT_PROFILE) {
-      $this->fixtureCreator->setProfile($profile);
-    }
-  }
-
-  /**
-   * Sets the Composer project template.
-   *
-   * @param string|string[]|bool|null $project_template
-   *   The Composer project template, e.g., "drupal/drupal-recommended-project".
-   */
-  private function setProjectTemplate($project_template): void {
-    if ($project_template !== FixtureCreator::DEFAULT_PROJECT_TEMPLATE) {
-      $this->fixtureCreator->setProjectTemplate($project_template);
-    }
-  }
-
-  /**
-   * Sets the site install flag.
-   *
-   * @param string|string[]|bool|null $no_site_install
-   *   The no-site-install flag.
-   */
-  private function setSiteInstall($no_site_install) {
-    if ($no_site_install) {
-      $this->fixtureCreator->setInstallSite(FALSE);
-    }
-  }
-
-  /**
-   * Sets the SQLite flag.
-   *
-   * @param string|string[]|bool|null $no_sqlite
-   *   The no-sqlite flag.
-   */
-  private function setSqlite($no_sqlite): void {
-    if ($no_sqlite) {
-      $this->fixtureCreator->setSqlite(FALSE);
-    }
-  }
-
-  /**
-   * Sets the symlink all flag.
-   *
-   * @param string|string[]|bool|null $symlink_all
-   *   The symlink-all flag.
-   */
-  private function setSymlinkAll($symlink_all): void {
-    if ($symlink_all) {
-      $this->fixtureCreator->setSymlinkAll(TRUE);
-    }
-  }
-
-  /**
    * Tests preconditions.
    *
    * @param string|string[]|bool|null $sut
    *   The SUT.
    *
-   * @throws \Acquia\Orca\Exception\OrcaException
+   * @throws \Acquia\Orca\Helper\Exception\OrcaException
    *   If preconditions are not satisfied.
    */
-  private function testPreconditions($sut) {
+  private function testPreconditions($sut): void {
     if ($sut) {
       $this->sutPreconditionsTester->test($sut);
     }

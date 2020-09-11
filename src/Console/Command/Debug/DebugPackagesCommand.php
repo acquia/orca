@@ -2,10 +2,10 @@
 
 namespace Acquia\Orca\Console\Command\Debug;
 
-use Acquia\Orca\Enum\DrupalCoreVersion;
-use Acquia\Orca\Enum\StatusCode;
+use Acquia\Orca\Console\Helper\StatusCode;
+use Acquia\Orca\Drupal\DrupalCoreVersion;
+use Acquia\Orca\Drupal\DrupalCoreVersionFinder;
 use Acquia\Orca\Package\PackageManager;
-use Acquia\Orca\Utility\DrupalCoreVersionFinder;
 use Composer\Semver\VersionParser;
 use InvalidArgumentException;
 use Symfony\Component\Console\Command\Command;
@@ -13,6 +13,7 @@ use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use UnexpectedValueException;
 
 /**
  * Provides a command.
@@ -43,7 +44,7 @@ class DebugPackagesCommand extends Command {
   /**
    * The Drupal core version finder.
    *
-   * @var \Acquia\Orca\Utility\DrupalCoreVersionFinder
+   * @var \Acquia\Orca\Drupal\DrupalCoreVersionFinder
    */
   private $drupalCoreVersionFinder;
 
@@ -57,7 +58,7 @@ class DebugPackagesCommand extends Command {
   /**
    * Constructs an instance.
    *
-   * @param \Acquia\Orca\Utility\DrupalCoreVersionFinder $drupal_core_version_finder
+   * @param \Acquia\Orca\Drupal\DrupalCoreVersionFinder $drupal_core_version_finder
    *   The Drupal core version finder.
    * @param \Acquia\Orca\Package\PackageManager $package_manager
    *   The package manager.
@@ -138,7 +139,7 @@ class DebugPackagesCommand extends Command {
       $this->versionParser->parseConstraints($argument);
       $this->coreVersion = $argument;
     }
-    catch (\UnexpectedValueException $e) {
+    catch (UnexpectedValueException $e) {
       throw new InvalidArgumentException();
     }
   }

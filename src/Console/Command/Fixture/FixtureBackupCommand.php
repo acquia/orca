@@ -2,9 +2,9 @@
 
 namespace Acquia\Orca\Console\Command\Fixture;
 
-use Acquia\Orca\Enum\StatusCode;
-use Acquia\Orca\Facade\GitFacade;
-use Acquia\Orca\Filesystem\FixturePathHandler;
+use Acquia\Orca\Console\Helper\StatusCode;
+use Acquia\Orca\Git\Git;
+use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -26,26 +26,26 @@ class FixtureBackupCommand extends Command {
   /**
    * The fixture path handler.
    *
-   * @var \Acquia\Orca\Filesystem\FixturePathHandler
+   * @var \Acquia\Orca\Helper\Filesystem\FixturePathHandler
    */
   private $fixture;
 
   /**
    * The Git facade.
    *
-   * @var \Acquia\Orca\Facade\GitFacade
+   * @var \Acquia\Orca\Git\Git
    */
   private $git;
 
   /**
    * Constructs an instance.
    *
-   * @param \Acquia\Orca\Filesystem\FixturePathHandler $fixture_path_handler
+   * @param \Acquia\Orca\Helper\Filesystem\FixturePathHandler $fixture_path_handler
    *   The fixture path handler.
-   * @param \Acquia\Orca\Facade\GitFacade $git
+   * @param \Acquia\Orca\Git\Git $git
    *   The Git facade.
    */
-  public function __construct(FixturePathHandler $fixture_path_handler, GitFacade $git) {
+  public function __construct(FixturePathHandler $fixture_path_handler, Git $git) {
     $this->fixture = $fixture_path_handler;
     $this->git = $git;
     parent::__construct(self::$defaultName);

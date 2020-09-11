@@ -2,8 +2,8 @@
 
 namespace Acquia\Orca\Package;
 
-use Acquia\Orca\Filesystem\FixturePathHandler;
-use Acquia\Orca\Filesystem\OrcaPathHandler;
+use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
+use Acquia\Orca\Helper\Filesystem\OrcaPathHandler;
 use Composer\Semver\VersionParser;
 use InvalidArgumentException;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -30,14 +30,14 @@ class Package {
   /**
    * The fixture path handler.
    *
-   * @var \Acquia\Orca\Filesystem\FixturePathHandler
+   * @var \Acquia\Orca\Helper\Filesystem\FixturePathHandler
    */
   private $fixture;
 
   /**
    * The ORCA path handler.
    *
-   * @var \Acquia\Orca\Filesystem\OrcaPathHandler
+   * @var \Acquia\Orca\Helper\Filesystem\OrcaPathHandler
    */
   private $orca;
 
@@ -75,9 +75,9 @@ class Package {
    *     both of the "version" and "version_dev" key-value pairs to be used when
    *     the corresponding Drupal core version constraint is satisfied. Mappings
    *     are processed in order, and the first match wins.
-   * @param \Acquia\Orca\Filesystem\FixturePathHandler $fixture_path_handler
+   * @param \Acquia\Orca\Helper\Filesystem\FixturePathHandler $fixture_path_handler
    *   The fixture path handler.
-   * @param \Acquia\Orca\Filesystem\OrcaPathHandler $orca_path_handler
+   * @param \Acquia\Orca\Helper\Filesystem\OrcaPathHandler $orca_path_handler
    *   The ORCA path handler.
    * @param string $package_name
    *   The package name, corresponding to the "name" property in its
@@ -162,11 +162,16 @@ class Package {
   /**
    * Gets the Drupal extension machine name.
    *
-   * @return string
-   *   The Drupal extension machine name suitable for use with Drush, for
-   *   example.
+   * Suitable for use with Drush, for example.
+   *
+   * @return string|null
+   *   The Drupal extension machine name if available or NULL if not.
    */
-  public function getDrupalExtensionName(): string {
+  public function getDrupalExtensionName(): ?string {
+    if (!$this->isDrupalExtension()) {
+      return NULL;
+    }
+
     // Project names may include a namespace.
     // @see https://www.drupal.org/project/project_composer/issues/3064900
     $name_parts = explode('-', $this->getProjectName());
@@ -219,6 +224,9 @@ class Package {
       case 'drupal-theme':
         return "docroot/themes/contrib/{$this->getProjectName()}";
 
+      case 'project-template':
+        return '.';
+
       default:
         return "vendor/{$this->getPackageName()}";
     }
@@ -248,6 +256,16 @@ class Package {
    */
   public function getRepositoryUrlAbsolute(): string {
     return $this->orca->getPath($this->getRepositoryUrlRaw());
+  }
+
+  /**
+   * Determines whether or not the Composer "path" repository exists.
+   *
+   * @return bool
+   *   Returns TRUE if the repository exists or FALSE if not.
+   */
+  public function repositoryExists(): bool {
+    return $this->orca->exists($this->getRepositoryUrlRaw());
   }
 
   /**
@@ -340,6 +358,16 @@ class Package {
   }
 
   /**
+   * Determines whether the package is a project template.
+   *
+   * @return bool
+   *   Returns TRUE if it is, or FALSE if not.
+   */
+  public function isProjectTemplate(): bool {
+    return $this->getType() === 'project-template';
+  }
+
+  /**
    * Determines whether the package is a Drupal module that should get enabled.
    *
    * @return bool
@@ -355,6 +383,20 @@ class Package {
   }
 
   /**
+   * Determines whether the package should get required with Composer.
+   *
+   * @return bool
+   *   TRUE if the package should get required with Composer or FALSE if not.
+   */
+  public function shouldGetComposerRequired(): bool {
+    if ($this->isProjectTemplate()) {
+      return FALSE;
+    }
+
+    return TRUE;
+  }
+
+  /**
    * Initializes the package name.
    *
    * @param string $package_name
@@ -364,7 +406,7 @@ class Package {
    *   In case of an invalid package name.
    */
   private function initializePackageName(string $package_name): void {
-    // Require a a full package name: "vendor/project". A simple test for a
+    // Require a full package name: "vendor/project". A simple test for a
     // forward slash will suffice.
     if (strpos($package_name, '/') === FALSE) {
       throw new InvalidArgumentException("Invalid package name: {$package_name}. Must take the form 'vendor/project'.");

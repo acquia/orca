@@ -21,6 +21,7 @@
         "hassankhan/config": "^2.1",
         "myclabs/php-enum": "^1.7",
         "oscarotero/env": "^1.2",
+        "php-coveralls/php-coveralls": "^2.2",
         "php-parallel-lint/php-console-highlighter": "^0.4.0",
         "php-parallel-lint/php-parallel-lint": "^1.2.0",
         "phploc/phploc": "^5.0",
@@ -90,7 +91,8 @@
         "phpcs": "phpcs -s --cache=var/cache/phpcs.json",
         "phplint": "parallel-lint --exclude vendor --ignore-fails .",
         "phpmd": "phpmd . text phpmd.xml.dist --ignore-violations-on-exit",
-        "phpunit": "phpunit"
+        "phpunit": "phpunit",
+        "update-docs": "./bin/orca --format=md > docs/commands.md"
     },
     "support": {
         "issues": "https://github.com/acquia/orca/issues",

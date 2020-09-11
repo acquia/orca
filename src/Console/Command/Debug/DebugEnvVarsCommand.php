@@ -2,7 +2,8 @@
 
 namespace Acquia\Orca\Console\Command\Debug;
 
-use Acquia\Orca\Enum\StatusCode;
+use Acquia\Orca\Console\Helper\StatusCode;
+use Env;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputInterface;
@@ -16,8 +17,12 @@ class DebugEnvVarsCommand extends Command {
   private const VARS = [
     'ORCA_AMPLITUDE_API_KEY',
     'ORCA_AMPLITUDE_USER_ID',
+    'ORCA_COVERAGE_CLOVER',
+    'ORCA_COVERAGE_ENABLE',
+    'ORCA_COVERALLS_ENABLE',
     'ORCA_CUSTOM_FIXTURE_INIT_ARGS',
     'ORCA_CUSTOM_TESTS_RUN_ARGS',
+    'ORCA_ENABLE_NIGHTWATCH',
     'ORCA_FIXTURE_DIR',
     'ORCA_FIXTURE_PROFILE',
     'ORCA_JOB',
@@ -25,7 +30,6 @@ class DebugEnvVarsCommand extends Command {
     'ORCA_PACKAGES_CONFIG_ALTER',
     'ORCA_PHPCS_STANDARD',
     'ORCA_ROOT',
-    'ORCA_ENABLE_NIGHTWATCH',
     'ORCA_SUT_BRANCH',
     'ORCA_SUT_DIR',
     'ORCA_SUT_HAS_NIGHTWATCH_TESTS',
@@ -97,7 +101,7 @@ class DebugEnvVarsCommand extends Command {
     foreach (self::VARS as $var) {
       $rows[] = [
         $var,
-        \Env::get($var) ?: '~',
+        Env::get($var) ?: '~',
       ];
     }
     return $rows;

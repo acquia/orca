@@ -3,19 +3,19 @@
 namespace Acquia\Orca\Tests\Console\Command\Qa;
 
 use Acquia\Orca\Console\Command\Qa\QaDeprecatedCodeScanCommand;
-use Acquia\Orca\Enum\StatusCode;
-use Acquia\Orca\Filesystem\FixturePathHandler;
+use Acquia\Orca\Console\Helper\StatusCode;
+use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
+use Acquia\Orca\Helper\Task\TaskRunner;
 use Acquia\Orca\Package\PackageManager;
-use Acquia\Orca\Task\DeprecatedCodeScanner\PhpStanTask;
-use Acquia\Orca\Task\TaskRunner;
 use Acquia\Orca\Tests\Console\Command\CommandTestBase;
+use Acquia\Orca\Tool\Phpstan\PhpstanTask;
 use Symfony\Component\Console\Command\Command;
 
 /**
- * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Filesystem\FixturePathHandler $fixture
+ * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Helper\Filesystem\FixturePathHandler $fixture
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Package\PackageManager $packageManager
- * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Task\DeprecatedCodeScanner\PhpStanTask $phpstan
- * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Task\TaskRunner $taskRunner
+ * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Tool\Phpstan\PhpstanTask $phpstan
+ * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Helper\Task\TaskRunner $taskRunner
  */
 class QaDeprecatedCodeScanCommandTest extends CommandTestBase {
 
@@ -26,7 +26,7 @@ class QaDeprecatedCodeScanCommandTest extends CommandTestBase {
     $this->fixture->getPath()
       ->willReturn(self::FIXTURE_ROOT);
     $this->packageManager = $this->prophesize(PackageManager::class);
-    $this->phpstan = $this->prophesize(PhpStanTask::class);
+    $this->phpstan = $this->prophesize(PhpstanTask::class);
     $this->taskRunner = $this->prophesize(TaskRunner::class);
   }
 
@@ -41,7 +41,7 @@ class QaDeprecatedCodeScanCommandTest extends CommandTestBase {
   /**
    * @dataProvider providerCommand
    */
-  public function testCommand($fixture_exists, $args, $methods_called, $status_code, $display) {
+  public function testCommand($fixture_exists, $args, $methods_called, $status_code, $display): void {
     $this->packageManager
       ->exists(@$args['--sut'])
       ->shouldBeCalledTimes((int) in_array('PackageManager::exists', $methods_called))
@@ -63,11 +63,11 @@ class QaDeprecatedCodeScanCommandTest extends CommandTestBase {
 
     $this->executeCommand($args);
 
-    $this->assertEquals($display, $this->getDisplay(), 'Displayed correct output.');
-    $this->assertEquals($status_code, $this->getStatusCode(), 'Returned correct status code.');
+    self::assertEquals($display, $this->getDisplay(), 'Displayed correct output.');
+    self::assertEquals($status_code, $this->getStatusCode(), 'Returned correct status code.');
   }
 
-  public function providerCommand() {
+  public function providerCommand(): array {
     return [
       [TRUE, [], [], StatusCode::ERROR, "Error: Nothing to do.\nHint: Use the \"--sut\" and \"--contrib\" options to specify what to scan.\n"],
       [FALSE, ['--sut' => self::VALID_PACKAGE], ['PackageManager::exists', 'Fixture::exists'], StatusCode::ERROR, sprintf("Error: No fixture exists at %s.\nHint: Use the \"fixture:init\" command to create one.\n", self::FIXTURE_ROOT)],

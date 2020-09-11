@@ -3,16 +3,16 @@
 namespace Acquia\Orca\Tests\Console\Command\Fixture;
 
 use Acquia\Orca\Console\Command\Fixture\FixtureEnableExtensionsCommand;
-use Acquia\Orca\Enum\StatusCode;
-use Acquia\Orca\Exception\OrcaException;
-use Acquia\Orca\Filesystem\FixturePathHandler;
+use Acquia\Orca\Console\Helper\StatusCode;
 use Acquia\Orca\Fixture\CompanyExtensionEnabler;
+use Acquia\Orca\Helper\Exception\OrcaException;
+use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
 use Acquia\Orca\Tests\Console\Command\CommandTestBase;
 use Symfony\Component\Console\Command\Command;
 
 /**
  * @property \Prophecy\Prophecy\ObjectProphecy|CompanyExtensionEnabler $companyExtensionEnabler
- * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Filesystem\FixturePathHandler $fixture_path_handler
+ * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Helper\Filesystem\FixturePathHandler $fixture_path_handler
  */
 class FixtureEnableExtensionsCommandTest extends CommandTestBase {
 
@@ -34,7 +34,7 @@ class FixtureEnableExtensionsCommandTest extends CommandTestBase {
   /**
    * @dataProvider providerCommand
    */
-  public function testCommand($fixture_exists, $install_called, $exception, $status_code, $display) {
+  public function testCommand($fixture_exists, $install_called, $exception, $status_code, $display): void {
     $this->fixture_path_handler
       ->exists()
       ->shouldBeCalled()
@@ -50,11 +50,11 @@ class FixtureEnableExtensionsCommandTest extends CommandTestBase {
 
     $this->executeCommand();
 
-    $this->assertEquals($display, $this->getDisplay(), 'Displayed correct output.');
-    $this->assertEquals($status_code, $this->getStatusCode(), 'Returned correct status code.');
+    self::assertEquals($display, $this->getDisplay(), 'Displayed correct output.');
+    self::assertEquals($status_code, $this->getStatusCode(), 'Returned correct status code.');
   }
 
-  public function providerCommand() {
+  public function providerCommand(): array {
     return [
       [FALSE, 0, FALSE, StatusCode::ERROR, sprintf("Error: No fixture exists at %s.\n", self::FIXTURE_ROOT)],
       [TRUE, 1, new OrcaException('Oops.'), StatusCode::ERROR, "\n [ERROR] Oops.                                                                  \n\n"],

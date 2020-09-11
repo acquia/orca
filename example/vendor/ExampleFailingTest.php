@@ -14,8 +14,8 @@ class ExampleFailingTest extends TestCase {
   /**
    * ORCA should never run this test.
    */
-  public function testExcludeVendorDirectory() {
-    $this->assertTrue(FALSE);
+  public function testExcludeVendorDirectory(): void {
+    self::assertTrue(FALSE);
   }
 
 }

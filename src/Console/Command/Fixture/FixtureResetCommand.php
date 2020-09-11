@@ -2,9 +2,9 @@
 
 namespace Acquia\Orca\Console\Command\Fixture;
 
-use Acquia\Orca\Enum\StatusCode;
-use Acquia\Orca\Filesystem\FixturePathHandler;
+use Acquia\Orca\Console\Helper\StatusCode;
 use Acquia\Orca\Fixture\FixtureResetter;
+use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -26,7 +26,7 @@ class FixtureResetCommand extends Command {
   /**
    * The fixture path handler.
    *
-   * @var \Acquia\Orca\Filesystem\FixturePathHandler
+   * @var \Acquia\Orca\Helper\Filesystem\FixturePathHandler
    */
   private $fixture;
 
@@ -40,7 +40,7 @@ class FixtureResetCommand extends Command {
   /**
    * Constructs an instance.
    *
-   * @param \Acquia\Orca\Filesystem\FixturePathHandler $fixture_path_handler
+   * @param \Acquia\Orca\Helper\Filesystem\FixturePathHandler $fixture_path_handler
    *   The fixture path handler.
    * @param \Acquia\Orca\Fixture\FixtureResetter $fixture_backupper
    *   The fixture resetter.

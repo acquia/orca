@@ -2,11 +2,11 @@
 
 namespace Acquia\Orca\Console\Command\Qa;
 
-use Acquia\Orca\Enum\PhpcsStandard;
-use Acquia\Orca\Enum\StatusCode;
-use Acquia\Orca\Task\Fixer\ComposerNormalizeTask;
-use Acquia\Orca\Task\Fixer\PhpCodeBeautifierAndFixerTask;
-use Acquia\Orca\Task\TaskRunner;
+use Acquia\Orca\Console\Helper\StatusCode;
+use Acquia\Orca\Helper\Task\TaskRunner;
+use Acquia\Orca\Tool\ComposerNormalize\ComposerNormalizeTask;
+use Acquia\Orca\Tool\Helper\PhpcsStandard;
+use Acquia\Orca\Tool\Phpcbf\PhpcbfTask;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -23,7 +23,7 @@ class QaFixerCommand extends Command {
   /**
    * The Composer normalize task.
    *
-   * @var \Acquia\Orca\Task\Fixer\ComposerNormalizeTask
+   * @var \Acquia\Orca\Tool\ComposerNormalize\ComposerNormalizeTask
    */
   private $composerNormalize;
 
@@ -37,14 +37,14 @@ class QaFixerCommand extends Command {
   /**
    * The PHP Code Beautifier and Fixer task.
    *
-   * @var \Acquia\Orca\Task\Fixer\PhpCodeBeautifierAndFixerTask
+   * @var \Acquia\Orca\Tool\Phpcbf\PhpcbfTask
    */
   private $phpCodeBeautifierAndFixer;
 
   /**
    * The task runner.
    *
-   * @var \Acquia\Orca\Task\TaskRunner
+   * @var \Acquia\Orca\Helper\Task\TaskRunner
    */
   private $taskRunner;
 
@@ -65,18 +65,18 @@ class QaFixerCommand extends Command {
   /**
    * Constructs an instance.
    *
-   * @param \Acquia\Orca\Task\Fixer\ComposerNormalizeTask $composer_normalize
+   * @param \Acquia\Orca\Tool\ComposerNormalize\ComposerNormalizeTask $composer_normalize
    *   The Composer normalize task.
    * @param string $default_phpcs_standard
    *   The default PHPCS standard.
    * @param \Symfony\Component\Filesystem\Filesystem $filesystem
    *   The filesystem.
-   * @param \Acquia\Orca\Task\Fixer\PhpCodeBeautifierAndFixerTask $php_code_beautifier_and_fixer
+   * @param \Acquia\Orca\Tool\Phpcbf\PhpcbfTask $php_code_beautifier_and_fixer
    *   The PHP Code Beautifier and Fixer task.
-   * @param \Acquia\Orca\Task\TaskRunner $task_runner
+   * @param \Acquia\Orca\Helper\Task\TaskRunner $task_runner
    *   The task runner.
    */
-  public function __construct(ComposerNormalizeTask $composer_normalize, string $default_phpcs_standard, Filesystem $filesystem, PhpCodeBeautifierAndFixerTask $php_code_beautifier_and_fixer, TaskRunner $task_runner) {
+  public function __construct(ComposerNormalizeTask $composer_normalize, string $default_phpcs_standard, Filesystem $filesystem, PhpcbfTask $php_code_beautifier_and_fixer, TaskRunner $task_runner) {
     $this->composerNormalize = $composer_normalize;
     $this->defaultPhpcsStandard = $default_phpcs_standard;
     $this->filesystem = $filesystem;
@@ -129,7 +129,7 @@ class QaFixerCommand extends Command {
    * @param \Symfony\Component\Console\Input\InputInterface $input
    *   The command input.
    */
-  private function configureTaskRunner(InputInterface $input) {
+  private function configureTaskRunner(InputInterface $input): void {
     $composer = $input->getOption('composer');
     $phpcbf = $input->getOption('phpcbf');
     $all = !$composer && !$phpcbf;
@@ -149,7 +149,7 @@ class QaFixerCommand extends Command {
    * @param \Symfony\Component\Console\Input\InputInterface $input
    *   The command input.
    *
-   * @return \Acquia\Orca\Enum\PhpcsStandard
+   * @return \Acquia\Orca\Tool\Helper\PhpcsStandard
    *   The PHPCS standard.
    */
   private function getStandard(InputInterface $input): PhpcsStandard {

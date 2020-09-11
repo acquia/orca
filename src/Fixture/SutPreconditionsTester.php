@@ -2,8 +2,8 @@
 
 namespace Acquia\Orca\Fixture;
 
-use Acquia\Orca\Exception\OrcaException;
-use Acquia\Orca\Filesystem\FixturePathHandler;
+use Acquia\Orca\Helper\Exception\OrcaException;
+use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
 use Acquia\Orca\Package\PackageManager;
 use Composer\Json\JsonFile;
 use Symfony\Component\Filesystem\Filesystem;
@@ -23,7 +23,7 @@ class SutPreconditionsTester {
   /**
    * The fixture path handler.
    *
-   * @var \Acquia\Orca\Filesystem\FixturePathHandler
+   * @var \Acquia\Orca\Helper\Filesystem\FixturePathHandler
    */
   private $fixture;
 
@@ -39,7 +39,7 @@ class SutPreconditionsTester {
    *
    * @param \Symfony\Component\Filesystem\Filesystem $filesystem
    *   The filesystem.
-   * @param \Acquia\Orca\Filesystem\FixturePathHandler $fixture_path_handler
+   * @param \Acquia\Orca\Helper\Filesystem\FixturePathHandler $fixture_path_handler
    *   The fixture path handler.
    * @param \Acquia\Orca\Package\PackageManager $package_manager
    *   The package manager.
@@ -56,7 +56,7 @@ class SutPreconditionsTester {
    * @param string $package_name
    *   The package name of the SUT, e.g., "drupal/example".
    *
-   * @throws \Acquia\Orca\Exception\OrcaException
+   * @throws \Acquia\Orca\Helper\Exception\OrcaException
    */
   public function test(string $package_name): void {
     $sut = $this->packageManager->get($package_name);
@@ -73,7 +73,7 @@ class SutPreconditionsTester {
 
     $data = $composer_json->read();
 
-    $actual_name = isset($data['name']) ? $data['name'] : NULL;
+    $actual_name = $data['name'] ?? NULL;
     $expected_name = $sut->getPackageName();
     if ($actual_name !== $expected_name) {
       throw new OrcaException(sprintf(

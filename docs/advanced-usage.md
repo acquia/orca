@@ -12,6 +12,8 @@ These affect ORCA in all contexts.
 
 * <a name="ORCA_AMPLITUDE_USER_ID"></a>**`ORCA_AMPLITUDE_USER_ID`**: Set the Amplitude user ID for telemetry events (see also [`ORCA_TELEMETRY_ENABLE`](#ORCA_TELEMETRY_ENABLE)). Defaults to `$ORCA_SUT_NAME:$ORCA_SUT_BRANCH`, e.g., `drupal/example:8.x-1.x`, on Travis CI.
 
+* <a name="ORCA_COVERAGE_CLOVER"></a>**`ORCA_COVERAGE_CLOVER`**: Change the path where ORCA saves the PHPUnit test coverage Clover XML file.
+
 * <a name="ORCA_FIXTURE_DIR"></a>**`ORCA_FIXTURE_DIR`**: Change the directory ORCA uses for test fixtures. Acceptable values are any valid, local directory reference, e.g., `/var/www/example`, or `../example`.
 
 * <a name="ORCA_PACKAGES_CONFIG"></a>**`ORCA_PACKAGES_CONFIG`**: Completely replace the list of packages ORCA installs in fixtures and runs tests on. Acceptable values are any valid path to a YAML file relative to ORCA itself, e.g., `../example/tests/packages.yml`. See [`config/packages.yml`](../config/packages.yml) for an example and explanation of the schema.
@@ -25,6 +27,10 @@ These affect ORCA in all contexts.
 ### Travis CI scripts
 
 These affect ORCA only as invoked via the Travis CI scripts.
+
+* <a name="ORCA_COVERAGE_ENABLE"></a>**`ORCA_COVERAGE_ENABLE`**: Set to `TRUE` to generate test coverage data without automatically sending it to [Coveralls](https://coveralls.io/). The resulting Clover file will be saved at the location set in [`ORCA_COVERAGE_CLOVER`](#ORCA_COVERAGE_CLOVER). Test coverage generation greatly increases build times, so only enable it on one job--all that makes sense anyway. Note: This setting is implied by [`ORCA_COVERALLS_ENABLE`](#ORCA_COVERALLS_ENABLE) and need not be enabled if that is.
+
+* <a name="ORCA_COVERALLS_ENABLE"></a>**`ORCA_COVERALLS_ENABLE`**: Set to `TRUE` to send test coverage data to [Coveralls](https://coveralls.io/) on the isolated/recommended job. Requires that you [add your repository to Coveralls](https://github.com/acquia/orca/blob/master/docs/faq.md#how-do-i-add-my-github-repository-to-coveralls). It is recommended to [enable notifications](https://docs.coveralls.io/coveralls-notifications). Test coverage generation greatly increases build times, so only enable it on one job--all that makes sense anyway. Note: [`ORCA_COVERAGE_ENABLE`](#ORCA_COVERAGE_ENABLE) is implied by this setting and need not be enabled if this is.
 
 * <a name="ORCA_CUSTOM_FIXTURE_INIT_ARGS"></a>**`ORCA_CUSTOM_FIXTURE_INIT_ARGS`**: Add command-line arguments to `fixture:init` invocation in the [`install`](../bin/travis/install.sh) build phase of a custom job. Example:
 

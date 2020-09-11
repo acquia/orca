@@ -2,11 +2,12 @@
 
 namespace Acquia\Orca\Fixture;
 
-use Acquia\Orca\Filesystem\FixturePathHandler;
-use Acquia\Orca\Filesystem\OrcaPathHandler;
+use Acquia\Orca\Helper\Config\ConfigLoader;
+use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
+use Acquia\Orca\Helper\Filesystem\OrcaPathHandler;
 use Acquia\Orca\Package\Package;
 use Acquia\Orca\Package\PackageManager;
-use Acquia\Orca\Utility\ConfigLoader;
+use Exception;
 use SplFileInfo;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
@@ -26,7 +27,7 @@ class SubextensionManager {
   /**
    * The config loader.
    *
-   * @var \Acquia\Orca\Utility\ConfigLoader
+   * @var \Acquia\Orca\Helper\Config\ConfigLoader
    */
   private $configLoader;
 
@@ -40,14 +41,14 @@ class SubextensionManager {
   /**
    * The fixture path handler.
    *
-   * @var \Acquia\Orca\Filesystem\FixturePathHandler
+   * @var \Acquia\Orca\Helper\Filesystem\FixturePathHandler
    */
   private $fixture;
 
   /**
    * The ORCA path handler.
    *
-   * @var \Acquia\Orca\Filesystem\OrcaPathHandler
+   * @var \Acquia\Orca\Helper\Filesystem\OrcaPathHandler
    */
   private $orca;
 
@@ -68,13 +69,13 @@ class SubextensionManager {
   /**
    * Constructs an instance.
    *
-   * @param \Acquia\Orca\Utility\ConfigLoader $config_loader
+   * @param \Acquia\Orca\Helper\Config\ConfigLoader $config_loader
    *   The config loader.
    * @param \Symfony\Component\Filesystem\Filesystem $filesystem
    *   The filesystem.
-   * @param \Acquia\Orca\Filesystem\FixturePathHandler $fixture_path_handler
+   * @param \Acquia\Orca\Helper\Filesystem\FixturePathHandler $fixture_path_handler
    *   The fixture path handler.
-   * @param \Acquia\Orca\Filesystem\OrcaPathHandler $orca_path_handler
+   * @param \Acquia\Orca\Helper\Filesystem\OrcaPathHandler $orca_path_handler
    *   The ORCA path handler.
    * @param \Acquia\Orca\Package\PackageManager $package_manager
    *   The package manager.
@@ -136,13 +137,13 @@ class SubextensionManager {
       try {
         $config = $this->configLoader->load($file->getPathname());
       }
-      catch (\Exception $e) {
+      catch (Exception $e) {
         continue;
       }
 
       $name = $config->get('name');
 
-      if (array_key_exists($name, $this->alterData) && is_null($this->alterData[$name])) {
+      if (array_key_exists($name, $this->alterData) && $this->alterData[$name] === NULL) {
         continue;
       }
 
@@ -222,7 +223,7 @@ class SubextensionManager {
       }
       [$vendor_name, $package_name] = explode('/', $name);
     }
-    catch (\Exception $e) {
+    catch (Exception $e) {
       return FALSE;
     }
 

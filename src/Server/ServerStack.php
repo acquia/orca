@@ -2,7 +2,7 @@
 
 namespace Acquia\Orca\Server;
 
-use Acquia\Orca\Utility\Clock;
+use Acquia\Orca\Helper\Clock;
 
 /**
  * Provides a single interface to all servers.
@@ -12,7 +12,7 @@ class ServerStack implements ServerInterface {
   /**
    * The clock.
    *
-   * @var \Acquia\Orca\Utility\Clock
+   * @var \Acquia\Orca\Helper\Clock
    */
   private $clock;
 
@@ -28,7 +28,7 @@ class ServerStack implements ServerInterface {
    *
    * @param \Acquia\Orca\Server\ChromeDriverServer $chrome_driver_server
    *   The ChromeDriver server.
-   * @param \Acquia\Orca\Utility\Clock $clock
+   * @param \Acquia\Orca\Helper\Clock $clock
    *   The clock.
    * @param \Acquia\Orca\Server\WebServer $web_server
    *   The web server.

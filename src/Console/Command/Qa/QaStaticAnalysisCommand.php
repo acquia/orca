@@ -2,16 +2,16 @@
 
 namespace Acquia\Orca\Console\Command\Qa;
 
-use Acquia\Orca\Enum\PhpcsStandard;
-use Acquia\Orca\Enum\StatusCode;
-use Acquia\Orca\Task\StaticAnalysisTool\ComposerValidateTask;
-use Acquia\Orca\Task\StaticAnalysisTool\CoverageTask;
-use Acquia\Orca\Task\StaticAnalysisTool\PhpCodeSnifferTask;
-use Acquia\Orca\Task\StaticAnalysisTool\PhpLintTask;
-use Acquia\Orca\Task\StaticAnalysisTool\PhplocTask;
-use Acquia\Orca\Task\StaticAnalysisTool\PhpMessDetectorTask;
-use Acquia\Orca\Task\StaticAnalysisTool\YamlLintTask;
-use Acquia\Orca\Task\TaskRunner;
+use Acquia\Orca\Console\Helper\StatusCode;
+use Acquia\Orca\Helper\Task\TaskRunner;
+use Acquia\Orca\Tool\ComposerValidate\ComposerValidateTask;
+use Acquia\Orca\Tool\Coverage\CoverageTask;
+use Acquia\Orca\Tool\Helper\PhpcsStandard;
+use Acquia\Orca\Tool\Phpcs\PhpcsTask;
+use Acquia\Orca\Tool\PhpLint\PhpLintTask;
+use Acquia\Orca\Tool\Phploc\PhplocTask;
+use Acquia\Orca\Tool\Phpmd\PhpmdTask;
+use Acquia\Orca\Tool\YamlLint\YamlLintTask;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -28,7 +28,7 @@ class QaStaticAnalysisCommand extends Command {
   /**
    * The Composer validate task.
    *
-   * @var \Acquia\Orca\Task\StaticAnalysisTool\ComposerValidateTask
+   * @var \Acquia\Orca\Tool\ComposerValidate\ComposerValidateTask
    */
   private $composerValidate;
 
@@ -42,42 +42,42 @@ class QaStaticAnalysisCommand extends Command {
   /**
    * The PHP Code Sniffer task.
    *
-   * @var \Acquia\Orca\Task\StaticAnalysisTool\PhpCodeSnifferTask
+   * @var \Acquia\Orca\Tool\Phpcs\PhpcsTask
    */
   private $phpCodeSniffer;
 
   /**
    * The PHP lint task.
    *
-   * @var \Acquia\Orca\Task\StaticAnalysisTool\PhpLintTask
+   * @var \Acquia\Orca\Tool\PhpLint\PhpLintTask
    */
   private $phplint;
 
   /**
    * The PHPLOC task.
    *
-   * @var \Acquia\Orca\Task\StaticAnalysisTool\PhplocTask
+   * @var \Acquia\Orca\Tool\Phploc\PhplocTask
    */
   private $phploc;
 
   /**
    * The PHP Mess Detector task.
    *
-   * @var \Acquia\Orca\Task\StaticAnalysisTool\PhpMessDetectorTask
+   * @var \Acquia\Orca\Tool\Phpmd\PhpmdTask
    */
   private $phpMessDetector;
 
   /**
    * The task runner.
    *
-   * @var \Acquia\Orca\Task\TaskRunner
+   * @var \Acquia\Orca\Helper\Task\TaskRunner
    */
   private $taskRunner;
 
   /**
    * The YAML lint task.
    *
-   * @var \Acquia\Orca\Task\StaticAnalysisTool\YamlLintTask
+   * @var \Acquia\Orca\Tool\YamlLint\YamlLintTask
    */
   private $yamlLint;
 
@@ -98,35 +98,35 @@ class QaStaticAnalysisCommand extends Command {
   /**
    * The code coverage task.
    *
-   * @var \Acquia\Orca\Task\StaticAnalysisTool\CoverageTask
+   * @var \Acquia\Orca\Tool\Coverage\CoverageTask
    */
   private $coverage;
 
   /**
    * Constructs an instance.
    *
-   * @param \Acquia\Orca\Task\StaticAnalysisTool\CoverageTask $coverage
+   * @param \Acquia\Orca\Tool\Coverage\CoverageTask $coverage
    *   The code coverage task.
-   * @param \Acquia\Orca\Task\StaticAnalysisTool\ComposerValidateTask $composer_validate
+   * @param \Acquia\Orca\Tool\ComposerValidate\ComposerValidateTask $composer_validate
    *   The Composer validate task.
    * @param string $default_phpcs_standard
    *   The default PHPCs standard.
    * @param \Symfony\Component\Filesystem\Filesystem $filesystem
    *   The filesystem.
-   * @param \Acquia\Orca\Task\StaticAnalysisTool\PhpCodeSnifferTask $php_code_sniffer
+   * @param \Acquia\Orca\Tool\Phpcs\PhpcsTask $php_code_sniffer
    *   The PHP Code Sniffer task.
-   * @param \Acquia\Orca\Task\StaticAnalysisTool\PhpLintTask $phplint
+   * @param \Acquia\Orca\Tool\PhpLint\PhpLintTask $phplint
    *   The PHP lint task.
-   * @param \Acquia\Orca\Task\StaticAnalysisTool\PhplocTask $phploc
+   * @param \Acquia\Orca\Tool\Phploc\PhplocTask $phploc
    *   The PHPLOC task.
-   * @param \Acquia\Orca\Task\StaticAnalysisTool\PhpMessDetectorTask $php_mess_detector
+   * @param \Acquia\Orca\Tool\Phpmd\PhpmdTask $php_mess_detector
    *   The PHP Mess Detector task.
-   * @param \Acquia\Orca\Task\TaskRunner $task_runner
+   * @param \Acquia\Orca\Helper\Task\TaskRunner $task_runner
    *   The task runner.
-   * @param \Acquia\Orca\Task\StaticAnalysisTool\YamlLintTask $yaml_lint
+   * @param \Acquia\Orca\Tool\YamlLint\YamlLintTask $yaml_lint
    *   The YAML lint task.
    */
-  public function __construct(CoverageTask $coverage, ComposerValidateTask $composer_validate, string $default_phpcs_standard, Filesystem $filesystem, PhpCodeSnifferTask $php_code_sniffer, PhpLintTask $phplint, PhplocTask $phploc, PhpMessDetectorTask $php_mess_detector, TaskRunner $task_runner, YamlLintTask $yaml_lint) {
+  public function __construct(CoverageTask $coverage, ComposerValidateTask $composer_validate, string $default_phpcs_standard, Filesystem $filesystem, PhpcsTask $php_code_sniffer, PhpLintTask $phplint, PhplocTask $phploc, PhpmdTask $php_mess_detector, TaskRunner $task_runner, YamlLintTask $yaml_lint) {
     $this->composerValidate = $composer_validate;
     $this->coverage = $coverage;
     $this->defaultPhpcsStandard = $default_phpcs_standard;
@@ -190,7 +190,7 @@ class QaStaticAnalysisCommand extends Command {
    * @param \Symfony\Component\Console\Input\InputInterface $input
    *   The command input.
    */
-  private function configureTaskRunner(InputInterface $input) {
+  private function configureTaskRunner(InputInterface $input): void {
     $composer = $input->getOption('composer');
     $coverage = $input->getOption('coverage');
     $phpcs = $input->getOption('phpcs');
@@ -231,7 +231,7 @@ class QaStaticAnalysisCommand extends Command {
    * @param \Symfony\Component\Console\Input\InputInterface $input
    *   The command input.
    *
-   * @return \Acquia\Orca\Enum\PhpcsStandard
+   * @return \Acquia\Orca\Tool\Helper\PhpcsStandard
    *   The PHPCS standard.
    */
   private function getStandard(InputInterface $input): PhpcsStandard {

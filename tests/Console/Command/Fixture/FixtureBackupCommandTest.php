@@ -3,15 +3,15 @@
 namespace Acquia\Orca\Tests\Console\Command\Fixture;
 
 use Acquia\Orca\Console\Command\Fixture\FixtureBackupCommand;
-use Acquia\Orca\Enum\StatusCode;
-use Acquia\Orca\Facade\GitFacade;
-use Acquia\Orca\Filesystem\FixturePathHandler;
+use Acquia\Orca\Console\Helper\StatusCode;
+use Acquia\Orca\Git\Git;
+use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
 use Acquia\Orca\Tests\Console\Command\CommandTestBase;
 use Symfony\Component\Console\Command\Command;
 
 /**
- * @property \Acquia\Orca\Facade\GitFacade|\Prophecy\Prophecy\ObjectProphecy $git
- * @property \Acquia\Orca\Filesystem\FixturePathHandler|\Prophecy\Prophecy\ObjectProphecy $fixture
+ * @property \Acquia\Orca\Git\Git|\Prophecy\Prophecy\ObjectProphecy $git
+ * @property \Acquia\Orca\Helper\Filesystem\FixturePathHandler|\Prophecy\Prophecy\ObjectProphecy $fixture
  */
 class FixtureBackupCommandTest extends CommandTestBase {
 
@@ -21,7 +21,7 @@ class FixtureBackupCommandTest extends CommandTestBase {
       ->willReturn(TRUE);
     $this->fixture->getPath()
       ->willReturn(self::FIXTURE_ROOT);
-    $this->git = $this->prophesize(GitFacade::class);
+    $this->git = $this->prophesize(Git::class);
   }
 
   protected function createCommand(): Command {
@@ -33,7 +33,7 @@ class FixtureBackupCommandTest extends CommandTestBase {
   /**
    * @dataProvider providerCommand
    */
-  public function testCommand($fixture_exists, $args, $inputs, $remove_called, $status_code, $display) {
+  public function testCommand($fixture_exists, $args, $inputs, $remove_called, $status_code, $display): void {
     $this->fixture
       ->exists()
       ->shouldBeCalled()
@@ -44,11 +44,11 @@ class FixtureBackupCommandTest extends CommandTestBase {
 
     $this->executeCommand($args, $inputs);
 
-    $this->assertEquals($display, $this->getDisplay(), 'Displayed correct output.');
-    $this->assertEquals($status_code, $this->getStatusCode(), 'Returned correct status code.');
+    self::assertEquals($display, $this->getDisplay(), 'Displayed correct output.');
+    self::assertEquals($status_code, $this->getStatusCode(), 'Returned correct status code.');
   }
 
-  public function providerCommand() {
+  public function providerCommand(): array {
     return [
       [FALSE, [], [], 0, StatusCode::ERROR, sprintf("Error: No fixture exists at %s.\n", self::FIXTURE_ROOT)],
       [TRUE, [], ['n'], 0, StatusCode::USER_CANCEL, 'Are you sure you want to overwrite the backup of the test fixture at /var/www/orca-build? '],

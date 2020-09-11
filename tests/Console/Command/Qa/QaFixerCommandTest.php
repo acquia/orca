@@ -3,20 +3,20 @@
 namespace Acquia\Orca\Tests\Console\Command\Qa;
 
 use Acquia\Orca\Console\Command\Qa\QaFixerCommand;
-use Acquia\Orca\Enum\PhpcsStandard;
-use Acquia\Orca\Enum\StatusCode;
-use Acquia\Orca\Task\Fixer\ComposerNormalizeTask;
-use Acquia\Orca\Task\Fixer\PhpCodeBeautifierAndFixerTask;
-use Acquia\Orca\Task\TaskRunner;
+use Acquia\Orca\Console\Helper\StatusCode;
+use Acquia\Orca\Helper\Task\TaskRunner;
 use Acquia\Orca\Tests\Console\Command\CommandTestBase;
+use Acquia\Orca\Tool\ComposerNormalize\ComposerNormalizeTask;
+use Acquia\Orca\Tool\Helper\PhpcsStandard;
+use Acquia\Orca\Tool\Phpcbf\PhpcbfTask;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
- * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Task\Fixer\ComposerNormalizeTask composerNormalize
+ * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Tool\ComposerNormalize\ComposerNormalizeTask composerNormalize
  * @property \Prophecy\Prophecy\ObjectProphecy|\Symfony\Component\Filesystem\Filesystem $filesystem
- * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Task\Fixer\PhpCodeBeautifierAndFixerTask phpCodeBeautifierAndFixer
- * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Task\TaskRunner $taskRunner
+ * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Tool\Phpcbf\PhpcbfTask phpCodeBeautifierAndFixer
+ * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Helper\Task\TaskRunner $taskRunner
  */
 class QaFixerCommandTest extends CommandTestBase {
 
@@ -27,7 +27,7 @@ class QaFixerCommandTest extends CommandTestBase {
   protected function setUp() {
     $this->composerNormalize = $this->prophesize(ComposerNormalizeTask::class);
     $this->filesystem = $this->prophesize(Filesystem::class);
-    $this->phpCodeBeautifierAndFixer = $this->prophesize(PhpCodeBeautifierAndFixerTask::class);
+    $this->phpCodeBeautifierAndFixer = $this->prophesize(PhpcbfTask::class);
     $this->taskRunner = $this->prophesize(TaskRunner::class);
   }
 
@@ -42,7 +42,7 @@ class QaFixerCommandTest extends CommandTestBase {
   /**
    * @dataProvider providerCommand
    */
-  public function testCommand($path_exists, $run_called, $status_code, $display) {
+  public function testCommand($path_exists, $run_called, $status_code, $display): void {
     $this->filesystem
       ->exists(self::SUT_PATH)
       ->shouldBeCalledTimes(1)
@@ -66,11 +66,11 @@ class QaFixerCommandTest extends CommandTestBase {
 
     $this->executeCommand(['path' => self::SUT_PATH]);
 
-    $this->assertEquals($display, $this->getDisplay(), 'Displayed correct output.');
-    $this->assertEquals($status_code, $this->getStatusCode(), 'Returned correct status code.');
+    self::assertEquals($display, $this->getDisplay(), 'Displayed correct output.');
+    self::assertEquals($status_code, $this->getStatusCode(), 'Returned correct status code.');
   }
 
-  public function providerCommand() {
+  public function providerCommand(): array {
     return [
       [TRUE, 1, StatusCode::OK, ''],
       [TRUE, 1, StatusCode::ERROR, ''],
@@ -81,7 +81,7 @@ class QaFixerCommandTest extends CommandTestBase {
   /**
    * @dataProvider providerTaskFiltering
    */
-  public function testTaskFiltering($args, $task) {
+  public function testTaskFiltering($args, $task): void {
     $args['path'] = self::SUT_PATH;
     $this->filesystem
       ->exists(self::SUT_PATH)
@@ -102,11 +102,11 @@ class QaFixerCommandTest extends CommandTestBase {
 
     $this->executeCommand($args);
 
-    $this->assertEquals('', $this->getDisplay(), 'Displayed correct output.');
-    $this->assertEquals(StatusCode::OK, $this->getStatusCode(), 'Returned correct status code.');
+    self::assertEquals('', $this->getDisplay(), 'Displayed correct output.');
+    self::assertEquals(StatusCode::OK, $this->getStatusCode(), 'Returned correct status code.');
   }
 
-  public function providerTaskFiltering() {
+  public function providerTaskFiltering(): array {
     return [
       [['--composer' => 1], 'composerNormalize'],
       [['--phpcbf' => 1], 'phpCodeBeautifierAndFixer'],
@@ -116,7 +116,7 @@ class QaFixerCommandTest extends CommandTestBase {
   /**
    * @dataProvider providerPhpcsStandardOption
    */
-  public function testPhpcsStandardOption($args, $standard) {
+  public function testPhpcsStandardOption($args, $standard): void {
     $this->filesystem
       ->exists(self::SUT_PATH)
       ->shouldBeCalledOnce()
@@ -140,11 +140,11 @@ class QaFixerCommandTest extends CommandTestBase {
 
     $this->executeCommand($args);
 
-    $this->assertEquals('', $this->getDisplay(), 'Displayed correct output.');
-    $this->assertEquals(StatusCode::OK, $this->getStatusCode(), 'Returned correct status code.');
+    self::assertEquals('', $this->getDisplay(), 'Displayed correct output.');
+    self::assertEquals(StatusCode::OK, $this->getStatusCode(), 'Returned correct status code.');
   }
 
-  public function providerPhpcsStandardOption() {
+  public function providerPhpcsStandardOption(): array {
     return [
       [[], $this->defaultPhpcsStandard],
       [['--phpcs-standard' => PhpcsStandard::ACQUIA_PHP], PhpcsStandard::ACQUIA_PHP],
@@ -156,7 +156,7 @@ class QaFixerCommandTest extends CommandTestBase {
   /**
    * @dataProvider providerPhpcsStandardEnvVar
    */
-  public function testPhpcsStandardEnvVar($standard) {
+  public function testPhpcsStandardEnvVar($standard): void {
     $this->defaultPhpcsStandard = $standard;
     $this->filesystem
       ->exists(self::SUT_PATH)
@@ -183,11 +183,11 @@ class QaFixerCommandTest extends CommandTestBase {
 
     $this->executeCommand($args);
 
-    $this->assertEquals('', $this->getDisplay(), 'Displayed correct output.');
-    $this->assertEquals(StatusCode::OK, $this->getStatusCode(), 'Returned correct status code.');
+    self::assertEquals('', $this->getDisplay(), 'Displayed correct output.');
+    self::assertEquals(StatusCode::OK, $this->getStatusCode(), 'Returned correct status code.');
   }
 
-  public function providerPhpcsStandardEnvVar() {
+  public function providerPhpcsStandardEnvVar(): array {
     return [
       [PhpcsStandard::ACQUIA_PHP],
       [PhpcsStandard::ACQUIA_DRUPAL_TRANSITIONAL],
@@ -198,7 +198,7 @@ class QaFixerCommandTest extends CommandTestBase {
   /**
    * @dataProvider providerInvalidPhpcsStandard
    */
-  public function testInvalidPhpcsStandard($args, $default_standard, $display) {
+  public function testInvalidPhpcsStandard($args, $default_standard, $display): void {
     $this->defaultPhpcsStandard = $default_standard;
     $this->filesystem
       ->exists(self::SUT_PATH)
@@ -212,11 +212,11 @@ class QaFixerCommandTest extends CommandTestBase {
 
     $this->executeCommand($args);
 
-    $this->assertEquals($display, $this->getDisplay(), 'Displayed correct output.');
-    $this->assertEquals(StatusCode::ERROR, $this->getStatusCode(), 'Returned correct status code.');
+    self::assertEquals($display, $this->getDisplay(), 'Displayed correct output.');
+    self::assertEquals(StatusCode::ERROR, $this->getStatusCode(), 'Returned correct status code.');
   }
 
-  public function providerInvalidPhpcsStandard() {
+  public function providerInvalidPhpcsStandard(): array {
     return [
       [['--phpcs-standard' => 'invalid'], $this->defaultPhpcsStandard, 'Error: Invalid value for "--phpcs-standard" option: "invalid".' . PHP_EOL],
       [[], 'invalid', 'Error: Invalid value for $ORCA_PHPCS_STANDARD environment variable: "invalid".' . PHP_EOL],

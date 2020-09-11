@@ -2,20 +2,20 @@
 
 namespace Acquia\Orca\Tests\Fixture;
 
-use Acquia\Orca\Filesystem\FixturePathHandler;
-use Acquia\Orca\Filesystem\OrcaPathHandler;
 use Acquia\Orca\Fixture\SubextensionManager;
+use Acquia\Orca\Helper\Config\ConfigLoader;
+use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
+use Acquia\Orca\Helper\Filesystem\OrcaPathHandler;
 use Acquia\Orca\Package\PackageManager;
-use Acquia\Orca\Utility\ConfigLoader;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
- * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Filesystem\FixturePathHandler $fixture
- * @property \Acquia\Orca\Filesystem\OrcaPathHandler|\Prophecy\Prophecy\ObjectProphecy $orca
+ * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Helper\Filesystem\FixturePathHandler $fixture
+ * @property \Acquia\Orca\Helper\Filesystem\OrcaPathHandler|\Prophecy\Prophecy\ObjectProphecy $orca
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Package\PackageManager $packageManager
  * @property \Prophecy\Prophecy\ObjectProphecy|\Symfony\Component\Filesystem\Filesystem $filesystem
- * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Utility\ConfigLoader $configLoader
+ * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Helper\Config\ConfigLoader $configLoader
  */
 class SubextensionManagerTest extends TestCase {
 
@@ -27,7 +27,7 @@ class SubextensionManagerTest extends TestCase {
     $this->packageManager = $this->prophesize(PackageManager::class);
   }
 
-  public function testConstruction() {
+  public function testConstruction(): void {
     $config_loader = $this->configLoader->reveal();
     $filesystem = $this->filesystem->reveal();
     $fixture = $this->fixture->reveal();
@@ -41,7 +41,7 @@ class SubextensionManagerTest extends TestCase {
     $package_manager = $this->packageManager->reveal();
     $object = new SubextensionManager($config_loader, $filesystem, $fixture, $orca_path_handler, $package_manager);
 
-    $this->assertInstanceOf(SubextensionManager::class, $object, 'Instantiated class.');
+    self::assertInstanceOf(SubextensionManager::class, $object, 'Instantiated class.');
   }
 
 }

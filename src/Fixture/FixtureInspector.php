@@ -2,8 +2,8 @@
 
 namespace Acquia\Orca\Fixture;
 
-use Acquia\Orca\Facade\DrushFacade;
-use Acquia\Orca\Filesystem\FixturePathHandler;
+use Acquia\Orca\Drush\Drush;
+use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
 use Acquia\Orca\Package\PackageManager;
 use Acquia\Orca\Server\WebServer;
 use Noodlehaus\Config;
@@ -33,7 +33,7 @@ class FixtureInspector {
   /**
    * The Drush facade.
    *
-   * @var \Acquia\Orca\Facade\DrushFacade
+   * @var \Acquia\Orca\Drush\Drush
    */
   private $drush;
 
@@ -47,7 +47,7 @@ class FixtureInspector {
   /**
    * The fixture path handler.
    *
-   * @var \Acquia\Orca\Filesystem\FixturePathHandler
+   * @var \Acquia\Orca\Helper\Filesystem\FixturePathHandler
    */
   private $fixture;
 
@@ -75,9 +75,9 @@ class FixtureInspector {
   /**
    * Constructs an instance.
    *
-   * @param \Acquia\Orca\Facade\DrushFacade $drush
+   * @param \Acquia\Orca\Drush\Drush $drush
    *   The Drush facade.
-   * @param \Acquia\Orca\Filesystem\FixturePathHandler $fixture_path_handler
+   * @param \Acquia\Orca\Helper\Filesystem\FixturePathHandler $fixture_path_handler
    *   The fixture path handler.
    * @param \Symfony\Component\Console\Style\SymfonyStyle $output
    *   The output decorator.
@@ -86,7 +86,7 @@ class FixtureInspector {
    * @param \Acquia\Orca\Fixture\SubextensionManager $subextension_manager
    *   The subextension manager.
    */
-  public function __construct(DrushFacade $drush, FixturePathHandler $fixture_path_handler, SymfonyStyle $output, PackageManager $package_manager, SubextensionManager $subextension_manager) {
+  public function __construct(Drush $drush, FixturePathHandler $fixture_path_handler, SymfonyStyle $output, PackageManager $package_manager, SubextensionManager $subextension_manager) {
     $this->drush = $drush;
     $this->fixture = $fixture_path_handler;
     $this->output = $output;
@@ -172,10 +172,10 @@ class FixtureInspector {
   /**
    * Gets the composer.json config.
    *
-   * @return \Noodlehaus\Config|null
-   *   The composer.json config if available or NULL if not.
+   * @return \Noodlehaus\Config
+   *   The composer.json config.
    */
-  private function getComposerJson() {
+  private function getComposerJson(): Config {
     if (!$this->composerJson) {
       $this->composerJson = new Config($this->fixture->getPath('composer.json'));
     }
@@ -265,7 +265,7 @@ class FixtureInspector {
    *   The retrieved status data if available, or an empty array if not.
    */
   private function getDrushStatusJson(): array {
-    if (!is_null($this->drushStatus)) {
+    if ($this->drushStatus !== NULL) {
       return $this->drushStatus;
     }
 
@@ -325,10 +325,10 @@ class FixtureInspector {
   /**
    * Gets the composer.lock config.
    *
-   * @return \Noodlehaus\Config|null
-   *   The composer.lock config if available or NULL if not.
+   * @return \Noodlehaus\Config
+   *   The composer.lock config.
    */
-  private function getComposerLock() {
+  private function getComposerLock(): Config {
     if (!$this->composerLock) {
       $this->composerLock = new Config($this->fixture->getPath('composer.lock'), new Json());
     }
