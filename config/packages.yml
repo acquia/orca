@@ -220,14 +220,3 @@ drupal/mysql56:
     '*':
       version: ~
       version_dev: ~
-
-# Composer project templates.
-
-acquia/blt-project:
-  type: project-template
-
-acquia/drupal-minimal-project:
-  type: project-template
-
-acquia/drupal-recommended-project:
-  type: project-template
