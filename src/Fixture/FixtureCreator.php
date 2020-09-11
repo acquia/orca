@@ -559,11 +559,22 @@ class FixtureCreator {
     if ($this->options->isSutOnly()) {
       $dependencies = [$sut];
     }
+    $core = $this->options->getCoreResolved();
     foreach ($dependencies as $package_name => &$package) {
       // Omit packages that cannot be Composer required.
       if (!$package->shouldGetComposerRequired()) {
         unset($dependencies[$package_name]);
         continue;
+      }
+
+      // Omit packages without a version compatible with the version of Drupal
+      // core being installed.
+      $has_version = (bool) $package->getVersionRecommended($core);
+      if ($this->options->isDev()) {
+        $has_version = (bool) $package->getVersionDev($core);
+      }
+      if (!$has_version) {
+        unset($dependencies[$package_name]);
       }
 
       // Always symlink a Composer requirable SUT.
