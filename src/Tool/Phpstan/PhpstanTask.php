@@ -2,7 +2,7 @@
 
 namespace Acquia\Orca\Tool\Phpstan;
 
-use Acquia\Orca\Console\Helper\StatusCode;
+use Acquia\Orca\Enum\StatusCodeEnum;
 use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
 use Acquia\Orca\Helper\Filesystem\OrcaPathHandler;
 use Acquia\Orca\Helper\Log\TelemetryClient;
@@ -69,7 +69,7 @@ class PhpstanTask {
    *
    * @var int
    */
-  private $status = StatusCode::OK;
+  private $status = StatusCodeEnum::OK;
 
   /**
    * The output decorator.
@@ -125,7 +125,7 @@ class PhpstanTask {
       $this->runCommand();
     }
     catch (ProcessFailedException $e) {
-      $this->status = StatusCode::ERROR;
+      $this->status = StatusCodeEnum::ERROR;
     }
     $this->logResults();
     return $this->status;

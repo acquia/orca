@@ -2,8 +2,8 @@
 
 namespace Acquia\Orca\Console\Command\Fixture;
 
-use Acquia\Orca\Console\Helper\StatusCode;
-use Acquia\Orca\Drupal\DrupalCoreVersion;
+use Acquia\Orca\Enum\DrupalCoreVersionEnum;
+use Acquia\Orca\Enum\StatusCodeEnum;
 use Acquia\Orca\Fixture\FixtureCreator;
 use Acquia\Orca\Fixture\FixtureOptionsFactory;
 use Acquia\Orca\Fixture\FixtureRemover;
@@ -107,9 +107,9 @@ class FixtureInitCommand extends Command {
       ->addOption('bare', NULL, InputOption::VALUE_NONE, 'Omit all non-required company packages')
       ->addOption('core', NULL, InputOption::VALUE_REQUIRED, implode(PHP_EOL, array_merge(
         ['Change the version of Drupal core installed:'],
-        DrupalCoreVersion::commandHelp(),
+        DrupalCoreVersionEnum::commandHelp(),
         ['- Any version string Composer understands, see https://getcomposer.org/doc/articles/versions.md']
-      )), DrupalCoreVersion::CURRENT_RECOMMENDED)
+      )), DrupalCoreVersionEnum::CURRENT_RECOMMENDED)
       ->addOption('dev', NULL, InputOption::VALUE_NONE, 'Use dev versions of company packages')
       ->addOption('profile', NULL, InputOption::VALUE_REQUIRED, 'The Drupal installation profile to use, e.g., "minimal". ("orca" is a pseudo-profile based on "minimal", with the Toolbar module enabled and Seven as the admin theme)', FixtureCreator::DEFAULT_PROFILE)
 
@@ -148,7 +148,7 @@ class FixtureInitCommand extends Command {
     }
     catch (OrcaInvalidArgumentException $e) {
       $output->writeln("Error: {$e->getMessage()}");
-      return StatusCode::ERROR;
+      return StatusCodeEnum::ERROR;
     }
 
     try {
@@ -159,7 +159,7 @@ class FixtureInitCommand extends Command {
             "Error: Fixture already exists at {$this->fixture->getPath()}.",
             'Hint: Use the "--force" option to remove it and proceed.',
           ]);
-          return StatusCode::ERROR;
+          return StatusCodeEnum::ERROR;
         }
         $this->fixtureRemover->remove();
       }
@@ -168,10 +168,10 @@ class FixtureInitCommand extends Command {
     catch (OrcaException $e) {
       (new SymfonyStyle($input, $output))
         ->error($e->getMessage());
-      return StatusCode::ERROR;
+      return StatusCodeEnum::ERROR;
     }
 
-    return StatusCode::OK;
+    return StatusCodeEnum::OK;
   }
 
   /**

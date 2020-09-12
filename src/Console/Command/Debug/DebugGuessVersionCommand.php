@@ -3,7 +3,7 @@
 namespace Acquia\Orca\Console\Command\Debug;
 
 use Acquia\Orca\Composer\VersionGuesser;
-use Acquia\Orca\Console\Helper\StatusCode;
+use Acquia\Orca\Enum\StatusCodeEnum;
 use Acquia\Orca\Helper\Exception\OrcaException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -63,11 +63,11 @@ class DebugGuessVersionCommand extends Command {
     }
     catch (OrcaException $e) {
       $output->writeln("Error: {$e->getMessage()}");
-      return StatusCode::ERROR;
+      return StatusCodeEnum::ERROR;
     }
 
     $output->writeln($guess);
-    return StatusCode::OK;
+    return StatusCodeEnum::OK;
   }
 
 }

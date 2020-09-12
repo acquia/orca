@@ -1,16 +1,16 @@
 <?php
 
-namespace Acquia\Orca\Helper\Log;
+namespace Acquia\Orca\Enum;
 
 use MyCLabs\Enum\Enum;
 
 /**
  * Provides telemetry event names.
  *
- * @method static TelemetryEventName TEST()
- * @method static TelemetryEventName TRAVIS_CI_JOB()
+ * @method static TelemetryEventNameEnum TEST()
+ * @method static TelemetryEventNameEnum TRAVIS_CI_JOB()
  */
-class TelemetryEventName extends Enum {
+class TelemetryEventNameEnum extends Enum {
 
   public const TRAVIS_CI_JOB = 'Travis CI job run';
 

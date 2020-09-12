@@ -2,7 +2,7 @@
 
 namespace Acquia\Orca\Console\Command\Debug;
 
-use Acquia\Orca\Console\Helper\StatusCode;
+use Acquia\Orca\Enum\StatusCodeEnum;
 use Env;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\Table;
@@ -74,7 +74,7 @@ class DebugEnvVarsCommand extends Command {
       ->setHeaders($this->getHeaders())
       ->setRows($this->getRows())
       ->render();
-    return StatusCode::OK;
+    return StatusCodeEnum::OK;
   }
 
   /**

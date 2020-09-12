@@ -2,8 +2,8 @@
 
 namespace Acquia\Orca\Tool\Phpcs;
 
+use Acquia\Orca\Enum\PhpcsStandardEnum;
 use Acquia\Orca\Helper\Filesystem\OrcaPathHandler;
-use Acquia\Orca\Tool\Helper\PhpcsStandard;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
@@ -50,10 +50,10 @@ class PhpcsConfigurator {
   /**
    * Prepares the temporary config.
    *
-   * @param \Acquia\Orca\Tool\Helper\PhpcsStandard $standard
+   * @param \Acquia\Orca\Enum\PhpcsStandardEnum $standard
    *   The PHPCS standard to use.
    */
-  public function prepareTemporaryConfig(PhpcsStandard $standard): void {
+  public function prepareTemporaryConfig(PhpcsStandardEnum $standard): void {
     $this->filesystem->mkdir($this->getTempDir());
     $this->filesystem->touch($this->getTemporaryConfigFile());
     $template = file_get_contents($this->getConfigFileTemplate());

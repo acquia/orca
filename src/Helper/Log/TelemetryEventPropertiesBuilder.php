@@ -2,6 +2,7 @@
 
 namespace Acquia\Orca\Helper\Log;
 
+use Acquia\Orca\Enum\TelemetryEventNameEnum;
 use Acquia\Orca\Helper\Filesystem\OrcaPathHandler;
 use Acquia\Orca\Tool\Phpcs\PhpcsTask;
 use Acquia\Orca\Tool\Phploc\PhplocTask;
@@ -61,18 +62,18 @@ class TelemetryEventPropertiesBuilder {
   /**
    * Builds an array of event properties for the given event name.
    *
-   * @param \Acquia\Orca\Helper\Log\TelemetryEventName $name
+   * @param \Acquia\Orca\Enum\TelemetryEventNameEnum $name
    *   A telemetry event name.
    *
    * @return array
    *   An array of event properties.
    */
-  public function build(TelemetryEventName $name): array {
+  public function build(TelemetryEventNameEnum $name): array {
     switch ($name->getValue()) {
-      case TelemetryEventName::TRAVIS_CI_JOB:
+      case TelemetryEventNameEnum::TRAVIS_CI_JOB:
         return $this->buildTravisCiJobProperties();
 
-      case TelemetryEventName::TEST:
+      case TelemetryEventNameEnum::TEST:
         return ['example' => TRUE];
     }
   }

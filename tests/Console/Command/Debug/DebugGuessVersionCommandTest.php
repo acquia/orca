@@ -4,7 +4,7 @@ namespace Acquia\Orca\Tests\Console\Command\Debug;
 
 use Acquia\Orca\Composer\VersionGuesser;
 use Acquia\Orca\Console\Command\Debug\DebugGuessVersionCommand;
-use Acquia\Orca\Console\Helper\StatusCode;
+use Acquia\Orca\Enum\StatusCodeEnum;
 use Acquia\Orca\Helper\Exception\FileNotFoundException;
 use Acquia\Orca\Helper\Exception\OrcaException;
 use Acquia\Orca\Helper\Exception\ParseError;
@@ -61,7 +61,7 @@ class DebugGuessVersionCommandTest extends CommandTestBase {
     $this->executeCommand(['path' => self::SUT_PATH]);
 
     self::assertEquals("{$version}\n", $this->getDisplay(), 'Displayed correct output.');
-    self::assertEquals(StatusCode::OK, $this->getStatusCode(), 'Returned correct status code.');
+    self::assertEquals(StatusCodeEnum::OK, $this->getStatusCode(), 'Returned correct status code.');
   }
 
   public function providerExecution(): array {
@@ -83,7 +83,7 @@ class DebugGuessVersionCommandTest extends CommandTestBase {
     $this->executeCommand(['path' => self::SUT_PATH]);
 
     self::assertEquals("Error: {$exception->getMessage()}\n", $this->getDisplay(), 'Displayed correct output.');
-    self::assertEquals(StatusCode::ERROR, $this->getStatusCode(), 'Returned correct status code.');
+    self::assertEquals(StatusCodeEnum::ERROR, $this->getStatusCode(), 'Returned correct status code.');
   }
 
   public function providerExecutionWithException(): array {

@@ -2,8 +2,8 @@
 
 namespace Acquia\Orca\Tests\Fixture;
 
-use Acquia\Orca\Drupal\DrupalCoreVersion;
 use Acquia\Orca\Drupal\DrupalCoreVersionFinder;
+use Acquia\Orca\Enum\DrupalCoreVersionEnum;
 use Acquia\Orca\Fixture\FixtureOptions;
 use Acquia\Orca\Helper\Exception\OrcaInvalidArgumentException;
 use Acquia\Orca\Package\Package;
@@ -56,7 +56,7 @@ class FixtureOptionsTest extends TestCase {
   public function testDefaults(): void {
     $core = '9.0.0';
     $this->drupalCoreVersionFinder
-      ->get(new DrupalCoreVersion(DrupalCoreVersion::CURRENT_RECOMMENDED))
+      ->get(new DrupalCoreVersionEnum(DrupalCoreVersionEnum::CURRENT_RECOMMENDED))
       ->willReturn($core);
 
     $options = $this->createFixtureOptions([]);
@@ -250,7 +250,7 @@ class FixtureOptionsTest extends TestCase {
   public function testCoreConstantValid($version): void {
     $expected = '10.0.0';
     $this->drupalCoreVersionFinder
-      ->get(new DrupalCoreVersion($version))
+      ->get(new DrupalCoreVersionEnum($version))
       ->shouldBeCalledOnce()
       ->willReturn($expected);
 
@@ -266,7 +266,7 @@ class FixtureOptionsTest extends TestCase {
   public function providerCoreConstantValid(): array {
     // Return all Drupal core version constants.
     $array = [];
-    foreach (DrupalCoreVersion::keys() as $value) {
+    foreach (DrupalCoreVersionEnum::keys() as $value) {
       $array[] = [$value];
     }
     return $array;
@@ -314,7 +314,7 @@ class FixtureOptionsTest extends TestCase {
   public function testCoreDefaultDev(): void {
     $core = '10.0.0';
     $this->drupalCoreVersionFinder
-      ->get(new DrupalCoreVersion(DrupalCoreVersion::CURRENT_DEV))
+      ->get(new DrupalCoreVersionEnum(DrupalCoreVersionEnum::CURRENT_DEV))
       ->shouldBeCalledOnce()
       ->willReturn($core);
 

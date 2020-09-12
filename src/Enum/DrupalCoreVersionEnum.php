@@ -1,13 +1,13 @@
 <?php
 
-namespace Acquia\Orca\Drupal;
+namespace Acquia\Orca\Enum;
 
 use MyCLabs\Enum\Enum;
 
 /**
  * Provides Drupal core version special values.
  */
-final class DrupalCoreVersion extends Enum {
+final class DrupalCoreVersionEnum extends Enum {
 
   public const PREVIOUS_RELEASE = 'PREVIOUS_RELEASE';
 

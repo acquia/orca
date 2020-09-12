@@ -3,9 +3,9 @@
 namespace Acquia\Orca\Tests\Console\Command\Internal;
 
 use Acquia\Orca\Console\Command\Internal\InternalLogJobCommand;
-use Acquia\Orca\Console\Helper\StatusCode;
+use Acquia\Orca\Enum\StatusCodeEnum;
+use Acquia\Orca\Enum\TelemetryEventNameEnum;
 use Acquia\Orca\Helper\Log\TelemetryClient;
-use Acquia\Orca\Helper\Log\TelemetryEventName;
 use Acquia\Orca\Helper\Log\TelemetryEventPropertiesBuilder;
 use Acquia\Orca\Tests\Console\Command\CommandTestBase;
 use Prophecy\Argument;
@@ -38,7 +38,7 @@ class InternalLogJobCommandTest extends CommandTestBase {
     $this->telemetryClient
       ->isReady()
       ->shouldBeCalledTimes(1);
-    $event = TelemetryEventName::TRAVIS_CI_JOB();
+    $event = TelemetryEventNameEnum::TRAVIS_CI_JOB();
     $properties = ['key' => 'value'];
     $this->telemetryEventBuilder
       ->build($event)
@@ -51,7 +51,7 @@ class InternalLogJobCommandTest extends CommandTestBase {
     $this->executeCommand();
 
     self::assertEquals('', $this->getDisplay(), 'Displayed correct output.');
-    self::assertEquals(StatusCode::OK, $this->getStatusCode(), 'Returned correct status code.');
+    self::assertEquals(StatusCodeEnum::OK, $this->getStatusCode(), 'Returned correct status code.');
   }
 
   public function testWithTelemetryDisabled(): void {
@@ -64,13 +64,13 @@ class InternalLogJobCommandTest extends CommandTestBase {
 
     self::assertEquals('Notice: Nothing logged. Telemetry is disabled.' . PHP_EOL .
       'Hint: https://github.com/acquia/orca/blob/master/docs/advanced-usage.md#ORCA_TELEMETRY_ENABLE' . PHP_EOL, $this->getDisplay(), 'Displayed correct output.');
-    self::assertEquals(StatusCode::OK, $this->getStatusCode(), 'Returned correct status code.');
+    self::assertEquals(StatusCodeEnum::OK, $this->getStatusCode(), 'Returned correct status code.');
   }
 
   public function testSimulateOption(): void {
     $properties = ['test' => 'example'];
     $this->telemetryEventBuilder
-      ->build(TelemetryEventName::TRAVIS_CI_JOB())
+      ->build(TelemetryEventNameEnum::TRAVIS_CI_JOB())
       ->willReturn($properties);
     $this->telemetryClient
       ->logEvent(Argument::any())
@@ -79,14 +79,14 @@ class InternalLogJobCommandTest extends CommandTestBase {
     $this->executeCommand(['--simulate' => TRUE]);
 
     self::assertEquals(print_r($properties, TRUE), $this->getDisplay(), 'Displayed correct output.');
-    self::assertEquals(StatusCode::OK, $this->getStatusCode(), 'Returned correct status code.');
+    self::assertEquals(StatusCodeEnum::OK, $this->getStatusCode(), 'Returned correct status code.');
   }
 
   public function testTestOption(): void {
     $this->telemetryClient
       ->isReady()
       ->shouldBeCalledTimes(1);
-    $event = TelemetryEventName::TEST();
+    $event = TelemetryEventNameEnum::TEST();
     $properties = ['key' => 'value'];
     $this->telemetryEventBuilder
       ->build($event)
@@ -99,7 +99,7 @@ class InternalLogJobCommandTest extends CommandTestBase {
     $this->executeCommand(['--test' => TRUE]);
 
     self::assertEquals('', $this->getDisplay(), 'Displayed correct output.');
-    self::assertEquals(StatusCode::OK, $this->getStatusCode(), 'Returned correct status code.');
+    self::assertEquals(StatusCodeEnum::OK, $this->getStatusCode(), 'Returned correct status code.');
   }
 
 }

@@ -2,7 +2,7 @@
 
 namespace Acquia\Orca\Console\Command\Qa;
 
-use Acquia\Orca\Console\Helper\StatusCode;
+use Acquia\Orca\Enum\StatusCodeEnum;
 use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
 use Acquia\Orca\Helper\Task\TaskRunner;
 use Acquia\Orca\Package\PackageManager;
@@ -108,7 +108,7 @@ class QaDeprecatedCodeScanCommand extends Command {
     $this->contrib = $input->getOption('contrib');
 
     if (!$this->isValidInput($output)) {
-      return StatusCode::ERROR;
+      return StatusCodeEnum::ERROR;
     }
 
     if (!$this->fixture->exists()) {
@@ -116,7 +116,7 @@ class QaDeprecatedCodeScanCommand extends Command {
         "Error: No fixture exists at {$this->fixture->getPath()}.",
         'Hint: Use the "fixture:init" command to create one.',
       ]);
-      return StatusCode::ERROR;
+      return StatusCodeEnum::ERROR;
     }
 
     if ($this->sut) {

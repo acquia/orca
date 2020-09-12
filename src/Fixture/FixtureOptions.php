@@ -3,8 +3,8 @@
 namespace Acquia\Orca\Fixture;
 
 use Acquia\Orca\Composer\Composer;
-use Acquia\Orca\Drupal\DrupalCoreVersion;
 use Acquia\Orca\Drupal\DrupalCoreVersionFinder;
+use Acquia\Orca\Enum\DrupalCoreVersionEnum;
 use Acquia\Orca\Helper\Exception\OrcaInvalidArgumentException;
 use Acquia\Orca\Package\Package;
 use Acquia\Orca\Package\PackageManager;
@@ -149,7 +149,7 @@ class FixtureOptions {
       if ($value === NULL) {
         return TRUE;
       }
-      if (DrupalCoreVersion::isValidKey($value)) {
+      if (DrupalCoreVersionEnum::isValidKey($value)) {
         return TRUE;
       }
       return Composer::isValidVersionConstraint($value);
@@ -238,12 +238,12 @@ class FixtureOptions {
   public function getCore(): string {
     $value = $this->options['core'];
     if (!$value && $this->isDev()) {
-      return $this->findCoreVersion(DrupalCoreVersion::CURRENT_DEV);
+      return $this->findCoreVersion(DrupalCoreVersionEnum::CURRENT_DEV);
     }
     if (!$value) {
-      return $this->findCoreVersion(DrupalCoreVersion::CURRENT_RECOMMENDED);
+      return $this->findCoreVersion(DrupalCoreVersionEnum::CURRENT_RECOMMENDED);
     }
-    if (DrupalCoreVersion::isValidKey($value)) {
+    if (DrupalCoreVersionEnum::isValidKey($value)) {
       return $this->findCoreVersion($value);
     }
     return $this->options['core'];
@@ -260,7 +260,7 @@ class FixtureOptions {
    */
   private function findCoreVersion(string $constraint): string {
     $version = $this->drupalCoreVersionFinder
-      ->get(new DrupalCoreVersion($constraint));
+      ->get(new DrupalCoreVersionEnum($constraint));
     // Cache the value for subsequent calls.
     $this->options['core'] = $version;
     return $version;

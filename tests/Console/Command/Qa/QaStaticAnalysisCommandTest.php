@@ -3,13 +3,13 @@
 namespace Acquia\Orca\Tests\Console\Command\Qa;
 
 use Acquia\Orca\Console\Command\Qa\QaStaticAnalysisCommand;
-use Acquia\Orca\Console\Helper\StatusCode;
+use Acquia\Orca\Enum\PhpcsStandardEnum;
+use Acquia\Orca\Enum\StatusCodeEnum;
 use Acquia\Orca\Helper\Exception\FileNotFoundException;
 use Acquia\Orca\Helper\Task\TaskRunner;
 use Acquia\Orca\Tests\Console\Command\CommandTestBase;
 use Acquia\Orca\Tool\ComposerValidate\ComposerValidateTask;
 use Acquia\Orca\Tool\Coverage\CoverageTask;
-use Acquia\Orca\Tool\Helper\PhpcsStandard;
 use Acquia\Orca\Tool\Phpcs\PhpcsTask;
 use Acquia\Orca\Tool\PhpLint\PhpLintTask;
 use Acquia\Orca\Tool\Phploc\PhplocTask;
@@ -46,7 +46,7 @@ class QaStaticAnalysisCommandTest extends CommandTestBase {
 
   private const SUT_PATH = '/var/www/example';
 
-  private $defaultPhpcsStandard = PhpcsStandard::DEFAULT;
+  private $defaultPhpcsStandard = PhpcsStandardEnum::DEFAULT;
 
   protected function setUp(): void {
     $this->composerValidate = $this->prophesize(ComposerValidateTask::class);
@@ -68,7 +68,7 @@ class QaStaticAnalysisCommandTest extends CommandTestBase {
       ->willReturn($this->taskRunner);
     $this->taskRunner
       ->run()
-      ->willReturn(StatusCode::OK);
+      ->willReturn(StatusCodeEnum::OK);
     $this->yamlLint = $this->prophesize(YamlLintTask::class);
   }
 
@@ -194,9 +194,9 @@ class QaStaticAnalysisCommandTest extends CommandTestBase {
 
   public function providerExecution(): array {
     return [
-      [TRUE, 1, StatusCode::OK, ''],
-      [TRUE, 1, StatusCode::ERROR, ''],
-      [FALSE, 0, StatusCode::ERROR, sprintf("Error: No such path: %s.\n", self::SUT_PATH)],
+      [TRUE, 1, StatusCodeEnum::OK, ''],
+      [TRUE, 1, StatusCodeEnum::ERROR, ''],
+      [FALSE, 0, StatusCodeEnum::ERROR, sprintf("Error: No such path: %s.\n", self::SUT_PATH)],
     ];
   }
 
@@ -221,7 +221,7 @@ class QaStaticAnalysisCommandTest extends CommandTestBase {
     $this->executeCommand($args);
 
     self::assertEquals('', $this->getDisplay(), 'Displayed correct output.');
-    self::assertEquals(StatusCode::OK, $this->getStatusCode(), 'Returned correct status code.');
+    self::assertEquals(StatusCodeEnum::OK, $this->getStatusCode(), 'Returned correct status code.');
   }
 
   /**
@@ -273,7 +273,7 @@ class QaStaticAnalysisCommandTest extends CommandTestBase {
    */
   public function testPhpcsStandardOption(array $args, $standard): void {
     $this->phpCodeSniffer
-      ->setStandard(new PhpcsStandard($standard))
+      ->setStandard(new PhpcsStandardEnum($standard))
       ->shouldBeCalledOnce();
     $this->taskRunner
       ->addTask($this->phpCodeSniffer->reveal())
@@ -291,15 +291,15 @@ class QaStaticAnalysisCommandTest extends CommandTestBase {
     $this->executeCommand($args);
 
     self::assertEquals('', $this->getDisplay(), 'Displayed correct output.');
-    self::assertEquals(StatusCode::OK, $this->getStatusCode(), 'Returned correct status code.');
+    self::assertEquals(StatusCodeEnum::OK, $this->getStatusCode(), 'Returned correct status code.');
   }
 
   public function providerPhpcsStandardOption(): array {
     return [
       [[], $this->defaultPhpcsStandard],
-      [['--phpcs-standard' => PhpcsStandard::ACQUIA_PHP], PhpcsStandard::ACQUIA_PHP],
-      [['--phpcs-standard' => PhpcsStandard::ACQUIA_DRUPAL_TRANSITIONAL], PhpcsStandard::ACQUIA_DRUPAL_TRANSITIONAL],
-      [['--phpcs-standard' => PhpcsStandard::ACQUIA_DRUPAL_STRICT], PhpcsStandard::ACQUIA_DRUPAL_STRICT],
+      [['--phpcs-standard' => PhpcsStandardEnum::ACQUIA_PHP], PhpcsStandardEnum::ACQUIA_PHP],
+      [['--phpcs-standard' => PhpcsStandardEnum::ACQUIA_DRUPAL_TRANSITIONAL], PhpcsStandardEnum::ACQUIA_DRUPAL_TRANSITIONAL],
+      [['--phpcs-standard' => PhpcsStandardEnum::ACQUIA_DRUPAL_STRICT], PhpcsStandardEnum::ACQUIA_DRUPAL_STRICT],
     ];
   }
 
@@ -309,7 +309,7 @@ class QaStaticAnalysisCommandTest extends CommandTestBase {
   public function testPhpcsStandardEnvVar($standard): void {
     $this->defaultPhpcsStandard = $standard;
     $this->phpCodeSniffer
-      ->setStandard(new PhpcsStandard($this->defaultPhpcsStandard))
+      ->setStandard(new PhpcsStandardEnum($this->defaultPhpcsStandard))
       ->shouldBeCalledOnce();
     $this->taskRunner
       ->addTask($this->phpCodeSniffer->reveal())
@@ -329,14 +329,14 @@ class QaStaticAnalysisCommandTest extends CommandTestBase {
     $this->executeCommand($args);
 
     self::assertEquals('', $this->getDisplay(), 'Displayed correct output.');
-    self::assertEquals(StatusCode::OK, $this->getStatusCode(), 'Returned correct status code.');
+    self::assertEquals(StatusCodeEnum::OK, $this->getStatusCode(), 'Returned correct status code.');
   }
 
   public function providerPhpcsStandardEnvVar(): array {
     return [
-      [PhpcsStandard::ACQUIA_PHP],
-      [PhpcsStandard::ACQUIA_DRUPAL_TRANSITIONAL],
-      [PhpcsStandard::ACQUIA_DRUPAL_STRICT],
+      [PhpcsStandardEnum::ACQUIA_PHP],
+      [PhpcsStandardEnum::ACQUIA_DRUPAL_TRANSITIONAL],
+      [PhpcsStandardEnum::ACQUIA_DRUPAL_STRICT],
     ];
   }
 
@@ -358,7 +358,7 @@ class QaStaticAnalysisCommandTest extends CommandTestBase {
     $this->executeCommand($args);
 
     self::assertEquals($display, $this->getDisplay(), 'Displayed correct output.');
-    self::assertEquals(StatusCode::ERROR, $this->getStatusCode(), 'Returned correct status code.');
+    self::assertEquals(StatusCodeEnum::ERROR, $this->getStatusCode(), 'Returned correct status code.');
   }
 
   public function providerInvalidPhpcsStandard(): array {
@@ -375,7 +375,7 @@ class QaStaticAnalysisCommandTest extends CommandTestBase {
 
     $this->executeCommand(['path' => self::SUT_PATH]);
 
-    self::assertEquals(StatusCode::OK, $this->getStatusCode(), 'Returned correct status code.');
+    self::assertEquals(StatusCodeEnum::OK, $this->getStatusCode(), 'Returned correct status code.');
   }
 
 }

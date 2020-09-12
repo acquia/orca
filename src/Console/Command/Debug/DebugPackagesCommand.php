@@ -2,9 +2,9 @@
 
 namespace Acquia\Orca\Console\Command\Debug;
 
-use Acquia\Orca\Console\Helper\StatusCode;
-use Acquia\Orca\Drupal\DrupalCoreVersion;
 use Acquia\Orca\Drupal\DrupalCoreVersionFinder;
+use Acquia\Orca\Enum\DrupalCoreVersionEnum;
+use Acquia\Orca\Enum\StatusCodeEnum;
 use Acquia\Orca\Package\PackageManager;
 use Composer\Semver\VersionParser;
 use InvalidArgumentException;
@@ -82,7 +82,7 @@ class DebugPackagesCommand extends Command {
       ->setAliases(['packages'])
       ->addArgument('core', InputArgument::OPTIONAL, implode(PHP_EOL, array_merge(
         ['A Drupal core version to target:'],
-        DrupalCoreVersion::commandHelp(),
+        DrupalCoreVersionEnum::commandHelp(),
         ['- Any version string Composer understands, see https://getcomposer.org/doc/articles/versions.md']
       )))
       ->setDescription('Displays the active packages configuration');
@@ -101,9 +101,9 @@ class DebugPackagesCommand extends Command {
     catch (InvalidArgumentException $e) {
       $output->writeln([
         sprintf('Error: Invalid value for "core" option: "%s".', $argument),
-        sprintf('Hint: Acceptable values are "%s", or any version string Composer understands.', implode('", "', DrupalCoreVersion::values())),
+        sprintf('Hint: Acceptable values are "%s", or any version string Composer understands.', implode('", "', DrupalCoreVersionEnum::values())),
       ]);
-      return StatusCode::ERROR;
+      return StatusCodeEnum::ERROR;
     }
 
     (new Table($output))
@@ -111,7 +111,7 @@ class DebugPackagesCommand extends Command {
       ->setHeaders($this->getHeaders())
       ->setRows($this->getRows())
       ->render();
-    return StatusCode::OK;
+    return StatusCodeEnum::OK;
   }
 
   /**
@@ -131,8 +131,8 @@ class DebugPackagesCommand extends Command {
       throw new InvalidArgumentException();
     }
 
-    if (DrupalCoreVersion::isValid($argument)) {
-      $argument = $this->drupalCoreVersionFinder->get(new DrupalCoreVersion($argument));
+    if (DrupalCoreVersionEnum::isValid($argument)) {
+      $argument = $this->drupalCoreVersionFinder->get(new DrupalCoreVersionEnum($argument));
     }
 
     try {

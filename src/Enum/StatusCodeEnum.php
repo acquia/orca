@@ -1,6 +1,6 @@
 <?php
 
-namespace Acquia\Orca\Console\Helper;
+namespace Acquia\Orca\Enum;
 
 use MyCLabs\Enum\Enum;
 
@@ -9,7 +9,7 @@ use MyCLabs\Enum\Enum;
  *
  * @see https://www.freebsd.org/cgi/man.cgi?query=sysexits
  */
-final class StatusCode extends Enum {
+final class StatusCodeEnum extends Enum {
 
   public const OK = 0;
 

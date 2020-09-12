@@ -3,7 +3,7 @@
 namespace Acquia\Orca\Tests\Console\Command\Fixture;
 
 use Acquia\Orca\Console\Command\Fixture\FixtureInitCommand;
-use Acquia\Orca\Console\Helper\StatusCode;
+use Acquia\Orca\Enum\StatusCodeEnum;
 use Acquia\Orca\Fixture\FixtureCreator;
 use Acquia\Orca\Fixture\FixtureOptions;
 use Acquia\Orca\Fixture\FixtureOptionsFactory;
@@ -93,7 +93,7 @@ class FixtureInitCommandTest extends CommandTestBase {
 
     $this->executeCommand();
 
-    self::assertEquals(StatusCode::OK, $this->getStatusCode(), 'Returned correct status code.');
+    self::assertEquals(StatusCodeEnum::OK, $this->getStatusCode(), 'Returned correct status code.');
     self::assertEquals('', $this->getDisplay(), 'Displayed correct output.');
   }
 
@@ -109,7 +109,7 @@ class FixtureInitCommandTest extends CommandTestBase {
 
     $this->executeCommand();
 
-    self::assertEquals(StatusCode::ERROR, $this->getStatusCode(), 'Returned correct status code.');
+    self::assertEquals(StatusCodeEnum::ERROR, $this->getStatusCode(), 'Returned correct status code.');
     self::assertContains("[ERROR] {$message}", $this->getDisplay(), 'Displayed correct output.');
   }
 
@@ -122,7 +122,7 @@ class FixtureInitCommandTest extends CommandTestBase {
 
     $this->executeCommand();
 
-    self::assertEquals(StatusCode::ERROR, $this->getStatusCode(), 'Returned correct status code.');
+    self::assertEquals(StatusCodeEnum::ERROR, $this->getStatusCode(), 'Returned correct status code.');
     self::assertEquals("Error: {$message}" . PHP_EOL, $this->getDisplay(), 'Displayed correct output.');
   }
 

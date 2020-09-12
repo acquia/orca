@@ -2,8 +2,8 @@
 
 namespace Acquia\Orca\Tool\Phpcbf;
 
+use Acquia\Orca\Enum\PhpcsStandardEnum;
 use Acquia\Orca\Helper\Exception\TaskFailureException;
-use Acquia\Orca\Tool\Helper\PhpcsStandard;
 use Acquia\Orca\Tool\TaskBase;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 
@@ -17,7 +17,7 @@ class PhpcbfTask extends TaskBase {
    *
    * @var string
    */
-  private $standard = PhpcsStandard::DEFAULT;
+  private $standard = PhpcsStandardEnum::DEFAULT;
 
   /**
    * {@inheritdoc}
@@ -37,7 +37,7 @@ class PhpcbfTask extends TaskBase {
    * {@inheritdoc}
    */
   public function execute(): void {
-    $this->phpcsConfigurator->prepareTemporaryConfig(new PhpcsStandard($this->standard));
+    $this->phpcsConfigurator->prepareTemporaryConfig(new PhpcsStandardEnum($this->standard));
     try {
       $this->processRunner->runOrcaVendorBin([
         'phpcbf',
@@ -55,10 +55,10 @@ class PhpcbfTask extends TaskBase {
   /**
    * Sets the standard to use.
    *
-   * @param \Acquia\Orca\Tool\Helper\PhpcsStandard $standard
+   * @param \Acquia\Orca\Enum\PhpcsStandardEnum $standard
    *   The PHPCS standard.
    */
-  public function setStandard(PhpcsStandard $standard): void {
+  public function setStandard(PhpcsStandardEnum $standard): void {
     $this->standard = $standard;
   }
 

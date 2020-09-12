@@ -2,7 +2,7 @@
 
 namespace Acquia\Orca\Console\Command\Fixture;
 
-use Acquia\Orca\Console\Helper\StatusCode;
+use Acquia\Orca\Enum\StatusCodeEnum;
 use Acquia\Orca\Fixture\CompanyExtensionEnabler;
 use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
 use Exception;
@@ -66,7 +66,7 @@ class FixtureEnableExtensionsCommand extends Command {
   public function execute(InputInterface $input, OutputInterface $output): int {
     if (!$this->fixture->exists()) {
       $output->writeln("Error: No fixture exists at {$this->fixture->getPath()}.");
-      return StatusCode::ERROR;
+      return StatusCodeEnum::ERROR;
     }
 
     try {
@@ -75,10 +75,10 @@ class FixtureEnableExtensionsCommand extends Command {
     catch (Exception $e) {
       $io = new SymfonyStyle($input, $output);
       $io->error($e->getMessage());
-      return StatusCode::ERROR;
+      return StatusCodeEnum::ERROR;
     }
 
-    return StatusCode::OK;
+    return StatusCodeEnum::OK;
   }
 
 }

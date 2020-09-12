@@ -3,7 +3,7 @@
 namespace Acquia\Orca\Tests\Console\Command\Fixture;
 
 use Acquia\Orca\Console\Command\Fixture\FixtureInstallSiteCommand;
-use Acquia\Orca\Console\Helper\StatusCode;
+use Acquia\Orca\Enum\StatusCodeEnum;
 use Acquia\Orca\Fixture\FixtureCreator;
 use Acquia\Orca\Fixture\SiteInstaller;
 use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
@@ -51,13 +51,13 @@ class FixtureSiteInstallCommandTest extends CommandTestBase {
 
   public function providerCommand(): array {
     return [
-      [FALSE, [], [], 0, FixtureCreator::DEFAULT_PROFILE, StatusCode::ERROR, sprintf("Error: No fixture exists at %s.\n", self::FIXTURE_ROOT)],
-      [TRUE, [], ['n'], 0, FixtureCreator::DEFAULT_PROFILE, StatusCode::USER_CANCEL, 'Are you sure you want to drop all tables in the database and install a fresh site at /var/www/orca-build? '],
-      [TRUE, [], ['y'], 1, FixtureCreator::DEFAULT_PROFILE, StatusCode::OK, 'Are you sure you want to drop all tables in the database and install a fresh site at /var/www/orca-build? '],
-      [TRUE, ['-n' => TRUE], [], 0, FixtureCreator::DEFAULT_PROFILE, StatusCode::USER_CANCEL, ''],
-      [TRUE, ['-f' => TRUE], [], 1, FixtureCreator::DEFAULT_PROFILE, StatusCode::OK, ''],
-      [TRUE, ['-f' => TRUE, '-n' => TRUE], [], 1, FixtureCreator::DEFAULT_PROFILE, StatusCode::OK, ''],
-      [TRUE, ['-f' => TRUE, '--profile' => 'lightning'], [], 1, 'lightning', StatusCode::OK, ''],
+      [FALSE, [], [], 0, FixtureCreator::DEFAULT_PROFILE, StatusCodeEnum::ERROR, sprintf("Error: No fixture exists at %s.\n", self::FIXTURE_ROOT)],
+      [TRUE, [], ['n'], 0, FixtureCreator::DEFAULT_PROFILE, StatusCodeEnum::USER_CANCEL, 'Are you sure you want to drop all tables in the database and install a fresh site at /var/www/orca-build? '],
+      [TRUE, [], ['y'], 1, FixtureCreator::DEFAULT_PROFILE, StatusCodeEnum::OK, 'Are you sure you want to drop all tables in the database and install a fresh site at /var/www/orca-build? '],
+      [TRUE, ['-n' => TRUE], [], 0, FixtureCreator::DEFAULT_PROFILE, StatusCodeEnum::USER_CANCEL, ''],
+      [TRUE, ['-f' => TRUE], [], 1, FixtureCreator::DEFAULT_PROFILE, StatusCodeEnum::OK, ''],
+      [TRUE, ['-f' => TRUE, '-n' => TRUE], [], 1, FixtureCreator::DEFAULT_PROFILE, StatusCodeEnum::OK, ''],
+      [TRUE, ['-f' => TRUE, '--profile' => 'lightning'], [], 1, 'lightning', StatusCodeEnum::OK, ''],
     ];
   }
 

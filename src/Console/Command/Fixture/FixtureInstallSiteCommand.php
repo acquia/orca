@@ -2,7 +2,7 @@
 
 namespace Acquia\Orca\Console\Command\Fixture;
 
-use Acquia\Orca\Console\Helper\StatusCode;
+use Acquia\Orca\Enum\StatusCodeEnum;
 use Acquia\Orca\Fixture\FixtureCreator;
 use Acquia\Orca\Fixture\SiteInstaller;
 use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
@@ -74,7 +74,7 @@ class FixtureInstallSiteCommand extends Command {
   public function execute(InputInterface $input, OutputInterface $output): int {
     if (!$this->fixture->exists()) {
       $output->writeln("Error: No fixture exists at {$this->fixture->getPath()}.");
-      return StatusCode::ERROR;
+      return StatusCodeEnum::ERROR;
     }
 
     /** @var \Symfony\Component\Console\Helper\QuestionHelper $helper */
@@ -84,12 +84,12 @@ class FixtureInstallSiteCommand extends Command {
       !$input->getOption('force')
       && ($input->getOption('no-interaction') || !$helper->ask($input, $output, $question))
     ) {
-      return StatusCode::USER_CANCEL;
+      return StatusCodeEnum::USER_CANCEL;
     }
 
     $profile = $input->getOption('profile');
     $this->siteInstaller->install($profile);
-    return StatusCode::OK;
+    return StatusCodeEnum::OK;
   }
 
 }

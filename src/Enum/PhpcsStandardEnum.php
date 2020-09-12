@@ -1,13 +1,13 @@
 <?php
 
-namespace Acquia\Orca\Tool\Helper;
+namespace Acquia\Orca\Enum;
 
 use MyCLabs\Enum\Enum;
 
 /**
  * Provides PHPCS standards.
  */
-final class PhpcsStandard extends Enum {
+final class PhpcsStandardEnum extends Enum {
 
   public const ACQUIA_PHP = 'AcquiaPHP';
 

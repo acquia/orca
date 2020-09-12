@@ -2,10 +2,10 @@
 
 namespace Acquia\Orca\Console\Command\Qa;
 
-use Acquia\Orca\Console\Helper\StatusCode;
+use Acquia\Orca\Enum\PhpcsStandardEnum;
+use Acquia\Orca\Enum\StatusCodeEnum;
 use Acquia\Orca\Helper\Task\TaskRunner;
 use Acquia\Orca\Tool\ComposerNormalize\ComposerNormalizeTask;
-use Acquia\Orca\Tool\Helper\PhpcsStandard;
 use Acquia\Orca\Tool\Phpcbf\PhpcbfTask;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -98,7 +98,7 @@ class QaFixerCommand extends Command {
       ->addOption('phpcbf', NULL, InputOption::VALUE_NONE, 'Run the PHP Code Beautifier and Fixer tool')
       ->addOption('phpcs-standard', NULL, InputOption::VALUE_REQUIRED, implode(PHP_EOL, array_merge(
         ['Change the PHPCS standard used:'],
-        PhpcsStandard::commandHelp()
+        PhpcsStandardEnum::commandHelp()
       )), $this->defaultPhpcsStandard);
   }
 
@@ -109,14 +109,14 @@ class QaFixerCommand extends Command {
     $path = $input->getArgument('path');
     if (!$this->filesystem->exists($path)) {
       $output->writeln(sprintf('Error: No such path: %s.', $path));
-      return StatusCode::ERROR;
+      return StatusCodeEnum::ERROR;
     }
     try {
       $this->configureTaskRunner($input);
     }
     catch (UnexpectedValueException $e) {
       $output->writeln($e->getMessage());
-      return StatusCode::ERROR;
+      return StatusCodeEnum::ERROR;
     }
     return $this->taskRunner
       ->setPath($path)
@@ -149,13 +149,13 @@ class QaFixerCommand extends Command {
    * @param \Symfony\Component\Console\Input\InputInterface $input
    *   The command input.
    *
-   * @return \Acquia\Orca\Tool\Helper\PhpcsStandard
+   * @return \Acquia\Orca\Enum\PhpcsStandardEnum
    *   The PHPCS standard.
    */
-  private function getStandard(InputInterface $input): PhpcsStandard {
+  private function getStandard(InputInterface $input): PhpcsStandardEnum {
     $standard = $input->getOption('phpcs-standard') ?? $this->defaultPhpcsStandard;
     try {
-      $standard = new PhpcsStandard($standard);
+      $standard = new PhpcsStandardEnum($standard);
     }
     catch (UnexpectedValueException $e) {
       $error_message = sprintf('Error: Invalid value for "--phpcs-standard" option: "%s".', $standard);

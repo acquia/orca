@@ -2,8 +2,8 @@
 
 namespace Acquia\Orca\Tests\Helper\Log;
 
+use Acquia\Orca\Enum\TelemetryEventNameEnum;
 use Acquia\Orca\Helper\Filesystem\OrcaPathHandler;
-use Acquia\Orca\Helper\Log\TelemetryEventName;
 use Acquia\Orca\Helper\Log\TelemetryEventPropertiesBuilder;
 use Env;
 use PHPUnit\Framework\TestCase;
@@ -38,7 +38,7 @@ class TelemetryEventPropertiesBuilderTest extends TestCase {
   public function testBuildingTestEvent(): void {
     $builder = $this->createTelemetryEventPropertiesBuilder();
 
-    $event = $builder->build(new TelemetryEventName(TelemetryEventName::TEST));
+    $event = $builder->build(new TelemetryEventNameEnum(TelemetryEventNameEnum::TEST));
 
     self::assertEquals(['example' => TRUE], $event, 'Built TEST event.');
   }

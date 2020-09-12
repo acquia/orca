@@ -3,11 +3,11 @@
 namespace Acquia\Orca\Tests\Console\Command\Qa;
 
 use Acquia\Orca\Console\Command\Qa\QaFixerCommand;
-use Acquia\Orca\Console\Helper\StatusCode;
+use Acquia\Orca\Enum\PhpcsStandardEnum;
+use Acquia\Orca\Enum\StatusCodeEnum;
 use Acquia\Orca\Helper\Task\TaskRunner;
 use Acquia\Orca\Tests\Console\Command\CommandTestBase;
 use Acquia\Orca\Tool\ComposerNormalize\ComposerNormalizeTask;
-use Acquia\Orca\Tool\Helper\PhpcsStandard;
 use Acquia\Orca\Tool\Phpcbf\PhpcbfTask;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Filesystem\Filesystem;
@@ -22,7 +22,7 @@ class QaFixerCommandTest extends CommandTestBase {
 
   private const SUT_PATH = '/var/www/example';
 
-  private $defaultPhpcsStandard = PhpcsStandard::DEFAULT;
+  private $defaultPhpcsStandard = PhpcsStandardEnum::DEFAULT;
 
   protected function setUp() {
     $this->composerNormalize = $this->prophesize(ComposerNormalizeTask::class);
@@ -72,9 +72,9 @@ class QaFixerCommandTest extends CommandTestBase {
 
   public function providerCommand(): array {
     return [
-      [TRUE, 1, StatusCode::OK, ''],
-      [TRUE, 1, StatusCode::ERROR, ''],
-      [FALSE, 0, StatusCode::ERROR, sprintf("Error: No such path: %s.\n", self::SUT_PATH)],
+      [TRUE, 1, StatusCodeEnum::OK, ''],
+      [TRUE, 1, StatusCodeEnum::ERROR, ''],
+      [FALSE, 0, StatusCodeEnum::ERROR, sprintf("Error: No such path: %s.\n", self::SUT_PATH)],
     ];
   }
 
@@ -98,12 +98,12 @@ class QaFixerCommandTest extends CommandTestBase {
     $this->taskRunner
       ->run()
       ->shouldBeCalledTimes(1)
-      ->willReturn(StatusCode::OK);
+      ->willReturn(StatusCodeEnum::OK);
 
     $this->executeCommand($args);
 
     self::assertEquals('', $this->getDisplay(), 'Displayed correct output.');
-    self::assertEquals(StatusCode::OK, $this->getStatusCode(), 'Returned correct status code.');
+    self::assertEquals(StatusCodeEnum::OK, $this->getStatusCode(), 'Returned correct status code.');
   }
 
   public function providerTaskFiltering(): array {
@@ -122,7 +122,7 @@ class QaFixerCommandTest extends CommandTestBase {
       ->shouldBeCalledOnce()
       ->willReturn(TRUE);
     $this->phpCodeBeautifierAndFixer
-      ->setStandard(new PhpcsStandard($standard))
+      ->setStandard(new PhpcsStandardEnum($standard))
       ->shouldBeCalledOnce();
     $this->taskRunner
       ->addTask($this->phpCodeBeautifierAndFixer->reveal())
@@ -141,15 +141,15 @@ class QaFixerCommandTest extends CommandTestBase {
     $this->executeCommand($args);
 
     self::assertEquals('', $this->getDisplay(), 'Displayed correct output.');
-    self::assertEquals(StatusCode::OK, $this->getStatusCode(), 'Returned correct status code.');
+    self::assertEquals(StatusCodeEnum::OK, $this->getStatusCode(), 'Returned correct status code.');
   }
 
   public function providerPhpcsStandardOption(): array {
     return [
       [[], $this->defaultPhpcsStandard],
-      [['--phpcs-standard' => PhpcsStandard::ACQUIA_PHP], PhpcsStandard::ACQUIA_PHP],
-      [['--phpcs-standard' => PhpcsStandard::ACQUIA_DRUPAL_TRANSITIONAL], PhpcsStandard::ACQUIA_DRUPAL_TRANSITIONAL],
-      [['--phpcs-standard' => PhpcsStandard::ACQUIA_DRUPAL_STRICT], PhpcsStandard::ACQUIA_DRUPAL_STRICT],
+      [['--phpcs-standard' => PhpcsStandardEnum::ACQUIA_PHP], PhpcsStandardEnum::ACQUIA_PHP],
+      [['--phpcs-standard' => PhpcsStandardEnum::ACQUIA_DRUPAL_TRANSITIONAL], PhpcsStandardEnum::ACQUIA_DRUPAL_TRANSITIONAL],
+      [['--phpcs-standard' => PhpcsStandardEnum::ACQUIA_DRUPAL_STRICT], PhpcsStandardEnum::ACQUIA_DRUPAL_STRICT],
     ];
   }
 
@@ -163,7 +163,7 @@ class QaFixerCommandTest extends CommandTestBase {
       ->shouldBeCalledTimes(1)
       ->willReturn(TRUE);
     $this->phpCodeBeautifierAndFixer
-      ->setStandard(new PhpcsStandard($this->defaultPhpcsStandard))
+      ->setStandard(new PhpcsStandardEnum($this->defaultPhpcsStandard))
       ->shouldBeCalledOnce();
     $this->taskRunner
       ->addTask($this->phpCodeBeautifierAndFixer->reveal())
@@ -184,14 +184,14 @@ class QaFixerCommandTest extends CommandTestBase {
     $this->executeCommand($args);
 
     self::assertEquals('', $this->getDisplay(), 'Displayed correct output.');
-    self::assertEquals(StatusCode::OK, $this->getStatusCode(), 'Returned correct status code.');
+    self::assertEquals(StatusCodeEnum::OK, $this->getStatusCode(), 'Returned correct status code.');
   }
 
   public function providerPhpcsStandardEnvVar(): array {
     return [
-      [PhpcsStandard::ACQUIA_PHP],
-      [PhpcsStandard::ACQUIA_DRUPAL_TRANSITIONAL],
-      [PhpcsStandard::ACQUIA_DRUPAL_STRICT],
+      [PhpcsStandardEnum::ACQUIA_PHP],
+      [PhpcsStandardEnum::ACQUIA_DRUPAL_TRANSITIONAL],
+      [PhpcsStandardEnum::ACQUIA_DRUPAL_STRICT],
     ];
   }
 
@@ -213,7 +213,7 @@ class QaFixerCommandTest extends CommandTestBase {
     $this->executeCommand($args);
 
     self::assertEquals($display, $this->getDisplay(), 'Displayed correct output.');
-    self::assertEquals(StatusCode::ERROR, $this->getStatusCode(), 'Returned correct status code.');
+    self::assertEquals(StatusCodeEnum::ERROR, $this->getStatusCode(), 'Returned correct status code.');
   }
 
   public function providerInvalidPhpcsStandard(): array {

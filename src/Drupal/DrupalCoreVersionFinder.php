@@ -2,6 +2,7 @@
 
 namespace Acquia\Orca\Drupal;
 
+use Acquia\Orca\Enum\DrupalCoreVersionEnum;
 use Composer\DependencyResolver\Pool;
 use Composer\IO\NullIO;
 use Composer\Package\Version\VersionSelector;
@@ -24,7 +25,7 @@ class DrupalCoreVersionFinder {
   /**
    * Gets the Drupal core version for a given constant.
    *
-   * @param \Acquia\Orca\Drupal\DrupalCoreVersion $version
+   * @param \Acquia\Orca\Enum\DrupalCoreVersionEnum $version
    *   The Drupal core version constant.
    *
    * @return string
@@ -33,27 +34,27 @@ class DrupalCoreVersionFinder {
    * @throws \RuntimeException
    *   If no corresponding version is found.
    */
-  public function get(DrupalCoreVersion $version): string {
+  public function get(DrupalCoreVersionEnum $version): string {
     switch ($version->getValue()) {
-      case DrupalCoreVersion::PREVIOUS_RELEASE:
+      case DrupalCoreVersionEnum::PREVIOUS_RELEASE:
         return $this->getPreviousMinorRelease();
 
-      case DrupalCoreVersion::PREVIOUS_DEV:
+      case DrupalCoreVersionEnum::PREVIOUS_DEV:
         return $this->getPreviousDevVersion();
 
-      case DrupalCoreVersion::CURRENT_RECOMMENDED:
+      case DrupalCoreVersionEnum::CURRENT_RECOMMENDED:
         return $this->getCurrentRecommendedRelease();
 
-      case DrupalCoreVersion::CURRENT_DEV:
+      case DrupalCoreVersionEnum::CURRENT_DEV:
         return $this->getCurrentDevVersion();
 
-      case DrupalCoreVersion::NEXT_RELEASE:
+      case DrupalCoreVersionEnum::NEXT_RELEASE:
         return $this->getNextRelease();
 
-      case DrupalCoreVersion::NEXT_DEV:
+      case DrupalCoreVersionEnum::NEXT_DEV:
         return $this->getNextDevVersion();
 
-      case DrupalCoreVersion::D9_READINESS:
+      case DrupalCoreVersionEnum::D9_READINESS:
         return $this->getD9DevVersion();
 
       default:
@@ -64,13 +65,13 @@ class DrupalCoreVersionFinder {
   /**
    * Gets a formatted form of the Drupal core version for a given constant.
    *
-   * @param \Acquia\Orca\Drupal\DrupalCoreVersion $version
+   * @param \Acquia\Orca\Enum\DrupalCoreVersionEnum $version
    *   The Drupal core version constant.
    *
    * @return string
    *   The corresponding version string if found or a tilde (~) if not.
    */
-  public function getPretty(DrupalCoreVersion $version): string {
+  public function getPretty(DrupalCoreVersionEnum $version): string {
     try {
       return $this->get($version);
     }
@@ -109,7 +110,7 @@ class DrupalCoreVersionFinder {
    * @return string
    *   The version string, e.g., "8.5.14.0".
    *
-   * @see \Acquia\Orca\Drupal\DrupalCoreVersion::PREVIOUS_RELEASE
+   * @see \Acquia\Orca\Enum\DrupalCoreVersionEnum::PREVIOUS_RELEASE
    */
   private function getPreviousMinorRelease(): string {
     if ($this->previousMinorRelease) {
@@ -125,7 +126,7 @@ class DrupalCoreVersionFinder {
    * @return string
    *   The version string, e.g., "8.5.x-dev".
    *
-   * @see \Acquia\Orca\Drupal\DrupalCoreVersion::PREVIOUS_DEV
+   * @see \Acquia\Orca\Enum\DrupalCoreVersionEnum::PREVIOUS_DEV
    */
   private function getPreviousDevVersion(): string {
     $previous_minor_version = (float) $this->getCurrentMinorVersion() - 0.1;
@@ -138,7 +139,7 @@ class DrupalCoreVersionFinder {
    * @return string
    *   The version string, e.g., "8.6.14.0".
    *
-   * @see \Acquia\Orca\Drupal\DrupalCoreVersion::CURRENT_RECOMMENDED
+   * @see \Acquia\Orca\Enum\DrupalCoreVersionEnum::CURRENT_RECOMMENDED
    */
   private function getCurrentRecommendedRelease(): string {
     // @todo This is hardcoded in order to prevent 8.8.x being dropped from the
@@ -154,7 +155,7 @@ class DrupalCoreVersionFinder {
    * @return string
    *   The version string, e.g., "8.6.x-dev".
    *
-   * @see \Acquia\Orca\Drupal\DrupalCoreVersion::CURRENT_DEV
+   * @see \Acquia\Orca\Enum\DrupalCoreVersionEnum::CURRENT_DEV
    */
   private function getCurrentDevVersion(): string {
     return "{$this->getCurrentMinorVersion()}.x-dev";
@@ -166,7 +167,7 @@ class DrupalCoreVersionFinder {
    * @return string
    *   The version string, e.g., "8.7.0.0-beta2".
    *
-   * @see \Acquia\Orca\Drupal\DrupalCoreVersion::NEXT_RELEASE
+   * @see \Acquia\Orca\Enum\DrupalCoreVersionEnum::NEXT_RELEASE
    */
   private function getNextRelease(): string {
     // @todo This is hardcoded in order to prevent 9.0.x from becoming the "next the
@@ -181,7 +182,7 @@ class DrupalCoreVersionFinder {
    * @return string
    *   The version string, e.g., "8.7.x-dev".
    *
-   * @see \Acquia\Orca\Drupal\DrupalCoreVersion::NEXT_DEV
+   * @see \Acquia\Orca\Enum\DrupalCoreVersionEnum::NEXT_DEV
    */
   private function getNextDevVersion(): string {
     // @todo This is hardcoded in order to prevent 9.x-dev from becoming the
@@ -197,7 +198,7 @@ class DrupalCoreVersionFinder {
    * @return string
    *   The version string, e.g., "9.0.x-dev".
    *
-   * @see \Acquia\Orca\Drupal\DrupalCoreVersion::D9_READINESS
+   * @see \Acquia\Orca\Enum\DrupalCoreVersionEnum::D9_READINESS
    */
   private function getD9DevVersion(): string {
     return $this->find('~9.0.0', 'dev', 'dev');
