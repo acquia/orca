@@ -3,7 +3,7 @@
 namespace Acquia\Orca\Fixture;
 
 use Acquia\Orca\Composer\Composer;
-use Acquia\Orca\Drupal\DrupalCoreVersionFinder;
+use Acquia\Orca\Domain\Drupal\DrupalCoreVersionFinder;
 use Acquia\Orca\Enum\DrupalCoreVersionEnum;
 use Acquia\Orca\Helper\Exception\OrcaInvalidArgumentException;
 use Acquia\Orca\Package\Package;
@@ -31,7 +31,7 @@ class FixtureOptions {
   /**
    * The Drupal Core version finder.
    *
-   * @var \Acquia\Orca\Drupal\DrupalCoreVersionFinder
+   * @var \Acquia\Orca\Domain\Drupal\DrupalCoreVersionFinder
    */
   private $drupalCoreVersionFinder;
 
@@ -52,7 +52,7 @@ class FixtureOptions {
   /**
    * Constructs an instance.
    *
-   * @param \Acquia\Orca\Drupal\DrupalCoreVersionFinder $drupal_core_version_finder
+   * @param \Acquia\Orca\Domain\Drupal\DrupalCoreVersionFinder $drupal_core_version_finder
    *   The Drupal core version finder.
    * @param \Acquia\Orca\Package\PackageManager $package_manager
    *   The package manager.

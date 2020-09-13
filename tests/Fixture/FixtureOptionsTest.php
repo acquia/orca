@@ -2,7 +2,7 @@
 
 namespace Acquia\Orca\Tests\Fixture;
 
-use Acquia\Orca\Drupal\DrupalCoreVersionFinder;
+use Acquia\Orca\Domain\Drupal\DrupalCoreVersionFinder;
 use Acquia\Orca\Enum\DrupalCoreVersionEnum;
 use Acquia\Orca\Fixture\FixtureOptions;
 use Acquia\Orca\Helper\Exception\OrcaInvalidArgumentException;
@@ -12,7 +12,7 @@ use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 
 /**
- * @property \Acquia\Orca\Drupal\DrupalCoreVersionFinder|\Prophecy\Prophecy\ObjectProphecy $drupalCoreVersionFinder
+ * @property \Acquia\Orca\Domain\Drupal\DrupalCoreVersionFinder|\Prophecy\Prophecy\ObjectProphecy $drupalCoreVersionFinder
  * @property \Acquia\Orca\Package\PackageManager|\Prophecy\Prophecy\ObjectProphecy $packageManager
  *
  * @coversDefaultClass \Acquia\Orca\Fixture\FixtureOptions

@@ -3,14 +3,14 @@
 namespace Acquia\Orca\Tests\Fixture;
 
 use Acquia\Orca\Composer\Composer;
-use Acquia\Orca\Drupal\DrupalCoreVersionFinder;
+use Acquia\Orca\Domain\Drupal\DrupalCoreVersionFinder;
 use Acquia\Orca\Fixture\FixtureOptionsFactory;
 use Acquia\Orca\Package\PackageManager;
 use PHPUnit\Framework\TestCase;
 
 /**
  * @property \Acquia\Orca\Composer\Composer|\Prophecy\Prophecy\ObjectProphecy $composer
- * @property \Acquia\Orca\Drupal\DrupalCoreVersionFinder|\Prophecy\Prophecy\ObjectProphecy $drupalCoreVersionFinder
+ * @property \Acquia\Orca\Domain\Drupal\DrupalCoreVersionFinder|\Prophecy\Prophecy\ObjectProphecy $drupalCoreVersionFinder
  * @property \Acquia\Orca\Package\PackageManager|\Prophecy\Prophecy\ObjectProphecy $packageManager
  *
  * @coversDefaultClass \Acquia\Orca\Fixture\FixtureOptionsFactory

@@ -1,6 +1,6 @@
 <?php
 
-namespace Acquia\Orca\Drupal;
+namespace Acquia\Orca\Domain\Drupal;
 
 use Acquia\Orca\Enum\DrupalCoreVersionEnum;
 use Composer\DependencyResolver\Pool;

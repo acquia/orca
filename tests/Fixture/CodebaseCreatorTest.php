@@ -3,7 +3,7 @@
 namespace Acquia\Orca\Tests\Fixture;
 
 use Acquia\Orca\Composer\Composer;
-use Acquia\Orca\Drupal\DrupalCoreVersionFinder;
+use Acquia\Orca\Domain\Drupal\DrupalCoreVersionFinder;
 use Acquia\Orca\Fixture\CodebaseCreator;
 use Acquia\Orca\Fixture\FixtureOptions;
 use Acquia\Orca\Git\Git;
@@ -16,7 +16,7 @@ use Prophecy\Argument;
 
 /**
  * @property \Acquia\Orca\Composer\Composer|\Prophecy\Prophecy\ObjectProphecy $composer
- * @property \Acquia\Orca\Drupal\DrupalCoreVersionFinder|\Prophecy\Prophecy\ObjectProphecy $drupalCoreVersionFinder
+ * @property \Acquia\Orca\Domain\Drupal\DrupalCoreVersionFinder|\Prophecy\Prophecy\ObjectProphecy $drupalCoreVersionFinder
  * @property \Acquia\Orca\Git\Git|\Prophecy\Prophecy\ObjectProphecy $git
  * @property \Acquia\Orca\Helper\Filesystem\FixturePathHandler|\Prophecy\Prophecy\ObjectProphecy $fixture
  * @property \Acquia\Orca\Helper\Filesystem\OrcaPathHandler|\Prophecy\Prophecy\ObjectProphecy $orca
