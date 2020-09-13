@@ -2,9 +2,9 @@
 
 namespace Acquia\Orca\Helper\Task;
 
+use Acquia\Orca\Domain\Tool\TaskInterface;
 use Acquia\Orca\Enum\StatusCodeEnum;
-use Acquia\Orca\Helper\Exception\TaskFailureException;
-use Acquia\Orca\Tool\TaskInterface;
+use Acquia\Orca\Exception\TaskFailureException;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
@@ -36,7 +36,7 @@ class TaskRunner {
   /**
    * The tasks to run.
    *
-   * @var \Acquia\Orca\Tool\TaskInterface[]
+   * @var \Acquia\Orca\Domain\Tool\TaskInterface[]
    */
   private $tasks = [];
 
@@ -60,7 +60,7 @@ class TaskRunner {
   /**
    * Adds a task to be run.
    *
-   * @param \Acquia\Orca\Tool\TaskInterface $task
+   * @param \Acquia\Orca\Domain\Tool\TaskInterface $task
    *   The task to add.
    *
    * @return self

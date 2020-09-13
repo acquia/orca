@@ -2,18 +2,18 @@
 
 namespace Acquia\Orca\Tests\Console\Command\Debug;
 
-use Acquia\Orca\Composer\VersionGuesser;
 use Acquia\Orca\Console\Command\Debug\DebugGuessVersionCommand;
+use Acquia\Orca\Domain\Composer\VersionGuesser;
 use Acquia\Orca\Enum\StatusCodeEnum;
-use Acquia\Orca\Helper\Exception\FileNotFoundException;
-use Acquia\Orca\Helper\Exception\OrcaException;
-use Acquia\Orca\Helper\Exception\ParseError;
+use Acquia\Orca\Exception\FileNotFoundException;
+use Acquia\Orca\Exception\OrcaException;
+use Acquia\Orca\Exception\ParseError;
 use Acquia\Orca\Tests\Console\Command\CommandTestBase;
 use Prophecy\Argument;
 use Symfony\Component\Console\Command\Command;
 
 /**
- * @property \Acquia\Orca\Composer\VersionGuesser|\Prophecy\Prophecy\ObjectProphecy $versionGuesser
+ * @property \Acquia\Orca\Domain\Composer\VersionGuesser|\Prophecy\Prophecy\ObjectProphecy $versionGuesser
  * @coversDefaultClass \Acquia\Orca\Console\Command\Debug\DebugGuessVersionCommand
  */
 class DebugGuessVersionCommandTest extends CommandTestBase {

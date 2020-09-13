@@ -3,18 +3,18 @@
 namespace Acquia\Orca\Tests\Console\Command\Qa;
 
 use Acquia\Orca\Console\Command\Qa\QaDeprecatedCodeScanCommand;
+use Acquia\Orca\Domain\Package\PackageManager;
+use Acquia\Orca\Domain\Tool\Phpstan\PhpstanTask;
 use Acquia\Orca\Enum\StatusCodeEnum;
 use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
 use Acquia\Orca\Helper\Task\TaskRunner;
-use Acquia\Orca\Package\PackageManager;
 use Acquia\Orca\Tests\Console\Command\CommandTestBase;
-use Acquia\Orca\Tool\Phpstan\PhpstanTask;
 use Symfony\Component\Console\Command\Command;
 
 /**
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Helper\Filesystem\FixturePathHandler $fixture
- * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Package\PackageManager $packageManager
- * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Tool\Phpstan\PhpstanTask $phpstan
+ * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Domain\Package\PackageManager $packageManager
+ * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Domain\Tool\Phpstan\PhpstanTask $phpstan
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Helper\Task\TaskRunner $taskRunner
  */
 class QaDeprecatedCodeScanCommandTest extends CommandTestBase {

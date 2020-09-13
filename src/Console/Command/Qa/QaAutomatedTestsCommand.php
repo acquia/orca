@@ -2,11 +2,11 @@
 
 namespace Acquia\Orca\Console\Command\Qa;
 
+use Acquia\Orca\Domain\Package\PackageManager;
+use Acquia\Orca\Domain\Tool\TestRunner;
 use Acquia\Orca\Enum\StatusCodeEnum;
-use Acquia\Orca\Helper\Exception\OrcaException;
+use Acquia\Orca\Exception\OrcaException;
 use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
-use Acquia\Orca\Package\PackageManager;
-use Acquia\Orca\Tool\TestRunner;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -41,7 +41,7 @@ class QaAutomatedTestsCommand extends Command {
   /**
    * The package manager.
    *
-   * @var \Acquia\Orca\Package\PackageManager
+   * @var \Acquia\Orca\Domain\Package\PackageManager
    */
   private $packageManager;
 
@@ -62,7 +62,7 @@ class QaAutomatedTestsCommand extends Command {
   /**
    * The test runner.
    *
-   * @var \Acquia\Orca\Tool\TestRunner
+   * @var \Acquia\Orca\Domain\Tool\TestRunner
    */
   private $testRunner;
 
@@ -71,9 +71,9 @@ class QaAutomatedTestsCommand extends Command {
    *
    * @param \Acquia\Orca\Helper\Filesystem\FixturePathHandler $fixture_path_handler
    *   The fixture path handler.
-   * @param \Acquia\Orca\Package\PackageManager $package_manager
+   * @param \Acquia\Orca\Domain\Package\PackageManager $package_manager
    *   The package manager.
-   * @param \Acquia\Orca\Tool\TestRunner $test_runner
+   * @param \Acquia\Orca\Domain\Tool\TestRunner $test_runner
    *   The test runner.
    */
   public function __construct(FixturePathHandler $fixture_path_handler, PackageManager $package_manager, TestRunner $test_runner) {

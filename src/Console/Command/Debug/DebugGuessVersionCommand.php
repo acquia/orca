@@ -2,9 +2,9 @@
 
 namespace Acquia\Orca\Console\Command\Debug;
 
-use Acquia\Orca\Composer\VersionGuesser;
+use Acquia\Orca\Domain\Composer\VersionGuesser;
 use Acquia\Orca\Enum\StatusCodeEnum;
-use Acquia\Orca\Helper\Exception\OrcaException;
+use Acquia\Orca\Exception\OrcaException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -32,7 +32,7 @@ class DebugGuessVersionCommand extends Command {
   /**
    * Constructs an instance.
    *
-   * @param \Acquia\Orca\Composer\VersionGuesser $version_guesser
+   * @param \Acquia\Orca\Domain\Composer\VersionGuesser $version_guesser
    *   The version guesser.
    */
   public function __construct(VersionGuesser $version_guesser) {

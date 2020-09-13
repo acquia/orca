@@ -2,11 +2,11 @@
 
 namespace Acquia\Orca\Console\Command\Qa;
 
+use Acquia\Orca\Domain\Tool\ComposerNormalize\ComposerNormalizeTask;
+use Acquia\Orca\Domain\Tool\Phpcbf\PhpcbfTask;
 use Acquia\Orca\Enum\PhpcsStandardEnum;
 use Acquia\Orca\Enum\StatusCodeEnum;
 use Acquia\Orca\Helper\Task\TaskRunner;
-use Acquia\Orca\Tool\ComposerNormalize\ComposerNormalizeTask;
-use Acquia\Orca\Tool\Phpcbf\PhpcbfTask;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -23,7 +23,7 @@ class QaFixerCommand extends Command {
   /**
    * The Composer normalize task.
    *
-   * @var \Acquia\Orca\Tool\ComposerNormalize\ComposerNormalizeTask
+   * @var \Acquia\Orca\Domain\Tool\ComposerNormalize\ComposerNormalizeTask
    */
   private $composerNormalize;
 
@@ -37,7 +37,7 @@ class QaFixerCommand extends Command {
   /**
    * The PHP Code Beautifier and Fixer task.
    *
-   * @var \Acquia\Orca\Tool\Phpcbf\PhpcbfTask
+   * @var \Acquia\Orca\Domain\Tool\Phpcbf\PhpcbfTask
    */
   private $phpCodeBeautifierAndFixer;
 
@@ -65,13 +65,13 @@ class QaFixerCommand extends Command {
   /**
    * Constructs an instance.
    *
-   * @param \Acquia\Orca\Tool\ComposerNormalize\ComposerNormalizeTask $composer_normalize
+   * @param \Acquia\Orca\Domain\Tool\ComposerNormalize\ComposerNormalizeTask $composer_normalize
    *   The Composer normalize task.
    * @param string $default_phpcs_standard
    *   The default PHPCS standard.
    * @param \Symfony\Component\Filesystem\Filesystem $filesystem
    *   The filesystem.
-   * @param \Acquia\Orca\Tool\Phpcbf\PhpcbfTask $php_code_beautifier_and_fixer
+   * @param \Acquia\Orca\Domain\Tool\Phpcbf\PhpcbfTask $php_code_beautifier_and_fixer
    *   The PHP Code Beautifier and Fixer task.
    * @param \Acquia\Orca\Helper\Task\TaskRunner $task_runner
    *   The task runner.

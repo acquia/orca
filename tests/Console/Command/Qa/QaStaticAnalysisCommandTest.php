@@ -3,30 +3,30 @@
 namespace Acquia\Orca\Tests\Console\Command\Qa;
 
 use Acquia\Orca\Console\Command\Qa\QaStaticAnalysisCommand;
+use Acquia\Orca\Domain\Tool\ComposerValidate\ComposerValidateTask;
+use Acquia\Orca\Domain\Tool\Coverage\CoverageTask;
+use Acquia\Orca\Domain\Tool\Phpcs\PhpcsTask;
+use Acquia\Orca\Domain\Tool\PhpLint\PhpLintTask;
+use Acquia\Orca\Domain\Tool\Phploc\PhplocTask;
+use Acquia\Orca\Domain\Tool\Phpmd\PhpmdTask;
+use Acquia\Orca\Domain\Tool\YamlLint\YamlLintTask;
 use Acquia\Orca\Enum\PhpcsStandardEnum;
 use Acquia\Orca\Enum\StatusCodeEnum;
-use Acquia\Orca\Helper\Exception\FileNotFoundException;
+use Acquia\Orca\Exception\FileNotFoundException;
 use Acquia\Orca\Helper\Task\TaskRunner;
 use Acquia\Orca\Tests\Console\Command\CommandTestBase;
-use Acquia\Orca\Tool\ComposerValidate\ComposerValidateTask;
-use Acquia\Orca\Tool\Coverage\CoverageTask;
-use Acquia\Orca\Tool\Phpcs\PhpcsTask;
-use Acquia\Orca\Tool\PhpLint\PhpLintTask;
-use Acquia\Orca\Tool\Phploc\PhplocTask;
-use Acquia\Orca\Tool\Phpmd\PhpmdTask;
-use Acquia\Orca\Tool\YamlLint\YamlLintTask;
 use Prophecy\Argument;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
- * @property \Acquia\Orca\Tool\ComposerValidate\ComposerValidateTask|\Prophecy\Prophecy\ObjectProphecy $composerValidate
- * @property \Acquia\Orca\Tool\Coverage\CoverageTask|\Prophecy\Prophecy\ObjectProphecy $coverage
- * @property \Acquia\Orca\Tool\Phpcs\PhpcsTask|\Prophecy\Prophecy\ObjectProphecy $phpCodeSniffer
- * @property \Acquia\Orca\Tool\PhpLint\PhpLintTask|\Prophecy\Prophecy\ObjectProphecy $phpLint
- * @property \Acquia\Orca\Tool\Phploc\PhplocTask|\Prophecy\Prophecy\ObjectProphecy $phploc
- * @property \Acquia\Orca\Tool\Phpmd\PhpmdTask|\Prophecy\Prophecy\ObjectProphecy $phpMessDetector
- * @property \Acquia\Orca\Tool\YamlLint\YamlLintTask|\Prophecy\Prophecy\ObjectProphecy $yamlLint
+ * @property \Acquia\Orca\Domain\Tool\ComposerValidate\ComposerValidateTask|\Prophecy\Prophecy\ObjectProphecy $composerValidate
+ * @property \Acquia\Orca\Domain\Tool\Coverage\CoverageTask|\Prophecy\Prophecy\ObjectProphecy $coverage
+ * @property \Acquia\Orca\Domain\Tool\Phpcs\PhpcsTask|\Prophecy\Prophecy\ObjectProphecy $phpCodeSniffer
+ * @property \Acquia\Orca\Domain\Tool\PhpLint\PhpLintTask|\Prophecy\Prophecy\ObjectProphecy $phpLint
+ * @property \Acquia\Orca\Domain\Tool\Phploc\PhplocTask|\Prophecy\Prophecy\ObjectProphecy $phploc
+ * @property \Acquia\Orca\Domain\Tool\Phpmd\PhpmdTask|\Prophecy\Prophecy\ObjectProphecy $phpMessDetector
+ * @property \Acquia\Orca\Domain\Tool\YamlLint\YamlLintTask|\Prophecy\Prophecy\ObjectProphecy $yamlLint
  * @property \Acquia\Orca\Helper\Task\TaskRunner|\Prophecy\Prophecy\ObjectProphecy $taskRunner
  * @property \Symfony\Component\Filesystem\Filesystem|\Prophecy\Prophecy\ObjectProphecy $filesystem
  * @coversDefaultClass \Acquia\Orca\Console\Command\Qa\QaStaticAnalysisCommand

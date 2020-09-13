@@ -3,9 +3,9 @@
 namespace Acquia\Orca\Tests\Console\Command\Fixture;
 
 use Acquia\Orca\Console\Command\Fixture\FixtureEnableExtensionsCommand;
+use Acquia\Orca\Domain\Fixture\CompanyExtensionEnabler;
 use Acquia\Orca\Enum\StatusCodeEnum;
-use Acquia\Orca\Fixture\CompanyExtensionEnabler;
-use Acquia\Orca\Helper\Exception\OrcaException;
+use Acquia\Orca\Exception\OrcaException;
 use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
 use Acquia\Orca\Tests\Console\Command\CommandTestBase;
 use Symfony\Component\Console\Command\Command;

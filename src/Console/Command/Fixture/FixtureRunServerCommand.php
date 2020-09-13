@@ -2,9 +2,9 @@
 
 namespace Acquia\Orca\Console\Command\Fixture;
 
+use Acquia\Orca\Domain\Server\WebServer;
 use Acquia\Orca\Enum\StatusCodeEnum;
 use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
-use Acquia\Orca\Server\WebServer;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -31,7 +31,7 @@ class FixtureRunServerCommand extends Command {
   /**
    * The web server.
    *
-   * @var \Acquia\Orca\Server\WebServer
+   * @var \Acquia\Orca\Domain\Server\WebServer
    */
   private $webServer;
 
@@ -40,7 +40,7 @@ class FixtureRunServerCommand extends Command {
    *
    * @param \Acquia\Orca\Helper\Filesystem\FixturePathHandler $fixture_path_handler
    *   The fixture path handler.
-   * @param \Acquia\Orca\Server\WebServer $web_server
+   * @param \Acquia\Orca\Domain\Server\WebServer $web_server
    *   The web server.
    */
   public function __construct(FixturePathHandler $fixture_path_handler, WebServer $web_server) {

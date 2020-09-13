@@ -3,15 +3,15 @@
 namespace Acquia\Orca\Tests\Console\Command\Fixture;
 
 use Acquia\Orca\Console\Command\Fixture\FixtureResetCommand;
+use Acquia\Orca\Domain\Fixture\FixtureResetter;
 use Acquia\Orca\Enum\StatusCodeEnum;
-use Acquia\Orca\Fixture\FixtureResetter;
 use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
 use Acquia\Orca\Tests\Console\Command\CommandTestBase;
 use Symfony\Component\Console\Command\Command;
 
 /**
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Helper\Filesystem\FixturePathHandler $fixture
- * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Fixture\FixtureResetter $fixtureResetter
+ * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Domain\Fixture\FixtureResetter $fixtureResetter
  */
 class FixtureResetCommandTest extends CommandTestBase {
 

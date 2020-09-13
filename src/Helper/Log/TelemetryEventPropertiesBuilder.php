@@ -2,11 +2,11 @@
 
 namespace Acquia\Orca\Helper\Log;
 
+use Acquia\Orca\Domain\Tool\Phpcs\PhpcsTask;
+use Acquia\Orca\Domain\Tool\Phploc\PhplocTask;
+use Acquia\Orca\Domain\Tool\Phpstan\PhpstanTask;
 use Acquia\Orca\Enum\TelemetryEventNameEnum;
 use Acquia\Orca\Helper\Filesystem\OrcaPathHandler;
-use Acquia\Orca\Tool\Phpcs\PhpcsTask;
-use Acquia\Orca\Tool\Phploc\PhplocTask;
-use Acquia\Orca\Tool\Phpstan\PhpstanTask;
 use Env;
 use Symfony\Component\Filesystem\Filesystem;
 

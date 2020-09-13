@@ -2,8 +2,8 @@
 
 namespace Acquia\Orca\Console\Command\Fixture;
 
+use Acquia\Orca\Domain\Fixture\FixtureRemover;
 use Acquia\Orca\Enum\StatusCodeEnum;
-use Acquia\Orca\Fixture\FixtureRemover;
 use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -33,7 +33,7 @@ class FixtureRmCommand extends Command {
   /**
    * The fixture remover.
    *
-   * @var \Acquia\Orca\Fixture\FixtureRemover
+   * @var \Acquia\Orca\Domain\Fixture\FixtureRemover
    */
   private $fixtureRemover;
 
@@ -42,7 +42,7 @@ class FixtureRmCommand extends Command {
    *
    * @param \Acquia\Orca\Helper\Filesystem\FixturePathHandler $fixture_path_handler
    *   The fixture path handler.
-   * @param \Acquia\Orca\Fixture\FixtureRemover $fixture_remover
+   * @param \Acquia\Orca\Domain\Fixture\FixtureRemover $fixture_remover
    *   The fixture remover.
    */
   public function __construct(FixturePathHandler $fixture_path_handler, FixtureRemover $fixture_remover) {

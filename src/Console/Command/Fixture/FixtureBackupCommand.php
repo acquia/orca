@@ -2,8 +2,8 @@
 
 namespace Acquia\Orca\Console\Command\Fixture;
 
+use Acquia\Orca\Domain\Git\Git;
 use Acquia\Orca\Enum\StatusCodeEnum;
-use Acquia\Orca\Git\Git;
 use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -33,7 +33,7 @@ class FixtureBackupCommand extends Command {
   /**
    * The Git facade.
    *
-   * @var \Acquia\Orca\Git\Git
+   * @var \Acquia\Orca\Domain\Git\Git
    */
   private $git;
 
@@ -42,7 +42,7 @@ class FixtureBackupCommand extends Command {
    *
    * @param \Acquia\Orca\Helper\Filesystem\FixturePathHandler $fixture_path_handler
    *   The fixture path handler.
-   * @param \Acquia\Orca\Git\Git $git
+   * @param \Acquia\Orca\Domain\Git\Git $git
    *   The Git facade.
    */
   public function __construct(FixturePathHandler $fixture_path_handler, Git $git) {
