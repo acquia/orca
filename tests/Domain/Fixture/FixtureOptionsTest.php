@@ -7,7 +7,7 @@ use Acquia\Orca\Domain\Fixture\FixtureOptions;
 use Acquia\Orca\Domain\Package\Package;
 use Acquia\Orca\Domain\Package\PackageManager;
 use Acquia\Orca\Enum\DrupalCoreVersionEnum;
-use Acquia\Orca\Exception\OrcaInvalidArgumentException;
+use Acquia\Orca\Exception\InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 
@@ -148,7 +148,7 @@ class FixtureOptionsTest extends TestCase {
    * @covers ::resolve
    */
   public function testUndefinedOptions(): void {
-    $this->expectException(OrcaInvalidArgumentException::class);
+    $this->expectException(InvalidArgumentException::class);
 
     $this->createFixtureOptions(['undefined' => 'option']);
   }
@@ -159,7 +159,7 @@ class FixtureOptionsTest extends TestCase {
    * @covers ::resolve
    */
   public function testInvalidOptions($option): void {
-    $this->expectException(OrcaInvalidArgumentException::class);
+    $this->expectException(InvalidArgumentException::class);
 
     $this->createFixtureOptions([$option => 12345]);
   }
@@ -193,7 +193,7 @@ class FixtureOptionsTest extends TestCase {
     $this->packageManager
       ->get(Argument::any())
       ->willReturn($sut_object);
-    $this->expectExceptionObject(new OrcaInvalidArgumentException($message));
+    $this->expectExceptionObject(new InvalidArgumentException($message));
 
     $this->createFixtureOptions($options);
   }
@@ -234,7 +234,7 @@ class FixtureOptionsTest extends TestCase {
    * @covers ::resolve
    */
   public function testCoreRawConstraintInvalid(): void {
-    $this->expectException(OrcaInvalidArgumentException::class);
+    $this->expectException(InvalidArgumentException::class);
 
     $this->createFixtureOptions(['core' => 'invalid']);
   }
@@ -352,7 +352,7 @@ class FixtureOptionsTest extends TestCase {
    * @covers ::resolve
    */
   public function testProfileInvalid($name): void {
-    $this->expectException(OrcaInvalidArgumentException::class);
+    $this->expectException(InvalidArgumentException::class);
 
     $options = $this->createFixtureOptions(['profile' => $name]);
 
@@ -388,7 +388,7 @@ class FixtureOptionsTest extends TestCase {
    * @covers ::resolve
    */
   public function testProjectTemplateInvalid(): void {
-    $this->expectException(OrcaInvalidArgumentException::class);
+    $this->expectException(InvalidArgumentException::class);
 
     $this->createFixtureOptions(['project-template' => 'invalid']);
   }
@@ -451,7 +451,7 @@ class FixtureOptionsTest extends TestCase {
       ->exists($name)
       ->shouldBeCalled()
       ->willReturn(FALSE);
-    $this->expectException(OrcaInvalidArgumentException::class);
+    $this->expectException(InvalidArgumentException::class);
 
     $this->createFixtureOptions(['sut' => $name]);
   }

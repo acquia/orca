@@ -5,5 +5,5 @@ namespace Acquia\Orca\Exception;
 /**
  * An invalid argument exception.
  */
-class OrcaInvalidArgumentException extends OrcaException {
+class InvalidArgumentException extends OrcaException {
 }

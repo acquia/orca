@@ -8,8 +8,8 @@ use Acquia\Orca\Domain\Fixture\FixtureRemover;
 use Acquia\Orca\Domain\Fixture\SutPreconditionsTester;
 use Acquia\Orca\Enum\DrupalCoreVersionEnum;
 use Acquia\Orca\Enum\StatusCodeEnum;
+use Acquia\Orca\Exception\InvalidArgumentException;
 use Acquia\Orca\Exception\OrcaException;
-use Acquia\Orca\Exception\OrcaInvalidArgumentException;
 use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -146,7 +146,7 @@ class FixtureInitCommand extends Command {
           'symlink-all' => $input->getOption('symlink-all'),
         ]);
     }
-    catch (OrcaInvalidArgumentException $e) {
+    catch (InvalidArgumentException $e) {
       $output->writeln("Error: {$e->getMessage()}");
       return StatusCodeEnum::ERROR;
     }
