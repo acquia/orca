@@ -1,6 +1,6 @@
 <?php
 
-namespace Acquia\Orca\Domain\Composer;
+namespace Acquia\Orca\Domain\Composer\Version;
 
 use Acquia\Orca\Exception\FileNotFoundException as OrcaFileNotFoundException;
 use Acquia\Orca\Exception\OrcaException;

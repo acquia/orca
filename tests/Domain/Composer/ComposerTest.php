@@ -3,7 +3,7 @@
 namespace Acquia\Orca\Tests\Domain\Composer;
 
 use Acquia\Orca\Domain\Composer\Composer;
-use Acquia\Orca\Domain\Composer\VersionGuesser;
+use Acquia\Orca\Domain\Composer\Version\VersionGuesser;
 use Acquia\Orca\Domain\Drupal\DrupalCoreVersionFinder;
 use Acquia\Orca\Domain\Fixture\FixtureOptions;
 use Acquia\Orca\Domain\Package\Package;
@@ -16,7 +16,7 @@ use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 
 /**
- * @property \Acquia\Orca\Domain\Composer\VersionGuesser|\Prophecy\Prophecy\ObjectProphecy $versionGuesser
+ * @property \Acquia\Orca\Domain\Composer\Version\VersionGuesser|\Prophecy\Prophecy\ObjectProphecy $versionGuesser
  * @property \Acquia\Orca\Domain\Drupal\DrupalCoreVersionFinder|\Prophecy\Prophecy\ObjectProphecy $drupalCoreVersionFinder
  * @property \Acquia\Orca\Helper\Filesystem\FixturePathHandler|\Prophecy\Prophecy\ObjectProphecy $fixture
  * @property \Acquia\Orca\Helper\Filesystem\OrcaPathHandler|\Prophecy\Prophecy\ObjectProphecy $orca

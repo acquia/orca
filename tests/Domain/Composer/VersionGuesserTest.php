@@ -2,7 +2,7 @@
 
 namespace Acquia\Orca\Tests\Domain\Composer;
 
-use Acquia\Orca\Domain\Composer\VersionGuesser;
+use Acquia\Orca\Domain\Composer\Version\VersionGuesser;
 use Acquia\Orca\Exception\FileNotFoundException as OrcaFileNotFoundExceptionAlias;
 use Acquia\Orca\Exception\OrcaException;
 use Acquia\Orca\Exception\ParseError;
@@ -18,7 +18,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * @property \Acquia\Orca\Helper\Config\ConfigLoader|\Prophecy\Prophecy\ObjectProphecy $configLoader
  * @property \Composer\Package\Version\VersionGuesser|\Prophecy\Prophecy\ObjectProphecy $composerGuesser
- * @coversDefaultClass \Acquia\Orca\Domain\Composer\VersionGuesser
+ * @coversDefaultClass \Acquia\Orca\Domain\Composer\Version\VersionGuesser
  */
 class VersionGuesserTest extends TestCase {
 

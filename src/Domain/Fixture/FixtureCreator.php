@@ -4,7 +4,8 @@ namespace Acquia\Orca\Domain\Fixture;
 
 use Acquia\Orca\Console\Helper\StatusTable;
 use Acquia\Orca\Domain\Composer\Composer;
-use Acquia\Orca\Domain\Composer\VersionGuesser;
+use Acquia\Orca\Domain\Composer\Version\VersionFinder;
+use Acquia\Orca\Domain\Composer\Version\VersionGuesser;
 use Acquia\Orca\Domain\Git\Git;
 use Acquia\Orca\Domain\Package\Package;
 use Acquia\Orca\Domain\Package\PackageManager;
@@ -12,13 +13,7 @@ use Acquia\Orca\Exception\OrcaException;
 use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
 use Acquia\Orca\Helper\Process\ProcessRunner;
 use Composer\Config\JsonConfigSource;
-use Composer\DependencyResolver\Pool;
-use Composer\Factory;
-use Composer\IO\NullIO;
 use Composer\Json\JsonFile;
-use Composer\Package\PackageInterface;
-use Composer\Package\Version\VersionSelector;
-use Composer\Repository\RepositoryFactory;
 use Composer\Semver\Comparator;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
@@ -30,11 +25,11 @@ class FixtureCreator {
   public const DEFAULT_PROFILE = 'orca';
 
   /**
-   * The BLT package, if defined.
+   * The codebase creator.
    *
-   * @var \Acquia\Orca\Domain\Package\Package|null
+   * @var \Acquia\Orca\Domain\Fixture\CodebaseCreator
    */
-  private $blt;
+  private $codebaseCreator;
 
   /**
    * The Composer facade.
@@ -114,18 +109,18 @@ class FixtureCreator {
   private $subextensionManager;
 
   /**
-   * The version guesser.
+   * The version finder.
    *
-   * @var \Acquia\Orca\Domain\Composer\VersionGuesser
+   * @var \Acquia\Orca\Domain\Composer\Version\VersionFinder
    */
-  private $versionGuesser;
+  private $versionFinder;
 
   /**
-   * The codebase creator.
+   * The version guesser.
    *
-   * @var \Acquia\Orca\Domain\Fixture\CodebaseCreator
+   * @var \Acquia\Orca\Domain\Composer\Version\VersionGuesser
    */
-  private $codebaseCreator;
+  private $versionGuesser;
 
   /**
    * Constructs an instance.
@@ -148,11 +143,12 @@ class FixtureCreator {
    *   The package manager.
    * @param \Acquia\Orca\Domain\Fixture\SubextensionManager $subextension_manager
    *   The subextension manager.
-   * @param \Acquia\Orca\Domain\Composer\VersionGuesser $version_guesser
+   * @param \Acquia\Orca\Domain\Composer\Version\VersionFinder $version_finder
+   *   The version finder.
+   * @param \Acquia\Orca\Domain\Composer\Version\VersionGuesser $version_guesser
    *   The version guesser.
    */
-  public function __construct(CodebaseCreator $codebase_creator, Composer $composer, FixturePathHandler $fixture_path_handler, FixtureInspector $fixture_inspector, SiteInstaller $site_installer, SymfonyStyle $output, ProcessRunner $process_runner, PackageManager $package_manager, SubextensionManager $subextension_manager, VersionGuesser $version_guesser) {
-    $this->blt = $package_manager->getBlt();
+  public function __construct(CodebaseCreator $codebase_creator, Composer $composer, FixturePathHandler $fixture_path_handler, FixtureInspector $fixture_inspector, SiteInstaller $site_installer, SymfonyStyle $output, ProcessRunner $process_runner, PackageManager $package_manager, SubextensionManager $subextension_manager, VersionFinder $version_finder, VersionGuesser $version_guesser) {
     $this->codebaseCreator = $codebase_creator;
     $this->composer = $composer;
     $this->fixture = $fixture_path_handler;
@@ -162,6 +158,7 @@ class FixtureCreator {
     $this->packageManager = $package_manager;
     $this->siteInstaller = $site_installer;
     $this->subextensionManager = $subextension_manager;
+    $this->versionFinder = $version_finder;
     $this->versionGuesser = $version_guesser;
   }
 
@@ -590,7 +587,7 @@ class FixtureCreator {
       }
 
       // Otherwise use the latest installable version according to Composer.
-      $version = $this->findLatestVersion($package)->getPrettyVersion();
+      $version = $this->findLatestVersion($package);
       $package = "{$package->getPackageName()}:{$version}";
     }
 
@@ -635,38 +632,19 @@ class FixtureCreator {
    * @param \Acquia\Orca\Domain\Package\Package $package
    *   The package to get the latest version for.
    *
-   * @return \Composer\Package\PackageInterface
+   * @return string
    *   The package for the latest version.
    *
    * @throws \Acquia\Orca\Exception\OrcaException
    *   In case no version can be found.
    */
-  private function findLatestVersion(Package $package): PackageInterface {
-    $io = new NullIO();
-    $packagist = RepositoryFactory::defaultRepos($io)['packagist.org'];
-    $drupal_org = RepositoryFactory::createRepo($io, Factory::createConfig($io), [
-      'type' => 'composer',
-      'url' => 'https://packages.drupal.org/8',
-    ]);
-
-    $stability = ($this->options->isDev()) ? 'dev' : 'alpha';
-
-    $pool = new Pool($stability);
-    $pool->addRepository($packagist);
-    $pool->addRepository($drupal_org);
-
-    $target_version = $this->getTargetVersion($package);
-    if ($target_version === '*') {
-      $target_version = NULL;
+  private function findLatestVersion(Package $package): string {
+    $constraint = $this->getTargetVersion($package);
+    if ($constraint === '*') {
+      $constraint = NULL;
     }
-    $version = (new VersionSelector($pool))
-      ->findBestCandidate($package->getPackageName(), $target_version, NULL, $stability);
-
-    if (!$version) {
-      throw new OrcaException(sprintf('No available version could be found for %s:"%s"', $package->getPackageName(), $target_version));
-    }
-
-    return $version;
+    return $this->versionFinder
+      ->findLatestVersion($package->getPackageName(), $constraint, $this->options->isDev());
   }
 
   /**

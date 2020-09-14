@@ -46,6 +46,9 @@ services:
 
   Composer\Semver\VersionParser: ~
 
+  Composer\Package\Version\VersionSelector:
+    factory: ['Acquia\Orca\Domain\Composer\Version\VersionSelectorFactory', 'create']
+
   Composer\Util\ProcessExecutor: ~
 
   Env:

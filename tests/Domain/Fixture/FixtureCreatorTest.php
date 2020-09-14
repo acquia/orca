@@ -3,13 +3,13 @@
 namespace Acquia\Orca\Tests\Domain\Fixture;
 
 use Acquia\Orca\Domain\Composer\Composer;
-use Acquia\Orca\Domain\Composer\VersionGuesser;
+use Acquia\Orca\Domain\Composer\Version\VersionFinder;
+use Acquia\Orca\Domain\Composer\Version\VersionGuesser;
 use Acquia\Orca\Domain\Fixture\CodebaseCreator;
 use Acquia\Orca\Domain\Fixture\FixtureCreator;
 use Acquia\Orca\Domain\Fixture\FixtureInspector;
 use Acquia\Orca\Domain\Fixture\SiteInstaller;
 use Acquia\Orca\Domain\Fixture\SubextensionManager;
-use Acquia\Orca\Domain\Package\Package;
 use Acquia\Orca\Domain\Package\PackageManager;
 use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
 use Acquia\Orca\Helper\Filesystem\OrcaPathHandler;
@@ -19,15 +19,16 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
  * @property \Acquia\Orca\Domain\Composer\Composer|\Prophecy\Prophecy\ObjectProphecy $composer
- * @property \Acquia\Orca\Domain\Composer\VersionGuesser|\Prophecy\Prophecy\ObjectProphecy $versionGuesser
+ * @property \Acquia\Orca\Domain\Composer\Version\VersionFinder|\Prophecy\Prophecy\ObjectProphecy $versionFinder
+ * @property \Acquia\Orca\Domain\Composer\Version\VersionGuesser|\Prophecy\Prophecy\ObjectProphecy $versionGuesser
  * @property \Acquia\Orca\Domain\Fixture\CodebaseCreator|\Prophecy\Prophecy\ObjectProphecy $codebaseCreator
  * @property \Acquia\Orca\Domain\Fixture\FixtureInspector|\Prophecy\Prophecy\ObjectProphecy $fixtureInspector
  * @property \Acquia\Orca\Domain\Fixture\SiteInstaller|\Prophecy\Prophecy\ObjectProphecy $siteInstaller
  * @property \Acquia\Orca\Domain\Fixture\SubextensionManager|\Prophecy\Prophecy\ObjectProphecy $subextensionManager
+ * @property \Acquia\Orca\Domain\Package\PackageManager|\Prophecy\Prophecy\ObjectProphecy $packageManager
  * @property \Acquia\Orca\Helper\Filesystem\FixturePathHandler|\Prophecy\Prophecy\ObjectProphecy $fixture
  * @property \Acquia\Orca\Helper\Filesystem\OrcaPathHandler|\Prophecy\Prophecy\ObjectProphecy $orca
  * @property \Acquia\Orca\Helper\Process\ProcessRunner|\Prophecy\Prophecy\ObjectProphecy $processRunner
- * @property \Acquia\Orca\Domain\Package\PackageManager|\Prophecy\Prophecy\ObjectProphecy $packageManager
  * @property \Symfony\Component\Console\Style\SymfonyStyle|\Prophecy\Prophecy\ObjectProphecy $output
  */
 class FixtureCreatorTest extends TestCase {
@@ -39,12 +40,10 @@ class FixtureCreatorTest extends TestCase {
     $this->fixtureInspector = $this->prophesize(FixtureInspector::class);
     $this->orca = $this->prophesize(OrcaPathHandler::class);
     $this->packageManager = $this->prophesize(PackageManager::class);
-    $this->packageManager
-      ->getBlt()
-      ->willReturn(new Package([], $this->fixture->reveal(), $this->orca->reveal(), 'acquia/blt'));
     $this->processRunner = $this->prophesize(ProcessRunner::class);
     $this->siteInstaller = $this->prophesize(SiteInstaller::class);
     $this->subextensionManager = $this->prophesize(SubextensionManager::class);
+    $this->versionFinder = $this->prophesize(VersionFinder::class);
     $this->versionGuesser = $this->prophesize(VersionGuesser::class);
     $this->output = $this->prophesize(SymfonyStyle::class);
   }
@@ -57,10 +56,11 @@ class FixtureCreatorTest extends TestCase {
     $package_manager = $this->packageManager->reveal();
     $process_runner = $this->processRunner->reveal();
     $site_installer = $this->siteInstaller->reveal();
-    $subextension_manager = $this->subextensionManager->reveal();
-    $version_guesser = $this->versionGuesser->reveal();
     $output = $this->output->reveal();
-    return new FixtureCreator($codebase_creator, $composer_facade, $fixture, $fixture_inspector, $site_installer, $output, $process_runner, $package_manager, $subextension_manager, $version_guesser);
+    $subextension_manager = $this->subextensionManager->reveal();
+    $version_finder = $this->versionFinder->reveal();
+    $version_guesser = $this->versionGuesser->reveal();
+    return new FixtureCreator($codebase_creator, $composer_facade, $fixture, $fixture_inspector, $site_installer, $output, $process_runner, $package_manager, $subextension_manager, $version_finder, $version_guesser);
   }
 
   public function testInstantiation(): void {

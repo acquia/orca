@@ -2,6 +2,7 @@
 
 namespace Acquia\Orca\Domain\Composer;
 
+use Acquia\Orca\Domain\Composer\Version\VersionGuesser;
 use Acquia\Orca\Domain\Fixture\FixtureOptions;
 use Acquia\Orca\Domain\Package\Package;
 use Acquia\Orca\Domain\Package\PackageManager;
@@ -48,7 +49,7 @@ class Composer {
   /**
    * The version guesser.
    *
-   * @var \Acquia\Orca\Domain\Composer\VersionGuesser
+   * @var \Acquia\Orca\Domain\Composer\Version\VersionGuesser
    */
   private $versionGuesser;
 
@@ -61,7 +62,7 @@ class Composer {
    *   The package manager.
    * @param \Acquia\Orca\Helper\Process\ProcessRunner $process_runner
    *   The process runner.
-   * @param \Acquia\Orca\Domain\Composer\VersionGuesser $version_guesser
+   * @param \Acquia\Orca\Domain\Composer\Version\VersionGuesser $version_guesser
    *   The version guesser.
    */
   public function __construct(FixturePathHandler $fixture_path_handler, PackageManager $package_manager, ProcessRunner $process_runner, VersionGuesser $version_guesser) {
