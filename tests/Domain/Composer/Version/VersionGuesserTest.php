@@ -1,6 +1,6 @@
 <?php
 
-namespace Acquia\Orca\Tests\Domain\Composer;
+namespace Acquia\Orca\Tests\Domain\Composer\Version;
 
 use Acquia\Orca\Domain\Composer\Version\VersionGuesser;
 use Acquia\Orca\Exception\FileNotFoundException as OrcaFileNotFoundExceptionAlias;

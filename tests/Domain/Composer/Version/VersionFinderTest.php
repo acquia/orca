@@ -1,6 +1,6 @@
 <?php
 
-namespace Acquia\Orca\Tests\Domain\Composer;
+namespace Acquia\Orca\Tests\Domain\Composer\Version;
 
 use Acquia\Orca\Domain\Composer\Version\VersionFinder;
 use Acquia\Orca\Exception\VersionNotFoundException;
