@@ -5,12 +5,15 @@ namespace Acquia\Orca\Tests\Console\Command\Ci;
 use Acquia\Orca\Console\Command\Ci\CiRunCommand;
 use Acquia\Orca\Enum\StatusCodeEnum;
 use Acquia\Orca\Tests\Console\Command\CommandTestBase;
+use Acquia\Orca\Tests\Enum\CiEnumsTestTrait;
 use Symfony\Component\Console\Command\Command;
 
 /**
  * @coversDefaultClass \Acquia\Orca\Console\Command\Ci\CiRunCommand
  */
 class CiRunCommandTest extends CommandTestBase {
+
+  use CiEnumsTestTrait;
 
   protected function createCommand(): Command {
     return new CiRunCommand();
@@ -19,6 +22,9 @@ class CiRunCommandTest extends CommandTestBase {
   /**
    * @covers ::__construct
    * @covers ::configure
+   * @covers ::formatArgumentDescription
+   * @covers ::getJobArgumentDescription
+   * @covers ::getPhaseArgumentDescription
    */
   public function testBasicConfiguration(): void {
     $command = $this->createCommand();
@@ -39,10 +45,23 @@ class CiRunCommandTest extends CommandTestBase {
   }
 
   public function testExecution(): void {
-    $this->executeCommand(['job' => '', 'phase' => '']);
+    $this->executeCommand([
+      'job' => $this->validJob(),
+      'phase' => $this->validPhase(),
+    ]);
 
     self::assertEquals('', $this->getDisplay(), 'Displayed correct output.');
     self::assertEquals(StatusCodeEnum::OK, $this->getStatusCode(), 'Returned correct status code.');
+  }
+
+  public function testInvalidOptions(): void {
+    $this->executeCommand([
+      'job' => 'invalid',
+      'phase' => 'invalid',
+    ]);
+
+    self::assertStringStartsWith('Error: ', $this->getDisplay(), 'Displayed correct output.');
+    self::assertEquals(StatusCodeEnum::ERROR, $this->getStatusCode(), 'Returned correct status code.');
   }
 
 }

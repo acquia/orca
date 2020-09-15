@@ -2,10 +2,9 @@
 
 namespace Acquia\Orca\Tests\Options;
 
-use Acquia\Orca\Options\CiRunOptions;
-use Acquia\Orca\Enum\CiJobEnum;
-use Acquia\Orca\Enum\CiJobPhaseEnum;
 use Acquia\Orca\Exception\OrcaInvalidArgumentException;
+use Acquia\Orca\Options\CiRunOptions;
+use Acquia\Orca\Tests\Enum\CiEnumsTestTrait;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\OptionsResolver\Exception\MissingOptionsException;
 
@@ -13,6 +12,8 @@ use Symfony\Component\OptionsResolver\Exception\MissingOptionsException;
  * @coversDefaultClass \Acquia\Orca\Options\CiRunOptions
  */
 class CiRunOptionsTest extends TestCase {
+
+  use CiEnumsTestTrait;
 
   /**
    * @dataProvider providerJobs
@@ -98,32 +99,6 @@ class CiRunOptionsTest extends TestCase {
       [['job' => $this->validJob(), 'phase' => 'invalid']],
       [['job' => 'invalid', 'phase' => $this->validPhase()]],
     ];
-  }
-
-  public function providerJobs(): array {
-    $jobs = CiJobEnum::keys();
-    array_walk($jobs, static function (&$value) {
-      $value = [$value];
-    });
-    return $jobs;
-  }
-
-  public function providerPhases(): array {
-    $phases = CiJobPhaseEnum::keys();
-    array_walk($phases, static function (&$value) {
-      $value = [strtolower($value)];
-    });
-    return $phases;
-  }
-
-  private function validJob(): string {
-    $jobs = CiJobEnum::keys();
-    return reset($jobs);
-  }
-
-  private function validPhase(): string {
-    $phases = CiJobPhaseEnum::keys();
-    return strtolower(reset($phases));
   }
 
 }
