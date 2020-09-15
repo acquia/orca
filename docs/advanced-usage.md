@@ -8,9 +8,9 @@ Various aspects of ORCA's behavior can be altered at runtime through the use of 
 
 These affect ORCA in all contexts.
 
-* <a name="ORCA_AMPLITUDE_API_KEY"></a>**`ORCA_AMPLITUDE_API_KEY`**: Sets the Amplitude API key for telemetry events (see also [`ORCA_TELEMETRY_ENABLE`](#ORCA_TELEMETRY_ENABLE)). For security on Travis CI, [define the variable in your repository settings](https://docs.travis-ci.com/user/environment-variables/#defining-variables-in-repository-settings).
+* <a name="ORCA_DOMO_API_KEY"></a>**`ORCA_DOMO_API_KEY`**: Sets the Amplitude API key for telemetry events (see also [`ORCA_TELEMETRY_ENABLE`](#ORCA_TELEMETRY_ENABLE)). For security on Travis CI, [define the variable in your repository settings](https://docs.travis-ci.com/user/environment-variables/#defining-variables-in-repository-settings).
 
-* <a name="ORCA_AMPLITUDE_USER_ID"></a>**`ORCA_AMPLITUDE_USER_ID`**: Set the Amplitude user ID for telemetry events (see also [`ORCA_TELEMETRY_ENABLE`](#ORCA_TELEMETRY_ENABLE)). Defaults to `$ORCA_SUT_NAME:$ORCA_SUT_BRANCH`, e.g., `drupal/example:8.x-1.x`, on Travis CI.
+* <a name="ORCA_DOMO_USER_ID"></a>**`ORCA_DOMO_USER_ID`**: Set the Amplitude user ID for telemetry events (see also [`ORCA_TELEMETRY_ENABLE`](#ORCA_TELEMETRY_ENABLE)). Defaults to `$ORCA_SUT_NAME:$ORCA_SUT_BRANCH`, e.g., `drupal/example:8.x-1.x`, on Travis CI.
 
 * <a name="ORCA_COVERAGE_CLOVER"></a>**`ORCA_COVERAGE_CLOVER`**: Change the path where ORCA saves the PHPUnit test coverage Clover XML file.
 
@@ -22,7 +22,7 @@ These affect ORCA in all contexts.
 
 * <a name="ORCA_PHPCS_STANDARD"></a>**`ORCA_PHPCS_STANDARD`**: Change the PHP Code Sniffer standard used by the `qa:static-analysis` and `qa:fixer` commands. Acceptable values are `AcquiaPHP`, `AcquiaDrupalStrict`, and `AcquiaDrupalTransitional`. See [Acquia Coding Standards for PHP](https://packagist.org/packages/acquia/coding-standards) for details.
 
-* <a name="ORCA_TELEMETRY_ENABLE"></a>**`ORCA_TELEMETRY_ENABLE`**: Set to `TRUE` to enable telemetry with Amplitude. Requires [`ORCA_AMPLITUDE_API_KEY`](#ORCA_AMPLITUDE_API_KEY) and [`ORCA_AMPLITUDE_USER_ID`](#ORCA_AMPLITUDE_USER_ID) values. On Travis CI, only takes effect for cron events.
+* <a name="ORCA_TELEMETRY_ENABLE"></a>**`ORCA_TELEMETRY_ENABLE`**: Set to `TRUE` to enable telemetry with Amplitude. Requires [`ORCA_DOMO_API_KEY`](#ORCA_DOMO_API_KEY) and [`ORCA_DOMO_USER_ID`](#ORCA_DOMO_USER_ID) values. On Travis CI, only takes effect for cron events.
 
 ### Travis CI scripts
 

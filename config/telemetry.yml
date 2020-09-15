@@ -1,0 +1,288 @@
+name: 'ORCA CI Run'
+description: 'Travis CI job run'
+dataset_id: a68f056b-6a18-4edd-acf3-30bb6a07c057
+schema:
+  columns:
+    -
+      name: ORCA_JOB
+      description: 'The ORCA job ID'
+      type: DECIMAL
+    -
+      name: phpcs.totals.errors
+      description: 'Total Errors'
+      type: DECIMAL
+    -
+      name: phpcs.totals.fixable
+      description: 'Total Fixable Issues'
+      type: DECIMAL
+    -
+      name: phpcs.totals.warnings
+      description: 'Total Warnings'
+      type: DECIMAL
+    -
+      name: phploc.abstractClasses
+      description: 'Abstract Classes'
+      type: DECIMAL
+    -
+      name: phploc.anonymousFunctions
+      description: 'Anonymous Functions'
+      type: DECIMAL
+    -
+      name: phploc.attributeAccesses
+      description: 'Attribute Accesses'
+      type: DECIMAL
+    -
+      name: phploc.ccn
+      description: 'Cyclomatic Complexity'
+      type: DECIMAL
+    -
+      name: phploc.ccnByLloc
+      description: 'Cyclomatic Complexity / Lines of Code'
+      type: DECIMAL
+    -
+      name: phploc.ccnMethods
+      description: 'Method Cyclomatic Complexity'
+      type: DECIMAL
+    -
+      name: phploc.classCcnAvg
+      description: 'Cyclomatic Complexity / Number of Classes'
+      type: DECIMAL
+    -
+      name: phploc.classCcnMax
+      description: 'Maximum Class Cyclomatic Complexity'
+      type: DECIMAL
+    -
+      name: phploc.classCcnMin
+      description: 'Minimum Class Cyclomatic Complexity'
+      type: DECIMAL
+    -
+      name: phploc.classConstants
+      description: 'Class Constants'
+      type: DECIMAL
+    -
+      name: phploc.classes
+      description: Classes
+      type: DECIMAL
+    -
+      name: phploc.classLlocAvg
+      description: 'Average Class Length'
+      type: DECIMAL
+    -
+      name: phploc.classLlocMax
+      description: 'Maximum Class Length'
+      type: DECIMAL
+    -
+      name: phploc.classLlocMin
+      description: 'Minimum Class Length'
+      type: DECIMAL
+    -
+      name: phploc.cloc
+      description: 'Comment Lines of Code (CLOC)'
+      type: DECIMAL
+    -
+      name: phploc.concreteClasses
+      description: 'Concrete Classes'
+      type: DECIMAL
+    -
+      name: phploc.constants
+      description: Constants
+      type: DECIMAL
+    -
+      name: phploc.directories
+      description: Directories
+      type: DECIMAL
+    -
+      name: phploc.files
+      description: Files
+      type: DECIMAL
+    -
+      name: phploc.functions
+      description: Functions
+      type: DECIMAL
+    -
+      name: phploc.globalAccesses
+      description: 'Global Accesses'
+      type: DECIMAL
+    -
+      name: phploc.globalConstantAccesses
+      description: 'Global Constant Accesses'
+      type: DECIMAL
+    -
+      name: phploc.globalConstants
+      description: 'Global Constants'
+      type: DECIMAL
+    -
+      name: phploc.globalVariableAccesses
+      description: 'Global Variable Accesses'
+      type: DECIMAL
+    -
+      name: phploc.instanceAttributeAccesses
+      description: 'Non-Static Attribute Accesses'
+      type: DECIMAL
+    -
+      name: phploc.instanceMethodCalls
+      description: 'Non-Static Method Calls'
+      type: DECIMAL
+    -
+      name: phploc.interfaces
+      description: Interfaces
+      type: DECIMAL
+    -
+      name: phploc.lloc
+      description: 'Logical Lines of Code (LLOC)'
+      type: DECIMAL
+    -
+      name: phploc.llocByNof
+      description: 'Average Function Length (LLOC)'
+      type: DECIMAL
+    -
+      name: phploc.llocClasses
+      description: 'Classes Length (LLOC)'
+      type: DECIMAL
+    -
+      name: phploc.llocFunctions
+      description: 'Functions Length (LLOC)'
+      type: DECIMAL
+    -
+      name: phploc.llocGlobal
+      description: 'LLOC outside functions or classes'
+      type: DECIMAL
+    -
+      name: phploc.loc
+      description: 'Lines of Code (LOC)'
+      type: DECIMAL
+    -
+      name: phploc.methodCalls
+      description: 'Method Calls'
+      type: DECIMAL
+    -
+      name: phploc.methodCcnAvg
+      description: 'Cyclomatic Complexity / Number of Methods'
+      type: DECIMAL
+    -
+      name: phploc.methodCcnMax
+      description: 'Maximum Method Cyclomatic Complexity'
+      type: DECIMAL
+    -
+      name: phploc.methodCcnMin
+      description: 'Minimum Method Cyclomatic Complexity'
+      type: DECIMAL
+    -
+      name: phploc.methodLlocAvg
+      description: 'Average Method Length'
+      type: DECIMAL
+    -
+      name: phploc.methodLlocMax
+      description: 'Maximum Method Length'
+      type: DECIMAL
+    -
+      name: phploc.methodLlocMin
+      description: 'Minimum Method Length'
+      type: DECIMAL
+    -
+      name: phploc.methods
+      description: Methods
+      type: DECIMAL
+    -
+      name: phploc.namedFunctions
+      description: 'Named Functions'
+      type: DECIMAL
+    -
+      name: phploc.namespaces
+      description: Namespaces
+      type: DECIMAL
+    -
+      name: phploc.ncloc
+      description: 'Non-Comment Lines of Code (NCLOC)'
+      type: DECIMAL
+    -
+      name: phploc.nonPublicMethods
+      description: 'Non-Public Methods'
+      type: DECIMAL
+    -
+      name: phploc.nonStaticMethods
+      description: 'Non-Static Methods'
+      type: DECIMAL
+    -
+      name: phploc.publicMethods
+      description: 'Public Methods'
+      type: DECIMAL
+    -
+      name: phploc.staticAttributeAccesses
+      description: 'Static Attribute Accesses'
+      type: DECIMAL
+    -
+      name: phploc.staticMethodCalls
+      description: 'Static Method Calls'
+      type: DECIMAL
+    -
+      name: phploc.staticMethods
+      description: 'Static Methods'
+      type: DECIMAL
+    -
+      name: phploc.superGlobalVariableAccesses
+      description: 'Super-Global Variable Accesses'
+      type: DECIMAL
+    -
+      name: phploc.testClasses
+      description: 'Test Classes'
+      type: DECIMAL
+    -
+      name: phploc.testMethods
+      description: 'Test Methods'
+      type: DECIMAL
+    -
+      name: phploc.traits
+      description: Traits
+      type: DECIMAL
+    -
+      name: phpstan.totals.errors
+      description: 'Non-file-specific errors'
+      type: DECIMAL
+    -
+      name: phpstan.totals.file_errors
+      description: 'File-specific errors'
+      type: DECIMAL
+    -
+      name: TRAVIS_ALLOW_FAILURE
+      description: 'Set to true if the job is allowed to fail or false if the job is not allowed to fail'
+      type: DECIMAL
+    -
+      name: TRAVIS_COMMIT
+      description: 'The commit that the build is testing'
+      type: STRING
+    -
+      name: TRAVIS_COMMIT_MESSAGE
+      description: 'The commit subject and body, unwrapped'
+      type: STRING
+    -
+      name: TRAVIS_JOB_ID
+      description: 'The id of the current job that Travis CI uses internally'
+      type: STRING
+    -
+      name: TRAVIS_JOB_NAME
+      description: 'The job name if it was specified, or ""'
+      type: STRING
+    -
+      name: TRAVIS_JOB_DECIMAL
+      description: 'The number of the current job (for example, “4.1”)'
+      type: DECIMAL
+    -
+      name: TRAVIS_JOB_WEB_URL
+      description: 'URL to the job log'
+      type: STRING
+    -
+      name: TRAVIS_PHP_VERSION
+      description: 'The PHP version used to run the build'
+      type: STRING
+    -
+      name: TRAVIS_REPO_SLUG
+      description: 'The slug (in form: owner_name/repo_name) of the repository being built'
+      type: STRING
+    -
+      name: TRAVIS_TEST_RESULT
+      description: '0 if all commands in the script section (up to the point this environment variable is referenced) have exited with zero; 1 otherwise'
+      type: DECIMAL
+createdAt: '2020-09-03T18:22:53Z'
+updatedAt: '2020-09-11T06:57:00Z'
+pdpEnabled: false

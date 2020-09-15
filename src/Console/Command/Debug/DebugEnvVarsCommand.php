@@ -15,8 +15,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 class DebugEnvVarsCommand extends Command {
 
   private const VARS = [
-    'ORCA_AMPLITUDE_API_KEY',
-    'ORCA_AMPLITUDE_USER_ID',
+    'ORCA_DOMO_API_KEY',
+    'ORCA_DOMO_USER_ID',
     'ORCA_COVERAGE_CLOVER',
     'ORCA_COVERAGE_ENABLE',
     'ORCA_COVERALLS_ENABLE',
