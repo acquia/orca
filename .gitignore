@@ -1,3 +1,5 @@
+/.idea/dictionaries
+/.idea/workspace.xml
 /var/*
 /vendor
 !/**/.gitkeep
