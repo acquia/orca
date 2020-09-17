@@ -1,6 +1,6 @@
 <?php
 
-namespace Acquia\Orca\Tests\Domain\Fixture;
+namespace Acquia\Orca\Tests\Options;
 
 use Acquia\Orca\Domain\Drupal\DrupalCoreVersionFinder;
 use Acquia\Orca\Domain\Package\Package;
