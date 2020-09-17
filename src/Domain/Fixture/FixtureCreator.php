@@ -165,19 +165,19 @@ class FixtureCreator {
   /**
    * Creates the fixture.
    *
-   * @param \Acquia\Orca\Domain\Fixture\FixtureOptions $fixture_options
+   * @param \Acquia\Orca\Domain\Fixture\FixtureOptions $options
    *   The fixture options.
    *
    * @throws \Acquia\Orca\Exception\OrcaException
    * @throws \Exception
    */
-  public function create(FixtureOptions $fixture_options): void {
-    $this->options = $fixture_options;
+  public function create(FixtureOptions $options): void {
+    $this->options = $options;
     $this->createComposerProject();
     $this->configureComposerProject();
     $this->fixDefaultDependencies();
     $this->addCompanyPackages();
-    $this->addComposerExtraData();
+    $this->composer->updateLockFile();
     $this->installCloudHooks();
     $this->ensureDrupalSettings();
     $this->installSite();
@@ -403,20 +403,6 @@ class FixtureCreator {
       $packages[$package_name] = $package;
     }
     return $packages;
-  }
-
-  /**
-   * Adds data about the fixture to the "extra" property.
-   */
-  private function addComposerExtraData(): void {
-    $this->jsonConfigSource->addProperty('extra.orca', [
-      'sut' => ($this->options->hasSut()) ? $this->options->getSut()->getPackageName() : NULL,
-      'is-sut-only' => $this->options->isSutOnly(),
-      'is-bare' => $this->options->isBare(),
-      'is-dev' => $this->options->isDev(),
-      'project-template' => $this->options->getProjectTemplate(),
-    ]);
-    $this->composer->updateLockFile();
   }
 
   /**

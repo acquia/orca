@@ -6,9 +6,12 @@ use Acquia\Orca\Domain\Composer\Composer;
 use Acquia\Orca\Domain\Drupal\DrupalCoreVersionFinder;
 use Acquia\Orca\Domain\Fixture\CodebaseCreator;
 use Acquia\Orca\Domain\Fixture\FixtureOptions;
+use Acquia\Orca\Domain\Fixture\Helper\ComposerJsonHelper;
 use Acquia\Orca\Domain\Git\Git;
 use Acquia\Orca\Domain\Package\Package;
 use Acquia\Orca\Domain\Package\PackageManager;
+use Acquia\Orca\Exception\FileNotFoundException;
+use Acquia\Orca\Exception\ParseError;
 use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
 use Acquia\Orca\Helper\Filesystem\OrcaPathHandler;
 use PHPUnit\Framework\TestCase;
@@ -17,17 +20,26 @@ use Prophecy\Argument;
 /**
  * @property \Acquia\Orca\Domain\Composer\Composer|\Prophecy\Prophecy\ObjectProphecy $composer
  * @property \Acquia\Orca\Domain\Drupal\DrupalCoreVersionFinder|\Prophecy\Prophecy\ObjectProphecy $drupalCoreVersionFinder
+ * @property \Acquia\Orca\Domain\Fixture\Helper\ComposerJsonHelper|\Prophecy\Prophecy\ObjectProphecy $composerJsonHelper
  * @property \Acquia\Orca\Domain\Git\Git|\Prophecy\Prophecy\ObjectProphecy $git
+ * @property \Acquia\Orca\Domain\Package\PackageManager|\Prophecy\Prophecy\ObjectProphecy $packageManager
  * @property \Acquia\Orca\Helper\Filesystem\FixturePathHandler|\Prophecy\Prophecy\ObjectProphecy $fixture
  * @property \Acquia\Orca\Helper\Filesystem\OrcaPathHandler|\Prophecy\Prophecy\ObjectProphecy $orca
- * @property \Acquia\Orca\Domain\Package\PackageManager|\Prophecy\Prophecy\ObjectProphecy $packageManager
  * @coversDefaultClass \Acquia\Orca\Domain\Fixture\CodebaseCreator
  */
 class CodebaseCreatorTest extends TestCase {
 
+  private const COMPOSER_JSON = 'composer.json';
+
+  private const COMPOSER_JSON_PATH = 'var/www/orca-build/composer.json';
+
   protected function setUp(): void {
     $this->composer = $this->prophesize(Composer::class);
+    $this->composerJsonHelper = $this->prophesize(ComposerJsonHelper::class);
     $this->fixture = $this->prophesize(FixturePathHandler::class);
+    $this->fixture
+      ->getPath(self::COMPOSER_JSON)
+      ->willReturn(self::COMPOSER_JSON_PATH);
     $this->drupalCoreVersionFinder = $this->prophesize(DrupalCoreVersionFinder::class);
     $this->git = $this->prophesize(Git::class);
     $this->orca = $this->prophesize(OrcaPathHandler::class);
@@ -39,8 +51,10 @@ class CodebaseCreatorTest extends TestCase {
 
   private function createCodebaseCreator(): CodebaseCreator {
     $composer = $this->composer->reveal();
+    $composer_json_helper = $this->composerJsonHelper->reveal();
+    $fixture = $this->fixture->reveal();
     $git = $this->git->reveal();
-    return new CodebaseCreator($composer, $git);
+    return new CodebaseCreator($composer, $composer_json_helper, $fixture, $git);
   }
 
   private function createFixtureOptions($options): FixtureOptions {
@@ -105,6 +119,16 @@ class CodebaseCreatorTest extends TestCase {
     $creator->create($fixture_options);
   }
 
+  public function testCreateWithoutSut(): void {
+    $fixture_options = $this->createFixtureOptions([]);
+    $this->composer
+      ->createProject($fixture_options)
+      ->shouldBeCalledOnce();
+
+    $creator = $this->createCodebaseCreator();
+    $creator->create($fixture_options);
+  }
+
   public function testCreateWithNonProjectTemplateSut(): void {
     $package_name = 'test/example';
     $fixture_options = $this->createFixtureOptions([
@@ -123,6 +147,28 @@ class CodebaseCreatorTest extends TestCase {
 
     $creator = $this->createCodebaseCreator();
     $creator->create($fixture_options);
+  }
+
+  /**
+   * @dataProvider providerLoadComposerJsonWithException
+   */
+  public function testLoadComposerJsonWithException($caught, $thrown): void {
+    $fixture_options = $this->createFixtureOptions([]);
+    $this->composerJsonHelper
+      ->writeFixtureOptions($fixture_options)
+      ->shouldBeCalledOnce()
+      ->willThrow($caught);
+    $this->expectExceptionObject($thrown);
+
+    $creator = $this->createCodebaseCreator();
+    $creator->create($fixture_options);
+  }
+
+  public function providerLoadComposerJsonWithException(): array {
+    return [
+      [new FileNotFoundException(''), new FileNotFoundException('No such file: ' . self::COMPOSER_JSON_PATH)],
+      [new ParseError(''), new ParseError('Cannot parse ' . self::COMPOSER_JSON_PATH)],
+    ];
   }
 
 }

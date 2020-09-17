@@ -39,6 +39,7 @@ class FixtureOptionsTest extends TestCase {
    * @covers ::getCore
    * @covers ::getProfile
    * @covers ::getProjectTemplate
+   * @covers ::getRawOptions
    * @covers ::getSut
    * @covers ::hasSut
    * @covers ::ignorePatchFailure
@@ -61,6 +62,7 @@ class FixtureOptionsTest extends TestCase {
 
     $options = $this->createFixtureOptions([]);
 
+    self::assertSame([], $options->getRawOptions(), 'Set/got raw options.');
     self::assertFalse($options->force(), 'Set/got default "force" option.');
     self::assertFalse($options->hasSut(), 'Detected absence of "sut" option.');
     self::assertFalse($options->ignorePatchFailure(), 'Set/got default "ignore-patch-failure" option.');
@@ -84,6 +86,7 @@ class FixtureOptionsTest extends TestCase {
    * @covers ::getProfile
    * @covers ::getProjectTemplate
    * @covers ::getSut
+   * @covers ::getRawOptions
    * @covers ::hasSut
    * @covers ::ignorePatchFailure
    * @covers ::installSite
@@ -110,7 +113,7 @@ class FixtureOptionsTest extends TestCase {
       ->willReturn($sut_object);
     $core = '10.0.0';
 
-    $options1 = $this->createFixtureOptions([
+    $raw_options1 = [
       'core' => $core,
       'dev' => TRUE,
       'force' => TRUE,
@@ -123,11 +126,13 @@ class FixtureOptionsTest extends TestCase {
       'sut' => $sut_name,
       'sut-only' => TRUE,
       'symlink-all' => TRUE,
-    ]);
+    ];
+    $options1 = $this->createFixtureOptions($raw_options1);
     $options2 = $this->createFixtureOptions([
       'bare' => TRUE,
     ]);
 
+    self::assertSame($raw_options1, $options1->getRawOptions(), 'Set/got raw options.');
     self::assertEquals($profile, $options1->getProfile(), 'Set/got "profile" option.');
     self::assertEquals($project_template, $options1->getProjectTemplate(), 'Set/got "project-template" option.');
     self::assertEquals($sut_object, $options1->getSut(), 'Set/got "sut" option.');

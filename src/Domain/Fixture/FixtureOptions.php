@@ -50,21 +50,29 @@ class FixtureOptions {
   private $packageManager;
 
   /**
+   * The raw options.
+   *
+   * @var array
+   */
+  private $rawOptions;
+
+  /**
    * Constructs an instance.
    *
    * @param \Acquia\Orca\Domain\Drupal\DrupalCoreVersionFinder $drupal_core_version_finder
    *   The Drupal core version finder.
    * @param \Acquia\Orca\Domain\Package\PackageManager $package_manager
    *   The package manager.
-   * @param array $options
+   * @param array $raw_options
    *   The options.
    *
    * @throws \Acquia\Orca\Exception\InvalidArgumentException
    */
-  public function __construct(DrupalCoreVersionFinder $drupal_core_version_finder, PackageManager $package_manager, array $options) {
+  public function __construct(DrupalCoreVersionFinder $drupal_core_version_finder, PackageManager $package_manager, array $raw_options) {
     $this->drupalCoreVersionFinder = $drupal_core_version_finder;
     $this->packageManager = $package_manager;
-    $this->resolve($options);
+    $this->rawOptions = $raw_options;
+    $this->resolve($raw_options);
     $this->validate();
   }
 
@@ -323,6 +331,16 @@ class FixtureOptions {
     }
     $this->coreResolved = $version;
     return $version;
+  }
+
+  /**
+   * Gets the raw options data.
+   *
+   * @return array
+   *   The options.
+   */
+  public function getRawOptions(): array {
+    return $this->rawOptions;
   }
 
   /**

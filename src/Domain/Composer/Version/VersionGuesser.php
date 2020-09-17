@@ -32,6 +32,11 @@ class VersionGuesser {
 
   /**
    * Constructs an instance.
+   *
+   * @param \Acquia\Orca\Helper\Config\ConfigLoader $config_loader
+   *   The config loader.
+   * @param \Composer\Package\Version\VersionGuesser $composer_version_guesser
+   *   The Composer version guesser.
    */
   public function __construct(ConfigLoader $config_loader, ComposerVersionGuesserAlias $composer_version_guesser) {
     $this->composerGuesser = $composer_version_guesser;

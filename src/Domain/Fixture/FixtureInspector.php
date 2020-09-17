@@ -3,6 +3,7 @@
 namespace Acquia\Orca\Domain\Fixture;
 
 use Acquia\Orca\Domain\Drush\Drush;
+use Acquia\Orca\Domain\Fixture\Helper\ComposerJsonHelper;
 use Acquia\Orca\Domain\Package\PackageManager;
 use Acquia\Orca\Domain\Server\WebServer;
 use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
@@ -17,11 +18,11 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 class FixtureInspector {
 
   /**
-   * The fixture's composer.json config.
+   * The fixture composer.json helper.
    *
-   * @var \Noodlehaus\Config|null
+   * @var \Acquia\Orca\Domain\Fixture\Helper\ComposerJsonHelper
    */
-  private $composerJson;
+  private $composerJsonHelper;
 
   /**
    * The fixture's composer.lock config.
@@ -52,6 +53,13 @@ class FixtureInspector {
   private $fixture;
 
   /**
+   * The fixture options.
+   *
+   * @var \Acquia\Orca\Domain\Fixture\FixtureOptions
+   */
+  private $options;
+
+  /**
    * The output decorator.
    *
    * @var \Symfony\Component\Console\Style\SymfonyStyle
@@ -75,6 +83,8 @@ class FixtureInspector {
   /**
    * Constructs an instance.
    *
+   * @param \Acquia\Orca\Domain\Fixture\Helper\ComposerJsonHelper $composer_json_helper
+   *   The fixture composer.json helper.
    * @param \Acquia\Orca\Domain\Drush\Drush $drush
    *   The Drush facade.
    * @param \Acquia\Orca\Helper\Filesystem\FixturePathHandler $fixture_path_handler
@@ -85,8 +95,14 @@ class FixtureInspector {
    *   The package manager.
    * @param \Acquia\Orca\Domain\Fixture\SubextensionManager $subextension_manager
    *   The subextension manager.
+   *
+   * @throws \Acquia\Orca\Exception\FileNotFoundException
+   * @throws \Acquia\Orca\Exception\FixtureNotExistsException
+   * @throws \Acquia\Orca\Exception\InvalidArgumentException
+   * @throws \Acquia\Orca\Exception\ParseError
    */
-  public function __construct(Drush $drush, FixturePathHandler $fixture_path_handler, SymfonyStyle $output, PackageManager $package_manager, SubextensionManager $subextension_manager) {
+  public function __construct(ComposerJsonHelper $composer_json_helper, Drush $drush, FixturePathHandler $fixture_path_handler, SymfonyStyle $output, PackageManager $package_manager, SubextensionManager $subextension_manager) {
+    $this->composerJsonHelper = $composer_json_helper;
     $this->drush = $drush;
     $this->fixture = $fixture_path_handler;
     $this->output = $output;
@@ -101,6 +117,8 @@ class FixtureInspector {
    *   An indexed array of data columns ([Label, Value]).
    */
   public function getOverview(): array {
+    $this->options = $this->composerJsonHelper->getFixtureOptions();
+
     $overview = [];
 
     $overview[] = ['Fixture directory', $this->fixture->getPath()];
@@ -160,27 +178,13 @@ class FixtureInspector {
    *   The SUT name if available (e.g., "drupal/example") or "Unknown" if not.
    */
   private function getSutName(): string {
-    $key = 'extra.orca.sut';
-
-    if (!$this->getComposerJson()->has($key)) {
-      return 'Unknown';
+    if (!$this->options->hasSut()) {
+      return 'None';
     }
 
-    return (string) $this->getComposerJson()->get($key);
-  }
-
-  /**
-   * Gets the composer.json config.
-   *
-   * @return \Noodlehaus\Config
-   *   The composer.json config.
-   */
-  private function getComposerJson(): Config {
-    if (!$this->composerJson) {
-      $this->composerJson = new Config($this->fixture->getPath('composer.json'));
-    }
-
-    return $this->composerJson;
+    /* @var \Acquia\Orca\Domain\Package\Package $sut */
+    $sut = $this->options->getSut();
+    return $sut->getPackageName();
   }
 
   /**
@@ -191,21 +195,16 @@ class FixtureInspector {
    *   "Unknown".
    */
   private function getFixtureType(): string {
-    if ($this->isBare()) {
+    if ($this->options->isBare()) {
       return 'Bare';
     }
-
-    if (!$this->getSutName()) {
+    if (!$this->options->hasSut()) {
       return 'No SUT';
     }
-
-    $key = 'extra.orca.is-sut-only';
-
-    if (!$this->getComposerJson()->has($key)) {
-      return 'Unknown';
+    if ($this->options->isSutOnly()) {
+      return 'SUT-only';
     }
-
-    return $this->getComposerJson()->get($key) ? 'SUT-only' : 'Standard';
+    return 'Standard';
   }
 
   /**
@@ -215,13 +214,10 @@ class FixtureInspector {
    *   The package stability setting, i.e., "Dev/HEAD", "Stable", or "Unknown".
    */
   private function getPackageStabilitySetting(): string {
-    $key = 'extra.orca.is-dev';
-
-    if (!$this->getComposerJson()->has($key)) {
-      return 'Unknown';
+    if ($this->options->isDev()) {
+      return 'Deb/HEAD';
     }
-
-    return $this->getComposerJson()->get($key) ? 'Dev/HEAD' : 'Stable';
+    return 'Stable';
   }
 
   /**
@@ -232,13 +228,7 @@ class FixtureInspector {
    *   acquia/drupal-recommended-project or acquia/blt-project:12.x.
    */
   private function getProjectTemplate(): string {
-    $key = 'extra.orca.project-template';
-
-    if (!$this->getComposerJson()->has($key)) {
-      return 'Unknown';
-    }
-
-    return $this->getComposerJson()->get($key);
+    return $this->options->getProjectTemplate();
   }
 
   /**
@@ -367,22 +357,6 @@ class FixtureInspector {
       }
     }
     return $packages;
-  }
-
-  /**
-   * Determines whether or not the fixture is bare.
-   *
-   * @return bool
-   *   TRUE if the fixture is bare or FALSE if not.
-   */
-  private function isBare(): bool {
-    $key = 'extra.orca.is-bare';
-
-    if (!$this->getComposerJson()->has($key)) {
-      return FALSE;
-    }
-
-    return (bool) $this->getComposerJson()->get($key);
   }
 
 }
