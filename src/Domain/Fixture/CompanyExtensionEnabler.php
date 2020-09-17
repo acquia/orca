@@ -56,7 +56,7 @@ class CompanyExtensionEnabler {
   /**
    * The fixture options.
    *
-   * @var \Acquia\Orca\Domain\Fixture\FixtureOptions
+   * @var \Acquia\Orca\Options\FixtureOptions
    */
   private $options;
 

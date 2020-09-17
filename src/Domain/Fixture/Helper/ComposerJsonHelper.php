@@ -2,13 +2,13 @@
 
 namespace Acquia\Orca\Domain\Fixture\Helper;
 
-use Acquia\Orca\Domain\Fixture\FixtureOptions;
 use Acquia\Orca\Domain\Fixture\FixtureOptionsFactory;
 use Acquia\Orca\Exception\FileNotFoundException;
 use Acquia\Orca\Exception\FixtureNotExistsException;
 use Acquia\Orca\Exception\ParseError;
 use Acquia\Orca\Helper\Config\ConfigLoader;
 use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
+use Acquia\Orca\Options\FixtureOptions;
 use LogicException;
 use Noodlehaus\Config;
 
@@ -38,7 +38,7 @@ class ComposerJsonHelper {
   /**
    * The fixture options, if available.
    *
-   * @var \Acquia\Orca\Domain\Fixture\FixtureOptions|null
+   * @var \Acquia\Orca\Options\FixtureOptions|null
    */
   private $fixtureOptions;
 
@@ -68,7 +68,7 @@ class ComposerJsonHelper {
   /**
    * Gets the fixture options.
    *
-   * @return \Acquia\Orca\Domain\Fixture\FixtureOptions
+   * @return \Acquia\Orca\Options\FixtureOptions
    *   The fixture options.
    *
    * @throws \Acquia\Orca\Exception\FileNotFoundException
@@ -123,7 +123,7 @@ class ComposerJsonHelper {
   /**
    * Write the fixture options to the file.
    *
-   * @param \Acquia\Orca\Domain\Fixture\FixtureOptions $options
+   * @param \Acquia\Orca\Options\FixtureOptions $options
    *   The fixture options.
    *
    * @throws \Acquia\Orca\Exception\FileNotFoundException

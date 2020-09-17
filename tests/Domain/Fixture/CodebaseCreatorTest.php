@@ -5,7 +5,6 @@ namespace Acquia\Orca\Tests\Domain\Fixture;
 use Acquia\Orca\Domain\Composer\Composer;
 use Acquia\Orca\Domain\Drupal\DrupalCoreVersionFinder;
 use Acquia\Orca\Domain\Fixture\CodebaseCreator;
-use Acquia\Orca\Domain\Fixture\FixtureOptions;
 use Acquia\Orca\Domain\Fixture\Helper\ComposerJsonHelper;
 use Acquia\Orca\Domain\Git\Git;
 use Acquia\Orca\Domain\Package\Package;
@@ -14,6 +13,7 @@ use Acquia\Orca\Exception\FileNotFoundException;
 use Acquia\Orca\Exception\ParseError;
 use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
 use Acquia\Orca\Helper\Filesystem\OrcaPathHandler;
+use Acquia\Orca\Options\FixtureOptions;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 

@@ -12,6 +12,7 @@ use Acquia\Orca\Domain\Package\PackageManager;
 use Acquia\Orca\Exception\OrcaException;
 use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
 use Acquia\Orca\Helper\Process\ProcessRunner;
+use Acquia\Orca\Options\FixtureOptions;
 use Composer\Config\JsonConfigSource;
 use Composer\Json\JsonFile;
 use Composer\Semver\Comparator;
@@ -69,7 +70,7 @@ class FixtureCreator {
   /**
    * The fixture options.
    *
-   * @var \Acquia\Orca\Domain\Fixture\FixtureOptions
+   * @var \Acquia\Orca\Options\FixtureOptions
    */
   private $options;
 
@@ -165,7 +166,7 @@ class FixtureCreator {
   /**
    * Creates the fixture.
    *
-   * @param \Acquia\Orca\Domain\Fixture\FixtureOptions $options
+   * @param \Acquia\Orca\Options\FixtureOptions $options
    *   The fixture options.
    *
    * @throws \Acquia\Orca\Exception\OrcaException

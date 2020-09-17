@@ -5,6 +5,7 @@ namespace Acquia\Orca\Domain\Fixture;
 use Acquia\Orca\Domain\Composer\Composer;
 use Acquia\Orca\Domain\Drupal\DrupalCoreVersionFinder;
 use Acquia\Orca\Domain\Package\PackageManager;
+use Acquia\Orca\Options\FixtureOptions;
 
 /**
  * Provides a factory for fixture options.
@@ -54,7 +55,7 @@ class FixtureOptionsFactory {
    * @param array $options
    *   An array of options data.
    *
-   * @return \Acquia\Orca\Domain\Fixture\FixtureOptions
+   * @return \Acquia\Orca\Options\FixtureOptions
    *   A fixture options object.
    *
    * @throws \Acquia\Orca\Exception\InvalidArgumentException

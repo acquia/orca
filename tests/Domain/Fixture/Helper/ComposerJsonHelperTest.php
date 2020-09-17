@@ -3,7 +3,6 @@
 namespace Acquia\Orca\Tests\Domain\Fixture\Helper;
 
 use Acquia\Orca\Domain\Drupal\DrupalCoreVersionFinder;
-use Acquia\Orca\Domain\Fixture\FixtureOptions;
 use Acquia\Orca\Domain\Fixture\FixtureOptionsFactory;
 use Acquia\Orca\Domain\Fixture\Helper\ComposerJsonHelper;
 use Acquia\Orca\Domain\Package\PackageManager;
@@ -12,6 +11,7 @@ use Acquia\Orca\Exception\FixtureNotExistsException;
 use Acquia\Orca\Exception\ParseError;
 use Acquia\Orca\Helper\Config\ConfigLoader;
 use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
+use Acquia\Orca\Options\FixtureOptions;
 use LogicException;
 use Noodlehaus\Config;
 use Noodlehaus\Parser\Json;

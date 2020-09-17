@@ -1,6 +1,6 @@
 <?php
 
-namespace Acquia\Orca\Domain\Fixture;
+namespace Acquia\Orca\Options;
 
 use Acquia\Orca\Domain\Composer\Composer;
 use Acquia\Orca\Domain\Drupal\DrupalCoreVersionFinder;

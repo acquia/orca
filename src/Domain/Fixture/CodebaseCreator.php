@@ -8,6 +8,7 @@ use Acquia\Orca\Domain\Git\Git;
 use Acquia\Orca\Exception\FileNotFoundException;
 use Acquia\Orca\Exception\ParseError;
 use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
+use Acquia\Orca\Options\FixtureOptions;
 
 /**
  * Creates the codebase component of a fixture.
@@ -38,7 +39,7 @@ class CodebaseCreator {
   /**
    * The fixture options.
    *
-   * @var \Acquia\Orca\Domain\Fixture\FixtureOptions
+   * @var \Acquia\Orca\Options\FixtureOptions
    */
   private $options;
 
@@ -71,7 +72,7 @@ class CodebaseCreator {
   /**
    * Creates the codebase.
    *
-   * @param \Acquia\Orca\Domain\Fixture\FixtureOptions $options
+   * @param \Acquia\Orca\Options\FixtureOptions $options
    *   The fixture options.
    *
    * @throws \Acquia\Orca\Exception\OrcaException

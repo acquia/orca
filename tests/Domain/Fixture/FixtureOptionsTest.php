@@ -3,11 +3,11 @@
 namespace Acquia\Orca\Tests\Domain\Fixture;
 
 use Acquia\Orca\Domain\Drupal\DrupalCoreVersionFinder;
-use Acquia\Orca\Domain\Fixture\FixtureOptions;
 use Acquia\Orca\Domain\Package\Package;
 use Acquia\Orca\Domain\Package\PackageManager;
 use Acquia\Orca\Enum\DrupalCoreVersionEnum;
 use Acquia\Orca\Exception\InvalidArgumentException;
+use Acquia\Orca\Options\FixtureOptions;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 
@@ -15,7 +15,7 @@ use Prophecy\Argument;
  * @property \Acquia\Orca\Domain\Drupal\DrupalCoreVersionFinder|\Prophecy\Prophecy\ObjectProphecy $drupalCoreVersionFinder
  * @property \Acquia\Orca\Domain\Package\PackageManager|\Prophecy\Prophecy\ObjectProphecy $packageManager
  *
- * @coversDefaultClass \Acquia\Orca\Domain\Fixture\FixtureOptions
+ * @coversDefaultClass \Acquia\Orca\Options\FixtureOptions
  */
 class FixtureOptionsTest extends TestCase {
 

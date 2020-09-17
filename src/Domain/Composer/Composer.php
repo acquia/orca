@@ -3,11 +3,11 @@
 namespace Acquia\Orca\Domain\Composer;
 
 use Acquia\Orca\Domain\Composer\Version\VersionGuesser;
-use Acquia\Orca\Domain\Fixture\FixtureOptions;
 use Acquia\Orca\Domain\Package\Package;
 use Acquia\Orca\Domain\Package\PackageManager;
 use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
 use Acquia\Orca\Helper\Process\ProcessRunner;
+use Acquia\Orca\Options\FixtureOptions;
 use Composer\Package\Loader\ValidatingArrayLoader;
 use Composer\Semver\VersionParser;
 use InvalidArgumentException;
@@ -28,7 +28,7 @@ class Composer {
   /**
    * The fixture options.
    *
-   * @var \Acquia\Orca\Domain\Fixture\FixtureOptions
+   * @var \Acquia\Orca\Options\FixtureOptions
    */
   private $options;
 
@@ -75,7 +75,7 @@ class Composer {
   /**
    * Creates the Composer project.
    *
-   * @param \Acquia\Orca\Domain\Fixture\FixtureOptions $options
+   * @param \Acquia\Orca\Options\FixtureOptions $options
    *   The fixture options.
    */
   public function createProject(FixtureOptions $options): void {
