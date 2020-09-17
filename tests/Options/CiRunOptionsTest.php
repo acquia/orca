@@ -2,6 +2,8 @@
 
 namespace Acquia\Orca\Tests\Options;
 
+use Acquia\Orca\Enum\CiJobEnum;
+use Acquia\Orca\Enum\CiJobPhaseEnum;
 use Acquia\Orca\Exception\OrcaInvalidArgumentException;
 use Acquia\Orca\Options\CiRunOptions;
 use Acquia\Orca\Tests\Enum\CiEnumsTestTrait;
@@ -23,13 +25,13 @@ class CiRunOptionsTest extends TestCase {
    * @covers ::isValidJobValue
    * @covers ::resolve
    */
-  public function testValidJobs($job): void {
+  public function testValidJobs(CiJobEnum $job): void {
     $options = new CiRunOptions([
-      'job' => $job,
-      'phase' => $this->validPhase(),
+      'job' => $job->getKey(),
+      'phase' => $this->validPhaseName(),
     ]);
 
-    self::assertSame($job, $options->getJob(), 'Set/got "job" option.');
+    self::assertEquals($job, $options->getJob(), 'Set/got "job" option.');
   }
 
   /**
@@ -40,13 +42,13 @@ class CiRunOptionsTest extends TestCase {
    * @covers ::isValidPhaseValue
    * @covers ::resolve
    */
-  public function testValidPhases($phase): void {
+  public function testValidPhases(CiJobPhaseEnum $phase): void {
     $options = new CiRunOptions([
-      'job' => $this->validJob(),
-      'phase' => $phase,
+      'job' => $this->validJobName(),
+      'phase' => strtolower($phase->getKey()),
     ]);
 
-    self::assertSame($phase, $options->getPhase(), 'Set/got "phase" phase.');
+    self::assertEquals($phase, $options->getPhase(), 'Set/got "phase" option.');
   }
 
   /**
@@ -61,8 +63,8 @@ class CiRunOptionsTest extends TestCase {
   public function providerMissingRequiredOptions(): array {
     return [
       [[]],
-      [['phase' => $this->validPhase()]],
-      [['job' => $this->validJob()]],
+      [['phase' => $this->validPhaseName()]],
+      [['job' => $this->validJobName()]],
     ];
   }
 
@@ -73,8 +75,8 @@ class CiRunOptionsTest extends TestCase {
     $this->expectException(OrcaInvalidArgumentException::class);
 
     new CiRunOptions([
-      'job' => $this->validJob(),
-      'phase' => $this->validPhase(),
+      'job' => $this->validJobName(),
+      'phase' => $this->validPhaseName(),
       'undefined' => 'option',
     ]);
   }
@@ -94,10 +96,10 @@ class CiRunOptionsTest extends TestCase {
 
   public function providerInvalidOptions(): array {
     return [
-      [['job' => $this->validJob(), 'phase' => 12345]],
-      [['job' => 12345, 'phase' => $this->validPhase()]],
-      [['job' => $this->validJob(), 'phase' => 'invalid']],
-      [['job' => 'invalid', 'phase' => $this->validPhase()]],
+      [['job' => $this->validJobName(), 'phase' => 12345]],
+      [['job' => 12345, 'phase' => $this->validPhaseName()]],
+      [['job' => $this->validJobName(), 'phase' => 'invalid']],
+      [['job' => 'invalid', 'phase' => $this->validPhaseName()]],
     ];
   }
 

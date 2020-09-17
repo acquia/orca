@@ -107,23 +107,23 @@ class CiRunOptions {
   }
 
   /**
-   * Gets the job name.
+   * Gets the job enum.
    *
-   * @return string
-   *   The job name.
+   * @return \Acquia\Orca\Enum\CiJobEnum
+   *   The job enum.
    */
-  public function getJob(): string {
-    return $this->options['job'];
+  public function getJob(): CiJobEnum {
+    return new CiJobEnum($this->options['job']);
   }
 
   /**
-   * Gets the phase name.
+   * Gets the phase enum.
    *
-   * @return string
-   *   The phase name.
+   * @return \Acquia\Orca\Enum\CiJobPhaseEnum
+   *   The phase enum.
    */
-  public function getPhase(): string {
-    return $this->options['phase'];
+  public function getPhase(): CiJobPhaseEnum {
+    return new CiJobPhaseEnum($this->options['phase']);
   }
 
 }

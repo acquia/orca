@@ -8,7 +8,7 @@ use Acquia\Orca\Enum\CiJobPhaseEnum;
 trait CiEnumsTestTrait {
 
   public function providerJobs(): array {
-    $jobs = CiJobEnum::keys();
+    $jobs = CiJobEnum::values();
     array_walk($jobs, static function (&$value) {
       $value = [$value];
     });
@@ -16,21 +16,28 @@ trait CiEnumsTestTrait {
   }
 
   public function providerPhases(): array {
-    $phases = CiJobPhaseEnum::keys();
+    $phases = CiJobPhaseEnum::values();
     array_walk($phases, static function (&$value) {
-      $value = [strtolower($value)];
+      $value = [$value];
     });
     return $phases;
   }
 
-  private function validJob(): string {
-    $jobs = CiJobEnum::keys();
+  private function validJob(): CiJobEnum {
+    $jobs = CiJobEnum::values();
     return reset($jobs);
   }
 
-  private function validPhase(): string {
-    $phases = CiJobPhaseEnum::keys();
-    return strtolower(reset($phases));
+  private function validJobName(): string {
+    return $this->validJob()->getKey();
+  }
+
+  private function validPhase(): CiJobPhaseEnum {
+    return CiJobPhaseEnum::SCRIPT();
+  }
+
+  private function validPhaseName(): string {
+    return strtolower($this->validPhase()->getValue());
   }
 
 }

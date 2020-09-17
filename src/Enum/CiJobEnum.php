@@ -6,6 +6,30 @@ use MyCLabs\Enum\Enum;
 
 /**
  * Provides CI job special values.
+ *
+ * @method static CiJobEnum STATIC_CODE_ANALYSIS()
+ * @method static CiJobEnum INTEGRATED_TEST_ON_OLDEST_SUPPORTED()
+ * @method static CiJobEnum INTEGRATED_TEST_ON_PREVIOUS_MINOR()
+ * @method static CiJobEnum INTEGRATED_TEST_ON_LATEST_LTS()
+ * @method static CiJobEnum ISOLATED_TEST_ON_CURRENT()
+ * @method static CiJobEnum INTEGRATED_TEST_ON_CURRENT()
+ * @method static CiJobEnum INTEGRATED_UPGRADE_TEST_TO_NEXT_MINOR()
+ * @method static CiJobEnum INTEGRATED_UPGRADE_TEST_TO_NEXT_MINOR_DEV()
+ * @method static CiJobEnum ISOLATED_TEST_ON_CURRENT_DEV()
+ * @method static CiJobEnum INTEGRATED_TEST_ON_CURRENT_DEV()
+ * @method static CiJobEnum LOOSE_DEPRECATED_CODE_SCAN()
+ * @method static CiJobEnum STRICT_DEPRECATED_CODE_SCAN()
+ * @method static CiJobEnum DEPRECATED_CODE_SCAN_W_CONTRIB()
+ * @method static CiJobEnum ISOLATED_TEST_ON_NEXT_MINOR()
+ * @method static CiJobEnum INTEGRATED_TEST_ON_NEXT_MINOR()
+ * @method static CiJobEnum ISOLATED_TEST_ON_NEXT_MINOR_DEV()
+ * @method static CiJobEnum INTEGRATED_TEST_ON_NEXT_MINOR_DEV()
+ * @method static CiJobEnum ISOLATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_BETA_OR_LATER()
+ * @method static CiJobEnum INTEGRATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_BETA_OR_LATER()
+ * @method static CiJobEnum ISOLATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_DEV()
+ * @method static CiJobEnum INTEGRATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_DEV()
+ * @method static CiJobEnum ISOLATED_UPGRADE_TO_NEXT_MAJOR_BETA_OR_LATER()
+ * @method static CiJobEnum ISOLATED_UPGRADE_TO_NEXT_MAJOR_DEV()
  */
 final class CiJobEnum extends Enum {
 

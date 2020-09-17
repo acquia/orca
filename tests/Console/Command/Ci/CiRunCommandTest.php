@@ -3,20 +3,33 @@
 namespace Acquia\Orca\Tests\Console\Command\Ci;
 
 use Acquia\Orca\Console\Command\Ci\CiRunCommand;
+use Acquia\Orca\Domain\Ci\CiJobFactory;
 use Acquia\Orca\Enum\StatusCodeEnum;
 use Acquia\Orca\Tests\Console\Command\CommandTestBase;
+use Acquia\Orca\Tests\Domain\Ci\Job\CiTestJob;
 use Acquia\Orca\Tests\Enum\CiEnumsTestTrait;
 use Symfony\Component\Console\Command\Command;
 
 /**
+ * @property \Acquia\Orca\Domain\Ci\Job\AbstractCiJob|\Prophecy\Prophecy\ObjectProphecy $ciJob
+ * @property \Acquia\Orca\Domain\Ci\CiJobFactory|\Prophecy\Prophecy\ObjectProphecy $jobFactory
  * @coversDefaultClass \Acquia\Orca\Console\Command\Ci\CiRunCommand
  */
 class CiRunCommandTest extends CommandTestBase {
 
   use CiEnumsTestTrait;
 
+  protected function setUp(): void {
+    $this->ciJob = $this->prophesize(CiTestJob::class);
+    $this->jobFactory = $this->prophesize(CiJobFactory::class);
+  }
+
   protected function createCommand(): Command {
-    return new CiRunCommand();
+    $this->jobFactory
+      ->create($this->validJob())
+      ->willReturn($this->ciJob->reveal());
+    $job_factory = $this->jobFactory->reveal();
+    return new CiRunCommand($job_factory);
   }
 
   /**
@@ -45,9 +58,13 @@ class CiRunCommandTest extends CommandTestBase {
   }
 
   public function testExecution(): void {
+    $this->ciJob
+      ->script()
+      ->shouldBeCalledOnce();
+
     $this->executeCommand([
-      'job' => $this->validJob(),
-      'phase' => $this->validPhase(),
+      'job' => $this->validJobName(),
+      'phase' => $this->validPhaseName(),
     ]);
 
     self::assertEquals('', $this->getDisplay(), 'Displayed correct output.');

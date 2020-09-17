@@ -2,6 +2,7 @@
 
 namespace Acquia\Orca\Console\Command\Ci;
 
+use Acquia\Orca\Domain\Ci\CiJobFactory;
 use Acquia\Orca\Enum\CiJobEnum;
 use Acquia\Orca\Enum\CiJobPhaseEnum;
 use Acquia\Orca\Enum\StatusCodeEnum;
@@ -23,6 +24,24 @@ class CiRunCommand extends Command {
    * @var string
    */
   protected static $defaultName = 'ci:run';
+
+  /**
+   * The CI job factory.
+   *
+   * @var \Acquia\Orca\Domain\Ci\CiJobFactory
+   */
+  private $jobFactory;
+
+  /**
+   * Constructs an instance.
+   *
+   * @param \Acquia\Orca\Domain\Ci\CiJobFactory $job_factory
+   *   The CI job factory.
+   */
+  public function __construct(CiJobFactory $job_factory) {
+    $this->jobFactory = $job_factory;
+    parent::__construct(self::$defaultName);
+  }
 
   /**
    * {@inheritdoc}
@@ -80,10 +99,12 @@ class CiRunCommand extends Command {
    */
   public function execute(InputInterface $input, OutputInterface $output): int {
     try {
-      new CiRunOptions([
+      $options = new CiRunOptions([
         'job' => $input->getArgument('job'),
         'phase' => $input->getArgument('phase'),
       ]);
+      $job = $this->jobFactory->create($options->getJob());
+      $job->run($options->getPhase());
     }
     catch (OrcaInvalidArgumentException $e) {
       $output->writeln("Error: {$e->getMessage()}");

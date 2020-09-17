@@ -6,6 +6,18 @@ use MyCLabs\Enum\Enum;
 
 /**
  * Provides CI build phase special values.
+ *
+ * @method static CiJobPhaseEnum BEFORE_INSTALL()
+ * @method static CiJobPhaseEnum INSTALL()
+ * @method static CiJobPhaseEnum BEFORE_SCRIPT()
+ * @method static CiJobPhaseEnum SCRIPT()
+ * @method static CiJobPhaseEnum BEFORE_CACHE()
+ * @method static CiJobPhaseEnum AFTER_SUCCESS()
+ * @method static CiJobPhaseEnum AFTER_FAILURE()
+ * @method static CiJobPhaseEnum BEFORE_DEPLOY()
+ * @method static CiJobPhaseEnum DEPLOY()
+ * @method static CiJobPhaseEnum AFTER_DEPLOY()
+ * @method static CiJobPhaseEnum AFTER_SCRIPT()
  */
 final class CiJobPhaseEnum extends Enum {
 
