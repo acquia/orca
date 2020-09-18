@@ -24,3 +24,5 @@ if [[ "$ORCA_COVERAGE_ENABLE" == TRUE && "$ORCA_COVERALLS_ENABLE" == TRUE ]]; th
 else
   notice "No coverage data sent to Coveralls."
 fi
+
+eval "orca ci:run $ORCA_JOB after_success"

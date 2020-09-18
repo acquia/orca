@@ -8,3 +8,5 @@
 #
 # DESCRIPTION
 #     Reserved for future use.
+
+eval "orca ci:run $ORCA_JOB before_cache"

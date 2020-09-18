@@ -22,3 +22,5 @@ drush --no-ansi pm:list --fields=package,display_name,type,status,version || tru
 
 # Display basic Drupal site details.
 drush core-status
+
+eval "orca ci:run $ORCA_JOB before_script"

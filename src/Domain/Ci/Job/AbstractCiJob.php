@@ -35,45 +35,51 @@ abstract class AbstractCiJob {
    *   The CI job phase.
    */
   final public function run(CiJobPhaseEnum $phase): void {
-    // This unusual idiom is used here because it makes the the code coverage
-    // generator happy, i.e., it doesn't report the logically unreachable
-    // default case or the method's closing brace as uncovered.
-    $functions = [
-      CiJobPhaseEnum::BEFORE_INSTALL => function () {
+    switch ($phase) {
+      case CiJobPhaseEnum::BEFORE_INSTALL:
         $this->beforeInstall();
-      },
-      CiJobPhaseEnum::INSTALL => function () {
+        break;
+
+      case CiJobPhaseEnum::INSTALL:
         $this->install();
-      },
-      CiJobPhaseEnum::BEFORE_SCRIPT => function () {
+        break;
+
+      case CiJobPhaseEnum::BEFORE_SCRIPT:
         $this->beforeScript();
-      },
-      CiJobPhaseEnum::SCRIPT => function () {
+        break;
+
+      case CiJobPhaseEnum::SCRIPT:
         $this->script();
-      },
-      CiJobPhaseEnum::BEFORE_CACHE => function () {
+        break;
+
+      case CiJobPhaseEnum::BEFORE_CACHE:
         $this->beforeCache();
-      },
-      CiJobPhaseEnum::AFTER_SUCCESS => function () {
+        break;
+
+      case CiJobPhaseEnum::AFTER_SUCCESS:
         $this->afterSuccess();
-      },
-      CiJobPhaseEnum::AFTER_FAILURE => function () {
+        break;
+
+      case CiJobPhaseEnum::AFTER_FAILURE:
         $this->afterFailure();
-      },
-      CiJobPhaseEnum::BEFORE_DEPLOY => function () {
+        break;
+
+      case CiJobPhaseEnum::BEFORE_DEPLOY:
         $this->beforeDeploy();
-      },
-      CiJobPhaseEnum::DEPLOY => function () {
+        break;
+
+      case CiJobPhaseEnum::DEPLOY:
         $this->deploy();
-      },
-      CiJobPhaseEnum::AFTER_DEPLOY => function () {
+        break;
+
+      case CiJobPhaseEnum::AFTER_DEPLOY:
         $this->afterDeploy();
-      },
-      CiJobPhaseEnum::AFTER_SCRIPT => function () {
+        break;
+
+      case CiJobPhaseEnum::AFTER_SCRIPT:
         $this->afterScript();
-      },
-    ];
-    call_user_func($functions[$phase->getValue()]);
+
+    }
   }
 
   /**
