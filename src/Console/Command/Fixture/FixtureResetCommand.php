@@ -48,7 +48,7 @@ class FixtureResetCommand extends Command {
   public function __construct(FixturePathHandler $fixture_path_handler, FixtureResetter $fixture_backupper) {
     $this->fixture = $fixture_path_handler;
     $this->fixtureResetter = $fixture_backupper;
-    parent::__construct(self::$defaultName);
+    parent::__construct();
   }
 
   /**

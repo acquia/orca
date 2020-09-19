@@ -7,7 +7,6 @@ use Acquia\Orca\Domain\Package\PackageManager;
 use Acquia\Orca\Domain\Tool\Phpstan\PhpstanTask;
 use Acquia\Orca\Enum\StatusCodeEnum;
 use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
-use Acquia\Orca\Helper\Task\TaskRunner;
 use Acquia\Orca\Tests\Console\Command\CommandTestBase;
 use Symfony\Component\Console\Command\Command;
 
@@ -15,11 +14,10 @@ use Symfony\Component\Console\Command\Command;
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Helper\Filesystem\FixturePathHandler $fixture
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Domain\Package\PackageManager $packageManager
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Domain\Tool\Phpstan\PhpstanTask $phpstan
- * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Helper\Task\TaskRunner $taskRunner
  */
 class QaDeprecatedCodeScanCommandTest extends CommandTestBase {
 
-  protected function setUp() {
+  protected function setUp(): void {
     $this->fixture = $this->prophesize(FixturePathHandler::class);
     $this->fixture->exists()
       ->willReturn(TRUE);
@@ -27,15 +25,13 @@ class QaDeprecatedCodeScanCommandTest extends CommandTestBase {
       ->willReturn(self::FIXTURE_ROOT);
     $this->packageManager = $this->prophesize(PackageManager::class);
     $this->phpstan = $this->prophesize(PhpstanTask::class);
-    $this->taskRunner = $this->prophesize(TaskRunner::class);
   }
 
   protected function createCommand(): Command {
     $fixture = $this->fixture->reveal();
     $package_manager = $this->packageManager->reveal();
     $phpstan = $this->phpstan->reveal();
-    $task_runner = $this->taskRunner->reveal();
-    return new QaDeprecatedCodeScanCommand($fixture, $package_manager, $phpstan, $task_runner);
+    return new QaDeprecatedCodeScanCommand($fixture, $package_manager, $phpstan);
   }
 
   /**

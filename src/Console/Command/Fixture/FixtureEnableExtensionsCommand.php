@@ -48,7 +48,7 @@ class FixtureEnableExtensionsCommand extends Command {
   public function __construct(CompanyExtensionEnabler $company_extension_enabler, FixturePathHandler $fixture_path_handler) {
     $this->companyExtensionEnabler = $company_extension_enabler;
     $this->fixture = $fixture_path_handler;
-    parent::__construct(self::$defaultName);
+    parent::__construct();
   }
 
   /**

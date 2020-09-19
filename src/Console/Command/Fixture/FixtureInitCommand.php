@@ -84,7 +84,7 @@ class FixtureInitCommand extends Command {
     $this->fixtureOptionsFactory = $fixture_options_factory;
     $this->fixtureRemover = $fixture_remover;
     $this->sutPreconditionsTester = $sut_preconditions_tester;
-    parent::__construct(self::$defaultName);
+    parent::__construct();
   }
 
   /**

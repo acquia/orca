@@ -49,7 +49,7 @@ class FixtureInstallSiteCommand extends Command {
   public function __construct(FixturePathHandler $fixture_path_handler, SiteInstaller $site_installer) {
     $this->fixture = $fixture_path_handler;
     $this->siteInstaller = $site_installer;
-    parent::__construct(self::$defaultName);
+    parent::__construct();
   }
 
   /**

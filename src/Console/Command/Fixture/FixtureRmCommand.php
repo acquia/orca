@@ -48,7 +48,7 @@ class FixtureRmCommand extends Command {
   public function __construct(FixturePathHandler $fixture_path_handler, FixtureRemover $fixture_remover) {
     $this->fixture = $fixture_path_handler;
     $this->fixtureRemover = $fixture_remover;
-    parent::__construct(self::$defaultName);
+    parent::__construct();
   }
 
   /**

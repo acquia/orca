@@ -37,7 +37,7 @@ class DebugCoreVersionsCommand extends Command {
    */
   public function __construct(DrupalCoreVersionFinder $drupal_core_version_finder) {
     $this->drupalCoreVersionFinder = $drupal_core_version_finder;
-    parent::__construct(self::$defaultName);
+    parent::__construct();
   }
 
   /**

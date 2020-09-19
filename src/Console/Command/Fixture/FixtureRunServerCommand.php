@@ -46,7 +46,7 @@ class FixtureRunServerCommand extends Command {
   public function __construct(FixturePathHandler $fixture_path_handler, WebServer $web_server) {
     $this->fixture = $fixture_path_handler;
     $this->webServer = $web_server;
-    parent::__construct(self::$defaultName);
+    parent::__construct();
   }
 
   /**

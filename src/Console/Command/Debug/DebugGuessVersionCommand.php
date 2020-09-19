@@ -36,8 +36,8 @@ class DebugGuessVersionCommand extends Command {
    *   The version guesser.
    */
   public function __construct(VersionGuesser $version_guesser) {
-    parent::__construct(self::$defaultName);
     $this->versionGuesser = $version_guesser;
+    parent::__construct();
   }
 
   /**

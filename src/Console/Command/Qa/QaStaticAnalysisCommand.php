@@ -137,13 +137,13 @@ class QaStaticAnalysisCommand extends Command {
     $this->phpMessDetector = $php_mess_detector;
     $this->taskRunner = $task_runner;
     $this->yamlLint = $yaml_lint;
-    parent::__construct(self::$defaultName);
+    parent::__construct();
   }
 
   /**
    * {@inheritdoc}
    */
-  protected function configure() {
+  protected function configure():void {
     $this
       ->setAliases(['analyze'])
       ->setDescription('Runs static analysis tools')

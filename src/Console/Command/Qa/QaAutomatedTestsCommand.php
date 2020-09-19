@@ -80,7 +80,7 @@ class QaAutomatedTestsCommand extends Command {
     $this->fixture = $fixture_path_handler;
     $this->packageManager = $package_manager;
     $this->testRunner = $test_runner;
-    parent::__construct(self::$defaultName);
+    parent::__construct();
   }
 
   /**

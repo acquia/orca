@@ -48,7 +48,7 @@ class FixtureBackupCommand extends Command {
   public function __construct(FixturePathHandler $fixture_path_handler, Git $git) {
     $this->fixture = $fixture_path_handler;
     $this->git = $git;
-    parent::__construct(self::$defaultName);
+    parent::__construct();
   }
 
   /**

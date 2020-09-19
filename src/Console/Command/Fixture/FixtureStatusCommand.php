@@ -47,7 +47,7 @@ class FixtureStatusCommand extends Command {
   public function __construct(FixturePathHandler $fixture_path_handler, FixtureInspector $fixture_inspector) {
     $this->fixture = $fixture_path_handler;
     $this->fixtureInspector = $fixture_inspector;
-    parent::__construct(self::$defaultName);
+    parent::__construct();
   }
 
   /**

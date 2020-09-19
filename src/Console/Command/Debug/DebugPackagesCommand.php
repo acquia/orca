@@ -69,7 +69,7 @@ class DebugPackagesCommand extends Command {
     $this->drupalCoreVersionFinder = $drupal_core_version_finder;
     $this->packageManager = $package_manager;
     $this->versionParser = $version_parser;
-    parent::__construct(self::$defaultName);
+    parent::__construct();
   }
 
   /**

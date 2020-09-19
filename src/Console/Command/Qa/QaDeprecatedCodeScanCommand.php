@@ -6,7 +6,6 @@ use Acquia\Orca\Domain\Package\PackageManager;
 use Acquia\Orca\Domain\Tool\Phpstan\PhpstanTask;
 use Acquia\Orca\Enum\StatusCodeEnum;
 use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
-use Acquia\Orca\Helper\Task\TaskRunner;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -75,15 +74,12 @@ class QaDeprecatedCodeScanCommand extends Command {
    *   The package manager.
    * @param \Acquia\Orca\Domain\Tool\Phpstan\PhpstanTask $phpstan
    *   The PhpStan task.
-   * @param \Acquia\Orca\Helper\Task\TaskRunner $task_runner
-   *   The task runner.
    */
-  public function __construct(FixturePathHandler $fixture_path_handler, PackageManager $package_manager, PhpstanTask $phpstan, TaskRunner $task_runner) {
+  public function __construct(FixturePathHandler $fixture_path_handler, PackageManager $package_manager, PhpstanTask $phpstan) {
     $this->fixture = $fixture_path_handler;
     $this->packageManager = $package_manager;
     $this->phpstan = $phpstan;
-    $this->taskRunner = clone($task_runner);
-    parent::__construct(self::$defaultName);
+    parent::__construct();
   }
 
   /**

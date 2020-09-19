@@ -48,7 +48,7 @@ class InternalLogJobCommand extends Command {
   public function __construct(TelemetryClient $telemetry_client, TelemetryEventPropertiesBuilder $telemetry_event_properties_builder) {
     $this->telemetryClient = $telemetry_client;
     $this->telemetryEventPropertiesBuilder = $telemetry_event_properties_builder;
-    parent::__construct(self::$defaultName);
+    parent::__construct();
   }
 
   /**

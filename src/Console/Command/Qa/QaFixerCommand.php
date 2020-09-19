@@ -82,7 +82,7 @@ class QaFixerCommand extends Command {
     $this->filesystem = $filesystem;
     $this->phpCodeBeautifierAndFixer = $php_code_beautifier_and_fixer;
     $this->taskRunner = $task_runner;
-    parent::__construct(self::$defaultName);
+    parent::__construct();
   }
 
   /**
