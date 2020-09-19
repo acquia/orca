@@ -6,6 +6,7 @@ use Acquia\Orca\Console\Helper\StatusTable;
 use Acquia\Orca\Domain\Composer\Composer;
 use Acquia\Orca\Domain\Composer\Version\VersionFinder;
 use Acquia\Orca\Domain\Composer\Version\VersionGuesser;
+use Acquia\Orca\Domain\Fixture\Helper\ComposerJsonHelper;
 use Acquia\Orca\Domain\Git\Git;
 use Acquia\Orca\Domain\Package\Package;
 use Acquia\Orca\Domain\Package\PackageManager;
@@ -13,8 +14,6 @@ use Acquia\Orca\Exception\OrcaException;
 use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
 use Acquia\Orca\Helper\Process\ProcessRunner;
 use Acquia\Orca\Options\FixtureOptions;
-use Composer\Config\JsonConfigSource;
-use Composer\Json\JsonFile;
 use Composer\Semver\Comparator;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
@@ -40,6 +39,13 @@ class FixtureCreator {
   private $composer;
 
   /**
+   * The fixture composer.json helper.
+   *
+   * @var \Acquia\Orca\Domain\Fixture\Helper\ComposerJsonHelper
+   */
+  private $composerJsonHelper;
+
+  /**
    * The fixture path handler.
    *
    * @var \Acquia\Orca\Helper\Filesystem\FixturePathHandler
@@ -52,20 +58,6 @@ class FixtureCreator {
    * @var \Acquia\Orca\Domain\Fixture\FixtureInspector
    */
   private $fixtureInspector;
-
-  /**
-   * The Composer API for the fixture's composer.json.
-   *
-   * @var \Composer\Config\JsonConfigSource|null
-   */
-  private $jsonConfigSource;
-
-  /**
-   * A backup of the fixture's composer.json data before making changes.
-   *
-   * @var array
-   */
-  private $jsonConfigDataBackup = [];
 
   /**
    * The fixture options.
@@ -130,6 +122,8 @@ class FixtureCreator {
    *   The codebase creator.
    * @param \Acquia\Orca\Domain\Composer\Composer $composer
    *   The Composer facade.
+   * @param \Acquia\Orca\Domain\Fixture\Helper\ComposerJsonHelper $composer_json_helper
+   *   The fixture composer.json helper.
    * @param \Acquia\Orca\Helper\Filesystem\FixturePathHandler $fixture_path_handler
    *   The fixture path handler.
    * @param \Acquia\Orca\Domain\Fixture\FixtureInspector $fixture_inspector
@@ -149,9 +143,10 @@ class FixtureCreator {
    * @param \Acquia\Orca\Domain\Composer\Version\VersionGuesser $version_guesser
    *   The version guesser.
    */
-  public function __construct(CodebaseCreator $codebase_creator, Composer $composer, FixturePathHandler $fixture_path_handler, FixtureInspector $fixture_inspector, SiteInstaller $site_installer, SymfonyStyle $output, ProcessRunner $process_runner, PackageManager $package_manager, SubextensionManager $subextension_manager, VersionFinder $version_finder, VersionGuesser $version_guesser) {
+  public function __construct(CodebaseCreator $codebase_creator, Composer $composer, ComposerJsonHelper $composer_json_helper, FixturePathHandler $fixture_path_handler, FixtureInspector $fixture_inspector, SiteInstaller $site_installer, SymfonyStyle $output, ProcessRunner $process_runner, PackageManager $package_manager, SubextensionManager $subextension_manager, VersionFinder $version_finder, VersionGuesser $version_guesser) {
     $this->codebaseCreator = $codebase_creator;
     $this->composer = $composer;
+    $this->composerJsonHelper = $composer_json_helper;
     $this->fixture = $fixture_path_handler;
     $this->fixtureInspector = $fixture_inspector;
     $this->output = $output;
@@ -175,7 +170,6 @@ class FixtureCreator {
   public function create(FixtureOptions $options): void {
     $this->options = $options;
     $this->createComposerProject();
-    $this->configureComposerProject();
     $this->fixDefaultDependencies();
     $this->addCompanyPackages();
     $this->composer->updateLockFile();
@@ -193,30 +187,6 @@ class FixtureCreator {
   private function createComposerProject(): void {
     $this->output->section('Creating Composer project');
     $this->codebaseCreator->create($this->options);
-  }
-
-  /**
-   * Configures the Composer project.
-   */
-  private function configureComposerProject(): void {
-    $this->loadComposerJson();
-
-    // Prevent errors later because "Source directory docroot/core has
-    // uncommitted changes" after "Removing package drupal/core so that it can
-    // be re-installed and re-patched".
-    // @see https://drupal.stackexchange.com/questions/273859
-    $this->jsonConfigSource->addConfigSetting('discard-changes', TRUE);
-
-    $this->jsonConfigSource->addProperty('extra.composer-exit-on-patch-failure', !$this->options->ignorePatchFailure());
-  }
-
-  /**
-   * Loads the fixture's composer.json data.
-   */
-  private function loadComposerJson(): void {
-    $json_file = new JsonFile($this->fixture->getPath('composer.json'));
-    $this->jsonConfigDataBackup = $json_file->read();
-    $this->jsonConfigSource = new JsonConfigSource($json_file);
   }
 
   /**
@@ -354,19 +324,11 @@ class FixtureCreator {
 
   /**
    * Adds Composer path repositories for company packages.
-   *
-   * Repositories take precedence in the order specified (i.e., first match
-   * found wins), so our overrides need to be added to the beginning in order
-   * to take effect.
    */
   private function addPathRepositories(): void {
     if (!$this->options->hasSut() && !$this->options->symlinkAll()) {
       return;
     }
-
-    // Remove existing repositories.
-    $this->loadComposerJson();
-    $this->jsonConfigSource->removeProperty('repositories');
 
     foreach ($this->getLocalPackages() as $package) {
       // Only create repositories for packages that are present locally.
@@ -374,15 +336,11 @@ class FixtureCreator {
         continue;
       }
 
-      $this->jsonConfigSource->addRepository($package->getPackageName(), [
-        'type' => 'path',
-        'url' => $this->fixture->getPath($package->getRepositoryUrlRaw()),
-      ]);
-    }
-
-    // Append original repositories.
-    foreach ($this->jsonConfigDataBackup['repositories'] as $key => $value) {
-      $this->jsonConfigSource->addRepository($key, $value);
+      $this->composerJsonHelper->addRepository(
+        $package->getPackageName(),
+        'path',
+        $this->fixture->getPath($package->getRepositoryUrlRaw())
+      );
     }
   }
 
@@ -411,31 +369,7 @@ class FixtureCreator {
    */
   private function configureComposerForTopLevelCompanyPackages(): void {
     $packages = $this->packageManager->getAll();
-
-    if (!$packages) {
-      return;
-    }
-
-    // The preferred-install patterns are applied in the order specified, so
-    // overrides need to be added to the beginning in order to take effect.
-    // @see https://getcomposer.org/doc/06-config.md#preferred-install
-    // Begin by removing the original installer paths.
-    $this->jsonConfigSource->removeConfigSetting('preferred-install');
-
-    $patterns = array_fill_keys(array_keys($packages), 'source');
-    $this->jsonConfigSource->addConfigSetting('preferred-install', $patterns);
-
-    if (empty($this->jsonConfigDataBackup['config']['preferred-install'])) {
-      return;
-    }
-
-    // Append original patterns.
-    foreach ($this->jsonConfigDataBackup['config']['preferred-install'] as $key => $value) {
-      if (array_key_exists($key, $patterns)) {
-        continue;
-      }
-      $this->jsonConfigSource->addConfigSetting("preferred-install.{$key}", $value);
-    }
+    $this->composerJsonHelper->setPreferInstallFromSource(array_keys($packages));
   }
 
   /**
@@ -673,35 +607,22 @@ class FixtureCreator {
    * Configures Composer to find and place subextensions of local packages.
    */
   private function configureComposerForLocalSubextensions(): void {
-    $this->loadComposerJson();
     $this->addLocalSubextensionRepositories();
     $this->addInstallerPathsForLocalSubextensions();
   }
 
   /**
    * Adds Composer repositories for subextensions of local packages.
-   *
-   * Repositories take precedence in the order specified (i.e., first match
-   * found wins), so our override needs to be added to the beginning in order
-   * to take effect.
    */
   private function addLocalSubextensionRepositories(): void {
-    // Remove original repositories.
-    $this->jsonConfigSource->removeProperty('repositories');
-
-    // Add new repositories.
     foreach ($this->getLocalPackages() as $package) {
       foreach ($this->subextensionManager->getByParent($package) as $subextension) {
-        $this->jsonConfigSource->addRepository($subextension->getPackageName(), [
-          'type' => 'path',
-          'url' => $subextension->getRepositoryUrlRaw(),
-        ]);
+        $this->composerJsonHelper->addRepository(
+          $subextension->getPackageName(),
+          'path',
+          $subextension->getRepositoryUrlRaw()
+        );
       }
-    }
-
-    // Append original repositories.
-    foreach ($this->jsonConfigDataBackup['repositories'] as $key => $value) {
-      $this->jsonConfigSource->addRepository($key, $value);
     }
   }
 
@@ -710,30 +631,8 @@ class FixtureCreator {
    */
   private function addInstallerPathsForLocalSubextensions(): void {
     $package_names = $this->getLocalSubextensionPackageNames();
-
-    if (!$package_names) {
-      return;
-    }
-
-    // Installer paths seem to be applied in the order specified, so overrides
-    // need to be added to the beginning in order to take effect. Begin by
-    // removing the original installer paths.
-    $this->jsonConfigSource->removeProperty('extra.installer-paths');
-
-    // Add new installer paths.
-    // Subextensions are implicitly installed with their parent modules, and
-    // Composer won't allow them to be placed in the same location via their
-    // separate packages. Neither will it allow them to be "installed" outside
-    // the repository, in the system temp directory or /dev/null, for example.
-    // In the absence of a better option, the private files directory provides a
-    // convenient destination that Git is already configured to ignore.
-    $path = 'extra.installer-paths.files-private/{$name}';
-    $this->jsonConfigSource->addProperty($path, $package_names);
-
-    // Append original installer paths.
-    foreach ($this->jsonConfigDataBackup['extra']['installer-paths'] as $key => $value) {
-      $this->jsonConfigSource->addProperty("extra.installer-paths.{$key}", $value);
-    }
+    $this->composerJsonHelper
+      ->addInstallerPath('files-private/{$name}', $package_names);
   }
 
   /**

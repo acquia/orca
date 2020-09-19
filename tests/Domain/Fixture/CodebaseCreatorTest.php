@@ -75,15 +75,25 @@ class CodebaseCreatorTest extends TestCase {
    * @covers ::__construct
    * @covers ::create
    */
-  public function testCreate($is_dev): void {
-    $fixture_options = $this->createFixtureOptions([
-      'dev' => $is_dev,
-    ]);
+  public function testCreate($options, $exit_on_patch_failure): void {
+    $fixture_options = $this->createFixtureOptions($options);
     $this->composer
       ->createProject($fixture_options)
       ->shouldBeCalledOnce();
     $this->git
       ->ensureFixtureRepo()
+      ->shouldBeCalledOnce();
+    $this->composerJsonHelper
+      ->writeFixtureOptions($fixture_options)
+      ->shouldBeCalledOnce();
+    $this->composerJsonHelper
+      ->set('config.discard-changes', TRUE)
+      ->shouldBeCalledOnce();
+    $this->composerJsonHelper
+      ->set('extra.composer-exit-on-patch-failure', $exit_on_patch_failure)
+      ->shouldBeCalledOnce();
+    $this->composerJsonHelper
+      ->writeFixtureOptions($fixture_options)
       ->shouldBeCalledOnce();
 
     $creator = $this->createCodebaseCreator();
@@ -92,8 +102,8 @@ class CodebaseCreatorTest extends TestCase {
 
   public function providerCreate(): array {
     return [
-      [TRUE],
-      [FALSE],
+      [['dev' => TRUE, 'ignore-patch-failure' => FALSE], TRUE],
+      [['dev' => FALSE, 'ignore-patch-failure' => TRUE], FALSE],
     ];
   }
 

@@ -64,6 +64,26 @@ class ComposerJsonHelperTest extends TestCase {
     return new ComposerJsonHelper($config_loader, $fixture, $fixture_options_factory);
   }
 
+  private function createComposerJsonHelperWithConfigSpy(): ComposerJsonHelper {
+    $config_loader = $this->configLoader->reveal();
+    $fixture = $this->fixture->reveal();
+    $fixture_options_factory = $this->fixtureOptionsFactory->reveal();
+    return new class($config_loader, $fixture, $fixture_options_factory) extends ComposerJsonHelper {
+
+      // phpcs:ignore DrupalPractice.CodeAnalysis.VariableAnalysis.UndefinedVariable
+      private $config;
+
+      protected function writeFile(Config $config): void {
+        $this->config = $config;
+      }
+
+      public function getConfig(): Config {
+        return $this->config;
+      }
+
+    };
+  }
+
   private function createFixtureOptions($options): FixtureOptions {
     $drupal_core_version_finder = $this->drupalCoreVersionFinder->reveal();
     $package_manager = $this->packageManager->reveal();
@@ -86,6 +106,134 @@ class ComposerJsonHelperTest extends TestCase {
 
   private function getTestComposerJsonWithFixtureOptionsRaw(): string {
     return json_encode($this->getTestComposerJsonDataWithFixtureOptions());
+  }
+
+  public function testAddRepository(): void {
+    $config = new Config($this->getTestComposerJsonRaw(), new Json(), TRUE);
+    $this->configLoader
+      ->load(self::FILENAME)
+      ->willReturn($config);
+    $composer_json = $this->createComposerJsonHelperWithConfigSpy();
+
+    $type = 'path';
+    $url = '/var/www/example';
+    $composer_json->addRepository('drupal/example_one', $type, $url);
+    $composer_json->addRepository('drupal/example_two', $type, $url);
+
+    $expected = [
+      'drupal/example_two' => [
+        'type' => $type,
+        'url' => $url,
+      ],
+      'drupal/example_one' => [
+        'type' => $type,
+        'url' => $url,
+      ],
+      'drupal' => [
+        'type' => 'composer',
+        'url' => 'https://packages.drupal.org/8',
+      ],
+      'asset-packagist' => [
+        'type' => 'composer',
+        'url' => 'https://asset-packagist.org',
+      ],
+    ];
+    /** @var \Noodlehaus\Config $config */
+    $config = $composer_json->getConfig();
+    $actual = $config->get('repositories');
+    self::assertSame($expected, $actual, 'Correctly added repositories');
+  }
+
+  public function testAddInstallerPath(): void {
+    $config = new Config($this->getTestComposerJsonRaw(), new Json(), TRUE);
+    $this->configLoader
+      ->load(self::FILENAME)
+      ->willReturn($config);
+    $composer_json = $this->createComposerJsonHelperWithConfigSpy();
+
+    $matches = [
+      "drupal/example_one",
+      "drupal/example_two",
+    ];
+    $composer_json->addInstallerPath('files-private/{$name}', $matches);
+
+    $expected = [
+      'files-private/{$name}' => [
+        "drupal/example_one",
+        "drupal/example_two",
+      ],
+      'docroot/core' => [
+        'type:drupal-core',
+      ],
+      'docroot/libraries/{$name}' => [
+        'type:drupal-library',
+        'type:bower-asset',
+        'type:npm-asset',
+      ],
+      'docroot/modules/contrib/{$name}' => [
+        'type:drupal-module',
+      ],
+      'docroot/profiles/contrib/{$name}' => [
+        'type:drupal-profile',
+      ],
+      'docroot/themes/contrib/{$name}' => [
+        'type:drupal-theme',
+      ],
+      'drush/Commands/contrib/{$name}' => [
+        'type:drupal-drush',
+      ],
+      'docroot/modules/custom/{$name}' => [
+        'type:drupal-custom-module',
+      ],
+      'docroot/themes/custom/{$name}' => [
+        'type:drupal-custom-theme',
+      ],
+    ];
+    /** @var \Noodlehaus\Config $config */
+    $config = $composer_json->getConfig();
+    $actual = $config->get('extra.installer-paths');
+    self::assertSame($expected, $actual, 'Correctly added repositories');
+  }
+
+  public function testAddInstallerPathEmpty(): void {
+    $this->configLoader
+      ->load(self::FILENAME)
+      ->shouldNotBeCalled();
+    $composer_json = $this->createComposerJsonHelper();
+
+    $composer_json->addInstallerPath('files-private/{$name}', []);
+  }
+
+  public function testSetPreferInstallFromSource(): void {
+    $config = new Config($this->getTestComposerJsonRaw(), new Json(), TRUE);
+    $this->configLoader
+      ->load(self::FILENAME)
+      ->willReturn($config);
+    $composer_json = $this->createComposerJsonHelperWithConfigSpy();
+
+    $packages = [
+      'drupal/example_one',
+      'drupal/example_two',
+    ];
+    $composer_json->setPreferInstallFromSource($packages);
+
+    $expected = [
+      'drupal/example_one' => 'source',
+      'drupal/example_two' => 'source',
+    ];
+    /** @var \Noodlehaus\Config $config */
+    $config = $composer_json->getConfig();
+    $actual = $config->get('config.preferred-install');
+    self::assertSame($expected, $actual, 'Correctly set preferred install values.');
+  }
+
+  public function testSetPreferInstallFromSourceEmpty(): void {
+    $this->configLoader
+      ->load(self::FILENAME)
+      ->shouldNotBeCalled();
+    $composer_json = $this->createComposerJsonHelper();
+
+    $composer_json->setPreferInstallFromSource([]);
   }
 
   public function testGetFixtureOptions(): void {
@@ -149,6 +297,31 @@ class ComposerJsonHelperTest extends TestCase {
     $composer_json = $this->createComposerJsonHelper();
 
     $composer_json->getFixtureOptions();
+  }
+
+  /**
+   * @dataProvider providerSet
+   */
+  public function testSet($key, $value): void {
+    $config = $this->prophesize(Config::class);
+    $config->set($key, $value)
+      ->shouldBeCalledOnce();
+    $config->toFile(Argument::any())
+      ->shouldBeCalledOnce();
+    $this->configLoader
+      ->load(self::FILENAME)
+      ->willReturn($config);
+    $composer_json = $this->createComposerJsonHelper();
+
+    $composer_json->set($key, $value);
+  }
+
+  public function providerSet(): array {
+    return [
+      ['lorem.ipsum', TRUE],
+      ['dolor.sit.amet', 12345],
+      ['consectitur', ['example']],
+    ];
   }
 
   public function testWriteOptions(): void {

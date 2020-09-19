@@ -215,7 +215,7 @@ class FixtureInspector {
    */
   private function getPackageStabilitySetting(): string {
     if ($this->options->isDev()) {
-      return 'Deb/HEAD';
+      return 'Dev/HEAD';
     }
     return 'Stable';
   }

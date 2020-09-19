@@ -82,7 +82,6 @@ class CodebaseCreator {
     $this->createProject();
     $this->git->ensureFixtureRepo();
     $this->configureComposerProject();
-    $this->composerJsonHelper->writeFixtureOptions($options);
   }
 
   /**
@@ -116,7 +115,7 @@ class CodebaseCreator {
   private function configureComposerProject(): void {
     $composer_json_path = $this->fixture->getPath('composer.json');
     try {
-      $this->composerJsonHelper->writeFixtureOptions($this->options);
+      $this->writeSettings();
     }
     catch (FileNotFoundException $e) {
       throw new FileNotFoundException("No such file: {$composer_json_path}");
@@ -124,6 +123,25 @@ class CodebaseCreator {
     catch (ParseError $e) {
       throw new ParseError("Cannot parse {$composer_json_path}");
     }
+  }
+
+  /**
+   * Writes settings to the composer.json.
+   *
+   * @throws \Acquia\Orca\Exception\FileNotFoundException
+   * @throws \Acquia\Orca\Exception\FixtureNotExistsException
+   * @throws \Acquia\Orca\Exception\ParseError
+   */
+  private function writeSettings(): void {
+    $this->composerJsonHelper->writeFixtureOptions($this->options);
+
+    // Prevent errors later because "Source directory docroot/core has
+    // uncommitted changes" after "Removing package drupal/core so that it can
+    // be re-installed and re-patched".
+    // @see https://drupal.stackexchange.com/questions/273859
+    $this->composerJsonHelper->set('config.discard-changes', TRUE);
+
+    $this->composerJsonHelper->set('extra.composer-exit-on-patch-failure', !$this->options->ignorePatchFailure());
   }
 
 }

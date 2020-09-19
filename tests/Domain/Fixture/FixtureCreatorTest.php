@@ -8,6 +8,7 @@ use Acquia\Orca\Domain\Composer\Version\VersionGuesser;
 use Acquia\Orca\Domain\Fixture\CodebaseCreator;
 use Acquia\Orca\Domain\Fixture\FixtureCreator;
 use Acquia\Orca\Domain\Fixture\FixtureInspector;
+use Acquia\Orca\Domain\Fixture\Helper\ComposerJsonHelper;
 use Acquia\Orca\Domain\Fixture\SiteInstaller;
 use Acquia\Orca\Domain\Fixture\SubextensionManager;
 use Acquia\Orca\Domain\Package\PackageManager;
@@ -23,6 +24,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  * @property \Acquia\Orca\Domain\Composer\Version\VersionGuesser|\Prophecy\Prophecy\ObjectProphecy $versionGuesser
  * @property \Acquia\Orca\Domain\Fixture\CodebaseCreator|\Prophecy\Prophecy\ObjectProphecy $codebaseCreator
  * @property \Acquia\Orca\Domain\Fixture\FixtureInspector|\Prophecy\Prophecy\ObjectProphecy $fixtureInspector
+ * @property \Acquia\Orca\Domain\Fixture\Helper\ComposerJsonHelper|\Prophecy\Prophecy\ObjectProphecy $composerJsonHelper
  * @property \Acquia\Orca\Domain\Fixture\SiteInstaller|\Prophecy\Prophecy\ObjectProphecy $siteInstaller
  * @property \Acquia\Orca\Domain\Fixture\SubextensionManager|\Prophecy\Prophecy\ObjectProphecy $subextensionManager
  * @property \Acquia\Orca\Domain\Package\PackageManager|\Prophecy\Prophecy\ObjectProphecy $packageManager
@@ -36,6 +38,7 @@ class FixtureCreatorTest extends TestCase {
   protected function setUp(): void {
     $this->codebaseCreator = $this->prophesize(CodebaseCreator::class);
     $this->composer = $this->prophesize(Composer::class);
+    $this->composerJsonHelper = $this->prophesize(ComposerJsonHelper::class);
     $this->fixture = $this->prophesize(FixturePathHandler::class);
     $this->fixtureInspector = $this->prophesize(FixtureInspector::class);
     $this->orca = $this->prophesize(OrcaPathHandler::class);
@@ -51,6 +54,7 @@ class FixtureCreatorTest extends TestCase {
   private function createFixtureCreator(): FixtureCreator {
     $codebase_creator = $this->codebaseCreator->reveal();
     $composer_facade = $this->composer->reveal();
+    $composer_json_helper = $this->composerJsonHelper->reveal();
     $fixture = $this->fixture->reveal();
     $fixture_inspector = $this->fixtureInspector->reveal();
     $package_manager = $this->packageManager->reveal();
@@ -60,7 +64,7 @@ class FixtureCreatorTest extends TestCase {
     $subextension_manager = $this->subextensionManager->reveal();
     $version_finder = $this->versionFinder->reveal();
     $version_guesser = $this->versionGuesser->reveal();
-    return new FixtureCreator($codebase_creator, $composer_facade, $fixture, $fixture_inspector, $site_installer, $output, $process_runner, $package_manager, $subextension_manager, $version_finder, $version_guesser);
+    return new FixtureCreator($codebase_creator, $composer_facade, $composer_json_helper, $fixture, $fixture_inspector, $site_installer, $output, $process_runner, $package_manager, $subextension_manager, $version_finder, $version_guesser);
   }
 
   public function testInstantiation(): void {
