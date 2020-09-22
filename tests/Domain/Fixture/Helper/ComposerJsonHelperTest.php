@@ -3,7 +3,6 @@
 namespace Acquia\Orca\Tests\Domain\Fixture\Helper;
 
 use Acquia\Orca\Domain\Drupal\DrupalCoreVersionFinder;
-use Acquia\Orca\Domain\Fixture\FixtureOptionsFactory;
 use Acquia\Orca\Domain\Fixture\Helper\ComposerJsonHelper;
 use Acquia\Orca\Domain\Package\PackageManager;
 use Acquia\Orca\Exception\FileNotFoundException;
@@ -12,6 +11,7 @@ use Acquia\Orca\Exception\ParseError;
 use Acquia\Orca\Helper\Config\ConfigLoader;
 use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
 use Acquia\Orca\Options\FixtureOptions;
+use Acquia\Orca\Options\FixtureOptionsFactory;
 use LogicException;
 use Noodlehaus\Config;
 use Noodlehaus\Parser\Json;
@@ -20,7 +20,7 @@ use Prophecy\Argument;
 
 /**
  * @property \Acquia\Orca\Domain\Drupal\DrupalCoreVersionFinder|\Prophecy\Prophecy\ObjectProphecy $drupalCoreVersionFinder
- * @property \Acquia\Orca\Domain\Fixture\FixtureOptionsFactory|\Prophecy\Prophecy\ObjectProphecy $fixtureOptionsFactory
+ * @property \Acquia\Orca\Options\FixtureOptionsFactory|\Prophecy\Prophecy\ObjectProphecy $fixtureOptionsFactory
  * @property \Acquia\Orca\Domain\Package\PackageManager|\Prophecy\Prophecy\ObjectProphecy $packageManager
  * @property \Acquia\Orca\Helper\Config\ConfigLoader|\Prophecy\Prophecy\ObjectProphecy $configLoader
  * @property \Acquia\Orca\Helper\Filesystem\FixturePathHandler|\Prophecy\Prophecy\ObjectProphecy $fixture

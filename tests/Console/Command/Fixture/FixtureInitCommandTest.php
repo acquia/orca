@@ -4,7 +4,6 @@ namespace Acquia\Orca\Tests\Console\Command\Fixture;
 
 use Acquia\Orca\Console\Command\Fixture\FixtureInitCommand;
 use Acquia\Orca\Domain\Fixture\FixtureCreator;
-use Acquia\Orca\Domain\Fixture\FixtureOptionsFactory;
 use Acquia\Orca\Domain\Fixture\FixtureRemover;
 use Acquia\Orca\Domain\Fixture\SutPreconditionsTester;
 use Acquia\Orca\Enum\StatusCodeEnum;
@@ -12,13 +11,14 @@ use Acquia\Orca\Exception\InvalidArgumentException;
 use Acquia\Orca\Exception\OrcaException;
 use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
 use Acquia\Orca\Options\FixtureOptions;
+use Acquia\Orca\Options\FixtureOptionsFactory;
 use Acquia\Orca\Tests\Console\Command\CommandTestBase;
 use Prophecy\Argument;
 use Symfony\Component\Console\Command\Command;
 
 /**
  * @property \Acquia\Orca\Domain\Fixture\FixtureCreator|\Prophecy\Prophecy\ObjectProphecy $fixtureCreator
- * @property \Acquia\Orca\Domain\Fixture\FixtureOptionsFactory|\Prophecy\Prophecy\ObjectProphecy $fixtureOptionsFactory
+ * @property \Acquia\Orca\Options\FixtureOptionsFactory|\Prophecy\Prophecy\ObjectProphecy $fixtureOptionsFactory
  * @property \Acquia\Orca\Options\FixtureOptions|\Prophecy\Prophecy\ObjectProphecy $fixtureOptions
  * @property \Acquia\Orca\Domain\Fixture\FixtureRemover|\Prophecy\Prophecy\ObjectProphecy $fixtureRemover
  * @property \Acquia\Orca\Domain\Fixture\SutPreconditionsTester|\Prophecy\Prophecy\ObjectProphecy $sutPreconditionsTester

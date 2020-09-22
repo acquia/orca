@@ -3,7 +3,6 @@
 namespace Acquia\Orca\Console\Command\Fixture;
 
 use Acquia\Orca\Domain\Fixture\FixtureCreator;
-use Acquia\Orca\Domain\Fixture\FixtureOptionsFactory;
 use Acquia\Orca\Domain\Fixture\FixtureRemover;
 use Acquia\Orca\Domain\Fixture\SutPreconditionsTester;
 use Acquia\Orca\Enum\DrupalCoreVersionEnum;
@@ -11,6 +10,7 @@ use Acquia\Orca\Enum\StatusCodeEnum;
 use Acquia\Orca\Exception\InvalidArgumentException;
 use Acquia\Orca\Exception\OrcaException;
 use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
+use Acquia\Orca\Options\FixtureOptionsFactory;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -46,7 +46,7 @@ class FixtureInitCommand extends Command {
   /**
    * The fixture options factory.
    *
-   * @var \Acquia\Orca\Domain\Fixture\FixtureOptionsFactory
+   * @var \Acquia\Orca\Options\FixtureOptionsFactory
    */
   private $fixtureOptionsFactory;
 
@@ -67,7 +67,7 @@ class FixtureInitCommand extends Command {
   /**
    * Constructs an instance.
    *
-   * @param \Acquia\Orca\Domain\Fixture\FixtureOptionsFactory $fixture_options_factory
+   * @param \Acquia\Orca\Options\FixtureOptionsFactory $fixture_options_factory
    *   The fixture options factory.
    * @param \Acquia\Orca\Helper\Filesystem\FixturePathHandler $fixture_path_handler
    *   The fixture path handler.

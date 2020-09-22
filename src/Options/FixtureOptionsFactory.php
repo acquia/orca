@@ -1,23 +1,14 @@
 <?php
 
-namespace Acquia\Orca\Domain\Fixture;
+namespace Acquia\Orca\Options;
 
-use Acquia\Orca\Domain\Composer\Composer;
 use Acquia\Orca\Domain\Drupal\DrupalCoreVersionFinder;
 use Acquia\Orca\Domain\Package\PackageManager;
-use Acquia\Orca\Options\FixtureOptions;
 
 /**
  * Provides a factory for fixture options.
  */
 class FixtureOptionsFactory {
-
-  /**
-   * The Composer facade.
-   *
-   * @var \Acquia\Orca\Domain\Composer\Composer
-   */
-  private $composer;
 
   /**
    * The package manager.
@@ -36,15 +27,12 @@ class FixtureOptionsFactory {
   /**
    * Constructs an instance.
    *
-   * @param \Acquia\Orca\Domain\Composer\Composer $composer
-   *   The Composer facade.
    * @param \Acquia\Orca\Domain\Drupal\DrupalCoreVersionFinder $drupal_core_version_finder
    *   The Drupal core version finder.
    * @param \Acquia\Orca\Domain\Package\PackageManager $package_manager
    *   The package manager.
    */
-  public function __construct(Composer $composer, DrupalCoreVersionFinder $drupal_core_version_finder, PackageManager $package_manager) {
-    $this->composer = $composer;
+  public function __construct(DrupalCoreVersionFinder $drupal_core_version_finder, PackageManager $package_manager) {
     $this->drupalCoreVersionFinder = $drupal_core_version_finder;
     $this->packageManager = $package_manager;
   }

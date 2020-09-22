@@ -2,13 +2,13 @@
 
 namespace Acquia\Orca\Domain\Fixture\Helper;
 
-use Acquia\Orca\Domain\Fixture\FixtureOptionsFactory;
 use Acquia\Orca\Exception\FileNotFoundException;
 use Acquia\Orca\Exception\FixtureNotExistsException;
 use Acquia\Orca\Exception\ParseError;
 use Acquia\Orca\Helper\Config\ConfigLoader;
 use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
 use Acquia\Orca\Options\FixtureOptions;
+use Acquia\Orca\Options\FixtureOptionsFactory;
 use LogicException;
 use Noodlehaus\Config;
 
@@ -49,7 +49,7 @@ class ComposerJsonHelper {
   /**
    * The fixture options factory.
    *
-   * @var \Acquia\Orca\Domain\Fixture\FixtureOptionsFactory
+   * @var \Acquia\Orca\Options\FixtureOptionsFactory
    */
   private $fixtureOptionsFactory;
 
@@ -60,7 +60,7 @@ class ComposerJsonHelper {
    *   The config loader.
    * @param \Acquia\Orca\Helper\Filesystem\FixturePathHandler $fixture_path_handler
    *   The fixture path handler.
-   * @param \Acquia\Orca\Domain\Fixture\FixtureOptionsFactory $fixture_options_factory
+   * @param \Acquia\Orca\Options\FixtureOptionsFactory $fixture_options_factory
    *   The fixture options factory.
    */
   public function __construct(ConfigLoader $config_loader, FixturePathHandler $fixture_path_handler, FixtureOptionsFactory $fixture_options_factory) {
