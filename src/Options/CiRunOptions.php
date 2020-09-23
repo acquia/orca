@@ -2,6 +2,8 @@
 
 namespace Acquia\Orca\Options;
 
+use Acquia\Orca\Domain\Package\Package;
+use Acquia\Orca\Domain\Package\PackageManager;
 use Acquia\Orca\Enum\CiJobEnum;
 use Acquia\Orca\Enum\CiJobPhaseEnum;
 use Acquia\Orca\Exception\OrcaInvalidArgumentException;
@@ -24,14 +26,24 @@ class CiRunOptions {
   private $options;
 
   /**
+   * The package manager.
+   *
+   * @var \Acquia\Orca\Domain\Package\PackageManager
+   */
+  private $packageManager;
+
+  /**
    * Constructs an instance.
    *
+   * @param \Acquia\Orca\Domain\Package\PackageManager $package_manager
+   *   The package manager.
    * @param array $options
    *   The options.
    *
    * @throws \Acquia\Orca\Exception\OrcaInvalidArgumentException
    */
-  public function __construct(array $options) {
+  public function __construct(PackageManager $package_manager, array $options) {
+    $this->packageManager = $package_manager;
     $this->resolve($options);
   }
 
@@ -50,18 +62,22 @@ class CiRunOptions {
         ->setDefined([
           'job',
           'phase',
+          'sut',
         ])
         // Set required.
         ->setRequired([
           'job',
           'phase',
+          'sut',
         ])
         // Set allowed types.
         ->setAllowedTypes('job', 'string')
         ->setAllowedTypes('phase', 'string')
+        ->setAllowedTypes('sut', 'string')
         // Set allowed values.
         ->setAllowedValues('job', $this->isValidJobValue())
         ->setAllowedValues('phase', $this->isValidPhaseValue())
+        ->setAllowedValues('sut', $this->isValidSutValue())
         // Resolve.
         ->resolve($options);
     }
@@ -107,6 +123,18 @@ class CiRunOptions {
   }
 
   /**
+   * Validates the "sut" value.
+   *
+   * @return \Closure
+   *   The validation function.
+   */
+  private function isValidSutValue(): Closure {
+    return function ($value): bool {
+      return $this->packageManager->exists($value);
+    };
+  }
+
+  /**
    * Gets the job enum.
    *
    * @return \Acquia\Orca\Enum\CiJobEnum
@@ -124,6 +152,16 @@ class CiRunOptions {
    */
   public function getPhase(): CiJobPhaseEnum {
     return new CiJobPhaseEnum($this->options['phase']);
+  }
+
+  /**
+   * Gets the SUT.
+   *
+   * @return \Acquia\Orca\Domain\Package\Package
+   *   The SUT package.
+   */
+  public function getSut(): Package {
+    return $this->packageManager->get($this->options['sut']);
   }
 
 }

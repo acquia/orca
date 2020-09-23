@@ -7,7 +7,7 @@ use Acquia\Orca\Enum\CiJobEnum;
 use Acquia\Orca\Enum\CiJobPhaseEnum;
 use Acquia\Orca\Enum\StatusCodeEnum;
 use Acquia\Orca\Exception\OrcaInvalidArgumentException;
-use Acquia\Orca\Options\CiRunOptions;
+use Acquia\Orca\Options\CiRunOptionsFactory;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -30,16 +30,26 @@ class CiRunCommand extends Command {
    *
    * @var \Acquia\Orca\Domain\Ci\CiJobFactory
    */
-  private $jobFactory;
+  private $ciJobFactory;
+
+  /**
+   * The CI run options factory.
+   *
+   * @var \Acquia\Orca\Options\CiRunOptionsFactory
+   */
+  private $ciRunOptionsFactory;
 
   /**
    * Constructs an instance.
    *
    * @param \Acquia\Orca\Domain\Ci\CiJobFactory $job_factory
    *   The CI job factory.
+   * @param \Acquia\Orca\Options\CiRunOptionsFactory $ci_run_options_factory
+   *   The CI run options factory.
    */
-  public function __construct(CiJobFactory $job_factory) {
-    $this->jobFactory = $job_factory;
+  public function __construct(CiJobFactory $job_factory, CiRunOptionsFactory $ci_run_options_factory) {
+    $this->ciJobFactory = $job_factory;
+    $this->ciRunOptionsFactory = $ci_run_options_factory;
     parent::__construct(self::$defaultName);
   }
 
@@ -51,7 +61,8 @@ class CiRunCommand extends Command {
       ->setAliases(['run'])
       ->setDescription('Runs an ORCA CI job phase')
       ->addArgument('job', InputArgument::REQUIRED, $this->getJobArgumentDescription())
-      ->addArgument('phase', InputArgument::REQUIRED, $this->getPhaseArgumentDescription());
+      ->addArgument('phase', InputArgument::REQUIRED, $this->getPhaseArgumentDescription())
+      ->addArgument('sut', InputArgument::REQUIRED, 'The system under test (SUT) in the form of its package name, e.g., "drupal/example"');
   }
 
   /**
@@ -99,12 +110,13 @@ class CiRunCommand extends Command {
    */
   public function execute(InputInterface $input, OutputInterface $output): int {
     try {
-      $options = new CiRunOptions([
+      $options = $this->ciRunOptionsFactory->create([
         'job' => $input->getArgument('job'),
         'phase' => $input->getArgument('phase'),
+        'sut' => $input->getArgument('sut'),
       ]);
-      $job = $this->jobFactory->create($options->getJob());
-      $job->run($options->getPhase());
+      $job = $this->ciJobFactory->create($options->getJob());
+      $job->run($options);
     }
     catch (OrcaInvalidArgumentException $e) {
       $output->writeln("Error: {$e->getMessage()}");

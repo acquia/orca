@@ -26,4 +26,4 @@ fi
 # @see https://travis-ci.org/acquia/orca/branches
 echo && travis history --no-interactive --repo=acquia/orca --branch=master --limit=2 --date
 
-eval "orca ci:run $ORCA_JOB after_script"
+eval "orca ci:run $ORCA_JOB after_script $ORCA_SUT_NAME"

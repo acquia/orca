@@ -15,4 +15,4 @@ if [[ -f "$ORCA_FIXTURE_DIR/vendor/bin/drush" && "$(drush core-status --field=bo
   drush watchdog:show --count=100 --severity=Error --extended
 fi
 
-eval "orca ci:run $ORCA_JOB after_failure"
+eval "orca ci:run $ORCA_JOB after_failure $ORCA_SUT_NAME"

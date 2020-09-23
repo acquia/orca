@@ -4,6 +4,7 @@ namespace Acquia\Orca\Domain\Ci\Job;
 
 use Acquia\Orca\Enum\CiJobEnum;
 use Acquia\Orca\Enum\CiJobPhaseEnum;
+use Acquia\Orca\Options\CiRunOptions;
 
 /**
  * Provides an abstract class for CI Job classes.
@@ -29,112 +30,145 @@ abstract class AbstractCiJob {
   abstract protected function jobName(): CiJobEnum;
 
   /**
-   * Runs a job given job.
+   * Runs a given job.
    *
-   * @param \Acquia\Orca\Enum\CiJobPhaseEnum $phase
-   *   The CI job phase.
+   * @param \Acquia\Orca\Options\CiRunOptions $options
+   *   The CI run options.
    */
-  final public function run(CiJobPhaseEnum $phase): void {
-    switch ($phase) {
+  final public function run(CiRunOptions $options): void {
+    switch ($options->getPhase()->getValue()) {
       case CiJobPhaseEnum::BEFORE_INSTALL:
-        $this->beforeInstall();
+        $this->beforeInstall($options);
         break;
 
       case CiJobPhaseEnum::INSTALL:
-        $this->install();
+        $this->install($options);
         break;
 
       case CiJobPhaseEnum::BEFORE_SCRIPT:
-        $this->beforeScript();
+        $this->beforeScript($options);
         break;
 
       case CiJobPhaseEnum::SCRIPT:
-        $this->script();
+        $this->script($options);
         break;
 
       case CiJobPhaseEnum::BEFORE_CACHE:
-        $this->beforeCache();
+        $this->beforeCache($options);
         break;
 
       case CiJobPhaseEnum::AFTER_SUCCESS:
-        $this->afterSuccess();
+        $this->afterSuccess($options);
         break;
 
       case CiJobPhaseEnum::AFTER_FAILURE:
-        $this->afterFailure();
+        $this->afterFailure($options);
         break;
 
       case CiJobPhaseEnum::BEFORE_DEPLOY:
-        $this->beforeDeploy();
+        $this->beforeDeploy($options);
         break;
 
       case CiJobPhaseEnum::DEPLOY:
-        $this->deploy();
+        $this->deploy($options);
         break;
 
       case CiJobPhaseEnum::AFTER_DEPLOY:
-        $this->afterDeploy();
+        $this->afterDeploy($options);
         break;
 
       case CiJobPhaseEnum::AFTER_SCRIPT:
-        $this->afterScript();
+        $this->afterScript($options);
 
     }
   }
 
   /**
    * Runs before the install stage.
+   *
+   * @param \Acquia\Orca\Options\CiRunOptions $options
+   *   The CI run options.
    */
-  protected function beforeInstall(): void {}
+  protected function beforeInstall(CiRunOptions $options): void {}
 
   /**
    * Runs at the install stage.
+   *
+   * @param \Acquia\Orca\Options\CiRunOptions $options
+   *   The CI run options.
    */
-  protected function install(): void {}
+  protected function install(CiRunOptions $options): void {}
 
   /**
    * Runs before the script stage.
+   *
+   * @param \Acquia\Orca\Options\CiRunOptions $options
+   *   The CI run options.
    */
-  protected function beforeScript(): void {}
+  protected function beforeScript(CiRunOptions $options): void {}
 
   /**
    * Runs at the script stage.
+   *
+   * @param \Acquia\Orca\Options\CiRunOptions $options
+   *   The CI run options.
    */
-  protected function script(): void {}
+  protected function script(CiRunOptions $options): void {}
 
   /**
    * Runs before storing a build cache.
+   *
+   * @param \Acquia\Orca\Options\CiRunOptions $options
+   *   The CI run options.
    */
-  protected function beforeCache(): void {}
+  protected function beforeCache(CiRunOptions $options): void {}
 
   /**
    * Runs after a successful script stage.
+   *
+   * @param \Acquia\Orca\Options\CiRunOptions $options
+   *   The CI run options.
    */
-  protected function afterSuccess(): void {}
+  protected function afterSuccess(CiRunOptions $options): void {}
 
   /**
    * Runs after a failing script stage.
+   *
+   * @param \Acquia\Orca\Options\CiRunOptions $options
+   *   The CI run options.
    */
-  protected function afterFailure(): void {}
+  protected function afterFailure(CiRunOptions $options): void {}
 
   /**
    * Runs before the deploy stage.
+   *
+   * @param \Acquia\Orca\Options\CiRunOptions $options
+   *   The CI run options.
    */
-  protected function beforeDeploy(): void {}
+  protected function beforeDeploy(CiRunOptions $options): void {}
 
   /**
    * Runs at the deploy stage.
+   *
+   * @param \Acquia\Orca\Options\CiRunOptions $options
+   *   The CI run options.
    */
-  protected function deploy(): void {}
+  protected function deploy(CiRunOptions $options): void {}
 
   /**
    * Runs after the deploy stage.
+   *
+   * @param \Acquia\Orca\Options\CiRunOptions $options
+   *   The CI run options.
    */
-  protected function afterDeploy(): void {}
+  protected function afterDeploy(CiRunOptions $options): void {}
 
   /**
    * Runs as the last stage.
+   *
+   * @param \Acquia\Orca\Options\CiRunOptions $options
+   *   The CI run options.
    */
-  protected function afterScript(): void {}
+  protected function afterScript(CiRunOptions $options): void {}
 
 }

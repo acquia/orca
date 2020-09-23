@@ -4,17 +4,20 @@ namespace Acquia\Orca\Tests\Domain\Ci\Job;
 
 use Acquia\Orca\Domain\Ci\Job\AbstractCiJob;
 use Acquia\Orca\Enum\CiJobEnum;
-use Acquia\Orca\Enum\CiJobPhaseEnum;
+use Acquia\Orca\Options\CiRunOptions;
 use Acquia\Orca\Tests\_Helper\TestSpy;
 
+/**
+ * @property \Acquia\Orca\Options\CiRunOptions options
+ */
 class CiTestJob extends AbstractCiJob {
 
   private $jobEnum;
 
   private $spy;
 
-  public function __construct(CiJobEnum $job_enum, TestSpy $spy) {
-    $this->jobEnum = $job_enum;
+  public function __construct(CiRunOptions $options, TestSpy $spy) {
+    $this->options = $options;
     $this->spy = $spy;
   }
 
@@ -22,48 +25,48 @@ class CiTestJob extends AbstractCiJob {
     return $this->jobEnum;
   }
 
-  public function beforeInstall(): void {
-    $this->spy->call(CiJobPhaseEnum::BEFORE_INSTALL);
+  public function beforeInstall(CiRunOptions $options): void {
+    $this->spy->call($this->options);
   }
 
-  public function install(): void {
-    $this->spy->call(CiJobPhaseEnum::INSTALL);
+  public function install(CiRunOptions $options): void {
+    $this->spy->call($this->options);
   }
 
-  public function beforeScript(): void {
-    $this->spy->call(CiJobPhaseEnum::BEFORE_SCRIPT);
+  public function beforeScript(CiRunOptions $options): void {
+    $this->spy->call($this->options);
   }
 
-  public function script(): void {
-    $this->spy->call(CiJobPhaseEnum::SCRIPT);
+  public function script(CiRunOptions $options): void {
+    $this->spy->call($this->options);
   }
 
-  public function beforeCache(): void {
-    $this->spy->call(CiJobPhaseEnum::BEFORE_CACHE);
+  public function beforeCache(CiRunOptions $options): void {
+    $this->spy->call($this->options);
   }
 
-  public function afterSuccess(): void {
-    $this->spy->call(CiJobPhaseEnum::AFTER_SUCCESS);
+  public function afterSuccess(CiRunOptions $options): void {
+    $this->spy->call($this->options);
   }
 
-  public function afterFailure(): void {
-    $this->spy->call(CiJobPhaseEnum::AFTER_FAILURE);
+  public function afterFailure(CiRunOptions $options): void {
+    $this->spy->call($this->options);
   }
 
-  public function beforeDeploy(): void {
-    $this->spy->call(CiJobPhaseEnum::BEFORE_DEPLOY);
+  public function beforeDeploy(CiRunOptions $options): void {
+    $this->spy->call($this->options);
   }
 
-  public function deploy(): void {
-    $this->spy->call(CiJobPhaseEnum::DEPLOY);
+  public function deploy(CiRunOptions $options): void {
+    $this->spy->call($this->options);
   }
 
-  public function afterDeploy(): void {
-    $this->spy->call(CiJobPhaseEnum::AFTER_DEPLOY);
+  public function afterDeploy(CiRunOptions $options): void {
+    $this->spy->call($this->options);
   }
 
-  public function afterScript(): void {
-    $this->spy->call(CiJobPhaseEnum::AFTER_SCRIPT);
+  public function afterScript(CiRunOptions $options): void {
+    $this->spy->call($this->options);
   }
 
 }

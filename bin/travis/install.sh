@@ -31,4 +31,4 @@ if [[ "$ORCA_ENABLE_NIGHTWATCH" = "TRUE" && "$ORCA_SUT_HAS_NIGHTWATCH_TESTS" && 
   )
 fi
 
-eval "orca ci:run $ORCA_JOB install"
+eval "orca ci:run $ORCA_JOB install $ORCA_SUT_NAME"

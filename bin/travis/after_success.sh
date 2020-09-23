@@ -25,4 +25,4 @@ else
   notice "No coverage data sent to Coveralls."
 fi
 
-eval "orca ci:run $ORCA_JOB after_success"
+eval "orca ci:run $ORCA_JOB after_success $ORCA_SUT_NAME"
