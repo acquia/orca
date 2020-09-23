@@ -13,6 +13,8 @@ use Prophecy\Argument;
  */
 class GitTest extends TestCase {
 
+  private const FRESH_FIXTURE_TAG = 'fresh-fixture';
+
   protected function setUp(): void {
     $this->processRunner = $this->prophesize(ProcessRunner::class);
     $this->processRunner
@@ -25,23 +27,7 @@ class GitTest extends TestCase {
     return new Git($process_runner);
   }
 
-  public function testEnsureFixtureRepo(): void {
-    $this->processRunner
-      ->git(['init'])
-      ->shouldBeCalledOnce();
-    $this->processRunner
-      ->git(['config', 'user.name', 'ORCA'])
-      ->shouldBeCalledOnce();
-    $this->processRunner
-      ->git(['config', 'user.email', 'no-reply@acquia.com'])
-      ->shouldBeCalledOnce();
-
-    $git = $this->createGit();
-
-    $git->ensureFixtureRepo();
-  }
-
-  public function testBackupFixtureState(): void {
+  public function testBackupCodebaseState(): void {
     // Ensure fixture repo.
     $this->processRunner
       ->git(['init'])
@@ -68,7 +54,40 @@ class GitTest extends TestCase {
 
     $git = $this->createGit();
 
-    $git->backupFixtureState();
+    $git->backupFixtureRepo();
+  }
+
+  public function testEnsureFixtureRepo(): void {
+    $this->processRunner
+      ->git(['init'])
+      ->shouldBeCalledOnce();
+    $this->processRunner
+      ->git(['config', 'user.name', 'ORCA'])
+      ->shouldBeCalledOnce();
+    $this->processRunner
+      ->git(['config', 'user.email', 'no-reply@acquia.com'])
+      ->shouldBeCalledOnce();
+
+    $git = $this->createGit();
+
+    $git->ensureFixtureRepo();
+  }
+
+  public function testResetRepoState(): void {
+    $this->processRunner
+      ->git([
+        'checkout',
+        '--force',
+        self::FRESH_FIXTURE_TAG,
+      ])
+      ->shouldBeCalledOnce();
+    $this->processRunner
+      ->git(['clean', '--force', '-d'])
+      ->shouldBeCalledOnce();
+
+    $git = $this->createGit();
+
+    $git->resetRepoState();
   }
 
 }

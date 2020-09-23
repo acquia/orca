@@ -39,7 +39,7 @@ class FixtureBackupCommandTest extends CommandTestBase {
       ->shouldBeCalled()
       ->willReturn($fixture_exists);
     $this->git
-      ->backupFixtureState()
+      ->backupFixtureRepo()
       ->shouldBeCalledTimes($remove_called);
 
     $this->executeCommand($args, $inputs);

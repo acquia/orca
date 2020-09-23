@@ -81,7 +81,7 @@ class FixtureBackupCommand extends Command {
       return StatusCodeEnum::USER_CANCEL;
     }
 
-    $this->git->backupFixtureState();
+    $this->git->backupFixtureRepo();
     return StatusCodeEnum::OK;
   }
 

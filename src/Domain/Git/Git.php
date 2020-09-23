@@ -29,6 +29,22 @@ class Git {
   }
 
   /**
+   * Backs up the fixture repository state.
+   *
+   * The SQLite database will be included, if present.
+   */
+  public function backupFixtureRepo(): void {
+    $this->ensureFixtureRepo();
+    $this->processRunner->git(['add', '--all']);
+    $this->processRunner->gitCommit('Backed up the fixture.');
+    $this->processRunner->git([
+      'tag',
+      '--force',
+      self::FRESH_FIXTURE_TAG,
+    ]);
+  }
+
+  /**
    * Ensures the fixture's Git repository existence and basic configuration.
    */
   public function ensureFixtureRepo(): void {
@@ -50,19 +66,15 @@ class Git {
   }
 
   /**
-   * Backs up the fixture state.
-   *
-   * The SQLite database will be included, if present.
+   * Resets the fixture's Git repository state.
    */
-  public function backupFixtureState(): void {
-    $this->ensureFixtureRepo();
-    $this->processRunner->git(['add', '--all']);
-    $this->processRunner->gitCommit('Backed up the fixture.');
+  public function resetRepoState(): void {
     $this->processRunner->git([
-      'tag',
+      'checkout',
       '--force',
       self::FRESH_FIXTURE_TAG,
     ]);
+    $this->processRunner->git(['clean', '--force', '-d']);
   }
 
 }
