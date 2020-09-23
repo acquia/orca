@@ -3,7 +3,6 @@
 namespace Acquia\Orca\Domain\Composer\Version;
 
 use Acquia\Orca\Exception\VersionNotFoundException;
-use Composer\Package\Version\VersionSelector;
 
 /**
  * Provides a facade for encapsulating Composer remote version finding.
@@ -11,20 +10,20 @@ use Composer\Package\Version\VersionSelector;
 class VersionFinder {
 
   /**
-   * The Composer version selector.
+   * The version selector factory.
    *
-   * @var \Composer\Package\Version\VersionSelector
+   * @var \Acquia\Orca\Domain\Composer\Version\VersionSelectorFactory
    */
-  private $versionSelector;
+  private $versionSelectorFactory;
 
   /**
    * Constructs an instance.
    *
-   * @param \Composer\Package\Version\VersionSelector $version_selector
-   *   The Composer version selector.
+   * @param \Acquia\Orca\Domain\Composer\Version\VersionSelectorFactory $version_selector_factory
+   *   The version selector factory.
    */
-  public function __construct(VersionSelector $version_selector) {
-    $this->versionSelector = $version_selector;
+  public function __construct(VersionSelectorFactory $version_selector_factory) {
+    $this->versionSelectorFactory = $version_selector_factory;
   }
 
   /**
@@ -48,8 +47,8 @@ class VersionFinder {
       $stability = 'dev';
     }
 
-    $candidate = $this->versionSelector
-      ->findBestCandidate($package_name, $constraint, NULL, $stability);
+    $selector = $this->versionSelectorFactory->create();
+    $candidate = $selector->findBestCandidate($package_name, $constraint, NULL, $stability);
 
     if (!$candidate) {
       throw new VersionNotFoundException(sprintf('No available version could be found for "%s:%s".', $package_name, $constraint));

@@ -14,12 +14,29 @@ use Composer\Repository\RepositoryFactory;
 class VersionSelectorFactory {
 
   /**
+   * The Composer package pool.
+   *
+   * @var \Composer\DependencyResolver\Pool
+   */
+  private $packagePool;
+
+  /**
+   * Constructs an instance.
+   *
+   * @param \Composer\DependencyResolver\Pool $package_pool
+   *   The Composer package pool.
+   */
+  public function __construct(Pool $package_pool) {
+    $this->packagePool = $package_pool;
+  }
+
+  /**
    * Creates a Composer version selector for Packagist and Drupal.org.
    *
    * @return \Composer\Package\Version\VersionSelector
    *   The version selector.
    */
-  public static function create(): VersionSelector {
+  public function create(): VersionSelector {
     $io = new NullIO();
     $packagist = RepositoryFactory::defaultRepos($io)['packagist.org'];
     $drupal_org = RepositoryFactory::createRepo($io, Factory::createConfig($io), [
@@ -27,11 +44,10 @@ class VersionSelectorFactory {
       'url' => 'https://packages.drupal.org/8',
     ]);
 
-    $pool = new Pool('dev');
-    $pool->addRepository($packagist);
-    $pool->addRepository($drupal_org);
+    $this->packagePool->addRepository($packagist);
+    $this->packagePool->addRepository($drupal_org);
 
-    return new VersionSelector($pool);
+    return new VersionSelector($this->packagePool);
   }
 
 }

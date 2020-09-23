@@ -42,12 +42,13 @@ services:
 
   Composer\Config: ~
 
+  Composer\DependencyResolver\Pool:
+    arguments:
+      $minimumStability: "dev"
+
   Composer\Package\Version\VersionGuesser: ~
 
   Composer\Semver\VersionParser: ~
-
-  Composer\Package\Version\VersionSelector:
-    factory: ['Acquia\Orca\Domain\Composer\Version\VersionSelectorFactory', 'create']
 
   Composer\Util\ProcessExecutor: ~
 
