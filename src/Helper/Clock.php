@@ -12,6 +12,8 @@ class Clock {
    *
    * @param int $seconds
    *   Halt time in seconds.
+   *
+   * @codeCoverageIgnore
    */
   public function sleep(int $seconds): void {
     sleep($seconds);

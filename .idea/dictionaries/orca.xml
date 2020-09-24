@@ -4,8 +4,10 @@
       <w>acquia</w>
       <w>docroot</w>
       <w>drush</w>
+      <w>nightwatch</w>
       <w>noodlehaus</w>
       <w>orca</w>
+      <w>phpcbf</w>
       <w>phpcs</w>
       <w>phplint</w>
       <w>phploc</w>

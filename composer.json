@@ -1,12 +1,23 @@
 {
     "name": "acquia/orca",
     "description": "A tool for testing a company's software packages together in the context of a realistic, functioning, best practices Drupal build",
+    "keywords": [
+        "ci",
+        "cli",
+        "console",
+        "drupal",
+        "testing"
+    ],
     "license": "GPL-2.0-or-later",
     "authors": [
         {
             "name": "Acquia Engineering",
             "homepage": "https://www.acquia.com",
             "role": "Maintainer"
+        },
+        {
+            "name": "Travis Carden",
+            "role": "Creator & Maintainer"
         }
     ],
     "require": {

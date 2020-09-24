@@ -1,3 +1,4 @@
+// noinspection JSUnusedGlobalSymbols
 module.exports = {
   '@tags': ['example'],
   before(browser) {
