@@ -19,7 +19,7 @@ use UnexpectedValueException;
  */
 class PackageTest extends TestCase {
 
-  public function setUp() {
+  public function setUp(): void {
     $this->fixture = $this->prophesize(FixturePathHandler::class);
     $this->orca = $this->prophesize(OrcaPathHandler::class);
   }

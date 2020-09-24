@@ -11,7 +11,7 @@ use PHPUnit\Framework\TestCase;
  */
 class PhplocTaskTest extends TestCase {
 
-  protected function setUp() {
+  protected function setUp(): void {
     $this->phploc = $this->prophesize(Phploc::class);
   }
 

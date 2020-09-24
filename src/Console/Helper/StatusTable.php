@@ -12,7 +12,10 @@ use Symfony\Component\Console\Output\OutputInterface;
 class StatusTable extends Table {
 
   /**
-   * {@inheritdoc}
+   * Constructs an instance.
+   *
+   * @param \Symfony\Component\Console\Output\OutputInterface $output
+   *   The output decorator.
    */
   public function __construct(OutputInterface $output) {
     parent::__construct($output);

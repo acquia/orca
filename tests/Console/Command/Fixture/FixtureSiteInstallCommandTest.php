@@ -16,7 +16,7 @@ use Symfony\Component\Console\Command\Command;
  */
 class FixtureSiteInstallCommandTest extends CommandTestBase {
 
-  protected function setUp() {
+  protected function setUp(): void {
     $this->fixture = $this->prophesize(FixturePathHandler::class);
     $this->fixture->exists()
       ->willReturn(TRUE);

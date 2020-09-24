@@ -320,7 +320,7 @@ class ComposerJsonHelperTest extends TestCase {
     return [
       ['lorem.ipsum', TRUE],
       ['dolor.sit.amet', 12345],
-      ['consectitur', ['example']],
+      ['consectetur', ['example']],
     ];
   }
 

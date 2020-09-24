@@ -59,13 +59,6 @@ class QaDeprecatedCodeScanCommand extends Command {
   private $sut;
 
   /**
-   * The task runner.
-   *
-   * @var \Acquia\Orca\Helper\Task\TaskRunner
-   */
-  private $taskRunner;
-
-  /**
    * Constructs an instance.
    *
    * @param \Acquia\Orca\Helper\Filesystem\FixturePathHandler $fixture_path_handler

@@ -19,7 +19,7 @@ use Prophecy\Argument;
  */
 class FixtureOptionsTest extends TestCase {
 
-  public function setUp(): void {
+  protected function setUp(): void {
     $this->drupalCoreVersionFinder = $this->prophesize(DrupalCoreVersionFinder::class);
     $this->packageManager = $this->prophesize(PackageManager::class);
     $this->packageManager
@@ -346,7 +346,7 @@ class FixtureOptionsTest extends TestCase {
       ['abc'],
       ['test_example'],
       ['test123'],
-      ['lorem_ipsum_dolor_sit_amet_consectetur_adipiscing_elit'],
+      ['lorem_ipsum_dolor_sit_amet_consectetur_adipiscing_velit'],
     ];
   }
 

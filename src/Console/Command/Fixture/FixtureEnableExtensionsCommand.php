@@ -54,7 +54,7 @@ class FixtureEnableExtensionsCommand extends Command {
   /**
    * {@inheritdoc}
    */
-  protected function configure() {
+  protected function configure(): void {
     $this
       ->setAliases(['enexts'])
       ->setDescription('Enables all company Drupal extensions');

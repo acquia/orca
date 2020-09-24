@@ -15,7 +15,7 @@ use Symfony\Component\Console\Command\Command;
  */
 class FixtureResetCommandTest extends CommandTestBase {
 
-  protected function setUp() {
+  protected function setUp(): void {
     $this->fixtureResetter = $this->prophesize(FixtureResetter::class);
     $this->fixture = $this->prophesize(FixturePathHandler::class);
     $this->fixture->exists()

@@ -47,8 +47,7 @@ class TaskRunnerTest extends TestCase {
       ->shouldBeCalledTimes(1)
       ->willReturn($task);
     $task->execute()->shouldBeCalledTimes(1);
-    $task = $task->reveal();
-    return $task;
+    return $task->reveal();
   }
 
 }

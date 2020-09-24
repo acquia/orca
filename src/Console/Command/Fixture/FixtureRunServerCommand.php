@@ -52,7 +52,7 @@ class FixtureRunServerCommand extends Command {
   /**
    * {@inheritdoc}
    */
-  protected function configure() {
+  protected function configure(): void {
     $this
       ->setAliases(['serve'])
       ->setDescription('Runs the web server for development');

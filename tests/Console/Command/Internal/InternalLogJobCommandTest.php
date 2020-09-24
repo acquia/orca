@@ -17,7 +17,7 @@ use Symfony\Component\Console\Command\Command;
  */
 class InternalLogJobCommandTest extends CommandTestBase {
 
-  public function setUp() {
+  protected function setUp(): void {
     $this->telemetryClient = $this->prophesize(TelemetryClient::class);
     $this->telemetryClient
       ->isReady()

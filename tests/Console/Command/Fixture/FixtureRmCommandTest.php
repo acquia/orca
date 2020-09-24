@@ -15,7 +15,7 @@ use Symfony\Component\Console\Command\Command;
  */
 class FixtureRmCommandTest extends CommandTestBase {
 
-  protected function setUp() {
+  protected function setUp(): void {
     $this->fixtureRemover = $this->prophesize(FixtureRemover::class);
     $this->fixture = $this->prophesize(FixturePathHandler::class);
     $this->fixture->exists()

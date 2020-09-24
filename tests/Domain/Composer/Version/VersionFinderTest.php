@@ -51,14 +51,14 @@ class VersionFinderTest extends TestCase {
     self::assertSame($expected, $actual);
   }
 
-  public function providerFindLatestVersion() {
+  public function providerFindLatestVersion(): array {
     return [
       ['lorem/ipsum', '1.0.0', TRUE, 'dev', '1.0.0'],
       ['dolor/sit', '>1 <2', FALSE, 'alpha', '1.2.3'],
     ];
   }
 
-  public function testFindLatestVersionNoMatch() {
+  public function testFindLatestVersionNoMatch(): void {
     $this->versionSelector
       ->findBestCandidate(Argument::any(), Argument::any(), NULL, Argument::any())
       ->shouldBeCalledOnce()

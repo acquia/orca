@@ -15,7 +15,7 @@ use PHPUnit\Framework\TestCase;
  */
 class ServerStackTest extends TestCase {
 
-  public function setUp() {
+  protected function setUp(): void {
     $this->chromeDriverServer = $this->prophesize(ChromeDriverServer::class);
     $this->clock = $this->prophesize(Clock::class);
     $this->webServer = $this->prophesize(WebServer::class);

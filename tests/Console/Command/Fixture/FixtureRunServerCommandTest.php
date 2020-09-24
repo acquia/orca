@@ -15,7 +15,7 @@ use Symfony\Component\Console\Command\Command;
  */
 class FixtureRunServerCommandTest extends CommandTestBase {
 
-  protected function setUp() {
+  protected function setUp(): void {
     $this->fixture = $this->prophesize(FixturePathHandler::class);
     $this->fixture->getPath()
       ->willReturn(self::FIXTURE_ROOT);

@@ -19,7 +19,7 @@ use Symfony\Component\Console\Command\Command;
  */
 class DebugPackagesCommandTest extends CommandTestBase {
 
-  protected function setUp() {
+  protected function setUp(): void {
     $this->drupalCoreVersionFinder = $this->prophesize(DrupalCoreVersionFinder::class);
     $this->packageManager = $this->prophesize(PackageManager::class);
     $this->packageManager

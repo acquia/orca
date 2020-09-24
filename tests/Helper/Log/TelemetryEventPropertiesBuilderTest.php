@@ -16,7 +16,7 @@ use Symfony\Component\Filesystem\Filesystem;
  */
 class TelemetryEventPropertiesBuilderTest extends TestCase {
 
-  protected function setUp() {
+  protected function setUp(): void {
     $this->env = $this->prophesize(Env::class);
     $this->filesystem = $this->prophesize(Filesystem::class);
     $this->orca = $this->prophesize(OrcaPathHandler::class);

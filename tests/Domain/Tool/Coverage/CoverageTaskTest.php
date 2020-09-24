@@ -16,7 +16,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class CoverageTaskTest extends TestCase {
 
-  protected function setUp() {
+  protected function setUp(): void {
     $this->builder = $this->prophesize(CodeCoverageReportBuilder::class);
     $this->symfonyOutput = $this->prophesize(OutputInterface::class);
   }

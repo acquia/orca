@@ -16,7 +16,7 @@ use Symfony\Component\Console\Command\Command;
  */
 class FixtureEnableExtensionsCommandTest extends CommandTestBase {
 
-  protected function setUp() {
+  protected function setUp(): void {
     $this->companyExtensionEnabler = $this->prophesize(CompanyExtensionEnabler::class);
     $this->fixture_path_handler = $this->prophesize(FixturePathHandler::class);
     $this->fixture_path_handler->exists()

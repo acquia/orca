@@ -77,7 +77,7 @@ class DebugPackagesCommand extends Command {
    *
    * @SuppressWarnings(PHPMD.StaticAccess)
    */
-  protected function configure() {
+  protected function configure(): void {
     $this
       ->setAliases(['packages'])
       ->addArgument('core', InputArgument::OPTIONAL, implode(PHP_EOL, array_merge(

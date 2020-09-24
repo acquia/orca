@@ -54,7 +54,7 @@ class FixtureResetCommand extends Command {
   /**
    * {@inheritdoc}
    */
-  protected function configure() {
+  protected function configure(): void {
     $this
       ->setAliases(['reset'])
       ->setDescription('Resets the test fixture')
