@@ -2,13 +2,13 @@
 
 namespace Acquia\Orca\Domain\Composer\Version;
 
-use Acquia\Orca\Exception\FileNotFoundException as OrcaFileNotFoundException;
 use Acquia\Orca\Exception\OrcaException;
-use Acquia\Orca\Exception\ParseError;
+use Acquia\Orca\Exception\OrcaFileNotFoundException;
+use Acquia\Orca\Exception\OrcaParseError;
 use Acquia\Orca\Helper\Config\ConfigLoader;
-use Composer\Package\Version\VersionGuesser as ComposerVersionGuesserAlias;
+use Composer\Package\Version\VersionGuesser as ComposerVersionGuesser;
 use Exception;
-use Noodlehaus\Exception\FileNotFoundException as NoodlehausFileNotFoundExceptionAlias;
+use Noodlehaus\Exception\FileNotFoundException as NoodlehausFileNotFoundException;
 use Noodlehaus\Exception\ParseException;
 
 /**
@@ -38,7 +38,7 @@ class VersionGuesser {
    * @param \Composer\Package\Version\VersionGuesser $composer_version_guesser
    *   The Composer version guesser.
    */
-  public function __construct(ConfigLoader $config_loader, ComposerVersionGuesserAlias $composer_version_guesser) {
+  public function __construct(ConfigLoader $config_loader, ComposerVersionGuesser $composer_version_guesser) {
     $this->composerGuesser = $composer_version_guesser;
     $this->configLoader = $config_loader;
   }
@@ -52,9 +52,9 @@ class VersionGuesser {
    * @return string
    *   The guessed version string.
    *
-   * @throws \Acquia\Orca\Exception\FileNotFoundException
+   * @throws \Acquia\Orca\Exception\OrcaFileNotFoundException
    * @throws \Acquia\Orca\Exception\OrcaException
-   * @throws \Acquia\Orca\Exception\ParseError
+   * @throws \Acquia\Orca\Exception\OrcaParseError
    */
   public function guessVersion(string $path): string {
     try {
@@ -63,11 +63,11 @@ class VersionGuesser {
         ->load($composer_json_path)
         ->all();
     }
-    catch (NoodlehausFileNotFoundExceptionAlias $e) {
+    catch (NoodlehausFileNotFoundException $e) {
       throw new OrcaFileNotFoundException("No such file: {$composer_json_path}");
     }
     catch (ParseException $e) {
-      throw new ParseError("Cannot parse {$composer_json_path}");
+      throw new OrcaParseError("Cannot parse {$composer_json_path}");
     }
     catch (Exception $e) {
       throw new OrcaException("Unknown error guessing version at {$path}");

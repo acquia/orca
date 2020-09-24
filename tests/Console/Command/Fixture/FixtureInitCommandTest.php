@@ -7,8 +7,8 @@ use Acquia\Orca\Domain\Fixture\FixtureCreator;
 use Acquia\Orca\Domain\Fixture\FixtureRemover;
 use Acquia\Orca\Domain\Fixture\SutPreconditionsTester;
 use Acquia\Orca\Enum\StatusCodeEnum;
-use Acquia\Orca\Exception\InvalidArgumentException;
 use Acquia\Orca\Exception\OrcaException;
+use Acquia\Orca\Exception\OrcaInvalidArgumentException;
 use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
 use Acquia\Orca\Options\FixtureOptions;
 use Acquia\Orca\Options\FixtureOptionsFactory;
@@ -118,7 +118,7 @@ class FixtureInitCommandTest extends CommandTestBase {
     $this->fixtureOptionsFactory
       ->create(Argument::any())
       ->shouldBeCalledOnce()
-      ->willThrow(new InvalidArgumentException($message));
+      ->willThrow(new OrcaInvalidArgumentException($message));
 
     $this->executeCommand();
 

@@ -5,8 +5,8 @@ namespace Acquia\Orca\Domain\Fixture;
 use Acquia\Orca\Domain\Composer\Composer;
 use Acquia\Orca\Domain\Fixture\Helper\ComposerJsonHelper;
 use Acquia\Orca\Domain\Git\Git;
-use Acquia\Orca\Exception\FileNotFoundException;
-use Acquia\Orca\Exception\ParseError;
+use Acquia\Orca\Exception\OrcaFileNotFoundException;
+use Acquia\Orca\Exception\OrcaParseError;
 use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
 use Acquia\Orca\Options\FixtureOptions;
 
@@ -108,29 +108,29 @@ class CodebaseCreator {
   /**
    * Configures the Composer project (i.e., composer.json).
    *
-   * @throws \Acquia\Orca\Exception\FileNotFoundException
-   * @throws \Acquia\Orca\Exception\ParseError
-   * @throws \Acquia\Orca\Exception\FixtureNotExistsException
+   * @throws \Acquia\Orca\Exception\OrcaFileNotFoundException
+   * @throws \Acquia\Orca\Exception\OrcaParseError
+   * @throws \Acquia\Orca\Exception\OrcaFixtureNotExistsException
    */
   private function configureComposerProject(): void {
     $composer_json_path = $this->fixture->getPath('composer.json');
     try {
       $this->writeSettings();
     }
-    catch (FileNotFoundException $e) {
-      throw new FileNotFoundException("No such file: {$composer_json_path}");
+    catch (OrcaFileNotFoundException $e) {
+      throw new OrcaFileNotFoundException("No such file: {$composer_json_path}");
     }
-    catch (ParseError $e) {
-      throw new ParseError("Cannot parse {$composer_json_path}");
+    catch (OrcaParseError $e) {
+      throw new OrcaParseError("Cannot parse {$composer_json_path}");
     }
   }
 
   /**
    * Writes settings to the composer.json.
    *
-   * @throws \Acquia\Orca\Exception\FileNotFoundException
-   * @throws \Acquia\Orca\Exception\FixtureNotExistsException
-   * @throws \Acquia\Orca\Exception\ParseError
+   * @throws \Acquia\Orca\Exception\OrcaFileNotFoundException
+   * @throws \Acquia\Orca\Exception\OrcaFixtureNotExistsException
+   * @throws \Acquia\Orca\Exception\OrcaParseError
    */
   private function writeSettings(): void {
     $this->composerJsonHelper->writeFixtureOptions($this->options);

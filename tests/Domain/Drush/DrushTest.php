@@ -3,7 +3,7 @@
 namespace Acquia\Orca\Tests\Domain\Drush;
 
 use Acquia\Orca\Domain\Drush\Drush;
-use Acquia\Orca\Exception\ParseError;
+use Acquia\Orca\Exception\OrcaParseError;
 use Acquia\Orca\Helper\Process\ProcessRunner;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
@@ -139,7 +139,7 @@ class DrushTest extends TestCase {
       ])
       ->willReturn($process->reveal())
       ->shouldBeCalledOnce();
-    $this->expectException(ParseError::class);
+    $this->expectException(OrcaParseError::class);
 
     $drush = $this->createDrush();
     $status = $drush->getDrushStatus();

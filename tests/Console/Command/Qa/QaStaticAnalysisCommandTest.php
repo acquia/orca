@@ -12,7 +12,7 @@ use Acquia\Orca\Domain\Tool\Phpmd\PhpmdTask;
 use Acquia\Orca\Domain\Tool\YamlLint\YamlLintTask;
 use Acquia\Orca\Enum\PhpcsStandardEnum;
 use Acquia\Orca\Enum\StatusCodeEnum;
-use Acquia\Orca\Exception\FileNotFoundException;
+use Acquia\Orca\Exception\OrcaFileNotFoundException;
 use Acquia\Orca\Helper\Task\TaskRunner;
 use Acquia\Orca\Tests\Console\Command\CommandTestBase;
 use Prophecy\Argument;
@@ -371,7 +371,7 @@ class QaStaticAnalysisCommandTest extends CommandTestBase {
   public function testCoverageNoFilesToScan(): void {
     $this->coverage
       ->execute()
-      ->willThrow(FileNotFoundException::class);
+      ->willThrow(OrcaFileNotFoundException::class);
 
     $this->executeCommand(['path' => self::SUT_PATH]);
 

@@ -2,7 +2,7 @@
 
 namespace Acquia\Orca\Domain\Composer\Version;
 
-use Acquia\Orca\Exception\VersionNotFoundException;
+use Acquia\Orca\Exception\OrcaVersionNotFoundException;
 
 /**
  * Provides a facade for encapsulating Composer remote version finding.
@@ -39,7 +39,7 @@ class VersionFinder {
    * @return string
    *   The found version.
    *
-   * @throws \Acquia\Orca\Exception\VersionNotFoundException
+   * @throws \Acquia\Orca\Exception\OrcaVersionNotFoundException
    */
   public function findLatestVersion(string $package_name, ?string $constraint, bool $dev): string {
     $stability = 'alpha';
@@ -51,7 +51,7 @@ class VersionFinder {
     $candidate = $selector->findBestCandidate($package_name, $constraint, NULL, $stability);
 
     if (!$candidate) {
-      throw new VersionNotFoundException(sprintf('No available version could be found for "%s:%s".', $package_name, $constraint));
+      throw new OrcaVersionNotFoundException(sprintf('No available version could be found for "%s:%s".', $package_name, $constraint));
     }
 
     return $candidate->getPrettyVersion();

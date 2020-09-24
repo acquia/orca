@@ -3,7 +3,7 @@
 namespace Acquia\Orca\Domain\Tool\PhpLint;
 
 use Acquia\Orca\Domain\Tool\TaskBase;
-use Acquia\Orca\Exception\TaskFailureException;
+use Acquia\Orca\Exception\OrcaTaskFailureException;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 
 /**
@@ -47,7 +47,7 @@ class PhpLintTask extends TaskBase {
       if ($e->getProcess()->getExitCode() === 254) {
         return;
       }
-      throw new TaskFailureException();
+      throw new OrcaTaskFailureException();
     }
   }
 

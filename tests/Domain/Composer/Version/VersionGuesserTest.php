@@ -3,14 +3,14 @@
 namespace Acquia\Orca\Tests\Domain\Composer\Version;
 
 use Acquia\Orca\Domain\Composer\Version\VersionGuesser;
-use Acquia\Orca\Exception\FileNotFoundException as OrcaFileNotFoundExceptionAlias;
 use Acquia\Orca\Exception\OrcaException;
-use Acquia\Orca\Exception\ParseError;
+use Acquia\Orca\Exception\OrcaFileNotFoundException;
+use Acquia\Orca\Exception\OrcaParseError;
 use Acquia\Orca\Helper\Config\ConfigLoader;
 use Composer\Package\Version\VersionGuesser as ComposerVersionGuesser;
 use Exception;
 use Noodlehaus\Config;
-use Noodlehaus\Exception\FileNotFoundException as NoodlehausFileNotFoundExceptionAlias;
+use Noodlehaus\Exception\FileNotFoundException as NoodlehausFileNotFoundException;
 use Noodlehaus\Exception\ParseException;
 use Noodlehaus\Parser\Json;
 use PHPUnit\Framework\TestCase;
@@ -87,8 +87,8 @@ class VersionGuesserTest extends TestCase {
 
   public function providerGuessVersionWithException(): array {
     return [
-      [new NoodlehausFileNotFoundExceptionAlias(''), new OrcaFileNotFoundExceptionAlias('No such file: /path/composer.json')],
-      [new ParseException(['message' => '']), new ParseError('Cannot parse /path/composer.json')],
+      [new NoodlehausFileNotFoundException(''), new OrcaFileNotFoundException('No such file: /path/composer.json')],
+      [new ParseException(['message' => '']), new OrcaParseError('Cannot parse /path/composer.json')],
       [new Exception(''), new OrcaException('Unknown error guessing version at /path')],
     ];
   }

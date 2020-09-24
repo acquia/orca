@@ -2,9 +2,9 @@
 
 namespace Acquia\Orca\Helper\Config;
 
-use Acquia\Orca\Exception\FileNotFoundException as OrcaFileNotFoundException;
 use Acquia\Orca\Exception\OrcaException;
-use Acquia\Orca\Exception\ParseError as OrcaParseError;
+use Acquia\Orca\Exception\OrcaFileNotFoundException;
+use Acquia\Orca\Exception\OrcaParseError;
 use Exception;
 use Noodlehaus\Config;
 use Noodlehaus\Exception\FileNotFoundException as NoodlehausFileNotFoundException;
@@ -27,8 +27,8 @@ class ConfigLoader {
    * @return \Noodlehaus\Config
    *   A config object.
    *
-   * @throws \Acquia\Orca\Exception\FileNotFoundException
-   * @throws \Acquia\Orca\Exception\ParseError
+   * @throws \Acquia\Orca\Exception\OrcaFileNotFoundException
+   * @throws \Acquia\Orca\Exception\OrcaParseError
    */
   public function load($paths): Config {
     try {

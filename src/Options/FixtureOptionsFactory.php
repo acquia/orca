@@ -46,7 +46,7 @@ class FixtureOptionsFactory {
    * @return \Acquia\Orca\Options\FixtureOptions
    *   A fixture options object.
    *
-   * @throws \Acquia\Orca\Exception\InvalidArgumentException
+   * @throws \Acquia\Orca\Exception\OrcaInvalidArgumentException
    */
   public function create(array $options): FixtureOptions {
     return new FixtureOptions($this->drupalCoreVersionFinder, $this->packageManager, $options);

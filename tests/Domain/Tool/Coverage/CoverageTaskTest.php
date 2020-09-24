@@ -4,7 +4,7 @@ namespace Acquia\Orca\Tests\Domain\Tool\Coverage;
 
 use Acquia\Orca\Domain\Tool\Coverage\CodeCoverageReportBuilder;
 use Acquia\Orca\Domain\Tool\Coverage\CoverageTask;
-use Acquia\Orca\Exception\FileNotFoundException;
+use Acquia\Orca\Exception\OrcaFileNotFoundException;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -57,7 +57,7 @@ class CoverageTaskTest extends TestCase {
     $this->builder
       ->build(Argument::any())
       ->shouldBeCalledOnce()
-      ->willThrow(new FileNotFoundException($display));
+      ->willThrow(new OrcaFileNotFoundException($display));
     $this->symfonyOutput
       ->writeln($display . PHP_EOL)
       ->shouldBeCalledOnce();

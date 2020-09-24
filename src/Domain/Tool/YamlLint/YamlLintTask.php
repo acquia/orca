@@ -3,7 +3,7 @@
 namespace Acquia\Orca\Domain\Tool\YamlLint;
 
 use Acquia\Orca\Domain\Tool\TaskBase;
-use Acquia\Orca\Exception\TaskFailureException;
+use Acquia\Orca\Exception\OrcaTaskFailureException;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process;
@@ -43,7 +43,7 @@ class YamlLintTask extends TaskBase {
       $this->processRunner->run($process);
     }
     catch (ProcessFailedException $e) {
-      throw new TaskFailureException();
+      throw new OrcaTaskFailureException();
     }
   }
 

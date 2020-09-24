@@ -4,9 +4,9 @@ namespace Acquia\Orca\Tests\Domain\Tool\Coverage;
 
 use Acquia\Orca\Domain\Tool\Coverage\CodeCoverageReportBuilder;
 use Acquia\Orca\Domain\Tool\Phploc\PhplocTask;
-use Acquia\Orca\Exception\DirectoryNotFoundException as OrcaDirectoryNotFoundException;
-use Acquia\Orca\Exception\FileNotFoundException as OrcaFileNotFoundException;
-use Acquia\Orca\Exception\ParseError;
+use Acquia\Orca\Exception\OrcaDirectoryNotFoundException;
+use Acquia\Orca\Exception\OrcaFileNotFoundException;
+use Acquia\Orca\Exception\OrcaParseError;
 use Acquia\Orca\Helper\Config\ConfigLoader;
 use Acquia\Orca\Helper\Filesystem\FinderFactory;
 use Acquia\Orca\Helper\Filesystem\OrcaPathHandler;
@@ -251,7 +251,7 @@ class CodeCoverageReportBuilderTest extends TestCase {
       ->load(PhplocTask::JSON_LOG_PATH)
       ->shouldBeCalledOnce()
       ->willThrow(ParseException::class);
-    $this->expectException(ParseError::class);
+    $this->expectException(OrcaParseError::class);
     $builder = $this->createBuilder();
 
     $builder->build(self::DEFAULT_PATH);

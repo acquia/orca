@@ -158,9 +158,9 @@ class Composer {
    * @param \Acquia\Orca\Domain\Package\Package $package
    *   The package in question.
    *
-   * @throws \Acquia\Orca\Exception\FileNotFoundException
+   * @throws \Acquia\Orca\Exception\OrcaFileNotFoundException
    * @throws \Acquia\Orca\Exception\OrcaException
-   * @throws \Acquia\Orca\Exception\ParseError
+   * @throws \Acquia\Orca\Exception\OrcaParseError
    */
   public function createProjectFromPackage(Package $package): void {
     $version = $this->versionGuesser->guessVersion($package->getRepositoryUrlAbsolute());

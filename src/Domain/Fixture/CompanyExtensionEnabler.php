@@ -83,10 +83,10 @@ class CompanyExtensionEnabler {
    * @param \Acquia\Orca\Domain\Fixture\SubextensionManager $subextension_manager
    *   The subextension manager.
    *
-   * @throws \Acquia\Orca\Exception\FileNotFoundException
-   * @throws \Acquia\Orca\Exception\FixtureNotExistsException
-   * @throws \Acquia\Orca\Exception\InvalidArgumentException
-   * @throws \Acquia\Orca\Exception\ParseError
+   * @throws \Acquia\Orca\Exception\OrcaFileNotFoundException
+   * @throws \Acquia\Orca\Exception\OrcaFixtureNotExistsException
+   * @throws \Acquia\Orca\Exception\OrcaInvalidArgumentException
+   * @throws \Acquia\Orca\Exception\OrcaParseError
    */
   public function __construct(ComposerJsonHelper $composer_json_helper, Drush $drush, Filesystem $filesystem, PackageManager $package_manager, SymfonyStyle $output, SubextensionManager $subextension_manager) {
     $this->composerJsonHelper = $composer_json_helper;

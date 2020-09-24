@@ -5,9 +5,9 @@ namespace Acquia\Orca\Tests\Domain\Fixture\Helper;
 use Acquia\Orca\Domain\Drupal\DrupalCoreVersionFinder;
 use Acquia\Orca\Domain\Fixture\Helper\ComposerJsonHelper;
 use Acquia\Orca\Domain\Package\PackageManager;
-use Acquia\Orca\Exception\FileNotFoundException;
-use Acquia\Orca\Exception\FixtureNotExistsException;
-use Acquia\Orca\Exception\ParseError;
+use Acquia\Orca\Exception\OrcaFileNotFoundException;
+use Acquia\Orca\Exception\OrcaFixtureNotExistsException;
+use Acquia\Orca\Exception\OrcaParseError;
 use Acquia\Orca\Helper\Config\ConfigLoader;
 use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
 use Acquia\Orca\Options\FixtureOptions;
@@ -260,7 +260,7 @@ class ComposerJsonHelperTest extends TestCase {
     $this->fixture
       ->exists()
       ->willReturn(FALSE);
-    $this->expectException(FixtureNotExistsException::class);
+    $this->expectException(OrcaFixtureNotExistsException::class);
     $composer_json = $this->createComposerJsonHelper();
 
     $composer_json->getFixtureOptions();
@@ -270,7 +270,7 @@ class ComposerJsonHelperTest extends TestCase {
     $this->fixture
       ->exists(self::FILENAME)
       ->willReturn(FALSE);
-    $this->expectException(FileNotFoundException::class);
+    $this->expectException(OrcaFileNotFoundException::class);
     $composer_json = $this->createComposerJsonHelper();
 
     $composer_json->getFixtureOptions();
@@ -292,8 +292,8 @@ class ComposerJsonHelperTest extends TestCase {
   public function testGetInvalidComposerJson(): void {
     $this->configLoader
       ->load(self::FILENAME)
-      ->willThrow(ParseError::class);
-    $this->expectException(ParseError::class);
+      ->willThrow(OrcaParseError::class);
+    $this->expectException(OrcaParseError::class);
     $composer_json = $this->createComposerJsonHelper();
 
     $composer_json->getFixtureOptions();

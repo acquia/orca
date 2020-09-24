@@ -5,9 +5,9 @@ namespace Acquia\Orca\Tests\Console\Command\Debug;
 use Acquia\Orca\Console\Command\Debug\DebugGuessVersionCommand;
 use Acquia\Orca\Domain\Composer\Version\VersionGuesser;
 use Acquia\Orca\Enum\StatusCodeEnum;
-use Acquia\Orca\Exception\FileNotFoundException;
 use Acquia\Orca\Exception\OrcaException;
-use Acquia\Orca\Exception\ParseError;
+use Acquia\Orca\Exception\OrcaFileNotFoundException;
+use Acquia\Orca\Exception\OrcaParseError;
 use Acquia\Orca\Tests\Console\Command\CommandTestBase;
 use Prophecy\Argument;
 use Symfony\Component\Console\Command\Command;
@@ -88,8 +88,8 @@ class DebugGuessVersionCommandTest extends CommandTestBase {
 
   public function providerExecutionWithException(): array {
     return [
-      [new FileNotFoundException('Lorem ipsum')],
-      [new ParseError('Dolor sit')],
+      [new OrcaFileNotFoundException('Lorem ipsum')],
+      [new OrcaParseError('Dolor sit')],
       [new OrcaException('Amet')],
     ];
   }

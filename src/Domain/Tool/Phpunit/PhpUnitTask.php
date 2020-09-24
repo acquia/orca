@@ -4,7 +4,7 @@ namespace Acquia\Orca\Domain\Tool\Phpunit;
 
 use Acquia\Orca\Domain\Server\WebServer;
 use Acquia\Orca\Domain\Tool\TestFrameworkBase;
-use Acquia\Orca\Exception\TaskFailureException;
+use Acquia\Orca\Exception\OrcaTaskFailureException;
 use Acquia\Orca\Helper\SutSettingsTrait;
 use DOMDocument;
 use DOMXPath;
@@ -214,7 +214,7 @@ class PhpUnitTask extends TestFrameworkBase {
   /**
    * Runs PHPUnit.
    *
-   * @throws \Acquia\Orca\Exception\TaskFailureException
+   * @throws \Acquia\Orca\Exception\OrcaTaskFailureException
    */
   protected function runPhpUnit(): void {
     try {
@@ -238,7 +238,7 @@ class PhpUnitTask extends TestFrameworkBase {
       $this->processRunner->runFixtureVendorBin($command);
     }
     catch (ProcessFailedException $e) {
-      throw new TaskFailureException($e->getMessage());
+      throw new OrcaTaskFailureException($e->getMessage());
     }
   }
 

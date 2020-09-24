@@ -3,13 +3,13 @@
 namespace Acquia\Orca\Domain\Tool\Coverage;
 
 use Acquia\Orca\Domain\Tool\Phploc\PhplocTask;
-use Acquia\Orca\Exception\DirectoryNotFoundException;
-use Acquia\Orca\Exception\FileNotFoundException as OrcaFileNotFoundException;
-use Acquia\Orca\Exception\ParseError as OrcaParseError;
+use Acquia\Orca\Exception\OrcaDirectoryNotFoundException;
+use Acquia\Orca\Exception\OrcaFileNotFoundException;
+use Acquia\Orca\Exception\OrcaParseError;
 use Acquia\Orca\Helper\Config\ConfigLoader;
 use Acquia\Orca\Helper\Filesystem\FinderFactory;
 use Acquia\Orca\Helper\Filesystem\OrcaPathHandler;
-use Noodlehaus\Exception\FileNotFoundException as NoodlehausFileNotFoundExceptionAlias;
+use Noodlehaus\Exception\FileNotFoundException as NoodlehausFileNotFoundException;
 use Noodlehaus\Exception\ParseException as NoodlehausParseException;
 use Symfony\Component\Console\Helper\TableSeparator;
 use Symfony\Component\Finder\Exception\DirectoryNotFoundException as FinderDirectoryNotFoundException;
@@ -126,7 +126,7 @@ class CodeCoverageReportBuilder {
   /**
    * Ensures that the preconditions are met.
    *
-   * @throws \Acquia\Orca\Exception\FileNotFoundException
+   * @throws \Acquia\Orca\Exception\OrcaFileNotFoundException
    *   In case no files are found to scan.
    */
   private function ensurePreconditions(): void {
@@ -154,9 +154,9 @@ class CodeCoverageReportBuilder {
   /**
    * Gets the PHPLOC log data.
    *
-   * @throws \Acquia\Orca\Exception\FileNotFoundException
+   * @throws \Acquia\Orca\Exception\OrcaFileNotFoundException
    *   In case of absent PHPLOC JSON log.
-   * @throws \Acquia\Orca\Exception\ParseError
+   * @throws \Acquia\Orca\Exception\OrcaParseError
    *   In case of error parsing PHPLOC JSON log.
    */
   private function getPhplocData(): void {
@@ -165,7 +165,7 @@ class CodeCoverageReportBuilder {
     try {
       $config = $this->configLoader->load($log_path);
     }
-    catch (NoodlehausFileNotFoundExceptionAlias $e) {
+    catch (NoodlehausFileNotFoundException $e) {
       throw new OrcaFileNotFoundException($e->getMessage());
     }
     catch (NoodlehausParseException $e) {
@@ -177,7 +177,7 @@ class CodeCoverageReportBuilder {
   /**
    * Gets the data on tests.
    *
-   * @throws \Acquia\Orca\Exception\DirectoryNotFoundException
+   * @throws \Acquia\Orca\Exception\OrcaDirectoryNotFoundException
    *   In case of missing directory or non-directory path.
    */
   private function getTestsData(): void {
@@ -190,7 +190,7 @@ class CodeCoverageReportBuilder {
         ->contains('public function test');
     }
     catch (FinderDirectoryNotFoundException $e) {
-      throw new DirectoryNotFoundException($e->getMessage());
+      throw new OrcaDirectoryNotFoundException($e->getMessage());
     }
 
     $this->testsData['classes'] = iterator_count($classes);

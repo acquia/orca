@@ -5,5 +5,5 @@ namespace Acquia\Orca\Exception;
 /**
  * A version not found exception.
  */
-class VersionNotFoundException extends OrcaException {
+class OrcaVersionNotFoundException extends OrcaException {
 }

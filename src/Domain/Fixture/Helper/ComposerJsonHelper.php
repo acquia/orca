@@ -2,9 +2,9 @@
 
 namespace Acquia\Orca\Domain\Fixture\Helper;
 
-use Acquia\Orca\Exception\FileNotFoundException;
-use Acquia\Orca\Exception\FixtureNotExistsException;
-use Acquia\Orca\Exception\ParseError;
+use Acquia\Orca\Exception\OrcaFileNotFoundException;
+use Acquia\Orca\Exception\OrcaFixtureNotExistsException;
+use Acquia\Orca\Exception\OrcaParseError;
 use Acquia\Orca\Helper\Config\ConfigLoader;
 use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
 use Acquia\Orca\Options\FixtureOptions;
@@ -77,9 +77,9 @@ class ComposerJsonHelper {
    * @param array $patterns
    *   The patterns to install at the given path.
    *
-   * @throws \Acquia\Orca\Exception\FileNotFoundException
-   * @throws \Acquia\Orca\Exception\FixtureNotExistsException
-   * @throws \Acquia\Orca\Exception\ParseError
+   * @throws \Acquia\Orca\Exception\OrcaFileNotFoundException
+   * @throws \Acquia\Orca\Exception\OrcaFixtureNotExistsException
+   * @throws \Acquia\Orca\Exception\OrcaParseError
    *
    * @see https://github.com/composer/installers#custom-install-paths
    */
@@ -105,10 +105,10 @@ class ComposerJsonHelper {
    * @return \Acquia\Orca\Options\FixtureOptions
    *   The fixture options.
    *
-   * @throws \Acquia\Orca\Exception\FileNotFoundException
-   * @throws \Acquia\Orca\Exception\FixtureNotExistsException
-   * @throws \Acquia\Orca\Exception\InvalidArgumentException
-   * @throws \Acquia\Orca\Exception\ParseError
+   * @throws \Acquia\Orca\Exception\OrcaFileNotFoundException
+   * @throws \Acquia\Orca\Exception\OrcaFixtureNotExistsException
+   * @throws \Acquia\Orca\Exception\OrcaInvalidArgumentException
+   * @throws \Acquia\Orca\Exception\OrcaParseError
    */
   public function getFixtureOptions(): FixtureOptions {
     if ($this->fixtureOptions) {
@@ -133,9 +133,9 @@ class ComposerJsonHelper {
    * @param string[] $packages
    *   The packages to install from source.
    *
-   * @throws \Acquia\Orca\Exception\FileNotFoundException
-   * @throws \Acquia\Orca\Exception\FixtureNotExistsException
-   * @throws \Acquia\Orca\Exception\ParseError
+   * @throws \Acquia\Orca\Exception\OrcaFileNotFoundException
+   * @throws \Acquia\Orca\Exception\OrcaFixtureNotExistsException
+   * @throws \Acquia\Orca\Exception\OrcaParseError
    *
    * @see https://getcomposer.org/doc/06-config.md#preferred-install
    */
@@ -164,9 +164,9 @@ class ComposerJsonHelper {
    * @param string $url
    *   A fully qualified URL or a local path.
    *
-   * @throws \Acquia\Orca\Exception\FileNotFoundException
-   * @throws \Acquia\Orca\Exception\FixtureNotExistsException
-   * @throws \Acquia\Orca\Exception\ParseError
+   * @throws \Acquia\Orca\Exception\OrcaFileNotFoundException
+   * @throws \Acquia\Orca\Exception\OrcaFixtureNotExistsException
+   * @throws \Acquia\Orca\Exception\OrcaParseError
    */
   public function addRepository(string $name, string $type, string $url): void {
     $config = $this->loadFile();
@@ -192,9 +192,9 @@ class ComposerJsonHelper {
    * @param mixed $value
    *   The value.
    *
-   * @throws \Acquia\Orca\Exception\FileNotFoundException
-   * @throws \Acquia\Orca\Exception\FixtureNotExistsException
-   * @throws \Acquia\Orca\Exception\ParseError
+   * @throws \Acquia\Orca\Exception\OrcaFileNotFoundException
+   * @throws \Acquia\Orca\Exception\OrcaFixtureNotExistsException
+   * @throws \Acquia\Orca\Exception\OrcaParseError
    */
   public function set(string $key, $value): void {
     $config = $this->loadFile();
@@ -208,9 +208,9 @@ class ComposerJsonHelper {
    * @param \Acquia\Orca\Options\FixtureOptions $options
    *   The fixture options.
    *
-   * @throws \Acquia\Orca\Exception\FileNotFoundException
-   * @throws \Acquia\Orca\Exception\FixtureNotExistsException
-   * @throws \Acquia\Orca\Exception\ParseError
+   * @throws \Acquia\Orca\Exception\OrcaFileNotFoundException
+   * @throws \Acquia\Orca\Exception\OrcaFixtureNotExistsException
+   * @throws \Acquia\Orca\Exception\OrcaParseError
    */
   public function writeFixtureOptions(FixtureOptions $options): void {
     $config = $this->loadFile();
@@ -244,23 +244,23 @@ class ComposerJsonHelper {
    * @return \Noodlehaus\Config
    *   The file as a config object.
    *
-   * @throws \Acquia\Orca\Exception\FileNotFoundException
-   * @throws \Acquia\Orca\Exception\FixtureNotExistsException
-   * @throws \Acquia\Orca\Exception\ParseError
+   * @throws \Acquia\Orca\Exception\OrcaFileNotFoundException
+   * @throws \Acquia\Orca\Exception\OrcaFixtureNotExistsException
+   * @throws \Acquia\Orca\Exception\OrcaParseError
    */
   private function loadFile(): Config {
     if (!$this->fixture->exists()) {
-      throw new FixtureNotExistsException('No fixture exists.');
+      throw new OrcaFixtureNotExistsException('No fixture exists.');
     }
     if (!$this->fixture->exists(self::COMPOSER_JSON)) {
-      throw new FileNotFoundException('Fixture is missing composer.json.');
+      throw new OrcaFileNotFoundException('Fixture is missing composer.json.');
     }
 
     try {
       $config = $this->configLoader->load($this->filePath());
     }
-    catch (ParseError $e) {
-      throw new ParseError('Fixture composer.json is corrupted.');
+    catch (OrcaParseError $e) {
+      throw new OrcaParseError('Fixture composer.json is corrupted.');
     }
     return $config;
   }

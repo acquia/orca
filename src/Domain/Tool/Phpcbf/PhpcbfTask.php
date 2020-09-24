@@ -4,7 +4,7 @@ namespace Acquia\Orca\Domain\Tool\Phpcbf;
 
 use Acquia\Orca\Domain\Tool\TaskBase;
 use Acquia\Orca\Enum\PhpcsStandardEnum;
-use Acquia\Orca\Exception\TaskFailureException;
+use Acquia\Orca\Exception\OrcaTaskFailureException;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 
 /**
@@ -45,7 +45,7 @@ class PhpcbfTask extends TaskBase {
       ], $this->phpcsConfigurator->getTempDir());
     }
     catch (ProcessFailedException $e) {
-      throw new TaskFailureException();
+      throw new OrcaTaskFailureException();
     }
     finally {
       $this->phpcsConfigurator->cleanupTemporaryConfig();

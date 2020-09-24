@@ -9,8 +9,8 @@ use Acquia\Orca\Domain\Fixture\Helper\ComposerJsonHelper;
 use Acquia\Orca\Domain\Git\Git;
 use Acquia\Orca\Domain\Package\Package;
 use Acquia\Orca\Domain\Package\PackageManager;
-use Acquia\Orca\Exception\FileNotFoundException;
-use Acquia\Orca\Exception\ParseError;
+use Acquia\Orca\Exception\OrcaFileNotFoundException;
+use Acquia\Orca\Exception\OrcaParseError;
 use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
 use Acquia\Orca\Helper\Filesystem\OrcaPathHandler;
 use Acquia\Orca\Options\FixtureOptions;
@@ -176,8 +176,8 @@ class CodebaseCreatorTest extends TestCase {
 
   public function providerLoadComposerJsonWithException(): array {
     return [
-      [new FileNotFoundException(''), new FileNotFoundException('No such file: ' . self::COMPOSER_JSON_PATH)],
-      [new ParseError(''), new ParseError('Cannot parse ' . self::COMPOSER_JSON_PATH)],
+      [new OrcaFileNotFoundException(''), new OrcaFileNotFoundException('No such file: ' . self::COMPOSER_JSON_PATH)],
+      [new OrcaParseError(''), new OrcaParseError('Cannot parse ' . self::COMPOSER_JSON_PATH)],
     ];
   }
 

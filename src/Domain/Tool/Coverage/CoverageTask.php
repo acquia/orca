@@ -4,7 +4,7 @@ namespace Acquia\Orca\Domain\Tool\Coverage;
 
 use Acquia\Orca\Console\Helper\StatusTable;
 use Acquia\Orca\Domain\Tool\TaskInterface;
-use Acquia\Orca\Exception\FileNotFoundException;
+use Acquia\Orca\Exception\OrcaFileNotFoundException;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
@@ -56,7 +56,7 @@ class CoverageTask implements TaskInterface {
         ->setRows($rows)
         ->render();
     }
-    catch (FileNotFoundException $e) {
+    catch (OrcaFileNotFoundException $e) {
       $this->output->writeln($e->getMessage() . PHP_EOL);
     }
 

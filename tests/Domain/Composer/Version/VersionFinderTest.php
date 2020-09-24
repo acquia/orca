@@ -4,7 +4,7 @@ namespace Acquia\Orca\Tests\Domain\Composer\Version;
 
 use Acquia\Orca\Domain\Composer\Version\VersionFinder;
 use Acquia\Orca\Domain\Composer\Version\VersionSelectorFactory;
-use Acquia\Orca\Exception\VersionNotFoundException;
+use Acquia\Orca\Exception\OrcaVersionNotFoundException;
 use Composer\Package\PackageInterface;
 use Composer\Package\Version\VersionSelector;
 use PHPUnit\Framework\TestCase;
@@ -63,7 +63,7 @@ class VersionFinderTest extends TestCase {
       ->findBestCandidate(Argument::any(), Argument::any(), NULL, Argument::any())
       ->shouldBeCalledOnce()
       ->willReturn(FALSE);
-    $this->expectExceptionObject(new VersionNotFoundException('No available version could be found for "test/example:~1".'));
+    $this->expectExceptionObject(new OrcaVersionNotFoundException('No available version could be found for "test/example:~1".'));
     $finder = $this->createVersionFinder();
 
     $finder->findLatestVersion('test/example', '~1', FALSE);

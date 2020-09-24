@@ -4,7 +4,7 @@ namespace Acquia\Orca\Helper\Task;
 
 use Acquia\Orca\Domain\Tool\TaskInterface;
 use Acquia\Orca\Enum\StatusCodeEnum;
-use Acquia\Orca\Exception\TaskFailureException;
+use Acquia\Orca\Exception\OrcaTaskFailureException;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
@@ -84,7 +84,7 @@ class TaskRunner {
         $this->output->section($task->statusMessage());
         $task->setPath($this->path)->execute();
       }
-      catch (TaskFailureException $e) {
+      catch (OrcaTaskFailureException $e) {
         $failure = $task->label();
         $this->output->block($failure, 'FAILURE', 'fg=white;bg=red');
         $this->failures[] = $failure;

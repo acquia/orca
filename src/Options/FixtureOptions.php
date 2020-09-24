@@ -7,7 +7,7 @@ use Acquia\Orca\Domain\Drupal\DrupalCoreVersionFinder;
 use Acquia\Orca\Domain\Package\Package;
 use Acquia\Orca\Domain\Package\PackageManager;
 use Acquia\Orca\Enum\DrupalCoreVersionEnum;
-use Acquia\Orca\Exception\InvalidArgumentException;
+use Acquia\Orca\Exception\OrcaInvalidArgumentException;
 use Closure;
 use Composer\Semver\Comparator;
 use Composer\Semver\VersionParser;
@@ -66,7 +66,7 @@ class FixtureOptions {
    * @param array $raw_options
    *   The options.
    *
-   * @throws \Acquia\Orca\Exception\InvalidArgumentException
+   * @throws \Acquia\Orca\Exception\OrcaInvalidArgumentException
    */
   public function __construct(DrupalCoreVersionFinder $drupal_core_version_finder, PackageManager $package_manager, array $raw_options) {
     $this->drupalCoreVersionFinder = $drupal_core_version_finder;
@@ -82,7 +82,7 @@ class FixtureOptions {
    * @param array $options
    *   The options to resolve.
    *
-   * @throws \Acquia\Orca\Exception\InvalidArgumentException
+   * @throws \Acquia\Orca\Exception\OrcaInvalidArgumentException
    */
   private function resolve(array $options): void {
     try {
@@ -142,7 +142,7 @@ class FixtureOptions {
         ->resolve($options);
     }
     catch (UndefinedOptionsException | InvalidOptionsException $e) {
-      throw new InvalidArgumentException($e->getMessage());
+      throw new OrcaInvalidArgumentException($e->getMessage());
     }
   }
 
@@ -213,17 +213,17 @@ class FixtureOptions {
   /**
    * Validates the resolved options.
    *
-   * @throws \Acquia\Orca\Exception\InvalidArgumentException
+   * @throws \Acquia\Orca\Exception\OrcaInvalidArgumentException
    */
   private function validate(): void {
     if ($this->isBare() && $this->hasSut()) {
-      throw new InvalidArgumentException('Cannot create a bare fixture with a SUT.');
+      throw new OrcaInvalidArgumentException('Cannot create a bare fixture with a SUT.');
     }
     if ($this->isBare() && $this->symlinkAll()) {
-      throw new InvalidArgumentException('Cannot symlink all in a bare fixture.');
+      throw new OrcaInvalidArgumentException('Cannot symlink all in a bare fixture.');
     }
     if ($this->isSutOnly() && !$this->hasSut()) {
-      throw new InvalidArgumentException('Cannot create a SUT-only fixture without a SUT.');
+      throw new OrcaInvalidArgumentException('Cannot create a SUT-only fixture without a SUT.');
     }
   }
 

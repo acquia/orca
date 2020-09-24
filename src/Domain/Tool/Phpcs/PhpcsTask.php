@@ -4,7 +4,7 @@ namespace Acquia\Orca\Domain\Tool\Phpcs;
 
 use Acquia\Orca\Domain\Tool\TaskBase;
 use Acquia\Orca\Enum\PhpcsStandardEnum;
-use Acquia\Orca\Exception\TaskFailureException;
+use Acquia\Orca\Exception\OrcaTaskFailureException;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 
 /**
@@ -53,7 +53,7 @@ class PhpcsTask extends TaskBase {
       $this->logResults();
     }
     catch (ProcessFailedException $e) {
-      throw new TaskFailureException(NULL, NULL, $e);
+      throw new OrcaTaskFailureException(NULL, NULL, $e);
     }
     finally {
       $this->phpcsConfigurator->cleanupTemporaryConfig();

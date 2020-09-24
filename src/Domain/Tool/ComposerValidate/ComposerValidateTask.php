@@ -4,7 +4,7 @@ namespace Acquia\Orca\Domain\Tool\ComposerValidate;
 
 use Acquia\Orca\Domain\Tool\TaskBase;
 use Acquia\Orca\Exception\OrcaException;
-use Acquia\Orca\Exception\TaskFailureException;
+use Acquia\Orca\Exception\OrcaTaskFailureException;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 use Symfony\Component\Process\Exception\ProcessFailedException;
@@ -55,7 +55,7 @@ class ComposerValidateTask extends TaskBase {
       }
     }
     if ($this->failures) {
-      throw new TaskFailureException();
+      throw new OrcaTaskFailureException();
     }
   }
 

@@ -2,7 +2,7 @@
 
 namespace Acquia\Orca\Domain\Drush;
 
-use Acquia\Orca\Exception\ParseError;
+use Acquia\Orca\Exception\OrcaParseError;
 use Acquia\Orca\Helper\Process\ProcessRunner;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 
@@ -63,7 +63,7 @@ class Drush {
    * @return array
    *   The Drush status data.
    *
-   * @throws \Acquia\Orca\Exception\ParseError
+   * @throws \Acquia\Orca\Exception\OrcaParseError
    *   In case of invalid output.
    */
   public function getDrushStatus(): array {
@@ -77,7 +77,7 @@ class Drush {
     $data = json_decode($json, TRUE);
 
     if (json_last_error()) {
-      throw new ParseError('Invalid Drush output.');
+      throw new OrcaParseError('Invalid Drush output.');
     }
 
     return $data;

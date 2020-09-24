@@ -7,7 +7,7 @@ use Acquia\Orca\Domain\Package\Package;
 use Acquia\Orca\Domain\Package\PackageManager;
 use Acquia\Orca\Domain\Server\ServerStack;
 use Acquia\Orca\Domain\Tool\Phpunit\PhpUnitTask;
-use Acquia\Orca\Exception\TaskFailureException;
+use Acquia\Orca\Exception\OrcaTaskFailureException;
 use Acquia\Orca\Helper\SutSettingsTrait;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Filesystem\Filesystem;
@@ -103,7 +103,7 @@ class TestRunner {
   /**
    * Runs the tests.
    *
-   * @throws \Acquia\Orca\Exception\TaskFailureException
+   * @throws \Acquia\Orca\Exception\OrcaTaskFailureException
    */
   public function run(): void {
     if ($this->runServers) {
@@ -124,7 +124,7 @@ class TestRunner {
     if ($this->failures) {
       $this->output->block(implode(PHP_EOL, $this->failures), 'FAILURES', 'fg=white;bg=red', ' ', TRUE);
       $this->output->writeln('');
-      throw new TaskFailureException();
+      throw new OrcaTaskFailureException();
     }
     $this->output->success('Tests passed');
   }
@@ -210,7 +210,7 @@ class TestRunner {
       }
       $framework->execute();
     }
-    catch (TaskFailureException $e) {
+    catch (OrcaTaskFailureException $e) {
       $failure = "{$package->getPackageName()}: {$framework->label()}";
       $this->output->block($failure, 'FAILURE', 'fg=white;bg=red');
       $this->failures[] = $failure;
