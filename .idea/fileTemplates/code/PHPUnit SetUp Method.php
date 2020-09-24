@@ -1,3 +1,2 @@
-protected function setUp() {
-  parent::setUp();
+protected function setUp(): void {
 }

@@ -1,3 +1,2 @@
-protected function tearDown() {
-  parent::tearDown();
+protected function tearDown(): void {
 }

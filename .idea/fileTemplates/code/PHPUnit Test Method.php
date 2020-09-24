@@ -1,3 +1,3 @@
-public function test${CAPITALIZED_NAME}() {
+public function test${CAPITALIZED_NAME}(): void {
 
 }
