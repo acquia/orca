@@ -66,11 +66,11 @@ abstract class TaskBase implements TaskInterface {
   protected $path;
 
   /**
-   * The process runner.
+   * The PHPCBF tool.
    *
-   * @var \Acquia\Orca\Helper\Process\ProcessRunner
+   * @var \Acquia\Orca\Domain\Tool\PhpcbfTool
    */
-  protected $processRunner;
+  protected $phpcbfTool;
 
   /**
    * The PHPCS configurator.
@@ -78,6 +78,27 @@ abstract class TaskBase implements TaskInterface {
    * @var \Acquia\Orca\Domain\Tool\Phpcs\PhpcsConfigurator
    */
   protected $phpcsConfigurator;
+
+  /**
+   * The PHP lint tool.
+   *
+   * @var \Acquia\Orca\Domain\Tool\PhpLintTool
+   */
+  protected $phpLintTool;
+
+  /**
+   * The PHPMD tool.
+   *
+   * @var \Acquia\Orca\Domain\Tool\PhpmdTool
+   */
+  protected $phpmdTool;
+
+  /**
+   * The process runner.
+   *
+   * @var \Acquia\Orca\Helper\Process\ProcessRunner
+   */
+  protected $processRunner;
 
   /**
    * Constructs an instance.
@@ -94,12 +115,18 @@ abstract class TaskBase implements TaskInterface {
    *   The ORCA path handler.
    * @param \Symfony\Component\Console\Style\SymfonyStyle $output
    *   The output decorator.
+   * @param \Acquia\Orca\Domain\Tool\PhpcbfTool $phpcbf_tool
+   *   The PHPCBF tool.
    * @param \Acquia\Orca\Domain\Tool\Phpcs\PhpcsConfigurator $phpcs_configurator
    *   The PHPCS configurator.
+   * @param \Acquia\Orca\Domain\Tool\PhpLintTool $php_lint_tool
+   *   The PHP lint tool.
+   * @param \Acquia\Orca\Domain\Tool\PhpmdTool $phpmd_tool
+   *   The PHPMD tool.
    * @param \Acquia\Orca\Helper\Process\ProcessRunner $process_runner
    *   The process runner.
    */
-  public function __construct(string $clover_coverage, ConfigFileOverrider $config_file_overrider, Filesystem $filesystem, FixturePathHandler $fixture_path_handler, OrcaPathHandler $orca_path_handler, SymfonyStyle $output, PhpcsConfigurator $phpcs_configurator, ProcessRunner $process_runner) {
+  public function __construct(string $clover_coverage, ConfigFileOverrider $config_file_overrider, Filesystem $filesystem, FixturePathHandler $fixture_path_handler, OrcaPathHandler $orca_path_handler, SymfonyStyle $output, PhpcbfTool $phpcbf_tool, PhpcsConfigurator $phpcs_configurator, PhpLintTool $php_lint_tool, PhpmdTool $phpmd_tool, ProcessRunner $process_runner) {
     $this->configFileOverrider = $config_file_overrider;
     $this->filesystem = $filesystem;
     $this->fixture = $fixture_path_handler;
@@ -113,6 +140,9 @@ abstract class TaskBase implements TaskInterface {
     $this->cloverCoverage = $clover_coverage;
     $this->phpcsConfigurator = $phpcs_configurator;
 
+    $this->phpcbfTool = $phpcbf_tool;
+    $this->phpLintTool = $php_lint_tool;
+    $this->phpmdTool = $phpmd_tool;
     $this->processRunner = $process_runner;
   }
 

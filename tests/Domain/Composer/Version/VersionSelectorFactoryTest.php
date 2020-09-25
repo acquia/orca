@@ -24,6 +24,7 @@ class VersionSelectorFactoryTest extends TestCase {
   }
 
   /**
+   * @covers ::__construct
    * @covers ::create
    */
   public function testCreate(): void {
@@ -34,7 +35,7 @@ class VersionSelectorFactoryTest extends TestCase {
 
     $selector = $factory->create();
 
-    // /* @noinspection UnnecessaryAssertionInspection */
+    /* @noinspection UnnecessaryAssertionInspection */
     self::assertInstanceOf(VersionSelector::class, $selector, 'Created a version selector.');
   }
 

@@ -4,8 +4,6 @@ namespace Acquia\Orca\Domain\Tool\Phpcbf;
 
 use Acquia\Orca\Domain\Tool\TaskBase;
 use Acquia\Orca\Enum\PhpcsStandardEnum;
-use Acquia\Orca\Exception\OrcaTaskFailureException;
-use Symfony\Component\Process\Exception\ProcessFailedException;
 
 /**
  * Automatically fixes coding standards violations.
@@ -23,33 +21,22 @@ class PhpcbfTask extends TaskBase {
    * {@inheritdoc}
    */
   public function label(): string {
-    return 'PHP Code Beautifier and Fixer (PHPCBF)';
+    return $this->phpcbfTool->label();
   }
 
   /**
    * {@inheritdoc}
    */
   public function statusMessage(): string {
-    return 'Fixing coding standards violations';
+    return $this->phpcbfTool->statusMessage();
   }
 
   /**
    * {@inheritdoc}
    */
   public function execute(): void {
-    $this->phpcsConfigurator->prepareTemporaryConfig(new PhpcsStandardEnum($this->standard));
-    try {
-      $this->processRunner->runOrcaVendorBin([
-        'phpcbf',
-        realpath($this->getPath()),
-      ], $this->phpcsConfigurator->getTempDir());
-    }
-    catch (ProcessFailedException $e) {
-      throw new OrcaTaskFailureException();
-    }
-    finally {
-      $this->phpcsConfigurator->cleanupTemporaryConfig();
-    }
+    $path = realpath($this->getPath());
+    $this->phpcbfTool->run($path);
   }
 
   /**
@@ -59,7 +46,7 @@ class PhpcbfTask extends TaskBase {
    *   The PHPCS standard.
    */
   public function setStandard(PhpcsStandardEnum $standard): void {
-    $this->standard = $standard;
+    $this->phpcbfTool->setStandard($standard);
   }
 
 }
