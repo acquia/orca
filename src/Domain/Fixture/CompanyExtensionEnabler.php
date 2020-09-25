@@ -2,7 +2,7 @@
 
 namespace Acquia\Orca\Domain\Fixture;
 
-use Acquia\Orca\Domain\Drush\Drush;
+use Acquia\Orca\Domain\Drush\DrushFacade;
 use Acquia\Orca\Domain\Fixture\Helper\ComposerJsonHelper;
 use Acquia\Orca\Domain\Package\Package;
 use Acquia\Orca\Domain\Package\PackageManager;
@@ -28,7 +28,7 @@ class CompanyExtensionEnabler {
   /**
    * The Drush facade.
    *
-   * @var \Acquia\Orca\Domain\Drush\Drush
+   * @var \Acquia\Orca\Domain\Drush\DrushFacade
    */
   private $drush;
 
@@ -72,7 +72,7 @@ class CompanyExtensionEnabler {
    *
    * @param \Acquia\Orca\Domain\Fixture\Helper\ComposerJsonHelper $composer_json_helper
    *   The fixture composer.json helper.
-   * @param \Acquia\Orca\Domain\Drush\Drush $drush
+   * @param \Acquia\Orca\Domain\Drush\DrushFacade $drush
    *   The Drush facade.
    * @param \Symfony\Component\Filesystem\Filesystem $filesystem
    *   The filesystem.
@@ -88,7 +88,7 @@ class CompanyExtensionEnabler {
    * @throws \Acquia\Orca\Exception\OrcaInvalidArgumentException
    * @throws \Acquia\Orca\Exception\OrcaParseError
    */
-  public function __construct(ComposerJsonHelper $composer_json_helper, Drush $drush, Filesystem $filesystem, PackageManager $package_manager, SymfonyStyle $output, SubextensionManager $subextension_manager) {
+  public function __construct(ComposerJsonHelper $composer_json_helper, DrushFacade $drush, Filesystem $filesystem, PackageManager $package_manager, SymfonyStyle $output, SubextensionManager $subextension_manager) {
     $this->composerJsonHelper = $composer_json_helper;
     $this->drush = $drush;
     $this->filesystem = $filesystem;

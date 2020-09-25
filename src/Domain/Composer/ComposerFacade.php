@@ -14,9 +14,9 @@ use InvalidArgumentException;
 use UnexpectedValueException;
 
 /**
- * Provides a facade for encapsulating Composer interactions.
+ * Provides a facade Composer.
  */
-class Composer {
+class ComposerFacade {
 
   /**
    * The fixture path handler.

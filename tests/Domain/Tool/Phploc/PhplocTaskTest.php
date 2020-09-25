@@ -2,17 +2,17 @@
 
 namespace Acquia\Orca\Tests\Domain\Tool\Phploc;
 
-use Acquia\Orca\Domain\Tool\Phploc\Phploc;
+use Acquia\Orca\Domain\Tool\Phploc\PhplocFacade;
 use Acquia\Orca\Domain\Tool\Phploc\PhplocTask;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @property \Acquia\Orca\Domain\Tool\Phploc\Phploc|\Prophecy\Prophecy\ObjectProphecy $phploc
+ * @property \Acquia\Orca\Domain\Tool\Phploc\PhplocFacade|\Prophecy\Prophecy\ObjectProphecy $phploc
  */
 class PhplocTaskTest extends TestCase {
 
   protected function setUp(): void {
-    $this->phploc = $this->prophesize(Phploc::class);
+    $this->phploc = $this->prophesize(PhplocFacade::class);
   }
 
   private function createPhplocTask(): PhplocTask {

@@ -2,7 +2,7 @@
 
 namespace Acquia\Orca\Domain\Fixture;
 
-use Acquia\Orca\Domain\Drush\Drush;
+use Acquia\Orca\Domain\Drush\DrushFacade;
 use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
 use Acquia\Orca\Helper\Filesystem\OrcaPathHandler;
 use Noodlehaus\Config;
@@ -47,7 +47,7 @@ class SiteInstaller {
   /**
    * The Drush facade.
    *
-   * @var \Acquia\Orca\Domain\Drush\Drush
+   * @var \Acquia\Orca\Domain\Drush\DrushFacade
    */
   private $drush;
 
@@ -98,7 +98,7 @@ class SiteInstaller {
    *
    * @param \Acquia\Orca\Domain\Fixture\CompanyExtensionEnabler $company_extension_enabler
    *   The company extension enabler.
-   * @param \Acquia\Orca\Domain\Drush\Drush $drush
+   * @param \Acquia\Orca\Domain\Drush\DrushFacade $drush
    *   The Drush facade.
    * @param \Symfony\Component\Filesystem\Filesystem $filesystem
    *   The filesystem.
@@ -109,7 +109,7 @@ class SiteInstaller {
    * @param \Symfony\Component\Console\Style\SymfonyStyle $output
    *   The output decorator.
    */
-  public function __construct(CompanyExtensionEnabler $company_extension_enabler, Drush $drush, Filesystem $filesystem, FixturePathHandler $fixture_path_handler, OrcaPathHandler $orca_path_handler, SymfonyStyle $output) {
+  public function __construct(CompanyExtensionEnabler $company_extension_enabler, DrushFacade $drush, Filesystem $filesystem, FixturePathHandler $fixture_path_handler, OrcaPathHandler $orca_path_handler, SymfonyStyle $output) {
     $this->companyExtensionEnabler = $company_extension_enabler;
     $this->drush = $drush;
     $this->filesystem = $filesystem;

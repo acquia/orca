@@ -2,7 +2,7 @@
 
 namespace Acquia\Orca\Options;
 
-use Acquia\Orca\Domain\Composer\Composer;
+use Acquia\Orca\Domain\Composer\ComposerFacade;
 use Acquia\Orca\Domain\Drupal\DrupalCoreVersionFinder;
 use Acquia\Orca\Domain\Package\Package;
 use Acquia\Orca\Domain\Package\PackageManager;
@@ -160,7 +160,7 @@ class FixtureOptions {
       if (DrupalCoreVersionEnum::isValidKey($value)) {
         return TRUE;
       }
-      return Composer::isValidVersionConstraint($value);
+      return ComposerFacade::isValidVersionConstraint($value);
     };
   }
 
@@ -191,7 +191,7 @@ class FixtureOptions {
       if ($value === NULL) {
         return TRUE;
       }
-      return Composer::isValidPackageName($value);
+      return ComposerFacade::isValidPackageName($value);
     };
   }
 

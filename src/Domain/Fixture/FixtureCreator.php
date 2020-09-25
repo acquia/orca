@@ -3,11 +3,11 @@
 namespace Acquia\Orca\Domain\Fixture;
 
 use Acquia\Orca\Console\Helper\StatusTable;
-use Acquia\Orca\Domain\Composer\Composer;
+use Acquia\Orca\Domain\Composer\ComposerFacade;
 use Acquia\Orca\Domain\Composer\Version\VersionFinder;
 use Acquia\Orca\Domain\Composer\Version\VersionGuesser;
 use Acquia\Orca\Domain\Fixture\Helper\ComposerJsonHelper;
-use Acquia\Orca\Domain\Git\Git;
+use Acquia\Orca\Domain\Git\GitFacade;
 use Acquia\Orca\Domain\Package\Package;
 use Acquia\Orca\Domain\Package\PackageManager;
 use Acquia\Orca\Exception\OrcaException;
@@ -34,7 +34,7 @@ class FixtureCreator {
   /**
    * The Composer facade.
    *
-   * @var \Acquia\Orca\Domain\Composer\Composer
+   * @var \Acquia\Orca\Domain\Composer\ComposerFacade
    */
   private $composer;
 
@@ -120,7 +120,7 @@ class FixtureCreator {
    *
    * @param \Acquia\Orca\Domain\Fixture\CodebaseCreator $codebase_creator
    *   The codebase creator.
-   * @param \Acquia\Orca\Domain\Composer\Composer $composer
+   * @param \Acquia\Orca\Domain\Composer\ComposerFacade $composer
    *   The Composer facade.
    * @param \Acquia\Orca\Domain\Fixture\Helper\ComposerJsonHelper $composer_json_helper
    *   The fixture composer.json helper.
@@ -143,7 +143,7 @@ class FixtureCreator {
    * @param \Acquia\Orca\Domain\Composer\Version\VersionGuesser $version_guesser
    *   The version guesser.
    */
-  public function __construct(CodebaseCreator $codebase_creator, Composer $composer, ComposerJsonHelper $composer_json_helper, FixturePathHandler $fixture_path_handler, FixtureInspector $fixture_inspector, SiteInstaller $site_installer, SymfonyStyle $output, ProcessRunner $process_runner, PackageManager $package_manager, SubextensionManager $subextension_manager, VersionFinder $version_finder, VersionGuesser $version_guesser) {
+  public function __construct(CodebaseCreator $codebase_creator, ComposerFacade $composer, ComposerJsonHelper $composer_json_helper, FixturePathHandler $fixture_path_handler, FixtureInspector $fixture_inspector, SiteInstaller $site_installer, SymfonyStyle $output, ProcessRunner $process_runner, PackageManager $package_manager, SubextensionManager $subextension_manager, VersionFinder $version_finder, VersionGuesser $version_guesser) {
     $this->codebaseCreator = $codebase_creator;
     $this->composer = $composer;
     $this->composerJsonHelper = $composer_json_helper;
@@ -861,11 +861,11 @@ PHP;
     $this->output->section('Creating backup tag');
     $this->processRunner->git([
       'tag',
-      Git::FRESH_FIXTURE_TAG,
+      GitFacade::FRESH_FIXTURE_TAG,
     ]);
     $this->processRunner->git([
       'checkout',
-      Git::FRESH_FIXTURE_TAG,
+      GitFacade::FRESH_FIXTURE_TAG,
     ]);
   }
 

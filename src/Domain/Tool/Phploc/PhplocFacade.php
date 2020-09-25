@@ -6,9 +6,9 @@ use Acquia\Orca\Helper\Filesystem\OrcaPathHandler;
 use Acquia\Orca\Helper\Process\ProcessRunner;
 
 /**
- * Provides a facade for encapsulating PHPLOC interactions.
+ * Provides a facade for PHPLOC.
  */
-class Phploc {
+class PhplocFacade {
 
   public const JSON_LOG_PATH = 'var/log/phploc.json';
 

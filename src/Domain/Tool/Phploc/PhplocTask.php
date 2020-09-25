@@ -14,7 +14,7 @@ class PhplocTask implements TaskInterface {
   /**
    * The PHPLOC facade.
    *
-   * @var \Acquia\Orca\Domain\Tool\Phploc\Phploc
+   * @var \Acquia\Orca\Domain\Tool\Phploc\PhplocFacade
    */
   private $phploc;
 
@@ -28,10 +28,10 @@ class PhplocTask implements TaskInterface {
   /**
    * Constructs an instance.
    *
-   * @param \Acquia\Orca\Domain\Tool\Phploc\Phploc $phploc
+   * @param \Acquia\Orca\Domain\Tool\Phploc\PhplocFacade $phploc
    *   The PHPLOC facade.
    */
-  public function __construct(Phploc $phploc) {
+  public function __construct(PhplocFacade $phploc) {
     $this->phploc = $phploc;
   }
 

@@ -2,7 +2,7 @@
 
 namespace Acquia\Orca\Tests\Domain\Tool\Phploc;
 
-use Acquia\Orca\Domain\Tool\Phploc\Phploc;
+use Acquia\Orca\Domain\Tool\Phploc\PhplocFacade;
 use Acquia\Orca\Helper\Filesystem\OrcaPathHandler;
 use Acquia\Orca\Helper\Process\ProcessRunner;
 use PHPUnit\Framework\TestCase;
@@ -11,9 +11,9 @@ use Prophecy\Argument;
 /**
  * @property \Acquia\Orca\Helper\Filesystem\OrcaPathHandler|\Prophecy\Prophecy\ObjectProphecy $orca
  * @property \Acquia\Orca\Helper\Process\ProcessRunner|\Prophecy\Prophecy\ObjectProphecy $processRunner
- * @coversDefaultClass \Acquia\Orca\Domain\Tool\Phploc\Phploc
+ * @coversDefaultClass \Acquia\Orca\Domain\Tool\Phploc\PhplocFacade
  */
-class PhplocTest extends TestCase {
+class PhplocFacadeTest extends TestCase {
 
   protected function setUp(): void {
     $this->orca = $this->prophesize(OrcaPathHandler::class);
@@ -26,10 +26,10 @@ class PhplocTest extends TestCase {
       ->willReturn(0);
   }
 
-  private function createPhploc(): Phploc {
+  private function createPhploc(): PhplocFacade {
     $orca_path_handler = $this->orca->reveal();
     $process_runner = $this->processRunner->reveal();
-    return new Phploc($orca_path_handler, $process_runner);
+    return new PhplocFacade($orca_path_handler, $process_runner);
   }
 
   /**
@@ -45,7 +45,7 @@ class PhplocTest extends TestCase {
         '--exclude=var',
         '--exclude=vendor',
         '--exclude=docroot',
-        '--log-json=' . Phploc::JSON_LOG_PATH,
+        '--log-json=' . PhplocFacade::JSON_LOG_PATH,
         '.',
       ], $path)
       ->shouldBeCalledOnce();

@@ -5,9 +5,9 @@ namespace Acquia\Orca\Domain\Git;
 use Acquia\Orca\Helper\Process\ProcessRunner;
 
 /**
- * Provides a facade for encapsulating Git interactions against the fixture.
+ * Provides a facade for Git.
  */
-class Git {
+class GitFacade {
 
   public const FRESH_FIXTURE_TAG = 'fresh-fixture';
 

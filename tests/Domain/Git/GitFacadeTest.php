@@ -2,16 +2,16 @@
 
 namespace Acquia\Orca\Tests\Domain\Git;
 
-use Acquia\Orca\Domain\Git\Git;
+use Acquia\Orca\Domain\Git\GitFacade;
 use Acquia\Orca\Helper\Process\ProcessRunner;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 
 /**
  * @property \Acquia\Orca\Helper\Process\ProcessRunner|\Prophecy\Prophecy\ObjectProphecy $processRunner
- * @coversDefaultClass \Acquia\Orca\Domain\Git\Git
+ * @coversDefaultClass \Acquia\Orca\Domain\Git\GitFacade
  */
-class GitTest extends TestCase {
+class GitFacadeTest extends TestCase {
 
   private const FRESH_FIXTURE_TAG = 'fresh-fixture';
 
@@ -22,9 +22,9 @@ class GitTest extends TestCase {
       ->willReturn(0);
   }
 
-  private function createGit(): Git {
+  private function createGit(): GitFacade {
     $process_runner = $this->processRunner->reveal();
-    return new Git($process_runner);
+    return new GitFacade($process_runner);
   }
 
   public function testBackupCodebaseState(): void {
@@ -49,7 +49,7 @@ class GitTest extends TestCase {
       ->git([
         'tag',
         '--force',
-        Git::FRESH_FIXTURE_TAG,
+        GitFacade::FRESH_FIXTURE_TAG,
       ])->shouldBeCalledOnce();
 
     $git = $this->createGit();

@@ -28,7 +28,7 @@ class CodeCoverageReportBuilder {
   /**
    * PHP filename extensions as Finder expects them.
    *
-   * @see \Acquia\Orca\Domain\Tool\Phploc\Phploc::PHP_EXTENSIONS
+   * @see \Acquia\Orca\Domain\Tool\Phploc\PhplocFacade::PHP_EXTENSIONS
    */
   private const PHP_NAME_PATTERNS = [
     '*.php',

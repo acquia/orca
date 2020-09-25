@@ -2,7 +2,7 @@
 
 namespace Acquia\Orca\Tests\Domain\Composer;
 
-use Acquia\Orca\Domain\Composer\Composer;
+use Acquia\Orca\Domain\Composer\ComposerFacade;
 use Acquia\Orca\Domain\Composer\Version\VersionGuesser;
 use Acquia\Orca\Domain\Drupal\DrupalCoreVersionFinder;
 use Acquia\Orca\Domain\Package\Package;
@@ -23,9 +23,9 @@ use Prophecy\Argument;
  * @property \Acquia\Orca\Helper\Process\ProcessRunner|\Prophecy\Prophecy\ObjectProphecy $processRunner
  * @property \Acquia\Orca\Domain\Package\PackageManager|\Prophecy\Prophecy\ObjectProphecy $packageManager
  * @property \Acquia\Orca\Domain\Package\Package|\Prophecy\Prophecy\ObjectProphecy $blt
- * @coversDefaultClass \Acquia\Orca\Domain\Composer\Composer
+ * @coversDefaultClass \Acquia\Orca\Domain\Composer\ComposerFacade
  */
-class ComposerTest extends TestCase {
+class ComposerFacadeTest extends TestCase {
 
   private const FIXTURE_PATH = '/var/www/orca-build';
 
@@ -62,12 +62,12 @@ class ComposerTest extends TestCase {
     $this->versionGuesser = $this->prophesize(VersionGuesser::class);
   }
 
-  private function createComposer(): Composer {
+  private function createComposer(): ComposerFacade {
     $fixture_path_handler = $this->fixture->reveal();
     $package_manager = $this->packageManager->reveal();
     $process_runner = $this->processRunner->reveal();
     $version_guesser = $this->versionGuesser->reveal();
-    return new Composer($fixture_path_handler, $package_manager, $process_runner, $version_guesser);
+    return new ComposerFacade($fixture_path_handler, $package_manager, $process_runner, $version_guesser);
   }
 
   private function createFixtureOptions($options): FixtureOptions {
@@ -372,7 +372,7 @@ class ComposerTest extends TestCase {
    * @covers ::isValidPackageName
    */
   public function testIsValidPackageName($expected, $name): void {
-    self::assertEquals($expected, Composer::isValidPackageName($name));
+    self::assertEquals($expected, ComposerFacade::isValidPackageName($name));
   }
 
   public function providerIsValidPackageName(): array {
@@ -393,7 +393,7 @@ class ComposerTest extends TestCase {
    * @dataProvider providerIsValidVersionConstraint
    */
   public function testIsValidConstraint($expected, $version): void {
-    $actual = Composer::isValidVersionConstraint($version);
+    $actual = ComposerFacade::isValidVersionConstraint($version);
 
     self::assertEquals($expected, $actual, 'Correctly determined validity of version constraint.');
   }

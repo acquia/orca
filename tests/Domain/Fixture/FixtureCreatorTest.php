@@ -2,7 +2,7 @@
 
 namespace Acquia\Orca\Tests\Domain\Fixture;
 
-use Acquia\Orca\Domain\Composer\Composer;
+use Acquia\Orca\Domain\Composer\ComposerFacade;
 use Acquia\Orca\Domain\Composer\Version\VersionFinder;
 use Acquia\Orca\Domain\Composer\Version\VersionGuesser;
 use Acquia\Orca\Domain\Fixture\CodebaseCreator;
@@ -19,7 +19,7 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
- * @property \Acquia\Orca\Domain\Composer\Composer|\Prophecy\Prophecy\ObjectProphecy $composer
+ * @property \Acquia\Orca\Domain\Composer\ComposerFacade|\Prophecy\Prophecy\ObjectProphecy $composer
  * @property \Acquia\Orca\Domain\Composer\Version\VersionFinder|\Prophecy\Prophecy\ObjectProphecy $versionFinder
  * @property \Acquia\Orca\Domain\Composer\Version\VersionGuesser|\Prophecy\Prophecy\ObjectProphecy $versionGuesser
  * @property \Acquia\Orca\Domain\Fixture\CodebaseCreator|\Prophecy\Prophecy\ObjectProphecy $codebaseCreator
@@ -37,7 +37,7 @@ class FixtureCreatorTest extends TestCase {
 
   protected function setUp(): void {
     $this->codebaseCreator = $this->prophesize(CodebaseCreator::class);
-    $this->composer = $this->prophesize(Composer::class);
+    $this->composer = $this->prophesize(ComposerFacade::class);
     $this->composerJsonHelper = $this->prophesize(ComposerJsonHelper::class);
     $this->fixture = $this->prophesize(FixturePathHandler::class);
     $this->fixtureInspector = $this->prophesize(FixtureInspector::class);

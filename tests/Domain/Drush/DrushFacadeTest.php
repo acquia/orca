@@ -2,7 +2,7 @@
 
 namespace Acquia\Orca\Tests\Domain\Drush;
 
-use Acquia\Orca\Domain\Drush\Drush;
+use Acquia\Orca\Domain\Drush\DrushFacade;
 use Acquia\Orca\Exception\OrcaParseError;
 use Acquia\Orca\Helper\Process\ProcessRunner;
 use PHPUnit\Framework\TestCase;
@@ -12,9 +12,9 @@ use Symfony\Component\Process\Process;
 
 /**
  * @property \Acquia\Orca\Helper\Process\ProcessRunner|\Prophecy\Prophecy\ObjectProphecy $processRunner
- * @coversDefaultClass \Acquia\Orca\Domain\Drush\Drush
+ * @coversDefaultClass \Acquia\Orca\Domain\Drush\DrushFacade
  */
-class DrushTest extends TestCase {
+class DrushFacadeTest extends TestCase {
 
   private $status = [
     'drupal-version' => '9.0.2',
@@ -51,9 +51,9 @@ class DrushTest extends TestCase {
     $this->processRunner = $this->prophesize(ProcessRunner::class);
   }
 
-  private function createDrush(): Drush {
+  private function createDrush(): DrushFacade {
     $process_runner = $this->processRunner->reveal();
-    return new Drush($process_runner);
+    return new DrushFacade($process_runner);
   }
 
   /**

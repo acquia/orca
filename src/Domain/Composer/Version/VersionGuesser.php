@@ -12,7 +12,7 @@ use Noodlehaus\Exception\FileNotFoundException as NoodlehausFileNotFoundExceptio
 use Noodlehaus\Exception\ParseException;
 
 /**
- * Provides a facade for encapsulating Composer version guessing.
+ * Provides Composer version guessing.
  */
 class VersionGuesser {
 

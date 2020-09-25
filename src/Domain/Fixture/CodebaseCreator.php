@@ -2,9 +2,9 @@
 
 namespace Acquia\Orca\Domain\Fixture;
 
-use Acquia\Orca\Domain\Composer\Composer;
+use Acquia\Orca\Domain\Composer\ComposerFacade;
 use Acquia\Orca\Domain\Fixture\Helper\ComposerJsonHelper;
-use Acquia\Orca\Domain\Git\Git;
+use Acquia\Orca\Domain\Git\GitFacade;
 use Acquia\Orca\Exception\OrcaFileNotFoundException;
 use Acquia\Orca\Exception\OrcaParseError;
 use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
@@ -18,7 +18,7 @@ class CodebaseCreator {
   /**
    * The Composer facade.
    *
-   * @var \Acquia\Orca\Domain\Composer\Composer
+   * @var \Acquia\Orca\Domain\Composer\ComposerFacade
    */
   private $composer;
 
@@ -32,7 +32,7 @@ class CodebaseCreator {
   /**
    * The Git facade.
    *
-   * @var \Acquia\Orca\Domain\Git\Git
+   * @var \Acquia\Orca\Domain\Git\GitFacade
    */
   private $git;
 
@@ -53,16 +53,16 @@ class CodebaseCreator {
   /**
    * Constructs an instance.
    *
-   * @param \Acquia\Orca\Domain\Composer\Composer $composer
+   * @param \Acquia\Orca\Domain\Composer\ComposerFacade $composer
    *   The Composer facade.
    * @param \Acquia\Orca\Domain\Fixture\Helper\ComposerJsonHelper $composer_json_helper
    *   The fixture composer.json helper.
    * @param \Acquia\Orca\Helper\Filesystem\FixturePathHandler $fixture_path_handler
    *   The fixture path handler.
-   * @param \Acquia\Orca\Domain\Git\Git $git
+   * @param \Acquia\Orca\Domain\Git\GitFacade $git
    *   The Git facade.
    */
-  public function __construct(Composer $composer, ComposerJsonHelper $composer_json_helper, FixturePathHandler $fixture_path_handler, Git $git) {
+  public function __construct(ComposerFacade $composer, ComposerJsonHelper $composer_json_helper, FixturePathHandler $fixture_path_handler, GitFacade $git) {
     $this->composer = $composer;
     $this->composerJsonHelper = $composer_json_helper;
     $this->fixture = $fixture_path_handler;

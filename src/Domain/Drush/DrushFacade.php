@@ -7,9 +7,9 @@ use Acquia\Orca\Helper\Process\ProcessRunner;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 
 /**
- * Provides a facade for encapsulating Drush interactions against the fixture.
+ * Provides a facade for Drush.
  */
-class Drush {
+class DrushFacade {
 
   /**
    * The process runner.

@@ -2,11 +2,11 @@
 
 namespace Acquia\Orca\Tests\Domain\Fixture;
 
-use Acquia\Orca\Domain\Composer\Composer;
+use Acquia\Orca\Domain\Composer\ComposerFacade;
 use Acquia\Orca\Domain\Drupal\DrupalCoreVersionFinder;
 use Acquia\Orca\Domain\Fixture\CodebaseCreator;
 use Acquia\Orca\Domain\Fixture\Helper\ComposerJsonHelper;
-use Acquia\Orca\Domain\Git\Git;
+use Acquia\Orca\Domain\Git\GitFacade;
 use Acquia\Orca\Domain\Package\Package;
 use Acquia\Orca\Domain\Package\PackageManager;
 use Acquia\Orca\Exception\OrcaFileNotFoundException;
@@ -18,10 +18,10 @@ use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 
 /**
- * @property \Acquia\Orca\Domain\Composer\Composer|\Prophecy\Prophecy\ObjectProphecy $composer
+ * @property \Acquia\Orca\Domain\Composer\ComposerFacade|\Prophecy\Prophecy\ObjectProphecy $composer
  * @property \Acquia\Orca\Domain\Drupal\DrupalCoreVersionFinder|\Prophecy\Prophecy\ObjectProphecy $drupalCoreVersionFinder
  * @property \Acquia\Orca\Domain\Fixture\Helper\ComposerJsonHelper|\Prophecy\Prophecy\ObjectProphecy $composerJsonHelper
- * @property \Acquia\Orca\Domain\Git\Git|\Prophecy\Prophecy\ObjectProphecy $git
+ * @property \Acquia\Orca\Domain\Git\GitFacade|\Prophecy\Prophecy\ObjectProphecy $git
  * @property \Acquia\Orca\Domain\Package\PackageManager|\Prophecy\Prophecy\ObjectProphecy $packageManager
  * @property \Acquia\Orca\Helper\Filesystem\FixturePathHandler|\Prophecy\Prophecy\ObjectProphecy $fixture
  * @property \Acquia\Orca\Helper\Filesystem\OrcaPathHandler|\Prophecy\Prophecy\ObjectProphecy $orca
@@ -34,14 +34,14 @@ class CodebaseCreatorTest extends TestCase {
   private const COMPOSER_JSON_PATH = 'var/www/orca-build/composer.json';
 
   protected function setUp(): void {
-    $this->composer = $this->prophesize(Composer::class);
+    $this->composer = $this->prophesize(ComposerFacade::class);
     $this->composerJsonHelper = $this->prophesize(ComposerJsonHelper::class);
     $this->fixture = $this->prophesize(FixturePathHandler::class);
     $this->fixture
       ->getPath(self::COMPOSER_JSON)
       ->willReturn(self::COMPOSER_JSON_PATH);
     $this->drupalCoreVersionFinder = $this->prophesize(DrupalCoreVersionFinder::class);
-    $this->git = $this->prophesize(Git::class);
+    $this->git = $this->prophesize(GitFacade::class);
     $this->orca = $this->prophesize(OrcaPathHandler::class);
     $this->packageManager = $this->prophesize(PackageManager::class);
     $this->packageManager

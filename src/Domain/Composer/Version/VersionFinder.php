@@ -5,7 +5,7 @@ namespace Acquia\Orca\Domain\Composer\Version;
 use Acquia\Orca\Exception\OrcaVersionNotFoundException;
 
 /**
- * Provides a facade for encapsulating Composer remote version finding.
+ * Provides Composer remote version finding.
  */
 class VersionFinder {
 
