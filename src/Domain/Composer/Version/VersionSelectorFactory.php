@@ -2,11 +2,8 @@
 
 namespace Acquia\Orca\Domain\Composer\Version;
 
-use Composer\DependencyResolver\Pool;
-use Composer\Factory;
-use Composer\IO\NullIO;
+use Acquia\Orca\Domain\Composer\DependencyResolver\PoolFactory;
 use Composer\Package\Version\VersionSelector;
-use Composer\Repository\RepositoryFactory;
 
 /**
  * Creates a Composer version selector.
@@ -14,20 +11,20 @@ use Composer\Repository\RepositoryFactory;
 class VersionSelectorFactory {
 
   /**
-   * The Composer package pool.
+   * The Composer pool factory.
    *
-   * @var \Composer\DependencyResolver\Pool
+   * @var \Acquia\Orca\Domain\Composer\DependencyResolver\PoolFactory
    */
-  private $packagePool;
+  private $factory;
 
   /**
    * Constructs an instance.
    *
-   * @param \Composer\DependencyResolver\Pool $package_pool
-   *   The Composer package pool.
+   * @param \Acquia\Orca\Domain\Composer\DependencyResolver\PoolFactory $factory
+   *   The Composer pool factory.
    */
-  public function __construct(Pool $package_pool) {
-    $this->packagePool = $package_pool;
+  public function __construct(PoolFactory $factory) {
+    $this->factory = $factory;
   }
 
   /**
@@ -37,17 +34,8 @@ class VersionSelectorFactory {
    *   The version selector.
    */
   public function create(): VersionSelector {
-    $io = new NullIO();
-    $packagist = RepositoryFactory::defaultRepos($io)['packagist.org'];
-    $drupal_org = RepositoryFactory::createRepo($io, Factory::createConfig($io), [
-      'type' => 'composer',
-      'url' => 'https://packages.drupal.org/8',
-    ]);
-
-    $this->packagePool->addRepository($packagist);
-    $this->packagePool->addRepository($drupal_org);
-
-    return new VersionSelector($this->packagePool);
+    $pool = $this->factory->createWithDrupalDotOrg();
+    return new VersionSelector($pool);
   }
 
 }

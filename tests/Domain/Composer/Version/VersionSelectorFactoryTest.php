@@ -2,25 +2,30 @@
 
 namespace Acquia\Orca\Tests\Domain\Composer\Version;
 
+use Acquia\Orca\Domain\Composer\DependencyResolver\PoolFactory;
 use Acquia\Orca\Domain\Composer\Version\VersionSelectorFactory;
-use Composer\DependencyResolver\Pool;
 use Composer\Package\Version\VersionSelector;
 use PHPUnit\Framework\TestCase;
-use Prophecy\Argument;
 
 /**
- * @property \Composer\DependencyResolver\Pool|\Prophecy\Prophecy\ObjectProphecy $packagePool
  * @coversDefaultClass \Acquia\Orca\Domain\Composer\Version\VersionSelectorFactory
  */
 class VersionSelectorFactoryTest extends TestCase {
 
+  /**
+   * The Composer pool factory.
+   *
+   * @var \Acquia\Orca\Domain\Composer\DependencyResolver\PoolFactory|\Prophecy\Prophecy\ObjectProphecy
+   */
+  private $poolFactory;
+
   protected function setUp(): void {
-    $this->packagePool = $this->prophesize(Pool::class);
+    $this->poolFactory = $this->prophesize(PoolFactory::class);
   }
 
   protected function createVersionSelectorFactory(): VersionSelectorFactory {
-    $package_pool = $this->packagePool->reveal();
-    return new VersionSelectorFactory($package_pool);
+    $pool_factory = $this->poolFactory->reveal();
+    return new VersionSelectorFactory($pool_factory);
   }
 
   /**
@@ -28,9 +33,9 @@ class VersionSelectorFactoryTest extends TestCase {
    * @covers ::create
    */
   public function testCreate(): void {
-    $this->packagePool
-      ->addRepository(Argument::any())
-      ->shouldBeCalledTimes(2);
+    $this->poolFactory
+      ->createWithDrupalDotOrg()
+      ->shouldBeCalledOnce();
     $factory = $this->createVersionSelectorFactory();
 
     $selector = $factory->create();

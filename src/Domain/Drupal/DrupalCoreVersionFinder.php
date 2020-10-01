@@ -2,11 +2,9 @@
 
 namespace Acquia\Orca\Domain\Drupal;
 
+use Acquia\Orca\Domain\Composer\DependencyResolver\PoolFactory;
 use Acquia\Orca\Enum\DrupalCoreVersionEnum;
-use Composer\DependencyResolver\Pool;
-use Composer\IO\NullIO;
 use Composer\Package\Version\VersionSelector;
-use Composer\Repository\RepositoryFactory;
 use LogicException;
 use RuntimeException;
 
@@ -21,6 +19,23 @@ class DrupalCoreVersionFinder {
    * @var string
    */
   private $previousMinorRelease = '';
+
+  /**
+   * The Composer pool factory.
+   *
+   * @var \Acquia\Orca\Domain\Composer\DependencyResolver\PoolFactory
+   */
+  private $factory;
+
+  /**
+   * Constructs an instance.
+   *
+   * @param \Acquia\Orca\Domain\Composer\DependencyResolver\PoolFactory $factory
+   *   The Composer pool factory.
+   */
+  public function __construct(PoolFactory $factory) {
+    $this->factory = $factory;
+  }
 
   /**
    * Gets the Drupal core version for a given constant.
@@ -207,19 +222,13 @@ class DrupalCoreVersionFinder {
   /**
    * Gets a Composer version selector.
    *
-   * @param string $minimum_stability
-   *   The minimum stability. Available options (in order of stability) are
-   *   dev, alpha, beta, RC, and stable.
-   *
    * @return \Composer\Package\Version\VersionSelector
    *   A Composer version selector.
    *
    * @SuppressWarnings(PHPMD.StaticAccess)
    */
-  private function getVersionSelector($minimum_stability = 'stable'): VersionSelector {
-    $pool = new Pool($minimum_stability);
-    $packagist = RepositoryFactory::defaultRepos(new NullIO())['packagist.org'];
-    $pool->addRepository($packagist);
+  private function getVersionSelector(): VersionSelector {
+    $pool = $this->factory->createWithPackagistOnly();
     return new VersionSelector($pool);
   }
 
