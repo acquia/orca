@@ -1,6 +1,6 @@
 <?php
 
-namespace Acquia\Orca\Tests\Domain\Ci\Job;
+namespace Acquia\Orca\Tests\Domain\Ci\Job\_Helper;
 
 use Acquia\Orca\Domain\Ci\Job\AbstractCiJob;
 use Acquia\Orca\Enum\CiJobEnum;

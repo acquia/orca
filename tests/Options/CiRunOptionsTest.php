@@ -82,15 +82,14 @@ class CiRunOptionsTest extends TestCase {
   }
 
   public function testValidSut(): void {
-    $this->packageManager
-      ->get($this->validSutName())
-      ->willReturn($this->validSut());
-
     $options = $this->createCiRunOptions([
       'job' => $this->validJobName(),
       'phase' => $this->validPhaseName(),
       'sut' => $this->validSutName(),
     ]);
+    $this->packageManager
+      ->get($this->validSutName())
+      ->willReturn($this->validSut());
 
     self::assertEquals($this->validSut(), $options->getSut(), 'Set/got "sut" option.');
   }

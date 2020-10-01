@@ -11,7 +11,7 @@ use Acquia\Orca\Exception\OrcaInvalidArgumentException;
 use Acquia\Orca\Options\CiRunOptions;
 use Acquia\Orca\Options\CiRunOptionsFactory;
 use Acquia\Orca\Tests\Console\Command\CommandTestBase;
-use Acquia\Orca\Tests\Domain\Ci\Job\CiTestJob;
+use Acquia\Orca\Tests\Domain\Ci\Job\_Helper\CiTestJob;
 use Acquia\Orca\Tests\Enum\CiEnumsTestTrait;
 use Prophecy\Argument;
 use Symfony\Component\Console\Command\Command;

@@ -23,20 +23,20 @@ trait CiEnumsTestTrait {
     return $phases;
   }
 
-  private function validJob(): CiJobEnum {
+  protected function validJob(): CiJobEnum {
     $jobs = CiJobEnum::values();
     return reset($jobs);
   }
 
-  private function validJobName(): string {
+  protected function validJobName(): string {
     return $this->validJob()->getKey();
   }
 
-  private function validPhase(): CiJobPhaseEnum {
+  protected function validPhase(): CiJobPhaseEnum {
     return CiJobPhaseEnum::SCRIPT();
   }
 
-  private function validPhaseName(): string {
+  protected function validPhaseName(): string {
     return strtolower($this->validPhase()->getValue());
   }
 
