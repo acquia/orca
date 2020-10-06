@@ -194,7 +194,6 @@ class FixtureCreator {
    */
   private function fixDefaultDependencies(): void {
     $this->output->section('Fixing default dependencies');
-    $fixture_path = $this->fixture->getPath();
 
     // Remove unwanted packages.
     $packages = $this->getUnwantedPackageList();
@@ -234,18 +233,9 @@ class FixtureCreator {
     $additions[] = 'nette/di:^3.0';
 
     // Require additional packages.
-    $command = [
-      'composer',
-      'require',
-    ];
-    if ($this->options->preferSource()) {
-      $command[] = '--prefer-source';
-    }
-    if (!$this->options->isBare()) {
-      $command[] = '--no-update';
-    }
-    $command = array_merge($command, $additions);
-    $this->processRunner->runOrcaVendorBin($command, $fixture_path);
+    $prefer_source = $this->options->preferSource();
+    $no_update = !$this->options->isBare();
+    $this->composer->requirePackages($additions, $prefer_source, $no_update);
   }
 
   /**
@@ -378,16 +368,9 @@ class FixtureCreator {
    * @throws \Acquia\Orca\Exception\OrcaException
    */
   private function composerRequireTopLevelCompanyPackages(): void {
-    $command = [
-      'composer',
-      'require',
-      '--no-interaction',
-    ];
-    if ($this->options->preferSource()) {
-      $command[] = '--prefer-source';
-    }
-    $command = array_merge($command, $this->getCompanyPackageDependencies());
-    $this->processRunner->runOrcaVendorBin($command, $this->fixture->getPath());
+    $packages = $this->getCompanyPackageDependencies();
+    $prefer_source = $this->options->preferSource();
+    $this->composer->requirePackages($packages, $prefer_source);
   }
 
   /**

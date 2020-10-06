@@ -451,6 +451,66 @@ class ComposerFacadeTest extends TestCase {
     $composer->requirePackages($packages);
   }
 
+  /**
+   * @dataProvider providerRequirePackagesOptions
+   */
+  public function testRequirePackagesOptions($prefer_source, $no_update, $options): void {
+    $options[] = '--no-interaction';
+    $packages = ['test1/example1', 'test2/example2'];
+    $command = array_merge([
+      'composer',
+      'require',
+    ], $options, $packages);
+    $this->processRunner
+      ->runOrcaVendorBin($command, self::FIXTURE_PATH)
+      ->shouldBeCalledOnce();
+    $composer = $this->createComposer();
+
+    $composer->requirePackages($packages, $prefer_source, $no_update);
+  }
+
+  public function providerRequirePackagesOptions(): array {
+    return [
+      [
+        'prefer_source' => FALSE,
+        'no_update' => FALSE,
+        'options' => [],
+      ],
+      [
+        'prefer_source' => FALSE,
+        'no_update' => FALSE,
+        'options' => [],
+      ],
+      [
+        'prefer_source' => TRUE,
+        'no_update' => FALSE,
+        'options' => [
+          '--prefer-source',
+        ],
+      ],
+      [
+        'prefer_source' => FALSE,
+        'no_update' => TRUE,
+        'options' => [
+          '--no-update',
+        ],
+      ],
+      [
+        'prefer_source' => TRUE,
+        'no_update' => TRUE,
+        'options' => [
+          '--prefer-source',
+          '--no-update',
+        ],
+      ],
+      [
+        'prefer_source' => NULL,
+        'no_update' => NULL,
+        'options' => [],
+      ],
+    ];
+  }
+
   public function testRequirePackagesEmptyArray(): void {
     $this->expectException(InvalidArgumentException::class);
     $composer = $this->createComposer();

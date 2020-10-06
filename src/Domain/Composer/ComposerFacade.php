@@ -239,15 +239,26 @@ class ComposerFacade {
    *
    * @param string[] $packages
    *   A list of package machine names, e.g., "vendor/package".
+   * @param bool|null $prefer_source
+   *   TRUE to pass the --prefer-source option or FALSE not to.
+   * @param bool|null $no_update
+   *   TRUE to pass the --no-update or FALSE not to.
    */
-  public function requirePackages(array $packages): void {
+  public function requirePackages(array $packages, ?bool $prefer_source = FALSE, ?bool $no_update = FALSE): void {
     if (empty($packages)) {
       throw new InvalidArgumentException('No packages provided to require.');
     }
-    $this->runComposer([
-      'require',
-      '--no-interaction',
-    ], $packages);
+
+    $command = ['require'];
+    if ($prefer_source) {
+      $command[] = '--prefer-source';
+    }
+    if ($no_update) {
+      $command[] = '--no-update';
+    }
+    $command[] = '--no-interaction';
+
+    $this->runComposer($command, $packages);
   }
 
   /**
