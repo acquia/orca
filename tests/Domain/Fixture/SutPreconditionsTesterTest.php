@@ -149,4 +149,20 @@ class SutPreconditionsTesterTest extends TestCase {
     $tester->test(self::SUT_NAME);
   }
 
+  public function testTestComposerVersionSpecified(): void {
+    $data = self::COMPOSER_JSON_DATA;
+    $data['version'] = 'v1.0.0';
+    $this->configLoader
+      ->load(Argument::any())
+      ->willReturn($this->createConfig($data));
+    $this->expectExceptionObject(new OrcaException(implode(PHP_EOL, [
+      "SUT composer.json must not specified a 'version'",
+      'See https://getcomposer.org/doc/04-schema.md#version',
+    ])));
+
+    $tester = $this->createSutPreconditionsTester();
+
+    $tester->test(self::SUT_NAME);
+  }
+
 }

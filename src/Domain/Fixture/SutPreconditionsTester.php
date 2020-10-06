@@ -88,6 +88,7 @@ class SutPreconditionsTester {
     try {
       $this->loadComposerJson();
       $this->validateComposerJsonName();
+      $this->assertComposerJsonSpecifiesNoVersion();
     }
     catch (OrcaException $e) {
       throw $e;
@@ -128,6 +129,20 @@ class SutPreconditionsTester {
         var_export($actual_name, TRUE),
         var_export($expected_name, TRUE
       )));
+    }
+  }
+
+  /**
+   * Asserts the the SUT's composer.json does not specify a "version".
+   *
+   * @throws \Acquia\Orca\Exception\OrcaException
+   */
+  private function assertComposerJsonSpecifiesNoVersion(): void {
+    if ($this->composerJsonConfig->get('version')) {
+      throw new OrcaException(implode(PHP_EOL, [
+        "SUT composer.json must not specified a 'version'",
+        'See https://getcomposer.org/doc/04-schema.md#version',
+      ]));
     }
   }
 
