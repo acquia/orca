@@ -156,7 +156,7 @@ class SutPreconditionsTesterTest extends TestCase {
       ->load(Argument::any())
       ->willReturn($this->createConfig($data));
     $this->expectExceptionObject(new OrcaException(implode(PHP_EOL, [
-      "SUT composer.json must not specified a 'version'",
+      "SUT composer.json must not specify a 'version'",
       'See https://getcomposer.org/doc/04-schema.md#version',
     ])));
 

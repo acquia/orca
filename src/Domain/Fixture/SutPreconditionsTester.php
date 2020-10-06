@@ -140,7 +140,7 @@ class SutPreconditionsTester {
   private function assertComposerJsonSpecifiesNoVersion(): void {
     if ($this->composerJsonConfig->get('version')) {
       throw new OrcaException(implode(PHP_EOL, [
-        "SUT composer.json must not specified a 'version'",
+        "SUT composer.json must not specify a 'version'",
         'See https://getcomposer.org/doc/04-schema.md#version',
       ]));
     }
