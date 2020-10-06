@@ -455,12 +455,15 @@ class FixtureCreator {
    * @throws \Acquia\Orca\Exception\OrcaException
    */
   private function getCompanyPackageDependencies(): array {
-    $dependencies = ($this->options->symlinkAll()) ? $this->getLocalPackages() : $this->packageManager->getAll();
     $sut = $this->options->getSut();
+    $dependencies = $this->getCompanyPackagesToRequire();
+
     if ($this->options->isSutOnly()) {
       $dependencies = [$sut];
     }
+
     $core = $this->options->getCoreResolved();
+
     foreach ($dependencies as $package_name => &$package) {
       // Omit packages that cannot be Composer required.
       if (!$package->shouldGetComposerRequired()) {
@@ -496,6 +499,19 @@ class FixtureCreator {
     }
 
     return array_values($dependencies);
+  }
+
+  /**
+   * Gets the company packages to require with Composer.
+   *
+   * @return \Acquia\Orca\Domain\Package\Package[]|string[]
+   *   The packages to require.
+   */
+  private function getCompanyPackagesToRequire(): array {
+    if ($this->options->symlinkAll()) {
+      return $this->getLocalPackages();
+    }
+    return $this->packageManager->getAll();
   }
 
   /**

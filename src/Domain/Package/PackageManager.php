@@ -125,8 +125,8 @@ class PackageManager {
   /**
    * Gets an array of all packages.
    *
-   * @return \Acquia\Orca\Domain\Package\Package[]|string[]
-   *   An array of packages or package properties keyed by package name.
+   * @return \Acquia\Orca\Domain\Package\Package[]
+   *   An array of packages keyed by package name.
    */
   public function getAll(): array {
     return $this->packages;
