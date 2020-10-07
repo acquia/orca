@@ -4,7 +4,7 @@ namespace Acquia\Orca\Console\Command\Debug;
 
 use Acquia\Orca\Console\Helper\StatusTable;
 use Acquia\Orca\Domain\Drupal\DrupalCoreVersionFinder;
-use Acquia\Orca\Enum\DrupalCoreVersionEnum;
+use Acquia\Orca\Enum\DrupalCoreVersionEnumOld;
 use Acquia\Orca\Enum\StatusCodeEnum;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -56,10 +56,10 @@ class DebugCoreVersionsCommand extends Command {
     $output->writeln('Getting version data via Composer. This takes a while.');
 
     $overview = [];
-    foreach (DrupalCoreVersionEnum::values() as $version) {
+    foreach (DrupalCoreVersionEnumOld::values() as $version) {
       $overview[] = [
         $version,
-        $this->drupalCoreVersionFinder->getPretty(new DrupalCoreVersionEnum($version)),
+        $this->drupalCoreVersionFinder->getPretty(new DrupalCoreVersionEnumOld($version)),
       ];
     }
 

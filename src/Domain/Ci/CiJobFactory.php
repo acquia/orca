@@ -49,8 +49,6 @@ class CiJobFactory {
    *   Integrated test on oldest supported Drupal core version.
    * @param \Acquia\Orca\Domain\Ci\Job\IntegratedTestOnCurrentDevCiJob $integrated_test_on_current_dev_ci_job
    *   Integrated test on previous minor Drupal core version.
-   * @param \Acquia\Orca\Domain\Ci\Job\IntegratedTestOnLatestLtsCiJob $integrated_test_on_latest_lts_ci_job
-   *   Integrated test on latest LTS Drupal core version.
    * @param \Acquia\Orca\Domain\Ci\Job\IntegratedTestOnNextMajorLatestMinorBetaOrLaterCiJob $integrated_test_on_next_major_latest_minor_beta_or_later_ci_job
    *   Isolated test on current Drupal core version.
    * @param \Acquia\Orca\Domain\Ci\Job\IntegratedTestOnNextMajorLatestMinorDevCiJob $integrated_test_on_next_major_latest_minor_dev_ci_job
@@ -96,7 +94,6 @@ class CiJobFactory {
     DeprecatedCodeScanWContribCiJob $deprecated_code_scan_w_contrib_ci_job,
     IntegratedTestOnCurrentCiJob $integrated_test_on_current_ci_job,
     IntegratedTestOnCurrentDevCiJob $integrated_test_on_current_dev_ci_job,
-    IntegratedTestOnLatestLtsCiJob $integrated_test_on_latest_lts_ci_job,
     IntegratedTestOnNextMajorLatestMinorBetaOrLaterCiJob $integrated_test_on_next_major_latest_minor_beta_or_later_ci_job,
     IntegratedTestOnNextMajorLatestMinorDevCiJob $integrated_test_on_next_major_latest_minor_dev_ci_job,
     IntegratedTestOnNextMinorCiJob $integrated_test_on_next_minor_ci_job,

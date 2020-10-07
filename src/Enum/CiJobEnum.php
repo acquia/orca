@@ -10,7 +10,6 @@ use MyCLabs\Enum\Enum;
  * @method static CiJobEnum STATIC_CODE_ANALYSIS()
  * @method static CiJobEnum INTEGRATED_TEST_ON_OLDEST_SUPPORTED()
  * @method static CiJobEnum INTEGRATED_TEST_ON_PREVIOUS_MINOR()
- * @method static CiJobEnum INTEGRATED_TEST_ON_LATEST_LTS()
  * @method static CiJobEnum ISOLATED_TEST_ON_CURRENT()
  * @method static CiJobEnum INTEGRATED_TEST_ON_CURRENT()
  * @method static CiJobEnum INTEGRATED_UPGRADE_TEST_TO_NEXT_MINOR()
@@ -38,8 +37,6 @@ final class CiJobEnum extends Enum {
   public const INTEGRATED_TEST_ON_OLDEST_SUPPORTED = 'INTEGRATED_TEST_ON_OLDEST_SUPPORTED';
 
   public const INTEGRATED_TEST_ON_PREVIOUS_MINOR = 'INTEGRATED_TEST_ON_PREVIOUS_MINOR';
-
-  public const INTEGRATED_TEST_ON_LATEST_LTS = 'INTEGRATED_TEST_ON_LATEST_LTS';
 
   public const ISOLATED_TEST_ON_CURRENT = 'ISOLATED_TEST_ON_CURRENT';
 
@@ -90,7 +87,6 @@ final class CiJobEnum extends Enum {
       self::STATIC_CODE_ANALYSIS => 'Static code analysis',
       self::INTEGRATED_TEST_ON_OLDEST_SUPPORTED => 'Integrated test on oldest supported Drupal core version',
       self::INTEGRATED_TEST_ON_PREVIOUS_MINOR => 'Integrated test on previous minor Drupal core version',
-      self::INTEGRATED_TEST_ON_LATEST_LTS => 'Integrated test on latest LTS Drupal core version',
       self::ISOLATED_TEST_ON_CURRENT => 'Isolated test on current Drupal core version',
       self::INTEGRATED_TEST_ON_CURRENT => 'Integrated test on current Drupal core version',
       self::INTEGRATED_UPGRADE_TEST_TO_NEXT_MINOR => 'Integrated upgrade test to next minor Drupal core version',

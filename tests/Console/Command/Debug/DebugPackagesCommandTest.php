@@ -6,7 +6,7 @@ use Acquia\Orca\Console\Command\Debug\DebugPackagesCommand;
 use Acquia\Orca\Domain\Drupal\DrupalCoreVersionFinder;
 use Acquia\Orca\Domain\Package\Package;
 use Acquia\Orca\Domain\Package\PackageManager;
-use Acquia\Orca\Enum\DrupalCoreVersionEnum;
+use Acquia\Orca\Enum\DrupalCoreVersionEnumOld;
 use Acquia\Orca\Enum\StatusCodeEnum;
 use Acquia\Orca\Tests\Console\Command\CommandTestBase;
 use Composer\Semver\VersionParser;
@@ -67,7 +67,7 @@ class DebugPackagesCommandTest extends CommandTestBase {
   public function testValidArguments($argument): void {
     $version = '8.7.0.0';
     $this->drupalCoreVersionFinder
-      ->get(new DrupalCoreVersionEnum($argument))
+      ->get(new DrupalCoreVersionEnumOld($argument))
       ->shouldBeCalledOnce()
       ->willReturn($version);
 
@@ -78,7 +78,7 @@ class DebugPackagesCommandTest extends CommandTestBase {
   }
 
   public function providerValidArguments(): array {
-    $versions = DrupalCoreVersionEnum::keys();
+    $versions = DrupalCoreVersionEnumOld::keys();
     array_walk($versions, static function (&$value) {
       $value = [$value];
     });

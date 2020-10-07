@@ -4,7 +4,7 @@ namespace Acquia\Orca\Console\Command\Debug;
 
 use Acquia\Orca\Domain\Drupal\DrupalCoreVersionFinder;
 use Acquia\Orca\Domain\Package\PackageManager;
-use Acquia\Orca\Enum\DrupalCoreVersionEnum;
+use Acquia\Orca\Enum\DrupalCoreVersionEnumOld;
 use Acquia\Orca\Enum\StatusCodeEnum;
 use Composer\Semver\VersionParser;
 use InvalidArgumentException;
@@ -80,7 +80,7 @@ class DebugPackagesCommand extends Command {
       ->setAliases(['packages'])
       ->addArgument('core', InputArgument::OPTIONAL, implode(PHP_EOL, array_merge(
         ['A Drupal core version to target:'],
-        DrupalCoreVersionEnum::commandHelp(),
+        DrupalCoreVersionEnumOld::commandHelp(),
         ['- Any version string Composer understands, see https://getcomposer.org/doc/articles/versions.md']
       )))
       ->setDescription('Displays the active packages configuration');
@@ -97,7 +97,7 @@ class DebugPackagesCommand extends Command {
     catch (InvalidArgumentException $e) {
       $output->writeln([
         sprintf('Error: Invalid value for "core" option: "%s".', $argument),
-        sprintf('Hint: Acceptable values are "%s", or any version string Composer understands.', implode('", "', DrupalCoreVersionEnum::values())),
+        sprintf('Hint: Acceptable values are "%s", or any version string Composer understands.', implode('", "', DrupalCoreVersionEnumOld::values())),
       ]);
       return StatusCodeEnum::ERROR;
     }
@@ -125,8 +125,8 @@ class DebugPackagesCommand extends Command {
       throw new InvalidArgumentException();
     }
 
-    if (DrupalCoreVersionEnum::isValid($argument)) {
-      $argument = $this->drupalCoreVersionFinder->get(new DrupalCoreVersionEnum($argument));
+    if (DrupalCoreVersionEnumOld::isValid($argument)) {
+      $argument = $this->drupalCoreVersionFinder->get(new DrupalCoreVersionEnumOld($argument));
     }
 
     try {

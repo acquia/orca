@@ -7,45 +7,49 @@ use MyCLabs\Enum\Enum;
 /**
  * Provides Drupal core version special values.
  *
- * @method static DrupalCoreVersionEnum PREVIOUS_RELEASE()
- * @method static DrupalCoreVersionEnum PREVIOUS_DEV()
- * @method static DrupalCoreVersionEnum CURRENT_RECOMMENDED()
+ * @method static DrupalCoreVersionEnum OLDEST_SUPPORTED()
+ * @method static DrupalCoreVersionEnum PREVIOUS_MINOR()
+ * @method static DrupalCoreVersionEnum CURRENT()
  * @method static DrupalCoreVersionEnum CURRENT_DEV()
- * @method static DrupalCoreVersionEnum NEXT_RELEASE()
- * @method static DrupalCoreVersionEnum NEXT_DEV()
- * @method static DrupalCoreVersionEnum D9_READINESS()
+ * @method static DrupalCoreVersionEnum NEXT_MINOR()
+ * @method static DrupalCoreVersionEnum NEXT_MINOR_DEV()
+ * @method static DrupalCoreVersionEnum NEXT_MAJOR_LATEST_MINOR_BETA_OR_LATER()
+ * @method static DrupalCoreVersionEnum NEXT_MAJOR_LATEST_MINOR_DEV()
  */
 final class DrupalCoreVersionEnum extends Enum {
 
-  public const PREVIOUS_RELEASE = 'PREVIOUS_RELEASE';
+  public const OLDEST_SUPPORTED = 'OLDEST_SUPPORTED';
 
-  public const PREVIOUS_DEV = 'PREVIOUS_DEV';
+  public const PREVIOUS_MINOR = 'PREVIOUS_MINOR';
 
-  public const CURRENT_RECOMMENDED = 'CURRENT_RECOMMENDED';
+  public const CURRENT = 'CURRENT';
 
   public const CURRENT_DEV = 'CURRENT_DEV';
 
-  public const NEXT_RELEASE = 'NEXT_RELEASE';
+  public const NEXT_MINOR = 'NEXT_MINOR';
 
-  public const NEXT_DEV = 'NEXT_DEV';
+  public const NEXT_MINOR_DEV = 'NEXT_MINOR_DEV';
 
-  public const D9_READINESS = 'D9_READINESS';
+  public const NEXT_MAJOR_LATEST_MINOR_BETA_OR_LATER = 'NEXT_MAJOR_LATEST_MINOR_BETA_OR_LATER';
+
+  public const NEXT_MAJOR_LATEST_MINOR_DEV = 'NEXT_MAJOR_LATEST_MINOR_DEV';
 
   /**
-   * Provides help text for commands that accept Drupal core version input.
+   * Descriptions for the versions.
    *
    * @return array
-   *   An array of lines.
+   *   An associative array of version names and their descriptions.
    */
-  public static function commandHelp(): array {
+  public static function descriptions(): array {
     return [
-      sprintf('- %s: The latest release of the previous minor version, e.g., "8.5.14" if the current minor version is 8.6', self::PREVIOUS_RELEASE),
-      sprintf('- %s: The development version of the previous minor version, e.g., "8.5.x-dev"', self::PREVIOUS_DEV),
-      sprintf('- %s: The current recommended release, e.g., "8.6.14"', self::CURRENT_RECOMMENDED),
-      sprintf('- %s: The current development version, e.g., "8.6.x-dev"', self::CURRENT_DEV),
-      sprintf('- %s: The next release version if available, e.g., "8.7.0-beta2"', self::NEXT_RELEASE),
-      sprintf('- %s: The next development version, e.g., "8.7.x-dev"', self::NEXT_DEV),
-      sprintf('- %s: The current development version of Drupal 9, e.g., "9.0.x-dev"', self::D9_READINESS),
+      self::OLDEST_SUPPORTED => 'Oldest supported Drupal core version',
+      self::PREVIOUS_MINOR => 'Previous minor Drupal core version',
+      self::CURRENT => 'Current Drupal core version',
+      self::CURRENT_DEV => 'Current dev Drupal core version',
+      self::NEXT_MINOR => 'Next minor Drupal core version',
+      self::NEXT_MINOR_DEV => 'Next minor dev Drupal core version',
+      self::NEXT_MAJOR_LATEST_MINOR_BETA_OR_LATER => 'Next major, latest minor beta-or-later Drupal core version',
+      self::NEXT_MAJOR_LATEST_MINOR_DEV => 'Next major, latest minor dev Drupal core version',
     ];
   }
 

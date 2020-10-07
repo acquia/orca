@@ -89,7 +89,6 @@ class CiJobFactoryTest extends TestCase {
     $deprecated_code_scan_w_contrib_ci_job = $this->deprecatedCodeScanWContribCiJob->reveal();
     $integrated_test_on_current_ci_job = $this->integratedTestOnCurrentCiJob->reveal();
     $integrated_test_on_current_dev_ci_job = $this->integratedTestOnCurrentDevCiJob->reveal();
-    $integrated_test_on_latest_lts_ci_job = $this->integratedTestOnLatestLtsCiJob->reveal();
     $integrated_test_on_next_major_latest_minor_beta_or_later_ci_job = $this->integratedTestOnNextMajorLatestMinorBetaOrLaterCiJob->reveal();
     $integrated_test_on_next_major_latest_minor_dev_ci_job = $this->integratedTestOnNextMajorLatestMinorDevCiJob->reveal();
     $integrated_test_on_next_minor_ci_job = $this->integratedTestOnNextMinorCiJob->reveal();
@@ -113,7 +112,6 @@ class CiJobFactoryTest extends TestCase {
       $deprecated_code_scan_w_contrib_ci_job,
       $integrated_test_on_current_ci_job,
       $integrated_test_on_current_dev_ci_job,
-      $integrated_test_on_latest_lts_ci_job,
       $integrated_test_on_next_major_latest_minor_beta_or_later_ci_job,
       $integrated_test_on_next_major_latest_minor_dev_ci_job,
       $integrated_test_on_next_minor_ci_job,
