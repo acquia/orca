@@ -11,6 +11,7 @@ use Acquia\Orca\Domain\Fixture\FixtureInspector;
 use Acquia\Orca\Domain\Fixture\Helper\ComposerJsonHelper;
 use Acquia\Orca\Domain\Fixture\SiteInstaller;
 use Acquia\Orca\Domain\Fixture\SubextensionManager;
+use Acquia\Orca\Domain\Git\GitFacade;
 use Acquia\Orca\Domain\Package\PackageManager;
 use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
 use Acquia\Orca\Helper\Filesystem\OrcaPathHandler;
@@ -27,6 +28,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  * @property \Acquia\Orca\Domain\Fixture\Helper\ComposerJsonHelper|\Prophecy\Prophecy\ObjectProphecy $composerJsonHelper
  * @property \Acquia\Orca\Domain\Fixture\SiteInstaller|\Prophecy\Prophecy\ObjectProphecy $siteInstaller
  * @property \Acquia\Orca\Domain\Fixture\SubextensionManager|\Prophecy\Prophecy\ObjectProphecy $subextensionManager
+ * @property \Acquia\Orca\Domain\Git\GitFacade|\Prophecy\Prophecy\ObjectProphecy $git
  * @property \Acquia\Orca\Domain\Package\PackageManager|\Prophecy\Prophecy\ObjectProphecy $packageManager
  * @property \Acquia\Orca\Helper\Filesystem\FixturePathHandler|\Prophecy\Prophecy\ObjectProphecy $fixture
  * @property \Acquia\Orca\Helper\Filesystem\OrcaPathHandler|\Prophecy\Prophecy\ObjectProphecy $orca
@@ -41,6 +43,7 @@ class FixtureCreatorTest extends TestCase {
     $this->composerJsonHelper = $this->prophesize(ComposerJsonHelper::class);
     $this->fixture = $this->prophesize(FixturePathHandler::class);
     $this->fixtureInspector = $this->prophesize(FixtureInspector::class);
+    $this->git = $this->prophesize(GitFacade::class);
     $this->orca = $this->prophesize(OrcaPathHandler::class);
     $this->packageManager = $this->prophesize(PackageManager::class);
     $this->processRunner = $this->prophesize(ProcessRunner::class);
@@ -57,6 +60,7 @@ class FixtureCreatorTest extends TestCase {
     $composer_json_helper = $this->composerJsonHelper->reveal();
     $fixture = $this->fixture->reveal();
     $fixture_inspector = $this->fixtureInspector->reveal();
+    $git = $this->git->reveal();
     $package_manager = $this->packageManager->reveal();
     $process_runner = $this->processRunner->reveal();
     $site_installer = $this->siteInstaller->reveal();
@@ -64,7 +68,7 @@ class FixtureCreatorTest extends TestCase {
     $subextension_manager = $this->subextensionManager->reveal();
     $version_finder = $this->versionFinder->reveal();
     $version_guesser = $this->versionGuesser->reveal();
-    return new FixtureCreator($codebase_creator, $composer_facade, $composer_json_helper, $fixture, $fixture_inspector, $site_installer, $output, $process_runner, $package_manager, $subextension_manager, $version_finder, $version_guesser);
+    return new FixtureCreator($codebase_creator, $composer_facade, $composer_json_helper, $fixture, $fixture_inspector, $git, $site_installer, $output, $process_runner, $package_manager, $subextension_manager, $version_finder, $version_guesser);
   }
 
   public function testInstantiation(): void {

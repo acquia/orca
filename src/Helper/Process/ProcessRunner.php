@@ -195,39 +195,6 @@ class ProcessRunner {
   }
 
   /**
-   * Executes a Git command.
-   *
-   * @param array $args
-   *   An array of Git command arguments.
-   * @param string|null $cwd
-   *   The working directory, or NULL to use the fixture directory.
-   *
-   * @return int
-   *   The exit status code.
-   */
-  public function git(array $args, ?string $cwd = NULL): int {
-    return $this->runExecutable('git', $args, $cwd);
-  }
-
-  /**
-   * Executes a Git `commit` command against the fixture.
-   *
-   * @param string $message
-   *   The commit message.
-   *
-   * @return int
-   *   The exit status code.
-   */
-  public function gitCommit(string $message): int {
-    return $this->git([
-      'commit',
-      "--message={$message}",
-      '--quiet',
-      '--allow-empty',
-    ]);
-  }
-
-  /**
    * Creates a process for a given vendor binary command.
    *
    * @param array $command

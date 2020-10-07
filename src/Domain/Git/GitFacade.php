@@ -29,15 +29,35 @@ class GitFacade {
   }
 
   /**
+   * Executes a Git command.
+   *
+   * @param array $args
+   *   An array of Git command arguments.
+   * @param string|null $cwd
+   *   The working directory, or NULL to use the fixture directory.
+   *
+   * @return int
+   *   The exit status code.
+   */
+  public function execute(array $args, ?string $cwd = NULL): int {
+    return $this->processRunner->runExecutable('git', $args, $cwd);
+  }
+
+  /**
    * Backs up the fixture repository state.
    *
    * The SQLite database will be included, if present.
    */
   public function backupFixtureRepo(): void {
     $this->ensureFixtureRepo();
-    $this->processRunner->git(['add', '--all']);
-    $this->processRunner->gitCommit('Backed up the fixture.');
-    $this->processRunner->git([
+    $this->execute(['add', '--all']);
+    $this->execute([
+      'commit',
+      "--message=Backed up the fixture.",
+      '--quiet',
+      '--allow-empty',
+    ]);
+    $this->execute([
       'tag',
       '--force',
       self::FRESH_FIXTURE_TAG,
@@ -49,32 +69,22 @@ class GitFacade {
    */
   public function ensureFixtureRepo(): void {
     // Ensure the repository is initialized.
-    $this->git(['init']);
+    $this->execute(['init']);
     // Prevent "Please tell me who you are" errors.
-    $this->git(['config', 'user.name', 'ORCA']);
-    $this->git(['config', 'user.email', 'no-reply@acquia.com']);
-  }
-
-  /**
-   * Executes a Git command.
-   *
-   * @param string[] $command
-   *   An array of command-line arguments.
-   */
-  private function git(array $command): void {
-    $this->processRunner->git($command);
+    $this->execute(['config', 'user.name', 'ORCA']);
+    $this->execute(['config', 'user.email', 'no-reply@acquia.com']);
   }
 
   /**
    * Resets the fixture's Git repository state.
    */
   public function resetRepoState(): void {
-    $this->processRunner->git([
+    $this->execute([
       'checkout',
       '--force',
       self::FRESH_FIXTURE_TAG,
     ]);
-    $this->processRunner->git(['clean', '--force', '-d']);
+    $this->execute(['clean', '--force', '-d']);
   }
 
 }

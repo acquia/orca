@@ -60,6 +60,13 @@ class FixtureCreator {
   private $fixtureInspector;
 
   /**
+   * The Git facade.
+   *
+   * @var \Acquia\Orca\Domain\Git\GitFacade
+   */
+  private $git;
+
+  /**
    * The fixture options.
    *
    * @var \Acquia\Orca\Options\FixtureOptions
@@ -128,6 +135,8 @@ class FixtureCreator {
    *   The fixture path handler.
    * @param \Acquia\Orca\Domain\Fixture\FixtureInspector $fixture_inspector
    *   The fixture inspector.
+   * @param \Acquia\Orca\Domain\Git\GitFacade $git
+   *   The Git facade.
    * @param \Acquia\Orca\Domain\Fixture\SiteInstaller $site_installer
    *   The site installer.
    * @param \Symfony\Component\Console\Style\SymfonyStyle $output
@@ -143,12 +152,13 @@ class FixtureCreator {
    * @param \Acquia\Orca\Domain\Composer\Version\VersionGuesser $version_guesser
    *   The version guesser.
    */
-  public function __construct(CodebaseCreator $codebase_creator, ComposerFacade $composer, ComposerJsonHelper $composer_json_helper, FixturePathHandler $fixture_path_handler, FixtureInspector $fixture_inspector, SiteInstaller $site_installer, SymfonyStyle $output, ProcessRunner $process_runner, PackageManager $package_manager, SubextensionManager $subextension_manager, VersionFinder $version_finder, VersionGuesser $version_guesser) {
+  public function __construct(CodebaseCreator $codebase_creator, ComposerFacade $composer, ComposerJsonHelper $composer_json_helper, FixturePathHandler $fixture_path_handler, FixtureInspector $fixture_inspector, GitFacade $git, SiteInstaller $site_installer, SymfonyStyle $output, ProcessRunner $process_runner, PackageManager $package_manager, SubextensionManager $subextension_manager, VersionFinder $version_finder, VersionGuesser $version_guesser) {
     $this->codebaseCreator = $codebase_creator;
     $this->composer = $composer;
     $this->composerJsonHelper = $composer_json_helper;
     $this->fixture = $fixture_path_handler;
     $this->fixtureInspector = $fixture_inspector;
+    $this->git = $git;
     $this->output = $output;
     $this->processRunner = $process_runner;
     $this->packageManager = $package_manager;
@@ -431,7 +441,7 @@ class FixtureCreator {
     ], $fixture_path);
 
     $this->output->comment('Display the Git branches in the path repo.');
-    $this->processRunner->git([
+    $this->git->execute([
       'branch',
     ], $sut->getRepositoryUrlAbsolute());
 
@@ -682,8 +692,13 @@ class FixtureCreator {
    *   The commit message to use.
    */
   private function commitCodeChanges($message): void {
-    $this->processRunner->git(['add', '--all']);
-    $this->processRunner->gitCommit($message);
+    $this->git->execute(['add', '--all']);
+    $this->git->execute([
+      'commit',
+      "--message={$message}",
+      '--quiet',
+      '--allow-empty',
+    ]);
   }
 
   /**
@@ -858,11 +873,11 @@ PHP;
    */
   private function createAndCheckoutBackupTag(): void {
     $this->output->section('Creating backup tag');
-    $this->processRunner->git([
+    $this->git->execute([
       'tag',
       GitFacade::FRESH_FIXTURE_TAG,
     ]);
-    $this->processRunner->git([
+    $this->git->execute([
       'checkout',
       GitFacade::FRESH_FIXTURE_TAG,
     ]);

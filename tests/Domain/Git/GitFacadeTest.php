@@ -18,7 +18,7 @@ class GitFacadeTest extends TestCase {
   protected function setUp(): void {
     $this->processRunner = $this->prophesize(ProcessRunner::class);
     $this->processRunner
-      ->git(Argument::any())
+      ->runExecutable('git', Argument::any(), Argument::any())
       ->willReturn(0);
   }
 
@@ -27,31 +27,58 @@ class GitFacadeTest extends TestCase {
     return new GitFacade($process_runner);
   }
 
+  /**
+   * @dataProvider providerExecute
+   */
+  public function testExecute($args, $cwd, $status) {
+    $git = $this->createGit();
+    $this->processRunner
+      ->runExecutable('git', $args, $cwd)
+      ->willReturn($status)
+      ->shouldBeCalledOnce();
+
+    $return = $git->execute($args, $cwd);
+
+    self::assertSame($status, $return, 'Returned correct status code.');
+  }
+
+  public function providerExecute(): array {
+    return [
+      ['args' => [], 'cwd' => NULL, 'status' => 0],
+      ['args' => ['commit'], 'cwd' => '/var/www', 'status' => 1],
+    ];
+  }
+
   public function testBackupCodebaseState(): void {
     // Ensure fixture repo.
     $this->processRunner
-      ->git(['init'])
+      ->runExecutable('git', ['init'], NULL)
       ->shouldBeCalledOnce();
     $this->processRunner
-      ->git(['config', 'user.name', 'ORCA'])
+      ->runExecutable('git', ['config', 'user.name', 'ORCA'], NULL)
       ->shouldBeCalledOnce();
     $this->processRunner
-      ->git(['config', 'user.email', 'no-reply@acquia.com'])
+      ->runExecutable('git', ['config', 'user.email', 'no-reply@acquia.com'], NULL)
       ->shouldBeCalledOnce();
     // Perform backup operation itself.
     $this->processRunner
-      ->git(['add', '--all'])
+      ->runExecutable('git', ['add', '--all'], NULL)
       ->shouldBeCalledOnce();
     $this->processRunner
-      ->gitCommit('Backed up the fixture.')
+      ->runExecutable('git', [
+        'commit',
+        "--message=Backed up the fixture.",
+        '--quiet',
+        '--allow-empty',
+      ], NULL)
       ->shouldBeCalledOnce();
     $this->processRunner
-      ->git([
+      ->runExecutable('git', [
         'tag',
         '--force',
         GitFacade::FRESH_FIXTURE_TAG,
-      ])->shouldBeCalledOnce();
-
+      ], NULL)
+      ->shouldBeCalledOnce();
     $git = $this->createGit();
 
     $git->backupFixtureRepo();
@@ -59,13 +86,13 @@ class GitFacadeTest extends TestCase {
 
   public function testEnsureFixtureRepo(): void {
     $this->processRunner
-      ->git(['init'])
+      ->runExecutable('git', ['init'], NULL)
       ->shouldBeCalledOnce();
     $this->processRunner
-      ->git(['config', 'user.name', 'ORCA'])
+      ->runExecutable('git', ['config', 'user.name', 'ORCA'], NULL)
       ->shouldBeCalledOnce();
     $this->processRunner
-      ->git(['config', 'user.email', 'no-reply@acquia.com'])
+      ->runExecutable('git', ['config', 'user.email', 'no-reply@acquia.com'], NULL)
       ->shouldBeCalledOnce();
 
     $git = $this->createGit();
@@ -75,14 +102,14 @@ class GitFacadeTest extends TestCase {
 
   public function testResetRepoState(): void {
     $this->processRunner
-      ->git([
+      ->runExecutable('git', [
         'checkout',
         '--force',
         self::FRESH_FIXTURE_TAG,
-      ])
+      ], NULL)
       ->shouldBeCalledOnce();
     $this->processRunner
-      ->git(['clean', '--force', '-d'])
+      ->runExecutable('git', ['clean', '--force', '-d'], NULL)
       ->shouldBeCalledOnce();
 
     $git = $this->createGit();
