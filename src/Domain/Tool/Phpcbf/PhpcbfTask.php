@@ -11,13 +11,6 @@ use Acquia\Orca\Enum\PhpcsStandardEnum;
 class PhpcbfTask extends TaskBase {
 
   /**
-   * The standard to use.
-   *
-   * @var string
-   */
-  private $standard = PhpcsStandardEnum::DEFAULT;
-
-  /**
    * {@inheritdoc}
    */
   public function label(): string {
