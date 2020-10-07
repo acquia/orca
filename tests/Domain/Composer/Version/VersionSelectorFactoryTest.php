@@ -30,15 +30,37 @@ class VersionSelectorFactoryTest extends TestCase {
 
   /**
    * @covers ::__construct
-   * @covers ::create
+   * @covers ::createWithPackagistOnly
    */
-  public function testCreate(): void {
+  public function testCreateWithPackagistOnly(): void {
+    $this->poolFactory
+      ->createWithPackagistOnly()
+      ->shouldBeCalledOnce();
+    $this->poolFactory
+      ->createWithDrupalDotOrg()
+      ->shouldNotBeCalled();
+    $factory = $this->createVersionSelectorFactory();
+
+    $selector = $factory->createWithPackagistOnly();
+
+    /* @noinspection UnnecessaryAssertionInspection */
+    self::assertInstanceOf(VersionSelector::class, $selector, 'Created a version selector.');
+  }
+
+  /**
+   * @covers ::__construct
+   * @covers ::createWithDrupalDotOrg
+   */
+  public function testCreateWithDrupalDotOrg(): void {
     $this->poolFactory
       ->createWithDrupalDotOrg()
       ->shouldBeCalledOnce();
+    $this->poolFactory
+      ->createWithPackagistOnly()
+      ->shouldNotBeCalled();
     $factory = $this->createVersionSelectorFactory();
 
-    $selector = $factory->create();
+    $selector = $factory->createWithDrupalDotOrg();
 
     /* @noinspection UnnecessaryAssertionInspection */
     self::assertInstanceOf(VersionSelector::class, $selector, 'Created a version selector.');

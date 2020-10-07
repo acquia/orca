@@ -47,7 +47,7 @@ class VersionFinder {
       $stability = 'dev';
     }
 
-    $selector = $this->versionSelectorFactory->create();
+    $selector = $this->versionSelectorFactory->createWithDrupalDotOrg();
     $candidate = $selector->findBestCandidate($package_name, $constraint, NULL, $stability);
 
     if (!$candidate) {

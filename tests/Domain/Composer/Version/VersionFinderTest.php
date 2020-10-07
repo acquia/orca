@@ -25,7 +25,10 @@ class VersionFinderTest extends TestCase {
 
   private function createVersionFinder(): VersionFinder {
     $this->versionSelectorFactory
-      ->create()
+      ->createWithPackagistOnly()
+      ->willReturn($this->versionSelector->reveal());
+    $this->versionSelectorFactory
+      ->createWithDrupalDotOrg()
       ->willReturn($this->versionSelector->reveal());
     $version_selector_factory = $this->versionSelectorFactory->reveal();
     return new VersionFinder($version_selector_factory);
