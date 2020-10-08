@@ -3,23 +3,23 @@
 namespace Acquia\Orca\Tests\Console\Command\Debug;
 
 use Acquia\Orca\Console\Command\Debug\DebugCoreVersionsCommand;
-use Acquia\Orca\Domain\Drupal\DrupalCoreVersionFinder;
+use Acquia\Orca\Domain\Composer\Version\DrupalCoreVersionResolver;
 use Acquia\Orca\Tests\Console\Command\CommandTestBase;
 use Symfony\Component\Console\Command\Command;
 
 /**
- * @property \Acquia\Orca\Domain\Drupal\DrupalCoreVersionFinder|\Prophecy\Prophecy\ObjectProphecy $drupalCoreVersionFinder
+ * @property \Acquia\Orca\Domain\Composer\Version\DrupalCoreVersionResolver|\Prophecy\Prophecy\ObjectProphecy $drupalCoreVersionResolver
  * @coversDefaultClass \Acquia\Orca\Console\Command\Debug\DebugCoreVersionsCommand
  */
 class DebugCoreVersionsCommandTest extends CommandTestBase {
 
   protected function setUp(): void {
-    $this->drupalCoreVersionFinder = $this->prophesize(DrupalCoreVersionFinder::class);
+    $this->drupalCoreVersionResolver = $this->prophesize(DrupalCoreVersionResolver::class);
   }
 
   protected function createCommand(): Command {
-    $drupal_core_version_finder = $this->drupalCoreVersionFinder->reveal();
-    return new DebugCoreVersionsCommand($drupal_core_version_finder);
+    $drupal_core_version_resolver = $this->drupalCoreVersionResolver->reveal();
+    return new DebugCoreVersionsCommand($drupal_core_version_resolver);
   }
 
   /**

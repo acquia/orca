@@ -53,4 +53,15 @@ final class DrupalCoreVersionEnum extends Enum {
     ];
   }
 
+  /**
+   * Gets the version description.
+   *
+   * @return string
+   *   The description.
+   */
+  public function getDescription(): string {
+    $descriptions = static::descriptions();
+    return $descriptions[$this->getKey()];
+  }
+
 }

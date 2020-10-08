@@ -111,7 +111,7 @@ class DrupalCoreVersionFinder {
    *   The version string.
    */
   public function find(string $target_core_version = NULL, string $minimum_stability = 'stable', string $preferred_stability = 'stable'): string {
-    $best_candidate = $this->getVersionSelector($minimum_stability)
+    $best_candidate = $this->getVersionSelector()
       ->findBestCandidate('drupal/core', $target_core_version, NULL, $preferred_stability);
     if (!$best_candidate) {
       throw new RuntimeException(sprintf('No Drupal core version satisfies the given constraints: version=%s, minimum stability=%s', $target_core_version, $minimum_stability));

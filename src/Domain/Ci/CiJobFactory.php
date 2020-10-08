@@ -6,7 +6,6 @@ use Acquia\Orca\Domain\Ci\Job\AbstractCiJob;
 use Acquia\Orca\Domain\Ci\Job\DeprecatedCodeScanWContribCiJob;
 use Acquia\Orca\Domain\Ci\Job\IntegratedTestOnCurrentCiJob;
 use Acquia\Orca\Domain\Ci\Job\IntegratedTestOnCurrentDevCiJob;
-use Acquia\Orca\Domain\Ci\Job\IntegratedTestOnLatestLtsCiJob;
 use Acquia\Orca\Domain\Ci\Job\IntegratedTestOnNextMajorLatestMinorBetaOrLaterCiJob;
 use Acquia\Orca\Domain\Ci\Job\IntegratedTestOnNextMajorLatestMinorDevCiJob;
 use Acquia\Orca\Domain\Ci\Job\IntegratedTestOnNextMinorCiJob;
