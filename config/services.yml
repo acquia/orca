@@ -73,4 +73,7 @@ services:
 
   Symfony\Component\Yaml\Parser: ~
 
+  Symfony\Contracts\HttpClient\HttpClientInterface:
+    factory: ['Symfony\Component\HttpClient\HttpClient', "create"]
+
   Zumba\Amplitude\Amplitude: ~
