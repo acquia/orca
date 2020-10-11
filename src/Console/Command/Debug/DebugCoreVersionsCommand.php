@@ -2,13 +2,11 @@
 
 namespace Acquia\Orca\Console\Command\Debug;
 
-use Acquia\Orca\Domain\Composer\Version\DrupalCoreVersionResolver;
-use Acquia\Orca\Enum\DrupalCoreVersionEnum;
+use Acquia\Orca\Console\Command\Debug\Helper\CoreVersionsTableBuilder;
 use Acquia\Orca\Enum\StatusCodeEnum;
-use Acquia\Orca\Exception\OrcaVersionNotFoundException;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
@@ -24,20 +22,20 @@ class DebugCoreVersionsCommand extends Command {
   protected static $defaultName = 'debug:core-versions';
 
   /**
-   * The Drupal core version resolver.
+   * The core versions table builder.
    *
-   * @var \Acquia\Orca\Domain\Drupal\DrupalCoreVersionFinder
+   * @var \Acquia\Orca\Console\Command\Debug\Helper\CoreVersionsTableBuilder
    */
-  private $drupalCoreVersionResolver;
+  private $coreVersionsTableBuilder;
 
   /**
    * Constructs an instance.
    *
-   * @param \Acquia\Orca\Domain\Composer\Version\DrupalCoreVersionResolver $drupal_core_version_resolver
-   *   The Drupal core version resolver.
+   * @param \Acquia\Orca\Console\Command\Debug\Helper\CoreVersionsTableBuilder $core_versions_table_builder
+   *   The core versions table builder.
    */
-  public function __construct(DrupalCoreVersionResolver $drupal_core_version_resolver) {
-    $this->drupalCoreVersionResolver = $drupal_core_version_resolver;
+  public function __construct(CoreVersionsTableBuilder $core_versions_table_builder) {
+    $this->coreVersionsTableBuilder = $core_versions_table_builder;
     parent::__construct();
   }
 
@@ -47,40 +45,25 @@ class DebugCoreVersionsCommand extends Command {
   protected function configure(): void {
     $this
       ->setAliases(['core'])
-      ->setDescription('Provides an overview of Drupal Core versions');
+      ->setDescription('Provides an overview of Drupal Core versions')
+      ->addOption('examples', NULL, InputOption::VALUE_NONE, 'Include example version strings')
+      ->addOption('resolve', NULL, InputOption::VALUE_NONE, 'Include the exact versions Composer would actually install. Makes HTTP requests and increases execution time');
   }
 
   /**
    * {@inheritdoc}
    */
   public function execute(InputInterface $input, OutputInterface $output): int {
-    $output->writeln('Getting version data via Composer. This can take a while.');
-
-    (new Table($output))
-      ->setHeaders(['Version', 'Resolved', 'Description'])
-      ->setRows($this->getRows())
-      ->render();
-    return StatusCodeEnum::OK;
-  }
-
-  /**
-   * Gets the table rows.
-   *
-   * @return array
-   *   An array of row data.
-   */
-  private function getRows(): array {
-    $overview = [];
-    foreach (DrupalCoreVersionEnum::values() as $version) {
-      try {
-        $value = $this->drupalCoreVersionResolver->resolve($version);
-      }
-      catch (OrcaVersionNotFoundException $e) {
-        $value = '~';
-      }
-      $overview[] = [$version->getKey(), $value, $version->getDescription()];
+    if ($input->getOption('resolve')) {
+      $output->writeln('Getting version data via Composer. This can take a while.');
     }
-    return $overview;
+
+    $include_examples = $input->getOption('examples');
+    $include_resolved = $input->getOption('resolve');
+    $table = $this->coreVersionsTableBuilder->build($output, $include_examples, $include_resolved);
+    $table->render();
+
+    return StatusCodeEnum::OK;
   }
 
 }

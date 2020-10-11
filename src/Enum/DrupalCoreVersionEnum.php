@@ -16,7 +16,7 @@ use MyCLabs\Enum\Enum;
  * @method static DrupalCoreVersionEnum NEXT_MAJOR_LATEST_MINOR_BETA_OR_LATER()
  * @method static DrupalCoreVersionEnum NEXT_MAJOR_LATEST_MINOR_DEV()
  */
-final class DrupalCoreVersionEnum extends Enum {
+class DrupalCoreVersionEnum extends Enum {
 
   public const OLDEST_SUPPORTED = 'OLDEST_SUPPORTED';
 
@@ -54,6 +54,25 @@ final class DrupalCoreVersionEnum extends Enum {
   }
 
   /**
+   * Examples of the versions.
+   *
+   * @return array
+   *   An associative array of version names and their examples.
+   */
+  public static function examples(): array {
+    return [
+      self::OLDEST_SUPPORTED => '8.8.10',
+      self::PREVIOUS_MINOR => '8.9.7',
+      self::CURRENT => '9.0.7',
+      self::CURRENT_DEV => '9.0.x-dev',
+      self::NEXT_MINOR => '9.1.0-alpha1',
+      self::NEXT_MINOR_DEV => '9.1.x-dev',
+      self::NEXT_MAJOR_LATEST_MINOR_BETA_OR_LATER => '10.0.0-beta1',
+      self::NEXT_MAJOR_LATEST_MINOR_DEV => '10.0.x-dev',
+    ];
+  }
+
+  /**
    * Gets the version description.
    *
    * @return string
@@ -62,6 +81,17 @@ final class DrupalCoreVersionEnum extends Enum {
   public function getDescription(): string {
     $descriptions = static::descriptions();
     return $descriptions[$this->getKey()];
+  }
+
+  /**
+   * Gets the version example.
+   *
+   * @return string
+   *   The example.
+   */
+  public function getExample(): string {
+    $examples = static::examples();
+    return $examples[$this->getKey()];
   }
 
 }

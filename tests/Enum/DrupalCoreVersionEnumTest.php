@@ -13,9 +13,11 @@ class DrupalCoreVersionEnumTest extends TestCase {
     $keys = DrupalCoreVersionEnum::keys();
     $values = array_values(DrupalCoreVersionEnum::toArray());
     $descriptions = DrupalCoreVersionEnum::descriptions();
+    $examples = DrupalCoreVersionEnum::examples();
 
     self::assertEquals($keys, $values, 'Keys and values match.');
     self::assertEquals($keys, array_keys($descriptions), 'Provided descriptions for all values.');
+    self::assertEquals($keys, array_keys($examples), 'Provided examples for all values.');
   }
 
   /**
@@ -23,10 +25,12 @@ class DrupalCoreVersionEnumTest extends TestCase {
    */
   public function testGetDescription($version) {
     $description = $version->getDescription();
+    $example = $version->getExample();
 
     /* @noinspection PhpUnitTestsInspection */
     self::assertTrue(is_string($description), 'Provided a description');
     self::assertNotEmpty($description, 'Description is not empty.');
+    self::assertNotEmpty($example, 'Example is not empty.');
   }
 
 }
