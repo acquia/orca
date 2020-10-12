@@ -5,7 +5,7 @@ namespace Acquia\Orca\Console\Command\Fixture;
 use Acquia\Orca\Domain\Fixture\FixtureCreator;
 use Acquia\Orca\Domain\Fixture\FixtureRemover;
 use Acquia\Orca\Domain\Fixture\SutPreconditionsTester;
-use Acquia\Orca\Enum\DrupalCoreVersionEnumOld;
+use Acquia\Orca\Enum\DrupalCoreVersionEnum;
 use Acquia\Orca\Enum\StatusCodeEnum;
 use Acquia\Orca\Exception\OrcaException;
 use Acquia\Orca\Exception\OrcaInvalidArgumentException;
@@ -105,9 +105,9 @@ class FixtureInitCommand extends Command {
       ->addOption('bare', NULL, InputOption::VALUE_NONE, 'Omit all non-required company packages')
       ->addOption('core', NULL, InputOption::VALUE_REQUIRED, implode(PHP_EOL, array_merge(
         ['Change the version of Drupal core installed:'],
-        DrupalCoreVersionEnumOld::commandHelp(),
+        DrupalCoreVersionEnum::commandArgumentHelp(),
         ['- Any version string Composer understands, see https://getcomposer.org/doc/articles/versions.md']
-      )), DrupalCoreVersionEnumOld::CURRENT_RECOMMENDED)
+      )), DrupalCoreVersionEnum::CURRENT)
       ->addOption('dev', NULL, InputOption::VALUE_NONE, 'Use dev versions of company packages')
       ->addOption('profile', NULL, InputOption::VALUE_REQUIRED, 'The Drupal installation profile to use, e.g., "minimal". ("orca" is a pseudo-profile based on "minimal", with the Toolbar module enabled and Seven as the admin theme)', FixtureCreator::DEFAULT_PROFILE)
 

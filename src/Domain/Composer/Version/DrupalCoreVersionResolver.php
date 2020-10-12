@@ -8,7 +8,7 @@ use Composer\Package\PackageInterface;
 use LogicException;
 
 /**
- * Resolves Drupal core version constants to concrete version strings.
+ * Finds a range of Drupal core versions.
  */
 class DrupalCoreVersionResolver {
 
@@ -92,7 +92,7 @@ class DrupalCoreVersionResolver {
    *
    * @throws \Acquia\Orca\Exception\OrcaVersionNotFoundException
    */
-  public function resolve(DrupalCoreVersionEnum $version): ?string {
+  public function resolvePredefined(DrupalCoreVersionEnum $version): ?string {
     switch ($version->getValue()) {
       case DrupalCoreVersionEnum::OLDEST_SUPPORTED():
         return $this->findOldestSupported();
@@ -120,6 +120,52 @@ class DrupalCoreVersionResolver {
         return $this->findNextMajorLatestMinorDev();
 
     }
+  }
+
+  /**
+   * Finds the Drupal core version matching the given arbitrary criteria.
+   *
+   * @param string|null $constraint
+   *   The core version constraint.
+   * @param string $stability
+   *   The stability, both minimum and preferred. Available options (in order of
+   *   stability) are dev, alpha, beta, RC, and stable.
+   *
+   * @return string
+   *   The version string.
+   *
+   * @throws \Acquia\Orca\Exception\OrcaVersionNotFoundException
+   */
+  public function resolveArbitrary(string $constraint, string $stability = 'stable'): string {
+    return $this->findBestCandidate($constraint, $stability);
+  }
+
+  /**
+   * Finds the best candidate for a given Drupal core version constraint.
+   *
+   * @param string $version
+   *   A Composer version constraint.
+   * @param string $stability
+   *   The minimum stability. Available options (in order of stability) are
+   *   dev, alpha, beta, RC, and stable.
+   *
+   * @return string|null
+   *   The semver version string if available, e.g., 9.1.x-dev, or NULL is not.
+   *
+   * @throws \Acquia\Orca\Exception\OrcaVersionNotFoundException
+   */
+  private function findBestCandidate(string $version, string $stability): ?string {
+    $package = $this->selector
+      ->findBestCandidate('drupal/core', $version, NULL, $stability);
+    if ($package instanceof PackageInterface) {
+      return $package->getPrettyVersion();
+    }
+    $message = sprintf(
+      'No Drupal core version satisfies the given constraints: version=%s, stability=%s',
+      $version,
+      $stability
+    );
+    throw new OrcaVersionNotFoundException($message);
   }
 
   /**
@@ -269,29 +315,6 @@ class DrupalCoreVersionResolver {
       ->findBestCandidate("^{$major}", 'dev');
 
     return $this->nextMajorLatestMinorDev;
-  }
-
-  /**
-   * Finds the best candidate for a given Drupal core version constraint.
-   *
-   * @param string $constraint
-   *   A Composer version constraint.
-   * @param string $stability
-   *   The minimum stability. Available options (in order of stability) are
-   *   dev, alpha, beta, RC, and stable.
-   *
-   * @return string|null
-   *   The semver version string if available, e.g., 9.1.x-dev, or NULL is not.
-   *
-   * @throws \Acquia\Orca\Exception\OrcaVersionNotFoundException
-   */
-  private function findBestCandidate(string $constraint, string $stability): ?string {
-    $package = $this->selector
-      ->findBestCandidate('drupal/core', $constraint, NULL, $stability);
-    if ($package instanceof PackageInterface) {
-      return $package->getPrettyVersion();
-    }
-    throw new OrcaVersionNotFoundException('There is no available version matching the given constraints.');
   }
 
   /**

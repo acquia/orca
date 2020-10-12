@@ -23,7 +23,7 @@ class DrupalCoreVersionEnumTest extends TestCase {
   /**
    * @dataProvider providerVersions
    */
-  public function testGetDescription($version) {
+  public function testGetDescriptionAndExample($version) {
     $description = $version->getDescription();
     $example = $version->getExample();
 
@@ -31,6 +31,12 @@ class DrupalCoreVersionEnumTest extends TestCase {
     self::assertTrue(is_string($description), 'Provided a description');
     self::assertNotEmpty($description, 'Description is not empty.');
     self::assertNotEmpty($example, 'Example is not empty.');
+  }
+
+  public function testGetCommandArgumentHelp() {
+    $help = DrupalCoreVersionEnum::commandArgumentHelp();
+
+    self::assertCount(count(DrupalCoreVersionEnum::keys()) + 2, $help, 'Provided descriptions for all values.');
   }
 
 }

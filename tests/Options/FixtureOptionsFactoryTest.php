@@ -2,13 +2,13 @@
 
 namespace Acquia\Orca\Tests\Options;
 
-use Acquia\Orca\Domain\Drupal\DrupalCoreVersionFinder;
+use Acquia\Orca\Domain\Composer\Version\DrupalCoreVersionResolver;
 use Acquia\Orca\Domain\Package\PackageManager;
 use Acquia\Orca\Options\FixtureOptionsFactory;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @property \Acquia\Orca\Domain\Drupal\DrupalCoreVersionFinder|\Prophecy\Prophecy\ObjectProphecy $drupalCoreVersionFinder
+ * @property \Acquia\Orca\Domain\Composer\Version\DrupalCoreVersionResolver|\Prophecy\Prophecy\ObjectProphecy $drupalCoreVersionFinder
  * @property \Acquia\Orca\Domain\Package\PackageManager|\Prophecy\Prophecy\ObjectProphecy $packageManager
  *
  * @coversDefaultClass \Acquia\Orca\Options\FixtureOptionsFactory
@@ -16,7 +16,7 @@ use PHPUnit\Framework\TestCase;
 class FixtureOptionsFactoryTest extends TestCase {
 
   protected function setUp(): void {
-    $this->drupalCoreVersionFinder = $this->prophesize(DrupalCoreVersionFinder::class);
+    $this->drupalCoreVersionFinder = $this->prophesize(DrupalCoreVersionResolver::class);
     $this->packageManager = $this->prophesize(PackageManager::class);
   }
 

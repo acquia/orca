@@ -73,6 +73,19 @@ class DrupalCoreVersionEnum extends Enum {
   }
 
   /**
+   * Provides help text for Console command that accept a "core" argument.
+   */
+  public static function commandArgumentHelp(): array {
+    $help = ['A Drupal core version to target:'];
+    foreach (self::values() as $version) {
+      $help[] = sprintf('- %s: %s, e.g., "%s"', $version->getKey(), $version->getDescription(), $version->getExample());
+    }
+    $help[] = '- Any version string Composer understands, see https://getcomposer.org/doc/articles/versions.md';
+    return $help;
+
+  }
+
+  /**
    * Gets the version description.
    *
    * @return string

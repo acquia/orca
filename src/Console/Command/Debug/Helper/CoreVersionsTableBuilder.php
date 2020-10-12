@@ -132,7 +132,7 @@ class CoreVersionsTableBuilder {
    */
   private function getResolvedVersion(DrupalCoreVersionEnum $version): string {
     try {
-      $value = $this->drupalCoreVersionResolver->resolve($version);
+      $value = $this->drupalCoreVersionResolver->resolvePredefined($version);
     }
     catch (OrcaVersionNotFoundException $e) {
       $value = '~';

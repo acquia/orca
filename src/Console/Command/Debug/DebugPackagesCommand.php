@@ -2,9 +2,9 @@
 
 namespace Acquia\Orca\Console\Command\Debug;
 
-use Acquia\Orca\Domain\Drupal\DrupalCoreVersionFinder;
+use Acquia\Orca\Domain\Composer\Version\DrupalCoreVersionResolver;
 use Acquia\Orca\Domain\Package\PackageManager;
-use Acquia\Orca\Enum\DrupalCoreVersionEnumOld;
+use Acquia\Orca\Enum\DrupalCoreVersionEnum;
 use Acquia\Orca\Enum\StatusCodeEnum;
 use Composer\Semver\VersionParser;
 use InvalidArgumentException;
@@ -44,7 +44,7 @@ class DebugPackagesCommand extends Command {
   /**
    * The Drupal core version finder.
    *
-   * @var \Acquia\Orca\Domain\Drupal\DrupalCoreVersionFinder
+   * @var \Acquia\Orca\Domain\Composer\Version\DrupalCoreVersionResolver
    */
   private $drupalCoreVersionFinder;
 
@@ -58,14 +58,14 @@ class DebugPackagesCommand extends Command {
   /**
    * Constructs an instance.
    *
-   * @param \Acquia\Orca\Domain\Drupal\DrupalCoreVersionFinder $drupal_core_version_finder
+   * @param \Acquia\Orca\Domain\Composer\Version\DrupalCoreVersionResolver $drupal_core_version_finder
    *   The Drupal core version finder.
    * @param \Acquia\Orca\Domain\Package\PackageManager $package_manager
    *   The package manager.
    * @param \Composer\Semver\VersionParser $version_parser
    *   The version parser.
    */
-  public function __construct(DrupalCoreVersionFinder $drupal_core_version_finder, PackageManager $package_manager, VersionParser $version_parser) {
+  public function __construct(DrupalCoreVersionResolver $drupal_core_version_finder, PackageManager $package_manager, VersionParser $version_parser) {
     $this->drupalCoreVersionFinder = $drupal_core_version_finder;
     $this->packageManager = $package_manager;
     $this->versionParser = $version_parser;
@@ -80,7 +80,7 @@ class DebugPackagesCommand extends Command {
       ->setAliases(['packages'])
       ->addArgument('core', InputArgument::OPTIONAL, implode(PHP_EOL, array_merge(
         ['A Drupal core version to target:'],
-        DrupalCoreVersionEnumOld::commandHelp(),
+        DrupalCoreVersionEnum::commandArgumentHelp(),
         ['- Any version string Composer understands, see https://getcomposer.org/doc/articles/versions.md']
       )))
       ->setDescription('Displays the active packages configuration');
@@ -97,7 +97,7 @@ class DebugPackagesCommand extends Command {
     catch (InvalidArgumentException $e) {
       $output->writeln([
         sprintf('Error: Invalid value for "core" option: "%s".', $argument),
-        sprintf('Hint: Acceptable values are "%s", or any version string Composer understands.', implode('", "', DrupalCoreVersionEnumOld::values())),
+        sprintf('Hint: Acceptable values are "%s", or any version string Composer understands.', implode('", "', DrupalCoreVersionEnum::values())),
       ]);
       return StatusCodeEnum::ERROR;
     }
@@ -125,8 +125,9 @@ class DebugPackagesCommand extends Command {
       throw new InvalidArgumentException();
     }
 
-    if (DrupalCoreVersionEnumOld::isValid($argument)) {
-      $argument = $this->drupalCoreVersionFinder->get(new DrupalCoreVersionEnumOld($argument));
+    if (DrupalCoreVersionEnum::isValid($argument)) {
+      $version = new DrupalCoreVersionEnum($argument);
+      $argument = $this->drupalCoreVersionFinder->resolvePredefined($version);
     }
 
     try {

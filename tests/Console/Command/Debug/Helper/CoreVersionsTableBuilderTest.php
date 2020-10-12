@@ -36,7 +36,7 @@ class CoreVersionsTableBuilderTest extends TestCase {
    */
   public function testBuild($include_examples, $include_resolved, $resolved1, $resolved2, $headers, $rows): void {
     $this->drupalCoreVersionResolver
-      ->resolve(Argument::any())
+      ->resolvePredefined(Argument::any())
       ->willReturn($resolved1, $resolved2);
     $expected = (new Table(new NullOutput()))
       ->setHeaders($headers)
@@ -99,7 +99,7 @@ class CoreVersionsTableBuilderTest extends TestCase {
 
   public function testBuildWithUnresolvableVersions(): void {
     $this->drupalCoreVersionResolver
-      ->resolve(Argument::any())
+      ->resolvePredefined(Argument::any())
       ->willThrow(OrcaVersionNotFoundException::class);
     $expected = (new Table(new NullOutput()))
       ->setHeaders(['Version', 'Resolved', 'Description'])

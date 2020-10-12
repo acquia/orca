@@ -3,24 +3,28 @@
 namespace Acquia\Orca\Tests\Console\Command\Debug;
 
 use Acquia\Orca\Console\Command\Debug\DebugPackagesCommand;
-use Acquia\Orca\Domain\Drupal\DrupalCoreVersionFinder;
+use Acquia\Orca\Domain\Composer\Version\DrupalCoreVersionResolver;
 use Acquia\Orca\Domain\Package\Package;
 use Acquia\Orca\Domain\Package\PackageManager;
-use Acquia\Orca\Enum\DrupalCoreVersionEnumOld;
+use Acquia\Orca\Enum\DrupalCoreVersionEnum;
 use Acquia\Orca\Enum\StatusCodeEnum;
 use Acquia\Orca\Tests\Console\Command\CommandTestBase;
+use Acquia\Orca\Tests\Enum\DrupalCoreVersionEnumsTestTrait;
 use Composer\Semver\VersionParser;
+use Prophecy\Argument;
 use Symfony\Component\Console\Command\Command;
 
 /**
- * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Domain\Drupal\DrupalCoreVersionFinder $drupalCoreVersionFinder
+ * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Domain\Composer\Version\DrupalCoreVersionResolver $drupalCoreVersionFinder
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Domain\Package\PackageManager $packageManager
  * @property \Prophecy\Prophecy\ObjectProphecy|\Composer\Semver\VersionParser $versionParser
  */
 class DebugPackagesCommandTest extends CommandTestBase {
 
+  use DrupalCoreVersionEnumsTestTrait;
+
   protected function setUp(): void {
-    $this->drupalCoreVersionFinder = $this->prophesize(DrupalCoreVersionFinder::class);
+    $this->drupalCoreVersionFinder = $this->prophesize(DrupalCoreVersionResolver::class);
     $this->packageManager = $this->prophesize(PackageManager::class);
     $this->packageManager
       ->getAll()
@@ -62,27 +66,19 @@ class DebugPackagesCommandTest extends CommandTestBase {
   }
 
   /**
-   * @dataProvider providerValidArguments
+   * @dataProvider providerVersions
    */
   public function testValidArguments($argument): void {
     $version = '8.7.0.0';
     $this->drupalCoreVersionFinder
-      ->get(new DrupalCoreVersionEnumOld($argument))
+      ->resolvePredefined(Argument::any())
       ->shouldBeCalledOnce()
       ->willReturn($version);
 
-    $this->executeCommand(['core' => $argument]);
+    $this->executeCommand(['core' => $argument->getKey()]);
 
     self::assertContains(ltrim("- Drupal {$version} -"), $this->getDisplay(), 'Displayed correct output.');
     self::assertEquals(StatusCodeEnum::OK, $this->getStatusCode(), 'Returned correct status code.');
-  }
-
-  public function providerValidArguments(): array {
-    $versions = DrupalCoreVersionEnumOld::keys();
-    array_walk($versions, static function (&$value) {
-      $value = [$value];
-    });
-    return $versions;
   }
 
   /**
@@ -92,7 +88,7 @@ class DebugPackagesCommandTest extends CommandTestBase {
     $this->executeCommand(['core' => $version]);
 
     $error_message = sprintf('Error: Invalid value for "core" option: "%s".', $version) . PHP_EOL
-      . 'Hint: Acceptable values are "PREVIOUS_RELEASE", "PREVIOUS_DEV", "CURRENT_RECOMMENDED", "CURRENT_DEV", "NEXT_RELEASE", "NEXT_DEV", "D9_READINESS", or any version string Composer understands.' . PHP_EOL;
+      . sprintf('Hint: Acceptable values are "%s", or any version string Composer understands.', implode('", "', DrupalCoreVersionEnum::values())) . PHP_EOL;
     self::assertEquals($error_message, $this->getDisplay(), 'Displayed correct output.');
     self::assertEquals(StatusCodeEnum::ERROR, $this->getStatusCode(), 'Returned correct status code.');
   }

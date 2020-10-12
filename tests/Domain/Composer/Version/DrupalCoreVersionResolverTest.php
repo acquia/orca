@@ -32,6 +32,9 @@ class DrupalCoreVersionResolverTest extends TestCase {
       ->getOldestSupportedDrupalCoreBranch()
       ->willReturn('8.8.x');
     $this->package = $this->prophesize(PackageInterface::class);
+    $this->package
+      ->getPrettyVersion()
+      ->willReturn(self::CURRENT);
     $package = $this->package->reveal();
     $this->selector = $this->prophesize(VersionSelector::class);
     $this->selector
@@ -60,22 +63,54 @@ class DrupalCoreVersionResolverTest extends TestCase {
   }
 
   /**
+   * @dataProvider providerResolveArbitrary
+   */
+  public function testResolveArbitrary($constraint, $stability): void {
+    $this->package
+      ->getPrettyVersion()
+      ->willReturn($constraint);
+    $package = $this->package->reveal();
+    $this->selector = $this->prophesize(VersionSelector::class);
+    $this->selector
+      ->findBestCandidate('drupal/core', $constraint, NULL, $stability)
+      ->willReturn($package);
+    $resolver = $this->createDrupalCoreVersionResolver();
+
+    $version = $resolver->resolveArbitrary($constraint, $stability);
+
+    self::assertSame($constraint, $version, 'Resolved arbitrary version string.');
+  }
+
+  public function providerResolveArbitrary(): array {
+    return [
+      [
+        'constraint' => 'v9.0.0',
+        'stability' => 'dev',
+      ],
+      [
+        'constraint' => 'v10.0.0',
+        'stability' => 'stable',
+      ],
+    ];
+  }
+
+  /**
    * @dataProvider providerVersions
    */
-  public function testResolveAcceptsAllVersions($version): void {
+  public function testResolvePredefinedAcceptsAllVersions($version): void {
     $this->package
       ->getPrettyVersion()
       ->willReturn('9.1.0')
       ->shouldBeCalled();
     $resolver = $this->createDrupalCoreVersionResolver();
 
-    $resolution = $resolver->resolve($version);
+    $resolution = $resolver->resolvePredefined($version);
 
     /* @noinspection PhpUnitTestsInspection */
     self::assertTrue(is_string($resolution), 'Accepted version and returned string.');
   }
 
-  public function testResolveOldestSupported(): void {
+  public function testResolvePredefinedOldestSupported(): void {
     $this->drupalDotOrgApiClient
       ->getOldestSupportedDrupalCoreBranch()
       ->willReturn('8.8.x')
@@ -90,14 +125,14 @@ class DrupalCoreVersionResolverTest extends TestCase {
       ->shouldBeCalledOnce();
     $resolver = $this->createDrupalCoreVersionResolver();
 
-    $actual = $resolver->resolve(DrupalCoreVersionEnum::OLDEST_SUPPORTED());
+    $actual = $resolver->resolvePredefined(DrupalCoreVersionEnum::OLDEST_SUPPORTED());
     // Call again to test value caching.
-    $resolver->resolve(DrupalCoreVersionEnum::OLDEST_SUPPORTED());
+    $resolver->resolvePredefined(DrupalCoreVersionEnum::OLDEST_SUPPORTED());
 
     self::assertSame('8.8.0', $actual);
   }
 
-  public function testResolvePreviousMinor(): void {
+  public function testResolvePredefinedPreviousMinor(): void {
     $this->package
       ->getPrettyVersion()
       ->willReturn('9.1.0', '9.0.0')
@@ -109,14 +144,14 @@ class DrupalCoreVersionResolverTest extends TestCase {
     $this->expectGetCurrentToBeCalledOnce();
     $resolver = $this->createDrupalCoreVersionResolver();
 
-    $actual = $resolver->resolve(DrupalCoreVersionEnum::PREVIOUS_MINOR());
+    $actual = $resolver->resolvePredefined(DrupalCoreVersionEnum::PREVIOUS_MINOR());
     // Call again to test value caching.
-    $resolver->resolve(DrupalCoreVersionEnum::PREVIOUS_MINOR());
+    $resolver->resolvePredefined(DrupalCoreVersionEnum::PREVIOUS_MINOR());
 
     self::assertSame('9.0.0', $actual);
   }
 
-  public function testResolveCurrent(): void {
+  public function testResolvePredefinedCurrent(): void {
     $this->package
       ->getPrettyVersion()
       ->willReturn('9.1.0')
@@ -124,17 +159,17 @@ class DrupalCoreVersionResolverTest extends TestCase {
     $this->expectGetCurrentToBeCalledOnce();
     $resolver = $this->createDrupalCoreVersionResolver();
 
-    $actual = $resolver->resolve(DrupalCoreVersionEnum::CURRENT());
+    $actual = $resolver->resolvePredefined(DrupalCoreVersionEnum::CURRENT());
     // Call again to test value caching.
-    $resolver->resolve(DrupalCoreVersionEnum::CURRENT());
+    $resolver->resolvePredefined(DrupalCoreVersionEnum::CURRENT());
 
     self::assertSame('9.1.0', $actual);
   }
 
   /**
-   * @dataProvider providerResolveCurrentNoneFound
+   * @dataProvider providerResolvePredefinedCurrentNoneFound
    */
-  public function testResolveCurrentNoneFound($version): void {
+  public function testResolvePredefinedCurrentNoneFound($version): void {
     $this->selector
       ->findBestCandidate('drupal/core', '*', NULL, 'stable')
       ->willReturn(FALSE)
@@ -142,17 +177,17 @@ class DrupalCoreVersionResolverTest extends TestCase {
     $this->expectException(LogicException::class);
     $resolver = $this->createDrupalCoreVersionResolver();
 
-    $resolver->resolve(DrupalCoreVersionEnum::CURRENT());
+    $resolver->resolvePredefined(DrupalCoreVersionEnum::CURRENT());
   }
 
-  public function providerResolveCurrentNoneFound() {
+  public function providerResolvePredefinedCurrentNoneFound() {
     return [
       [DrupalCoreVersionEnum::CURRENT()],
       [DrupalCoreVersionEnum::CURRENT_DEV()],
     ];
   }
 
-  public function testResolveCurrentDev(): void {
+  public function testResolvePredefinedCurrentDev(): void {
     $this->package
       ->getPrettyVersion()
       ->willReturn('9.1.0')
@@ -160,14 +195,14 @@ class DrupalCoreVersionResolverTest extends TestCase {
     $this->expectGetCurrentToBeCalledOnce();
     $resolver = $this->createDrupalCoreVersionResolver();
 
-    $actual = $resolver->resolve(DrupalCoreVersionEnum::CURRENT());
+    $actual = $resolver->resolvePredefined(DrupalCoreVersionEnum::CURRENT());
     // Call again to test value caching.
-    $resolver->resolve(DrupalCoreVersionEnum::CURRENT());
+    $resolver->resolvePredefined(DrupalCoreVersionEnum::CURRENT());
 
     self::assertSame('9.1.0', $actual);
   }
 
-  public function testResolveNextMinor(): void {
+  public function testResolvePredefinedNextMinor(): void {
     $this->expectGetCurrentToBeCalledOnce();
     $this->package
       ->getPrettyVersion()
@@ -178,14 +213,14 @@ class DrupalCoreVersionResolverTest extends TestCase {
       ->shouldBeCalledOnce();
     $resolver = $this->createDrupalCoreVersionResolver();
 
-    $actual = $resolver->resolve(DrupalCoreVersionEnum::NEXT_MINOR());
+    $actual = $resolver->resolvePredefined(DrupalCoreVersionEnum::NEXT_MINOR());
     // Call again to test value caching.
-    $resolver->resolve(DrupalCoreVersionEnum::NEXT_MINOR());
+    $resolver->resolvePredefined(DrupalCoreVersionEnum::NEXT_MINOR());
 
     self::assertSame('9.2.0-alpha1', $actual);
   }
 
-  public function testResolveNextMinorDev(): void {
+  public function testResolvePredefinedNextMinorDev(): void {
     $this->expectGetCurrentToBeCalledOnce();
     $this->package
       ->getPrettyVersion()
@@ -194,14 +229,14 @@ class DrupalCoreVersionResolverTest extends TestCase {
       ->willReturn($this->package->reveal());
     $resolver = $this->createDrupalCoreVersionResolver();
 
-    $actual = $resolver->resolve(DrupalCoreVersionEnum::NEXT_MINOR_DEV());
+    $actual = $resolver->resolvePredefined(DrupalCoreVersionEnum::NEXT_MINOR_DEV());
     // Call again to test value caching.
-    $resolver->resolve(DrupalCoreVersionEnum::NEXT_MINOR_DEV());
+    $resolver->resolvePredefined(DrupalCoreVersionEnum::NEXT_MINOR_DEV());
 
     self::assertSame('9.2.x-dev', $actual);
   }
 
-  public function testResolveNextMajorLatestMinorBetaOrLater(): void {
+  public function testResolvePredefinedNextMajorLatestMinorBetaOrLater(): void {
     $this->expectGetCurrentToBeCalledOnce();
     $this->package
       ->getPrettyVersion()
@@ -211,14 +246,14 @@ class DrupalCoreVersionResolverTest extends TestCase {
       ->shouldBeCalledOnce();
     $resolver = $this->createDrupalCoreVersionResolver();
 
-    $actual = $resolver->resolve(DrupalCoreVersionEnum::NEXT_MAJOR_LATEST_MINOR_BETA_OR_LATER());
+    $actual = $resolver->resolvePredefined(DrupalCoreVersionEnum::NEXT_MAJOR_LATEST_MINOR_BETA_OR_LATER());
     // Call again to test value caching.
-    $resolver->resolve(DrupalCoreVersionEnum::NEXT_MAJOR_LATEST_MINOR_BETA_OR_LATER());
+    $resolver->resolvePredefined(DrupalCoreVersionEnum::NEXT_MAJOR_LATEST_MINOR_BETA_OR_LATER());
 
     self::assertSame('10.0.0-beta1', $actual);
   }
 
-  public function testResolveNextMajorLatestMinorDev(): void {
+  public function testResolvePredefinedNextMajorLatestMinorDev(): void {
     $this->expectGetCurrentToBeCalledOnce();
     $resolver = $this->createDrupalCoreVersionResolver();
     $this->package
@@ -229,17 +264,17 @@ class DrupalCoreVersionResolverTest extends TestCase {
       ->willReturn($this->package->reveal())
       ->shouldBeCalledOnce();
 
-    $actual = $resolver->resolve(DrupalCoreVersionEnum::NEXT_MAJOR_LATEST_MINOR_DEV());
+    $actual = $resolver->resolvePredefined(DrupalCoreVersionEnum::NEXT_MAJOR_LATEST_MINOR_DEV());
     // Call again to test value caching.
-    $resolver->resolve(DrupalCoreVersionEnum::NEXT_MAJOR_LATEST_MINOR_DEV());
+    $resolver->resolvePredefined(DrupalCoreVersionEnum::NEXT_MAJOR_LATEST_MINOR_DEV());
 
     self::assertSame('10.0.x-dev', $actual);
   }
 
   /**
-   * @dataProvider providerResolveVersionNotFound
+   * @dataProvider providerResolvePredefinedVersionNotFound
    */
-  public function testResolveVersionNotFound($version): void {
+  public function testResolvePredefinedVersionNotFound($version): void {
     $this->package
       ->getPrettyVersion()
       ->willReturn('9.1.0', NULL);
@@ -249,10 +284,10 @@ class DrupalCoreVersionResolverTest extends TestCase {
     $resolver = $this->createDrupalCoreVersionResolver();
     $this->expectException(OrcaVersionNotFoundException::class);
 
-    $resolver->resolve($version);
+    $resolver->resolvePredefined($version);
   }
 
-  public function providerResolveVersionNotFound(): array {
+  public function providerResolvePredefinedVersionNotFound(): array {
     $data = $this->providerVersions();
     unset($data[DrupalCoreVersionEnum::CURRENT], $data[DrupalCoreVersionEnum::CURRENT_DEV]);
     return $data;

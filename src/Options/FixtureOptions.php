@@ -3,10 +3,10 @@
 namespace Acquia\Orca\Options;
 
 use Acquia\Orca\Domain\Composer\ComposerFacade;
-use Acquia\Orca\Domain\Drupal\DrupalCoreVersionFinder;
+use Acquia\Orca\Domain\Composer\Version\DrupalCoreVersionResolver;
 use Acquia\Orca\Domain\Package\Package;
 use Acquia\Orca\Domain\Package\PackageManager;
-use Acquia\Orca\Enum\DrupalCoreVersionEnumOld;
+use Acquia\Orca\Enum\DrupalCoreVersionEnum;
 use Acquia\Orca\Exception\OrcaInvalidArgumentException;
 use Closure;
 use Composer\Semver\Comparator;
@@ -31,7 +31,7 @@ class FixtureOptions {
   /**
    * The Drupal Core version finder.
    *
-   * @var \Acquia\Orca\Domain\Drupal\DrupalCoreVersionFinder
+   * @var \Acquia\Orca\Domain\Composer\Version\DrupalCoreVersionResolver
    */
   private $drupalCoreVersionFinder;
 
@@ -59,7 +59,7 @@ class FixtureOptions {
   /**
    * Constructs an instance.
    *
-   * @param \Acquia\Orca\Domain\Drupal\DrupalCoreVersionFinder $drupal_core_version_finder
+   * @param \Acquia\Orca\Domain\Composer\Version\DrupalCoreVersionResolver $drupal_core_version_finder
    *   The Drupal core version finder.
    * @param \Acquia\Orca\Domain\Package\PackageManager $package_manager
    *   The package manager.
@@ -68,7 +68,7 @@ class FixtureOptions {
    *
    * @throws \Acquia\Orca\Exception\OrcaInvalidArgumentException
    */
-  public function __construct(DrupalCoreVersionFinder $drupal_core_version_finder, PackageManager $package_manager, array $raw_options) {
+  public function __construct(DrupalCoreVersionResolver $drupal_core_version_finder, PackageManager $package_manager, array $raw_options) {
     $this->drupalCoreVersionFinder = $drupal_core_version_finder;
     $this->packageManager = $package_manager;
     $this->rawOptions = $raw_options;
@@ -157,7 +157,7 @@ class FixtureOptions {
       if ($value === NULL) {
         return TRUE;
       }
-      if (DrupalCoreVersionEnumOld::isValidKey($value)) {
+      if (DrupalCoreVersionEnum::isValidKey($value)) {
         return TRUE;
       }
       return ComposerFacade::isValidVersionConstraint($value);
@@ -242,16 +242,18 @@ class FixtureOptions {
    *
    * @return string
    *   The Drupal core version.
+   *
+   * @throws \Acquia\Orca\Exception\OrcaVersionNotFoundException
    */
   public function getCore(): string {
     $value = $this->options['core'];
     if (!$value && $this->isDev()) {
-      return $this->findCoreVersion(DrupalCoreVersionEnumOld::CURRENT_DEV);
+      return $this->findCoreVersion(DrupalCoreVersionEnum::CURRENT_DEV);
     }
     if (!$value) {
-      return $this->findCoreVersion(DrupalCoreVersionEnumOld::CURRENT_RECOMMENDED);
+      return $this->findCoreVersion(DrupalCoreVersionEnum::CURRENT);
     }
-    if (DrupalCoreVersionEnumOld::isValidKey($value)) {
+    if (DrupalCoreVersionEnum::isValidKey($value)) {
       return $this->findCoreVersion($value);
     }
     return $this->options['core'];
@@ -265,10 +267,12 @@ class FixtureOptions {
    *
    * @return string
    *   The exact version string.
+   *
+   * @throws \Acquia\Orca\Exception\OrcaVersionNotFoundException
    */
   private function findCoreVersion(string $constraint): string {
     $version = $this->drupalCoreVersionFinder
-      ->get(new DrupalCoreVersionEnumOld($constraint));
+      ->resolvePredefined(new DrupalCoreVersionEnum($constraint));
     // Cache the value for subsequent calls.
     $this->options['core'] = $version;
     return $version;
@@ -327,7 +331,7 @@ class FixtureOptions {
       // The core version is a range. Get the best match.
       $stability = $this->isDev() ? 'dev' : 'stable';
       $version = $this->drupalCoreVersionFinder
-        ->find($core, $stability, $stability);
+        ->resolveArbitrary($core, $stability);
     }
     $this->coreResolved = $version;
     return $version;
