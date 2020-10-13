@@ -15,37 +15,31 @@ class VersionSelectorFactory {
    *
    * @var \Acquia\Orca\Domain\Composer\DependencyResolver\PoolFactory
    */
-  private $factory;
+  private $poolFactory;
 
   /**
    * Constructs an instance.
    *
-   * @param \Acquia\Orca\Domain\Composer\DependencyResolver\PoolFactory $factory
+   * @param \Acquia\Orca\Domain\Composer\DependencyResolver\PoolFactory $pool_factory
    *   The Composer pool factory.
    */
-  public function __construct(PoolFactory $factory) {
-    $this->factory = $factory;
+  public function __construct(PoolFactory $pool_factory) {
+    $this->poolFactory = $pool_factory;
   }
 
   /**
-   * Creates a Composer version selector with Packagist only.
+   * Creates Composer version selector.
+   *
+   * @param bool $include_drupal_dot_org
+   *   TRUE to include drupal.org or FALSE to include on Packagist.
+   * @param bool $dev
+   *   TRUE for a minimum stability of dev or FALSE for alpha.
    *
    * @return \Composer\Package\Version\VersionSelector
    *   The version selector.
    */
-  public function createWithPackagistOnly(): VersionSelector {
-    $pool = $this->factory->createWithPackagistOnly();
-    return new VersionSelector($pool);
-  }
-
-  /**
-   * Creates a Composer version selector with Packagist and drupal.org.
-   *
-   * @return \Composer\Package\Version\VersionSelector
-   *   The version selector.
-   */
-  public function createWithDrupalDotOrg(): VersionSelector {
-    $pool = $this->factory->createWithDrupalDotOrg();
+  public function create($include_drupal_dot_org, bool $dev): VersionSelector {
+    $pool = $this->poolFactory->create($include_drupal_dot_org, $dev);
     return new VersionSelector($pool);
   }
 

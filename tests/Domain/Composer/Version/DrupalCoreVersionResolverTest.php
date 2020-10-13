@@ -50,7 +50,7 @@ class DrupalCoreVersionResolverTest extends TestCase {
     $drupal_dot_org_api_client = $this->drupalDotOrgApiClient->reveal();
     $selector = $this->selector->reveal();
     $this->selectorFactory
-      ->createWithPackagistOnly()
+      ->create(FALSE, Argument::any())
       ->willReturn($selector);
     $version_selector_factory = $this->selectorFactory->reveal();
     return new DrupalCoreVersionResolver($drupal_dot_org_api_client, $version_selector_factory);

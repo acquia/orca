@@ -62,23 +62,23 @@ class DrupalCoreVersionResolver {
   private $previousMinor;
 
   /**
-   * The version selector.
+   * The version selector factory.
    *
-   * @var \Composer\Package\Version\VersionSelector
+   * @var \Acquia\Orca\Domain\Composer\Version\VersionSelectorFactory
    */
-  private $selector;
+  private $versionSelectorFactory;
 
   /**
    * Constructs an instance.
    *
-   * @param \Acquia\Orca\Domain\Composer\Version\DrupalDotOrgApiClient $drupal_to_org_api_client
+   * @param \Acquia\Orca\Domain\Composer\Version\DrupalDotOrgApiClient $drupal_dot_org_api_client
    *   The Drupal.org API client.
    * @param \Acquia\Orca\Domain\Composer\Version\VersionSelectorFactory $version_selector_factory
    *   The version selector factory.
    */
-  public function __construct(DrupalDotOrgApiClient $drupal_to_org_api_client, VersionSelectorFactory $version_selector_factory) {
-    $this->drupalDotOrgApiClient = $drupal_to_org_api_client;
-    $this->selector = $version_selector_factory->createWithPackagistOnly();
+  public function __construct(DrupalDotOrgApiClient $drupal_dot_org_api_client, VersionSelectorFactory $version_selector_factory) {
+    $this->drupalDotOrgApiClient = $drupal_dot_org_api_client;
+    $this->versionSelectorFactory = $version_selector_factory;
   }
 
   /**
@@ -125,45 +125,29 @@ class DrupalCoreVersionResolver {
   /**
    * Finds the Drupal core version matching the given arbitrary criteria.
    *
-   * @param string|null $constraint
+   * @param string|null $version
    *   The core version constraint.
-   * @param string $stability
+   * @param string $preferred_stability
    *   The stability, both minimum and preferred. Available options (in order of
    *   stability) are dev, alpha, beta, RC, and stable.
+   * @param bool $dev
+   *   TRUE to allow dev stability results or FALSE not to.
    *
    * @return string
    *   The version string.
    *
    * @throws \Acquia\Orca\Exception\OrcaVersionNotFoundException
    */
-  public function resolveArbitrary(string $constraint, string $stability = 'stable'): string {
-    return $this->findBestCandidate($constraint, $stability);
-  }
-
-  /**
-   * Finds the best candidate for a given Drupal core version constraint.
-   *
-   * @param string $version
-   *   A Composer version constraint.
-   * @param string $stability
-   *   The minimum stability. Available options (in order of stability) are
-   *   dev, alpha, beta, RC, and stable.
-   *
-   * @return string|null
-   *   The semver version string if available, e.g., 9.1.x-dev, or NULL is not.
-   *
-   * @throws \Acquia\Orca\Exception\OrcaVersionNotFoundException
-   */
-  private function findBestCandidate(string $version, string $stability): ?string {
-    $package = $this->selector
-      ->findBestCandidate('drupal/core', $version, NULL, $stability);
+  public function resolveArbitrary(string $version, string $preferred_stability = 'stable', bool $dev = TRUE): string {
+    $selector = $this->versionSelectorFactory->create(FALSE, $dev);
+    $package = $selector->findBestCandidate('drupal/core', $version, NULL, $preferred_stability);
     if ($package instanceof PackageInterface) {
       return $package->getPrettyVersion();
     }
     $message = sprintf(
       'No Drupal core version satisfies the given constraints: version=%s, stability=%s',
       $version,
-      $stability
+      $preferred_stability
     );
     throw new OrcaVersionNotFoundException($message);
   }
@@ -182,7 +166,7 @@ class DrupalCoreVersionResolver {
     }
 
     $branch = $this->drupalDotOrgApiClient->getOldestSupportedDrupalCoreBranch();
-    $this->oldestSupported = $this->findBestCandidate($branch, 'stable');
+    $this->oldestSupported = $this->resolveArbitrary($branch, 'stable');
 
     return $this->oldestSupported;
   }
@@ -204,7 +188,7 @@ class DrupalCoreVersionResolver {
     array_pop($parts);
     $current_minor = implode('.', $parts);
     $this->previousMinor = $this
-      ->findBestCandidate("<{$current_minor}", 'stable');
+      ->resolveArbitrary("<{$current_minor}", 'stable');
     return $this->previousMinor;
   }
 
@@ -220,7 +204,7 @@ class DrupalCoreVersionResolver {
     }
 
     try {
-      $candidate = $this->findBestCandidate('*', 'stable');
+      $candidate = $this->resolveArbitrary('*', 'stable');
     }
     catch (OrcaVersionNotFoundException $e) {
       throw new LogicException('Could not find current version of Drupal core.');
@@ -254,7 +238,7 @@ class DrupalCoreVersionResolver {
     }
 
     $this->nextMinor = $this
-      ->findBestCandidate(">{$this->findCurrent()}", 'alpha');
+      ->resolveArbitrary(">{$this->findCurrent()}", 'alpha', FALSE);
 
     return $this->nextMinor;
   }
@@ -289,7 +273,7 @@ class DrupalCoreVersionResolver {
     $major++;
 
     $this->nextMajorLatestMinorBetaOrLater = $this
-      ->findBestCandidate("^{$major}", 'beta');
+      ->resolveArbitrary("^{$major}", 'beta');
 
     return $this->nextMajorLatestMinorBetaOrLater;
   }
@@ -312,7 +296,7 @@ class DrupalCoreVersionResolver {
     $major++;
 
     $this->nextMajorLatestMinorDev = $this
-      ->findBestCandidate("^{$major}", 'dev');
+      ->resolveArbitrary("^{$major}", 'dev');
 
     return $this->nextMajorLatestMinorDev;
   }

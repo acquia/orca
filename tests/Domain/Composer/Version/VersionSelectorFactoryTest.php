@@ -4,20 +4,14 @@ namespace Acquia\Orca\Tests\Domain\Composer\Version;
 
 use Acquia\Orca\Domain\Composer\DependencyResolver\PoolFactory;
 use Acquia\Orca\Domain\Composer\Version\VersionSelectorFactory;
-use Composer\Package\Version\VersionSelector;
+use Composer\DependencyResolver\Pool;
 use PHPUnit\Framework\TestCase;
 
 /**
+ * @property \Acquia\Orca\Domain\Composer\DependencyResolver\PoolFactory|\Prophecy\Prophecy\ObjectProphecy $poolFactory
  * @coversDefaultClass \Acquia\Orca\Domain\Composer\Version\VersionSelectorFactory
  */
 class VersionSelectorFactoryTest extends TestCase {
-
-  /**
-   * The Composer pool factory.
-   *
-   * @var \Acquia\Orca\Domain\Composer\DependencyResolver\PoolFactory|\Prophecy\Prophecy\ObjectProphecy
-   */
-  private $poolFactory;
 
   protected function setUp(): void {
     $this->poolFactory = $this->prophesize(PoolFactory::class);
@@ -29,41 +23,40 @@ class VersionSelectorFactoryTest extends TestCase {
   }
 
   /**
-   * @covers ::__construct
-   * @covers ::createWithPackagistOnly
+   * @dataProvider providerCreate
+   * @covers ::create
    */
-  public function testCreateWithPackagistOnly(): void {
+  public function testCreate($include_drupal_dot_org, $dev): void {
+    $pool = $this->prophesize(Pool::class)->reveal();
     $this->poolFactory
-      ->createWithPackagistOnly()
-      ->shouldBeCalledOnce();
-    $this->poolFactory
-      ->createWithDrupalDotOrg()
-      ->shouldNotBeCalled();
-    $factory = $this->createVersionSelectorFactory();
+      ->create($include_drupal_dot_org, $dev)
+      ->shouldBeCalledOnce()
+      ->willReturn($pool);
 
-    $selector = $factory->createWithPackagistOnly();
+    $selector_factory = $this->createVersionSelectorFactory();
 
-    /* @noinspection UnnecessaryAssertionInspection */
-    self::assertInstanceOf(VersionSelector::class, $selector, 'Created a version selector.');
+    $selector_factory->create($include_drupal_dot_org, $dev);
   }
 
-  /**
-   * @covers ::__construct
-   * @covers ::createWithDrupalDotOrg
-   */
-  public function testCreateWithDrupalDotOrg(): void {
-    $this->poolFactory
-      ->createWithDrupalDotOrg()
-      ->shouldBeCalledOnce();
-    $this->poolFactory
-      ->createWithPackagistOnly()
-      ->shouldNotBeCalled();
-    $factory = $this->createVersionSelectorFactory();
-
-    $selector = $factory->createWithDrupalDotOrg();
-
-    /* @noinspection UnnecessaryAssertionInspection */
-    self::assertInstanceOf(VersionSelector::class, $selector, 'Created a version selector.');
+  public function providerCreate(): array {
+    return [
+      [
+        'include_drupal_dot_org' => TRUE,
+        'dev' => TRUE,
+      ],
+      [
+        'include_drupal_dot_org' => TRUE,
+        'dev' => FALSE,
+      ],
+      [
+        'include_drupal_dot_org' => FALSE,
+        'dev' => TRUE,
+      ],
+      [
+        'include_drupal_dot_org' => FALSE,
+        'dev' => FALSE,
+      ],
+    ];
   }
 
 }

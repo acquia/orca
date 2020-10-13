@@ -32,6 +32,14 @@ services:
     public: false
     resource: ../src
 
+  Acquia\Orca\Domain\Composer\DependencyResolver\DevPool:
+    arguments:
+      $minimumStability: "dev"
+
+  Acquia\Orca\Domain\Composer\DependencyResolver\ReleasePool:
+    arguments:
+      $minimumStability: "alpha"
+
   Acquia\Orca\Helper\Filesystem\FixturePathHandler:
     arguments:
       $base_path: "%env(ORCA_FIXTURE_DIR)%"
