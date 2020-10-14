@@ -12,6 +12,24 @@ ORCA doesn't install dev dependencies because Composer provides no means of doin
 
 1. For conditional functionality (i.e., behavior that manifests only in the presence of dependencies, such as optional Drupal modules), move the functionality into a submodule and require those conditions in its `composer.json`. ORCA will automatically discover the submodule and install the dependencies with Composer. This design may be considered an expression of [the Common Reuse Principle (CRP) of package cohesion](https://en.wikipedia.org/wiki/Package_principles#Principles_of_package_cohesion), in which sense the "no dev dependencies" limitation actually encourages good system design.
 
+1. Invoke `composer require` manually in your `.travis.yml` (or in a script called by it) to add the dependency after it's created, e.g.:
+
+   ```yaml
+   install:
+     - ../orca/bin/travis/install.sh
+
+     # Add the physical dependency to the codebase.
+     - cd "$TRAVIS_BUILD_DIR/../orca-build"
+     - composer require drupal/dev_only_dependency
+
+     # Install Drupal modules and themes.
+     - cd docroot
+     - ../vendor/bin/drush pm:enable -y dev_only_dependency
+
+     # Backup the fixture state for ORCA's automatic resets between tests.
+     - ../../orca/bin/orca fixture:backup -f
+   ```
+
 1. Simply "ignore" tests with unique dependencies and run them apart from ORCA. See [Running automated tests](getting-started.md#tagginggrouping).
 
 ## Coveralls
