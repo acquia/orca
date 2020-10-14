@@ -13,23 +13,9 @@ cd "$(dirname "$0")" || exit; source _includes.sh
 
 [[ ! -d "$ORCA_FIXTURE_DIR" ]] || orca fixture:status
 
-# The Drupal installation profile is such a fundamental aspect of the fixture
-# that it cannot be changed and other packages' tests still be expected to pass.
-# Thus if the SUT changes it, only its own tests are run.
-[[ "$ORCA_FIXTURE_PROFILE" = "orca" ]] || SUT_ONLY="--sut-only"
-
-case "$ORCA_JOB" in
-  "STATIC_CODE_ANALYSIS") eval "orca qa:static-analysis $ORCA_SUT_DIR"; unset ORCA_ENABLE_NIGHTWATCH ;;
-  "DEPRECATED_CODE_SCAN") eval "orca qa:deprecated-code-scan --sut=$ORCA_SUT_NAME"; unset ORCA_ENABLE_NIGHTWATCH ;;
-  "DEPRECATED_CODE_SCAN_CONTRIB") eval "orca qa:deprecated-code-scan --contrib"; unset ORCA_ENABLE_NIGHTWATCH ;;
-  "ISOLATED_RECOMMENDED") eval "orca qa:automated-tests --sut=$ORCA_SUT_NAME --sut-only" ;;
-  "INTEGRATED_RECOMMENDED") eval "orca qa:automated-tests --sut=$ORCA_SUT_NAME $SUT_ONLY" ;;
-  "CORE_PREVIOUS") eval "orca qa:automated-tests --sut=$ORCA_SUT_NAME $SUT_ONLY" ;;
-  "ISOLATED_DEV") eval "orca qa:automated-tests --sut=$ORCA_SUT_NAME --sut-only" ;;
-  "INTEGRATED_DEV") eval "orca qa:automated-tests --sut=$ORCA_SUT_NAME $SUT_ONLY" ;;
-  "CORE_NEXT") eval "orca qa:automated-tests --sut=$ORCA_SUT_NAME $SUT_ONLY" ;;
-  "D9_READINESS") eval "orca qa:automated-tests --sut=$ORCA_SUT_NAME --sut-only" ;;
-esac
+if [[ "$ORCA_JOB" ]]; then
+  eval "orca ci:run $ORCA_JOB script $ORCA_SUT_NAME"
+fi
 
 if [[ "$ORCA_ENABLE_NIGHTWATCH" = "TRUE" && "$ORCA_SUT_HAS_NIGHTWATCH_TESTS" && -d "$ORCA_YARN_DIR" ]]; then
   (
@@ -45,5 +31,3 @@ if [[ "$ORCA_ENABLE_NIGHTWATCH" = "TRUE" && "$ORCA_SUT_HAS_NIGHTWATCH_TESTS" && 
     kill -0 $PID
   )
 fi
-
-eval "orca ci:run $ORCA_JOB script $ORCA_SUT_NAME"

@@ -11,6 +11,10 @@
 
 cd "$(dirname "$0")" || exit 1; source _includes.sh
 
+if [[ "$ORCA_JOB" ]]; then
+  eval "orca ci:run $ORCA_JOB after_success $ORCA_SUT_NAME"
+fi
+
 # Send test coverage data to Coveralls (coveralls.io) if enabled.
 if [[ "$ORCA_COVERAGE_ENABLE" == TRUE && "$ORCA_COVERALLS_ENABLE" == TRUE ]]; then
   (
@@ -24,5 +28,3 @@ if [[ "$ORCA_COVERAGE_ENABLE" == TRUE && "$ORCA_COVERALLS_ENABLE" == TRUE ]]; th
 else
   notice "No coverage data sent to Coveralls."
 fi
-
-eval "orca ci:run $ORCA_JOB after_success $ORCA_SUT_NAME"

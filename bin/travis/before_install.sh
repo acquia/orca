@@ -60,4 +60,6 @@ if [[ $(git -C "$ORCA_SUT_DIR" rev-parse --abbrev-ref HEAD) != "$ORCA_SUT_BRANCH
   git -C "$ORCA_SUT_DIR" checkout "$ORCA_SUT_BRANCH"
 fi
 
-eval "orca ci:run $ORCA_JOB before_install $ORCA_SUT_NAME"
+if [[ "$ORCA_JOB" ]]; then
+  eval "orca ci:run $ORCA_JOB before_install $ORCA_SUT_NAME"
+fi

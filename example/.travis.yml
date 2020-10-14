@@ -67,7 +67,7 @@ env:
     # @see https://semver.org/
     # It is also recommended to watch ORCA releases.
     # @see https://help.github.com/en/enterprise/2.20/user/github/receiving-notifications-about-activity-on-github/watching-and-unwatching-releases-for-a-repository
-    - ORCA_VERSION=^2
+    - ORCA_VERSION=^3
     # If your package isn't in ORCA's packages.yml or conflicts with details
     # that are, you can modify the active packages configuration at runtime by
     # uncommenting the following line and specifying your own alter file.
@@ -102,12 +102,12 @@ env:
 jobs:
   # Mark the build as finished once the only remaining jobs are allowed to fail.
   fast_finish: true
+  # The standard ORCA jobs provide broad out-of-the-box coverage.
+  # @see https://github.com/acquia/orca/blob/master/docs/understanding-orca.md#continuous-integration
   include:
-    # The standard ORCA jobs provide broad out-of-the-box coverage.
-    # @see https://github.com/acquia/orca/blob/master/docs/understanding-orca.md#continuous-integration
-    - { name: "Static code analysis", env: ORCA_JOB=STATIC_CODE_ANALYSIS }
-    - { name: "Deprecated code scan", env: ORCA_JOB=DEPRECATED_CODE_SCAN }
-    - { name: "Isolated test w/ recommended package versions", env: ORCA_JOB=ISOLATED_RECOMMENDED }
+    - { env: ORCA_JOB=STATIC_CODE_ANALYSIS, name: "Static code analysis" }
+    - { env: ORCA_JOB=INTEGRATED_TEST_ON_OLDEST_SUPPORTED, name: "Integrated test on oldest supported Drupal core version" }
+    - { env: ORCA_JOB=INTEGRATED_TEST_ON_PREVIOUS_MINOR, name: "Integrated test on previous minor Drupal core version" }
     # To send PHPUnit test coverage data to Coveralls (coveralls.io), configure
     # your GitHub repository and uncomment the following line. The job on the
     # line immediately before is otherwise identical and can be removed. Note:
@@ -116,25 +116,42 @@ jobs:
     # @see https://github.com/acquia/orca/blob/master/docs/faq.md#coveralls
     # @see https://github.com/acquia/orca/blob/master/docs/advanced-usage.md#ORCA_COVERALLS_ENABLE
     # @see https://github.com/acquia/orca/blob/master/docs/advanced-usage.md#ORCA_COVERAGE_ENABLE
-    # - { name: "Isolated test w/ recommended package versions and code coverage", env: ORCA_JOB=ISOLATED_RECOMMENDED ORCA_COVERALLS_ENABLE=TRUE }
+    # - { env: ORCA_JOB=ISOLATED_TEST_ON_CURRENT ORCA_COVERALLS_ENABLE=TRUE, name: "Isolated test on current Drupal core version with test coverage" }
     #
     # To generate test coverage data to send somewhere other than Coveralls, use
     # the ORCA_COVERAGE_ENABLE variable instead.
-    # - { name: "Isolated test w/ recommended package versions and code coverage", env: ORCA_JOB=ISOLATED_RECOMMENDED ORCA_COVERAGE_ENABLE=TRUE }
-    - { name: "Integrated test w/ recommended package versions", env: ORCA_JOB=INTEGRATED_RECOMMENDED }
-    - { name: "Integrated test w/ recommended package versions & previous minor release of Drupal core", env: ORCA_JOB=CORE_PREVIOUS }
-    - { name: "Isolated test w/ dev package versions", env: ORCA_JOB=ISOLATED_DEV }
-    - { name: "Integrated test w/ dev package versions", env: ORCA_JOB=INTEGRATED_DEV }
-    - { name: "Integrated test w/ dev package versions & next minor dev version of Drupal core", env: ORCA_JOB=CORE_NEXT }
-    - { name: "D9 readiness test", php: "7.3", env: ORCA_JOB=D9_READINESS}
+    # - { env: ORCA_JOB=ISOLATED_TEST_ON_CURRENT ORCA_COVERAGE_ENABLE=TRUE, name: "Isolated test on current Drupal core version with test coverage" }
+    - { env: ORCA_JOB=ISOLATED_TEST_ON_CURRENT, name: "Isolated test on current Drupal core version" }
+    - { env: ORCA_JOB=INTEGRATED_TEST_ON_CURRENT, name: "Integrated test on current Drupal core version" }
+    - { env: ORCA_JOB=INTEGRATED_UPGRADE_TEST_TO_NEXT_MINOR, name: "Integrated upgrade test to next minor Drupal core version" }
+    - { env: ORCA_JOB=INTEGRATED_UPGRADE_TEST_TO_NEXT_MINOR_DEV, name: "Integrated upgrade test to next minor dev Drupal core version" }
+    - { env: ORCA_JOB=ISOLATED_TEST_ON_CURRENT_DEV, name: "Isolated test on current dev Drupal core version" }
+    - { env: ORCA_JOB=INTEGRATED_TEST_ON_CURRENT_DEV, name: "Integrated test on current dev Drupal core version" }
+    - { env: ORCA_JOB=LOOSE_DEPRECATED_CODE_SCAN, name: "Loose deprecated code scan" }
+    - { env: ORCA_JOB=STRICT_DEPRECATED_CODE_SCAN, name: "Strict deprecated code scan" }
+    - { env: ORCA_JOB=DEPRECATED_CODE_SCAN_W_CONTRIB, name: "Deprecated code scan w/ contrib" }
+    - { env: ORCA_JOB=ISOLATED_TEST_ON_NEXT_MINOR, name: "Isolated test on next minor Drupal core version" }
+    - { env: ORCA_JOB=INTEGRATED_TEST_ON_NEXT_MINOR, name: "Integrated test on next minor Drupal core version" }
+    - { env: ORCA_JOB=ISOLATED_TEST_ON_NEXT_MINOR_DEV, name: "Isolated test on next minor dev Drupal core version" }
+    - { env: ORCA_JOB=INTEGRATED_TEST_ON_NEXT_MINOR_DEV, name: "Integrated test on next minor dev Drupal core version" }
+    - { env: ORCA_JOB=ISOLATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_BETA_OR_LATER, name: "Isolated test on next major, latest minor beta-or-later Drupal core version" }
+    - { env: ORCA_JOB=INTEGRATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_BETA_OR_LATER, name: "Integrated test on next major, latest minor beta-or-later Drupal core version" }
+    - { env: ORCA_JOB=ISOLATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_DEV, name: "Isolated test on next major, latest minor dev Drupal core version" }
+    - { env: ORCA_JOB=INTEGRATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_DEV, name: "Integrated test on next major, latest minor dev Drupal core version" }
+    - { env: ORCA_JOB=ISOLATED_UPGRADE_TO_NEXT_MAJOR_BETA_OR_LATER, name: "Isolated upgrade to next major beta-or-later Drupal core version" }
+    - { env: ORCA_JOB=ISOLATED_UPGRADE_TO_NEXT_MAJOR_DEV, name: "Isolated upgrade to next major dev Drupal core version" }
   # For various reasons, some jobs are allowed to fail without failing the whole
   # build. They should still be watched for advance notice of future problems.
   # @see https://docs.travis-ci.com/user/customizing-the-build#rows-that-are-allowed-to-fail
   allow_failures:
-    # Dev jobs are allowed to fail due to their inherent instability.
-    - env: ORCA_JOB=ISOLATED_DEV
-    - env: ORCA_JOB=INTEGRATED_DEV
-    - env: ORCA_JOB=CORE_NEXT
+    - env: ORCA_JOB=INTEGRATED_UPGRADE_TEST_TO_NEXT_MINOR_DEV
+    - env: ORCA_JOB=LOOSE_DEPRECATED_CODE_SCAN
+    - env: ORCA_JOB=DEPRECATED_CODE_SCAN_W_CONTRIB
+    - env: ORCA_JOB=ISOLATED_TEST_ON_NEXT_MINOR_DEV
+    - env: ORCA_JOB=INTEGRATED_TEST_ON_NEXT_MINOR_DEV
+    - env: ORCA_JOB=ISOLATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_DEV
+    - env: ORCA_JOB=INTEGRATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_DEV
+    - env: ORCA_JOB=ISOLATED_UPGRADE_TO_NEXT_MAJOR_DEV
 
 # Install ORCA and prepare the environment.
 before_install:

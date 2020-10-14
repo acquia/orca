@@ -9,4 +9,6 @@
 # DESCRIPTION
 #     Reserved for future use.
 
-eval "orca ci:run $ORCA_JOB before_cache $ORCA_SUT_NAME"
+if [[ "$ORCA_JOB" ]]; then
+  eval "orca ci:run $ORCA_JOB before_cache $ORCA_SUT_NAME"
+fi

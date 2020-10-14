@@ -36,7 +36,7 @@ orca debug:env-vars
 echo "The current job is $ORCA_JOB."
 
 # Target an out-of-the-box ORCA job to modify its behavior.
-if [[ "$ORCA_JOB" == "ISOLATED_RECOMMENDED" ]]; then
+if [[ "$ORCA_JOB" == "ISOLATED_TEST_ON_CURRENT" ]]; then
   # For example, add test dependencies before running automated tests.
   if [[ -d "$ORCA_FIXTURE_DIR" ]]; then
     (

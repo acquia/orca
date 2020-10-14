@@ -36,17 +36,30 @@ env:
 jobs:
   fast_finish: true
   include:
-    - { name: "Static code analysis", env: ORCA_JOB=STATIC_CODE_ANALYSIS }
-    - { name: "Deprecated code scan", env: ORCA_JOB=DEPRECATED_CODE_SCAN }
-    - { name: "Isolated test w/ recommended package versions", env: ORCA_JOB=ISOLATED_RECOMMENDED }
-    - { name: "Isolated test w/ recommended package versions and code coverage", env: ORCA_JOB=ISOLATED_RECOMMENDED ORCA_COVERALLS_ENABLE=TRUE }
-    - { name: "Integrated test w/ recommended package versions", env: ORCA_JOB=INTEGRATED_RECOMMENDED }
-    - { name: "Integrated test w/ recommended package versions & previous minor release of Drupal core", env: ORCA_JOB=CORE_PREVIOUS }
-    - { name: "Isolated test w/ dev package versions", env: ORCA_JOB=ISOLATED_DEV }
-    - { name: "Integrated test w/ dev package versions", env: ORCA_JOB=INTEGRATED_DEV }
-    - { name: "Integrated test w/ dev package versions & next minor dev version of Drupal core", env: ORCA_JOB=CORE_NEXT }
-    - { name: "D9 readiness test", php: "7.3", env: ORCA_JOB=D9_READINESS }
-    - { name: "Integrated live test", env: ORCA_JOB=LIVE_TEST ORCA_ENABLE_NIGHTWATCH=FALSE }
+    - { env: ORCA_JOB=STATIC_CODE_ANALYSIS, name: "Static code analysis" }
+    - { env: ORCA_JOB=INTEGRATED_TEST_ON_OLDEST_SUPPORTED, name: "Integrated test on oldest supported Drupal core version" }
+    - { env: ORCA_JOB=INTEGRATED_TEST_ON_PREVIOUS_MINOR, name: "Integrated test on previous minor Drupal core version" }
+    - { env: ORCA_JOB=ISOLATED_TEST_ON_CURRENT ORCA_COVERALLS_ENABLE=TRUE, name: "Isolated test on current Drupal core version with test coverage" }
+    - { env: ORCA_JOB=ISOLATED_TEST_ON_CURRENT, name: "Isolated test on current Drupal core version" }
+    - { env: ORCA_JOB=INTEGRATED_TEST_ON_CURRENT, name: "Integrated test on current Drupal core version" }
+    - { env: ORCA_JOB=INTEGRATED_UPGRADE_TEST_TO_NEXT_MINOR, name: "Integrated upgrade test to next minor Drupal core version" }
+    - { env: ORCA_JOB=INTEGRATED_UPGRADE_TEST_TO_NEXT_MINOR_DEV, name: "Integrated upgrade test to next minor dev Drupal core version" }
+    - { env: ORCA_JOB=ISOLATED_TEST_ON_CURRENT_DEV, name: "Isolated test on current dev Drupal core version" }
+    - { env: ORCA_JOB=INTEGRATED_TEST_ON_CURRENT_DEV, name: "Integrated test on current dev Drupal core version" }
+    - { env: ORCA_JOB=LOOSE_DEPRECATED_CODE_SCAN, name: "Loose deprecated code scan" }
+    - { env: ORCA_JOB=STRICT_DEPRECATED_CODE_SCAN, name: "Strict deprecated code scan" }
+    - { env: ORCA_JOB=DEPRECATED_CODE_SCAN_W_CONTRIB, name: "Deprecated code scan w/ contrib" }
+    - { env: ORCA_JOB=ISOLATED_TEST_ON_NEXT_MINOR, name: "Isolated test on next minor Drupal core version" }
+    - { env: ORCA_JOB=INTEGRATED_TEST_ON_NEXT_MINOR, name: "Integrated test on next minor Drupal core version" }
+    - { env: ORCA_JOB=ISOLATED_TEST_ON_NEXT_MINOR_DEV, name: "Isolated test on next minor dev Drupal core version" }
+    - { env: ORCA_JOB=INTEGRATED_TEST_ON_NEXT_MINOR_DEV, name: "Integrated test on next minor dev Drupal core version" }
+    - { env: ORCA_JOB=ISOLATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_BETA_OR_LATER, name: "Isolated test on next major, latest minor beta-or-later Drupal core version" }
+    - { env: ORCA_JOB=INTEGRATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_BETA_OR_LATER, name: "Integrated test on next major, latest minor beta-or-later Drupal core version" }
+    - { env: ORCA_JOB=ISOLATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_DEV, name: "Isolated test on next major, latest minor dev Drupal core version" }
+    - { env: ORCA_JOB=INTEGRATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_DEV, name: "Integrated test on next major, latest minor dev Drupal core version" }
+    - { env: ORCA_JOB=ISOLATED_UPGRADE_TO_NEXT_MAJOR_BETA_OR_LATER, name: "Isolated upgrade to next major beta-or-later Drupal core version" }
+    - { env: ORCA_JOB=ISOLATED_UPGRADE_TO_NEXT_MAJOR_DEV, name: "Isolated upgrade to next major dev Drupal core version" }
+    - { env: ORCA_JOB=LIVE_TEST, name: "Integrated live test" }
   allow_failures:
     - env: ORCA_JOB=LIVE_TEST ORCA_ENABLE_NIGHTWATCH=FALSE
 
