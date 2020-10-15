@@ -8,6 +8,7 @@ use MyCLabs\Enum\Enum;
  * Provides Drupal core version special values.
  *
  * @method static DrupalCoreVersionEnum OLDEST_SUPPORTED()
+ * @method static DrupalCoreVersionEnum LATEST_LTS()
  * @method static DrupalCoreVersionEnum PREVIOUS_MINOR()
  * @method static DrupalCoreVersionEnum CURRENT()
  * @method static DrupalCoreVersionEnum CURRENT_DEV()
@@ -19,6 +20,8 @@ use MyCLabs\Enum\Enum;
 class DrupalCoreVersionEnum extends Enum {
 
   public const OLDEST_SUPPORTED = 'OLDEST_SUPPORTED';
+
+  public const LATEST_LTS = 'LATEST_LTS';
 
   public const PREVIOUS_MINOR = 'PREVIOUS_MINOR';
 
@@ -43,6 +46,7 @@ class DrupalCoreVersionEnum extends Enum {
   public static function descriptions(): array {
     return [
       self::OLDEST_SUPPORTED => 'Oldest supported Drupal core version',
+      self::LATEST_LTS => 'Latest LTS Drupal core version',
       self::PREVIOUS_MINOR => 'Previous minor Drupal core version',
       self::CURRENT => 'Current Drupal core version',
       self::CURRENT_DEV => 'Current dev Drupal core version',
@@ -61,12 +65,13 @@ class DrupalCoreVersionEnum extends Enum {
    */
   public static function examples(): array {
     return [
-      self::OLDEST_SUPPORTED => '8.8.10',
-      self::PREVIOUS_MINOR => '8.9.7',
-      self::CURRENT => '9.0.7',
-      self::CURRENT_DEV => '9.0.x-dev',
-      self::NEXT_MINOR => '9.1.0-alpha1',
-      self::NEXT_MINOR_DEV => '9.1.x-dev',
+      self::OLDEST_SUPPORTED => '8.8.1',
+      self::LATEST_LTS => '8.9.1',
+      self::PREVIOUS_MINOR => '9.1.1',
+      self::CURRENT => '9.2.1',
+      self::CURRENT_DEV => '9.2.x-dev',
+      self::NEXT_MINOR => '9.3.0-alpha1',
+      self::NEXT_MINOR_DEV => '9.3.x-dev',
       self::NEXT_MAJOR_LATEST_MINOR_BETA_OR_LATER => '10.0.0-beta1',
       self::NEXT_MAJOR_LATEST_MINOR_DEV => '10.0.x-dev',
     ];

@@ -22,7 +22,7 @@ class CiJobEnumTest extends TestCase {
   /**
    * @dataProvider providerDescriptions
    */
-  public function testDescriptions($description): void {
+  public function testValidDescriptions($description): void {
     self::assertTrue(is_string($description), 'Description is a string.');
     self::assertNotEmpty($description, 'Description is non-empty.');
   }
@@ -33,6 +33,13 @@ class CiJobEnumTest extends TestCase {
       $descriptions[] = [$value];
     }
     return $descriptions;
+  }
+
+  public function testUniqueDescriptions(): void {
+    $all_descriptions = CiJobEnum::descriptions();
+    $unique_descriptions = array_unique($all_descriptions);
+
+    self::assertSame($unique_descriptions, $all_descriptions, 'No duplicate descriptions.');
   }
 
 }

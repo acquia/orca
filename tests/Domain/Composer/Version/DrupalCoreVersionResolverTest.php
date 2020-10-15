@@ -132,6 +132,25 @@ class DrupalCoreVersionResolverTest extends TestCase {
     self::assertSame('8.8.0', $actual);
   }
 
+  public function testResolvePredefinedLatestLts(): void {
+    $this->package
+      ->getPrettyVersion()
+      ->willReturn('9.1.0', '8.9.7')
+      ->shouldBeCalledTimes(2);
+    $this->selector
+      ->findBestCandidate('drupal/core', '<9', NULL, 'stable')
+      ->willReturn($this->package->reveal())
+      ->shouldBeCalledOnce();
+    $this->expectGetCurrentToBeCalledOnce();
+    $resolver = $this->createDrupalCoreVersionResolver();
+
+    $actual = $resolver->resolvePredefined(DrupalCoreVersionEnum::LATEST_LTS());
+    // Call again to test value caching.
+    $resolver->resolvePredefined(DrupalCoreVersionEnum::LATEST_LTS());
+
+    self::assertSame('8.9.7', $actual);
+  }
+
   public function testResolvePredefinedPreviousMinor(): void {
     $this->package
       ->getPrettyVersion()

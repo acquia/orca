@@ -39,4 +39,18 @@ class DrupalCoreVersionEnumTest extends TestCase {
     self::assertCount(count(DrupalCoreVersionEnum::keys()) + 2, $help, 'Provided descriptions for all values.');
   }
 
+  public function testUniqueDescriptions(): void {
+    $all = DrupalCoreVersionEnum::descriptions();
+    $unique = array_unique($all);
+
+    self::assertSame($unique, $all, 'No duplicate descriptions.');
+  }
+
+  public function testUniqueExamples(): void {
+    $all = DrupalCoreVersionEnum::examples();
+    $unique = array_unique($all);
+
+    self::assertSame($unique, $all, 'No duplicate examples.');
+  }
+
 }

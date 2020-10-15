@@ -88,6 +88,7 @@ class CiJobFactoryTest extends TestCase {
   private function createFactory(): CiJobFactory {
     $deprecated_code_scan_w_contrib_ci_job = $this->deprecatedCodeScanWContribCiJob->reveal();
     $integrated_test_on_current_ci_job = $this->integratedTestOnCurrentCiJob->reveal();
+    $integrated_test_on_latest_lts = $this->integratedTestOnLatestLtsCiJob->reveal();
     $integrated_test_on_current_dev_ci_job = $this->integratedTestOnCurrentDevCiJob->reveal();
     $integrated_test_on_next_major_latest_minor_beta_or_later_ci_job = $this->integratedTestOnNextMajorLatestMinorBetaOrLaterCiJob->reveal();
     $integrated_test_on_next_major_latest_minor_dev_ci_job = $this->integratedTestOnNextMajorLatestMinorDevCiJob->reveal();
@@ -110,6 +111,7 @@ class CiJobFactoryTest extends TestCase {
     $strict_deprecated_code_scan_ci_job = $this->strictDeprecatedCodeScanCiJob->reveal();
     return new CiJobFactory(
       $deprecated_code_scan_w_contrib_ci_job,
+      $integrated_test_on_latest_lts,
       $integrated_test_on_current_ci_job,
       $integrated_test_on_current_dev_ci_job,
       $integrated_test_on_next_major_latest_minor_beta_or_later_ci_job,

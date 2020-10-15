@@ -27,6 +27,13 @@ class DrupalCoreVersionResolver {
   private $drupalDotOrgApiClient;
 
   /**
+   * The latest LTS Drupal core version.
+   *
+   * @var string|null
+   */
+  private $latestLts;
+
+  /**
    * The next major latest minor Drupal core version beta or later.
    *
    * @var string|null
@@ -96,6 +103,9 @@ class DrupalCoreVersionResolver {
     switch ($version->getValue()) {
       case DrupalCoreVersionEnum::OLDEST_SUPPORTED():
         return $this->findOldestSupported();
+
+      case DrupalCoreVersionEnum::LATEST_LTS():
+        return $this->findLatestLts();
 
       case DrupalCoreVersionEnum::PREVIOUS_MINOR():
         return $this->findPreviousMinor();
@@ -169,6 +179,24 @@ class DrupalCoreVersionResolver {
     $this->oldestSupported = $this->resolveArbitrary($branch, 'stable');
 
     return $this->oldestSupported;
+  }
+
+  /**
+   * Finds the latest LTS version of Drupal core.
+   *
+   * @return string
+   *   The semver version string, e.g., 8.9.7.
+   */
+  private function findLatestLts(): string {
+    if ($this->latestLts) {
+      return $this->latestLts;
+    }
+
+    $parts = explode('.', $this->findCurrent());
+    $current_major = array_shift($parts);
+    $this->latestLts = $this->resolveArbitrary("<{$current_major}", 'stable');
+
+    return $this->latestLts;
   }
 
   /**
