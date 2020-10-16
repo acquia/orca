@@ -27,7 +27,9 @@ class IntegratedTestOnCurrentCiJobTest extends CiJobTestBase {
     $this->processRunner
       ->runOrca([
         'fixture:init',
+        '--force',
         "--sut={$this->validSutName()}",
+        '--core=CURRENT',
       ])
       ->shouldBeCalledOnce()
       ->willReturn(0);
@@ -41,6 +43,10 @@ class IntegratedTestOnCurrentCiJobTest extends CiJobTestBase {
   }
 
   public function testScript(): void {
+    $this->processRunner
+      ->runOrca(['fixture:status'])
+      ->shouldBeCalledOnce()
+      ->willReturn(0);
     $this->processRunner
       ->runOrca([
         'qa:automated-tests',

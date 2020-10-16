@@ -36,7 +36,7 @@ class DrupalCoreVersionEnumTest extends TestCase {
   public function testGetCommandArgumentHelp() {
     $help = DrupalCoreVersionEnum::commandArgumentHelp();
 
-    self::assertCount(count(DrupalCoreVersionEnum::keys()) + 2, $help, 'Provided descriptions for all values.');
+    self::assertCount(count(DrupalCoreVersionEnum::keys()) + 1, $help, 'Provided descriptions for all values.');
   }
 
   public function testUniqueDescriptions(): void {

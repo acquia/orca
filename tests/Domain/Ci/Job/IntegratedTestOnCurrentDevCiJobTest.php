@@ -27,7 +27,9 @@ class IntegratedTestOnCurrentDevCiJobTest extends CiJobTestBase {
     $this->processRunner
       ->runOrca([
         'fixture:init',
+        '--force',
         "--sut={$this->validSutName()}",
+        '--core=CURRENT_DEV',
         '--dev',
       ])
       ->shouldBeCalledOnce()
@@ -35,13 +37,17 @@ class IntegratedTestOnCurrentDevCiJobTest extends CiJobTestBase {
     $job = $this->createJob();
 
     $job->run($this->createCiRunOptions([
-      'job' => CiJobEnum::INTEGRATED_TEST_ON_CURRENT,
+      'job' => CiJobEnum::INTEGRATED_TEST_ON_CURRENT_DEV,
       'phase' => CiJobPhaseEnum::INSTALL,
       'sut' => $this->validSutName(),
     ]));
   }
 
   public function testScript(): void {
+    $this->processRunner
+      ->runOrca(['fixture:status'])
+      ->shouldBeCalledOnce()
+      ->willReturn(0);
     $this->processRunner
       ->runOrca([
         'qa:automated-tests',

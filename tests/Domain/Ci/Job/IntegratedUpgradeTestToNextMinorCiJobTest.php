@@ -3,55 +3,51 @@
 namespace Acquia\Orca\Tests\Domain\Ci\Job;
 
 use Acquia\Orca\Domain\Ci\Job\IntegratedUpgradeTestToNextMinorCiJob;
-use Acquia\Orca\Domain\Package\PackageManager;
 use Acquia\Orca\Enum\CiJobEnum;
 use Acquia\Orca\Enum\CiJobPhaseEnum;
-use Acquia\Orca\Helper\Process\ProcessRunner;
 use Acquia\Orca\Tests\Domain\Ci\Job\_Helper\CiJobTestBase;
+use Prophecy\Argument;
+use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * @property \Acquia\Orca\Domain\Package\PackageManager|\Prophecy\Prophecy\ObjectProphecy $packageManager
- * @property \Acquia\Orca\Helper\Process\ProcessRunner|\Prophecy\Prophecy\ObjectProphecy $processRunner
+ * @property \Prophecy\Prophecy\ObjectProphecy|\Symfony\Component\Console\Output\OutputInterface $symfonyOutput
  */
 class IntegratedUpgradeTestToNextMinorCiJobTest extends CiJobTestBase {
 
   public function setUp(): void {
-    $this->packageManager = $this->prophesize(PackageManager::class);
-    $this->processRunner = $this->prophesize(ProcessRunner::class);
+    $this->symfonyOutput = $this->prophesize(OutputInterface::class);
     parent::setUp();
   }
 
   private function createJob(): IntegratedUpgradeTestToNextMinorCiJob {
-    return new IntegratedUpgradeTestToNextMinorCiJob($this->processRunner->reveal());
+    $output = $this->symfonyOutput->reveal();
+    return new IntegratedUpgradeTestToNextMinorCiJob($output);
   }
 
   public function testInstall(): void {
-    $this->processRunner
-      ->runOrca([
-        'fixture:init',
-        "--sut={$this->validSutName()}",
-      ])
-      ->shouldBeCalledOnce()
-      ->willReturn(0);
+    $this->symfonyOutput
+      ->writeln(Argument::any())
+      ->shouldBeCalledOnce();
     $job = $this->createJob();
 
     $job->run($this->createCiRunOptions([
-      'job' => CiJobEnum::INTEGRATED_TEST_ON_CURRENT,
+      'job' => CiJobEnum::ISOLATED_UPGRADE_TO_NEXT_MAJOR_DEV,
       'phase' => CiJobPhaseEnum::INSTALL,
       'sut' => $this->validSutName(),
     ]));
   }
 
   public function testScript(): void {
-    $this->processRunner
-      ->runOrca([
-        'qa:automated-tests',
-        "--sut={$this->validSutName()}",
-      ])
+    $this->symfonyOutput
+      ->writeln(Argument::any())
       ->shouldBeCalledOnce();
     $job = $this->createJob();
 
-    $job->run($this->createValidRunOptions());
+    $job->run($this->createCiRunOptions([
+      'job' => CiJobEnum::ISOLATED_UPGRADE_TO_NEXT_MAJOR_DEV,
+      'phase' => CiJobPhaseEnum::SCRIPT,
+      'sut' => $this->validSutName(),
+    ]));
   }
 
 }

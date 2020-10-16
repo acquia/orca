@@ -26,8 +26,9 @@ class DeprecatedCodeScanWContribCiJobTest extends CiJobTestBase {
     $this->processRunner
       ->runOrca([
         'fixture:init',
-        '-f',
+        '--force',
         "--sut={$this->validSutName()}",
+        '--core=CURRENT_DEV',
         '--no-site-install',
       ])
       ->shouldBeCalledOnce();
@@ -41,6 +42,10 @@ class DeprecatedCodeScanWContribCiJobTest extends CiJobTestBase {
   }
 
   public function testScript(): void {
+    $this->processRunner
+      ->runOrca(['fixture:status'])
+      ->shouldBeCalledOnce()
+      ->willReturn(0);
     $this->processRunner
       ->runOrca([
         'qa:deprecated-code-scan',

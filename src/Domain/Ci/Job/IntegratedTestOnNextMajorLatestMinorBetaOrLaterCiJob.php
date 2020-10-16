@@ -42,7 +42,9 @@ class IntegratedTestOnNextMajorLatestMinorBetaOrLaterCiJob extends AbstractCiJob
     $this->processRunner
       ->runOrca([
         'fixture:init',
+        '--force',
         "--sut={$options->getSut()->getPackageName()}",
+        '--core=NEXT_MAJOR_LATEST_MINOR_BETA_OR_LATER',
       ]);
   }
 
@@ -50,6 +52,9 @@ class IntegratedTestOnNextMajorLatestMinorBetaOrLaterCiJob extends AbstractCiJob
    * {@inheritdoc}
    */
   protected function script(CiRunOptions $options): void {
+    $this->processRunner
+      ->runOrca(['fixture:status']);
+
     $sut = $options->getSut();
     $this->processRunner
       ->runOrca([

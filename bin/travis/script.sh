@@ -11,8 +11,6 @@
 
 cd "$(dirname "$0")" || exit; source _includes.sh
 
-[[ ! -d "$ORCA_FIXTURE_DIR" ]] || orca fixture:status
-
 if [[ "$ORCA_JOB" ]]; then
   eval "orca ci:run $ORCA_JOB script $ORCA_SUT_NAME"
 fi

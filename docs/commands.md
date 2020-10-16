@@ -9,11 +9,14 @@
 * [`guess`](#debugguess-version)
 * [`help`](#help)
 * [`init`](#fixtureinit)
+* [`jobs`](#debugci-jobs)
 * [`list`](#list)
 * [`packages`](#debugpackages)
+* [`phases`](#debugci-phases)
 * [`phpstan`](#qadeprecated-code-scan)
 * [`reset`](#fixturereset)
 * [`rm`](#fixturerm)
+* [`run`](#cirun)
 * [`serve`](#fixturerun-server)
 * [`si`](#fixtureinstall-site)
 * [`st`](#fixturestatus)
@@ -21,8 +24,14 @@
 * [`test`](#qaautomated-tests)
 * [`vars`](#debugenv-vars)
 
+**ci:**
+
+* [`ci:run`](#cirun)
+
 **debug:**
 
+* [`debug:ci-jobs`](#debugci-jobs)
+* [`debug:ci-phases`](#debugci-phases)
 * [`debug:core-versions`](#debugcore-versions)
 * [`debug:env-vars`](#debugenv-vars)
 * [`debug:guess-version`](#debugguess-version)
@@ -38,6 +47,10 @@
 * [`fixture:rm`](#fixturerm)
 * [`fixture:run-server`](#fixturerun-server)
 * [`fixture:status`](#fixturestatus)
+
+**internal:**
+
+
 
 **qa:**
 
@@ -213,6 +226,297 @@ The output format (txt, xml, json, or md)
 * Is multiple: no
 * Default: `'txt'`
 
+`ci:run`
+--------
+
+Runs an ORCA CI job phase
+
+### Usage
+
+* `ci:run <job> <phase> <sut>`
+* `run`
+
+Runs an ORCA CI job phase
+
+### Arguments
+
+#### `job`
+
+The job name:
+- STATIC_CODE_ANALYSIS: Static code analysis
+- INTEGRATED_TEST_ON_OLDEST_SUPPORTED: Integrated test on oldest supported Drupal core version
+- INTEGRATED_TEST_ON_PREVIOUS_MINOR: Integrated test on previous minor Drupal core version
+- INTEGRATED_TEST_ON_LATEST_LTS: Integrated test on latest LTS Drupal core version
+- ISOLATED_TEST_ON_CURRENT: Isolated test on current Drupal core version
+- INTEGRATED_TEST_ON_CURRENT: Integrated test on current Drupal core version
+- INTEGRATED_UPGRADE_TEST_TO_NEXT_MINOR: Integrated upgrade test to next minor Drupal core version
+- INTEGRATED_UPGRADE_TEST_TO_NEXT_MINOR_DEV: Integrated upgrade test to next minor dev Drupal core version
+- ISOLATED_TEST_ON_CURRENT_DEV: Isolated test on current dev Drupal core version
+- INTEGRATED_TEST_ON_CURRENT_DEV: Integrated test on current dev Drupal core version
+- LOOSE_DEPRECATED_CODE_SCAN: Loose deprecated code scan
+- STRICT_DEPRECATED_CODE_SCAN: Strict deprecated code scan
+- DEPRECATED_CODE_SCAN_W_CONTRIB: Deprecated code scan w/ contrib
+- ISOLATED_TEST_ON_NEXT_MINOR: Isolated test on next minor Drupal core version
+- INTEGRATED_TEST_ON_NEXT_MINOR: Integrated test on next minor Drupal core version
+- ISOLATED_TEST_ON_NEXT_MINOR_DEV: Isolated test on next minor dev Drupal core version
+- INTEGRATED_TEST_ON_NEXT_MINOR_DEV: Integrated test on next minor dev Drupal core version
+- ISOLATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_BETA_OR_LATER: Isolated test on next major, latest minor beta-or-later Drupal core version
+- INTEGRATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_BETA_OR_LATER: Integrated test on next major, latest minor beta-or-later Drupal core version
+- ISOLATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_DEV: Isolated test on next major, latest minor dev Drupal core version
+- INTEGRATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_DEV: Integrated test on next major, latest minor dev Drupal core version
+- ISOLATED_UPGRADE_TO_NEXT_MAJOR_BETA_OR_LATER: Isolated upgrade to next major beta-or-later Drupal core version
+- ISOLATED_UPGRADE_TO_NEXT_MAJOR_DEV: Isolated upgrade to next major dev Drupal core version
+
+* Is required: yes
+* Is array: no
+* Default: `NULL`
+
+#### `phase`
+
+The phase name:
+- before_install: Scripts to run before the install stage
+- install: Scripts to run at the install stage
+- before_script: Scripts to run before the script stage
+- script: Scripts to run at the script stage
+- before_cache: Scripts to run before storing a build cache
+- after_success: Scripts to run after a successful script stage
+- after_failure: Scripts to run after a failing script stage
+- before_deploy: Scripts to run before the deploy stage
+- deploy: Scripts to run at the deploy stage
+- after_deploy: Scripts to run after the deploy stage
+- after_script: Scripts to run as the last stage
+
+* Is required: yes
+* Is array: no
+* Default: `NULL`
+
+#### `sut`
+
+The system under test (SUT) in the form of its package name, e.g., "drupal/example"
+
+* Is required: yes
+* Is array: no
+* Default: `NULL`
+
+### Options
+
+#### `--help|-h`
+
+Display this help message
+
+* Accept value: no
+* Is value required: no
+* Is multiple: no
+* Default: `false`
+
+#### `--quiet|-q`
+
+Do not output any message
+
+* Accept value: no
+* Is value required: no
+* Is multiple: no
+* Default: `false`
+
+#### `--verbose|-v|-vv|-vvv`
+
+Increase the verbosity of messages: 1 for normal output, 2 for more verbose output and 3 for debug
+
+* Accept value: no
+* Is value required: no
+* Is multiple: no
+* Default: `false`
+
+#### `--version|-V`
+
+Display this application version
+
+* Accept value: no
+* Is value required: no
+* Is multiple: no
+* Default: `false`
+
+#### `--ansi`
+
+Force ANSI output
+
+* Accept value: no
+* Is value required: no
+* Is multiple: no
+* Default: `false`
+
+#### `--no-ansi`
+
+Disable ANSI output
+
+* Accept value: no
+* Is value required: no
+* Is multiple: no
+* Default: `false`
+
+#### `--no-interaction|-n`
+
+Do not ask any interactive question
+
+* Accept value: no
+* Is value required: no
+* Is multiple: no
+* Default: `false`
+
+`debug:ci-jobs`
+---------------
+
+Displays ORCA CI jobs
+
+### Usage
+
+* `debug:ci-jobs`
+* `jobs`
+
+Displays ORCA CI jobs
+
+### Options
+
+#### `--help|-h`
+
+Display this help message
+
+* Accept value: no
+* Is value required: no
+* Is multiple: no
+* Default: `false`
+
+#### `--quiet|-q`
+
+Do not output any message
+
+* Accept value: no
+* Is value required: no
+* Is multiple: no
+* Default: `false`
+
+#### `--verbose|-v|-vv|-vvv`
+
+Increase the verbosity of messages: 1 for normal output, 2 for more verbose output and 3 for debug
+
+* Accept value: no
+* Is value required: no
+* Is multiple: no
+* Default: `false`
+
+#### `--version|-V`
+
+Display this application version
+
+* Accept value: no
+* Is value required: no
+* Is multiple: no
+* Default: `false`
+
+#### `--ansi`
+
+Force ANSI output
+
+* Accept value: no
+* Is value required: no
+* Is multiple: no
+* Default: `false`
+
+#### `--no-ansi`
+
+Disable ANSI output
+
+* Accept value: no
+* Is value required: no
+* Is multiple: no
+* Default: `false`
+
+#### `--no-interaction|-n`
+
+Do not ask any interactive question
+
+* Accept value: no
+* Is value required: no
+* Is multiple: no
+* Default: `false`
+
+`debug:ci-phases`
+-----------------
+
+Displays ORCA CI phases
+
+### Usage
+
+* `debug:ci-phases`
+* `phases`
+
+Displays ORCA CI phases
+
+### Options
+
+#### `--help|-h`
+
+Display this help message
+
+* Accept value: no
+* Is value required: no
+* Is multiple: no
+* Default: `false`
+
+#### `--quiet|-q`
+
+Do not output any message
+
+* Accept value: no
+* Is value required: no
+* Is multiple: no
+* Default: `false`
+
+#### `--verbose|-v|-vv|-vvv`
+
+Increase the verbosity of messages: 1 for normal output, 2 for more verbose output and 3 for debug
+
+* Accept value: no
+* Is value required: no
+* Is multiple: no
+* Default: `false`
+
+#### `--version|-V`
+
+Display this application version
+
+* Accept value: no
+* Is value required: no
+* Is multiple: no
+* Default: `false`
+
+#### `--ansi`
+
+Force ANSI output
+
+* Accept value: no
+* Is value required: no
+* Is multiple: no
+* Default: `false`
+
+#### `--no-ansi`
+
+Disable ANSI output
+
+* Accept value: no
+* Is value required: no
+* Is multiple: no
+* Default: `false`
+
+#### `--no-interaction|-n`
+
+Do not ask any interactive question
+
+* Accept value: no
+* Is value required: no
+* Is multiple: no
+* Default: `false`
+
 `debug:core-versions`
 ---------------------
 
@@ -220,12 +524,30 @@ Provides an overview of Drupal Core versions
 
 ### Usage
 
-* `debug:core-versions`
+* `debug:core-versions [--examples] [--resolve]`
 * `core`
 
 Provides an overview of Drupal Core versions
 
 ### Options
+
+#### `--examples`
+
+Include example version strings
+
+* Accept value: no
+* Is value required: no
+* Is multiple: no
+* Default: `false`
+
+#### `--resolve`
+
+Include the exact versions Composer would actually install. Makes HTTP requests and increases execution time
+
+* Accept value: no
+* Is value required: no
+* Is multiple: no
+* Default: `false`
 
 #### `--help|-h`
 
@@ -471,13 +793,15 @@ Displays the active packages configuration
 #### `core`
 
 A Drupal core version to target:
-- PREVIOUS_RELEASE: The latest release of the previous minor version, e.g., "8.5.14" if the current minor version is 8.6
-- PREVIOUS_DEV: The development version of the previous minor version, e.g., "8.5.x-dev"
-- CURRENT_RECOMMENDED: The current recommended release, e.g., "8.6.14"
-- CURRENT_DEV: The current development version, e.g., "8.6.x-dev"
-- NEXT_RELEASE: The next release version if available, e.g., "8.7.0-beta2"
-- NEXT_DEV: The next development version, e.g., "8.7.x-dev"
-- D9_READINESS: The current development version of Drupal 9, e.g., "9.0.x-dev"
+- OLDEST_SUPPORTED: Oldest supported Drupal core version, e.g., "8.8.1"
+- LATEST_LTS: Latest LTS Drupal core version, e.g., "8.9.1"
+- PREVIOUS_MINOR: Previous minor Drupal core version, e.g., "9.1.1"
+- CURRENT: Current Drupal core version, e.g., "9.2.1"
+- CURRENT_DEV: Current dev Drupal core version, e.g., "9.2.x-dev"
+- NEXT_MINOR: Next minor Drupal core version, e.g., "9.3.0-alpha1"
+- NEXT_MINOR_DEV: Next minor dev Drupal core version, e.g., "9.3.x-dev"
+- NEXT_MAJOR_LATEST_MINOR_BETA_OR_LATER: Next major, latest minor beta-or-later Drupal core version, e.g., "10.0.0-beta1"
+- NEXT_MAJOR_LATEST_MINOR_DEV: Next major, latest minor dev Drupal core version, e.g., "10.0.x-dev"
 - Any version string Composer understands, see https://getcomposer.org/doc/articles/versions.md
 
 * Is required: no
@@ -765,19 +1089,21 @@ Omit all non-required company packages
 #### `--core`
 
 Change the version of Drupal core installed:
-- PREVIOUS_RELEASE: The latest release of the previous minor version, e.g., "8.5.14" if the current minor version is 8.6
-- PREVIOUS_DEV: The development version of the previous minor version, e.g., "8.5.x-dev"
-- CURRENT_RECOMMENDED: The current recommended release, e.g., "8.6.14"
-- CURRENT_DEV: The current development version, e.g., "8.6.x-dev"
-- NEXT_RELEASE: The next release version if available, e.g., "8.7.0-beta2"
-- NEXT_DEV: The next development version, e.g., "8.7.x-dev"
-- D9_READINESS: The current development version of Drupal 9, e.g., "9.0.x-dev"
+- OLDEST_SUPPORTED: Oldest supported Drupal core version, e.g., "8.8.1"
+- LATEST_LTS: Latest LTS Drupal core version, e.g., "8.9.1"
+- PREVIOUS_MINOR: Previous minor Drupal core version, e.g., "9.1.1"
+- CURRENT: Current Drupal core version, e.g., "9.2.1"
+- CURRENT_DEV: Current dev Drupal core version, e.g., "9.2.x-dev"
+- NEXT_MINOR: Next minor Drupal core version, e.g., "9.3.0-alpha1"
+- NEXT_MINOR_DEV: Next minor dev Drupal core version, e.g., "9.3.x-dev"
+- NEXT_MAJOR_LATEST_MINOR_BETA_OR_LATER: Next major, latest minor beta-or-later Drupal core version, e.g., "10.0.0-beta1"
+- NEXT_MAJOR_LATEST_MINOR_DEV: Next major, latest minor dev Drupal core version, e.g., "10.0.x-dev"
 - Any version string Composer understands, see https://getcomposer.org/doc/articles/versions.md
 
 * Accept value: yes
 * Is value required: yes
 * Is multiple: no
-* Default: `'CURRENT_RECOMMENDED'`
+* Default: `'CURRENT'`
 
 #### `--dev`
 
@@ -804,7 +1130,7 @@ The Composer project template used to create the fixture
 * Accept value: yes
 * Is value required: yes
 * Is multiple: no
-* Default: `'acquia/blt-project'`
+* Default: `NULL`
 
 #### `--ignore-patch-failure`
 

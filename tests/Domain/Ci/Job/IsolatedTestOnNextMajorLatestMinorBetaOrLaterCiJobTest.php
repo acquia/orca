@@ -29,20 +29,27 @@ class IsolatedTestOnNextMajorLatestMinorBetaOrLaterCiJobTest extends CiJobTestBa
     $this->processRunner
       ->runOrca([
         'fixture:init',
+        '--force',
         "--sut={$this->validSutName()}",
+        '--sut-only',
+        '--core=NEXT_MAJOR_LATEST_MINOR_BETA_OR_LATER',
       ])
       ->shouldBeCalledOnce()
       ->willReturn(0);
     $job = $this->createJob();
 
     $job->run($this->createCiRunOptions([
-      'job' => CiJobEnum::INTEGRATED_TEST_ON_CURRENT,
+      'job' => CiJobEnum::ISOLATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_BETA_OR_LATER,
       'phase' => CiJobPhaseEnum::INSTALL,
       'sut' => $this->validSutName(),
     ]));
   }
 
   public function testScript(): void {
+    $this->processRunner
+      ->runOrca(['fixture:status'])
+      ->shouldBeCalledOnce()
+      ->willReturn(0);
     $this->processRunner
       ->runOrca([
         'qa:automated-tests',

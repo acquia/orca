@@ -38,14 +38,30 @@ class IsolatedTestOnCurrentDevCiJob extends AbstractCiJob {
   /**
    * {@inheritdoc}
    */
+  protected function install(CiRunOptions $options): void {
+    $this->processRunner
+      ->runOrca([
+        'fixture:init',
+        '--force',
+        "--sut={$options->getSut()->getPackageName()}",
+        '--sut-only',
+        '--core=CURRENT_DEV',
+      ]);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   protected function script(CiRunOptions $options): void {
+    $this->processRunner
+      ->runOrca(['fixture:status']);
+
     $sut = $options->getSut();
     $this->processRunner
       ->runOrca([
         'qa:automated-tests',
         "--sut={$sut->getPackageName()}",
         '--sut-only',
-        '--dev',
       ]);
   }
 

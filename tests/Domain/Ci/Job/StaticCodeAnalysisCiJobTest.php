@@ -24,6 +24,9 @@ class StaticCodeAnalysisCiJobTest extends CiJobTestBase {
   }
 
   public function testScript(): void {
+    $this->processRunner
+      ->runOrca(['fixture:status'])
+      ->shouldNotBeCalled();
     $job = $this->createJob();
     $this->processRunner
       ->runOrca([

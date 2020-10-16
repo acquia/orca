@@ -42,8 +42,9 @@ class DeprecatedCodeScanWContribCiJob extends AbstractCiJob {
     $this->processRunner
       ->runOrca([
         'fixture:init',
-        '-f',
+        '--force',
         "--sut={$options->getSut()->getPackageName()}",
+        '--core=CURRENT_DEV',
         '--no-site-install',
       ]);
   }
@@ -52,6 +53,9 @@ class DeprecatedCodeScanWContribCiJob extends AbstractCiJob {
    * {@inheritdoc}
    */
   protected function script(CiRunOptions $options): void {
+    $this->processRunner
+      ->runOrca(['fixture:status']);
+
     $this->processRunner
       ->runOrca([
         'qa:deprecated-code-scan',

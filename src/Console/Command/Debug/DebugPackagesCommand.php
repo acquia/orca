@@ -80,8 +80,7 @@ class DebugPackagesCommand extends Command {
       ->setAliases(['packages'])
       ->addArgument('core', InputArgument::OPTIONAL, implode(PHP_EOL, array_merge(
         ['A Drupal core version to target:'],
-        DrupalCoreVersionEnum::commandArgumentHelp(),
-        ['- Any version string Composer understands, see https://getcomposer.org/doc/articles/versions.md']
+        DrupalCoreVersionEnum::commandArgumentHelp()
       )))
       ->setDescription('Displays the active packages configuration');
   }

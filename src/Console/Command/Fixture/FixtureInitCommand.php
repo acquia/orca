@@ -105,8 +105,7 @@ class FixtureInitCommand extends Command {
       ->addOption('bare', NULL, InputOption::VALUE_NONE, 'Omit all non-required company packages')
       ->addOption('core', NULL, InputOption::VALUE_REQUIRED, implode(PHP_EOL, array_merge(
         ['Change the version of Drupal core installed:'],
-        DrupalCoreVersionEnum::commandArgumentHelp(),
-        ['- Any version string Composer understands, see https://getcomposer.org/doc/articles/versions.md']
+        DrupalCoreVersionEnum::commandArgumentHelp()
       )), DrupalCoreVersionEnum::CURRENT)
       ->addOption('dev', NULL, InputOption::VALUE_NONE, 'Use dev versions of company packages')
       ->addOption('profile', NULL, InputOption::VALUE_REQUIRED, 'The Drupal installation profile to use, e.g., "minimal". ("orca" is a pseudo-profile based on "minimal", with the Toolbar module enabled and Seven as the admin theme)', FixtureCreator::DEFAULT_PROFILE)

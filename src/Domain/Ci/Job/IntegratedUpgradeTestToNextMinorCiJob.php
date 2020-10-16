@@ -3,8 +3,8 @@
 namespace Acquia\Orca\Domain\Ci\Job;
 
 use Acquia\Orca\Enum\CiJobEnum;
-use Acquia\Orca\Helper\Process\ProcessRunner;
 use Acquia\Orca\Options\CiRunOptions;
+use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * The integrated upgrade test to next minor CI job.
@@ -12,20 +12,20 @@ use Acquia\Orca\Options\CiRunOptions;
 class IntegratedUpgradeTestToNextMinorCiJob extends AbstractCiJob {
 
   /**
-   * The process runner.
+   * The output decorator.
    *
-   * @var \Acquia\Orca\Helper\Process\ProcessRunner
+   * @var \Symfony\Component\Console\Output\OutputInterface
    */
-  private $processRunner;
+  private $output;
 
   /**
    * Constructs an instance.
    *
-   * @param \Acquia\Orca\Helper\Process\ProcessRunner $process_runner
-   *   The process runner.
+   * @param \Symfony\Component\Console\Output\OutputInterface $output
+   *   The output decorator.
    */
-  public function __construct(ProcessRunner $process_runner) {
-    $this->processRunner = $process_runner;
+  public function __construct(OutputInterface $output) {
+    $this->output = $output;
   }
 
   /**
@@ -39,23 +39,14 @@ class IntegratedUpgradeTestToNextMinorCiJob extends AbstractCiJob {
    * {@inheritdoc}
    */
   protected function install(CiRunOptions $options): void {
-    $this->processRunner
-      ->runOrca([
-        'fixture:init',
-        "--sut={$options->getSut()->getPackageName()}",
-      ]);
+    $this->output->writeln(sprintf('The %s job has not yet been implemented. Skipping.', $this->jobName()));
   }
 
   /**
    * {@inheritdoc}
    */
   protected function script(CiRunOptions $options): void {
-    $sut = $options->getSut();
-    $this->processRunner
-      ->runOrca([
-        'qa:automated-tests',
-        "--sut={$sut->getPackageName()}",
-      ]);
+    $this->output->writeln(sprintf('The %s job has not yet been implemented. Skipping.', $this->jobName()));
   }
 
 }

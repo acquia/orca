@@ -29,14 +29,18 @@ class LooseDeprecatedCodeScanCiJobTest extends CiJobTestBase {
     $this->processRunner
       ->runOrca([
         'fixture:init',
+        '--force',
         "--sut={$this->validSutName()}",
+        '--sut-only',
+        '--core=CURRENT_DEV',
+        '--no-site-install',
       ])
       ->shouldBeCalledOnce()
       ->willReturn(0);
     $job = $this->createJob();
 
     $job->run($this->createCiRunOptions([
-      'job' => CiJobEnum::INTEGRATED_TEST_ON_CURRENT,
+      'job' => CiJobEnum::LOOSE_DEPRECATED_CODE_SCAN,
       'phase' => CiJobPhaseEnum::INSTALL,
       'sut' => $this->validSutName(),
     ]));
@@ -44,10 +48,13 @@ class LooseDeprecatedCodeScanCiJobTest extends CiJobTestBase {
 
   public function testScript(): void {
     $this->processRunner
+      ->runOrca(['fixture:status'])
+      ->shouldBeCalledOnce()
+      ->willReturn(0);
+    $this->processRunner
       ->runOrca([
         'qa:deprecated-code-scan',
         "--sut={$this->validSutName()}",
-        '--sut-only',
       ])
       ->shouldBeCalledOnce();
     $job = $this->createJob();
