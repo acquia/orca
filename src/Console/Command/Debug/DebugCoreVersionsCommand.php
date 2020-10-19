@@ -2,10 +2,10 @@
 
 namespace Acquia\Orca\Console\Command\Debug;
 
-use Acquia\Orca\Console\Helper\StatusCode;
 use Acquia\Orca\Console\Helper\StatusTable;
-use Acquia\Orca\Drupal\DrupalCoreVersion;
-use Acquia\Orca\Drupal\DrupalCoreVersionFinder;
+use Acquia\Orca\Domain\Drupal\DrupalCoreVersionFinder;
+use Acquia\Orca\Enum\DrupalCoreVersionEnum;
+use Acquia\Orca\Enum\StatusCodeEnum;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -25,19 +25,19 @@ class DebugCoreVersionsCommand extends Command {
   /**
    * The Drupal core version finder.
    *
-   * @var \Acquia\Orca\Drupal\DrupalCoreVersionFinder
+   * @var \Acquia\Orca\Domain\Drupal\DrupalCoreVersionFinder
    */
   private $drupalCoreVersionFinder;
 
   /**
    * Constructs an instance.
    *
-   * @param \Acquia\Orca\Drupal\DrupalCoreVersionFinder $drupal_core_version_finder
+   * @param \Acquia\Orca\Domain\Drupal\DrupalCoreVersionFinder $drupal_core_version_finder
    *   The Drupal core version finder.
    */
   public function __construct(DrupalCoreVersionFinder $drupal_core_version_finder) {
     $this->drupalCoreVersionFinder = $drupal_core_version_finder;
-    parent::__construct(self::$defaultName);
+    parent::__construct();
   }
 
   /**
@@ -58,17 +58,17 @@ class DebugCoreVersionsCommand extends Command {
     $output->writeln('Getting version data via Composer. This takes a while.');
 
     $overview = [];
-    foreach (DrupalCoreVersion::values() as $version) {
+    foreach (DrupalCoreVersionEnum::values() as $version) {
       $overview[] = [
         $version,
-        $this->drupalCoreVersionFinder->getPretty(new DrupalCoreVersion($version)),
+        $this->drupalCoreVersionFinder->getPretty(new DrupalCoreVersionEnum($version)),
       ];
     }
 
     (new StatusTable($output))
       ->setRows($overview)
       ->render();
-    return StatusCode::OK;
+    return StatusCodeEnum::OK;
   }
 
 }

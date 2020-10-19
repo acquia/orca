@@ -2,8 +2,8 @@
 
 namespace Acquia\Orca\Console\Command\Fixture;
 
-use Acquia\Orca\Console\Helper\StatusCode;
-use Acquia\Orca\Fixture\FixtureResetter;
+use Acquia\Orca\Domain\Fixture\FixtureResetter;
+use Acquia\Orca\Enum\StatusCodeEnum;
 use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -33,7 +33,7 @@ class FixtureResetCommand extends Command {
   /**
    * The fixture resetter.
    *
-   * @var \Acquia\Orca\Fixture\FixtureResetter
+   * @var \Acquia\Orca\Domain\Fixture\FixtureResetter
    */
   private $fixtureResetter;
 
@@ -42,19 +42,19 @@ class FixtureResetCommand extends Command {
    *
    * @param \Acquia\Orca\Helper\Filesystem\FixturePathHandler $fixture_path_handler
    *   The fixture path handler.
-   * @param \Acquia\Orca\Fixture\FixtureResetter $fixture_backupper
+   * @param \Acquia\Orca\Domain\Fixture\FixtureResetter $fixture_backupper
    *   The fixture resetter.
    */
   public function __construct(FixturePathHandler $fixture_path_handler, FixtureResetter $fixture_backupper) {
     $this->fixture = $fixture_path_handler;
     $this->fixtureResetter = $fixture_backupper;
-    parent::__construct(self::$defaultName);
+    parent::__construct();
   }
 
   /**
    * {@inheritdoc}
    */
-  protected function configure() {
+  protected function configure(): void {
     $this
       ->setAliases(['reset'])
       ->setDescription('Resets the test fixture')
@@ -68,7 +68,7 @@ class FixtureResetCommand extends Command {
   public function execute(InputInterface $input, OutputInterface $output): int {
     if (!$this->fixture->exists()) {
       $output->writeln("Error: No fixture exists at {$this->fixture->getPath()}.");
-      return StatusCode::ERROR;
+      return StatusCodeEnum::ERROR;
     }
 
     /** @var \Symfony\Component\Console\Helper\QuestionHelper $helper */
@@ -78,11 +78,11 @@ class FixtureResetCommand extends Command {
       !$input->getOption('force')
       && ($input->getOption('no-interaction') || !$helper->ask($input, $output, $question))
     ) {
-      return StatusCode::USER_CANCEL;
+      return StatusCodeEnum::USER_CANCEL;
     }
 
     $this->fixtureResetter->reset();
-    return StatusCode::OK;
+    return StatusCodeEnum::OK;
   }
 
 }

@@ -2,9 +2,9 @@
 
 namespace Acquia\Orca\Console\Command\Fixture;
 
-use Acquia\Orca\Console\Helper\StatusCode;
-use Acquia\Orca\Fixture\FixtureCreator;
-use Acquia\Orca\Fixture\SiteInstaller;
+use Acquia\Orca\Domain\Fixture\FixtureCreator;
+use Acquia\Orca\Domain\Fixture\SiteInstaller;
+use Acquia\Orca\Enum\StatusCodeEnum;
 use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -34,7 +34,7 @@ class FixtureInstallSiteCommand extends Command {
   /**
    * The site installer.
    *
-   * @var \Acquia\Orca\Fixture\SiteInstaller
+   * @var \Acquia\Orca\Domain\Fixture\SiteInstaller
    */
   private $siteInstaller;
 
@@ -43,13 +43,13 @@ class FixtureInstallSiteCommand extends Command {
    *
    * @param \Acquia\Orca\Helper\Filesystem\FixturePathHandler $fixture_path_handler
    *   The fixture path handler.
-   * @param \Acquia\Orca\Fixture\SiteInstaller $site_installer
+   * @param \Acquia\Orca\Domain\Fixture\SiteInstaller $site_installer
    *   The site installer.
    */
   public function __construct(FixturePathHandler $fixture_path_handler, SiteInstaller $site_installer) {
     $this->fixture = $fixture_path_handler;
     $this->siteInstaller = $site_installer;
-    parent::__construct(self::$defaultName);
+    parent::__construct();
   }
 
   /**
@@ -74,7 +74,7 @@ class FixtureInstallSiteCommand extends Command {
   public function execute(InputInterface $input, OutputInterface $output): int {
     if (!$this->fixture->exists()) {
       $output->writeln("Error: No fixture exists at {$this->fixture->getPath()}.");
-      return StatusCode::ERROR;
+      return StatusCodeEnum::ERROR;
     }
 
     /** @var \Symfony\Component\Console\Helper\QuestionHelper $helper */
@@ -84,12 +84,12 @@ class FixtureInstallSiteCommand extends Command {
       !$input->getOption('force')
       && ($input->getOption('no-interaction') || !$helper->ask($input, $output, $question))
     ) {
-      return StatusCode::USER_CANCEL;
+      return StatusCodeEnum::USER_CANCEL;
     }
 
     $profile = $input->getOption('profile');
     $this->siteInstaller->install($profile);
-    return StatusCode::OK;
+    return StatusCodeEnum::OK;
   }
 
 }

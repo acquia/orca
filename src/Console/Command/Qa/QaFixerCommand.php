@@ -2,11 +2,11 @@
 
 namespace Acquia\Orca\Console\Command\Qa;
 
-use Acquia\Orca\Console\Helper\StatusCode;
+use Acquia\Orca\Domain\Tool\ComposerNormalize\ComposerNormalizeTask;
+use Acquia\Orca\Domain\Tool\Phpcbf\PhpcbfTask;
+use Acquia\Orca\Enum\PhpcsStandardEnum;
+use Acquia\Orca\Enum\StatusCodeEnum;
 use Acquia\Orca\Helper\Task\TaskRunner;
-use Acquia\Orca\Tool\ComposerNormalize\ComposerNormalizeTask;
-use Acquia\Orca\Tool\Helper\PhpcsStandard;
-use Acquia\Orca\Tool\Phpcbf\PhpcbfTask;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -23,7 +23,7 @@ class QaFixerCommand extends Command {
   /**
    * The Composer normalize task.
    *
-   * @var \Acquia\Orca\Tool\ComposerNormalize\ComposerNormalizeTask
+   * @var \Acquia\Orca\Domain\Tool\ComposerNormalize\ComposerNormalizeTask
    */
   private $composerNormalize;
 
@@ -37,7 +37,7 @@ class QaFixerCommand extends Command {
   /**
    * The PHP Code Beautifier and Fixer task.
    *
-   * @var \Acquia\Orca\Tool\Phpcbf\PhpcbfTask
+   * @var \Acquia\Orca\Domain\Tool\Phpcbf\PhpcbfTask
    */
   private $phpCodeBeautifierAndFixer;
 
@@ -65,13 +65,13 @@ class QaFixerCommand extends Command {
   /**
    * Constructs an instance.
    *
-   * @param \Acquia\Orca\Tool\ComposerNormalize\ComposerNormalizeTask $composer_normalize
+   * @param \Acquia\Orca\Domain\Tool\ComposerNormalize\ComposerNormalizeTask $composer_normalize
    *   The Composer normalize task.
    * @param string $default_phpcs_standard
    *   The default PHPCS standard.
    * @param \Symfony\Component\Filesystem\Filesystem $filesystem
    *   The filesystem.
-   * @param \Acquia\Orca\Tool\Phpcbf\PhpcbfTask $php_code_beautifier_and_fixer
+   * @param \Acquia\Orca\Domain\Tool\Phpcbf\PhpcbfTask $php_code_beautifier_and_fixer
    *   The PHP Code Beautifier and Fixer task.
    * @param \Acquia\Orca\Helper\Task\TaskRunner $task_runner
    *   The task runner.
@@ -82,7 +82,7 @@ class QaFixerCommand extends Command {
     $this->filesystem = $filesystem;
     $this->phpCodeBeautifierAndFixer = $php_code_beautifier_and_fixer;
     $this->taskRunner = $task_runner;
-    parent::__construct(self::$defaultName);
+    parent::__construct();
   }
 
   /**
@@ -98,7 +98,7 @@ class QaFixerCommand extends Command {
       ->addOption('phpcbf', NULL, InputOption::VALUE_NONE, 'Run the PHP Code Beautifier and Fixer tool')
       ->addOption('phpcs-standard', NULL, InputOption::VALUE_REQUIRED, implode(PHP_EOL, array_merge(
         ['Change the PHPCS standard used:'],
-        PhpcsStandard::commandHelp()
+        PhpcsStandardEnum::commandHelp()
       )), $this->defaultPhpcsStandard);
   }
 
@@ -109,14 +109,14 @@ class QaFixerCommand extends Command {
     $path = $input->getArgument('path');
     if (!$this->filesystem->exists($path)) {
       $output->writeln(sprintf('Error: No such path: %s.', $path));
-      return StatusCode::ERROR;
+      return StatusCodeEnum::ERROR;
     }
     try {
       $this->configureTaskRunner($input);
     }
     catch (UnexpectedValueException $e) {
       $output->writeln($e->getMessage());
-      return StatusCode::ERROR;
+      return StatusCodeEnum::ERROR;
     }
     return $this->taskRunner
       ->setPath($path)
@@ -149,13 +149,13 @@ class QaFixerCommand extends Command {
    * @param \Symfony\Component\Console\Input\InputInterface $input
    *   The command input.
    *
-   * @return \Acquia\Orca\Tool\Helper\PhpcsStandard
+   * @return \Acquia\Orca\Enum\PhpcsStandardEnum
    *   The PHPCS standard.
    */
-  private function getStandard(InputInterface $input): PhpcsStandard {
+  private function getStandard(InputInterface $input): PhpcsStandardEnum {
     $standard = $input->getOption('phpcs-standard') ?? $this->defaultPhpcsStandard;
     try {
-      $standard = new PhpcsStandard($standard);
+      $standard = new PhpcsStandardEnum($standard);
     }
     catch (UnexpectedValueException $e) {
       $error_message = sprintf('Error: Invalid value for "--phpcs-standard" option: "%s".', $standard);

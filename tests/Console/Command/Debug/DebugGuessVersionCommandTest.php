@@ -2,18 +2,18 @@
 
 namespace Acquia\Orca\Tests\Console\Command\Debug;
 
-use Acquia\Orca\Composer\VersionGuesser;
 use Acquia\Orca\Console\Command\Debug\DebugGuessVersionCommand;
-use Acquia\Orca\Console\Helper\StatusCode;
-use Acquia\Orca\Helper\Exception\FileNotFoundException;
-use Acquia\Orca\Helper\Exception\OrcaException;
-use Acquia\Orca\Helper\Exception\ParseError;
+use Acquia\Orca\Domain\Composer\Version\VersionGuesser;
+use Acquia\Orca\Enum\StatusCodeEnum;
+use Acquia\Orca\Exception\OrcaException;
+use Acquia\Orca\Exception\OrcaFileNotFoundException;
+use Acquia\Orca\Exception\OrcaParseError;
 use Acquia\Orca\Tests\Console\Command\CommandTestBase;
 use Prophecy\Argument;
 use Symfony\Component\Console\Command\Command;
 
 /**
- * @property \Acquia\Orca\Composer\VersionGuesser|\Prophecy\Prophecy\ObjectProphecy $versionGuesser
+ * @property \Acquia\Orca\Domain\Composer\Version\VersionGuesser|\Prophecy\Prophecy\ObjectProphecy $versionGuesser
  * @coversDefaultClass \Acquia\Orca\Console\Command\Debug\DebugGuessVersionCommand
  */
 class DebugGuessVersionCommandTest extends CommandTestBase {
@@ -61,7 +61,7 @@ class DebugGuessVersionCommandTest extends CommandTestBase {
     $this->executeCommand(['path' => self::SUT_PATH]);
 
     self::assertEquals("{$version}\n", $this->getDisplay(), 'Displayed correct output.');
-    self::assertEquals(StatusCode::OK, $this->getStatusCode(), 'Returned correct status code.');
+    self::assertEquals(StatusCodeEnum::OK, $this->getStatusCode(), 'Returned correct status code.');
   }
 
   public function providerExecution(): array {
@@ -83,13 +83,13 @@ class DebugGuessVersionCommandTest extends CommandTestBase {
     $this->executeCommand(['path' => self::SUT_PATH]);
 
     self::assertEquals("Error: {$exception->getMessage()}\n", $this->getDisplay(), 'Displayed correct output.');
-    self::assertEquals(StatusCode::ERROR, $this->getStatusCode(), 'Returned correct status code.');
+    self::assertEquals(StatusCodeEnum::ERROR, $this->getStatusCode(), 'Returned correct status code.');
   }
 
   public function providerExecutionWithException(): array {
     return [
-      [new FileNotFoundException('Lorem ipsum')],
-      [new ParseError('Dolor sit')],
+      [new OrcaFileNotFoundException('Lorem ipsum')],
+      [new OrcaParseError('Dolor sit')],
       [new OrcaException('Amet')],
     ];
   }

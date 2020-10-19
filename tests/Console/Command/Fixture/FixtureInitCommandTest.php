@@ -3,25 +3,25 @@
 namespace Acquia\Orca\Tests\Console\Command\Fixture;
 
 use Acquia\Orca\Console\Command\Fixture\FixtureInitCommand;
-use Acquia\Orca\Console\Helper\StatusCode;
-use Acquia\Orca\Fixture\FixtureCreator;
-use Acquia\Orca\Fixture\FixtureOptions;
-use Acquia\Orca\Fixture\FixtureOptionsFactory;
-use Acquia\Orca\Fixture\FixtureRemover;
-use Acquia\Orca\Fixture\SutPreconditionsTester;
-use Acquia\Orca\Helper\Exception\OrcaException;
-use Acquia\Orca\Helper\Exception\OrcaInvalidArgumentException;
+use Acquia\Orca\Domain\Fixture\FixtureCreator;
+use Acquia\Orca\Domain\Fixture\FixtureRemover;
+use Acquia\Orca\Domain\Fixture\SutPreconditionsTester;
+use Acquia\Orca\Enum\StatusCodeEnum;
+use Acquia\Orca\Exception\OrcaException;
+use Acquia\Orca\Exception\OrcaInvalidArgumentException;
 use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
+use Acquia\Orca\Options\FixtureOptions;
+use Acquia\Orca\Options\FixtureOptionsFactory;
 use Acquia\Orca\Tests\Console\Command\CommandTestBase;
 use Prophecy\Argument;
 use Symfony\Component\Console\Command\Command;
 
 /**
- * @property \Acquia\Orca\Fixture\FixtureCreator|\Prophecy\Prophecy\ObjectProphecy $fixtureCreator
- * @property \Acquia\Orca\Fixture\FixtureOptionsFactory|\Prophecy\Prophecy\ObjectProphecy $fixtureOptionsFactory
- * @property \Acquia\Orca\Fixture\FixtureOptions|\Prophecy\Prophecy\ObjectProphecy $fixtureOptions
- * @property \Acquia\Orca\Fixture\FixtureRemover|\Prophecy\Prophecy\ObjectProphecy $fixtureRemover
- * @property \Acquia\Orca\Fixture\SutPreconditionsTester|\Prophecy\Prophecy\ObjectProphecy $sutPreconditionsTester
+ * @property \Acquia\Orca\Domain\Fixture\FixtureCreator|\Prophecy\Prophecy\ObjectProphecy $fixtureCreator
+ * @property \Acquia\Orca\Options\FixtureOptionsFactory|\Prophecy\Prophecy\ObjectProphecy $fixtureOptionsFactory
+ * @property \Acquia\Orca\Options\FixtureOptions|\Prophecy\Prophecy\ObjectProphecy $fixtureOptions
+ * @property \Acquia\Orca\Domain\Fixture\FixtureRemover|\Prophecy\Prophecy\ObjectProphecy $fixtureRemover
+ * @property \Acquia\Orca\Domain\Fixture\SutPreconditionsTester|\Prophecy\Prophecy\ObjectProphecy $sutPreconditionsTester
  * @property \Acquia\Orca\Helper\Filesystem\FixturePathHandler|\Prophecy\Prophecy\ObjectProphecy $fixture
  *
  * @coversDefaultClass \Acquia\Orca\Console\Command\Fixture\FixtureInitCommand
@@ -93,7 +93,7 @@ class FixtureInitCommandTest extends CommandTestBase {
 
     $this->executeCommand();
 
-    self::assertEquals(StatusCode::OK, $this->getStatusCode(), 'Returned correct status code.');
+    self::assertEquals(StatusCodeEnum::OK, $this->getStatusCode(), 'Returned correct status code.');
     self::assertEquals('', $this->getDisplay(), 'Displayed correct output.');
   }
 
@@ -109,7 +109,7 @@ class FixtureInitCommandTest extends CommandTestBase {
 
     $this->executeCommand();
 
-    self::assertEquals(StatusCode::ERROR, $this->getStatusCode(), 'Returned correct status code.');
+    self::assertEquals(StatusCodeEnum::ERROR, $this->getStatusCode(), 'Returned correct status code.');
     self::assertContains("[ERROR] {$message}", $this->getDisplay(), 'Displayed correct output.');
   }
 
@@ -122,7 +122,7 @@ class FixtureInitCommandTest extends CommandTestBase {
 
     $this->executeCommand();
 
-    self::assertEquals(StatusCode::ERROR, $this->getStatusCode(), 'Returned correct status code.');
+    self::assertEquals(StatusCodeEnum::ERROR, $this->getStatusCode(), 'Returned correct status code.');
     self::assertEquals("Error: {$message}" . PHP_EOL, $this->getDisplay(), 'Displayed correct output.');
   }
 

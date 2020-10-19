@@ -3,14 +3,14 @@
 namespace Acquia\Orca\Tests\Console\Command\Fixture;
 
 use Acquia\Orca\Console\Command\Fixture\FixtureBackupCommand;
-use Acquia\Orca\Console\Helper\StatusCode;
-use Acquia\Orca\Git\Git;
+use Acquia\Orca\Domain\Git\GitFacade;
+use Acquia\Orca\Enum\StatusCodeEnum;
 use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
 use Acquia\Orca\Tests\Console\Command\CommandTestBase;
 use Symfony\Component\Console\Command\Command;
 
 /**
- * @property \Acquia\Orca\Git\Git|\Prophecy\Prophecy\ObjectProphecy $git
+ * @property \Acquia\Orca\Domain\Git\GitFacade|\Prophecy\Prophecy\ObjectProphecy $git
  * @property \Acquia\Orca\Helper\Filesystem\FixturePathHandler|\Prophecy\Prophecy\ObjectProphecy $fixture
  */
 class FixtureBackupCommandTest extends CommandTestBase {
@@ -21,7 +21,7 @@ class FixtureBackupCommandTest extends CommandTestBase {
       ->willReturn(TRUE);
     $this->fixture->getPath()
       ->willReturn(self::FIXTURE_ROOT);
-    $this->git = $this->prophesize(Git::class);
+    $this->git = $this->prophesize(GitFacade::class);
   }
 
   protected function createCommand(): Command {
@@ -39,7 +39,7 @@ class FixtureBackupCommandTest extends CommandTestBase {
       ->shouldBeCalled()
       ->willReturn($fixture_exists);
     $this->git
-      ->backupFixtureState()
+      ->backupFixtureRepo()
       ->shouldBeCalledTimes($remove_called);
 
     $this->executeCommand($args, $inputs);
@@ -50,12 +50,12 @@ class FixtureBackupCommandTest extends CommandTestBase {
 
   public function providerCommand(): array {
     return [
-      [FALSE, [], [], 0, StatusCode::ERROR, sprintf("Error: No fixture exists at %s.\n", self::FIXTURE_ROOT)],
-      [TRUE, [], ['n'], 0, StatusCode::USER_CANCEL, 'Are you sure you want to overwrite the backup of the test fixture at /var/www/orca-build? '],
-      [TRUE, [], ['y'], 1, StatusCode::OK, 'Are you sure you want to overwrite the backup of the test fixture at /var/www/orca-build? '],
-      [TRUE, ['-n' => TRUE], [], 0, StatusCode::USER_CANCEL, ''],
-      [TRUE, ['-f' => TRUE], [], 1, StatusCode::OK, ''],
-      [TRUE, ['-f' => TRUE, '-n' => TRUE], [], 1, StatusCode::OK, ''],
+      [FALSE, [], [], 0, StatusCodeEnum::ERROR, sprintf("Error: No fixture exists at %s.\n", self::FIXTURE_ROOT)],
+      [TRUE, [], ['n'], 0, StatusCodeEnum::USER_CANCEL, 'Are you sure you want to overwrite the backup of the test fixture at /var/www/orca-build? '],
+      [TRUE, [], ['y'], 1, StatusCodeEnum::OK, 'Are you sure you want to overwrite the backup of the test fixture at /var/www/orca-build? '],
+      [TRUE, ['-n' => TRUE], [], 0, StatusCodeEnum::USER_CANCEL, ''],
+      [TRUE, ['-f' => TRUE], [], 1, StatusCodeEnum::OK, ''],
+      [TRUE, ['-f' => TRUE, '-n' => TRUE], [], 1, StatusCodeEnum::OK, ''],
     ];
   }
 

@@ -16,6 +16,7 @@
 
   <file>.</file>
 
+  <exclude-pattern>.idea/</exclude-pattern>
   <exclude-pattern>docroot/</exclude-pattern>
   <exclude-pattern>vendor/</exclude-pattern>
   <exclude-pattern>var/</exclude-pattern>

@@ -3,19 +3,19 @@
 namespace Acquia\Orca\Tests\Console\Command\Fixture;
 
 use Acquia\Orca\Console\Command\Fixture\FixtureRmCommand;
-use Acquia\Orca\Console\Helper\StatusCode;
-use Acquia\Orca\Fixture\FixtureRemover;
+use Acquia\Orca\Domain\Fixture\FixtureRemover;
+use Acquia\Orca\Enum\StatusCodeEnum;
 use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
 use Acquia\Orca\Tests\Console\Command\CommandTestBase;
 use Symfony\Component\Console\Command\Command;
 
 /**
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Helper\Filesystem\FixturePathHandler $fixture
- * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Fixture\FixtureRemover $fixtureRemover
+ * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Domain\Fixture\FixtureRemover $fixtureRemover
  */
 class FixtureRmCommandTest extends CommandTestBase {
 
-  protected function setUp() {
+  protected function setUp(): void {
     $this->fixtureRemover = $this->prophesize(FixtureRemover::class);
     $this->fixture = $this->prophesize(FixturePathHandler::class);
     $this->fixture->exists()
@@ -50,12 +50,12 @@ class FixtureRmCommandTest extends CommandTestBase {
 
   public function providerCommand(): array {
     return [
-      [FALSE, [], [], 0, StatusCode::ERROR, sprintf("Error: No fixture exists at %s.\n", self::FIXTURE_ROOT)],
-      [TRUE, [], ['n'], 0, StatusCode::USER_CANCEL, 'Are you sure you want to remove the test fixture at /var/www/orca-build? '],
-      [TRUE, [], ['y'], 1, StatusCode::OK, 'Are you sure you want to remove the test fixture at /var/www/orca-build? '],
-      [TRUE, ['-n' => TRUE], [], 0, StatusCode::USER_CANCEL, ''],
-      [TRUE, ['-f' => TRUE], [], 1, StatusCode::OK, ''],
-      [TRUE, ['-f' => TRUE, '-n' => TRUE], [], 1, StatusCode::OK, ''],
+      [FALSE, [], [], 0, StatusCodeEnum::ERROR, sprintf("Error: No fixture exists at %s.\n", self::FIXTURE_ROOT)],
+      [TRUE, [], ['n'], 0, StatusCodeEnum::USER_CANCEL, 'Are you sure you want to remove the test fixture at /var/www/orca-build? '],
+      [TRUE, [], ['y'], 1, StatusCodeEnum::OK, 'Are you sure you want to remove the test fixture at /var/www/orca-build? '],
+      [TRUE, ['-n' => TRUE], [], 0, StatusCodeEnum::USER_CANCEL, ''],
+      [TRUE, ['-f' => TRUE], [], 1, StatusCodeEnum::OK, ''],
+      [TRUE, ['-f' => TRUE, '-n' => TRUE], [], 1, StatusCodeEnum::OK, ''],
     ];
   }
 

@@ -2,8 +2,8 @@
 
 namespace Acquia\Orca\Console\Command\Fixture;
 
-use Acquia\Orca\Console\Helper\StatusCode;
-use Acquia\Orca\Git\Git;
+use Acquia\Orca\Domain\Git\GitFacade;
+use Acquia\Orca\Enum\StatusCodeEnum;
 use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -33,7 +33,7 @@ class FixtureBackupCommand extends Command {
   /**
    * The Git facade.
    *
-   * @var \Acquia\Orca\Git\Git
+   * @var \Acquia\Orca\Domain\Git\GitFacade
    */
   private $git;
 
@@ -42,19 +42,19 @@ class FixtureBackupCommand extends Command {
    *
    * @param \Acquia\Orca\Helper\Filesystem\FixturePathHandler $fixture_path_handler
    *   The fixture path handler.
-   * @param \Acquia\Orca\Git\Git $git
+   * @param \Acquia\Orca\Domain\Git\GitFacade $git
    *   The Git facade.
    */
-  public function __construct(FixturePathHandler $fixture_path_handler, Git $git) {
+  public function __construct(FixturePathHandler $fixture_path_handler, GitFacade $git) {
     $this->fixture = $fixture_path_handler;
     $this->git = $git;
-    parent::__construct(self::$defaultName);
+    parent::__construct();
   }
 
   /**
    * {@inheritdoc}
    */
-  protected function configure() {
+  protected function configure(): void {
     $this
       ->setAliases(['backup'])
       ->setDescription('Backs up the test fixture')
@@ -68,7 +68,7 @@ class FixtureBackupCommand extends Command {
   public function execute(InputInterface $input, OutputInterface $output): int {
     if (!$this->fixture->exists()) {
       $output->writeln("Error: No fixture exists at {$this->fixture->getPath()}.");
-      return StatusCode::ERROR;
+      return StatusCodeEnum::ERROR;
     }
 
     /** @var \Symfony\Component\Console\Helper\QuestionHelper $helper */
@@ -78,11 +78,11 @@ class FixtureBackupCommand extends Command {
       !$input->getOption('force')
       && ($input->getOption('no-interaction') || !$helper->ask($input, $output, $question))
     ) {
-      return StatusCode::USER_CANCEL;
+      return StatusCodeEnum::USER_CANCEL;
     }
 
-    $this->git->backupFixtureState();
-    return StatusCode::OK;
+    $this->git->backupFixtureRepo();
+    return StatusCodeEnum::OK;
   }
 
 }

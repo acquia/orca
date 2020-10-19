@@ -4,25 +4,24 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d91b6375bf70c3bb6848882f9867eb94",
+    "content-hash": "8cd8c336c15084c305a0e099cec82cfb",
     "packages": [
         {
             "name": "acquia/coding-standards",
-            "version": "v0.4.3",
+            "version": "v0.5.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/acquia/coding-standards-php.git",
-                "reference": "8a0cbe436775dd945b2f51856b0ddfee5f3fd800"
+                "reference": "26ca99f80131b1bd7cea22faf13f0767f68313ea"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/acquia/coding-standards-php/zipball/8a0cbe436775dd945b2f51856b0ddfee5f3fd800",
-                "reference": "8a0cbe436775dd945b2f51856b0ddfee5f3fd800",
+                "url": "https://api.github.com/repos/acquia/coding-standards-php/zipball/26ca99f80131b1bd7cea22faf13f0767f68313ea",
+                "reference": "26ca99f80131b1bd7cea22faf13f0767f68313ea",
                 "shasum": ""
             },
             "require": {
                 "drupal/coder": "^8.3.7",
-                "pheromone/phpcs-security-audit": "^2.0",
                 "phpcompatibility/php-compatibility": "^9.0",
                 "slevomat/coding-standard": "^5.0",
                 "squizlabs/php_codesniffer": "^3"
@@ -59,7 +58,7 @@
                 "phpcs",
                 "standards"
             ],
-            "time": "2020-03-20T20:14:11+00:00"
+            "time": "2020-08-19T15:59:18+00:00"
         },
         {
             "name": "behat/mink",
@@ -1777,43 +1776,6 @@
             ],
             "description": "Library for handling version information and constraints",
             "time": "2017-03-05T17:38:23+00:00"
-        },
-        {
-            "name": "pheromone/phpcs-security-audit",
-            "version": "2.0.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/FloeDesignTechnologies/phpcs-security-audit.git",
-                "reference": "68a6c53a57156a5efb2073b1eb3f2d79a46c9dc2"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/FloeDesignTechnologies/phpcs-security-audit/zipball/68a6c53a57156a5efb2073b1eb3f2d79a46c9dc2",
-                "reference": "68a6c53a57156a5efb2073b1eb3f2d79a46c9dc2",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.4",
-                "squizlabs/php_codesniffer": ">3.0"
-            },
-            "type": "phpcodesniffer-standard",
-            "autoload": {
-                "psr-4": {
-                    "PHPCS_SecurityAudit\\": "Security/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "GPL-3.0-or-later"
-            ],
-            "authors": [
-                {
-                    "name": "Jonathan Marcil",
-                    "homepage": "https://twitter.com/jonathanmarcil"
-                }
-            ],
-            "description": "phpcs-security-audit is a set of PHP_CodeSniffer rules that finds vulnerabilities and weaknesses related to security in PHP code",
-            "time": "2019-08-05T19:34:55+00:00"
         },
         {
             "name": "php-coveralls/php-coveralls",
@@ -6646,6 +6608,43 @@
                 "git"
             ],
             "time": "2019-12-09T09:49:20+00:00"
+        },
+        {
+            "name": "pheromone/phpcs-security-audit",
+            "version": "2.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/FloeDesignTechnologies/phpcs-security-audit.git",
+                "reference": "68a6c53a57156a5efb2073b1eb3f2d79a46c9dc2"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/FloeDesignTechnologies/phpcs-security-audit/zipball/68a6c53a57156a5efb2073b1eb3f2d79a46c9dc2",
+                "reference": "68a6c53a57156a5efb2073b1eb3f2d79a46c9dc2",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.4",
+                "squizlabs/php_codesniffer": ">3.0"
+            },
+            "type": "phpcodesniffer-standard",
+            "autoload": {
+                "psr-4": {
+                    "PHPCS_SecurityAudit\\": "Security/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-3.0-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "Jonathan Marcil",
+                    "homepage": "https://twitter.com/jonathanmarcil"
+                }
+            ],
+            "description": "phpcs-security-audit is a set of PHP_CodeSniffer rules that finds vulnerabilities and weaknesses related to security in PHP code",
+            "time": "2019-08-05T19:34:55+00:00"
         },
         {
             "name": "sensiolabs/security-checker",

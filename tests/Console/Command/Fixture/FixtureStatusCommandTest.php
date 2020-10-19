@@ -3,19 +3,19 @@
 namespace Acquia\Orca\Tests\Console\Command\Fixture;
 
 use Acquia\Orca\Console\Command\Fixture\FixtureStatusCommand;
-use Acquia\Orca\Console\Helper\StatusCode;
-use Acquia\Orca\Fixture\FixtureInspector;
+use Acquia\Orca\Domain\Fixture\FixtureInspector;
+use Acquia\Orca\Enum\StatusCodeEnum;
 use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
 use Acquia\Orca\Tests\Console\Command\CommandTestBase;
 use Symfony\Component\Console\Command\Command;
 
 /**
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Helper\Filesystem\FixturePathHandler $fixture
- * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Fixture\FixtureInspector $fixtureInspector
+ * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Domain\Fixture\FixtureInspector $fixtureInspector
  */
 class FixtureStatusCommandTest extends CommandTestBase {
 
-  protected function setUp() {
+  protected function setUp(): void {
     $this->fixture = $this->prophesize(FixturePathHandler::class);
     $this->fixture->exists()
       ->willReturn(TRUE);
@@ -54,8 +54,8 @@ class FixtureStatusCommandTest extends CommandTestBase {
 
   public function providerCommand(): array {
     return [
-      [FALSE, 0, StatusCode::ERROR, sprintf("Error: No fixture exists at %s.\n", self::FIXTURE_ROOT)],
-      [TRUE, 1, StatusCode::OK, "\n Key one : Value one \n Key two : Value two \n\n"],
+      [FALSE, 0, StatusCodeEnum::ERROR, sprintf("Error: No fixture exists at %s.\n", self::FIXTURE_ROOT)],
+      [TRUE, 1, StatusCodeEnum::OK, "\n Key one : Value one \n Key two : Value two \n\n"],
     ];
   }
 

@@ -3,9 +3,9 @@
 namespace Acquia\Orca\Tests\Console\Command\Fixture;
 
 use Acquia\Orca\Console\Command\Fixture\FixtureEnableExtensionsCommand;
-use Acquia\Orca\Console\Helper\StatusCode;
-use Acquia\Orca\Fixture\CompanyExtensionEnabler;
-use Acquia\Orca\Helper\Exception\OrcaException;
+use Acquia\Orca\Domain\Fixture\CompanyExtensionEnabler;
+use Acquia\Orca\Enum\StatusCodeEnum;
+use Acquia\Orca\Exception\OrcaException;
 use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
 use Acquia\Orca\Tests\Console\Command\CommandTestBase;
 use Symfony\Component\Console\Command\Command;
@@ -16,7 +16,7 @@ use Symfony\Component\Console\Command\Command;
  */
 class FixtureEnableExtensionsCommandTest extends CommandTestBase {
 
-  protected function setUp() {
+  protected function setUp(): void {
     $this->companyExtensionEnabler = $this->prophesize(CompanyExtensionEnabler::class);
     $this->fixture_path_handler = $this->prophesize(FixturePathHandler::class);
     $this->fixture_path_handler->exists()
@@ -56,9 +56,9 @@ class FixtureEnableExtensionsCommandTest extends CommandTestBase {
 
   public function providerCommand(): array {
     return [
-      [FALSE, 0, FALSE, StatusCode::ERROR, sprintf("Error: No fixture exists at %s.\n", self::FIXTURE_ROOT)],
-      [TRUE, 1, new OrcaException('Oops.'), StatusCode::ERROR, "\n [ERROR] Oops.                                                                  \n\n"],
-      [TRUE, 1, FALSE, StatusCode::OK, ''],
+      [FALSE, 0, FALSE, StatusCodeEnum::ERROR, sprintf("Error: No fixture exists at %s.\n", self::FIXTURE_ROOT)],
+      [TRUE, 1, new OrcaException('Oops.'), StatusCodeEnum::ERROR, "\n [ERROR] Oops.                                                                  \n\n"],
+      [TRUE, 1, FALSE, StatusCodeEnum::OK, ''],
     ];
   }
 

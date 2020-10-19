@@ -17,7 +17,7 @@ class TelemetryClientTest extends TestCase {
 
   private $telemetryIsEnabled;
 
-  public function setUp() {
+  protected function setUp(): void {
     $this->amplitude = $this->prophesize(Amplitude::class);
   }
 

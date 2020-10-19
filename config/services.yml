@@ -42,6 +42,10 @@ services:
 
   Composer\Config: ~
 
+  Composer\DependencyResolver\Pool:
+    arguments:
+      $minimumStability: "dev"
+
   Composer\Package\Version\VersionGuesser: ~
 
   Composer\Semver\VersionParser: ~

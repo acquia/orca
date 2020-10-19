@@ -41,11 +41,6 @@ yes | pecl install yaml
 # Display PHP information.
 php -i
 
-# Install Composer optimizations for faster builds.
-composer global require \
-  hirak/prestissimo \
-  zaporylie/composer-drupal-optimizations
-
 # Install Travis command line client.
 gem install travis
 

@@ -2,8 +2,8 @@
 
 namespace Acquia\Orca\Console\Command\Fixture;
 
-use Acquia\Orca\Console\Helper\StatusCode;
-use Acquia\Orca\Fixture\CompanyExtensionEnabler;
+use Acquia\Orca\Domain\Fixture\CompanyExtensionEnabler;
+use Acquia\Orca\Enum\StatusCodeEnum;
 use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
 use Exception;
 use Symfony\Component\Console\Command\Command;
@@ -26,7 +26,7 @@ class FixtureEnableExtensionsCommand extends Command {
   /**
    * The company extension enabler.
    *
-   * @var \Acquia\Orca\Fixture\CompanyExtensionEnabler
+   * @var \Acquia\Orca\Domain\Fixture\CompanyExtensionEnabler
    */
   private $companyExtensionEnabler;
 
@@ -40,7 +40,7 @@ class FixtureEnableExtensionsCommand extends Command {
   /**
    * Constructs an instance.
    *
-   * @param \Acquia\Orca\Fixture\CompanyExtensionEnabler $company_extension_enabler
+   * @param \Acquia\Orca\Domain\Fixture\CompanyExtensionEnabler $company_extension_enabler
    *   The company extension enabler.
    * @param \Acquia\Orca\Helper\Filesystem\FixturePathHandler $fixture_path_handler
    *   The fixture path handler.
@@ -48,13 +48,13 @@ class FixtureEnableExtensionsCommand extends Command {
   public function __construct(CompanyExtensionEnabler $company_extension_enabler, FixturePathHandler $fixture_path_handler) {
     $this->companyExtensionEnabler = $company_extension_enabler;
     $this->fixture = $fixture_path_handler;
-    parent::__construct(self::$defaultName);
+    parent::__construct();
   }
 
   /**
    * {@inheritdoc}
    */
-  protected function configure() {
+  protected function configure(): void {
     $this
       ->setAliases(['enexts'])
       ->setDescription('Enables all company Drupal extensions');
@@ -66,7 +66,7 @@ class FixtureEnableExtensionsCommand extends Command {
   public function execute(InputInterface $input, OutputInterface $output): int {
     if (!$this->fixture->exists()) {
       $output->writeln("Error: No fixture exists at {$this->fixture->getPath()}.");
-      return StatusCode::ERROR;
+      return StatusCodeEnum::ERROR;
     }
 
     try {
@@ -75,10 +75,10 @@ class FixtureEnableExtensionsCommand extends Command {
     catch (Exception $e) {
       $io = new SymfonyStyle($input, $output);
       $io->error($e->getMessage());
-      return StatusCode::ERROR;
+      return StatusCodeEnum::ERROR;
     }
 
-    return StatusCode::OK;
+    return StatusCodeEnum::OK;
   }
 
 }

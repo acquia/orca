@@ -2,15 +2,15 @@
 
 namespace Acquia\Orca\Console\Command\Fixture;
 
-use Acquia\Orca\Console\Helper\StatusCode;
-use Acquia\Orca\Drupal\DrupalCoreVersion;
-use Acquia\Orca\Fixture\FixtureCreator;
-use Acquia\Orca\Fixture\FixtureOptionsFactory;
-use Acquia\Orca\Fixture\FixtureRemover;
-use Acquia\Orca\Fixture\SutPreconditionsTester;
-use Acquia\Orca\Helper\Exception\OrcaException;
-use Acquia\Orca\Helper\Exception\OrcaInvalidArgumentException;
+use Acquia\Orca\Domain\Fixture\FixtureCreator;
+use Acquia\Orca\Domain\Fixture\FixtureRemover;
+use Acquia\Orca\Domain\Fixture\SutPreconditionsTester;
+use Acquia\Orca\Enum\DrupalCoreVersionEnum;
+use Acquia\Orca\Enum\StatusCodeEnum;
+use Acquia\Orca\Exception\OrcaException;
+use Acquia\Orca\Exception\OrcaInvalidArgumentException;
 use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
+use Acquia\Orca\Options\FixtureOptionsFactory;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -39,43 +39,43 @@ class FixtureInitCommand extends Command {
   /**
    * The fixture creator.
    *
-   * @var \Acquia\Orca\Fixture\FixtureCreator
+   * @var \Acquia\Orca\Domain\Fixture\FixtureCreator
    */
   private $fixtureCreator;
 
   /**
    * The fixture options factory.
    *
-   * @var \Acquia\Orca\Fixture\FixtureOptionsFactory
+   * @var \Acquia\Orca\Options\FixtureOptionsFactory
    */
   private $fixtureOptionsFactory;
 
   /**
    * The fixture remover.
    *
-   * @var \Acquia\Orca\Fixture\FixtureRemover
+   * @var \Acquia\Orca\Domain\Fixture\FixtureRemover
    */
   private $fixtureRemover;
 
   /**
    * The SUT preconditions tester.
    *
-   * @var \Acquia\Orca\Fixture\SutPreconditionsTester
+   * @var \Acquia\Orca\Domain\Fixture\SutPreconditionsTester
    */
   private $sutPreconditionsTester;
 
   /**
    * Constructs an instance.
    *
-   * @param \Acquia\Orca\Fixture\FixtureOptionsFactory $fixture_options_factory
+   * @param \Acquia\Orca\Options\FixtureOptionsFactory $fixture_options_factory
    *   The fixture options factory.
    * @param \Acquia\Orca\Helper\Filesystem\FixturePathHandler $fixture_path_handler
    *   The fixture path handler.
-   * @param \Acquia\Orca\Fixture\FixtureCreator $fixture_creator
+   * @param \Acquia\Orca\Domain\Fixture\FixtureCreator $fixture_creator
    *   The fixture creator.
-   * @param \Acquia\Orca\Fixture\FixtureRemover $fixture_remover
+   * @param \Acquia\Orca\Domain\Fixture\FixtureRemover $fixture_remover
    *   The fixture remover.
-   * @param \Acquia\Orca\Fixture\SutPreconditionsTester $sut_preconditions_tester
+   * @param \Acquia\Orca\Domain\Fixture\SutPreconditionsTester $sut_preconditions_tester
    *   The SUT preconditions tester.
    */
   public function __construct(FixtureOptionsFactory $fixture_options_factory, FixturePathHandler $fixture_path_handler, FixtureCreator $fixture_creator, FixtureRemover $fixture_remover, SutPreconditionsTester $sut_preconditions_tester) {
@@ -84,7 +84,7 @@ class FixtureInitCommand extends Command {
     $this->fixtureOptionsFactory = $fixture_options_factory;
     $this->fixtureRemover = $fixture_remover;
     $this->sutPreconditionsTester = $sut_preconditions_tester;
-    parent::__construct(self::$defaultName);
+    parent::__construct();
   }
 
   /**
@@ -107,9 +107,9 @@ class FixtureInitCommand extends Command {
       ->addOption('bare', NULL, InputOption::VALUE_NONE, 'Omit all non-required company packages')
       ->addOption('core', NULL, InputOption::VALUE_REQUIRED, implode(PHP_EOL, array_merge(
         ['Change the version of Drupal core installed:'],
-        DrupalCoreVersion::commandHelp(),
+        DrupalCoreVersionEnum::commandHelp(),
         ['- Any version string Composer understands, see https://getcomposer.org/doc/articles/versions.md']
-      )), DrupalCoreVersion::CURRENT_RECOMMENDED)
+      )), DrupalCoreVersionEnum::CURRENT_RECOMMENDED)
       ->addOption('dev', NULL, InputOption::VALUE_NONE, 'Use dev versions of company packages')
       ->addOption('profile', NULL, InputOption::VALUE_REQUIRED, 'The Drupal installation profile to use, e.g., "minimal". ("orca" is a pseudo-profile based on "minimal", with the Toolbar module enabled and Seven as the admin theme)', FixtureCreator::DEFAULT_PROFILE)
 
@@ -148,7 +148,7 @@ class FixtureInitCommand extends Command {
     }
     catch (OrcaInvalidArgumentException $e) {
       $output->writeln("Error: {$e->getMessage()}");
-      return StatusCode::ERROR;
+      return StatusCodeEnum::ERROR;
     }
 
     try {
@@ -159,7 +159,7 @@ class FixtureInitCommand extends Command {
             "Error: Fixture already exists at {$this->fixture->getPath()}.",
             'Hint: Use the "--force" option to remove it and proceed.',
           ]);
-          return StatusCode::ERROR;
+          return StatusCodeEnum::ERROR;
         }
         $this->fixtureRemover->remove();
       }
@@ -168,10 +168,10 @@ class FixtureInitCommand extends Command {
     catch (OrcaException $e) {
       (new SymfonyStyle($input, $output))
         ->error($e->getMessage());
-      return StatusCode::ERROR;
+      return StatusCodeEnum::ERROR;
     }
 
-    return StatusCode::OK;
+    return StatusCodeEnum::OK;
   }
 
   /**
@@ -180,7 +180,7 @@ class FixtureInitCommand extends Command {
    * @param string|string[]|bool|null $sut
    *   The SUT.
    *
-   * @throws \Acquia\Orca\Helper\Exception\OrcaException
+   * @throws \Acquia\Orca\Exception\OrcaException
    *   If preconditions are not satisfied.
    */
   private function testPreconditions($sut): void {

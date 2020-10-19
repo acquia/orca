@@ -2,11 +2,10 @@
 
 namespace Acquia\Orca\Console\Command\Qa;
 
-use Acquia\Orca\Console\Helper\StatusCode;
+use Acquia\Orca\Domain\Package\PackageManager;
+use Acquia\Orca\Domain\Tool\Phpstan\PhpstanTask;
+use Acquia\Orca\Enum\StatusCodeEnum;
 use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
-use Acquia\Orca\Helper\Task\TaskRunner;
-use Acquia\Orca\Package\PackageManager;
-use Acquia\Orca\Tool\Phpstan\PhpstanTask;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -41,14 +40,14 @@ class QaDeprecatedCodeScanCommand extends Command {
   /**
    * The package manager.
    *
-   * @var \Acquia\Orca\Package\PackageManager
+   * @var \Acquia\Orca\Domain\Package\PackageManager
    */
   private $packageManager;
 
   /**
    * The PhpStan task.
    *
-   * @var \Acquia\Orca\Tool\Phpstan\PhpstanTask
+   * @var \Acquia\Orca\Domain\Tool\Phpstan\PhpstanTask
    */
   private $phpstan;
 
@@ -60,30 +59,20 @@ class QaDeprecatedCodeScanCommand extends Command {
   private $sut;
 
   /**
-   * The task runner.
-   *
-   * @var \Acquia\Orca\Helper\Task\TaskRunner
-   */
-  private $taskRunner;
-
-  /**
    * Constructs an instance.
    *
    * @param \Acquia\Orca\Helper\Filesystem\FixturePathHandler $fixture_path_handler
    *   The fixture path handler.
-   * @param \Acquia\Orca\Package\PackageManager $package_manager
+   * @param \Acquia\Orca\Domain\Package\PackageManager $package_manager
    *   The package manager.
-   * @param \Acquia\Orca\Tool\Phpstan\PhpstanTask $phpstan
+   * @param \Acquia\Orca\Domain\Tool\Phpstan\PhpstanTask $phpstan
    *   The PhpStan task.
-   * @param \Acquia\Orca\Helper\Task\TaskRunner $task_runner
-   *   The task runner.
    */
-  public function __construct(FixturePathHandler $fixture_path_handler, PackageManager $package_manager, PhpstanTask $phpstan, TaskRunner $task_runner) {
+  public function __construct(FixturePathHandler $fixture_path_handler, PackageManager $package_manager, PhpstanTask $phpstan) {
     $this->fixture = $fixture_path_handler;
     $this->packageManager = $package_manager;
     $this->phpstan = $phpstan;
-    $this->taskRunner = clone($task_runner);
-    parent::__construct(self::$defaultName);
+    parent::__construct();
   }
 
   /**
@@ -108,7 +97,7 @@ class QaDeprecatedCodeScanCommand extends Command {
     $this->contrib = $input->getOption('contrib');
 
     if (!$this->isValidInput($output)) {
-      return StatusCode::ERROR;
+      return StatusCodeEnum::ERROR;
     }
 
     if (!$this->fixture->exists()) {
@@ -116,7 +105,7 @@ class QaDeprecatedCodeScanCommand extends Command {
         "Error: No fixture exists at {$this->fixture->getPath()}.",
         'Hint: Use the "fixture:init" command to create one.',
       ]);
-      return StatusCode::ERROR;
+      return StatusCodeEnum::ERROR;
     }
 
     if ($this->sut) {

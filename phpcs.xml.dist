@@ -13,6 +13,7 @@
 
   <file>.</file>
 
+  <exclude-pattern>.idea/</exclude-pattern>
   <exclude-pattern>var/</exclude-pattern>
   <exclude-pattern>vendor/</exclude-pattern>
 

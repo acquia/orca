@@ -2,8 +2,8 @@
 
 namespace Acquia\Orca\Console\Command\Fixture;
 
-use Acquia\Orca\Console\Helper\StatusCode;
-use Acquia\Orca\Fixture\FixtureRemover;
+use Acquia\Orca\Domain\Fixture\FixtureRemover;
+use Acquia\Orca\Enum\StatusCodeEnum;
 use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -33,7 +33,7 @@ class FixtureRmCommand extends Command {
   /**
    * The fixture remover.
    *
-   * @var \Acquia\Orca\Fixture\FixtureRemover
+   * @var \Acquia\Orca\Domain\Fixture\FixtureRemover
    */
   private $fixtureRemover;
 
@@ -42,13 +42,13 @@ class FixtureRmCommand extends Command {
    *
    * @param \Acquia\Orca\Helper\Filesystem\FixturePathHandler $fixture_path_handler
    *   The fixture path handler.
-   * @param \Acquia\Orca\Fixture\FixtureRemover $fixture_remover
+   * @param \Acquia\Orca\Domain\Fixture\FixtureRemover $fixture_remover
    *   The fixture remover.
    */
   public function __construct(FixturePathHandler $fixture_path_handler, FixtureRemover $fixture_remover) {
     $this->fixture = $fixture_path_handler;
     $this->fixtureRemover = $fixture_remover;
-    parent::__construct(self::$defaultName);
+    parent::__construct();
   }
 
   /**
@@ -68,7 +68,7 @@ class FixtureRmCommand extends Command {
   public function execute(InputInterface $input, OutputInterface $output): int {
     if (!$this->fixture->exists()) {
       $output->writeln("Error: No fixture exists at {$this->fixture->getPath()}.");
-      return StatusCode::ERROR;
+      return StatusCodeEnum::ERROR;
     }
 
     /** @var \Symfony\Component\Console\Helper\QuestionHelper $helper */
@@ -78,11 +78,11 @@ class FixtureRmCommand extends Command {
       !$input->getOption('force')
       && ($input->getOption('no-interaction') || !$helper->ask($input, $output, $question))
     ) {
-      return StatusCode::USER_CANCEL;
+      return StatusCodeEnum::USER_CANCEL;
     }
 
     $this->fixtureRemover->remove();
-    return StatusCode::OK;
+    return StatusCodeEnum::OK;
   }
 
 }

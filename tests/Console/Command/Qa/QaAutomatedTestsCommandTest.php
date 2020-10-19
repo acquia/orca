@@ -3,23 +3,23 @@
 namespace Acquia\Orca\Tests\Console\Command\Qa;
 
 use Acquia\Orca\Console\Command\Qa\QaAutomatedTestsCommand;
-use Acquia\Orca\Console\Helper\StatusCode;
-use Acquia\Orca\Helper\Exception\OrcaException;
+use Acquia\Orca\Domain\Package\PackageManager;
+use Acquia\Orca\Domain\Tool\TestRunner;
+use Acquia\Orca\Enum\StatusCodeEnum;
+use Acquia\Orca\Exception\OrcaException;
 use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
-use Acquia\Orca\Package\PackageManager;
 use Acquia\Orca\Tests\Console\Command\CommandTestBase;
-use Acquia\Orca\Tool\TestRunner;
 use Symfony\Component\Console\Command\Command;
 
 /**
- * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Server\ChromeDriverServer $chromedriver
+ * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Domain\Server\ChromeDriverServer $chromedriver
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Helper\Clock $clock
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Helper\Filesystem\FixturePathHandler $fixture
- * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Tool\Phpunit\PhpUnitTask $phpunit
- * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Package\PackageManager $packageManager
+ * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Domain\Tool\Phpunit\PhpUnitTask $phpunit
+ * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Domain\Package\PackageManager $packageManager
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Helper\Task\TaskRunner $taskRunner
- * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Tool\TestRunner $testRunner
- * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Server\WebServer $webServer
+ * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Domain\Tool\TestRunner $testRunner
+ * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Domain\Server\WebServer $webServer
  */
 class QaAutomatedTestsCommandTest extends CommandTestBase {
 
@@ -78,14 +78,14 @@ class QaAutomatedTestsCommandTest extends CommandTestBase {
 
   public function providerCommand(): array {
     return [
-      [FALSE, [], ['Fixture::exists'], 0, StatusCode::ERROR, sprintf("Error: No fixture exists at %s.\nHint: Use the \"fixture:init\" command to create one.\n", self::FIXTURE_ROOT)],
-      [TRUE, [], ['Fixture::exists', 'run'], 0, StatusCode::OK, ''],
-      [TRUE, ['--sut' => self::INVALID_PACKAGE], ['PackageManager::exists'], 0, StatusCode::ERROR, sprintf("Error: Invalid value for \"--sut\" option: \"%s\".\n", self::INVALID_PACKAGE)],
-      [TRUE, ['--sut' => self::VALID_PACKAGE], ['PackageManager::exists', 'Fixture::exists', 'run', 'setSut'], 0, StatusCode::OK, ''],
-      [TRUE, ['--sut' => self::VALID_PACKAGE, '--sut-only' => TRUE], ['PackageManager::exists', 'Fixture::exists', 'run', 'setSut', 'setSutOnly'], 0, StatusCode::OK, ''],
-      [TRUE, ['--no-servers' => TRUE], ['Fixture::exists', 'run', 'setRunServers'], 0, StatusCode::OK, ''],
-      [TRUE, [], ['Fixture::exists', 'run'], 1, StatusCode::ERROR, ''],
-      [TRUE, ['--sut-only' => TRUE], [], 0, StatusCode::ERROR, "Error: Cannot run SUT-only tests without a SUT.\nHint: Use the \"--sut\" option to specify the SUT.\n"],
+      [FALSE, [], ['Fixture::exists'], 0, StatusCodeEnum::ERROR, sprintf("Error: No fixture exists at %s.\nHint: Use the \"fixture:init\" command to create one.\n", self::FIXTURE_ROOT)],
+      [TRUE, [], ['Fixture::exists', 'run'], 0, StatusCodeEnum::OK, ''],
+      [TRUE, ['--sut' => self::INVALID_PACKAGE], ['PackageManager::exists'], 0, StatusCodeEnum::ERROR, sprintf("Error: Invalid value for \"--sut\" option: \"%s\".\n", self::INVALID_PACKAGE)],
+      [TRUE, ['--sut' => self::VALID_PACKAGE], ['PackageManager::exists', 'Fixture::exists', 'run', 'setSut'], 0, StatusCodeEnum::OK, ''],
+      [TRUE, ['--sut' => self::VALID_PACKAGE, '--sut-only' => TRUE], ['PackageManager::exists', 'Fixture::exists', 'run', 'setSut', 'setSutOnly'], 0, StatusCodeEnum::OK, ''],
+      [TRUE, ['--no-servers' => TRUE], ['Fixture::exists', 'run', 'setRunServers'], 0, StatusCodeEnum::OK, ''],
+      [TRUE, [], ['Fixture::exists', 'run'], 1, StatusCodeEnum::ERROR, ''],
+      [TRUE, ['--sut-only' => TRUE], [], 0, StatusCodeEnum::ERROR, "Error: Cannot run SUT-only tests without a SUT.\nHint: Use the \"--sut\" option to specify the SUT.\n"],
     ];
   }
 

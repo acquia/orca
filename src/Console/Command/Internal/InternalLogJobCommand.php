@@ -2,9 +2,9 @@
 
 namespace Acquia\Orca\Console\Command\Internal;
 
-use Acquia\Orca\Console\Helper\StatusCode;
+use Acquia\Orca\Enum\StatusCodeEnum;
+use Acquia\Orca\Enum\TelemetryEventNameEnum;
 use Acquia\Orca\Helper\Log\TelemetryClient;
-use Acquia\Orca\Helper\Log\TelemetryEventName;
 use Acquia\Orca\Helper\Log\TelemetryEventPropertiesBuilder;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -48,7 +48,7 @@ class InternalLogJobCommand extends Command {
   public function __construct(TelemetryClient $telemetry_client, TelemetryEventPropertiesBuilder $telemetry_event_properties_builder) {
     $this->telemetryClient = $telemetry_client;
     $this->telemetryEventPropertiesBuilder = $telemetry_event_properties_builder;
-    parent::__construct(self::$defaultName);
+    parent::__construct();
   }
 
   /**
@@ -74,7 +74,7 @@ class InternalLogJobCommand extends Command {
         'Notice: Nothing logged. Telemetry is disabled.',
         'Hint: https://github.com/acquia/orca/blob/master/docs/advanced-usage.md#ORCA_TELEMETRY_ENABLE',
       ]);
-      return StatusCode::OK;
+      return StatusCodeEnum::OK;
     }
 
     $name = $this->getEventName((bool) $input->getOption('test'));
@@ -82,12 +82,12 @@ class InternalLogJobCommand extends Command {
 
     if ($simulate) {
       $output->write(print_r($properties, TRUE));
-      return StatusCode::OK;
+      return StatusCodeEnum::OK;
     }
 
     $this->telemetryClient->logEvent($name->getValue(), $properties);
 
-    return StatusCode::OK;
+    return StatusCodeEnum::OK;
   }
 
   /**
@@ -96,12 +96,12 @@ class InternalLogJobCommand extends Command {
    * @param bool $test_option
    *   The "--test" option value.
    *
-   * @return \Acquia\Orca\Helper\Log\TelemetryEventName
+   * @return \Acquia\Orca\Enum\TelemetryEventNameEnum
    *   The telemetry event name.
    */
-  protected function getEventName(bool $test_option): TelemetryEventName {
-    $name = ($test_option) ? TelemetryEventName::TEST : TelemetryEventName::TRAVIS_CI_JOB;
-    return new TelemetryEventName($name);
+  protected function getEventName(bool $test_option): TelemetryEventNameEnum {
+    $name = ($test_option) ? TelemetryEventNameEnum::TEST : TelemetryEventNameEnum::TRAVIS_CI_JOB;
+    return new TelemetryEventNameEnum($name);
   }
 
 }

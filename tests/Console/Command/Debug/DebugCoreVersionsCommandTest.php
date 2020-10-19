@@ -3,12 +3,12 @@
 namespace Acquia\Orca\Tests\Console\Command\Debug;
 
 use Acquia\Orca\Console\Command\Debug\DebugCoreVersionsCommand;
-use Acquia\Orca\Drupal\DrupalCoreVersionFinder;
+use Acquia\Orca\Domain\Drupal\DrupalCoreVersionFinder;
 use Acquia\Orca\Tests\Console\Command\CommandTestBase;
 use Symfony\Component\Console\Command\Command;
 
 /**
- * @property \Acquia\Orca\Drupal\DrupalCoreVersionFinder|\Prophecy\Prophecy\ObjectProphecy $drupalCoreVersionFinder
+ * @property \Acquia\Orca\Domain\Drupal\DrupalCoreVersionFinder|\Prophecy\Prophecy\ObjectProphecy $drupalCoreVersionFinder
  * @coversDefaultClass \Acquia\Orca\Console\Command\Debug\DebugCoreVersionsCommand
  */
 class DebugCoreVersionsCommandTest extends CommandTestBase {

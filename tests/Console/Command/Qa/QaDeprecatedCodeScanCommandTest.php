@@ -3,23 +3,21 @@
 namespace Acquia\Orca\Tests\Console\Command\Qa;
 
 use Acquia\Orca\Console\Command\Qa\QaDeprecatedCodeScanCommand;
-use Acquia\Orca\Console\Helper\StatusCode;
+use Acquia\Orca\Domain\Package\PackageManager;
+use Acquia\Orca\Domain\Tool\Phpstan\PhpstanTask;
+use Acquia\Orca\Enum\StatusCodeEnum;
 use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
-use Acquia\Orca\Helper\Task\TaskRunner;
-use Acquia\Orca\Package\PackageManager;
 use Acquia\Orca\Tests\Console\Command\CommandTestBase;
-use Acquia\Orca\Tool\Phpstan\PhpstanTask;
 use Symfony\Component\Console\Command\Command;
 
 /**
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Helper\Filesystem\FixturePathHandler $fixture
- * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Package\PackageManager $packageManager
- * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Tool\Phpstan\PhpstanTask $phpstan
- * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Helper\Task\TaskRunner $taskRunner
+ * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Domain\Package\PackageManager $packageManager
+ * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Domain\Tool\Phpstan\PhpstanTask $phpstan
  */
 class QaDeprecatedCodeScanCommandTest extends CommandTestBase {
 
-  protected function setUp() {
+  protected function setUp(): void {
     $this->fixture = $this->prophesize(FixturePathHandler::class);
     $this->fixture->exists()
       ->willReturn(TRUE);
@@ -27,15 +25,13 @@ class QaDeprecatedCodeScanCommandTest extends CommandTestBase {
       ->willReturn(self::FIXTURE_ROOT);
     $this->packageManager = $this->prophesize(PackageManager::class);
     $this->phpstan = $this->prophesize(PhpstanTask::class);
-    $this->taskRunner = $this->prophesize(TaskRunner::class);
   }
 
   protected function createCommand(): Command {
     $fixture = $this->fixture->reveal();
     $package_manager = $this->packageManager->reveal();
     $phpstan = $this->phpstan->reveal();
-    $task_runner = $this->taskRunner->reveal();
-    return new QaDeprecatedCodeScanCommand($fixture, $package_manager, $phpstan, $task_runner);
+    return new QaDeprecatedCodeScanCommand($fixture, $package_manager, $phpstan);
   }
 
   /**
@@ -69,12 +65,12 @@ class QaDeprecatedCodeScanCommandTest extends CommandTestBase {
 
   public function providerCommand(): array {
     return [
-      [TRUE, [], [], StatusCode::ERROR, "Error: Nothing to do.\nHint: Use the \"--sut\" and \"--contrib\" options to specify what to scan.\n"],
-      [FALSE, ['--sut' => self::VALID_PACKAGE], ['PackageManager::exists', 'Fixture::exists'], StatusCode::ERROR, sprintf("Error: No fixture exists at %s.\nHint: Use the \"fixture:init\" command to create one.\n", self::FIXTURE_ROOT)],
-      [TRUE, ['--sut' => self::INVALID_PACKAGE], ['PackageManager::exists'], StatusCode::ERROR, sprintf("Error: Invalid value for \"--sut\" option: \"%s\".\n", self::INVALID_PACKAGE)],
-      [TRUE, ['--sut' => self::VALID_PACKAGE], ['PackageManager::exists', 'Fixture::exists', 'setSut', 'execute'], StatusCode::OK, ''],
-      [TRUE, ['--contrib' => TRUE], ['Fixture::exists', 'setScanContrib', 'execute'], StatusCode::OK, ''],
-      [TRUE, ['--sut' => self::VALID_PACKAGE, '--contrib' => TRUE], ['PackageManager::exists', 'Fixture::exists', 'setSut', 'setScanContrib', 'execute'], StatusCode::OK, ''],
+      [TRUE, [], [], StatusCodeEnum::ERROR, "Error: Nothing to do.\nHint: Use the \"--sut\" and \"--contrib\" options to specify what to scan.\n"],
+      [FALSE, ['--sut' => self::VALID_PACKAGE], ['PackageManager::exists', 'Fixture::exists'], StatusCodeEnum::ERROR, sprintf("Error: No fixture exists at %s.\nHint: Use the \"fixture:init\" command to create one.\n", self::FIXTURE_ROOT)],
+      [TRUE, ['--sut' => self::INVALID_PACKAGE], ['PackageManager::exists'], StatusCodeEnum::ERROR, sprintf("Error: Invalid value for \"--sut\" option: \"%s\".\n", self::INVALID_PACKAGE)],
+      [TRUE, ['--sut' => self::VALID_PACKAGE], ['PackageManager::exists', 'Fixture::exists', 'setSut', 'execute'], StatusCodeEnum::OK, ''],
+      [TRUE, ['--contrib' => TRUE], ['Fixture::exists', 'setScanContrib', 'execute'], StatusCodeEnum::OK, ''],
+      [TRUE, ['--sut' => self::VALID_PACKAGE, '--contrib' => TRUE], ['PackageManager::exists', 'Fixture::exists', 'setSut', 'setScanContrib', 'execute'], StatusCodeEnum::OK, ''],
     ];
   }
 

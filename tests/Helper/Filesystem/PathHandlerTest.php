@@ -13,11 +13,11 @@ use Symfony\Component\Filesystem\Filesystem;
  */
 class PathHandlerTest extends TestCase {
 
-  protected function setUp() {
+  protected function setUp(): void {
     $this->filesystem = $this->prophesize(Filesystem::class);
   }
 
-  protected function createPathHander() {
+  protected function createPathHandler(): AbstractPathHandler {
     $filesystem = $this->filesystem->reveal();
     return new class($filesystem, $this->basePath) extends AbstractPathHandler {};
   }
@@ -31,7 +31,7 @@ class PathHandlerTest extends TestCase {
       ->exists($base_path)
       ->shouldBeCalledOnce()
       ->willReturn($exists);
-    $path_handler = $this->createPathHander();
+    $path_handler = $this->createPathHandler();
 
     $return = $path_handler->exists();
 
@@ -57,7 +57,7 @@ class PathHandlerTest extends TestCase {
       ->shouldBeCalledOnce()
       ->willReturn($exists);
 
-    $path_handler = $this->createPathHander();
+    $path_handler = $this->createPathHandler();
     $return = $path_handler->exists($sub_path);
 
     self::assertEquals($exists, $return, 'Returned correct value.');
@@ -77,7 +77,7 @@ class PathHandlerTest extends TestCase {
   public function testGetPath($base_path, $sub_path, $expected): void {
     $this->basePath = $base_path;
 
-    $path_handler = $this->createPathHander();
+    $path_handler = $this->createPathHandler();
 
     self::assertEquals($expected, $path_handler->getPath($sub_path), 'Resolved path.');
   }

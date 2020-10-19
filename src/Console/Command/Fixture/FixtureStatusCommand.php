@@ -2,9 +2,9 @@
 
 namespace Acquia\Orca\Console\Command\Fixture;
 
-use Acquia\Orca\Console\Helper\StatusCode;
 use Acquia\Orca\Console\Helper\StatusTable;
-use Acquia\Orca\Fixture\FixtureInspector;
+use Acquia\Orca\Domain\Fixture\FixtureInspector;
+use Acquia\Orca\Enum\StatusCodeEnum;
 use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -32,7 +32,7 @@ class FixtureStatusCommand extends Command {
   /**
    * The fixture inspector.
    *
-   * @var \Acquia\Orca\Fixture\FixtureInspector
+   * @var \Acquia\Orca\Domain\Fixture\FixtureInspector
    */
   private $fixtureInspector;
 
@@ -41,13 +41,13 @@ class FixtureStatusCommand extends Command {
    *
    * @param \Acquia\Orca\Helper\Filesystem\FixturePathHandler $fixture_path_handler
    *   The fixture path handler.
-   * @param \Acquia\Orca\Fixture\FixtureInspector $fixture_inspector
+   * @param \Acquia\Orca\Domain\Fixture\FixtureInspector $fixture_inspector
    *   The fixture inspector.
    */
   public function __construct(FixturePathHandler $fixture_path_handler, FixtureInspector $fixture_inspector) {
     $this->fixture = $fixture_path_handler;
     $this->fixtureInspector = $fixture_inspector;
-    parent::__construct(self::$defaultName);
+    parent::__construct();
   }
 
   /**
@@ -65,14 +65,14 @@ class FixtureStatusCommand extends Command {
   public function execute(InputInterface $input, OutputInterface $output): int {
     if (!$this->fixture->exists()) {
       $output->writeln("Error: No fixture exists at {$this->fixture->getPath()}.");
-      return StatusCode::ERROR;
+      return StatusCodeEnum::ERROR;
     }
 
     (new StatusTable($output))
       ->setRows($this->fixtureInspector->getOverview())
       ->render();
 
-    return StatusCode::OK;
+    return StatusCodeEnum::OK;
   }
 
 }
