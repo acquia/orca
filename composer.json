@@ -26,8 +26,7 @@
         "ext-json": "*",
         "ext-sqlite3": "*",
         "acquia/coding-standards": "^0.5.0",
-        "composer/composer": "^1.7",
-        "dealerdirect/phpcodesniffer-composer-installer": "^0.5",
+        "composer/composer": "^2.0",
         "ergebnis/composer-normalize": "^2.0.0",
         "hassankhan/config": "^2.1",
         "myclabs/php-enum": "^1.7",
@@ -48,7 +47,6 @@
         "symfony/phpunit-bridge": "^4.2",
         "symfony/process": "^4.1",
         "symfony/yaml": "^4.1",
-        "vaimo/binary-chromedriver": "^5.0",
         "weitzman/drupal-test-traits": "^1.3",
         "zumba/amplitude-php": "^1.0"
     },
@@ -93,11 +91,14 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "scripts": {
+        "post-install-cmd": "@install-coding-standards",
         "post-update-cmd": [
-            "@composer normalize"
+            "@composer normalize",
+            "@install-coding-standards"
         ],
         "cghooks": "cghooks --ansi",
         "coverage": "phpunit --coverage-html var/coverage-report; open var/coverage-report/index.html",
+        "install-coding-standards": "\"vendor/bin/phpcs\" --config-set installed_paths vendor/acquia/coding-standards/src,vendor/drupal/coder/coder_sniffer,vendor/phpcompatibility/php-compatibility",
         "phpcbf": "phpcbf",
         "phpcs": "phpcs -s --cache=var/cache/phpcs.json",
         "phplint": "parallel-lint --exclude vendor --ignore-fails .",

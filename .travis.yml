@@ -52,6 +52,7 @@ jobs:
     - env: ORCA_JOB=LIVE_TEST ORCA_ENABLE_NIGHTWATCH=FALSE
 
 before_install:
+  - composer self-update --2
   - nvm use 12.13.1
   - ../orca/bin/travis/self-test/before_install.sh
   - ../orca/bin/travis/before_install.sh
