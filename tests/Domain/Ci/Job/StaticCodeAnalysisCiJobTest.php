@@ -23,6 +23,12 @@ class StaticCodeAnalysisCiJobTest extends CiJobTestBase {
     return new StaticCodeAnalysisCiJob($process_runner);
   }
 
+  public function testBasicConfiguration(): void {
+    $job = $this->createJob();
+
+    self::assertEquals(NULL, $job->getDrupalCoreVersion(), 'Declared the correct Drupal core version.');
+  }
+
   public function testScript(): void {
     $this->processRunner
       ->runOrca(['fixture:status'])

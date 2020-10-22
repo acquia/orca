@@ -5,6 +5,7 @@ namespace Acquia\Orca\Tests\Domain\Ci\Job;
 use Acquia\Orca\Domain\Ci\Job\IntegratedTestOnCurrentDevCiJob;
 use Acquia\Orca\Enum\CiJobEnum;
 use Acquia\Orca\Enum\CiJobPhaseEnum;
+use Acquia\Orca\Enum\DrupalCoreVersionEnum;
 use Acquia\Orca\Helper\Process\ProcessRunner;
 use Acquia\Orca\Tests\Domain\Ci\Job\_Helper\CiJobTestBase;
 
@@ -21,6 +22,12 @@ class IntegratedTestOnCurrentDevCiJobTest extends CiJobTestBase {
   private function createJob(): IntegratedTestOnCurrentDevCiJob {
     $process_runner = $this->processRunner->reveal();
     return new IntegratedTestOnCurrentDevCiJob($process_runner);
+  }
+
+  public function testBasicConfiguration(): void {
+    $job = $this->createJob();
+
+    self::assertEquals(DrupalCoreVersionEnum::CURRENT_DEV(), $job->getDrupalCoreVersion(), 'Declared the correct Drupal core version.');
   }
 
   public function testInstall(): void {

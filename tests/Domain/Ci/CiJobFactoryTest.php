@@ -144,7 +144,7 @@ class CiJobFactoryTest extends TestCase {
 
     $job = $factory->create($expected);
 
-    self::assertSame($expected->getValue(), $job->getJobName());
+    self::assertEquals($expected, $job->getJobName());
   }
 
 }

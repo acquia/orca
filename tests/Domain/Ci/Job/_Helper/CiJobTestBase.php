@@ -2,6 +2,7 @@
 
 namespace Acquia\Orca\Tests\Domain\Ci\Job\_Helper;
 
+use Acquia\Orca\Domain\Composer\Version\DrupalCoreVersionResolver;
 use Acquia\Orca\Domain\Package\Package;
 use Acquia\Orca\Domain\Package\PackageManager;
 use Acquia\Orca\Enum\CiJobEnum;
@@ -10,22 +11,37 @@ use Acquia\Orca\Helper\Process\ProcessRunner;
 use Acquia\Orca\Options\CiRunOptions;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
+use Symfony\Component\Console\Output\OutputInterface;
 
 /**
+ * @property \Acquia\Orca\Domain\Composer\Version\DrupalCoreVersionResolver|\Prophecy\Prophecy\ObjectProphecy $drupalCoreVersionResolver
  * @property \Acquia\Orca\Domain\Package\PackageManager|\Prophecy\Prophecy\ObjectProphecy $packageManager
  * @property \Acquia\Orca\Helper\Process\ProcessRunner|\Prophecy\Prophecy\ObjectProphecy $processRunner
+ * @property \Symfony\Component\Console\Output\OutputInterface|\Prophecy\Prophecy\ObjectProphecy $output
  */
 abstract class CiJobTestBase extends TestCase {
 
   protected const SUT_REPOSITORY_URL_ABSOLUTE = '/var/www/sut';
 
   public function setUp(): void {
+    // Drupal core version resolver.
+    $this->drupalCoreVersionResolver = $this->prophesize(DrupalCoreVersionResolver::class);
+    $this->drupalCoreVersionResolver
+      ->resolvePredefined(Argument::any())
+      ->willReturn('9.0.0');
+
     // SUT (package).
     $sut = $this->prophesize(Package::class);
     $sut->getPackageName()
       ->willReturn($this->validSutName());
     $sut->getRepositoryUrlAbsolute()
       ->willReturn(self::SUT_REPOSITORY_URL_ABSOLUTE);
+
+    // Output decorator.
+    $this->output = $this->prophesize(OutputInterface::class);
+    $this->output
+      ->writeln(Argument::any())
+      ->shouldNotBeCalled();
 
     // Package manager.
     $this->packageManager = $this->prophesize(PackageManager::class);

@@ -113,4 +113,70 @@ final class CiJobEnum extends Enum {
     ];
   }
 
+  /**
+   * Gets the description.
+   *
+   * @return string
+   *   The description.
+   */
+  public function getDescription(): string {
+    $descriptions = static::descriptions();
+    return $descriptions[$this->getKey()];
+  }
+
+  /**
+   * Gets the Drupal core version.
+   *
+   * @return \Acquia\Orca\Enum\DrupalCoreVersionEnum|null
+   *   The Drupal core version if applicable or NULL if not.
+   */
+  public function getDrupalCoreVersion(): ?DrupalCoreVersionEnum {
+    switch ($this->getKey()) {
+      case self::INTEGRATED_TEST_ON_OLDEST_SUPPORTED:
+        return DrupalCoreVersionEnum::OLDEST_SUPPORTED();
+
+      case self::INTEGRATED_TEST_ON_PREVIOUS_MINOR:
+        return DrupalCoreVersionEnum::PREVIOUS_MINOR();
+
+      case self::INTEGRATED_TEST_ON_LATEST_LTS:
+        return DrupalCoreVersionEnum::LATEST_LTS();
+
+      case self::ISOLATED_TEST_ON_CURRENT:
+      case self::INTEGRATED_TEST_ON_CURRENT:
+      case self::INTEGRATED_UPGRADE_TEST_TO_NEXT_MINOR:
+      case self::INTEGRATED_UPGRADE_TEST_TO_NEXT_MINOR_DEV:
+      case self::ISOLATED_UPGRADE_TO_NEXT_MAJOR_BETA_OR_LATER:
+      case self::ISOLATED_UPGRADE_TO_NEXT_MAJOR_DEV:
+        return DrupalCoreVersionEnum::CURRENT();
+
+      case self::ISOLATED_TEST_ON_CURRENT_DEV:
+      case self::INTEGRATED_TEST_ON_CURRENT_DEV:
+      case self::LOOSE_DEPRECATED_CODE_SCAN:
+      case self::STRICT_DEPRECATED_CODE_SCAN:
+      case self::DEPRECATED_CODE_SCAN_W_CONTRIB:
+        return DrupalCoreVersionEnum::CURRENT_DEV();
+
+      case self::ISOLATED_TEST_ON_NEXT_MINOR:
+      case self::INTEGRATED_TEST_ON_NEXT_MINOR:
+        return DrupalCoreVersionEnum::NEXT_MINOR();
+
+      case self::ISOLATED_TEST_ON_NEXT_MINOR_DEV:
+      case self::INTEGRATED_TEST_ON_NEXT_MINOR_DEV:
+        return DrupalCoreVersionEnum::NEXT_MINOR_DEV();
+
+      case self::ISOLATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_BETA_OR_LATER:
+      case self::INTEGRATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_BETA_OR_LATER:
+        return DrupalCoreVersionEnum::NEXT_MAJOR_LATEST_MINOR_BETA_OR_LATER();
+
+      case self::ISOLATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_DEV:
+      case self::INTEGRATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_DEV:
+        return DrupalCoreVersionEnum::NEXT_MAJOR_LATEST_MINOR_DEV();
+
+      case self::STATIC_CODE_ANALYSIS:
+      default:
+        return NULL;
+
+    }
+  }
+
 }

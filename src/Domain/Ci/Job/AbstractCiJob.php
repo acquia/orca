@@ -2,9 +2,14 @@
 
 namespace Acquia\Orca\Domain\Ci\Job;
 
+use Acquia\Orca\Domain\Ci\Job\Helper\RedundantJobChecker;
+use Acquia\Orca\Domain\Composer\Version\DrupalCoreVersionResolver;
 use Acquia\Orca\Enum\CiJobEnum;
 use Acquia\Orca\Enum\CiJobPhaseEnum;
+use Acquia\Orca\Enum\DrupalCoreVersionEnum;
+use Acquia\Orca\Exception\OrcaVersionNotFoundException;
 use Acquia\Orca\Options\CiRunOptions;
+use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Provides an abstract class for CI Job classes.
@@ -14,11 +19,21 @@ abstract class AbstractCiJob {
   /**
    * Gets the job name.
    *
-   * @return string
+   * @return \Acquia\Orca\Enum\CiJobEnum
    *   The job name.
    */
-  final public function getJobName(): string {
-    return $this->jobName()->getValue();
+  final public function getJobName(): CiJobEnum {
+    return $this->jobName();
+  }
+
+  /**
+   * Gets the Drupal core version.
+   *
+   * @return \Acquia\Orca\Enum\DrupalCoreVersionEnum|null
+   *   The Drupal core version if specified or NULL if not.
+   */
+  final public function getDrupalCoreVersion(): ?DrupalCoreVersionEnum {
+    return $this->getJobName()->getDrupalCoreVersion();
   }
 
   /**
@@ -36,6 +51,10 @@ abstract class AbstractCiJob {
    *   The CI run options.
    */
   final public function run(CiRunOptions $options): void {
+    if ($this->exitEarly()) {
+      return;
+    }
+
     switch ($options->getPhase()->getValue()) {
       case CiJobPhaseEnum::BEFORE_INSTALL:
         $this->beforeInstall($options);
@@ -81,6 +100,13 @@ abstract class AbstractCiJob {
         $this->afterScript($options);
 
     }
+  }
+
+  /**
+   * Determines whether or not to exit the job early.
+   */
+  protected function exitEarly(): bool {
+    return FALSE;
   }
 
   /**
@@ -170,5 +196,48 @@ abstract class AbstractCiJob {
    *   The CI run options.
    */
   protected function afterScript(CiRunOptions $options): void {}
+
+  /**
+   * Determines whether or not the job is redundant.
+   *
+   * @param \Acquia\Orca\Domain\Ci\Job\Helper\RedundantJobChecker $redundant_job_checker
+   *   The redundant job checker.
+   * @param \Symfony\Component\Console\Output\OutputInterface $output
+   *   The output decorator.
+   *
+   * @return bool
+   *   TRUE if the job is redundant or FALSE if not.
+   *
+   * @throws \Acquia\Orca\Exception\OrcaVersionNotFoundException
+   */
+  protected function isRedundant(RedundantJobChecker $redundant_job_checker, OutputInterface $output): bool {
+    if ($redundant_job_checker->isRedundant($this->jobName())) {
+      $output->writeln('This job is currently redundant given the spread of available Drupal core versions. Exiting.');
+      return TRUE;
+    }
+    return FALSE;
+  }
+
+  /**
+   * Determines whether a matching Drupal core version exists or not.
+   *
+   * @param \Acquia\Orca\Domain\Composer\Version\DrupalCoreVersionResolver $drupal_core_version_resolver
+   *   The Drupal core version resolver.
+   * @param \Symfony\Component\Console\Output\OutputInterface $output
+   *   The output decorator.
+   *
+   * @return bool
+   *   TRUE if a matching version exists or FALSE if not.
+   */
+  protected function matchingCoreVersionExists(DrupalCoreVersionResolver $drupal_core_version_resolver, OutputInterface $output): bool {
+    try {
+      $drupal_core_version_resolver->resolvePredefined($this->getDrupalCoreVersion());
+    }
+    catch (OrcaVersionNotFoundException $e) {
+      $output->writeln('There is currently no available version of Drupal core corresponding to this job. Exiting.');
+      return FALSE;
+    }
+    return TRUE;
+  }
 
 }

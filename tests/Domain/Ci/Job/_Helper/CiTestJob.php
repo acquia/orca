@@ -7,17 +7,13 @@ use Acquia\Orca\Enum\CiJobEnum;
 use Acquia\Orca\Options\CiRunOptions;
 use Acquia\Orca\Tests\_Helper\TestSpy;
 
-/**
- * @property \Acquia\Orca\Options\CiRunOptions options
- */
 class CiTestJob extends AbstractCiJob {
 
   private $jobEnum;
 
   private $spy;
 
-  public function __construct(CiRunOptions $options, TestSpy $spy) {
-    $this->options = $options;
+  public function __construct(TestSpy $spy) {
     $this->spy = $spy;
   }
 
@@ -26,47 +22,47 @@ class CiTestJob extends AbstractCiJob {
   }
 
   public function beforeInstall(CiRunOptions $options): void {
-    $this->spy->call($this->options);
+    $this->spy->call($options);
   }
 
   public function install(CiRunOptions $options): void {
-    $this->spy->call($this->options);
+    $this->spy->call($options);
   }
 
   public function beforeScript(CiRunOptions $options): void {
-    $this->spy->call($this->options);
+    $this->spy->call($options);
   }
 
   public function script(CiRunOptions $options): void {
-    $this->spy->call($this->options);
+    $this->spy->call($options);
   }
 
   public function beforeCache(CiRunOptions $options): void {
-    $this->spy->call($this->options);
+    $this->spy->call($options);
   }
 
   public function afterSuccess(CiRunOptions $options): void {
-    $this->spy->call($this->options);
+    $this->spy->call($options);
   }
 
   public function afterFailure(CiRunOptions $options): void {
-    $this->spy->call($this->options);
+    $this->spy->call($options);
   }
 
   public function beforeDeploy(CiRunOptions $options): void {
-    $this->spy->call($this->options);
+    $this->spy->call($options);
   }
 
   public function deploy(CiRunOptions $options): void {
-    $this->spy->call($this->options);
+    $this->spy->call($options);
   }
 
   public function afterDeploy(CiRunOptions $options): void {
-    $this->spy->call($this->options);
+    $this->spy->call($options);
   }
 
   public function afterScript(CiRunOptions $options): void {
-    $this->spy->call($this->options);
+    $this->spy->call($options);
   }
 
 }

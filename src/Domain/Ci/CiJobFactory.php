@@ -118,7 +118,8 @@ class CiJobFactory {
     StrictDeprecatedCodeScanCiJob $strict_deprecated_code_scan_ci_job
   ) {
     foreach (func_get_args() as $job) {
-      $this->jobs[$job->getJobName()] = $job;
+      $job_name = $job->getJobName();
+      $this->jobs[$job_name->getKey()] = $job;
     }
   }
 

@@ -5,6 +5,7 @@ namespace Acquia\Orca\Tests\Domain\Ci\Job;
 use Acquia\Orca\Domain\Ci\Job\IntegratedUpgradeTestToNextMinorCiJob;
 use Acquia\Orca\Enum\CiJobEnum;
 use Acquia\Orca\Enum\CiJobPhaseEnum;
+use Acquia\Orca\Enum\DrupalCoreVersionEnum;
 use Acquia\Orca\Tests\Domain\Ci\Job\_Helper\CiJobTestBase;
 use Prophecy\Argument;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -22,6 +23,12 @@ class IntegratedUpgradeTestToNextMinorCiJobTest extends CiJobTestBase {
   private function createJob(): IntegratedUpgradeTestToNextMinorCiJob {
     $output = $this->symfonyOutput->reveal();
     return new IntegratedUpgradeTestToNextMinorCiJob($output);
+  }
+
+  public function testBasicConfiguration(): void {
+    $job = $this->createJob();
+
+    self::assertEquals(DrupalCoreVersionEnum::CURRENT(), $job->getDrupalCoreVersion(), 'Declared the correct Drupal core version.');
   }
 
   public function testInstall(): void {

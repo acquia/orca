@@ -31,7 +31,7 @@ class AbstractCiJobTest extends CiJobTestBase {
     $spy
       ->call($options)
       ->shouldBeCalledOnce();
-    $job = new CiTestJob($options, $spy->reveal());
+    $job = new CiTestJob($spy->reveal());
 
     $job->run($options);
   }
@@ -49,7 +49,24 @@ class AbstractCiJobTest extends CiJobTestBase {
     $spy
       ->call($options)
       ->shouldBeCalledOnce();
-    $job = new CiTestJob($options, $spy->reveal());
+    $job = new CiTestJob($spy->reveal());
+
+    $job->run($options);
+  }
+
+  public function testExitEarly(): void {
+    $options = $this->createValidRunOptions();
+    $spy = $this->prophesize(TestSpy::class);
+    $spy
+      ->call($options)
+      ->shouldNotBeCalled();
+    $job = new class($spy->reveal()) extends CiTestJob {
+
+      protected function exitEarly(): bool {
+        return TRUE;
+      }
+
+    };
 
     $job->run($options);
   }
