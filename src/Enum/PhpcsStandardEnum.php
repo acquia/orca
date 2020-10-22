@@ -6,6 +6,11 @@ use MyCLabs\Enum\Enum;
 
 /**
  * Provides PHPCS standards.
+ *
+ * @method static PhpcsStandardEnum ACQUIA_PHP()
+ * @method static PhpcsStandardEnum ACQUIA_DRUPAL_STRICT()
+ * @method static PhpcsStandardEnum ACQUIA_DRUPAL_TRANSITIONAL()
+ * @method static PhpcsStandardEnum DEFAULT()
  */
 final class PhpcsStandardEnum extends Enum {
 
@@ -18,7 +23,7 @@ final class PhpcsStandardEnum extends Enum {
   public const DEFAULT = self::ACQUIA_DRUPAL_TRANSITIONAL;
 
   /**
-   * Provides help text for commands that accept Drupal core version input.
+   * Provides help text for commands that accept PHPCS standard input.
    *
    * @return array
    *   An array of lines.

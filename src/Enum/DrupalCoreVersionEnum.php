@@ -6,6 +6,14 @@ use MyCLabs\Enum\Enum;
 
 /**
  * Provides Drupal core version special values.
+ *
+ * @method static DrupalCoreVersionEnum PREVIOUS_RELEASE()
+ * @method static DrupalCoreVersionEnum PREVIOUS_DEV()
+ * @method static DrupalCoreVersionEnum CURRENT_RECOMMENDED()
+ * @method static DrupalCoreVersionEnum CURRENT_DEV()
+ * @method static DrupalCoreVersionEnum NEXT_RELEASE()
+ * @method static DrupalCoreVersionEnum NEXT_DEV()
+ * @method static DrupalCoreVersionEnum D9_READINESS()
  */
 final class DrupalCoreVersionEnum extends Enum {
 

@@ -14,7 +14,7 @@ use InvalidArgumentException;
 use UnexpectedValueException;
 
 /**
- * Provides a facade Composer.
+ * Provides a facade for Composer.
  */
 class ComposerFacade {
 
