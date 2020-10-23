@@ -4,6 +4,8 @@
       <w>acquia</w>
       <w>docroot</w>
       <w>drush</w>
+      <w>ipsum</w>
+      <w>lorem</w>
       <w>nightwatch</w>
       <w>noodlehaus</w>
       <w>orca</w>
@@ -13,9 +15,12 @@
       <w>phploc</w>
       <w>phpmd</w>
       <w>phpstan</w>
+      <w>reparse</w>
+      <w>reparsed</w>
       <w>requirable</w>
       <w>subextension</w>
       <w>subextensions</w>
+      <w>sut</w>
       <w>symlinked</w>
       <w>yamllint</w>
     </words>
