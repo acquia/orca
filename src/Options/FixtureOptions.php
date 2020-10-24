@@ -33,7 +33,7 @@ class FixtureOptions {
    *
    * @var \Acquia\Orca\Domain\Composer\Version\DrupalCoreVersionResolver
    */
-  private $drupalCoreVersionFinder;
+  private $drupalCoreVersionResolver;
 
   /**
    * The resolved options.
@@ -59,8 +59,8 @@ class FixtureOptions {
   /**
    * Constructs an instance.
    *
-   * @param \Acquia\Orca\Domain\Composer\Version\DrupalCoreVersionResolver $drupal_core_version_finder
-   *   The Drupal core version finder.
+   * @param \Acquia\Orca\Domain\Composer\Version\DrupalCoreVersionResolver $drupal_core_version_resolver
+   *   The Drupal core version resolver.
    * @param \Acquia\Orca\Domain\Package\PackageManager $package_manager
    *   The package manager.
    * @param array $raw_options
@@ -68,8 +68,8 @@ class FixtureOptions {
    *
    * @throws \Acquia\Orca\Exception\OrcaInvalidArgumentException
    */
-  public function __construct(DrupalCoreVersionResolver $drupal_core_version_finder, PackageManager $package_manager, array $raw_options) {
-    $this->drupalCoreVersionFinder = $drupal_core_version_finder;
+  public function __construct(DrupalCoreVersionResolver $drupal_core_version_resolver, PackageManager $package_manager, array $raw_options) {
+    $this->drupalCoreVersionResolver = $drupal_core_version_resolver;
     $this->packageManager = $package_manager;
     $this->rawOptions = $raw_options;
     $this->resolve($raw_options);
@@ -271,7 +271,7 @@ class FixtureOptions {
    * @throws \Acquia\Orca\Exception\OrcaVersionNotFoundException
    */
   private function findCoreVersion(string $constraint): string {
-    $version = $this->drupalCoreVersionFinder
+    $version = $this->drupalCoreVersionResolver
       ->resolvePredefined(new DrupalCoreVersionEnum($constraint));
     // Cache the value for subsequent calls.
     $this->options['core'] = $version;
@@ -330,7 +330,7 @@ class FixtureOptions {
     catch (UnexpectedValueException $e) {
       // The core version is a range. Get the best match.
       $stability = $this->isDev() ? 'dev' : 'stable';
-      $version = $this->drupalCoreVersionFinder
+      $version = $this->drupalCoreVersionResolver
         ->resolveArbitrary($core, $stability);
     }
     $this->coreResolved = $version;
