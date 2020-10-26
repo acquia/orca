@@ -53,6 +53,7 @@ jobs:
 
 before_install:
   - nvm use 12.13.1
+  - composer self-update 1.10.16
   - ../orca/bin/travis/self-test/before_install.sh
   - ../orca/bin/travis/before_install.sh
 
