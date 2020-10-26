@@ -96,9 +96,6 @@
         "post-update-cmd": [
             "@composer normalize"
         ],
-        "post-root-package-install": [
-            "./bin/composer/post_root_package_install.sh"
-        ],
         "cghooks": "cghooks --ansi",
         "coverage": "phpunit --coverage-html var/coverage-report; open var/coverage-report/index.html",
         "phpcbf": "phpcbf",
