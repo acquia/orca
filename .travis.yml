@@ -30,6 +30,7 @@ env:
     - ORCA_SUT_BRANCH=master
     - ORCA_PACKAGES_CONFIG=example/tests/packages.yml
     - ORCA_PACKAGES_CONFIG_ALTER=example/tests/packages_alter.yml
+    - ORCA_ENABLE_NIGHTWATCH=FALSE
     - ORCA_SUT_DIR=${TRAVIS_BUILD_DIR}/../example
     - ORCA_SELF_TEST_COVERAGE_CLOVER=$HOME/build/logs/clover-self.xml
 
@@ -39,7 +40,7 @@ jobs:
     - { env: ORCA_JOB=STATIC_CODE_ANALYSIS, name: "Static code analysis" }
     - { env: ORCA_JOB=INTEGRATED_TEST_ON_OLDEST_SUPPORTED, name: "Integrated test on oldest supported Drupal core version" }
     - { env: ORCA_JOB=INTEGRATED_TEST_ON_PREVIOUS_MINOR, name: "Integrated test on previous minor Drupal core version" }
-    - { env: ORCA_JOB=ISOLATED_TEST_ON_CURRENT ORCA_COVERALLS_ENABLE=TRUE, name: "Isolated test on current Drupal core version with test coverage" }
+    - { env: ORCA_JOB=ISOLATED_TEST_ON_CURRENT ORCA_ENABLE_NIGHTWATCH=TRUE ORCA_COVERALLS_ENABLE=TRUE, name: "Isolated test on current Drupal core version with Nightwatch.js and Coveralls" }
     - { env: ORCA_JOB=ISOLATED_TEST_ON_CURRENT, name: "Isolated test on current Drupal core version" }
     - { env: ORCA_JOB=INTEGRATED_TEST_ON_CURRENT, name: "Integrated test on current Drupal core version" }
     - { env: ORCA_JOB=INTEGRATED_UPGRADE_TEST_TO_NEXT_MINOR, name: "Integrated upgrade test to next minor Drupal core version" }

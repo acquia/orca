@@ -37,11 +37,7 @@ class IsolatedUpgradeToNextMajorDevCiJobTest extends CiJobTestBase {
       ->shouldBeCalledOnce();
     $job = $this->createJob();
 
-    $job->run($this->createCiRunOptions([
-      'job' => CiJobEnum::ISOLATED_UPGRADE_TO_NEXT_MAJOR_DEV,
-      'phase' => CiJobPhaseEnum::INSTALL,
-      'sut' => $this->validSutName(),
-    ]));
+    $this->runInstallPhase($job, CiJobEnum::ISOLATED_UPGRADE_TO_NEXT_MAJOR_DEV);
   }
 
   public function testScript(): void {

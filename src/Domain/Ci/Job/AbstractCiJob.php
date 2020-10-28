@@ -8,6 +8,8 @@ use Acquia\Orca\Enum\CiJobEnum;
 use Acquia\Orca\Enum\CiJobPhaseEnum;
 use Acquia\Orca\Enum\DrupalCoreVersionEnum;
 use Acquia\Orca\Exception\OrcaVersionNotFoundException;
+use Acquia\Orca\Helper\EnvFacade;
+use Acquia\Orca\Helper\Process\ProcessRunner;
 use Acquia\Orca\Options\CiRunOptions;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -238,6 +240,34 @@ abstract class AbstractCiJob {
       return FALSE;
     }
     return TRUE;
+  }
+
+  /**
+   * Runs a fixture:init ORCA command.
+   *
+   * Handles conditional "--profile" and "--project-template" options.
+   *
+   * @param array $command
+   *   An array of command arguments.
+   * @param \Acquia\Orca\Helper\EnvFacade $env_facade
+   *   The ENV facade.
+   * @param \Acquia\Orca\Helper\Process\ProcessRunner $process_runner
+   *   The process runner.
+   */
+  protected function runOrcaFixtureInit(array $command, EnvFacade $env_facade, ProcessRunner $process_runner): void {
+    array_unshift($command, 'fixture:init');
+
+    $profile = $env_facade->get('ORCA_FIXTURE_PROFILE');
+    if ($profile) {
+      $command[] = "--profile={$profile}";
+    }
+
+    $project_template = $env_facade->get('ORCA_FIXTURE_PROJECT_TEMPLATE');
+    if ($project_template) {
+      $command[] = "--project-template={$project_template}";
+    }
+
+    $process_runner->runOrca($command);
   }
 
 }

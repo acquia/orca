@@ -37,11 +37,7 @@ class IntegratedUpgradeTestToNextMinorDevCiJobTest extends CiJobTestBase {
       ->shouldBeCalledOnce();
     $job = $this->createJob();
 
-    $job->run($this->createCiRunOptions([
-      'job' => CiJobEnum::INTEGRATED_UPGRADE_TEST_TO_NEXT_MINOR_DEV,
-      'phase' => CiJobPhaseEnum::INSTALL,
-      'sut' => $this->validSutName(),
-    ]));
+    $this->runInstallPhase($job, CiJobEnum::INTEGRATED_UPGRADE_TEST_TO_NEXT_MINOR_DEV);
   }
 
   public function testScript(): void {

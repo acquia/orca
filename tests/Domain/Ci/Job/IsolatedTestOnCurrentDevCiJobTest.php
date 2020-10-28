@@ -3,27 +3,24 @@
 namespace Acquia\Orca\Tests\Domain\Ci\Job;
 
 use Acquia\Orca\Domain\Ci\Job\IsolatedTestOnCurrentDevCiJob;
-use Acquia\Orca\Domain\Package\PackageManager;
 use Acquia\Orca\Enum\CiJobEnum;
-use Acquia\Orca\Enum\CiJobPhaseEnum;
 use Acquia\Orca\Enum\DrupalCoreVersionEnum;
+use Acquia\Orca\Helper\EnvFacade;
 use Acquia\Orca\Helper\Process\ProcessRunner;
 use Acquia\Orca\Tests\Domain\Ci\Job\_Helper\CiJobTestBase;
 
-/**
- * @property \Acquia\Orca\Domain\Package\PackageManager|\Prophecy\Prophecy\ObjectProphecy $packageManager
- * @property \Acquia\Orca\Helper\Process\ProcessRunner|\Prophecy\Prophecy\ObjectProphecy $processRunner
- */
 class IsolatedTestOnCurrentDevCiJobTest extends CiJobTestBase {
 
   public function setUp(): void {
-    $this->packageManager = $this->prophesize(PackageManager::class);
+    $this->envFacade = $this->prophesize(EnvFacade::class);
     $this->processRunner = $this->prophesize(ProcessRunner::class);
     parent::setUp();
   }
 
   private function createJob(): IsolatedTestOnCurrentDevCiJob {
-    return new IsolatedTestOnCurrentDevCiJob($this->processRunner->reveal());
+    $env_facade = $this->envFacade->reveal();
+    $process_runner = $this->processRunner->reveal();
+    return new IsolatedTestOnCurrentDevCiJob($env_facade, $process_runner);
   }
 
   public function testBasicConfiguration(): void {
@@ -40,16 +37,55 @@ class IsolatedTestOnCurrentDevCiJobTest extends CiJobTestBase {
         "--sut={$this->validSutName()}",
         '--sut-only',
         '--core=CURRENT_DEV',
+        '--dev',
       ])
       ->shouldBeCalledOnce()
       ->willReturn(0);
     $job = $this->createJob();
 
-    $job->run($this->createCiRunOptions([
-      'job' => CiJobEnum::ISOLATED_TEST_ON_CURRENT_DEV,
-      'phase' => CiJobPhaseEnum::INSTALL,
-      'sut' => $this->validSutName(),
-    ]));
+    $this->runInstallPhase($job, CiJobEnum::ISOLATED_TEST_ON_CURRENT_DEV);
+  }
+
+  public function testInstallOverrideProfile(): void {
+    $profile = 'example';
+    $this->envFacade
+      ->get('ORCA_FIXTURE_PROFILE')
+      ->willReturn($profile);
+    $this->processRunner
+      ->runOrca([
+        'fixture:init',
+        '--force',
+        "--sut={$this->validSutName()}",
+        '--sut-only',
+        '--core=CURRENT_DEV',
+        '--dev',
+        "--profile={$profile}",
+      ])
+      ->shouldBeCalledOnce();
+    $job = $this->createJob();
+
+    $this->runInstallPhase($job, CiJobEnum::ISOLATED_TEST_ON_CURRENT_DEV);
+  }
+
+  public function testInstallOverrideProjectTemplate(): void {
+    $project_template = 'example';
+    $this->envFacade
+      ->get('ORCA_FIXTURE_PROJECT_TEMPLATE')
+      ->willReturn($project_template);
+    $this->processRunner
+      ->runOrca([
+        'fixture:init',
+        '--force',
+        "--sut={$this->validSutName()}",
+        '--sut-only',
+        '--core=CURRENT_DEV',
+        '--dev',
+        "--project-template={$project_template}",
+      ])
+      ->shouldBeCalledOnce();
+    $job = $this->createJob();
+
+    $this->runInstallPhase($job, CiJobEnum::ISOLATED_TEST_ON_CURRENT_DEV);
   }
 
   public function testScript(): void {

@@ -15,7 +15,7 @@ if [[ "$ORCA_JOB" ]]; then
   eval "orca ci:run $ORCA_JOB script $ORCA_SUT_NAME"
 fi
 
-if [[ "$ORCA_ENABLE_NIGHTWATCH" = "TRUE" && "$ORCA_SUT_HAS_NIGHTWATCH_TESTS" && -d "$ORCA_YARN_DIR" ]]; then
+if [[ "$ORCA_ENABLE_NIGHTWATCH" == "TRUE" && "$ORCA_SUT_HAS_NIGHTWATCH_TESTS" && -d "$ORCA_YARN_DIR" ]]; then
   (
     cd "$ORCA_YARN_DIR" || exit
     orca fixture:run-server &

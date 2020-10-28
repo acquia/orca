@@ -5,25 +5,29 @@ namespace Acquia\Orca\Tests\Domain\Ci\Job;
 use Acquia\Orca\Domain\Ci\Job\StrictDeprecatedCodeScanCiJob;
 use Acquia\Orca\Domain\Package\PackageManager;
 use Acquia\Orca\Enum\CiJobEnum;
-use Acquia\Orca\Enum\CiJobPhaseEnum;
 use Acquia\Orca\Enum\DrupalCoreVersionEnum;
+use Acquia\Orca\Helper\EnvFacade;
 use Acquia\Orca\Helper\Process\ProcessRunner;
 use Acquia\Orca\Tests\Domain\Ci\Job\_Helper\CiJobTestBase;
 
 /**
  * @property \Acquia\Orca\Domain\Package\PackageManager|\Prophecy\Prophecy\ObjectProphecy $packageManager
+ * @property \Acquia\Orca\Helper\EnvFacade|\Prophecy\Prophecy\ObjectProphecy $envFacade
  * @property \Acquia\Orca\Helper\Process\ProcessRunner|\Prophecy\Prophecy\ObjectProphecy $processRunner
  */
 class StrictDeprecatedCodeScanCiJobTest extends CiJobTestBase {
 
   public function setUp(): void {
+    $this->envFacade = $this->prophesize(EnvFacade::class);
     $this->packageManager = $this->prophesize(PackageManager::class);
     $this->processRunner = $this->prophesize(ProcessRunner::class);
     parent::setUp();
   }
 
   private function createJob(): StrictDeprecatedCodeScanCiJob {
-    return new StrictDeprecatedCodeScanCiJob($this->processRunner->reveal());
+    $env_facade = $this->envFacade->reveal();
+    $process_runner = $this->processRunner->reveal();
+    return new StrictDeprecatedCodeScanCiJob($env_facade, $process_runner);
   }
 
   public function testBasicConfiguration(): void {
@@ -46,11 +50,49 @@ class StrictDeprecatedCodeScanCiJobTest extends CiJobTestBase {
       ->willReturn(0);
     $job = $this->createJob();
 
-    $job->run($this->createCiRunOptions([
-      'job' => CiJobEnum::STRICT_DEPRECATED_CODE_SCAN,
-      'phase' => CiJobPhaseEnum::INSTALL,
-      'sut' => $this->validSutName(),
-    ]));
+    $this->runInstallPhase($job, CiJobEnum::STRICT_DEPRECATED_CODE_SCAN);
+  }
+
+  public function testInstallOverrideProfile(): void {
+    $profile = 'example';
+    $this->envFacade
+      ->get('ORCA_FIXTURE_PROFILE')
+      ->willReturn($profile);
+    $this->processRunner
+      ->runOrca([
+        'fixture:init',
+        '--force',
+        "--sut={$this->validSutName()}",
+        '--sut-only',
+        '--core=CURRENT_DEV',
+        '--no-site-install',
+        "--profile={$profile}",
+      ])
+      ->shouldBeCalledOnce();
+    $job = $this->createJob();
+
+    $this->runInstallPhase($job, CiJobEnum::STRICT_DEPRECATED_CODE_SCAN);
+  }
+
+  public function testInstallOverrideProjectTemplate(): void {
+    $project_template = 'example';
+    $this->envFacade
+      ->get('ORCA_FIXTURE_PROJECT_TEMPLATE')
+      ->willReturn($project_template);
+    $this->processRunner
+      ->runOrca([
+        'fixture:init',
+        '--force',
+        "--sut={$this->validSutName()}",
+        '--sut-only',
+        '--core=CURRENT_DEV',
+        '--no-site-install',
+        "--project-template={$project_template}",
+      ])
+      ->shouldBeCalledOnce();
+    $job = $this->createJob();
+
+    $this->runInstallPhase($job, CiJobEnum::STRICT_DEPRECATED_CODE_SCAN);
   }
 
   public function testScript(): void {

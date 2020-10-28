@@ -3,6 +3,7 @@
 namespace Acquia\Orca\Domain\Ci\Job;
 
 use Acquia\Orca\Enum\CiJobEnum;
+use Acquia\Orca\Helper\EnvFacade;
 use Acquia\Orca\Helper\Process\ProcessRunner;
 use Acquia\Orca\Options\CiRunOptions;
 
@@ -10,6 +11,13 @@ use Acquia\Orca\Options\CiRunOptions;
  * The integrated test on next minor dev CI job.
  */
 class IntegratedTestOnNextMinorDevCiJob extends AbstractCiJob {
+
+  /**
+   * The ENV facade.
+   *
+   * @var \Acquia\Orca\Helper\EnvFacade
+   */
+  private $envFacade;
 
   /**
    * The process runner.
@@ -21,10 +29,13 @@ class IntegratedTestOnNextMinorDevCiJob extends AbstractCiJob {
   /**
    * Constructs an instance.
    *
+   * @param \Acquia\Orca\Helper\EnvFacade $env_facade
+   *   The ENV facade.
    * @param \Acquia\Orca\Helper\Process\ProcessRunner $process_runner
    *   The process runner.
    */
-  public function __construct(ProcessRunner $process_runner) {
+  public function __construct(EnvFacade $env_facade, ProcessRunner $process_runner) {
+    $this->envFacade = $env_facade;
     $this->processRunner = $process_runner;
   }
 
@@ -39,13 +50,12 @@ class IntegratedTestOnNextMinorDevCiJob extends AbstractCiJob {
    * {@inheritdoc}
    */
   protected function install(CiRunOptions $options): void {
-    $this->processRunner
-      ->runOrca([
-        'fixture:init',
-        '--force',
-        "--sut={$options->getSut()->getPackageName()}",
-        '--core=NEXT_MINOR_DEV',
-      ]);
+    $this->runOrcaFixtureInit([
+      '--force',
+      "--sut={$options->getSut()->getPackageName()}",
+      '--core=NEXT_MINOR_DEV',
+      '--dev',
+    ], $this->envFacade, $this->processRunner);
   }
 
   /**

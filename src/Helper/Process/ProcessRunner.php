@@ -166,7 +166,7 @@ class ProcessRunner {
    * Runs an ORCA command.
    *
    * @param array $command
-   *   An array of command command arguments.
+   *   An array of command arguments.
    *
    * @return int
    *   The exit status code.

@@ -10,16 +10,16 @@ use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Output\NullOutput;
 
 /**
- * @property \Acquia\Orca\Helper\EnvFacade|\Prophecy\Prophecy\ObjectProphecy $env
+ * @property \Acquia\Orca\Helper\EnvFacade|\Prophecy\Prophecy\ObjectProphecy $envFacade
  */
 class EnvVarsTableBuilderTest extends TestCase {
 
   protected function setUp(): void {
-    $this->env = $this->prophesize(EnvFacade::class);
+    $this->envFacade = $this->prophesize(EnvFacade::class);
   }
 
   private function createCoreVersionsTableBuilder(): EnvVarsTableBuilder {
-    $env_facade = $this->env->reveal();
+    $env_facade = $this->envFacade->reveal();
     return new class ($env_facade) extends EnvVarsTableBuilder {
 
       protected function getVars(): array {

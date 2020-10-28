@@ -8,6 +8,7 @@ use Acquia\Orca\Domain\Package\PackageManager;
 use Acquia\Orca\Enum\CiJobEnum;
 use Acquia\Orca\Enum\CiJobPhaseEnum;
 use Acquia\Orca\Enum\DrupalCoreVersionEnum;
+use Acquia\Orca\Helper\EnvFacade;
 use Acquia\Orca\Helper\Process\ProcessRunner;
 use Acquia\Orca\Tests\Domain\Ci\Job\_Helper\CiJobTestBase;
 use Prophecy\Argument;
@@ -15,12 +16,11 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * @property \Acquia\Orca\Domain\Ci\Job\Helper\RedundantJobChecker|\Prophecy\Prophecy\ObjectProphecy $redundantJobChecker
- * @property \Acquia\Orca\Domain\Package\PackageManager|\Prophecy\Prophecy\ObjectProphecy $packageManager
- * @property \Acquia\Orca\Helper\Process\ProcessRunner|\Prophecy\Prophecy\ObjectProphecy $processRunner
  */
 class IntegratedTestOnPreviousMinorCiJobTest extends CiJobTestBase {
 
   public function setUp(): void {
+    $this->envFacade = $this->prophesize(EnvFacade::class);
     $this->output = $this->prophesize(OutputInterface::class);
     $this->packageManager = $this->prophesize(PackageManager::class);
     $this->processRunner = $this->prophesize(ProcessRunner::class);
@@ -32,10 +32,11 @@ class IntegratedTestOnPreviousMinorCiJobTest extends CiJobTestBase {
   }
 
   private function createJob(): IntegratedTestOnPreviousMinorCiJob {
+    $env_facade = $this->envFacade->reveal();
     $output = $this->output->reveal();
     $process_runner = $this->processRunner->reveal();
     $redundant_job_checker = $this->redundantJobChecker->reveal();
-    return new IntegratedTestOnPreviousMinorCiJob($output, $process_runner, $redundant_job_checker);
+    return new IntegratedTestOnPreviousMinorCiJob($env_facade, $output, $process_runner, $redundant_job_checker);
   }
 
   public function testBasicConfiguration(): void {
@@ -56,11 +57,45 @@ class IntegratedTestOnPreviousMinorCiJobTest extends CiJobTestBase {
       ->willReturn(0);
     $job = $this->createJob();
 
-    $job->run($this->createCiRunOptions([
-      'job' => CiJobEnum::INTEGRATED_TEST_ON_PREVIOUS_MINOR,
-      'phase' => CiJobPhaseEnum::INSTALL,
-      'sut' => $this->validSutName(),
-    ]));
+    $this->runInstallPhase($job, CiJobEnum::INTEGRATED_TEST_ON_PREVIOUS_MINOR);
+  }
+
+  public function testInstallOverrideProfile(): void {
+    $profile = 'example';
+    $this->envFacade
+      ->get('ORCA_FIXTURE_PROFILE')
+      ->willReturn($profile);
+    $this->processRunner
+      ->runOrca([
+        'fixture:init',
+        '--force',
+        "--sut={$this->validSutName()}",
+        '--core=PREVIOUS_MINOR',
+        "--profile={$profile}",
+      ])
+      ->shouldBeCalledOnce();
+    $job = $this->createJob();
+
+    $this->runInstallPhase($job, CiJobEnum::INTEGRATED_TEST_ON_PREVIOUS_MINOR);
+  }
+
+  public function testInstallOverrideProjectTemplate(): void {
+    $project_template = 'example';
+    $this->envFacade
+      ->get('ORCA_FIXTURE_PROJECT_TEMPLATE')
+      ->willReturn($project_template);
+    $this->processRunner
+      ->runOrca([
+        'fixture:init',
+        '--force',
+        "--sut={$this->validSutName()}",
+        '--core=PREVIOUS_MINOR',
+        "--project-template={$project_template}",
+      ])
+      ->shouldBeCalledOnce();
+    $job = $this->createJob();
+
+    $this->runInstallPhase($job, CiJobEnum::INTEGRATED_TEST_ON_PREVIOUS_MINOR);
   }
 
   public function testScript(): void {

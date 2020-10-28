@@ -9,6 +9,7 @@ use Acquia\Orca\Enum\CiJobEnum;
 use Acquia\Orca\Enum\CiJobPhaseEnum;
 use Acquia\Orca\Enum\DrupalCoreVersionEnum;
 use Acquia\Orca\Exception\OrcaVersionNotFoundException;
+use Acquia\Orca\Helper\EnvFacade;
 use Acquia\Orca\Helper\Process\ProcessRunner;
 use Acquia\Orca\Tests\Domain\Ci\Job\_Helper\CiJobTestBase;
 use Prophecy\Argument;
@@ -16,6 +17,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * @property \Acquia\Orca\Domain\Package\PackageManager|\Prophecy\Prophecy\ObjectProphecy $packageManager
+ * @property \Acquia\Orca\Helper\EnvFacade|\Prophecy\Prophecy\ObjectProphecy $envFacade
  * @property \Acquia\Orca\Helper\Process\ProcessRunner|\Prophecy\Prophecy\ObjectProphecy $processRunner
  * @property \Symfony\Component\Console\Output\OutputInterface|\Prophecy\Prophecy\ObjectProphecy $output
  */
@@ -23,6 +25,7 @@ class IntegratedTestOnNextMajorLatestMinorDevCiJobTest extends CiJobTestBase {
 
   public function setUp(): void {
     $this->drupalCoreVersionResolver = $this->prophesize(DrupalCoreVersionResolver::class);
+    $this->envFacade = $this->prophesize(EnvFacade::class);
     $this->output = $this->prophesize(OutputInterface::class);
     $this->packageManager = $this->prophesize(PackageManager::class);
     $this->processRunner = $this->prophesize(ProcessRunner::class);
@@ -31,9 +34,10 @@ class IntegratedTestOnNextMajorLatestMinorDevCiJobTest extends CiJobTestBase {
 
   private function createJob(): IntegratedTestOnNextMajorLatestMinorDevCiJob {
     $drupal_core_version_resolver = $this->drupalCoreVersionResolver->reveal();
+    $env_facade = $this->envFacade->reveal();
     $output = $this->output->reveal();
     $process_runner = $this->processRunner->reveal();
-    return new IntegratedTestOnNextMajorLatestMinorDevCiJob($drupal_core_version_resolver, $output, $process_runner);
+    return new IntegratedTestOnNextMajorLatestMinorDevCiJob($drupal_core_version_resolver, $env_facade, $output, $process_runner);
   }
 
   public function testBasicConfiguration(): void {
@@ -49,16 +53,53 @@ class IntegratedTestOnNextMajorLatestMinorDevCiJobTest extends CiJobTestBase {
         '--force',
         "--sut={$this->validSutName()}",
         '--core=NEXT_MAJOR_LATEST_MINOR_DEV',
+        '--dev',
       ])
       ->shouldBeCalledOnce()
       ->willReturn(0);
     $job = $this->createJob();
 
-    $job->run($this->createCiRunOptions([
-      'job' => CiJobEnum::INTEGRATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_DEV,
-      'phase' => CiJobPhaseEnum::INSTALL,
-      'sut' => $this->validSutName(),
-    ]));
+    $this->runInstallPhase($job, CiJobEnum::INTEGRATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_DEV);
+  }
+
+  public function testInstallOverrideProfile(): void {
+    $profile = 'example';
+    $this->envFacade
+      ->get('ORCA_FIXTURE_PROFILE')
+      ->willReturn($profile);
+    $this->processRunner
+      ->runOrca([
+        'fixture:init',
+        '--force',
+        "--sut={$this->validSutName()}",
+        '--core=NEXT_MAJOR_LATEST_MINOR_DEV',
+        '--dev',
+        "--profile={$profile}",
+      ])
+      ->shouldBeCalledOnce();
+    $job = $this->createJob();
+
+    $this->runInstallPhase($job, CiJobEnum::INTEGRATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_DEV);
+  }
+
+  public function testInstallOverrideProjectTemplate(): void {
+    $project_template = 'example';
+    $this->envFacade
+      ->get('ORCA_FIXTURE_PROJECT_TEMPLATE')
+      ->willReturn($project_template);
+    $this->processRunner
+      ->runOrca([
+        'fixture:init',
+        '--force',
+        "--sut={$this->validSutName()}",
+        '--core=NEXT_MAJOR_LATEST_MINOR_DEV',
+        '--dev',
+        "--project-template={$project_template}",
+      ])
+      ->shouldBeCalledOnce();
+    $job = $this->createJob();
+
+    $this->runInstallPhase($job, CiJobEnum::INTEGRATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_DEV);
   }
 
   public function testScript(): void {

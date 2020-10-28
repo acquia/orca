@@ -2,11 +2,13 @@
 
 namespace Acquia\Orca\Tests\Domain\Ci\Job\_Helper;
 
+use Acquia\Orca\Domain\Ci\Job\AbstractCiJob;
 use Acquia\Orca\Domain\Composer\Version\DrupalCoreVersionResolver;
 use Acquia\Orca\Domain\Package\Package;
 use Acquia\Orca\Domain\Package\PackageManager;
 use Acquia\Orca\Enum\CiJobEnum;
 use Acquia\Orca\Enum\CiJobPhaseEnum;
+use Acquia\Orca\Helper\EnvFacade;
 use Acquia\Orca\Helper\Process\ProcessRunner;
 use Acquia\Orca\Options\CiRunOptions;
 use PHPUnit\Framework\TestCase;
@@ -16,6 +18,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 /**
  * @property \Acquia\Orca\Domain\Composer\Version\DrupalCoreVersionResolver|\Prophecy\Prophecy\ObjectProphecy $drupalCoreVersionResolver
  * @property \Acquia\Orca\Domain\Package\PackageManager|\Prophecy\Prophecy\ObjectProphecy $packageManager
+ * @property \Acquia\Orca\Helper\EnvFacade|\Prophecy\Prophecy\ObjectProphecy $envFacade
  * @property \Acquia\Orca\Helper\Process\ProcessRunner|\Prophecy\Prophecy\ObjectProphecy $processRunner
  * @property \Symfony\Component\Console\Output\OutputInterface|\Prophecy\Prophecy\ObjectProphecy $output
  */
@@ -29,6 +32,12 @@ abstract class CiJobTestBase extends TestCase {
     $this->drupalCoreVersionResolver
       ->resolvePredefined(Argument::any())
       ->willReturn('9.0.0');
+
+    // ENV facade.
+    $this->envFacade = $this->prophesize(EnvFacade::class);
+    $this->envFacade
+      ->get(Argument::any())
+      ->willReturn(NULL);
 
     // SUT (package).
     $sut = $this->prophesize(Package::class);
@@ -94,6 +103,14 @@ abstract class CiJobTestBase extends TestCase {
       $value = [$value];
     });
     return $phases;
+  }
+
+  protected function runInstallPhase(AbstractCiJob $job, string $id): void {
+    $job->run($this->createCiRunOptions([
+      'job' => $id,
+      'phase' => CiJobPhaseEnum::INSTALL,
+      'sut' => $this->validSutName(),
+    ]));
   }
 
   protected function validJob(): CiJobEnum {
