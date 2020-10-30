@@ -25,6 +25,13 @@ class FixtureCreator {
   public const DEFAULT_PROFILE = 'orca';
 
   /**
+   * The Cloud Hooks installer.
+   *
+   * @var \Acquia\Orca\Domain\Fixture\CloudHooksInstaller
+   */
+  private $cloudHooksInstaller;
+
+  /**
    * The codebase creator.
    *
    * @var \Acquia\Orca\Domain\Fixture\CodebaseCreator
@@ -125,6 +132,8 @@ class FixtureCreator {
   /**
    * Constructs an instance.
    *
+   * @param \Acquia\Orca\Domain\Fixture\CloudHooksInstaller $cloud_hooks_installer
+   *   The Cloud Hooks installer.
    * @param \Acquia\Orca\Domain\Fixture\CodebaseCreator $codebase_creator
    *   The codebase creator.
    * @param \Acquia\Orca\Domain\Composer\ComposerFacade $composer
@@ -152,7 +161,7 @@ class FixtureCreator {
    * @param \Acquia\Orca\Domain\Composer\Version\VersionGuesser $version_guesser
    *   The version guesser.
    */
-  public function __construct(CodebaseCreator $codebase_creator, ComposerFacade $composer, ComposerJsonHelper $composer_json_helper, FixturePathHandler $fixture_path_handler, FixtureInspector $fixture_inspector, GitFacade $git, SiteInstaller $site_installer, SymfonyStyle $output, ProcessRunner $process_runner, PackageManager $package_manager, SubextensionManager $subextension_manager, VersionFinder $version_finder, VersionGuesser $version_guesser) {
+  public function __construct(CloudHooksInstaller $cloud_hooks_installer, CodebaseCreator $codebase_creator, ComposerFacade $composer, ComposerJsonHelper $composer_json_helper, FixturePathHandler $fixture_path_handler, FixtureInspector $fixture_inspector, GitFacade $git, SiteInstaller $site_installer, SymfonyStyle $output, ProcessRunner $process_runner, PackageManager $package_manager, SubextensionManager $subextension_manager, VersionFinder $version_finder, VersionGuesser $version_guesser) {
     $this->codebaseCreator = $codebase_creator;
     $this->composer = $composer;
     $this->composerJsonHelper = $composer_json_helper;
@@ -166,6 +175,7 @@ class FixtureCreator {
     $this->subextensionManager = $subextension_manager;
     $this->versionFinder = $version_finder;
     $this->versionGuesser = $version_guesser;
+    $this->cloudHooksInstaller = $cloud_hooks_installer;
   }
 
   /**
@@ -646,29 +656,7 @@ class FixtureCreator {
    */
   private function installCloudHooks(): void {
     $this->output->section('Installing Cloud Hooks');
-    $cwd = $this->fixture->getPath();
-
-    $tarball = 'hooks.tar.gz';
-    $this->processRunner->runExecutable('curl', [
-      '-L',
-      '-o',
-      $tarball,
-      'https://github.com/acquia/cloud-hooks/tarball/master',
-    ], $cwd);
-    $this->processRunner->runExecutable('tar', [
-      'xzf',
-      $tarball,
-    ], $cwd);
-    $this->processRunner->runExecutable('rm', [
-      $tarball,
-    ], $cwd);
-
-    $directory = glob($this->fixture->getPath('acquia-cloud-hooks-*'))[0];
-    $this->processRunner->runExecutable('mv', [
-      $directory,
-      'hooks',
-    ], $cwd);
-
+    $this->cloudHooksInstaller->install();
     $this->git->commitCodeChanges('Installed Cloud Hooks.');
   }
 
