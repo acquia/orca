@@ -65,6 +65,22 @@ class GitFacade {
   }
 
   /**
+   * Commits code changes made to the fixture directory.
+   *
+   * @param string $message
+   *   The commit message to use.
+   */
+  public function commitCodeChanges($message): void {
+    $this->execute(['add', '--all']);
+    $this->execute([
+      'commit',
+      "--message={$message}",
+      '--quiet',
+      '--allow-empty',
+    ]);
+  }
+
+  /**
    * Ensures the fixture's Git repository existence and basic configuration.
    */
   public function ensureFixtureRepo(): void {

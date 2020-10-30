@@ -306,7 +306,7 @@ class FixtureCreator {
     $this->output->section('Adding company packages');
     $this->addTopLevelAcquiaPackages();
     $this->addCompanySubextensions();
-    $this->commitCodeChanges('Added company packages.');
+    $this->git->commitCodeChanges('Added company packages.');
   }
 
   /**
@@ -640,22 +640,6 @@ class FixtureCreator {
   }
 
   /**
-   * Commits code changes made to the build directory.
-   *
-   * @param string $message
-   *   The commit message to use.
-   */
-  private function commitCodeChanges($message): void {
-    $this->git->execute(['add', '--all']);
-    $this->git->execute([
-      'commit',
-      "--message={$message}",
-      '--quiet',
-      '--allow-empty',
-    ]);
-  }
-
-  /**
    * Installs Acquia Cloud Hooks.
    *
    * @see https://github.com/acquia/cloud-hooks#installing-cloud-hooks
@@ -685,7 +669,7 @@ class FixtureCreator {
       'hooks',
     ], $cwd);
 
-    $this->commitCodeChanges('Installed Cloud Hooks.');
+    $this->git->commitCodeChanges('Installed Cloud Hooks.');
   }
 
   /**
@@ -695,7 +679,7 @@ class FixtureCreator {
     $this->output->section('Ensuring Drupal settings');
     $this->ensureCiSettingsFile();
     $this->ensureLocalSettingsFile();
-    $this->commitCodeChanges('Ensured Drupal settings');
+    $this->git->commitCodeChanges('Ensured Drupal settings');
   }
 
   /**
@@ -795,7 +779,7 @@ PHP;
 
     $this->output->section('Installing site');
     $this->siteInstaller->install($this->options->getProfile());
-    $this->commitCodeChanges('Installed site.');
+    $this->git->commitCodeChanges('Installed site.');
   }
 
   /**
@@ -827,14 +811,7 @@ PHP;
    */
   private function createAndCheckoutBackupTag(): void {
     $this->output->section('Creating backup tag');
-    $this->git->execute([
-      'tag',
-      GitFacade::FRESH_FIXTURE_TAG,
-    ]);
-    $this->git->execute([
-      'checkout',
-      GitFacade::FRESH_FIXTURE_TAG,
-    ]);
+    $this->git->backupFixtureRepo();
   }
 
   /**
