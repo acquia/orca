@@ -406,54 +406,8 @@ class FixtureCreator {
     }
 
     if (!is_link($sut_install_path)) {
-      $this->displayFailedSymlinkDebuggingInfo();
       throw new OrcaException('Failed to symlink SUT via local path repository.');
     }
-  }
-
-  /**
-   * Displays debugging info about a failure to symlink the SUT.
-   */
-  private function displayFailedSymlinkDebuggingInfo(): void {
-    $this->output->section('Debugging info');
-    /* @var Package $sut */
-    $sut = $this->options->getSut();
-
-    $this->output->comment('Display some info about the SUT install path.');
-    $this->processRunner->runExecutable('stat', [
-      $sut->getInstallPathAbsolute(),
-    ]);
-
-    $fixture_path = $this->fixture->getPath();
-
-    $this->output->comment("See if Composer knows why it wasn't symlinked.");
-    $this->processRunner->runOrcaVendorBin([
-      'composer',
-      'why-not',
-      $this->getLocalPackageString($sut),
-    ], $fixture_path);
-
-    $this->output->comment('See why Composer installed what it did.');
-    $this->processRunner->runOrcaVendorBin([
-      'composer',
-      'why',
-      $sut->getPackageName(),
-    ], $fixture_path);
-
-    $this->output->comment('Display the Git branches in the path repo.');
-    $this->git->execute([
-      'branch',
-    ], $sut->getRepositoryUrlAbsolute());
-
-    $this->output->comment("Display the fixture's composer.json.");
-    $this->processRunner->runExecutable('cat', [
-      $this->fixture->getPath('composer.json'),
-    ]);
-
-    $this->output->comment("Display the SUT's composer.json.");
-    $this->processRunner->runExecutable('cat', [
-      "{$sut->getRepositoryUrlAbsolute()}/composer.json",
-    ]);
   }
 
   /**
