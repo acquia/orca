@@ -2,11 +2,11 @@
 
 namespace Acquia\Orca\Tests\Domain\Ci\Job;
 
+use Acquia\Orca\Domain\Ci\Job\AbstractCiJob;
 use Acquia\Orca\Domain\Ci\Job\Helper\RedundantJobChecker;
 use Acquia\Orca\Domain\Ci\Job\IntegratedTestOnPreviousMinorCiJob;
 use Acquia\Orca\Domain\Package\PackageManager;
 use Acquia\Orca\Enum\CiJobEnum;
-use Acquia\Orca\Enum\CiJobPhaseEnum;
 use Acquia\Orca\Enum\DrupalCoreVersionEnum;
 use Acquia\Orca\Helper\EnvFacade;
 use Acquia\Orca\Helper\Process\ProcessRunner;
@@ -31,7 +31,7 @@ class IntegratedTestOnPreviousMinorCiJobTest extends CiJobTestBase {
     parent::setUp();
   }
 
-  private function createJob(): IntegratedTestOnPreviousMinorCiJob {
+  protected function createJob(): AbstractCiJob {
     $env_facade = $this->envFacade->reveal();
     $output = $this->output->reveal();
     $process_runner = $this->processRunner->reveal();
@@ -57,7 +57,23 @@ class IntegratedTestOnPreviousMinorCiJobTest extends CiJobTestBase {
       ->willReturn(0);
     $job = $this->createJob();
 
-    $this->runInstallPhase($job, CiJobEnum::INTEGRATED_TEST_ON_PREVIOUS_MINOR);
+    $this->runInstallPhase($job);
+  }
+
+  public function testRedundantJob(): void {
+    $this->redundantJobChecker
+      ->isRedundant(CiJobEnum::INTEGRATED_TEST_ON_PREVIOUS_MINOR())
+      ->willReturn(TRUE);
+    $this->output
+      ->writeln(Argument::any())
+      ->shouldBeCalledTimes(2);
+    $this->processRunner
+      ->runOrca(Argument::any())
+      ->shouldNotBeCalled();
+    $job = $this->createJob();
+
+    $this->runScriptPhase($job);
+    $this->runScriptPhase($job);
   }
 
   public function testInstallOverrideProfile(): void {
@@ -76,7 +92,7 @@ class IntegratedTestOnPreviousMinorCiJobTest extends CiJobTestBase {
       ->shouldBeCalledOnce();
     $job = $this->createJob();
 
-    $this->runInstallPhase($job, CiJobEnum::INTEGRATED_TEST_ON_PREVIOUS_MINOR);
+    $this->runInstallPhase($job);
   }
 
   public function testInstallOverrideProjectTemplate(): void {
@@ -95,14 +111,13 @@ class IntegratedTestOnPreviousMinorCiJobTest extends CiJobTestBase {
       ->shouldBeCalledOnce();
     $job = $this->createJob();
 
-    $this->runInstallPhase($job, CiJobEnum::INTEGRATED_TEST_ON_PREVIOUS_MINOR);
+    $this->runInstallPhase($job);
   }
 
   public function testScript(): void {
     $this->processRunner
       ->runOrca(['fixture:status'])
-      ->shouldBeCalledOnce()
-      ->willReturn(0);
+      ->shouldBeCalledOnce();
     $this->processRunner
       ->runOrca([
         'qa:automated-tests',
@@ -111,31 +126,23 @@ class IntegratedTestOnPreviousMinorCiJobTest extends CiJobTestBase {
       ->shouldBeCalledOnce();
     $job = $this->createJob();
 
-    $job->run($this->createValidRunOptions());
+    $this->runScriptPhase($job);
   }
 
-  public function testRedundantJob(): void {
-    $this->redundantJobChecker
-      ->isRedundant(CiJobEnum::INTEGRATED_TEST_ON_PREVIOUS_MINOR())
-      ->willReturn(TRUE);
-    $this->output
-      ->writeln(Argument::any())
-      ->shouldBeCalledTimes(2);
+  public function testScriptOverrideProfile(): void {
+    $this->envFacade
+      ->get('ORCA_FIXTURE_PROFILE')
+      ->willReturn('test/example');
     $this->processRunner
-      ->runOrca(Argument::any())
-      ->shouldNotBeCalled();
+      ->runOrca([
+        'qa:automated-tests',
+        "--sut={$this->validSutName()}",
+        '--sut-only',
+      ])
+      ->shouldBeCalledOnce();
     $job = $this->createJob();
 
-    $job->run($this->createCiRunOptions([
-      'job' => CiJobEnum::INTEGRATED_TEST_ON_PREVIOUS_MINOR,
-      'phase' => CiJobPhaseEnum::INSTALL,
-      'sut' => $this->validSutName(),
-    ]));
-    $job->run($this->createCiRunOptions([
-      'job' => CiJobEnum::INTEGRATED_TEST_ON_PREVIOUS_MINOR,
-      'phase' => CiJobPhaseEnum::SCRIPT,
-      'sut' => $this->validSutName(),
-    ]));
+    $this->runScriptPhase($job);
   }
 
 }

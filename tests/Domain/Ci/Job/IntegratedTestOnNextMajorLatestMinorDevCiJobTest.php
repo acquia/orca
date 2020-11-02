@@ -2,17 +2,14 @@
 
 namespace Acquia\Orca\Tests\Domain\Ci\Job;
 
+use Acquia\Orca\Domain\Ci\Job\AbstractCiJob;
 use Acquia\Orca\Domain\Ci\Job\IntegratedTestOnNextMajorLatestMinorDevCiJob;
 use Acquia\Orca\Domain\Composer\Version\DrupalCoreVersionResolver;
 use Acquia\Orca\Domain\Package\PackageManager;
-use Acquia\Orca\Enum\CiJobEnum;
-use Acquia\Orca\Enum\CiJobPhaseEnum;
 use Acquia\Orca\Enum\DrupalCoreVersionEnum;
-use Acquia\Orca\Exception\OrcaVersionNotFoundException;
 use Acquia\Orca\Helper\EnvFacade;
 use Acquia\Orca\Helper\Process\ProcessRunner;
 use Acquia\Orca\Tests\Domain\Ci\Job\_Helper\CiJobTestBase;
-use Prophecy\Argument;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
@@ -32,7 +29,7 @@ class IntegratedTestOnNextMajorLatestMinorDevCiJobTest extends CiJobTestBase {
     parent::setUp();
   }
 
-  private function createJob(): IntegratedTestOnNextMajorLatestMinorDevCiJob {
+  protected function createJob(): AbstractCiJob {
     $drupal_core_version_resolver = $this->drupalCoreVersionResolver->reveal();
     $env_facade = $this->envFacade->reveal();
     $output = $this->output->reveal();
@@ -55,11 +52,14 @@ class IntegratedTestOnNextMajorLatestMinorDevCiJobTest extends CiJobTestBase {
         '--core=NEXT_MAJOR_LATEST_MINOR_DEV',
         '--dev',
       ])
-      ->shouldBeCalledOnce()
-      ->willReturn(0);
+      ->shouldBeCalledOnce();
     $job = $this->createJob();
 
-    $this->runInstallPhase($job, CiJobEnum::INTEGRATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_DEV);
+    $this->runInstallPhase($job);
+  }
+
+  public function testNoDrupalCoreVersionFound(): void {
+    $this->assertExitsEarlyIfNoDrupalCoreVersionFound();
   }
 
   public function testInstallOverrideProfile(): void {
@@ -79,7 +79,7 @@ class IntegratedTestOnNextMajorLatestMinorDevCiJobTest extends CiJobTestBase {
       ->shouldBeCalledOnce();
     $job = $this->createJob();
 
-    $this->runInstallPhase($job, CiJobEnum::INTEGRATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_DEV);
+    $this->runInstallPhase($job);
   }
 
   public function testInstallOverrideProjectTemplate(): void {
@@ -99,14 +99,13 @@ class IntegratedTestOnNextMajorLatestMinorDevCiJobTest extends CiJobTestBase {
       ->shouldBeCalledOnce();
     $job = $this->createJob();
 
-    $this->runInstallPhase($job, CiJobEnum::INTEGRATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_DEV);
+    $this->runInstallPhase($job);
   }
 
   public function testScript(): void {
     $this->processRunner
       ->runOrca(['fixture:status'])
-      ->shouldBeCalledOnce()
-      ->willReturn(0);
+      ->shouldBeCalledOnce();
     $this->processRunner
       ->runOrca([
         'qa:automated-tests',
@@ -115,32 +114,23 @@ class IntegratedTestOnNextMajorLatestMinorDevCiJobTest extends CiJobTestBase {
       ->shouldBeCalledOnce();
     $job = $this->createJob();
 
-    $job->run($this->createValidRunOptions());
+    $this->runScriptPhase($job);
   }
 
-  public function testNoDrupalCoreVersionFound(): void {
-    $this->drupalCoreVersionResolver
-      ->resolvePredefined(CiJobEnum::INTEGRATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_DEV()->getDrupalCoreVersion())
-      ->shouldBeCalledTimes(2)
-      ->willThrow(OrcaVersionNotFoundException::class);
-    $this->output
-      ->writeln(Argument::any())
-      ->shouldBeCalledTimes(2);
+  public function testScriptOverrideProfile(): void {
+    $this->envFacade
+      ->get('ORCA_FIXTURE_PROFILE')
+      ->willReturn('test/example');
     $this->processRunner
-      ->runOrca(Argument::any())
-      ->shouldNotBeCalled();
+      ->runOrca([
+        'qa:automated-tests',
+        "--sut={$this->validSutName()}",
+        '--sut-only',
+      ])
+      ->shouldBeCalledOnce();
     $job = $this->createJob();
 
-    $job->run($this->createCiRunOptions([
-      'job' => CiJobEnum::INTEGRATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_DEV,
-      'phase' => CiJobPhaseEnum::INSTALL,
-      'sut' => $this->validSutName(),
-    ]));
-    $job->run($this->createCiRunOptions([
-      'job' => CiJobEnum::INTEGRATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_DEV,
-      'phase' => CiJobPhaseEnum::SCRIPT,
-      'sut' => $this->validSutName(),
-    ]));
+    $this->runScriptPhase($job);
   }
 
 }

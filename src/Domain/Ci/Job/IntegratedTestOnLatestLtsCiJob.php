@@ -64,11 +64,9 @@ class IntegratedTestOnLatestLtsCiJob extends AbstractCiJob {
     $this->processRunner
       ->runOrca(['fixture:status']);
 
-    $this->processRunner
-      ->runOrca([
-        'qa:automated-tests',
-        "--sut={$options->getSut()->getPackageName()}",
-      ]);
+    $this->runOrcaQaAutomatedTests([
+      "--sut={$options->getSut()->getPackageName()}",
+    ], $options, $this->envFacade, $this->processRunner);
   }
 
 }

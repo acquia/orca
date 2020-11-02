@@ -8,6 +8,7 @@ use Acquia\Orca\Domain\Package\Package;
 use Acquia\Orca\Domain\Package\PackageManager;
 use Acquia\Orca\Enum\CiJobEnum;
 use Acquia\Orca\Enum\CiJobPhaseEnum;
+use Acquia\Orca\Exception\OrcaVersionNotFoundException;
 use Acquia\Orca\Helper\EnvFacade;
 use Acquia\Orca\Helper\Process\ProcessRunner;
 use Acquia\Orca\Options\CiRunOptions;
@@ -68,6 +69,37 @@ abstract class CiJobTestBase extends TestCase {
       ->willReturn(0);
   }
 
+  protected function createJob(): AbstractCiJob {
+    return new class($this->validJobName()) extends AbstractCiJob {
+
+      public function __construct(CiJobEnum $job_name) {
+        $this->jobName = $job_name;
+      }
+
+      protected function jobName(): CiJobEnum {
+        return $this->jobName;
+      }
+
+    };
+  }
+
+  protected function assertExitsEarlyIfNoDrupalCoreVersionFound(): void {
+    $job = $this->createJob();
+    $this->drupalCoreVersionResolver
+      ->resolvePredefined($job->getDrupalCoreVersion())
+      ->shouldBeCalledTimes(2)
+      ->willThrow(OrcaVersionNotFoundException::class);
+    $this->output
+      ->writeln(Argument::any())
+      ->shouldBeCalledTimes(2);
+    $this->processRunner
+      ->runOrca(Argument::any())
+      ->shouldNotBeCalled();
+
+    $this->runInstallPhase($job);
+    $this->runScriptPhase($job);
+  }
+
   protected function createCiRunOptions($options): CiRunOptions {
     $package_manager = $this->packageManager->reveal();
     return new CiRunOptions($package_manager, $options);
@@ -105,10 +137,18 @@ abstract class CiJobTestBase extends TestCase {
     return $phases;
   }
 
-  protected function runInstallPhase(AbstractCiJob $job, string $id): void {
+  protected function runInstallPhase(AbstractCiJob $job): void {
     $job->run($this->createCiRunOptions([
-      'job' => $id,
+      'job' => $job->getJobName()->getKey(),
       'phase' => CiJobPhaseEnum::INSTALL,
+      'sut' => $this->validSutName(),
+    ]));
+  }
+
+  protected function runScriptPhase(AbstractCiJob $job): void {
+    $job->run($this->createCiRunOptions([
+      'job' => $job->getJobName()->getKey(),
+      'phase' => CiJobPhaseEnum::SCRIPT,
       'sut' => $this->validSutName(),
     ]));
   }

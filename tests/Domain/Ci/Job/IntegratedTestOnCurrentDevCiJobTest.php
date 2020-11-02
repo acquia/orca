@@ -2,8 +2,8 @@
 
 namespace Acquia\Orca\Tests\Domain\Ci\Job;
 
+use Acquia\Orca\Domain\Ci\Job\AbstractCiJob;
 use Acquia\Orca\Domain\Ci\Job\IntegratedTestOnCurrentDevCiJob;
-use Acquia\Orca\Enum\CiJobEnum;
 use Acquia\Orca\Enum\DrupalCoreVersionEnum;
 use Acquia\Orca\Helper\EnvFacade;
 use Acquia\Orca\Helper\Process\ProcessRunner;
@@ -17,7 +17,7 @@ class IntegratedTestOnCurrentDevCiJobTest extends CiJobTestBase {
     parent::setUp();
   }
 
-  private function createJob(): IntegratedTestOnCurrentDevCiJob {
+  protected function createJob(): AbstractCiJob {
     $env_facade = $this->envFacade->reveal();
     $process_runner = $this->processRunner->reveal();
     return new IntegratedTestOnCurrentDevCiJob($env_facade, $process_runner);
@@ -42,7 +42,7 @@ class IntegratedTestOnCurrentDevCiJobTest extends CiJobTestBase {
       ->willReturn(0);
     $job = $this->createJob();
 
-    $this->runInstallPhase($job, CiJobEnum::INTEGRATED_TEST_ON_CURRENT_DEV);
+    $this->runInstallPhase($job);
   }
 
   public function testInstallOverrideProfile(): void {
@@ -62,7 +62,7 @@ class IntegratedTestOnCurrentDevCiJobTest extends CiJobTestBase {
       ->shouldBeCalledOnce();
     $job = $this->createJob();
 
-    $this->runInstallPhase($job, CiJobEnum::INTEGRATED_TEST_ON_CURRENT_DEV);
+    $this->runInstallPhase($job);
   }
 
   public function testInstallOverrideProjectTemplate(): void {
@@ -82,24 +82,38 @@ class IntegratedTestOnCurrentDevCiJobTest extends CiJobTestBase {
       ->shouldBeCalledOnce();
     $job = $this->createJob();
 
-    $this->runInstallPhase($job, CiJobEnum::INTEGRATED_TEST_ON_CURRENT_DEV);
+    $this->runInstallPhase($job);
   }
 
   public function testScript(): void {
     $this->processRunner
       ->runOrca(['fixture:status'])
-      ->shouldBeCalledOnce()
-      ->willReturn(0);
+      ->shouldBeCalledOnce();
     $this->processRunner
       ->runOrca([
         'qa:automated-tests',
         "--sut={$this->validSutName()}",
       ])
-      ->shouldBeCalledOnce()
-      ->willReturn(0);
+      ->shouldBeCalledOnce();
     $job = $this->createJob();
 
-    $job->run($this->createValidRunOptions());
+    $this->runScriptPhase($job);
+  }
+
+  public function testScriptOverrideProfile(): void {
+    $this->envFacade
+      ->get('ORCA_FIXTURE_PROFILE')
+      ->willReturn('test/example');
+    $this->processRunner
+      ->runOrca([
+        'qa:automated-tests',
+        "--sut={$this->validSutName()}",
+        '--sut-only',
+      ])
+      ->shouldBeCalledOnce();
+    $job = $this->createJob();
+
+    $this->runScriptPhase($job);
   }
 
 }

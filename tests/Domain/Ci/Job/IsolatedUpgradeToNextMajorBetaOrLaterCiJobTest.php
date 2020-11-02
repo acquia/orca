@@ -2,9 +2,8 @@
 
 namespace Acquia\Orca\Tests\Domain\Ci\Job;
 
+use Acquia\Orca\Domain\Ci\Job\AbstractCiJob;
 use Acquia\Orca\Domain\Ci\Job\IsolatedUpgradeToNextMajorBetaOrLaterCiJob;
-use Acquia\Orca\Enum\CiJobEnum;
-use Acquia\Orca\Enum\CiJobPhaseEnum;
 use Acquia\Orca\Enum\DrupalCoreVersionEnum;
 use Acquia\Orca\Tests\Domain\Ci\Job\_Helper\CiJobTestBase;
 use Prophecy\Argument;
@@ -20,7 +19,7 @@ class IsolatedUpgradeToNextMajorBetaOrLaterCiJobTest extends CiJobTestBase {
     parent::setUp();
   }
 
-  private function createJob(): IsolatedUpgradeToNextMajorBetaOrLaterCiJob {
+  protected function createJob(): AbstractCiJob {
     $output = $this->symfonyOutput->reveal();
     return new IsolatedUpgradeToNextMajorBetaOrLaterCiJob($output);
   }
@@ -37,7 +36,7 @@ class IsolatedUpgradeToNextMajorBetaOrLaterCiJobTest extends CiJobTestBase {
       ->shouldBeCalledOnce();
     $job = $this->createJob();
 
-    $this->runInstallPhase($job, CiJobEnum::ISOLATED_UPGRADE_TO_NEXT_MAJOR_DEV);
+    $this->runInstallPhase($job);
   }
 
   public function testScript(): void {
@@ -46,11 +45,7 @@ class IsolatedUpgradeToNextMajorBetaOrLaterCiJobTest extends CiJobTestBase {
       ->shouldBeCalledOnce();
     $job = $this->createJob();
 
-    $job->run($this->createCiRunOptions([
-      'job' => CiJobEnum::ISOLATED_UPGRADE_TO_NEXT_MAJOR_DEV,
-      'phase' => CiJobPhaseEnum::SCRIPT,
-      'sut' => $this->validSutName(),
-    ]));
+    $this->runScriptPhase($job);
   }
 
 }

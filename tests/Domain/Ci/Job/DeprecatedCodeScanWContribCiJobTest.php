@@ -2,9 +2,8 @@
 
 namespace Acquia\Orca\Tests\Domain\Ci\Job;
 
+use Acquia\Orca\Domain\Ci\Job\AbstractCiJob;
 use Acquia\Orca\Domain\Ci\Job\DeprecatedCodeScanWContribCiJob;
-use Acquia\Orca\Enum\CiJobEnum;
-use Acquia\Orca\Enum\CiJobPhaseEnum;
 use Acquia\Orca\Enum\DrupalCoreVersionEnum;
 use Acquia\Orca\Helper\EnvFacade;
 use Acquia\Orca\Helper\Process\ProcessRunner;
@@ -22,7 +21,7 @@ class DeprecatedCodeScanWContribCiJobTest extends CiJobTestBase {
     parent::setUp();
   }
 
-  private function createJob(): DeprecatedCodeScanWContribCiJob {
+  protected function createJob(): AbstractCiJob {
     $env_facade = $this->envFacade->reveal();
     $process_runner = $this->processRunner->reveal();
     return new DeprecatedCodeScanWContribCiJob($env_facade, $process_runner);
@@ -47,7 +46,7 @@ class DeprecatedCodeScanWContribCiJobTest extends CiJobTestBase {
       ->shouldBeCalledOnce();
     $job = $this->createJob();
 
-    $this->runInstallPhase($job, CiJobEnum::DEPRECATED_CODE_SCAN_W_CONTRIB);
+    $this->runInstallPhase($job);
   }
 
   public function testInstallOverrideProfile(): void {
@@ -68,7 +67,7 @@ class DeprecatedCodeScanWContribCiJobTest extends CiJobTestBase {
       ->shouldBeCalledOnce();
     $job = $this->createJob();
 
-    $this->runInstallPhase($job, CiJobEnum::DEPRECATED_CODE_SCAN_W_CONTRIB);
+    $this->runInstallPhase($job);
   }
 
   public function testInstallOverrideProjectTemplate(): void {
@@ -89,14 +88,13 @@ class DeprecatedCodeScanWContribCiJobTest extends CiJobTestBase {
       ->shouldBeCalledOnce();
     $job = $this->createJob();
 
-    $this->runInstallPhase($job, CiJobEnum::DEPRECATED_CODE_SCAN_W_CONTRIB);
+    $this->runInstallPhase($job);
   }
 
   public function testScript(): void {
     $this->processRunner
       ->runOrca(['fixture:status'])
-      ->shouldBeCalledOnce()
-      ->willReturn(0);
+      ->shouldBeCalledOnce();
     $this->processRunner
       ->runOrca([
         'qa:deprecated-code-scan',
@@ -105,11 +103,7 @@ class DeprecatedCodeScanWContribCiJobTest extends CiJobTestBase {
       ->shouldBeCalledOnce();
     $job = $this->createJob();
 
-    $job->run($this->createCiRunOptions([
-      'job' => CiJobEnum::DEPRECATED_CODE_SCAN_W_CONTRIB,
-      'phase' => CiJobPhaseEnum::SCRIPT,
-      'sut' => $this->validSutName(),
-    ]));
+    $this->runScriptPhase($job);
   }
 
 }

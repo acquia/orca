@@ -2,6 +2,7 @@
 
 namespace Acquia\Orca\Tests\Domain\Ci\Job;
 
+use Acquia\Orca\Domain\Ci\Job\AbstractCiJob;
 use Acquia\Orca\Domain\Ci\Job\StaticCodeAnalysisCiJob;
 use Acquia\Orca\Domain\Package\PackageManager;
 use Acquia\Orca\Helper\Process\ProcessRunner;
@@ -18,7 +19,7 @@ class StaticCodeAnalysisCiJobTest extends CiJobTestBase {
     parent::setUp();
   }
 
-  private function createJob(): StaticCodeAnalysisCiJob {
+  protected function createJob(): AbstractCiJob {
     $process_runner = $this->processRunner->reveal();
     return new StaticCodeAnalysisCiJob($process_runner);
   }
@@ -33,15 +34,15 @@ class StaticCodeAnalysisCiJobTest extends CiJobTestBase {
     $this->processRunner
       ->runOrca(['fixture:status'])
       ->shouldNotBeCalled();
-    $job = $this->createJob();
     $this->processRunner
       ->runOrca([
         'qa:static-analysis',
         self::SUT_REPOSITORY_URL_ABSOLUTE,
       ])
       ->shouldBeCalledOnce();
+    $job = $this->createJob();
 
-    $job->run($this->createValidRunOptions());
+    $this->runScriptPhase($job);
   }
 
 }
