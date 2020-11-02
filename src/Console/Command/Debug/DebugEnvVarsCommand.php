@@ -49,8 +49,6 @@ class DebugEnvVarsCommand extends Command {
 
   /**
    * {@inheritdoc}
-   *
-   * @SuppressWarnings(PHPMD.StaticAccess)
    */
   public function execute(InputInterface $input, OutputInterface $output): int {
     $table = $this->tableBuilder->build($output);

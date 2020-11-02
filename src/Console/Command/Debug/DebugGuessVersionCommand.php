@@ -52,8 +52,6 @@ class DebugGuessVersionCommand extends Command {
 
   /**
    * {@inheritdoc}
-   *
-   * @SuppressWarnings(PHPMD.StaticAccess)
    */
   public function execute(InputInterface $input, OutputInterface $output): int {
     $path = $input->getArgument('path');

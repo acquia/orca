@@ -224,8 +224,6 @@ class DrupalCoreVersionFinder {
    *
    * @return \Composer\Package\Version\VersionSelector
    *   A Composer version selector.
-   *
-   * @SuppressWarnings(PHPMD.StaticAccess)
    */
   private function getVersionSelector(): VersionSelector {
     $pool = $this->factory->createWithPackagistOnly();

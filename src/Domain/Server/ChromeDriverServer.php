@@ -36,8 +36,6 @@ class ChromeDriverServer extends ServerBase {
 
   /**
    * {@inheritdoc}
-   *
-   * @SuppressWarnings(PHPMD.StaticAccess)
    */
   protected function createProcess(): Process {
     $command = $this->orca->getPath('vendor/bin/chromedriver') . " \\

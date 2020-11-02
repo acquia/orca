@@ -89,8 +89,6 @@ class FixtureInitCommand extends Command {
 
   /**
    * {@inheritdoc}
-   *
-   * @SuppressWarnings(PHPMD.StaticAccess)
    */
   protected function configure(): void {
     $this

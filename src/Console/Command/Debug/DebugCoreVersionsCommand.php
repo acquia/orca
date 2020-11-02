@@ -51,8 +51,6 @@ class DebugCoreVersionsCommand extends Command {
 
   /**
    * {@inheritdoc}
-   *
-   * @SuppressWarnings(PHPMD.StaticAccess)
    */
   public function execute(InputInterface $input, OutputInterface $output): int {
     $output->writeln('Getting version data via Composer. This takes a while.');

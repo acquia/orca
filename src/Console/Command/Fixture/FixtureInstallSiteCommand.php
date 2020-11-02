@@ -54,8 +54,6 @@ class FixtureInstallSiteCommand extends Command {
 
   /**
    * {@inheritdoc}
-   *
-   * @SuppressWarnings(PHPMD.StaticAccess)
    */
   protected function configure() {
     $this

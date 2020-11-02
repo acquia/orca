@@ -74,8 +74,6 @@ class DebugPackagesCommand extends Command {
 
   /**
    * {@inheritdoc}
-   *
-   * @SuppressWarnings(PHPMD.StaticAccess)
    */
   protected function configure(): void {
     $this
@@ -90,8 +88,6 @@ class DebugPackagesCommand extends Command {
 
   /**
    * {@inheritdoc}
-   *
-   * @SuppressWarnings(PHPMD.StaticAccess)
    */
   public function execute(InputInterface $input, OutputInterface $output): int {
     $argument = $input->getArgument('core');
@@ -119,8 +115,6 @@ class DebugPackagesCommand extends Command {
    *
    * @param string|string[]|null $argument
    *   The "core" command argument.
-   *
-   * @SuppressWarnings(PHPMD.StaticAccess)
    */
   private function handleCoreArgument($argument): void {
     if ($argument === NULL) {
