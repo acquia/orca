@@ -22,7 +22,6 @@ case "$ORCA_JOB" in
   "INTEGRATED_DEV") orca debug:packages CURRENT_DEV; eval "orca fixture:init -f --sut=$ORCA_SUT_NAME --core=CURRENT_DEV --dev --profile=$ORCA_FIXTURE_PROFILE --project-template=$ORCA_FIXTURE_PROJECT_TEMPLATE" ;;
   "CORE_NEXT") orca debug:packages NEXT_DEV; eval "orca fixture:init -f --sut=$ORCA_SUT_NAME --core=NEXT_DEV --dev --profile=$ORCA_FIXTURE_PROFILE --project-template=$ORCA_FIXTURE_PROJECT_TEMPLATE" ;;
   "D9_READINESS") orca debug:packages D9_READINESS; eval "orca fixture:init -f --sut=$ORCA_SUT_NAME --sut-only --core=D9_READINESS --dev --profile=$ORCA_FIXTURE_PROFILE --project-template=$ORCA_FIXTURE_PROJECT_TEMPLATE" ;;
-  "CUSTOM") eval "orca fixture:init -f --sut=$ORCA_SUT_NAME --profile=$ORCA_FIXTURE_PROFILE ${ORCA_CUSTOM_FIXTURE_INIT_ARGS:=}" ;;
 esac
 
 if [[ "$ORCA_ENABLE_NIGHTWATCH" = "TRUE" && "$ORCA_SUT_HAS_NIGHTWATCH_TESTS" && -d "$ORCA_YARN_DIR" ]]; then

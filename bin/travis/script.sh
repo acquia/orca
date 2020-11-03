@@ -29,7 +29,6 @@ case "$ORCA_JOB" in
   "INTEGRATED_DEV") eval "orca qa:automated-tests --sut=$ORCA_SUT_NAME $SUT_ONLY" ;;
   "CORE_NEXT") eval "orca qa:automated-tests --sut=$ORCA_SUT_NAME $SUT_ONLY" ;;
   "D9_READINESS") eval "orca qa:automated-tests --sut=$ORCA_SUT_NAME --sut-only" ;;
-  "CUSTOM") eval "orca qa:automated-tests --sut=$ORCA_SUT_NAME ${ORCA_CUSTOM_TESTS_RUN_ARGS:=}" ;;
 esac
 
 if [[ "$ORCA_ENABLE_NIGHTWATCH" = "TRUE" && "$ORCA_SUT_HAS_NIGHTWATCH_TESTS" && -d "$ORCA_YARN_DIR" ]]; then
