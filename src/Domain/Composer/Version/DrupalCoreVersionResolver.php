@@ -89,6 +89,25 @@ class DrupalCoreVersionResolver {
   }
 
   /**
+   * Determines if a given version keyword resolves to a version that exists.
+   *
+   * @param \Acquia\Orca\Enum\DrupalCoreVersionEnum $version
+   *   The Drupal core version constant.
+   *
+   * @return bool
+   *   TRUE if the version exists or FALSE if not.
+   */
+  public function existsPredefined(DrupalCoreVersionEnum $version): bool {
+    try {
+      $this->resolvePredefined($version);
+    }
+    catch (OrcaVersionNotFoundException $e) {
+      return FALSE;
+    }
+    return TRUE;
+  }
+
+  /**
    * Resolves a given version keyword to a concrete version string.
    *
    * @param \Acquia\Orca\Enum\DrupalCoreVersionEnum $version

@@ -4,11 +4,15 @@ namespace Acquia\Orca\Tests\Domain\Ci\Job;
 
 use Acquia\Orca\Domain\Ci\Job\AbstractCiJob;
 use Acquia\Orca\Domain\Ci\Job\StrictDeprecatedCodeScanCiJob;
+use Acquia\Orca\Domain\Composer\Version\DrupalCoreVersionResolver;
 use Acquia\Orca\Domain\Package\PackageManager;
 use Acquia\Orca\Enum\DrupalCoreVersionEnum;
+use Acquia\Orca\Exception\OrcaVersionNotFoundException;
 use Acquia\Orca\Helper\EnvFacade;
 use Acquia\Orca\Helper\Process\ProcessRunner;
 use Acquia\Orca\Tests\Domain\Ci\Job\_Helper\CiJobTestBase;
+use Prophecy\Argument;
+use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * @property \Acquia\Orca\Domain\Package\PackageManager|\Prophecy\Prophecy\ObjectProphecy $packageManager
@@ -18,22 +22,47 @@ use Acquia\Orca\Tests\Domain\Ci\Job\_Helper\CiJobTestBase;
 class StrictDeprecatedCodeScanCiJobTest extends CiJobTestBase {
 
   public function setUp(): void {
+    $this->drupalCoreVersionResolver = $this->prophesize(DrupalCoreVersionResolver::class);
     $this->envFacade = $this->prophesize(EnvFacade::class);
+    $this->output = $this->prophesize(OutputInterface::class);
+    $this->output
+      ->writeln(Argument::any())
+      ->shouldNotBeCalled();
     $this->packageManager = $this->prophesize(PackageManager::class);
     $this->processRunner = $this->prophesize(ProcessRunner::class);
     parent::setUp();
   }
 
   protected function createJob(): AbstractCiJob {
+    $drupal_core_version_resolver = $this->drupalCoreVersionResolver->reveal();
     $env_facade = $this->envFacade->reveal();
+    $output = $this->output->reveal();
     $process_runner = $this->processRunner->reveal();
-    return new StrictDeprecatedCodeScanCiJob($env_facade, $process_runner);
+    return new StrictDeprecatedCodeScanCiJob($drupal_core_version_resolver, $env_facade, $output, $process_runner);
   }
 
   public function testBasicConfiguration(): void {
     $job = $this->createJob();
 
     self::assertEquals(DrupalCoreVersionEnum::CURRENT_DEV(), $job->getDrupalCoreVersion(), 'Declared the correct Drupal core version.');
+  }
+
+  public function testExitEarly(): void {
+    $version = DrupalCoreVersionEnum::NEXT_MAJOR_LATEST_MINOR_BETA_OR_LATER();
+    $this->drupalCoreVersionResolver
+      ->resolvePredefined($version)
+      ->shouldBeCalledTimes(2)
+      ->willThrow(OrcaVersionNotFoundException::class);
+    $this->output
+      ->writeln(Argument::any())
+      ->shouldBeCalledTimes(2);
+    $this->processRunner
+      ->runOrca(Argument::any())
+      ->shouldNotBeCalled();
+    $job = $this->createJob();
+
+    $this->runInstallPhase($job);
+    $this->runScriptPhase($job);
   }
 
   public function testInstall(): void {

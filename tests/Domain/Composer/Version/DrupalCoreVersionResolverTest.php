@@ -62,6 +62,30 @@ class DrupalCoreVersionResolverTest extends TestCase {
       ->shouldBeCalledOnce();
   }
 
+  public function testExistsPredefinedTrue(): void {
+    $this->selector
+      ->findBestCandidate('drupal/core', Argument::any(), NULL, Argument::any())
+      ->shouldBeCalledOnce()
+      ->willReturn($this->package->reveal());
+    $resolver = $this->createDrupalCoreVersionResolver();
+
+    $exists = $resolver->existsPredefined($this->validVersion());
+
+    self::assertTrue($exists);
+  }
+
+  public function testExistsPredefinedFalse(): void {
+    $this->selector
+      ->findBestCandidate('drupal/core', Argument::any(), NULL, Argument::any())
+      ->shouldBeCalledOnce()
+      ->willReturn(FALSE);
+    $resolver = $this->createDrupalCoreVersionResolver();
+
+    $exists = $resolver->existsPredefined($this->validVersion());
+
+    self::assertFalse($exists);
+  }
+
   /**
    * @dataProvider providerResolveArbitrary
    */
@@ -196,7 +220,7 @@ class DrupalCoreVersionResolverTest extends TestCase {
     $this->expectException(LogicException::class);
     $resolver = $this->createDrupalCoreVersionResolver();
 
-    $resolver->resolvePredefined(DrupalCoreVersionEnum::CURRENT());
+    $resolver->resolvePredefined($version);
   }
 
   public function providerResolvePredefinedCurrentNoneFound() {
