@@ -9,9 +9,9 @@ use MyCLabs\Enum\Enum;
  *
  * @method static CiJobEnum STATIC_CODE_ANALYSIS()
  * @method static CiJobEnum INTEGRATED_TEST_ON_OLDEST_SUPPORTED()
+ * @method static CiJobEnum INTEGRATED_TEST_ON_LATEST_LTS()
  * @method static CiJobEnum INTEGRATED_TEST_ON_PREVIOUS_MINOR()
  * @method static CiJobEnum ISOLATED_TEST_ON_CURRENT()
- * @method static CiJobEnum INTEGRATED_TEST_ON_LATEST_LTS()
  * @method static CiJobEnum INTEGRATED_TEST_ON_CURRENT()
  * @method static CiJobEnum INTEGRATED_UPGRADE_TEST_TO_NEXT_MINOR()
  * @method static CiJobEnum INTEGRATED_UPGRADE_TEST_TO_NEXT_MINOR_DEV()
@@ -28,8 +28,8 @@ use MyCLabs\Enum\Enum;
  * @method static CiJobEnum INTEGRATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_BETA_OR_LATER()
  * @method static CiJobEnum ISOLATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_DEV()
  * @method static CiJobEnum INTEGRATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_DEV()
- * @method static CiJobEnum ISOLATED_UPGRADE_TO_NEXT_MAJOR_BETA_OR_LATER()
- * @method static CiJobEnum ISOLATED_UPGRADE_TO_NEXT_MAJOR_DEV()
+ * @method static CiJobEnum ISOLATED_UPGRADE_TEST_TO_NEXT_MAJOR_BETA_OR_LATER()
+ * @method static CiJobEnum ISOLATED_UPGRADE_TEST_TO_NEXT_MAJOR_DEV()
  */
 final class CiJobEnum extends Enum {
 
@@ -37,9 +37,9 @@ final class CiJobEnum extends Enum {
 
   public const INTEGRATED_TEST_ON_OLDEST_SUPPORTED = 'INTEGRATED_TEST_ON_OLDEST_SUPPORTED';
 
-  public const INTEGRATED_TEST_ON_PREVIOUS_MINOR = 'INTEGRATED_TEST_ON_PREVIOUS_MINOR';
-
   public const INTEGRATED_TEST_ON_LATEST_LTS = 'INTEGRATED_TEST_ON_LATEST_LTS';
+
+  public const INTEGRATED_TEST_ON_PREVIOUS_MINOR = 'INTEGRATED_TEST_ON_PREVIOUS_MINOR';
 
   public const ISOLATED_TEST_ON_CURRENT = 'ISOLATED_TEST_ON_CURRENT';
 
@@ -75,9 +75,9 @@ final class CiJobEnum extends Enum {
 
   public const INTEGRATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_DEV = 'INTEGRATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_DEV';
 
-  public const ISOLATED_UPGRADE_TO_NEXT_MAJOR_BETA_OR_LATER = 'ISOLATED_UPGRADE_TO_NEXT_MAJOR_BETA_OR_LATER';
+  public const ISOLATED_UPGRADE_TEST_TO_NEXT_MAJOR_BETA_OR_LATER = 'ISOLATED_UPGRADE_TEST_TO_NEXT_MAJOR_BETA_OR_LATER';
 
-  public const ISOLATED_UPGRADE_TO_NEXT_MAJOR_DEV = 'ISOLATED_UPGRADE_TO_NEXT_MAJOR_DEV';
+  public const ISOLATED_UPGRADE_TEST_TO_NEXT_MAJOR_DEV = 'ISOLATED_UPGRADE_TEST_TO_NEXT_MAJOR_DEV';
 
   /**
    * Descriptions for the jobs.
@@ -89,8 +89,8 @@ final class CiJobEnum extends Enum {
     return [
       self::STATIC_CODE_ANALYSIS => 'Static code analysis',
       self::INTEGRATED_TEST_ON_OLDEST_SUPPORTED => 'Integrated test on oldest supported Drupal core version',
-      self::INTEGRATED_TEST_ON_PREVIOUS_MINOR => 'Integrated test on previous minor Drupal core version',
       self::INTEGRATED_TEST_ON_LATEST_LTS => 'Integrated test on latest LTS Drupal core version',
+      self::INTEGRATED_TEST_ON_PREVIOUS_MINOR => 'Integrated test on previous minor Drupal core version',
       self::ISOLATED_TEST_ON_CURRENT => 'Isolated test on current Drupal core version',
       self::INTEGRATED_TEST_ON_CURRENT => 'Integrated test on current Drupal core version',
       self::INTEGRATED_UPGRADE_TEST_TO_NEXT_MINOR => 'Integrated upgrade test to next minor Drupal core version',
@@ -108,8 +108,8 @@ final class CiJobEnum extends Enum {
       self::INTEGRATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_BETA_OR_LATER => 'Integrated test on next major, latest minor beta-or-later Drupal core version',
       self::ISOLATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_DEV => 'Isolated test on next major, latest minor dev Drupal core version',
       self::INTEGRATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_DEV => 'Integrated test on next major, latest minor dev Drupal core version',
-      self::ISOLATED_UPGRADE_TO_NEXT_MAJOR_BETA_OR_LATER => 'Isolated upgrade to next major beta-or-later Drupal core version',
-      self::ISOLATED_UPGRADE_TO_NEXT_MAJOR_DEV => 'Isolated upgrade to next major dev Drupal core version',
+      self::ISOLATED_UPGRADE_TEST_TO_NEXT_MAJOR_BETA_OR_LATER => 'Isolated upgrade test to next major beta-or-later Drupal core version',
+      self::ISOLATED_UPGRADE_TEST_TO_NEXT_MAJOR_DEV => 'Isolated upgrade test to next major dev Drupal core version',
     ];
   }
 
@@ -145,8 +145,8 @@ final class CiJobEnum extends Enum {
       case self::INTEGRATED_TEST_ON_CURRENT:
       case self::INTEGRATED_UPGRADE_TEST_TO_NEXT_MINOR:
       case self::INTEGRATED_UPGRADE_TEST_TO_NEXT_MINOR_DEV:
-      case self::ISOLATED_UPGRADE_TO_NEXT_MAJOR_BETA_OR_LATER:
-      case self::ISOLATED_UPGRADE_TO_NEXT_MAJOR_DEV:
+      case self::ISOLATED_UPGRADE_TEST_TO_NEXT_MAJOR_BETA_OR_LATER:
+      case self::ISOLATED_UPGRADE_TEST_TO_NEXT_MAJOR_DEV:
         return DrupalCoreVersionEnum::CURRENT();
 
       case self::ISOLATED_TEST_ON_CURRENT_DEV:

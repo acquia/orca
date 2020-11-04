@@ -7,9 +7,9 @@ use Acquia\Orca\Options\CiRunOptions;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * The isolated upgrade to next major beta-or-later CI job.
+ * The isolated upgrade test to next major beta-or-later CI job.
  */
-class IsolatedUpgradeToNextMajorBetaOrLaterCiJob extends AbstractCiJob {
+class IsolatedUpgradeTestToNextMajorBetaOrLaterCiJob extends AbstractCiJob {
 
   /**
    * The output decorator.
@@ -32,7 +32,7 @@ class IsolatedUpgradeToNextMajorBetaOrLaterCiJob extends AbstractCiJob {
    * {@inheritdoc}
    */
   protected function jobName(): CiJobEnum {
-    return CiJobEnum::ISOLATED_UPGRADE_TO_NEXT_MAJOR_BETA_OR_LATER();
+    return CiJobEnum::ISOLATED_UPGRADE_TEST_TO_NEXT_MAJOR_BETA_OR_LATER();
   }
 
   /**

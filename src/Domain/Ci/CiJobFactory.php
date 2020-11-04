@@ -21,8 +21,8 @@ use Acquia\Orca\Domain\Ci\Job\IsolatedTestOnNextMajorLatestMinorBetaOrLaterCiJob
 use Acquia\Orca\Domain\Ci\Job\IsolatedTestOnNextMajorLatestMinorDevCiJob;
 use Acquia\Orca\Domain\Ci\Job\IsolatedTestOnNextMinorCiJob;
 use Acquia\Orca\Domain\Ci\Job\IsolatedTestOnNextMinorDevCiJob;
-use Acquia\Orca\Domain\Ci\Job\IsolatedUpgradeToNextMajorBetaOrLaterCiJob;
-use Acquia\Orca\Domain\Ci\Job\IsolatedUpgradeToNextMajorDevCiJob;
+use Acquia\Orca\Domain\Ci\Job\IsolatedUpgradeTestToNextMajorBetaOrLaterCiJob;
+use Acquia\Orca\Domain\Ci\Job\IsolatedUpgradeTestToNextMajorDevCiJob;
 use Acquia\Orca\Domain\Ci\Job\LooseDeprecatedCodeScanCiJob;
 use Acquia\Orca\Domain\Ci\Job\StaticCodeAnalysisCiJob;
 use Acquia\Orca\Domain\Ci\Job\StrictDeprecatedCodeScanCiJob;
@@ -81,10 +81,10 @@ class CiJobFactory {
    *   Isolated test on next minor Drupal core version.
    * @param \Acquia\Orca\Domain\Ci\Job\IsolatedTestOnNextMinorDevCiJob $isolated_test_on_next_minor_dev_ci_job
    *   Isolated test on next minor dev Drupal core version.
-   * @param \Acquia\Orca\Domain\Ci\Job\IsolatedUpgradeToNextMajorBetaOrLaterCiJob $isolated_upgrade_to_next_major_beta_or_later_ci_job
-   *   Isolated upgrade to next major beta-or-later Drupal core version.
-   * @param \Acquia\Orca\Domain\Ci\Job\IsolatedUpgradeToNextMajorDevCiJob $isolated_upgrade_to_next_major_dev_ci_job
-   *   Isolated upgrade to next major dev Drupal core version.
+   * @param \Acquia\Orca\Domain\Ci\Job\IsolatedUpgradeTestToNextMajorBetaOrLaterCiJob $isolated_upgrade_test_to_next_major_beta_or_later_ci_job
+   *   Isolated upgrade test to next major beta-or-later Drupal core version.
+   * @param \Acquia\Orca\Domain\Ci\Job\IsolatedUpgradeTestToNextMajorDevCiJob $isolated_upgrade_test_to_next_major_dev_ci_job
+   *   Isolated upgrade test to next major dev Drupal core version.
    * @param \Acquia\Orca\Domain\Ci\Job\LooseDeprecatedCodeScanCiJob $loose_deprecated_code_scan_ci_job
    *   Loose deprecated code scan.
    * @param \Acquia\Orca\Domain\Ci\Job\StaticCodeAnalysisCiJob $static_code_analysis_ci_job
@@ -111,8 +111,8 @@ class CiJobFactory {
     IsolatedTestOnNextMajorLatestMinorDevCiJob $isolated_test_on_next_major_latest_minor_dev_ci_job,
     IsolatedTestOnNextMinorCiJob $isolated_test_on_next_minor_ci_job,
     IsolatedTestOnNextMinorDevCiJob $isolated_test_on_next_minor_dev_ci_job,
-    IsolatedUpgradeToNextMajorBetaOrLaterCiJob $isolated_upgrade_to_next_major_beta_or_later_ci_job,
-    IsolatedUpgradeToNextMajorDevCiJob $isolated_upgrade_to_next_major_dev_ci_job,
+    IsolatedUpgradeTestToNextMajorBetaOrLaterCiJob $isolated_upgrade_test_to_next_major_beta_or_later_ci_job,
+    IsolatedUpgradeTestToNextMajorDevCiJob $isolated_upgrade_test_to_next_major_dev_ci_job,
     LooseDeprecatedCodeScanCiJob $loose_deprecated_code_scan_ci_job,
     StaticCodeAnalysisCiJob $static_code_analysis_ci_job,
     StrictDeprecatedCodeScanCiJob $strict_deprecated_code_scan_ci_job

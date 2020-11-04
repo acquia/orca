@@ -3,7 +3,7 @@
 namespace Acquia\Orca\Tests\Domain\Ci\Job;
 
 use Acquia\Orca\Domain\Ci\Job\AbstractCiJob;
-use Acquia\Orca\Domain\Ci\Job\IsolatedUpgradeToNextMajorBetaOrLaterCiJob;
+use Acquia\Orca\Domain\Ci\Job\IsolatedUpgradeTestToNextMajorBetaOrLaterCiJob;
 use Acquia\Orca\Enum\DrupalCoreVersionEnum;
 use Acquia\Orca\Tests\Domain\Ci\Job\_Helper\CiJobTestBase;
 use Prophecy\Argument;
@@ -21,7 +21,7 @@ class IsolatedUpgradeToNextMajorBetaOrLaterCiJobTest extends CiJobTestBase {
 
   protected function createJob(): AbstractCiJob {
     $output = $this->symfonyOutput->reveal();
-    return new IsolatedUpgradeToNextMajorBetaOrLaterCiJob($output);
+    return new IsolatedUpgradeTestToNextMajorBetaOrLaterCiJob($output);
   }
 
   public function testBasicConfiguration(): void {

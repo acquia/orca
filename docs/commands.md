@@ -264,8 +264,8 @@ The job name:
 - INTEGRATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_BETA_OR_LATER: Integrated test on next major, latest minor beta-or-later Drupal core version
 - ISOLATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_DEV: Isolated test on next major, latest minor dev Drupal core version
 - INTEGRATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_DEV: Integrated test on next major, latest minor dev Drupal core version
-- ISOLATED_UPGRADE_TO_NEXT_MAJOR_BETA_OR_LATER: Isolated upgrade to next major beta-or-later Drupal core version
-- ISOLATED_UPGRADE_TO_NEXT_MAJOR_DEV: Isolated upgrade to next major dev Drupal core version
+- ISOLATED_UPGRADE_TEST_TO_NEXT_MAJOR_BETA_OR_LATER: Isolated upgrade test to next major beta-or-later Drupal core version
+- ISOLATED_UPGRADE_TEST_TO_NEXT_MAJOR_DEV: Isolated upgrade test to next major dev Drupal core version
 
 * Is required: yes
 * Is array: no

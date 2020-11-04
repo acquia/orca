@@ -21,8 +21,8 @@ use Acquia\Orca\Domain\Ci\Job\IsolatedTestOnNextMajorLatestMinorBetaOrLaterCiJob
 use Acquia\Orca\Domain\Ci\Job\IsolatedTestOnNextMajorLatestMinorDevCiJob;
 use Acquia\Orca\Domain\Ci\Job\IsolatedTestOnNextMinorCiJob;
 use Acquia\Orca\Domain\Ci\Job\IsolatedTestOnNextMinorDevCiJob;
-use Acquia\Orca\Domain\Ci\Job\IsolatedUpgradeToNextMajorBetaOrLaterCiJob;
-use Acquia\Orca\Domain\Ci\Job\IsolatedUpgradeToNextMajorDevCiJob;
+use Acquia\Orca\Domain\Ci\Job\IsolatedUpgradeTestToNextMajorBetaOrLaterCiJob;
+use Acquia\Orca\Domain\Ci\Job\IsolatedUpgradeTestToNextMajorDevCiJob;
 use Acquia\Orca\Domain\Ci\Job\LooseDeprecatedCodeScanCiJob;
 use Acquia\Orca\Domain\Ci\Job\StaticCodeAnalysisCiJob;
 use Acquia\Orca\Domain\Ci\Job\StrictDeprecatedCodeScanCiJob;
@@ -49,8 +49,8 @@ use PHPUnit\Framework\TestCase;
  * @property \Acquia\Orca\Domain\Ci\Job\IsolatedTestOnNextMajorLatestMinorDevCiJob|\Prophecy\Prophecy\ObjectProphecy $isolatedTestOnNextMajorLatestMinorDevCiJob
  * @property \Acquia\Orca\Domain\Ci\Job\IsolatedTestOnNextMinorCiJob|\Prophecy\Prophecy\ObjectProphecy $isolatedTestOnNextMinorCiJob
  * @property \Acquia\Orca\Domain\Ci\Job\IsolatedTestOnNextMinorDevCiJob|\Prophecy\Prophecy\ObjectProphecy $isolatedTestOnNextMinorDevCiJob
- * @property \Acquia\Orca\Domain\Ci\Job\IsolatedUpgradeToNextMajorBetaOrLaterCiJob|\Prophecy\Prophecy\ObjectProphecy $isolatedUpgradeToNextMajorBetaOrLaterCiJob
- * @property \Acquia\Orca\Domain\Ci\Job\IsolatedUpgradeToNextMajorDevCiJob|\Prophecy\Prophecy\ObjectProphecy $isolatedUpgradeToNextMajorDevCiJob
+ * @property \Acquia\Orca\Domain\Ci\Job\IsolatedUpgradeTestToNextMajorBetaOrLaterCiJob|\Prophecy\Prophecy\ObjectProphecy $isolatedUpgradeToNextMajorBetaOrLaterCiJob
+ * @property \Acquia\Orca\Domain\Ci\Job\IsolatedUpgradeTestToNextMajorDevCiJob|\Prophecy\Prophecy\ObjectProphecy $isolatedUpgradeToNextMajorDevCiJob
  * @property \Acquia\Orca\Domain\Ci\Job\LooseDeprecatedCodeScanCiJob|\Prophecy\Prophecy\ObjectProphecy $looseDeprecatedCodeScanCiJob
  * @property \Acquia\Orca\Domain\Ci\Job\StaticCodeAnalysisCiJob|\Prophecy\Prophecy\ObjectProphecy $staticCodeAnalysisCiJob
  * @property \Acquia\Orca\Domain\Ci\Job\StrictDeprecatedCodeScanCiJob|\Prophecy\Prophecy\ObjectProphecy $strictDeprecatedCodeScanCiJob
@@ -78,8 +78,8 @@ class CiJobFactoryTest extends TestCase {
     $this->isolatedTestOnNextMajorLatestMinorDevCiJob = $this->prophesize(IsolatedTestOnNextMajorLatestMinorDevCiJob::class);
     $this->isolatedTestOnNextMinorCiJob = $this->prophesize(IsolatedTestOnNextMinorCiJob::class);
     $this->isolatedTestOnNextMinorDevCiJob = $this->prophesize(IsolatedTestOnNextMinorDevCiJob::class);
-    $this->isolatedUpgradeToNextMajorBetaOrLaterCiJob = $this->prophesize(IsolatedUpgradeToNextMajorBetaOrLaterCiJob::class);
-    $this->isolatedUpgradeToNextMajorDevCiJob = $this->prophesize(IsolatedUpgradeToNextMajorDevCiJob::class);
+    $this->isolatedUpgradeToNextMajorBetaOrLaterCiJob = $this->prophesize(IsolatedUpgradeTestToNextMajorBetaOrLaterCiJob::class);
+    $this->isolatedUpgradeToNextMajorDevCiJob = $this->prophesize(IsolatedUpgradeTestToNextMajorDevCiJob::class);
     $this->looseDeprecatedCodeScanCiJob = $this->prophesize(LooseDeprecatedCodeScanCiJob::class);
     $this->staticCodeAnalysisCiJob = $this->prophesize(StaticCodeAnalysisCiJob::class);
     $this->strictDeprecatedCodeScanCiJob = $this->prophesize(StrictDeprecatedCodeScanCiJob::class);
@@ -104,8 +104,8 @@ class CiJobFactoryTest extends TestCase {
     $isolated_test_on_next_major_latest_minor_dev_ci_job = $this->isolatedTestOnNextMajorLatestMinorDevCiJob->reveal();
     $isolated_test_on_next_minor_ci_job = $this->isolatedTestOnNextMinorCiJob->reveal();
     $isolated_test_on_next_minor_dev_ci_job = $this->isolatedTestOnNextMinorDevCiJob->reveal();
-    $isolated_upgrade_to_next_major_beta_or_later_ci_job = $this->isolatedUpgradeToNextMajorBetaOrLaterCiJob->reveal();
-    $isolated_upgrade_to_next_major_dev_ci_job = $this->isolatedUpgradeToNextMajorDevCiJob->reveal();
+    $isolated_upgrade_test_to_next_major_beta_or_later_ci_job = $this->isolatedUpgradeToNextMajorBetaOrLaterCiJob->reveal();
+    $isolated_upgrade_test_to_next_major_dev_ci_job = $this->isolatedUpgradeToNextMajorDevCiJob->reveal();
     $loose_deprecated_code_scan_ci_job = $this->looseDeprecatedCodeScanCiJob->reveal();
     $static_code_analysis_ci_job = $this->staticCodeAnalysisCiJob->reveal();
     $strict_deprecated_code_scan_ci_job = $this->strictDeprecatedCodeScanCiJob->reveal();
@@ -128,8 +128,8 @@ class CiJobFactoryTest extends TestCase {
       $isolated_test_on_next_major_latest_minor_dev_ci_job,
       $isolated_test_on_next_minor_ci_job,
       $isolated_test_on_next_minor_dev_ci_job,
-      $isolated_upgrade_to_next_major_beta_or_later_ci_job,
-      $isolated_upgrade_to_next_major_dev_ci_job,
+      $isolated_upgrade_test_to_next_major_beta_or_later_ci_job,
+      $isolated_upgrade_test_to_next_major_dev_ci_job,
       $loose_deprecated_code_scan_ci_job,
       $static_code_analysis_ci_job,
       $strict_deprecated_code_scan_ci_job
