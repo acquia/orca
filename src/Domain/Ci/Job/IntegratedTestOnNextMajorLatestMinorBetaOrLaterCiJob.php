@@ -82,7 +82,7 @@ class IntegratedTestOnNextMajorLatestMinorBetaOrLaterCiJob extends AbstractCiJob
     $this->runOrcaFixtureInit([
       '--force',
       "--sut={$options->getSut()->getPackageName()}",
-      '--core=NEXT_MAJOR_LATEST_MINOR_BETA_OR_LATER',
+      "--core={$this->getDrupalCoreVersion()}",
     ], $this->envFacade, $this->processRunner);
   }
 

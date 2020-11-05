@@ -84,7 +84,7 @@ class IntegratedTestOnOldestSupportedCiJob extends AbstractCiJob {
     $this->runOrcaFixtureInit([
       '--force',
       "--sut={$options->getSut()->getPackageName()}",
-      '--core=OLDEST_SUPPORTED',
+      "--core={$this->getDrupalCoreVersion()}",
     ], $this->envFacade, $this->processRunner);
   }
 

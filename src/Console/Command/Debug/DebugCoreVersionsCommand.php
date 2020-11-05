@@ -15,9 +15,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 class DebugCoreVersionsCommand extends Command {
 
   /**
-   * The default command name.
-   *
-   * @var string
+   * {@inheritdoc}
    */
   protected static $defaultName = 'debug:core-versions';
 

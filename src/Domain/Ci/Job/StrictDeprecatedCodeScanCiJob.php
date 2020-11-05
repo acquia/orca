@@ -93,7 +93,7 @@ class StrictDeprecatedCodeScanCiJob extends AbstractCiJob {
       '--force',
       "--sut={$options->getSut()->getPackageName()}",
       '--sut-only',
-      '--core=CURRENT_DEV',
+      "--core={$this->getDrupalCoreVersion()}",
       '--no-site-install',
     ], $this->envFacade, $this->processRunner);
   }

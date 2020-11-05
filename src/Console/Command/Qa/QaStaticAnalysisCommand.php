@@ -82,9 +82,7 @@ class QaStaticAnalysisCommand extends Command {
   private $yamlLint;
 
   /**
-   * The default command name.
-   *
-   * @var string
+   * {@inheritdoc}
    */
   protected static $defaultName = 'qa:static-analysis';
 

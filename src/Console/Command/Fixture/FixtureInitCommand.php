@@ -23,9 +23,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 class FixtureInitCommand extends Command {
 
   /**
-   * The default command name.
-   *
-   * @var string
+   * {@inheritdoc}
    */
   protected static $defaultName = 'fixture:init';
 

@@ -17,9 +17,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 class QaDeprecatedCodeScanCommand extends Command {
 
   /**
-   * The default command name.
-   *
-   * @var string
+   * {@inheritdoc}
    */
   protected static $defaultName = 'qa:deprecated-code-scan';
 

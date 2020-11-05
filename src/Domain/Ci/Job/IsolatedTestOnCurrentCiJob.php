@@ -54,7 +54,7 @@ class IsolatedTestOnCurrentCiJob extends AbstractCiJob {
       '--force',
       "--sut={$options->getSut()->getPackageName()}",
       '--sut-only',
-      '--core=CURRENT',
+      "--core={$this->getDrupalCoreVersion()}",
     ], $this->envFacade, $this->processRunner);
   }
 

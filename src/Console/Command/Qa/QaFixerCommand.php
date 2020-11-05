@@ -49,9 +49,7 @@ class QaFixerCommand extends Command {
   private $taskRunner;
 
   /**
-   * The default command name.
-   *
-   * @var string
+   * {@inheritdoc}
    */
   protected static $defaultName = 'qa:fixer';
 

@@ -21,9 +21,7 @@ use UnexpectedValueException;
 class DebugPackagesCommand extends Command {
 
   /**
-   * The default command name.
-   *
-   * @var string
+   * {@inheritdoc}
    */
   protected static $defaultName = 'debug:packages';
 

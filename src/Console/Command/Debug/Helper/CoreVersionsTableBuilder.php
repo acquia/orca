@@ -21,7 +21,7 @@ class CoreVersionsTableBuilder {
   private $drupalCoreVersionResolver;
 
   /**
-   * Whether or not to display "Example" column.
+   * Whether or not to display the "Example" column.
    *
    * @var bool
    */

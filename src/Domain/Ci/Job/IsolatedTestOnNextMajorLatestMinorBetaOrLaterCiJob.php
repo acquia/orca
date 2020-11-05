@@ -83,7 +83,7 @@ class IsolatedTestOnNextMajorLatestMinorBetaOrLaterCiJob extends AbstractCiJob {
       '--force',
       "--sut={$options->getSut()->getPackageName()}",
       '--sut-only',
-      '--core=NEXT_MAJOR_LATEST_MINOR_BETA_OR_LATER',
+      "--core={$this->getDrupalCoreVersion()}",
     ], $this->envFacade, $this->processRunner);
   }
 

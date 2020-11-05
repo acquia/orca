@@ -66,7 +66,7 @@ class CiJobFactory {
    * @param \Acquia\Orca\Domain\Ci\Job\IntegratedTestOnPreviousMinorCiJob $integrated_test_on_previous_minor_ci_job
    *   Integrated test on previous minor Drupal core version.
    * @param \Acquia\Orca\Domain\Ci\Job\IntegratedUpgradeTestFromPreviousMinorCiJob $integrated_upgrade_test_from_previous_minor
-   *   Integrated upgrade test from previous minor.
+   *   Integrated upgrade test from previous minor Drupal core version.
    * @param \Acquia\Orca\Domain\Ci\Job\IntegratedUpgradeTestToNextMinorCiJob $integrated_upgrade_test_to_next_minor_ci_job
    *   Integrated upgrade test to next minor Drupal core version.
    * @param \Acquia\Orca\Domain\Ci\Job\IntegratedUpgradeTestToNextMinorDevCiJob $integrated_upgrade_test_to_next_minor_dev_ci_job

@@ -17,9 +17,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 class FixtureEnableExtensionsCommand extends Command {
 
   /**
-   * The default command name.
-   *
-   * @var string
+   * {@inheritdoc}
    */
   protected static $defaultName = 'fixture:enable-extensions';
 
