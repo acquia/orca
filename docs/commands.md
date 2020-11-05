@@ -5,6 +5,7 @@
 * [`core`](#debugcore-versions)
 * [`deprecations`](#qadeprecated-code-scan)
 * [`enexts`](#fixtureenable-extensions)
+* [`env`](#debugenv-vars)
 * [`fix`](#qafixer)
 * [`guess`](#debugguess-version)
 * [`help`](#help)
@@ -245,8 +246,9 @@ Runs an ORCA CI job phase
 The job name:
 - STATIC_CODE_ANALYSIS: Static code analysis
 - INTEGRATED_TEST_ON_OLDEST_SUPPORTED: Integrated test on oldest supported Drupal core version
-- INTEGRATED_TEST_ON_PREVIOUS_MINOR: Integrated test on previous minor Drupal core version
 - INTEGRATED_TEST_ON_LATEST_LTS: Integrated test on latest LTS Drupal core version
+- INTEGRATED_TEST_ON_PREVIOUS_MINOR: Integrated test on previous minor Drupal core version
+- INTEGRATED_UPGRADE_TEST_FROM_PREVIOUS_MINOR: Integrated upgrade test from previous minor Drupal core version
 - ISOLATED_TEST_ON_CURRENT: Isolated test on current Drupal core version
 - INTEGRATED_TEST_ON_CURRENT: Integrated test on current Drupal core version
 - INTEGRATED_UPGRADE_TEST_TO_NEXT_MINOR: Integrated upgrade test to next minor Drupal core version
@@ -620,6 +622,7 @@ Displays ORCA environment variables
 ### Usage
 
 * `debug:env-vars`
+* `env`
 * `vars`
 
 Displays ORCA environment variables

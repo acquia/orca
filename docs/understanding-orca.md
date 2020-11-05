@@ -61,17 +61,32 @@ See [Running automated tests](getting-started.md#running-automated-tests).
 
 ORCA includes out-of-the-box support for Travis CI for continuous integration. The default implementation runs the following concurrent jobs per build:
 
-<!-- https://www.tablesgenerator.com/markdown_tables -->
+![Job Matrix](images/job-matrix.png)
 
-|                      | #1<br />Static code<br />analysis | #2<br />Deprecated<br />code scan | #3<br />Isolated/<br />recommended | #4<br />Integrated/<br />recommended | #5<br /> Integrated/<br />recommended/<br />previous core | #6<br />Isolated/<br />dev | #7<br />Integrated/<br />dev | #8<br />Integrated/<br />dev/next core<br />dev | #9<br />D9 readiness |
-|----------------------|:---------------------------------:|:---------------------------------:|:----------------------------------:|:------------------------------------:|:---------------------------------------------------------:|:--------------------------:|:----------------------------:|:-----------------------------------------------:|:--------------------:|
-| Fixture type         |                None               |              SUT-only             |              SUT-only              |               Standard               |                          Standard                         |          SUT-only          |           Standard           |                     Standard                    |       SUT-only       |
-| Package stability    |                n/a                |               Stable              |               Stable               |                Stable                |                           Stable                          |             Dev            |              Dev             |                       Dev                       |          Dev         |
-| Drupal core version  |                n/a                |              Current              |               Current              |                Current               |                Previous<br />minor release                |           Current          |            Current           |               Next<br />minor dev               |  Latest<br />D9 dev  |
-| Static analysis      |                 ✓                 |                                   |                                    |                                      |                                                           |                            |                              |                                                 |                      |
-| Deprecated code scan |                                   |                 ✓                 |                                    |                                      |                                                           |                            |                              |                                                 |                      |
-| Automated tests      |                                   |                                   |                  ✓                 |                   ✓                  |                             ✓                             |              ✓             |               ✓              |                        ✓                        |           ✓          |
-| Allow failure        |                                   |                                   |                                    |                                      |                                                           |              ✓             |               ✓              |                        ✓                        |           ✓          |
+- `STATIC_CODE_ANALYSIS` - Static code analysis
+- `INTEGRATED_TEST_ON_OLDEST_SUPPORTED` - Integrated test on oldest supported
+- `INTEGRATED_TEST_ON_LATEST_LTS` - Integrated test on latest LTS
+- `INTEGRATED_TEST_ON_PREVIOUS_MINOR` - Integrated test on previous minor
+- `INTEGRATED_UPGRADE_TEST_FROM_PREVIOUS_MINOR` - Integrated upgrade test from previous minor
+- `ISOLATED_TEST_ON_CURRENT` - Isolated test on current
+- `INTEGRATED_TEST_ON_CURRENT` - Integrated test on current
+- `INTEGRATED_UPGRADE_TEST_TO_NEXT_MINOR` - Integrated upgrade test to next minor
+- `INTEGRATED_UPGRADE_TEST_TO_NEXT_MINOR_DEV` - Integrated upgrade test to next minor dev
+- `ISOLATED_TEST_ON_CURRENT_DEV` - Isolated test on current dev
+- `INTEGRATED_TEST_ON_CURRENT_DEV` - Integrated test on current dev
+- `LOOSE_DEPRECATED_CODE_SCAN` - Loose deprecated code scan
+- `STRICT_DEPRECATED_CODE_SCAN` - Strict deprecated code scan
+- `DEPRECATED_CODE_SCAN_W_CONTRIB` - Deprecated code scan w/ contrib
+- `ISOLATED_TEST_ON_NEXT_MINOR` - Isolated test on next minor
+- `INTEGRATED_TEST_ON_NEXT_MINOR` - Integrated test on next minor
+- `ISOLATED_TEST_ON_NEXT_MINOR_DEV` - Isolated test on next minor dev
+- `INTEGRATED_TEST_ON_NEXT_MINOR_DEV` - Integrated test on next minor dev
+- `ISOLATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_BETA_OR_LATER` - Isolated test on next major, latest minor beta-or-later
+- `INTEGRATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_BETA_OR_LATER` - Integrated test on next major, latest minor beta-or-later
+- `ISOLATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_DEV` - Isolated test on next major, latest minor dev
+- `INTEGRATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_DEV` - Integrated test on next major, latest minor dev
+- `ISOLATED_UPGRADE_TEST_TO_NEXT_MAJOR_BETA_OR_LATER` - Isolated upgrade test to next major beta-or-later
+- `ISOLATED_UPGRADE_TEST_TO_NEXT_MAJOR_DEV` - Isolated upgrade test to next major dev
 
 See [Configuring Travis CI](getting-started.md#configuring-travis-ci).
 
