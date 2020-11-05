@@ -64,29 +64,29 @@ ORCA includes out-of-the-box support for Travis CI for continuous integration. T
 ![Job Matrix](images/job-matrix.png)
 
 - `STATIC_CODE_ANALYSIS` - Static code analysis
-- `INTEGRATED_TEST_ON_OLDEST_SUPPORTED` - Integrated test on oldest supported
-- `INTEGRATED_TEST_ON_LATEST_LTS` - Integrated test on latest LTS
-- `INTEGRATED_TEST_ON_PREVIOUS_MINOR` - Integrated test on previous minor
-- `INTEGRATED_UPGRADE_TEST_FROM_PREVIOUS_MINOR` - Integrated upgrade test from previous minor
-- `ISOLATED_TEST_ON_CURRENT` - Isolated test on current
-- `INTEGRATED_TEST_ON_CURRENT` - Integrated test on current
-- `INTEGRATED_UPGRADE_TEST_TO_NEXT_MINOR` - Integrated upgrade test to next minor
-- `INTEGRATED_UPGRADE_TEST_TO_NEXT_MINOR_DEV` - Integrated upgrade test to next minor dev
-- `ISOLATED_TEST_ON_CURRENT_DEV` - Isolated test on current dev
-- `INTEGRATED_TEST_ON_CURRENT_DEV` - Integrated test on current dev
+- `INTEGRATED_TEST_ON_OLDEST_SUPPORTED` - Integrated test on oldest supported Drupal core version
+- `INTEGRATED_TEST_ON_LATEST_LTS` - Integrated test on latest LTS Drupal core version
+- `INTEGRATED_TEST_ON_PREVIOUS_MINOR` - Integrated test on previous minor Drupal core version
+- `INTEGRATED_UPGRADE_TEST_FROM_PREVIOUS_MINOR` - Integrated upgrade test from previous minor Drupal core version
+- `ISOLATED_TEST_ON_CURRENT` - Isolated test on current Drupal core version
+- `INTEGRATED_TEST_ON_CURRENT` - Integrated test on current Drupal core version
+- `INTEGRATED_UPGRADE_TEST_TO_NEXT_MINOR` - Integrated upgrade test to next minor Drupal core version
+- `INTEGRATED_UPGRADE_TEST_TO_NEXT_MINOR_DEV` - Integrated upgrade test to next minor dev Drupal core version
+- `ISOLATED_TEST_ON_CURRENT_DEV` - Isolated test on current dev Drupal core version
+- `INTEGRATED_TEST_ON_CURRENT_DEV` - Integrated test on current dev Drupal core version
 - `LOOSE_DEPRECATED_CODE_SCAN` - Loose deprecated code scan
 - `STRICT_DEPRECATED_CODE_SCAN` - Strict deprecated code scan
 - `DEPRECATED_CODE_SCAN_W_CONTRIB` - Deprecated code scan w/ contrib
-- `ISOLATED_TEST_ON_NEXT_MINOR` - Isolated test on next minor
-- `INTEGRATED_TEST_ON_NEXT_MINOR` - Integrated test on next minor
-- `ISOLATED_TEST_ON_NEXT_MINOR_DEV` - Isolated test on next minor dev
-- `INTEGRATED_TEST_ON_NEXT_MINOR_DEV` - Integrated test on next minor dev
-- `ISOLATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_BETA_OR_LATER` - Isolated test on next major, latest minor beta-or-later
-- `INTEGRATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_BETA_OR_LATER` - Integrated test on next major, latest minor beta-or-later
-- `ISOLATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_DEV` - Isolated test on next major, latest minor dev
-- `INTEGRATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_DEV` - Integrated test on next major, latest minor dev
-- `ISOLATED_UPGRADE_TEST_TO_NEXT_MAJOR_BETA_OR_LATER` - Isolated upgrade test to next major beta-or-later
-- `ISOLATED_UPGRADE_TEST_TO_NEXT_MAJOR_DEV` - Isolated upgrade test to next major dev
+- `ISOLATED_TEST_ON_NEXT_MINOR` - Isolated test on next minor Drupal core version
+- `INTEGRATED_TEST_ON_NEXT_MINOR` - Integrated test on next minor Drupal core version
+- `ISOLATED_TEST_ON_NEXT_MINOR_DEV` - Isolated test on next minor dev Drupal core version
+- `INTEGRATED_TEST_ON_NEXT_MINOR_DEV` - Integrated test on next minor dev Drupal core version
+- `ISOLATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_BETA_OR_LATER` - Isolated test on next major, latest minor beta-or-later Drupal core version
+- `INTEGRATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_BETA_OR_LATER` - Integrated test on next major, latest minor beta-or-later Drupal core version
+- `ISOLATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_DEV` - Isolated test on next major, latest minor dev Drupal core version
+- `INTEGRATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_DEV` - Integrated test on next major, latest minor dev Drupal core version
+- `ISOLATED_UPGRADE_TEST_TO_NEXT_MAJOR_BETA_OR_LATER` - Isolated upgrade test to next major beta-or-later Drupal core version
+- `ISOLATED_UPGRADE_TEST_TO_NEXT_MAJOR_DEV` - Isolated upgrade test to next major dev Drupal core version
 
 See [Configuring Travis CI](getting-started.md#configuring-travis-ci).
 
