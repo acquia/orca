@@ -121,6 +121,7 @@ jobs:
     # To generate test coverage data to send somewhere other than Coveralls, use
     # the ORCA_COVERAGE_ENABLE variable instead.
     # - { env: ORCA_JOB=ISOLATED_TEST_ON_CURRENT ORCA_COVERAGE_ENABLE=TRUE, name: "Isolated test on current Drupal core version with test coverage" }
+    - { env: ORCA_JOB=INTEGRATED_UPGRADE_TEST_FROM_PREVIOUS_MINOR, name: "Integrated upgrade test from previous minor" }
     - { env: ORCA_JOB=ISOLATED_TEST_ON_CURRENT, name: "Isolated test on current Drupal core version" }
     - { env: ORCA_JOB=INTEGRATED_TEST_ON_CURRENT, name: "Integrated test on current Drupal core version" }
     - { env: ORCA_JOB=INTEGRATED_UPGRADE_TEST_TO_NEXT_MINOR, name: "Integrated upgrade test to next minor Drupal core version" }

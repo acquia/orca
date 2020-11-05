@@ -13,6 +13,7 @@ use Acquia\Orca\Domain\Ci\Job\IntegratedTestOnNextMinorCiJob;
 use Acquia\Orca\Domain\Ci\Job\IntegratedTestOnNextMinorDevCiJob;
 use Acquia\Orca\Domain\Ci\Job\IntegratedTestOnOldestSupportedCiJob;
 use Acquia\Orca\Domain\Ci\Job\IntegratedTestOnPreviousMinorCiJob;
+use Acquia\Orca\Domain\Ci\Job\IntegratedUpgradeTestFromPreviousMinorCiJob;
 use Acquia\Orca\Domain\Ci\Job\IntegratedUpgradeTestToNextMinorCiJob;
 use Acquia\Orca\Domain\Ci\Job\IntegratedUpgradeTestToNextMinorDevCiJob;
 use Acquia\Orca\Domain\Ci\Job\IsolatedTestOnCurrentCiJob;
@@ -41,6 +42,7 @@ use PHPUnit\Framework\TestCase;
  * @property \Acquia\Orca\Domain\Ci\Job\IntegratedTestOnNextMinorDevCiJob|\Prophecy\Prophecy\ObjectProphecy $integratedTestOnNextMinorDevCiJob
  * @property \Acquia\Orca\Domain\Ci\Job\IntegratedTestOnOldestSupportedCiJob|\Prophecy\Prophecy\ObjectProphecy $integratedTestOnOldestSupportedCiJob
  * @property \Acquia\Orca\Domain\Ci\Job\IntegratedTestOnPreviousMinorCiJob|\Prophecy\Prophecy\ObjectProphecy $integratedTestOnPreviousMinorCiJob
+ * @property \Acquia\Orca\Domain\Ci\Job\IntegratedUpgradeTestFromPreviousMinorCiJob|\Prophecy\Prophecy\ObjectProphecy $integratedUpgradeTestFromPreviousMinorCiJob
  * @property \Acquia\Orca\Domain\Ci\Job\IntegratedUpgradeTestToNextMinorCiJob|\Prophecy\Prophecy\ObjectProphecy $integratedUpgradeTestToNextMinorCiJob
  * @property \Acquia\Orca\Domain\Ci\Job\IntegratedUpgradeTestToNextMinorDevCiJob|\Prophecy\Prophecy\ObjectProphecy $integratedUpgradeTestToNextMinorDevCiJob
  * @property \Acquia\Orca\Domain\Ci\Job\IsolatedTestOnCurrentCiJob|\Prophecy\Prophecy\ObjectProphecy $isolatedTestOnCurrentCiJob
@@ -70,6 +72,7 @@ class CiJobFactoryTest extends TestCase {
     $this->integratedTestOnNextMinorDevCiJob = $this->prophesize(IntegratedTestOnNextMinorDevCiJob::class);
     $this->integratedTestOnOldestSupportedCiJob = $this->prophesize(IntegratedTestOnOldestSupportedCiJob::class);
     $this->integratedTestOnPreviousMinorCiJob = $this->prophesize(IntegratedTestOnPreviousMinorCiJob::class);
+    $this->integratedUpgradeTestFromPreviousMinorCiJob = $this->prophesize(IntegratedUpgradeTestFromPreviousMinorCiJob::class);
     $this->integratedUpgradeTestToNextMinorCiJob = $this->prophesize(IntegratedUpgradeTestToNextMinorCiJob::class);
     $this->integratedUpgradeTestToNextMinorDevCiJob = $this->prophesize(IntegratedUpgradeTestToNextMinorDevCiJob::class);
     $this->isolatedTestOnCurrentCiJob = $this->prophesize(IsolatedTestOnCurrentCiJob::class);
@@ -88,14 +91,15 @@ class CiJobFactoryTest extends TestCase {
   private function createFactory(): CiJobFactory {
     $deprecated_code_scan_w_contrib_ci_job = $this->deprecatedCodeScanWContribCiJob->reveal();
     $integrated_test_on_current_ci_job = $this->integratedTestOnCurrentCiJob->reveal();
-    $integrated_test_on_latest_lts = $this->integratedTestOnLatestLtsCiJob->reveal();
     $integrated_test_on_current_dev_ci_job = $this->integratedTestOnCurrentDevCiJob->reveal();
+    $integrated_test_on_latest_lts = $this->integratedTestOnLatestLtsCiJob->reveal();
     $integrated_test_on_next_major_latest_minor_beta_or_later_ci_job = $this->integratedTestOnNextMajorLatestMinorBetaOrLaterCiJob->reveal();
     $integrated_test_on_next_major_latest_minor_dev_ci_job = $this->integratedTestOnNextMajorLatestMinorDevCiJob->reveal();
     $integrated_test_on_next_minor_ci_job = $this->integratedTestOnNextMinorCiJob->reveal();
     $integrated_test_on_next_minor_dev_ci_job = $this->integratedTestOnNextMinorDevCiJob->reveal();
     $integrated_test_on_oldest_supported_ci_job = $this->integratedTestOnOldestSupportedCiJob->reveal();
     $integrated_test_on_previous_minor_ci_job = $this->integratedTestOnPreviousMinorCiJob->reveal();
+    $integrated_upgrade_test_from_previous_minor = $this->integratedUpgradeTestFromPreviousMinorCiJob->reveal();
     $integrated_upgrade_test_to_next_minor_ci_job = $this->integratedUpgradeTestToNextMinorCiJob->reveal();
     $integrated_upgrade_test_to_next_minor_dev_ci_job = $this->integratedUpgradeTestToNextMinorDevCiJob->reveal();
     $isolated_test_on_current_ci_job = $this->isolatedTestOnCurrentCiJob->reveal();
@@ -111,15 +115,16 @@ class CiJobFactoryTest extends TestCase {
     $strict_deprecated_code_scan_ci_job = $this->strictDeprecatedCodeScanCiJob->reveal();
     return new CiJobFactory(
       $deprecated_code_scan_w_contrib_ci_job,
-      $integrated_test_on_latest_lts,
       $integrated_test_on_current_ci_job,
       $integrated_test_on_current_dev_ci_job,
+      $integrated_test_on_latest_lts,
       $integrated_test_on_next_major_latest_minor_beta_or_later_ci_job,
       $integrated_test_on_next_major_latest_minor_dev_ci_job,
       $integrated_test_on_next_minor_ci_job,
       $integrated_test_on_next_minor_dev_ci_job,
       $integrated_test_on_oldest_supported_ci_job,
       $integrated_test_on_previous_minor_ci_job,
+      $integrated_upgrade_test_from_previous_minor,
       $integrated_upgrade_test_to_next_minor_ci_job,
       $integrated_upgrade_test_to_next_minor_dev_ci_job,
       $isolated_test_on_current_ci_job,
