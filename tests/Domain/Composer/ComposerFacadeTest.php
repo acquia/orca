@@ -511,8 +511,17 @@ class ComposerFacadeTest extends TestCase {
     ];
   }
 
+  /**
+   * @see https://github.com/acquia/orca/pull/113
+   */
   public function testRequirePackagesEmptyArray(): void {
-    $this->expectException(InvalidArgumentException::class);
+    $this->processRunner
+      ->runOrcaVendorBin(array_merge([
+        'composer',
+        'require',
+        '--no-interaction',
+      ], []), self::FIXTURE_PATH)
+      ->shouldBeCalledOnce();
     $composer = $this->createComposer();
 
     $composer->requirePackages([]);
