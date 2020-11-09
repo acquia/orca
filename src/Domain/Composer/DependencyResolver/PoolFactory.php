@@ -13,11 +13,25 @@ use Composer\Repository\RepositoryFactory;
 class PoolFactory {
 
   /**
-   * The original Composer package pool.
+   * A Composer package pool with a dev minimum stability.
+   *
+   * @var \Acquia\Orca\Domain\Composer\DependencyResolver\DevPool
+   */
+  private $devPool;
+
+  /**
+   * The base Composer package pool.
    *
    * @var \Composer\DependencyResolver\Pool
    */
-  private $originalPool;
+  private $basePool;
+
+  /**
+   * TRUE to use the dev pool as the base or FALSE to use the release pool.
+   *
+   * @var bool
+   */
+  private $dev;
 
   /**
    * A Composer package pool with Packagist and Drupal.org.
@@ -41,14 +55,54 @@ class PoolFactory {
   private $packagistOnlyPool;
 
   /**
+   * A Composer package pool with an alpha minimum stability.
+   *
+   * @var \Acquia\Orca\Domain\Composer\DependencyResolver\ReleasePool
+   */
+  private $releasePool;
+
+  /**
    * Constructs an instance.
    *
-   * @param \Composer\DependencyResolver\Pool $pool
-   *   The original Composer package pool.
+   * @param \Acquia\Orca\Domain\Composer\DependencyResolver\DevPool $dev_pool
+   *   A Composer package pool with a dev minimum stability.
+   * @param \Acquia\Orca\Domain\Composer\DependencyResolver\ReleasePool $release_pool
+   *   A Composer package pool with an alpha minimum stability.
    */
-  public function __construct(Pool $pool) {
-    $this->originalPool = $pool;
+  public function __construct(DevPool $dev_pool, ReleasePool $release_pool) {
+    $this->devPool = $dev_pool;
+    $this->releasePool = $release_pool;
     $this->io = new NullIO();
+  }
+
+  /**
+   * Creates a Pool instance.
+   *
+   * @param bool $include_drupal_dot_org
+   *   TRUE to include the Drupal.org package repository or FALSE not to.
+   * @param bool $dev
+   *   TRUE to allow dev version results or FALSE not to.
+   *
+   * @return \Composer\DependencyResolver\Pool
+   *   The Composer package pool.
+   */
+  public function create(bool $include_drupal_dot_org, bool $dev): Pool {
+    $this->dev = $dev;
+    $this->setBasePool();
+    if ($include_drupal_dot_org) {
+      return $this->createWithDrupalDotOrg();
+    }
+    return $this->createWithPackagistOnly();
+  }
+
+  /**
+   * Sets the pool that will be used as the base for adding repositories.
+   */
+  private function setBasePool(): void {
+    $this->basePool = $this->releasePool;
+    if ($this->dev) {
+      $this->basePool = $this->devPool;
+    }
   }
 
   /**
@@ -57,12 +111,8 @@ class PoolFactory {
    * @return \Composer\DependencyResolver\Pool
    *   The Composer package pool.
    */
-  public function createWithPackagistOnly(): Pool {
-    if ($this->packagistOnlyPool) {
-      return $this->packagistOnlyPool;
-    }
-
-    $this->packagistOnlyPool = $this->originalPool;
+  private function createWithPackagistOnly(): Pool {
+    $this->packagistOnlyPool = $this->basePool;
 
     $packagist = RepositoryFactory::defaultRepos($this->io)['packagist.org'];
 
@@ -77,11 +127,7 @@ class PoolFactory {
    * @return \Composer\DependencyResolver\Pool
    *   The Composer package pool.
    */
-  public function createWithDrupalDotOrg(): Pool {
-    if ($this->drupalDotOrgPool) {
-      return $this->drupalDotOrgPool;
-    }
-
+  private function createWithDrupalDotOrg(): Pool {
     $this->drupalDotOrgPool = $this->createWithPackagistOnly();
 
     $drupal_org =

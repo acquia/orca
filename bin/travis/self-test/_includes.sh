@@ -11,7 +11,7 @@
 
 source ../_includes.sh
 
-if [[ "$ORCA_JOB" = "LIVE_TEST" ]]; then
+if [[ "$ORCA_LIVE_TEST" ]]; then
   unset ORCA_PACKAGES_CONFIG
   unset ORCA_PACKAGES_CONFIG_ALTER
 fi

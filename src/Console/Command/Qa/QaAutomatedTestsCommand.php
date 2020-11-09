@@ -18,9 +18,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 class QaAutomatedTestsCommand extends Command {
 
   /**
-   * The default command name.
-   *
-   * @var string
+   * {@inheritdoc}
    */
   protected static $defaultName = 'qa:automated-tests';
 

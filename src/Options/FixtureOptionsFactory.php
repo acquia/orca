@@ -2,13 +2,20 @@
 
 namespace Acquia\Orca\Options;
 
-use Acquia\Orca\Domain\Drupal\DrupalCoreVersionFinder;
+use Acquia\Orca\Domain\Composer\Version\DrupalCoreVersionResolver;
 use Acquia\Orca\Domain\Package\PackageManager;
 
 /**
  * Provides a factory for fixture options.
  */
 class FixtureOptionsFactory {
+
+  /**
+   * The Drupal core version resolver.
+   *
+   * @var \Acquia\Orca\Domain\Composer\Version\DrupalCoreVersionResolver
+   */
+  private $drupalCoreVersionResolver;
 
   /**
    * The package manager.
@@ -18,22 +25,15 @@ class FixtureOptionsFactory {
   private $packageManager;
 
   /**
-   * The Drupal core version finder.
-   *
-   * @var \Acquia\Orca\Domain\Drupal\DrupalCoreVersionFinder
-   */
-  private $drupalCoreVersionFinder;
-
-  /**
    * Constructs an instance.
    *
-   * @param \Acquia\Orca\Domain\Drupal\DrupalCoreVersionFinder $drupal_core_version_finder
+   * @param \Acquia\Orca\Domain\Composer\Version\DrupalCoreVersionResolver $drupal_core_version_resolver
    *   The Drupal core version finder.
    * @param \Acquia\Orca\Domain\Package\PackageManager $package_manager
    *   The package manager.
    */
-  public function __construct(DrupalCoreVersionFinder $drupal_core_version_finder, PackageManager $package_manager) {
-    $this->drupalCoreVersionFinder = $drupal_core_version_finder;
+  public function __construct(DrupalCoreVersionResolver $drupal_core_version_resolver, PackageManager $package_manager) {
+    $this->drupalCoreVersionResolver = $drupal_core_version_resolver;
     $this->packageManager = $package_manager;
   }
 
@@ -49,7 +49,7 @@ class FixtureOptionsFactory {
    * @throws \Acquia\Orca\Exception\OrcaInvalidArgumentException
    */
   public function create(array $options): FixtureOptions {
-    return new FixtureOptions($this->drupalCoreVersionFinder, $this->packageManager, $options);
+    return new FixtureOptions($this->drupalCoreVersionResolver, $this->packageManager, $options);
   }
 
 }

@@ -14,9 +14,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 class DebugEnvVarsCommand extends Command {
 
   /**
-   * The default command name.
-   *
-   * @var string
+   * {@inheritdoc}
    */
   protected static $defaultName = 'debug:env-vars';
 

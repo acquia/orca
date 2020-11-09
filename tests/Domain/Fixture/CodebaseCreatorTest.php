@@ -3,7 +3,7 @@
 namespace Acquia\Orca\Tests\Domain\Fixture;
 
 use Acquia\Orca\Domain\Composer\ComposerFacade;
-use Acquia\Orca\Domain\Drupal\DrupalCoreVersionFinder;
+use Acquia\Orca\Domain\Composer\Version\DrupalCoreVersionResolver;
 use Acquia\Orca\Domain\Fixture\CodebaseCreator;
 use Acquia\Orca\Domain\Fixture\Helper\ComposerJsonHelper;
 use Acquia\Orca\Domain\Git\GitFacade;
@@ -19,7 +19,7 @@ use Prophecy\Argument;
 
 /**
  * @property \Acquia\Orca\Domain\Composer\ComposerFacade|\Prophecy\Prophecy\ObjectProphecy $composer
- * @property \Acquia\Orca\Domain\Drupal\DrupalCoreVersionFinder|\Prophecy\Prophecy\ObjectProphecy $drupalCoreVersionFinder
+ * @property \Acquia\Orca\Domain\Composer\Version\DrupalCoreVersionResolver|\Prophecy\Prophecy\ObjectProphecy $drupalCoreVersionFinder
  * @property \Acquia\Orca\Domain\Fixture\Helper\ComposerJsonHelper|\Prophecy\Prophecy\ObjectProphecy $composerJsonHelper
  * @property \Acquia\Orca\Domain\Git\GitFacade|\Prophecy\Prophecy\ObjectProphecy $git
  * @property \Acquia\Orca\Domain\Package\PackageManager|\Prophecy\Prophecy\ObjectProphecy $packageManager
@@ -40,7 +40,7 @@ class CodebaseCreatorTest extends TestCase {
     $this->fixture
       ->getPath(self::COMPOSER_JSON)
       ->willReturn(self::COMPOSER_JSON_PATH);
-    $this->drupalCoreVersionFinder = $this->prophesize(DrupalCoreVersionFinder::class);
+    $this->drupalCoreVersionFinder = $this->prophesize(DrupalCoreVersionResolver::class);
     $this->git = $this->prophesize(GitFacade::class);
     $this->orca = $this->prophesize(OrcaPathHandler::class);
     $this->packageManager = $this->prophesize(PackageManager::class);

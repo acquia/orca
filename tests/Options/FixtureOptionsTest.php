@@ -2,25 +2,28 @@
 
 namespace Acquia\Orca\Tests\Options;
 
-use Acquia\Orca\Domain\Drupal\DrupalCoreVersionFinder;
+use Acquia\Orca\Domain\Composer\Version\DrupalCoreVersionResolver;
 use Acquia\Orca\Domain\Package\Package;
 use Acquia\Orca\Domain\Package\PackageManager;
 use Acquia\Orca\Enum\DrupalCoreVersionEnum;
 use Acquia\Orca\Exception\OrcaInvalidArgumentException;
 use Acquia\Orca\Options\FixtureOptions;
+use Acquia\Orca\Tests\Enum\DrupalCoreVersionEnumsTestTrait;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 
 /**
- * @property \Acquia\Orca\Domain\Drupal\DrupalCoreVersionFinder|\Prophecy\Prophecy\ObjectProphecy $drupalCoreVersionFinder
+ * @property \Acquia\Orca\Domain\Composer\Version\DrupalCoreVersionResolver|\Prophecy\Prophecy\ObjectProphecy $drupalCoreVersionFinder
  * @property \Acquia\Orca\Domain\Package\PackageManager|\Prophecy\Prophecy\ObjectProphecy $packageManager
  *
  * @coversDefaultClass \Acquia\Orca\Options\FixtureOptions
  */
 class FixtureOptionsTest extends TestCase {
 
+  use DrupalCoreVersionEnumsTestTrait;
+
   protected function setUp(): void {
-    $this->drupalCoreVersionFinder = $this->prophesize(DrupalCoreVersionFinder::class);
+    $this->drupalCoreVersionFinder = $this->prophesize(DrupalCoreVersionResolver::class);
     $this->packageManager = $this->prophesize(PackageManager::class);
     $this->packageManager
       ->exists(Argument::any())
@@ -57,7 +60,7 @@ class FixtureOptionsTest extends TestCase {
   public function testDefaults(): void {
     $core = '9.0.0';
     $this->drupalCoreVersionFinder
-      ->get(new DrupalCoreVersionEnum(DrupalCoreVersionEnum::CURRENT_RECOMMENDED))
+      ->resolvePredefined(DrupalCoreVersionEnum::CURRENT())
       ->willReturn($core);
 
     $options = $this->createFixtureOptions([]);
@@ -245,7 +248,7 @@ class FixtureOptionsTest extends TestCase {
   }
 
   /**
-   * @dataProvider providerCoreConstantValid
+   * @dataProvider providerVersions
    *
    * @covers ::findCoreVersion
    * @covers ::getCore
@@ -255,26 +258,17 @@ class FixtureOptionsTest extends TestCase {
   public function testCoreConstantValid($version): void {
     $expected = '10.0.0';
     $this->drupalCoreVersionFinder
-      ->get(new DrupalCoreVersionEnum($version))
+      ->resolvePredefined($version)
       ->shouldBeCalledOnce()
       ->willReturn($expected);
 
-    $options = $this->createFixtureOptions(['core' => $version]);
+    $options = $this->createFixtureOptions(['core' => $version->getKey()]);
     // Call once to test essential functionality.
     $core = $options->getCore();
     // Call again to test value caching.
     $options->getCore();
 
     self::assertEquals($expected, $core, 'Accepted valid "core" constant option.');
-  }
-
-  public function providerCoreConstantValid(): array {
-    // Return all Drupal core version constants.
-    $array = [];
-    foreach (DrupalCoreVersionEnum::keys() as $value) {
-      $array[] = [$value];
-    }
-    return $array;
   }
 
   /**
@@ -285,7 +279,7 @@ class FixtureOptionsTest extends TestCase {
    */
   public function testCoreResolvedRange($core, $dev, $stability): void {
     $this->drupalCoreVersionFinder
-      ->find($core, $stability, $stability)
+      ->resolveArbitrary($core, $stability)
       ->shouldBeCalledOnce()
       ->willReturn('string');
 
@@ -319,7 +313,7 @@ class FixtureOptionsTest extends TestCase {
   public function testCoreDefaultDev(): void {
     $core = '10.0.0';
     $this->drupalCoreVersionFinder
-      ->get(new DrupalCoreVersionEnum(DrupalCoreVersionEnum::CURRENT_DEV))
+      ->resolvePredefined(DrupalCoreVersionEnum::CURRENT_DEV())
       ->shouldBeCalledOnce()
       ->willReturn($core);
 
@@ -407,7 +401,7 @@ class FixtureOptionsTest extends TestCase {
    */
   public function testProjectTemplateSelectionByCoreVersion($core, $expected): void {
     $this->drupalCoreVersionFinder
-      ->find($core, Argument::any(), Argument::any())
+      ->resolveArbitrary($core, Argument::any())
       ->willReturnArgument();
 
     $options = $this->createFixtureOptions(['core' => $core]);

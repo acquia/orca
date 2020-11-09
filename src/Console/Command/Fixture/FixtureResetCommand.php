@@ -17,9 +17,7 @@ use Symfony\Component\Console\Question\ConfirmationQuestion;
 class FixtureResetCommand extends Command {
 
   /**
-   * The default command name.
-   *
-   * @var string
+   * {@inheritdoc}
    */
   protected static $defaultName = 'fixture:reset';
 
