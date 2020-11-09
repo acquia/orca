@@ -98,6 +98,7 @@
             "@composer normalize"
         ],
         "cghooks": "cghooks --ansi",
+        "changelog": "./bin/changelog.sh",
         "coverage": "phpunit --coverage-html var/coverage-report; open var/coverage-report/index.html",
         "open-coverage": "open var/coverage-report/index.html",
         "phpcbf": "phpcbf",
