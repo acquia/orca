@@ -7,6 +7,7 @@ use Acquia\Orca\Domain\Composer\ComposerFacade;
 use Acquia\Orca\Domain\Composer\Version\VersionFinder;
 use Acquia\Orca\Domain\Composer\Version\VersionGuesser;
 use Acquia\Orca\Domain\Fixture\Helper\ComposerJsonHelper;
+use Acquia\Orca\Domain\Fixture\Helper\DrupalSettingsHelper;
 use Acquia\Orca\Domain\Git\GitFacade;
 use Acquia\Orca\Domain\Package\Package;
 use Acquia\Orca\Domain\Package\PackageManager;
@@ -51,6 +52,13 @@ class FixtureCreator {
    * @var \Acquia\Orca\Domain\Fixture\Helper\ComposerJsonHelper
    */
   private $composerJsonHelper;
+
+  /**
+   * The Drupal settings helper.
+   *
+   * @var \Acquia\Orca\Domain\Fixture\Helper\DrupalSettingsHelper
+   */
+  private $drupalSettingsHelper;
 
   /**
    * The fixture path handler.
@@ -140,6 +148,8 @@ class FixtureCreator {
    *   The Composer facade.
    * @param \Acquia\Orca\Domain\Fixture\Helper\ComposerJsonHelper $composer_json_helper
    *   The fixture composer.json helper.
+   * @param \Acquia\Orca\Domain\Fixture\Helper\DrupalSettingsHelper $drupal_settings_helper
+   *   The Drupal settings helper.
    * @param \Acquia\Orca\Helper\Filesystem\FixturePathHandler $fixture_path_handler
    *   The fixture path handler.
    * @param \Acquia\Orca\Domain\Fixture\FixtureInspector $fixture_inspector
@@ -161,10 +171,12 @@ class FixtureCreator {
    * @param \Acquia\Orca\Domain\Composer\Version\VersionGuesser $version_guesser
    *   The version guesser.
    */
-  public function __construct(CloudHooksInstaller $cloud_hooks_installer, CodebaseCreator $codebase_creator, ComposerFacade $composer, ComposerJsonHelper $composer_json_helper, FixturePathHandler $fixture_path_handler, FixtureInspector $fixture_inspector, GitFacade $git, SiteInstaller $site_installer, SymfonyStyle $output, ProcessRunner $process_runner, PackageManager $package_manager, SubextensionManager $subextension_manager, VersionFinder $version_finder, VersionGuesser $version_guesser) {
+  public function __construct(CloudHooksInstaller $cloud_hooks_installer, CodebaseCreator $codebase_creator, ComposerFacade $composer, ComposerJsonHelper $composer_json_helper, DrupalSettingsHelper $drupal_settings_helper, FixturePathHandler $fixture_path_handler, FixtureInspector $fixture_inspector, GitFacade $git, SiteInstaller $site_installer, SymfonyStyle $output, ProcessRunner $process_runner, PackageManager $package_manager, SubextensionManager $subextension_manager, VersionFinder $version_finder, VersionGuesser $version_guesser) {
+    $this->cloudHooksInstaller = $cloud_hooks_installer;
     $this->codebaseCreator = $codebase_creator;
     $this->composer = $composer;
     $this->composerJsonHelper = $composer_json_helper;
+    $this->drupalSettingsHelper = $drupal_settings_helper;
     $this->fixture = $fixture_path_handler;
     $this->fixtureInspector = $fixture_inspector;
     $this->git = $git;
@@ -175,7 +187,6 @@ class FixtureCreator {
     $this->subextensionManager = $subextension_manager;
     $this->versionFinder = $version_finder;
     $this->versionGuesser = $version_guesser;
-    $this->cloudHooksInstaller = $cloud_hooks_installer;
   }
 
   /**
@@ -665,92 +676,8 @@ class FixtureCreator {
    */
   protected function ensureDrupalSettings(): void {
     $this->output->section('Ensuring Drupal settings');
-    $this->ensureCiSettingsFile();
-    $this->ensureLocalSettingsFile();
+    $this->drupalSettingsHelper->ensureSettings($this->options);
     $this->git->commitCodeChanges('Ensured Drupal settings');
-  }
-
-  /**
-   * Ensures that the CI settings file is correctly configured.
-   */
-  private function ensureCiSettingsFile(): void {
-    $path = $this->fixture->getPath('docroot/sites/default/settings/ci.settings.php');
-
-    $data = '<?php' . PHP_EOL . PHP_EOL;
-    $data .= $this->getSettings();
-
-    file_put_contents($path, $data, FILE_APPEND);
-  }
-
-  /**
-   * Ensures that the local settings file is correctly configured.
-   */
-  private function ensureLocalSettingsFile(): void {
-    $path = $this->fixture->getPath('docroot/sites/default/settings/local.settings.php');
-
-    $id = '# ORCA settings.';
-
-    // Return early if the settings are already present.
-    if (strpos(file_get_contents($path), $id)) {
-      return;
-    }
-
-    // Add the settings.
-    $data = PHP_EOL . $id . PHP_EOL;
-    $data .= $this->getSettings();
-    file_put_contents($path, $data, FILE_APPEND);
-  }
-
-  /**
-   * Gets the PHP code to add to the Drupal settings files.
-   *
-   * @return string
-   *   A string of PHP code.
-   */
-  private function getSettings(): string {
-    $data = '';
-
-    if ($this->options->useSqlite()) {
-      $data .= <<<'PHP'
-$databases['default']['default']['database'] = dirname(DRUPAL_ROOT) . '/db.sqlite';
-$databases['default']['default']['driver'] = 'sqlite';
-unset($databases['default']['default']['namespace']);
-PHP;
-    }
-
-    $data .= PHP_EOL . PHP_EOL . <<<'PHP'
-// Override the definition of the service container used during Drupal's
-// bootstrapping process. This is needed so that the core db-tools.php script
-// can import database dumps properly. Without this, the destination database
-// will get a cache_container table created in it before the import begins,
-// which will cause the import to fail because it will think that Drupal is
-// already installed.
-// @see \Drupal\Core\DrupalKernel::$defaultBootstrapContainerDefinition
-// @see https://www.drupal.org/project/drupal/issues/3006038
-$settings['bootstrap_container_definition'] = [
-  'parameters' => [],
-  'services' => [
-    'database' => [
-      'class' => 'Drupal\Core\Database\Connection',
-      'factory' => 'Drupal\Core\Database\Database::getConnection',
-      'arguments' => ['default'],
-    ],
-    'cache.container' => [
-      'class' => 'Drupal\Core\Cache\MemoryBackend',
-    ],
-    'cache_tags_provider.container' => [
-      'class' => 'Drupal\Core\Cache\DatabaseCacheTagsChecksum',
-      'arguments' => ['@database'],
-    ],
-  ],
-];
-
-// Change the config cache to use a memory backend to prevent SQLite "too many
-// SQL variables" errors.
-// @see https://www.drupal.org/project/drupal/issues/2031261
-$settings['cache']['bins']['config'] = 'cache.backend.memory';
-PHP;
-    return $data . PHP_EOL;
   }
 
   /**
