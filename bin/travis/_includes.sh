@@ -28,11 +28,13 @@ function notice {
 }
 
 # Assert that necessary environment variables are set.
-if [[ "$ORCA_JOB" != "DEPRECATED_CODE_SCAN_CONTRIB" ]]; then
+if [[ "$ORCA_JOB" ]]; then
   assert "$ORCA_SUT_NAME" "Missing required ORCA_SUT_NAME environment variable.\nHint: ORCA_SUT_NAME=drupal/example"
   if [[ "$TRAVIS" ]]; then assert "$ORCA_SUT_BRANCH" "Missing required ORCA_SUT_BRANCH environment variable.\nHint: ORCA_SUT_BRANCH=8.x-1.x"; fi
 fi
-if [[ ! "$TRAVIS" && "$ORCA_JOB" = "STATIC_CODE_ANALYSIS" ]]; then assert "$ORCA_SUT_DIR" "Missing required ORCA_SUT_DIR environment variable.\nHint: ORCA_SUT_DIR=~/Projects/example"; fi
+if [[ ! "$TRAVIS" && "$ORCA_JOB" = "STATIC_CODE_ANALYSIS" ]]; then
+  assert "$ORCA_SUT_DIR" "Missing required ORCA_SUT_DIR environment variable.\nHint: ORCA_SUT_DIR=~/Projects/example"
+fi
 
 # Set environment variables.
 ORCA_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
