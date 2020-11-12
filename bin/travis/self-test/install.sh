@@ -11,7 +11,7 @@
 
 cd "$(dirname "$0")" || exit; source _includes.sh
 
-if [[ "$ORCA_JOB" = "LIVE_TEST" ]]; then
-  orca debug:packages CURRENT_RECOMMENDED
-  orca fixture:init -f --core=CURRENT_RECOMMENDED
+if [[ "$ORCA_LIVE_TEST" ]]; then
+  orca debug:packages CURRENT
+  orca fixture:init -f --core=CURRENT
 fi

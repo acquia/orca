@@ -16,9 +16,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 class DebugGuessVersionCommand extends Command {
 
   /**
-   * The default command name.
-   *
-   * @var string
+   * {@inheritdoc}
    */
   protected static $defaultName = 'debug:guess-version';
 
@@ -52,8 +50,6 @@ class DebugGuessVersionCommand extends Command {
 
   /**
    * {@inheritdoc}
-   *
-   * @SuppressWarnings(PHPMD.StaticAccess)
    */
   public function execute(InputInterface $input, OutputInterface $output): int {
     $path = $input->getArgument('path');

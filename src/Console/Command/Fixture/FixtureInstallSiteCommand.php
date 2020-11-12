@@ -18,9 +18,7 @@ use Symfony\Component\Console\Question\ConfirmationQuestion;
 class FixtureInstallSiteCommand extends Command {
 
   /**
-   * The default command name.
-   *
-   * @var string
+   * {@inheritdoc}
    */
   protected static $defaultName = 'fixture:install-site';
 
@@ -54,8 +52,6 @@ class FixtureInstallSiteCommand extends Command {
 
   /**
    * {@inheritdoc}
-   *
-   * @SuppressWarnings(PHPMD.StaticAccess)
    */
   protected function configure() {
     $this

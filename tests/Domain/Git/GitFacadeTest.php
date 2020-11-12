@@ -84,6 +84,33 @@ class GitFacadeTest extends TestCase {
     $git->backupFixtureRepo();
   }
 
+  /**
+   * @dataProvider providerCommitCodeChanges
+   */
+  public function testCommitCodeChanges($message): void {
+    $this->processRunner
+      ->runExecutable('git', ['add', '--all'], NULL)
+      ->shouldBeCalledOnce();
+    $this->processRunner
+      ->runExecutable('git', [
+        'commit',
+        "--message={$message}",
+        '--quiet',
+        '--allow-empty',
+      ], NULL)
+      ->shouldBeCalledOnce();
+    $git = $this->createGit();
+
+    $git->commitCodeChanges($message);
+  }
+
+  public function providerCommitCodeChanges(): array {
+    return [
+      ['Lorem'],
+      ['Ipsum'],
+    ];
+  }
+
   public function testEnsureFixtureRepo(): void {
     $this->processRunner
       ->runExecutable('git', ['init'], NULL)

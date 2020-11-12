@@ -11,6 +11,10 @@
 
 cd "$(dirname "$0")" || exit 1; source _includes.sh
 
+if [[ "$ORCA_JOB" ]]; then
+  eval "orca ci:run $ORCA_JOB after_script $ORCA_SUT_NAME"
+fi
+
 # Log the job on cron if telemetry is enabled.
 if [[ "$TRAVIS_EVENT_TYPE" = "cron" && "$ORCA_TELEMETRY_ENABLE" = "TRUE" && "$ORCA_AMPLITUDE_API_KEY" && "$ORCA_AMPLITUDE_USER_ID" ]]; then
   orca internal:log-job

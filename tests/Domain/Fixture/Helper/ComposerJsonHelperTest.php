@@ -2,7 +2,7 @@
 
 namespace Acquia\Orca\Tests\Domain\Fixture\Helper;
 
-use Acquia\Orca\Domain\Drupal\DrupalCoreVersionFinder;
+use Acquia\Orca\Domain\Composer\Version\DrupalCoreVersionResolver;
 use Acquia\Orca\Domain\Fixture\Helper\ComposerJsonHelper;
 use Acquia\Orca\Domain\Package\PackageManager;
 use Acquia\Orca\Exception\OrcaFileNotFoundException;
@@ -19,11 +19,11 @@ use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 
 /**
- * @property \Acquia\Orca\Domain\Drupal\DrupalCoreVersionFinder|\Prophecy\Prophecy\ObjectProphecy $drupalCoreVersionFinder
- * @property \Acquia\Orca\Options\FixtureOptionsFactory|\Prophecy\Prophecy\ObjectProphecy $fixtureOptionsFactory
+ * @property \Acquia\Orca\Domain\Composer\Version\DrupalCoreVersionResolver|\Prophecy\Prophecy\ObjectProphecy $drupalCoreVersionFinder
  * @property \Acquia\Orca\Domain\Package\PackageManager|\Prophecy\Prophecy\ObjectProphecy $packageManager
  * @property \Acquia\Orca\Helper\Config\ConfigLoader|\Prophecy\Prophecy\ObjectProphecy $configLoader
  * @property \Acquia\Orca\Helper\Filesystem\FixturePathHandler|\Prophecy\Prophecy\ObjectProphecy $fixture
+ * @property \Acquia\Orca\Options\FixtureOptionsFactory|\Prophecy\Prophecy\ObjectProphecy $fixtureOptionsFactory
  * @coversDefaultClass \Acquia\Orca\Domain\Fixture\Helper\ComposerJsonHelper
  */
 class ComposerJsonHelperTest extends TestCase {
@@ -38,7 +38,7 @@ class ComposerJsonHelperTest extends TestCase {
 
   protected function setUp(): void {
     $config = new Config($this->getTestComposerJsonWithFixtureOptionsRaw(), new Json(), TRUE);
-    $this->drupalCoreVersionFinder = $this->prophesize(DrupalCoreVersionFinder::class);
+    $this->drupalCoreVersionFinder = $this->prophesize(DrupalCoreVersionResolver::class);
     $this->configLoader = $this->prophesize(ConfigLoader::class);
     $this->configLoader
       ->load(Argument::any())
@@ -278,7 +278,7 @@ class ComposerJsonHelperTest extends TestCase {
 
   public function testGetComposerJsonMissingFixtureOptions(): void {
     $config = new Config($this->getTestComposerJsonRaw(), new Json(), TRUE);
-    $this->drupalCoreVersionFinder = $this->prophesize(DrupalCoreVersionFinder::class);
+    $this->drupalCoreVersionFinder = $this->prophesize(DrupalCoreVersionResolver::class);
     $this->configLoader = $this->prophesize(ConfigLoader::class);
     $this->configLoader
       ->load(self::FILENAME)

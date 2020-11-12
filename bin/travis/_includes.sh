@@ -28,11 +28,13 @@ function notice {
 }
 
 # Assert that necessary environment variables are set.
-if [[ "$ORCA_JOB" != "DEPRECATED_CODE_SCAN_CONTRIB" ]]; then
+if [[ "$ORCA_JOB" ]]; then
   assert "$ORCA_SUT_NAME" "Missing required ORCA_SUT_NAME environment variable.\nHint: ORCA_SUT_NAME=drupal/example"
   if [[ "$TRAVIS" ]]; then assert "$ORCA_SUT_BRANCH" "Missing required ORCA_SUT_BRANCH environment variable.\nHint: ORCA_SUT_BRANCH=8.x-1.x"; fi
 fi
-if [[ ! "$TRAVIS" && "$ORCA_JOB" = "STATIC_CODE_ANALYSIS" ]]; then assert "$ORCA_SUT_DIR" "Missing required ORCA_SUT_DIR environment variable.\nHint: ORCA_SUT_DIR=~/Projects/example"; fi
+if [[ ! "$TRAVIS" && "$ORCA_JOB" = "STATIC_CODE_ANALYSIS" ]]; then
+  assert "$ORCA_SUT_DIR" "Missing required ORCA_SUT_DIR environment variable.\nHint: ORCA_SUT_DIR=~/Projects/example"
+fi
 
 # Set environment variables.
 ORCA_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
@@ -42,8 +44,6 @@ export ORCA_COVERALLS_ENABLE=${ORCA_COVERALLS_ENABLE:=FALSE}
 export ORCA_COVERAGE_ENABLE=${ORCA_COVERAGE_ENABLE:="$ORCA_COVERALLS_ENABLE"}
 export ORCA_FIXTURE_DIR=${ORCA_FIXTURE_DIR:="$ORCA_ROOT/../orca-build"}
 export ORCA_FIXTURE_PROFILE=${ORCA_FIXTURE_PROFILE:="orca"}
-DEFAULT_PROJECT_TEMPLATE=$([[ "$ORCA_JOB" == "D9_READINESS" ]] && echo "acquia/drupal-recommended-project" || echo "acquia/blt-project")
-export ORCA_FIXTURE_PROJECT_TEMPLATE=${ORCA_FIXTURE_PROJECT_TEMPLATE:="$DEFAULT_PROJECT_TEMPLATE"}
 export ORCA_SUT_DIR=${ORCA_SUT_DIR:=${TRAVIS_BUILD_DIR}}
 ORCA_SUT_HAS_NIGHTWATCH_TESTS=$(cd "$ORCA_SUT_DIR"; find . -regex ".*/Nightwatch/.*" -name \*.js)
 export ORCA_SUT_HAS_NIGHTWATCH_TESTS

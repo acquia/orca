@@ -14,7 +14,7 @@ use InvalidArgumentException;
 use UnexpectedValueException;
 
 /**
- * Provides a facade Composer.
+ * Provides a facade for Composer.
  */
 class ComposerFacade {
 
@@ -245,10 +245,6 @@ class ComposerFacade {
    *   TRUE to pass the --no-update or FALSE not to.
    */
   public function requirePackages(array $packages, ?bool $prefer_source = FALSE, ?bool $no_update = FALSE): void {
-    if (empty($packages)) {
-      throw new InvalidArgumentException('No packages provided to require.');
-    }
-
     $command = ['require'];
     if ($prefer_source) {
       $command[] = '--prefer-source';

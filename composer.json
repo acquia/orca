@@ -43,6 +43,7 @@
         "symfony/dependency-injection": "^4.1",
         "symfony/filesystem": "^4.1",
         "symfony/finder": "^4.1",
+        "symfony/http-client": "^5.1",
         "symfony/http-kernel": "^4.1",
         "symfony/options-resolver": "^4.2",
         "symfony/phpunit-bridge": "^4.2",
@@ -97,7 +98,9 @@
             "@composer normalize"
         ],
         "cghooks": "cghooks --ansi",
+        "changelog": "./bin/changelog.sh",
         "coverage": "phpunit --coverage-html var/coverage-report; open var/coverage-report/index.html",
+        "open-coverage": "open var/coverage-report/index.html",
         "phpcbf": "phpcbf",
         "phpcs": "phpcs -s --cache=var/cache/phpcs.json",
         "phplint": "parallel-lint --exclude vendor --ignore-fails .",

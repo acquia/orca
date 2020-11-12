@@ -3,8 +3,8 @@
 namespace Acquia\Orca\Tests\Domain\Composer;
 
 use Acquia\Orca\Domain\Composer\ComposerFacade;
+use Acquia\Orca\Domain\Composer\Version\DrupalCoreVersionResolver;
 use Acquia\Orca\Domain\Composer\Version\VersionGuesser;
-use Acquia\Orca\Domain\Drupal\DrupalCoreVersionFinder;
 use Acquia\Orca\Domain\Package\Package;
 use Acquia\Orca\Domain\Package\PackageManager;
 use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
@@ -17,12 +17,12 @@ use Prophecy\Argument;
 
 /**
  * @property \Acquia\Orca\Domain\Composer\Version\VersionGuesser|\Prophecy\Prophecy\ObjectProphecy $versionGuesser
- * @property \Acquia\Orca\Domain\Drupal\DrupalCoreVersionFinder|\Prophecy\Prophecy\ObjectProphecy $drupalCoreVersionFinder
+ * @property \Acquia\Orca\Domain\Composer\Version\DrupalCoreVersionResolver|\Prophecy\Prophecy\ObjectProphecy $drupalCoreVersionFinder
+ * @property \Acquia\Orca\Domain\Package\PackageManager|\Prophecy\Prophecy\ObjectProphecy $packageManager
+ * @property \Acquia\Orca\Domain\Package\Package|\Prophecy\Prophecy\ObjectProphecy $blt
  * @property \Acquia\Orca\Helper\Filesystem\FixturePathHandler|\Prophecy\Prophecy\ObjectProphecy $fixture
  * @property \Acquia\Orca\Helper\Filesystem\OrcaPathHandler|\Prophecy\Prophecy\ObjectProphecy $orca
  * @property \Acquia\Orca\Helper\Process\ProcessRunner|\Prophecy\Prophecy\ObjectProphecy $processRunner
- * @property \Acquia\Orca\Domain\Package\PackageManager|\Prophecy\Prophecy\ObjectProphecy $packageManager
- * @property \Acquia\Orca\Domain\Package\Package|\Prophecy\Prophecy\ObjectProphecy $blt
  * @coversDefaultClass \Acquia\Orca\Domain\Composer\ComposerFacade
  */
 class ComposerFacadeTest extends TestCase {
@@ -39,7 +39,7 @@ class ComposerFacadeTest extends TestCase {
       ->willReturn(TRUE);
     $this->blt->getRepositoryUrlAbsolute()
       ->willReturn(self::PACKAGE_ABSOLUTE_PATH);
-    $this->drupalCoreVersionFinder = $this->prophesize(DrupalCoreVersionFinder::class);
+    $this->drupalCoreVersionFinder = $this->prophesize(DrupalCoreVersionResolver::class);
     $this->fixture = $this->prophesize(FixturePathHandler::class);
     $this->fixture
       ->getPath()
@@ -186,9 +186,6 @@ class ComposerFacadeTest extends TestCase {
     $this->packageManager
       ->get($package_name)
       ->willReturn($package);
-    $this->drupalCoreVersionFinder
-      ->get(Argument::any())
-      ->willReturn('1.0.0');
     $project_template = 'test/example-project';
     $options = $this->createFixtureOptions([
       'project-template' => $project_template,
@@ -235,7 +232,7 @@ class ComposerFacadeTest extends TestCase {
       ->getBlt()
       ->willReturn($blt);
     $this->drupalCoreVersionFinder
-      ->get(Argument::any())
+      ->resolvePredefined(Argument::any())
       ->willReturn($core_version);
     $this->versionGuesser
       ->guessVersion(Argument::any())
@@ -511,8 +508,17 @@ class ComposerFacadeTest extends TestCase {
     ];
   }
 
+  /**
+   * @see https://github.com/acquia/orca/pull/113
+   */
   public function testRequirePackagesEmptyArray(): void {
-    $this->expectException(InvalidArgumentException::class);
+    $this->processRunner
+      ->runOrcaVendorBin(array_merge([
+        'composer',
+        'require',
+        '--no-interaction',
+      ], []), self::FIXTURE_PATH)
+      ->shouldBeCalledOnce();
     $composer = $this->createComposer();
 
     $composer->requirePackages([]);

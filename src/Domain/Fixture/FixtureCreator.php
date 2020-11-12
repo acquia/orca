@@ -7,6 +7,7 @@ use Acquia\Orca\Domain\Composer\ComposerFacade;
 use Acquia\Orca\Domain\Composer\Version\VersionFinder;
 use Acquia\Orca\Domain\Composer\Version\VersionGuesser;
 use Acquia\Orca\Domain\Fixture\Helper\ComposerJsonHelper;
+use Acquia\Orca\Domain\Fixture\Helper\DrupalSettingsHelper;
 use Acquia\Orca\Domain\Git\GitFacade;
 use Acquia\Orca\Domain\Package\Package;
 use Acquia\Orca\Domain\Package\PackageManager;
@@ -23,6 +24,13 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 class FixtureCreator {
 
   public const DEFAULT_PROFILE = 'orca';
+
+  /**
+   * The Cloud Hooks installer.
+   *
+   * @var \Acquia\Orca\Domain\Fixture\CloudHooksInstaller
+   */
+  private $cloudHooksInstaller;
 
   /**
    * The codebase creator.
@@ -44,6 +52,13 @@ class FixtureCreator {
    * @var \Acquia\Orca\Domain\Fixture\Helper\ComposerJsonHelper
    */
   private $composerJsonHelper;
+
+  /**
+   * The Drupal settings helper.
+   *
+   * @var \Acquia\Orca\Domain\Fixture\Helper\DrupalSettingsHelper
+   */
+  private $drupalSettingsHelper;
 
   /**
    * The fixture path handler.
@@ -125,12 +140,16 @@ class FixtureCreator {
   /**
    * Constructs an instance.
    *
+   * @param \Acquia\Orca\Domain\Fixture\CloudHooksInstaller $cloud_hooks_installer
+   *   The Cloud Hooks installer.
    * @param \Acquia\Orca\Domain\Fixture\CodebaseCreator $codebase_creator
    *   The codebase creator.
    * @param \Acquia\Orca\Domain\Composer\ComposerFacade $composer
    *   The Composer facade.
    * @param \Acquia\Orca\Domain\Fixture\Helper\ComposerJsonHelper $composer_json_helper
    *   The fixture composer.json helper.
+   * @param \Acquia\Orca\Domain\Fixture\Helper\DrupalSettingsHelper $drupal_settings_helper
+   *   The Drupal settings helper.
    * @param \Acquia\Orca\Helper\Filesystem\FixturePathHandler $fixture_path_handler
    *   The fixture path handler.
    * @param \Acquia\Orca\Domain\Fixture\FixtureInspector $fixture_inspector
@@ -152,10 +171,12 @@ class FixtureCreator {
    * @param \Acquia\Orca\Domain\Composer\Version\VersionGuesser $version_guesser
    *   The version guesser.
    */
-  public function __construct(CodebaseCreator $codebase_creator, ComposerFacade $composer, ComposerJsonHelper $composer_json_helper, FixturePathHandler $fixture_path_handler, FixtureInspector $fixture_inspector, GitFacade $git, SiteInstaller $site_installer, SymfonyStyle $output, ProcessRunner $process_runner, PackageManager $package_manager, SubextensionManager $subextension_manager, VersionFinder $version_finder, VersionGuesser $version_guesser) {
+  public function __construct(CloudHooksInstaller $cloud_hooks_installer, CodebaseCreator $codebase_creator, ComposerFacade $composer, ComposerJsonHelper $composer_json_helper, DrupalSettingsHelper $drupal_settings_helper, FixturePathHandler $fixture_path_handler, FixtureInspector $fixture_inspector, GitFacade $git, SiteInstaller $site_installer, SymfonyStyle $output, ProcessRunner $process_runner, PackageManager $package_manager, SubextensionManager $subextension_manager, VersionFinder $version_finder, VersionGuesser $version_guesser) {
+    $this->cloudHooksInstaller = $cloud_hooks_installer;
     $this->codebaseCreator = $codebase_creator;
     $this->composer = $composer;
     $this->composerJsonHelper = $composer_json_helper;
+    $this->drupalSettingsHelper = $drupal_settings_helper;
     $this->fixture = $fixture_path_handler;
     $this->fixtureInspector = $fixture_inspector;
     $this->git = $git;
@@ -306,7 +327,7 @@ class FixtureCreator {
     $this->output->section('Adding company packages');
     $this->addTopLevelAcquiaPackages();
     $this->addCompanySubextensions();
-    $this->commitCodeChanges('Added company packages.');
+    $this->git->commitCodeChanges('Added company packages.');
   }
 
   /**
@@ -406,54 +427,8 @@ class FixtureCreator {
     }
 
     if (!is_link($sut_install_path)) {
-      $this->displayFailedSymlinkDebuggingInfo();
       throw new OrcaException('Failed to symlink SUT via local path repository.');
     }
-  }
-
-  /**
-   * Displays debugging info about a failure to symlink the SUT.
-   */
-  private function displayFailedSymlinkDebuggingInfo(): void {
-    $this->output->section('Debugging info');
-    /* @var Package $sut */
-    $sut = $this->options->getSut();
-
-    $this->output->comment('Display some info about the SUT install path.');
-    $this->processRunner->runExecutable('stat', [
-      $sut->getInstallPathAbsolute(),
-    ]);
-
-    $fixture_path = $this->fixture->getPath();
-
-    $this->output->comment("See if Composer knows why it wasn't symlinked.");
-    $this->processRunner->runOrcaVendorBin([
-      'composer',
-      'why-not',
-      $this->getLocalPackageString($sut),
-    ], $fixture_path);
-
-    $this->output->comment('See why Composer installed what it did.');
-    $this->processRunner->runOrcaVendorBin([
-      'composer',
-      'why',
-      $sut->getPackageName(),
-    ], $fixture_path);
-
-    $this->output->comment('Display the Git branches in the path repo.');
-    $this->git->execute([
-      'branch',
-    ], $sut->getRepositoryUrlAbsolute());
-
-    $this->output->comment("Display the fixture's composer.json.");
-    $this->processRunner->runExecutable('cat', [
-      $this->fixture->getPath('composer.json'),
-    ]);
-
-    $this->output->comment("Display the SUT's composer.json.");
-    $this->processRunner->runExecutable('cat', [
-      "{$sut->getRepositoryUrlAbsolute()}/composer.json",
-    ]);
   }
 
   /**
@@ -686,52 +661,14 @@ class FixtureCreator {
   }
 
   /**
-   * Commits code changes made to the build directory.
-   *
-   * @param string $message
-   *   The commit message to use.
-   */
-  private function commitCodeChanges($message): void {
-    $this->git->execute(['add', '--all']);
-    $this->git->execute([
-      'commit',
-      "--message={$message}",
-      '--quiet',
-      '--allow-empty',
-    ]);
-  }
-
-  /**
    * Installs Acquia Cloud Hooks.
    *
    * @see https://github.com/acquia/cloud-hooks#installing-cloud-hooks
    */
   private function installCloudHooks(): void {
     $this->output->section('Installing Cloud Hooks');
-    $cwd = $this->fixture->getPath();
-
-    $tarball = 'hooks.tar.gz';
-    $this->processRunner->runExecutable('curl', [
-      '-L',
-      '-o',
-      $tarball,
-      'https://github.com/acquia/cloud-hooks/tarball/master',
-    ], $cwd);
-    $this->processRunner->runExecutable('tar', [
-      'xzf',
-      $tarball,
-    ], $cwd);
-    $this->processRunner->runExecutable('rm', [
-      $tarball,
-    ], $cwd);
-
-    $directory = glob($this->fixture->getPath('acquia-cloud-hooks-*'))[0];
-    $this->processRunner->runExecutable('mv', [
-      $directory,
-      'hooks',
-    ], $cwd);
-
-    $this->commitCodeChanges('Installed Cloud Hooks.');
+    $this->cloudHooksInstaller->install();
+    $this->git->commitCodeChanges('Installed Cloud Hooks.');
   }
 
   /**
@@ -739,92 +676,8 @@ class FixtureCreator {
    */
   protected function ensureDrupalSettings(): void {
     $this->output->section('Ensuring Drupal settings');
-    $this->ensureCiSettingsFile();
-    $this->ensureLocalSettingsFile();
-    $this->commitCodeChanges('Ensured Drupal settings');
-  }
-
-  /**
-   * Ensures that the CI settings file is correctly configured.
-   */
-  private function ensureCiSettingsFile(): void {
-    $path = $this->fixture->getPath('docroot/sites/default/settings/ci.settings.php');
-
-    $data = '<?php' . PHP_EOL . PHP_EOL;
-    $data .= $this->getSettings();
-
-    file_put_contents($path, $data, FILE_APPEND);
-  }
-
-  /**
-   * Ensures that the local settings file is correctly configured.
-   */
-  private function ensureLocalSettingsFile(): void {
-    $path = $this->fixture->getPath('docroot/sites/default/settings/local.settings.php');
-
-    $id = '# ORCA settings.';
-
-    // Return early if the settings are already present.
-    if (strpos(file_get_contents($path), $id)) {
-      return;
-    }
-
-    // Add the settings.
-    $data = PHP_EOL . $id . PHP_EOL;
-    $data .= $this->getSettings();
-    file_put_contents($path, $data, FILE_APPEND);
-  }
-
-  /**
-   * Gets the PHP code to add to the Drupal settings files.
-   *
-   * @return string
-   *   A string of PHP code.
-   */
-  private function getSettings(): string {
-    $data = '';
-
-    if ($this->options->useSqlite()) {
-      $data .= <<<'PHP'
-$databases['default']['default']['database'] = dirname(DRUPAL_ROOT) . '/db.sqlite';
-$databases['default']['default']['driver'] = 'sqlite';
-unset($databases['default']['default']['namespace']);
-PHP;
-    }
-
-    $data .= PHP_EOL . PHP_EOL . <<<'PHP'
-// Override the definition of the service container used during Drupal's
-// bootstrapping process. This is needed so that the core db-tools.php script
-// can import database dumps properly. Without this, the destination database
-// will get a cache_container table created in it before the import begins,
-// which will cause the import to fail because it will think that Drupal is
-// already installed.
-// @see \Drupal\Core\DrupalKernel::$defaultBootstrapContainerDefinition
-// @see https://www.drupal.org/project/drupal/issues/3006038
-$settings['bootstrap_container_definition'] = [
-  'parameters' => [],
-  'services' => [
-    'database' => [
-      'class' => 'Drupal\Core\Database\Connection',
-      'factory' => 'Drupal\Core\Database\Database::getConnection',
-      'arguments' => ['default'],
-    ],
-    'cache.container' => [
-      'class' => 'Drupal\Core\Cache\MemoryBackend',
-    ],
-    'cache_tags_provider.container' => [
-      'class' => 'Drupal\Core\Cache\DatabaseCacheTagsChecksum',
-      'arguments' => ['@database'],
-    ],
-  ],
-];
-
-// Change the config cache to use a memory backend to prevent SQLite "too many
-// SQL variables" errors.
-// @see https://www.drupal.org/project/drupal/issues/2031261
-$settings['cache']['bins']['config'] = 'cache.backend.memory';
-PHP;
-    return $data . PHP_EOL;
+    $this->drupalSettingsHelper->ensureSettings($this->options);
+    $this->git->commitCodeChanges('Ensured Drupal settings');
   }
 
   /**
@@ -841,7 +694,7 @@ PHP;
 
     $this->output->section('Installing site');
     $this->siteInstaller->install($this->options->getProfile());
-    $this->commitCodeChanges('Installed site.');
+    $this->git->commitCodeChanges('Installed site.');
   }
 
   /**
@@ -873,14 +726,7 @@ PHP;
    */
   private function createAndCheckoutBackupTag(): void {
     $this->output->section('Creating backup tag');
-    $this->git->execute([
-      'tag',
-      GitFacade::FRESH_FIXTURE_TAG,
-    ]);
-    $this->git->execute([
-      'checkout',
-      GitFacade::FRESH_FIXTURE_TAG,
-    ]);
+    $this->git->backupFixtureRepo();
   }
 
   /**

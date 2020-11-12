@@ -12,9 +12,7 @@ use Symfony\Component\Yaml\Command\LintCommand;
 class InternalLintYamlCommand extends LintCommand {
 
   /**
-   * The default command name.
-   *
-   * @var string
+   * {@inheritdoc}
    */
   protected static $defaultName = 'internal:lint-yaml';
 

@@ -163,6 +163,23 @@ class ProcessRunner {
   }
 
   /**
+   * Runs an ORCA command.
+   *
+   * @param array $command
+   *   An array of command arguments.
+   *
+   * @return int
+   *   The exit status code.
+   */
+  public function runOrca(array $command): int {
+    array_unshift($command, $this->orca->getPath('bin/orca'));
+    $process = new Process($command);
+    $process->setTty(TRUE);
+    $cwd = $this->orca->getPath();
+    return $this->run($process, $cwd);
+  }
+
+  /**
    * Runs a given command in ORCA's vendor/bin directory.
    *
    * @param array $command

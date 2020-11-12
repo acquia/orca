@@ -5,10 +5,12 @@ namespace Acquia\Orca\Tests\Domain\Fixture;
 use Acquia\Orca\Domain\Composer\ComposerFacade;
 use Acquia\Orca\Domain\Composer\Version\VersionFinder;
 use Acquia\Orca\Domain\Composer\Version\VersionGuesser;
+use Acquia\Orca\Domain\Fixture\CloudHooksInstaller;
 use Acquia\Orca\Domain\Fixture\CodebaseCreator;
 use Acquia\Orca\Domain\Fixture\FixtureCreator;
 use Acquia\Orca\Domain\Fixture\FixtureInspector;
 use Acquia\Orca\Domain\Fixture\Helper\ComposerJsonHelper;
+use Acquia\Orca\Domain\Fixture\Helper\DrupalSettingsHelper;
 use Acquia\Orca\Domain\Fixture\SiteInstaller;
 use Acquia\Orca\Domain\Fixture\SubextensionManager;
 use Acquia\Orca\Domain\Git\GitFacade;
@@ -23,9 +25,11 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  * @property \Acquia\Orca\Domain\Composer\ComposerFacade|\Prophecy\Prophecy\ObjectProphecy $composer
  * @property \Acquia\Orca\Domain\Composer\Version\VersionFinder|\Prophecy\Prophecy\ObjectProphecy $versionFinder
  * @property \Acquia\Orca\Domain\Composer\Version\VersionGuesser|\Prophecy\Prophecy\ObjectProphecy $versionGuesser
+ * @property \Acquia\Orca\Domain\Fixture\CloudHooksInstaller|\Prophecy\Prophecy\ObjectProphecy $cloudHooksInstaller
  * @property \Acquia\Orca\Domain\Fixture\CodebaseCreator|\Prophecy\Prophecy\ObjectProphecy $codebaseCreator
  * @property \Acquia\Orca\Domain\Fixture\FixtureInspector|\Prophecy\Prophecy\ObjectProphecy $fixtureInspector
  * @property \Acquia\Orca\Domain\Fixture\Helper\ComposerJsonHelper|\Prophecy\Prophecy\ObjectProphecy $composerJsonHelper
+ * @property \Acquia\Orca\Domain\Fixture\Helper\DrupalSettingsHelper|\Prophecy\Prophecy\ObjectProphecy $drupalSettingsHelper
  * @property \Acquia\Orca\Domain\Fixture\SiteInstaller|\Prophecy\Prophecy\ObjectProphecy $siteInstaller
  * @property \Acquia\Orca\Domain\Fixture\SubextensionManager|\Prophecy\Prophecy\ObjectProphecy $subextensionManager
  * @property \Acquia\Orca\Domain\Git\GitFacade|\Prophecy\Prophecy\ObjectProphecy $git
@@ -38,9 +42,11 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 class FixtureCreatorTest extends TestCase {
 
   protected function setUp(): void {
+    $this->cloudHooksInstaller = $this->prophesize(CloudHooksInstaller::class);
     $this->codebaseCreator = $this->prophesize(CodebaseCreator::class);
     $this->composer = $this->prophesize(ComposerFacade::class);
     $this->composerJsonHelper = $this->prophesize(ComposerJsonHelper::class);
+    $this->drupalSettingsHelper = $this->prophesize(DrupalSettingsHelper::class);
     $this->fixture = $this->prophesize(FixturePathHandler::class);
     $this->fixtureInspector = $this->prophesize(FixtureInspector::class);
     $this->git = $this->prophesize(GitFacade::class);
@@ -55,9 +61,11 @@ class FixtureCreatorTest extends TestCase {
   }
 
   private function createFixtureCreator(): FixtureCreator {
+    $cloud_hooks_installer = $this->cloudHooksInstaller->reveal();
     $codebase_creator = $this->codebaseCreator->reveal();
     $composer_facade = $this->composer->reveal();
     $composer_json_helper = $this->composerJsonHelper->reveal();
+    $drupal_settings_helper = $this->drupalSettingsHelper->reveal();
     $fixture = $this->fixture->reveal();
     $fixture_inspector = $this->fixtureInspector->reveal();
     $git = $this->git->reveal();
@@ -68,7 +76,7 @@ class FixtureCreatorTest extends TestCase {
     $subextension_manager = $this->subextensionManager->reveal();
     $version_finder = $this->versionFinder->reveal();
     $version_guesser = $this->versionGuesser->reveal();
-    return new FixtureCreator($codebase_creator, $composer_facade, $composer_json_helper, $fixture, $fixture_inspector, $git, $site_installer, $output, $process_runner, $package_manager, $subextension_manager, $version_finder, $version_guesser);
+    return new FixtureCreator($cloud_hooks_installer, $codebase_creator, $composer_facade, $composer_json_helper, $drupal_settings_helper, $fixture, $fixture_inspector, $git, $site_installer, $output, $process_runner, $package_manager, $subextension_manager, $version_finder, $version_guesser);
   }
 
   public function testInstantiation(): void {

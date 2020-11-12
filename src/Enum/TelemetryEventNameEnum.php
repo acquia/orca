@@ -12,8 +12,8 @@ use MyCLabs\Enum\Enum;
  */
 class TelemetryEventNameEnum extends Enum {
 
-  public const TRAVIS_CI_JOB = 'Travis CI job run';
-
   public const TEST = 'Telemetry test run';
+
+  public const TRAVIS_CI_JOB = 'Travis CI job run';
 
 }

@@ -32,25 +32,22 @@ These affect ORCA only as invoked via the Travis CI scripts.
 
 * <a name="ORCA_COVERALLS_ENABLE"></a>**`ORCA_COVERALLS_ENABLE`**: Set to `TRUE` to send test coverage data to [Coveralls](https://coveralls.io/) on the isolated/recommended job. Requires that you [add your repository to Coveralls](https://github.com/acquia/orca/blob/master/docs/faq.md#how-do-i-add-my-github-repository-to-coveralls). It is recommended to [enable notifications](https://docs.coveralls.io/coveralls-notifications). Test coverage generation greatly increases build times, so only enable it on one job--all that makes sense anyway. Note: [`ORCA_COVERAGE_ENABLE`](#ORCA_COVERAGE_ENABLE) is implied by this setting and need not be enabled if this is.
 
-* <a name="ORCA_CUSTOM_FIXTURE_INIT_ARGS"></a>**`ORCA_CUSTOM_FIXTURE_INIT_ARGS`**: Add command-line arguments to `fixture:init` invocation in the [`install`](../bin/travis/install.sh) build phase of a custom job. Example:
-
-    ```yaml
-    matrix:
-      include:
-        - { name: "Custom job", env: ORCA_JOB=CUSTOM ORCA_CUSTOM_FIXTURE_INIT_ARGS="--profile=lightning" }
-    ```
-
-* <a name="ORCA_CUSTOM_TESTS_RUN_ARGS"></a>**`ORCA_CUSTOM_TESTS_RUN_ARGS`**: Add command-line arguments to the `qa:automated-tests` invocation in the [`script`](../bin/travis/script.sh) build phase of a custom job. Example:
-
-    ```yaml
-    matrix:
-      include:
-        - { name: "Custom job", env: ORCA_JOB=CUSTOM ORCA_CUSTOM_TESTS_RUN_ARGS="--sut-only" }
-    ```
-
 * <a name="ORCA_FIXTURE_PROFILE"></a>**`ORCA_FIXTURE_PROFILE`**: Change the Drupal installation profile ORCA installs in fixtures. Note: Changing this value will cause non-SUT automated tests to be skipped in all jobs to avoid failures from changing such a fundamental assumption.
 
 * <a name="ORCA_FIXTURE_PROJECT_TEMPLATE"></a>**`ORCA_FIXTURE_PROJECT_TEMPLATE`**: Change the Composer project template used to create the fixture.
+
+## Adding and customizing jobs
+
+For special testing needs, custom jobs can be added and existing ones modified through the addition of scripts to your `.travis.yml`, e.g.:
+
+   ```yaml
+   before_script:
+     - ../orca/bin/travis/before_script.sh
+     # Your custom script:
+     - ./bin/travis/before_script.sh
+   ```
+
+See [the example script](https://github.com/acquia/orca/blob/master/example/bin/travis/example.sh) for more details.
 
 ---
 

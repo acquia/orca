@@ -2,12 +2,11 @@
 
 namespace Acquia\Orca\Console\Command\Debug;
 
-use Acquia\Orca\Console\Helper\StatusTable;
-use Acquia\Orca\Domain\Drupal\DrupalCoreVersionFinder;
-use Acquia\Orca\Enum\DrupalCoreVersionEnum;
+use Acquia\Orca\Console\Command\Debug\Helper\CoreVersionsTableBuilder;
 use Acquia\Orca\Enum\StatusCodeEnum;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
@@ -16,27 +15,25 @@ use Symfony\Component\Console\Output\OutputInterface;
 class DebugCoreVersionsCommand extends Command {
 
   /**
-   * The default command name.
-   *
-   * @var string
+   * {@inheritdoc}
    */
   protected static $defaultName = 'debug:core-versions';
 
   /**
-   * The Drupal core version finder.
+   * The core versions table builder.
    *
-   * @var \Acquia\Orca\Domain\Drupal\DrupalCoreVersionFinder
+   * @var \Acquia\Orca\Console\Command\Debug\Helper\CoreVersionsTableBuilder
    */
-  private $drupalCoreVersionFinder;
+  private $coreVersionsTableBuilder;
 
   /**
    * Constructs an instance.
    *
-   * @param \Acquia\Orca\Domain\Drupal\DrupalCoreVersionFinder $drupal_core_version_finder
-   *   The Drupal core version finder.
+   * @param \Acquia\Orca\Console\Command\Debug\Helper\CoreVersionsTableBuilder $core_versions_table_builder
+   *   The core versions table builder.
    */
-  public function __construct(DrupalCoreVersionFinder $drupal_core_version_finder) {
-    $this->drupalCoreVersionFinder = $drupal_core_version_finder;
+  public function __construct(CoreVersionsTableBuilder $core_versions_table_builder) {
+    $this->coreVersionsTableBuilder = $core_versions_table_builder;
     parent::__construct();
   }
 
@@ -46,28 +43,24 @@ class DebugCoreVersionsCommand extends Command {
   protected function configure(): void {
     $this
       ->setAliases(['core'])
-      ->setDescription('Provides an overview of Drupal Core versions');
+      ->setDescription('Provides an overview of Drupal Core versions')
+      ->addOption('examples', NULL, InputOption::VALUE_NONE, 'Include example version strings')
+      ->addOption('resolve', NULL, InputOption::VALUE_NONE, 'Include the exact versions Composer would actually install. Makes HTTP requests and increases execution time');
   }
 
   /**
    * {@inheritdoc}
-   *
-   * @SuppressWarnings(PHPMD.StaticAccess)
    */
   public function execute(InputInterface $input, OutputInterface $output): int {
-    $output->writeln('Getting version data via Composer. This takes a while.');
-
-    $overview = [];
-    foreach (DrupalCoreVersionEnum::values() as $version) {
-      $overview[] = [
-        $version,
-        $this->drupalCoreVersionFinder->getPretty(new DrupalCoreVersionEnum($version)),
-      ];
+    if ($input->getOption('resolve')) {
+      $output->writeln('Getting version data via Composer. This can take a while.');
     }
 
-    (new StatusTable($output))
-      ->setRows($overview)
-      ->render();
+    $include_examples = $input->getOption('examples');
+    $include_resolved = $input->getOption('resolve');
+    $table = $this->coreVersionsTableBuilder->build($output, $include_examples, $include_resolved);
+    $table->render();
+
     return StatusCodeEnum::OK;
   }
 

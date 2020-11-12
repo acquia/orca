@@ -30,10 +30,16 @@ $kernel = new Kernel($env, FALSE);
 // precisely when it is needed.
 if (in_array($input->getFirstArgument(), ['cache:clear', 'cc'])) {
   $filesystem = new Filesystem();
+  // Delete cache directory.
   $cache_dir = $kernel->getCacheDir();
   $filesystem->remove($cache_dir);
   $filesystem->mkdir($cache_dir);
   $filesystem->touch("{$cache_dir}/.gitkeep");
+  // Delete coverage report directory.
+  $coverage_report_dir = __DIR__ . '/../var/coverage-report';
+  $filesystem->remove($coverage_report_dir);
+  $filesystem->mkdir($coverage_report_dir);
+  $filesystem->touch("{$coverage_report_dir}/.gitkeep");
   exit;
 }
 
