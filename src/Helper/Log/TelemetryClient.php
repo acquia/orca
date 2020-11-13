@@ -21,7 +21,7 @@ class TelemetryClient {
    *
    * @param \Zumba\Amplitude\Amplitude $amplitude
    *   The Amplitude client.
-   * @param bool|null $telemetry_is_enabled
+   * @param bool $telemetry_is_enabled
    *   TRUE if telemetry is enabled or FALSE if not.
    * @param string|null $amplitude_api_key
    *   The Amplitude API key.

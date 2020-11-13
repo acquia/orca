@@ -75,7 +75,7 @@ class FixtureOptionsTest extends TestCase {
     self::assertFalse($options->preferSource(), 'Set/got default "prefer-source" option.');
     self::assertFalse($options->symlinkAll(), 'Set/got default "symlink-all" option.');
     self::assertEquals($core, $options->getCore(), 'Set/got default "core" option.');
-    self::assertNull($options->getProfile(), 'Set/got default "profile" option.');
+    self::assertEquals('orca', $options->getProfile(), 'Set/got default "profile" option.');
     self::assertEquals('acquia/drupal-recommended-project', $options->getProjectTemplate(), 'Set/got default "project-template" option.');
     self::assertNull($options->getSut(), 'Set/got default "sut" option.');
     self::assertTrue($options->installSite(), 'Set/got default "no-site-install" option.');
@@ -336,7 +336,6 @@ class FixtureOptionsTest extends TestCase {
 
   public function providerProfileValid(): array {
     return [
-      [NULL],
       ['abc'],
       ['test_example'],
       ['test123'],

@@ -85,8 +85,9 @@ class RedundantJobChecker {
         ->getDrupalCoreVersion(),
     ];
     foreach ($ci_jobs as $key => $ci_job) {
-      $ci_jobs[$key] =
-        $this->drupalCoreVersionResolver->resolvePredefined($ci_job);
+      /* @phan-suppress-next-line PhanTypeMismatchArgumentNullable */
+      $job = $this->drupalCoreVersionResolver->resolvePredefined($ci_job);
+      $ci_jobs[$key] = $job;
     }
     return $ci_jobs;
   }

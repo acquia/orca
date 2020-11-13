@@ -53,7 +53,7 @@ class PhpcsTask extends TaskBase {
       $this->logResults();
     }
     catch (ProcessFailedException $e) {
-      throw new OrcaTaskFailureException(NULL, NULL, $e);
+      throw new OrcaTaskFailureException('Failed to log results.', 0, $e);
     }
     finally {
       $this->phpcsConfigurator->cleanupTemporaryConfig();

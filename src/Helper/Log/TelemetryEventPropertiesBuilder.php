@@ -74,6 +74,7 @@ class TelemetryEventPropertiesBuilder {
         return $this->buildTravisCiJobProperties();
 
       case TelemetryEventNameEnum::TEST:
+      default:
         return ['example' => TRUE];
     }
   }

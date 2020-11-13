@@ -23,7 +23,7 @@ class DebugGuessVersionCommand extends Command {
   /**
    * The version guesser.
    *
-   * @var \Composer\Package\Version\VersionGuesser
+   * @var \Acquia\Orca\Domain\Composer\Version\VersionGuesser
    */
   private $versionGuesser;
 

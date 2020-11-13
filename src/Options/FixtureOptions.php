@@ -281,10 +281,13 @@ class FixtureOptions {
   /**
    * Gets the profile machine name.
    *
-   * @return string|null
+   * @return string
    *   The machine name.
    */
-  public function getProfile(): ?string {
+  public function getProfile(): string {
+    if (empty($this->options['profile'])) {
+      return 'orca';
+    }
     return $this->options['profile'];
   }
 

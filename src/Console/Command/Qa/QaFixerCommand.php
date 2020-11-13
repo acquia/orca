@@ -160,7 +160,7 @@ class QaFixerCommand extends Command {
       if (!$input->getParameterOption('--phpcs-standard')) {
         $error_message = sprintf('Error: Invalid value for $ORCA_PHPCS_STANDARD environment variable: "%s".', $standard);
       }
-      throw new UnexpectedValueException($error_message, NULL, $e);
+      throw new UnexpectedValueException($error_message, 0, $e);
     }
     return $standard;
   }
