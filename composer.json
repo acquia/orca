@@ -58,8 +58,11 @@
     },
     "require-dev": {
         "brainmaestro/composer-git-hooks": "^2.5",
+        "phan/phan": "^3.2",
+        "phpstan/phpstan": "^0.12.54",
         "phpunit/phpunit": "^6.5",
-        "sensiolabs/security-checker": "^5.0"
+        "sensiolabs/security-checker": "^5.0",
+        "taptima/phalyfusion": "dev-master"
     },
     "config": {
         "discard-changes": true,
@@ -106,6 +109,7 @@
         "phplint": "parallel-lint --exclude vendor --ignore-fails .",
         "phpmd": "phpmd . text phpmd.xml.dist --ignore-violations-on-exit",
         "phpunit": "phpunit",
+        "stan": "phalyfusion --config=phalyfusion.neon",
         "update-docs": "./bin/orca --format=md > docs/commands.md"
     },
     "support": {

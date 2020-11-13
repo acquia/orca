@@ -1,0 +1,7 @@
+plugins:
+  usePlugins:
+    - phan
+    - phpstan
+  runCommands:
+    phan: vendor/bin/phan -k phan.php --allow-polyfill-parser
+    phpstan: vendor/bin/phpstan analyse src

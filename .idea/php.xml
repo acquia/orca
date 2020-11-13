@@ -5,6 +5,11 @@
       <MessDetectorConfiguration tool_path="$PROJECT_DIR$/vendor/bin/phpmd" />
     </phpmd_settings>
   </component>
+  <component name="Phalyfusion">
+    <phalyfusion_settings>
+      <PhalyfusionConfiguration tool_path="$PROJECT_DIR$/vendor/taptima/phalyfusion/phalyfusion" />
+    </phalyfusion_settings>
+  </component>
   <component name="PhpCodeSniffer">
     <phpcs_settings>
       <PhpCSConfiguration beautifier_path="$PROJECT_DIR$/vendor/squizlabs/php_codesniffer/bin/phpcbf" standards="AcquiaDrupalStrict;AcquiaDrupalTransitional;AcquiaPHP;Drupal;DrupalPractice;MySource;PEAR;PHPCompatibility;PSR1;PSR12;PSR2;Security;SlevomatCodingStandard;Squiz;Zend" tool_path="$PROJECT_DIR$/vendor/squizlabs/php_codesniffer/bin/phpcs" />
@@ -125,6 +130,14 @@
       <path value="$PROJECT_DIR$/vendor/sirbrillig/phpcs-variable-analysis" />
       <path value="$PROJECT_DIR$/vendor/symfony/http-client" />
       <path value="$PROJECT_DIR$/vendor/symfony/http-client-contracts" />
+      <path value="$PROJECT_DIR$/vendor/felixfbecker/advanced-json-rpc" />
+      <path value="$PROJECT_DIR$/vendor/sabre/event" />
+      <path value="$PROJECT_DIR$/vendor/nette/neon" />
+      <path value="$PROJECT_DIR$/vendor/phan/phan" />
+      <path value="$PROJECT_DIR$/vendor/netresearch/jsonmapper" />
+      <path value="$PROJECT_DIR$/vendor/phpstan/phpstan" />
+      <path value="$PROJECT_DIR$/vendor/microsoft/tolerant-php-parser" />
+      <path value="$PROJECT_DIR$/vendor/taptima/phalyfusion" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="7.2" />
