@@ -44,7 +44,7 @@ jobs:
     - { name: "Integrated test w/ recommended package versions & previous minor release of Drupal core", env: ORCA_JOB=CORE_PREVIOUS }
     - { name: "Isolated test w/ dev package versions", env: ORCA_JOB=ISOLATED_DEV }
     - { name: "Integrated test w/ dev package versions", env: ORCA_JOB=INTEGRATED_DEV }
-    - { name: "Integrated test w/ dev package versions & next minor dev version of Drupal core", env: ORCA_JOB=CORE_NEXT }
+    - { name: "Integrated test w/ dev package versions & next minor dev version of Drupal core", env: ORCA_JOB=CORE_NEXT ORCA_ENABLE_NIGHTWATCH=FALSE }
     - { name: "D9 readiness test", php: "7.3", env: ORCA_JOB=D9_READINESS }
     - { name: "Custom job", env: ORCA_JOB=CUSTOM ORCA_CUSTOM_FIXTURE_INIT_ARGS="--help" ORCA_CUSTOM_TESTS_RUN_ARGS="--help" }
     - { name: "Integrated live test", env: ORCA_JOB=LIVE_TEST ORCA_ENABLE_NIGHTWATCH=FALSE }
