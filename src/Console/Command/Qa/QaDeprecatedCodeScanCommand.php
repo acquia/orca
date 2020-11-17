@@ -3,7 +3,7 @@
 namespace Acquia\Orca\Console\Command\Qa;
 
 use Acquia\Orca\Domain\Package\PackageManager;
-use Acquia\Orca\Domain\Tool\Phpstan\PhpstanTask;
+use Acquia\Orca\Domain\Tool\PhpstanTool;
 use Acquia\Orca\Enum\StatusCodeEnum;
 use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
 use Symfony\Component\Console\Command\Command;
@@ -43,9 +43,9 @@ class QaDeprecatedCodeScanCommand extends Command {
   private $packageManager;
 
   /**
-   * The PhpStan task.
+   * The PhpStan tool.
    *
-   * @var \Acquia\Orca\Domain\Tool\Phpstan\PhpstanTask
+   * @var \Acquia\Orca\Domain\Tool\PhpstanTool
    */
   private $phpstan;
 
@@ -63,10 +63,10 @@ class QaDeprecatedCodeScanCommand extends Command {
    *   The fixture path handler.
    * @param \Acquia\Orca\Domain\Package\PackageManager $package_manager
    *   The package manager.
-   * @param \Acquia\Orca\Domain\Tool\Phpstan\PhpstanTask $phpstan
-   *   The PhpStan task.
+   * @param \Acquia\Orca\Domain\Tool\PhpstanTool $phpstan
+   *   The PhpStan tool.
    */
-  public function __construct(FixturePathHandler $fixture_path_handler, PackageManager $package_manager, PhpstanTask $phpstan) {
+  public function __construct(FixturePathHandler $fixture_path_handler, PackageManager $package_manager, PhpstanTool $phpstan) {
     $this->fixture = $fixture_path_handler;
     $this->packageManager = $package_manager;
     $this->phpstan = $phpstan;
@@ -76,7 +76,7 @@ class QaDeprecatedCodeScanCommand extends Command {
   /**
    * {@inheritdoc}
    */
-  protected function configure() {
+  protected function configure(): void {
     $this
       ->setAliases([
         'deprecations',
@@ -106,15 +106,7 @@ class QaDeprecatedCodeScanCommand extends Command {
       return StatusCodeEnum::ERROR;
     }
 
-    if ($this->sut) {
-      $this->phpstan->setSut($this->sut);
-    }
-
-    if ($this->contrib) {
-      $this->phpstan->setScanContrib(TRUE);
-    }
-
-    return $this->phpstan->execute();
+    return $this->phpstan->run($this->sut, $this->contrib);
   }
 
   /**

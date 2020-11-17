@@ -1,6 +1,6 @@
 <?php
 
-namespace Acquia\Orca\Domain\Tool\Phpstan;
+namespace Acquia\Orca\Domain\Tool;
 
 use Acquia\Orca\Domain\Package\PackageManager;
 use Acquia\Orca\Enum\StatusCodeEnum;
@@ -8,17 +8,14 @@ use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
 use Acquia\Orca\Helper\Filesystem\OrcaPathHandler;
 use Acquia\Orca\Helper\Log\TelemetryClient;
 use Acquia\Orca\Helper\Process\ProcessRunner;
-use Acquia\Orca\Helper\SutSettingsTrait;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 
 /**
- * Scans for deprecated code with PhpStan.
+ * Runs PHPStan.
  */
-class PhpstanTask {
-
-  use SutSettingsTrait;
+class PhpstanTool {
 
   public const JSON_LOG_PATH = 'var/log/phpstan.json';
 
@@ -51,6 +48,13 @@ class PhpstanTask {
   private $orca;
 
   /**
+   * The output decorator.
+   *
+   * @var \Symfony\Component\Console\Style\SymfonyStyle
+   */
+  private $output;
+
+  /**
    * The process runner.
    *
    * @var \Acquia\Orca\Helper\Process\ProcessRunner
@@ -58,11 +62,11 @@ class PhpstanTask {
   private $processRunner;
 
   /**
-   * The "scan contrib" flag.
+   * The package manager.
    *
-   * @var bool
+   * @var \Acquia\Orca\Domain\Package\PackageManager
    */
-  private $scanContrib = FALSE;
+  private $packageManager;
 
   /**
    * The status code.
@@ -70,13 +74,6 @@ class PhpstanTask {
    * @var int
    */
   private $status = StatusCodeEnum::OK;
-
-  /**
-   * The output decorator.
-   *
-   * @var \Symfony\Component\Console\Style\SymfonyStyle
-   */
-  private $output;
 
   /**
    * The telemetry client.
@@ -107,20 +104,25 @@ class PhpstanTask {
     $this->filesystem = $filesystem;
     $this->fixture = $fixture_path_handler;
     $this->orca = $orca_path_handler;
-    $this->output = $output;
     $this->packageManager = $package_manager;
     $this->processRunner = $process_runner;
     $this->telemetryClient = $telemetry_client;
+    $this->output = $output;
   }
 
   /**
-   * Executes the test.
+   * Runs PHPStan.
+   *
+   * @param string|null $sut_name
+   *   The SUT name if available (e.g., "drupal/example") or NULL if not.
+   * @param bool $scan_contrib
+   *   TRUE to scan contrib packages or FALSE not to.
    *
    * @return int
    *   The exit status code.
    */
-  public function execute(): int {
-    $this->command = $this->createCommand();
+  public function run(?string $sut_name, bool $scan_contrib): int {
+    $this->command = $this->createCommand($sut_name, $scan_contrib);
     try {
       $this->runCommand();
     }
@@ -132,31 +134,27 @@ class PhpstanTask {
   }
 
   /**
-   * Sets the "scan contrib" flag.
-   *
-   * @param bool $scan_contrib
-   *   TRUE to scan contrib or FALSE not to.
-   */
-  public function setScanContrib(bool $scan_contrib): void {
-    $this->scanContrib = $scan_contrib;
-  }
-
-  /**
    * Creates the command array.
    *
-   * @return array
+   * @param string|null $sut_name
+   *   The SUT name if available (e.g., "drupal/example") or NULL if not.
+   * @param bool $scan_contrib
+   *   TRUE to scan contrib packages or FALSE not to.
+   *
+   * @return string[]
    *   The command array.
    */
-  private function createCommand(): array {
+  private function createCommand(?string $sut_name, bool $scan_contrib): array {
     $command = [
       'phpstan',
       'analyse',
       "--configuration={$this->orca->getPath('resources/phpstan.neon')}",
     ];
-    if ($this->sut) {
-      $command[] = $this->sut->getInstallPathAbsolute();
+    if ($sut_name) {
+      $sut = $this->packageManager->get($sut_name);
+      $command[] = $sut->getInstallPathAbsolute();
     }
-    if ($this->scanContrib) {
+    if ($scan_contrib) {
       $command[] = $this->getAndEnsurePath('docroot/modules/contrib');
       $command[] = $this->getAndEnsurePath('docroot/profiles/contrib');
       $command[] = $this->getAndEnsurePath('docroot/themes/contrib');
@@ -181,9 +179,9 @@ class PhpstanTask {
   }
 
   /**
-   * Runs Phpstan and sends output to the console.
+   * Runs PHPStan and sends output to the console.
    */
-  protected function runCommand(): void {
+  private function runCommand(): void {
     $this->processRunner->runFixtureVendorBin($this->command);
   }
 
