@@ -74,7 +74,6 @@
       <option name="DESIGN" value="true" />
       <option name="UNUSEDCODE" value="true" />
     </inspection_tool>
-    <inspection_tool class="PhalyfusionValidation" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
     <inspection_tool class="PhpCSFixerValidationInspection" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="PhpCSValidationInspection" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="CODING_STANDARD" value="AcquiaDrupalStrict" />
