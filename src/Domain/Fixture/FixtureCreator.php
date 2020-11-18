@@ -263,10 +263,6 @@ class FixtureCreator {
       $additions[] = 'phpspec/prophecy-phpunit:^2';
     }
 
-    // Install requirements for deprecation checking.
-    $additions[] = 'mglaman/phpstan-drupal-deprecations';
-    $additions[] = 'nette/di:^3.0';
-
     // Require additional packages.
     $prefer_source = $this->options->preferSource();
     $no_update = !$this->options->isBare();
