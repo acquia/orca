@@ -201,7 +201,7 @@ class DrupalCheckTool {
 
     // Run the command.
     $this->command[] = '--format=json';
-    $process = $this->processRunner->createFixtureVendorBinProcess($this->command);
+    $process = $this->processRunner->createOrcaVendorBinProcess($this->command);
     $process->setWorkingDirectory($this->fixture->getPath());
     $process->run();
 

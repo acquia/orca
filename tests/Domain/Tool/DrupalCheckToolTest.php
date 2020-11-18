@@ -171,7 +171,7 @@ class DrupalCheckToolTest extends TestCase {
       ->getOutput()
       ->willReturn('  EXAMPLE OUTPUT  ');
     $this->processRunner
-      ->createFixtureVendorBinProcess([
+      ->createOrcaVendorBinProcess([
         'drupal-check',
         '-d',
         sprintf('--drupal-root=%s', self::FIXTURE_PATH),
