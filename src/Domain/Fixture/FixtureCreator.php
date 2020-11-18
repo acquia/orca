@@ -259,6 +259,10 @@ class FixtureCreator {
       $additions[] = "drupal/core-dev:{$this->options->getCore()}";
     }
 
+    if ($this->shouldRequireProphecyPhpunit()) {
+      $additions[] = 'phpspec/prophecy-phpunit:^2';
+    }
+
     // Install requirements for deprecation checking.
     $additions[] = 'mglaman/phpstan-drupal-deprecations';
     $additions[] = 'nette/di:^3.0';
@@ -295,6 +299,19 @@ class FixtureCreator {
   private function shouldRequireDrupalCoreDev(): bool {
     $version = $this->options->getCoreResolved();
     return Comparator::greaterThanOrEqualTo($version, '8.8');
+  }
+
+  /**
+   * Determines whether or not to require phpspec/prophecy-phpunit.
+   *
+   * @see https://www.drupal.org/node/3176567
+   *
+   * @return bool
+   *   Returns TRUE if it should be required, or FALSE if not.
+   */
+  private function shouldRequireProphecyPhpunit(): bool {
+    $version = $this->options->getCoreResolved();
+    return Comparator::greaterThanOrEqualTo($version, '9.1');
   }
 
   /**
