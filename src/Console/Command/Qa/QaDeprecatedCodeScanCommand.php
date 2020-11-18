@@ -3,7 +3,7 @@
 namespace Acquia\Orca\Console\Command\Qa;
 
 use Acquia\Orca\Domain\Package\PackageManager;
-use Acquia\Orca\Domain\Tool\PhpstanTool;
+use Acquia\Orca\Domain\Tool\DrupalCheckTool;
 use Acquia\Orca\Enum\StatusCodeEnum;
 use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
 use Symfony\Component\Console\Command\Command;
@@ -43,11 +43,11 @@ class QaDeprecatedCodeScanCommand extends Command {
   private $packageManager;
 
   /**
-   * The PhpStan tool.
+   * The drupal-check tool.
    *
-   * @var \Acquia\Orca\Domain\Tool\PhpstanTool
+   * @var \Acquia\Orca\Domain\Tool\DrupalCheckTool
    */
-  private $phpstan;
+  private $drupalCheck;
 
   /**
    * The "sut" command line option.
@@ -59,17 +59,17 @@ class QaDeprecatedCodeScanCommand extends Command {
   /**
    * Constructs an instance.
    *
+   * @param \Acquia\Orca\Domain\Tool\DrupalCheckTool $drupal_check
+   *   The drupal-check tool.
    * @param \Acquia\Orca\Helper\Filesystem\FixturePathHandler $fixture_path_handler
    *   The fixture path handler.
    * @param \Acquia\Orca\Domain\Package\PackageManager $package_manager
    *   The package manager.
-   * @param \Acquia\Orca\Domain\Tool\PhpstanTool $phpstan
-   *   The PhpStan tool.
    */
-  public function __construct(FixturePathHandler $fixture_path_handler, PackageManager $package_manager, PhpstanTool $phpstan) {
+  public function __construct(DrupalCheckTool $drupal_check, FixturePathHandler $fixture_path_handler, PackageManager $package_manager) {
     $this->fixture = $fixture_path_handler;
     $this->packageManager = $package_manager;
-    $this->phpstan = $phpstan;
+    $this->drupalCheck = $drupal_check;
     parent::__construct();
   }
 
@@ -80,6 +80,7 @@ class QaDeprecatedCodeScanCommand extends Command {
     $this
       ->setAliases([
         'deprecations',
+        'drupal-check',
         'phpstan',
       ])
       ->setDescription('Scans for deprecated code')
@@ -106,7 +107,7 @@ class QaDeprecatedCodeScanCommand extends Command {
       return StatusCodeEnum::ERROR;
     }
 
-    return $this->phpstan->run($this->sut, $this->contrib);
+    return $this->drupalCheck->run($this->sut, $this->contrib);
   }
 
   /**

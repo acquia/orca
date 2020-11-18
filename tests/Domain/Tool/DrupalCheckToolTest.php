@@ -4,7 +4,7 @@ namespace Acquia\Orca\Tests\Domain\Tool;
 
 use Acquia\Orca\Domain\Package\Package;
 use Acquia\Orca\Domain\Package\PackageManager;
-use Acquia\Orca\Domain\Tool\PhpstanTool;
+use Acquia\Orca\Domain\Tool\DrupalCheckTool;
 use Acquia\Orca\Enum\StatusCodeEnum;
 use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
 use Acquia\Orca\Helper\Filesystem\OrcaPathHandler;
@@ -26,9 +26,9 @@ use Symfony\Component\Process\Process;
  * @property \Symfony\Component\Console\Style\SymfonyStyle|\Prophecy\Prophecy\ObjectProphecy $symfonyStyle
  * @property \Symfony\Component\Filesystem\Filesystem|\Prophecy\Prophecy\ObjectProphecy $filesystem
  */
-class PhpstanToolTest extends TestCase {
+class DrupalCheckToolTest extends TestCase {
 
-  private const FIXTURE_PATH = 'var/www/orca-build';
+  private const FIXTURE_PATH = '/var/www/orca-build';
 
   private const PACKAGE_NAME = 'drupal/example';
 
@@ -54,7 +54,7 @@ class PhpstanToolTest extends TestCase {
     $this->symfonyStyle = $this->prophesize(SymfonyStyle::class);
     $this->processRunner = $this->prophesize(ProcessRunner::class);
     $this->processRunner
-      ->runFixtureVendorBin(Argument::any())
+      ->runOrcaVendorBin(Argument::any())
       ->willReturn(0);
     $this->telemetryClient = $this->prophesize(TelemetryClient::class);
     $this->telemetryClient
@@ -62,7 +62,7 @@ class PhpstanToolTest extends TestCase {
       ->willReturn(FALSE);
   }
 
-  private function createPhpstanTool(): PhpstanTool {
+  private function createDrupalCheckTool(): DrupalCheckTool {
     $filesystem = $this->filesystem->reveal();
     $fixture_path_handler = $this->fixture->reveal();
     $orca_path_handler = $this->orca->reveal();
@@ -70,7 +70,7 @@ class PhpstanToolTest extends TestCase {
     $package_manager = $this->packageManager->reveal();
     $process_runner = $this->processRunner->reveal();
     $telemetry_client = $this->telemetryClient->reveal();
-    return new PhpstanTool($filesystem, $fixture_path_handler, $orca_path_handler, $output, $package_manager, $process_runner, $telemetry_client);
+    return new DrupalCheckTool($filesystem, $fixture_path_handler, $orca_path_handler, $output, $package_manager, $process_runner, $telemetry_client);
   }
 
   private function createPackage($data, $package_name): Package {
@@ -84,15 +84,15 @@ class PhpstanToolTest extends TestCase {
       ->mkdir(Argument::any())
       ->shouldNotBeCalled();
     $this->processRunner
-      ->runFixtureVendorBin([
-        'phpstan',
-        'analyse',
-        '--configuration=resources/phpstan.neon',
+      ->runOrcaVendorBin([
+        'drupal-check',
+        '-d',
+        sprintf('--drupal-root=%s', self::FIXTURE_PATH),
         self::PACKAGE_PATH,
       ])
       ->shouldBeCalledOnce();
 
-    $tool = $this->createPhpstanTool();
+    $tool = $this->createDrupalCheckTool();
     $tool->run(self::PACKAGE_NAME, FALSE);
   }
 
@@ -101,10 +101,10 @@ class PhpstanToolTest extends TestCase {
       ->mkdir(Argument::any())
       ->shouldBeCalledTimes(4);
     $this->processRunner
-      ->runFixtureVendorBin([
-        'phpstan',
-        'analyse',
-        "--configuration=resources/phpstan.neon",
+      ->runOrcaVendorBin([
+        'drupal-check',
+        '-d',
+        sprintf('--drupal-root=%s', self::FIXTURE_PATH),
         'docroot/modules/contrib',
         'docroot/profiles/contrib',
         'docroot/themes/contrib',
@@ -112,7 +112,7 @@ class PhpstanToolTest extends TestCase {
       ])
       ->shouldBeCalledOnce();
 
-    $tool = $this->createPhpstanTool();
+    $tool = $this->createDrupalCheckTool();
     $status = $tool->run(NULL, TRUE);
 
     self::assertSame(StatusCodeEnum::OK, $status, 'Returned correct status code');
@@ -123,10 +123,10 @@ class PhpstanToolTest extends TestCase {
       ->mkdir(Argument::any())
       ->shouldBeCalledTimes(4);
     $this->processRunner
-      ->runFixtureVendorBin([
-        'phpstan',
-        'analyse',
-        "--configuration=resources/phpstan.neon",
+      ->runOrcaVendorBin([
+        'drupal-check',
+        '-d',
+        sprintf('--drupal-root=%s', self::FIXTURE_PATH),
         self::PACKAGE_PATH,
         'docroot/modules/contrib',
         'docroot/profiles/contrib',
@@ -135,7 +135,7 @@ class PhpstanToolTest extends TestCase {
       ])
       ->shouldBeCalledOnce();
 
-    $tool = $this->createPhpstanTool();
+    $tool = $this->createDrupalCheckTool();
     $status = $tool->run(self::PACKAGE_NAME, TRUE);
 
     self::assertSame(StatusCodeEnum::OK, $status, 'Returned correct status code');
@@ -143,10 +143,10 @@ class PhpstanToolTest extends TestCase {
 
   public function testRunFailure(): void {
     $this->processRunner
-      ->runFixtureVendorBin(Argument::any())
+      ->runOrcaVendorBin(Argument::any())
       ->willThrow(ProcessFailedException::class);
 
-    $tool = $this->createPhpstanTool();
+    $tool = $this->createDrupalCheckTool();
     $status = $tool->run(NULL, TRUE);
 
     self::assertSame(StatusCodeEnum::ERROR, $status, 'Returned correct status code');
@@ -160,7 +160,7 @@ class PhpstanToolTest extends TestCase {
       ->comment(Argument::any())
       ->shouldBeCalledOnce();
     $this->filesystem
-      ->remove(PhpstanTool::JSON_LOG_PATH)
+      ->remove(DrupalCheckTool::JSON_LOG_PATH)
       ->shouldBeCalledOnce();
     $process = $this->prophesize(Process::class);
     $process->setWorkingDirectory(self::FIXTURE_PATH)
@@ -172,19 +172,19 @@ class PhpstanToolTest extends TestCase {
       ->willReturn('  EXAMPLE OUTPUT  ');
     $this->processRunner
       ->createFixtureVendorBinProcess([
-        'phpstan',
-        'analyse',
-        '--configuration=resources/phpstan.neon',
+        'drupal-check',
+        '-d',
+        sprintf('--drupal-root=%s', self::FIXTURE_PATH),
         self::PACKAGE_PATH,
-        '--error-format=prettyJson',
+        '--format=json',
       ])
       ->shouldBeCalledOnce()
       ->willReturn($process);
     $this->filesystem
-      ->dumpFile(PhpstanTool::JSON_LOG_PATH, 'EXAMPLE OUTPUT')
+      ->dumpFile(DrupalCheckTool::JSON_LOG_PATH, 'EXAMPLE OUTPUT')
       ->shouldBeCalledOnce();
 
-    $tool = $this->createPhpstanTool();
+    $tool = $this->createDrupalCheckTool();
     $tool->run(self::PACKAGE_NAME, FALSE);
   }
 
@@ -196,7 +196,7 @@ class PhpstanToolTest extends TestCase {
       ->dumpFile(Argument::any(), Argument::any())
       ->shouldNotBeCalled();
 
-    $tool = $this->createPhpstanTool();
+    $tool = $this->createDrupalCheckTool();
     $tool->run(self::PACKAGE_NAME, FALSE);
   }
 

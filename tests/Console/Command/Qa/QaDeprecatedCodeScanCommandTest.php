@@ -4,7 +4,7 @@ namespace Acquia\Orca\Tests\Console\Command\Qa;
 
 use Acquia\Orca\Console\Command\Qa\QaDeprecatedCodeScanCommand;
 use Acquia\Orca\Domain\Package\PackageManager;
-use Acquia\Orca\Domain\Tool\PhpstanTool;
+use Acquia\Orca\Domain\Tool\DrupalCheckTool;
 use Acquia\Orca\Enum\StatusCodeEnum;
 use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
 use Acquia\Orca\Tests\Console\Command\CommandTestBase;
@@ -12,9 +12,10 @@ use Prophecy\Argument;
 use Symfony\Component\Console\Command\Command;
 
 /**
- * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Helper\Filesystem\FixturePathHandler $fixture
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Domain\Package\PackageManager $packageManager
- * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Domain\Tool\Phpstan\PhpstanTask $phpstan
+ * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Domain\Tool\DrupalCheckTool $drupalCheck
+ * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Helper\Filesystem\FixturePathHandler $fixture
+ * @coversDefaultClass \Acquia\Orca\Console\Command\Qa\QaDeprecatedCodeScanCommand
  */
 class QaDeprecatedCodeScanCommandTest extends CommandTestBase {
 
@@ -28,21 +29,39 @@ class QaDeprecatedCodeScanCommandTest extends CommandTestBase {
     $this->packageManager
       ->exists(Argument::any())
       ->willReturn(TRUE);
-    $this->phpstan = $this->prophesize(PhpstanTool::class);
+    $this->drupalCheck = $this->prophesize(DrupalCheckTool::class);
   }
 
   protected function createCommand(): Command {
+    $drupal_check = $this->drupalCheck->reveal();
     $fixture = $this->fixture->reveal();
     $package_manager = $this->packageManager->reveal();
-    $phpstan = $this->phpstan->reveal();
-    return new QaDeprecatedCodeScanCommand($fixture, $package_manager, $phpstan);
+    return new QaDeprecatedCodeScanCommand($drupal_check, $fixture, $package_manager);
+  }
+
+  /**
+   * @covers ::__construct
+   * @covers ::configure
+   */
+  public function testBasicConfiguration(): void {
+    $command = $this->createCommand();
+
+    $definition = $command->getDefinition();
+    $arguments = $definition->getArguments();
+    $options = $definition->getOptions();
+
+    self::assertEquals('qa:deprecated-code-scan', $command->getName(), 'Set correct name.');
+    self::assertEquals(['deprecations', 'drupal-check', 'phpstan'], $command->getAliases(), 'Set correct aliases.');
+    self::assertNotEmpty($command->getDescription(), 'Set a description.');
+    self::assertEquals([], array_keys($arguments), 'Set correct arguments.');
+    self::assertEquals(['sut', 'contrib'], array_keys($options), 'Set correct options.');
   }
 
   /**
    * @dataProvider providerCommand
    */
   public function testCommandHappyPath($args, $sut, $contrib): void {
-    $this->phpstan
+    $this->drupalCheck
       ->run($sut, $contrib)
       ->shouldBeCalledOnce()
       ->willReturn(StatusCodeEnum::OK);

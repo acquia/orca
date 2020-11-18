@@ -13,9 +13,9 @@ use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 
 /**
- * Runs PHPStan.
+ * Runs drupal-check.
  */
-class PhpstanTool {
+class DrupalCheckTool {
 
   public const JSON_LOG_PATH = 'var/log/phpstan.json';
 
@@ -111,7 +111,7 @@ class PhpstanTool {
   }
 
   /**
-   * Runs PHPStan.
+   * Runs drupal-check.
    *
    * @param string|null $sut_name
    *   The SUT name if available (e.g., "drupal/example") or NULL if not.
@@ -146,9 +146,9 @@ class PhpstanTool {
    */
   private function createCommand(?string $sut_name, bool $scan_contrib): array {
     $command = [
-      'phpstan',
-      'analyse',
-      "--configuration={$this->orca->getPath('resources/phpstan.neon')}",
+      'drupal-check',
+      '-d',
+      "--drupal-root={$this->fixture->getPath()}",
     ];
     if ($sut_name) {
       $sut = $this->packageManager->get($sut_name);
@@ -179,10 +179,10 @@ class PhpstanTool {
   }
 
   /**
-   * Runs PHPStan and sends output to the console.
+   * Runs drupal-check and sends output to the console.
    */
   private function runCommand(): void {
-    $this->processRunner->runFixtureVendorBin($this->command);
+    $this->processRunner->runOrcaVendorBin($this->command);
   }
 
   /**
@@ -200,7 +200,7 @@ class PhpstanTool {
     $this->filesystem->remove($file);
 
     // Run the command.
-    $this->command[] = '--error-format=prettyJson';
+    $this->command[] = '--format=json';
     $process = $this->processRunner->createFixtureVendorBinProcess($this->command);
     $process->setWorkingDirectory($this->fixture->getPath());
     $process->run();

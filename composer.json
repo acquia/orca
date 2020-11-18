@@ -30,6 +30,7 @@
         "dealerdirect/phpcodesniffer-composer-installer": "^0.5",
         "ergebnis/composer-normalize": "^2.0.0",
         "hassankhan/config": "^2.1",
+        "mglaman/drupal-check": "^1.1",
         "myclabs/php-enum": "^1.7",
         "oscarotero/env": "^1.2",
         "php-coveralls/php-coveralls": "^2.2",
