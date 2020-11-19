@@ -53,6 +53,9 @@ gem install travis
 orca --version
 orca debug:env-vars
 
+# Silence the "You are in 'detached HEAD' state" warning from Git.
+git config --global advice.detachedHead false
+
 # Ensure the checked out branch is named after the nearest Git version branch.
 git -C "$ORCA_SUT_DIR" rev-parse --abbrev-ref HEAD
 if [[ $(git -C "$ORCA_SUT_DIR" rev-parse --abbrev-ref HEAD) != "$ORCA_SUT_BRANCH" ]]; then
