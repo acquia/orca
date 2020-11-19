@@ -16,6 +16,7 @@ use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
 use Acquia\Orca\Helper\Process\ProcessRunner;
 use Acquia\Orca\Options\FixtureOptions;
 use Composer\Semver\Comparator;
+use Composer\Semver\VersionParser;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
@@ -306,8 +307,13 @@ class FixtureCreator {
    *   Returns TRUE if it should be required, or FALSE if not.
    */
   private function shouldRequireProphecyPhpunit(): bool {
-    $version = $this->options->getCoreResolved();
-    return Comparator::greaterThanOrEqualTo($version, '9.1');
+    $parser = new VersionParser();
+    $core = $this->options->getCoreResolved();
+
+    $required = $parser->parseConstraints('^9.1.0');
+    $actual = $parser->parseConstraints($core);
+
+    return $required->matches($actual);
   }
 
   /**
