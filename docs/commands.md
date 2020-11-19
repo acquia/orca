@@ -4,6 +4,7 @@
 * [`backup`](#fixturebackup)
 * [`core`](#debugcore-versions)
 * [`deprecations`](#qadeprecated-code-scan)
+* [`drupal-check`](#qadeprecated-code-scan)
 * [`enexts`](#fixtureenable-extensions)
 * [`env`](#debugenv-vars)
 * [`fix`](#qafixer)
@@ -1787,6 +1788,7 @@ Scans for deprecated code
 
 * `qa:deprecated-code-scan [--sut SUT] [--contrib]`
 * `deprecations`
+* `drupal-check`
 * `phpstan`
 
 Scans for deprecated code
