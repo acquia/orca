@@ -16,6 +16,7 @@ use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
 use Acquia\Orca\Helper\Process\ProcessRunner;
 use Acquia\Orca\Options\FixtureOptions;
 use Composer\Semver\Comparator;
+use Composer\Semver\VersionParser;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
@@ -259,9 +260,9 @@ class FixtureCreator {
       $additions[] = "drupal/core-dev:{$this->options->getCore()}";
     }
 
-    // Install requirements for deprecation checking.
-    $additions[] = 'mglaman/phpstan-drupal-deprecations';
-    $additions[] = 'nette/di:^3.0';
+    if ($this->shouldRequireProphecyPhpunit()) {
+      $additions[] = 'phpspec/prophecy-phpunit:^2';
+    }
 
     // Require additional packages.
     $prefer_source = $this->options->preferSource();
@@ -295,6 +296,24 @@ class FixtureCreator {
   private function shouldRequireDrupalCoreDev(): bool {
     $version = $this->options->getCoreResolved();
     return Comparator::greaterThanOrEqualTo($version, '8.8');
+  }
+
+  /**
+   * Determines whether or not to require phpspec/prophecy-phpunit.
+   *
+   * @see https://www.drupal.org/node/3176567
+   *
+   * @return bool
+   *   Returns TRUE if it should be required, or FALSE if not.
+   */
+  private function shouldRequireProphecyPhpunit(): bool {
+    $parser = new VersionParser();
+    $core = $this->options->getCoreResolved();
+
+    $required = $parser->parseConstraints('^9.1.0');
+    $actual = $parser->parseConstraints($core);
+
+    return $required->matches($actual);
   }
 
   /**

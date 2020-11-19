@@ -302,8 +302,8 @@ class Package {
   /**
    * Gets the dev version constraint.
    *
-   * @param string $core_version
-   *   The Drupal core version targeted.
+   * @param string|null $core_version
+   *   The Drupal core version targeted if any or NULL if not.
    *
    * @return string|null
    *   The dev version constraint, e.g., "*@dev" or "1.x-dev", if available or
@@ -316,8 +316,8 @@ class Package {
   /**
    * Gets the recommended version constraint.
    *
-   * @param string $core_version
-   *   The Drupal core version targeted.
+   * @param string|null $core_version
+   *   The Drupal core version targeted if any or NULL if not.
    *
    * @return string|null
    *   The recommended version constraint, e.g., "*" or "~1.0", if available or

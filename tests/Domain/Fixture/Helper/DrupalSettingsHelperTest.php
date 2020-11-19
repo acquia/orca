@@ -53,10 +53,9 @@ class DrupalSettingsHelperTest extends TestCase {
         parent::__construct($filesystem, $fixture_path_handler);
       }
 
+      // phpcs:ignore Generic.CodeAnalysis.UselessOverridingMethod.Found
       public function getSettings(): string {
-        // Append an empty string to make PHPCS happy without changing behavior.
-        // @see Generic.CodeAnalysis.UselessOverridingMethod.Found
-        return parent::getSettings() . '';
+        return parent::getSettings();
       }
 
     };

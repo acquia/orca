@@ -111,7 +111,7 @@ class SutPreconditionsTester {
         ->load($path);
     }
     catch (OrcaFileNotFoundException $e) {
-      throw new OrcaFileNotFoundException("SUT is missing root composer.json at {$path}", NULL, $e);
+      throw new OrcaFileNotFoundException("SUT is missing root composer.json at {$path}", 0, $e);
     }
   }
 

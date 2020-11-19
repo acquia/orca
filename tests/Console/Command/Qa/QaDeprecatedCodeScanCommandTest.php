@@ -4,16 +4,18 @@ namespace Acquia\Orca\Tests\Console\Command\Qa;
 
 use Acquia\Orca\Console\Command\Qa\QaDeprecatedCodeScanCommand;
 use Acquia\Orca\Domain\Package\PackageManager;
-use Acquia\Orca\Domain\Tool\Phpstan\PhpstanTask;
+use Acquia\Orca\Domain\Tool\DrupalCheckTool;
 use Acquia\Orca\Enum\StatusCodeEnum;
 use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
 use Acquia\Orca\Tests\Console\Command\CommandTestBase;
+use Prophecy\Argument;
 use Symfony\Component\Console\Command\Command;
 
 /**
- * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Helper\Filesystem\FixturePathHandler $fixture
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Domain\Package\PackageManager $packageManager
- * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Domain\Tool\Phpstan\PhpstanTask $phpstan
+ * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Domain\Tool\DrupalCheckTool $drupalCheck
+ * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Helper\Filesystem\FixturePathHandler $fixture
+ * @coversDefaultClass \Acquia\Orca\Console\Command\Qa\QaDeprecatedCodeScanCommand
  */
 class QaDeprecatedCodeScanCommandTest extends CommandTestBase {
 
@@ -24,54 +26,107 @@ class QaDeprecatedCodeScanCommandTest extends CommandTestBase {
     $this->fixture->getPath()
       ->willReturn(self::FIXTURE_ROOT);
     $this->packageManager = $this->prophesize(PackageManager::class);
-    $this->phpstan = $this->prophesize(PhpstanTask::class);
+    $this->packageManager
+      ->exists(Argument::any())
+      ->willReturn(TRUE);
+    $this->drupalCheck = $this->prophesize(DrupalCheckTool::class);
   }
 
   protected function createCommand(): Command {
+    $drupal_check = $this->drupalCheck->reveal();
     $fixture = $this->fixture->reveal();
     $package_manager = $this->packageManager->reveal();
-    $phpstan = $this->phpstan->reveal();
-    return new QaDeprecatedCodeScanCommand($fixture, $package_manager, $phpstan);
+    return new QaDeprecatedCodeScanCommand($drupal_check, $fixture, $package_manager);
+  }
+
+  /**
+   * @covers ::__construct
+   * @covers ::configure
+   */
+  public function testBasicConfiguration(): void {
+    $command = $this->createCommand();
+
+    $definition = $command->getDefinition();
+    $arguments = $definition->getArguments();
+    $options = $definition->getOptions();
+
+    self::assertEquals('qa:deprecated-code-scan', $command->getName(), 'Set correct name.');
+    self::assertEquals(['deprecations', 'drupal-check', 'phpstan'], $command->getAliases(), 'Set correct aliases.');
+    self::assertNotEmpty($command->getDescription(), 'Set a description.');
+    self::assertEquals([], array_keys($arguments), 'Set correct arguments.');
+    self::assertEquals(['sut', 'contrib'], array_keys($options), 'Set correct options.');
   }
 
   /**
    * @dataProvider providerCommand
    */
-  public function testCommand($fixture_exists, $args, $methods_called, $status_code, $display): void {
-    $this->packageManager
-      ->exists(@$args['--sut'])
-      ->shouldBeCalledTimes((int) in_array('PackageManager::exists', $methods_called))
-      ->willReturn(@$args['--sut'] === self::VALID_PACKAGE);
-    $this->fixture
-      ->exists()
-      ->shouldBeCalledTimes((int) in_array('Fixture::exists', $methods_called))
-      ->willReturn($fixture_exists);
-    $this->phpstan
-      ->setSut(@$args['--sut'])
-      ->shouldBeCalledTimes((int) in_array('setSut', $methods_called));
-    $this->phpstan
-      ->setScanContrib(@$args['--contrib'])
-      ->shouldBeCalledTimes((int) in_array('setScanContrib', $methods_called));
-    $this->phpstan
-      ->execute()
-      ->shouldBeCalledTimes((int) in_array('execute', $methods_called))
-      ->willReturn($status_code);
+  public function testCommandHappyPath($args, $sut, $contrib): void {
+    $this->drupalCheck
+      ->run($sut, $contrib)
+      ->shouldBeCalledOnce()
+      ->willReturn(StatusCodeEnum::OK);
 
     $this->executeCommand($args);
 
-    self::assertEquals($display, $this->getDisplay(), 'Displayed correct output.');
-    self::assertEquals($status_code, $this->getStatusCode(), 'Returned correct status code.');
+    self::assertEquals('', $this->getDisplay(), 'Displayed correct output.');
+    self::assertEquals(StatusCodeEnum::OK, $this->getStatusCode(), 'Returned correct status code.');
   }
 
   public function providerCommand(): array {
     return [
-      [TRUE, [], [], StatusCodeEnum::ERROR, "Error: Nothing to do.\nHint: Use the \"--sut\" and \"--contrib\" options to specify what to scan.\n"],
-      [FALSE, ['--sut' => self::VALID_PACKAGE], ['PackageManager::exists', 'Fixture::exists'], StatusCodeEnum::ERROR, sprintf("Error: No fixture exists at %s.\nHint: Use the \"fixture:init\" command to create one.\n", self::FIXTURE_ROOT)],
-      [TRUE, ['--sut' => self::INVALID_PACKAGE], ['PackageManager::exists'], StatusCodeEnum::ERROR, sprintf("Error: Invalid value for \"--sut\" option: \"%s\".\n", self::INVALID_PACKAGE)],
-      [TRUE, ['--sut' => self::VALID_PACKAGE], ['PackageManager::exists', 'Fixture::exists', 'setSut', 'execute'], StatusCodeEnum::OK, ''],
-      [TRUE, ['--contrib' => TRUE], ['Fixture::exists', 'setScanContrib', 'execute'], StatusCodeEnum::OK, ''],
-      [TRUE, ['--sut' => self::VALID_PACKAGE, '--contrib' => TRUE], ['PackageManager::exists', 'Fixture::exists', 'setSut', 'setScanContrib', 'execute'], StatusCodeEnum::OK, ''],
+      [
+        'args' => ['--sut' => self::VALID_PACKAGE],
+        'sut' => self::VALID_PACKAGE,
+        'contrib' => FALSE,
+      ],
+      [
+        'args' => ['--contrib' => TRUE],
+        'sut' => NULL,
+        'contrib' => TRUE,
+      ],
+      [
+        'args' => ['--sut' => self::VALID_PACKAGE, '--contrib' => TRUE],
+        'sut' => self::VALID_PACKAGE,
+        'contrib' => TRUE,
+      ],
     ];
+  }
+
+  public function testCommandNothingToDo(): void {
+    $this->executeCommand([]);
+
+    $display = implode(PHP_EOL, [
+      'Error: Nothing to do.',
+      'Hint: Use the "--sut" and "--contrib" options to specify what to scan.',
+    ]) . PHP_EOL;
+    self::assertEquals($display, $this->getDisplay(), 'Displayed correct output.');
+    self::assertEquals(StatusCodeEnum::ERROR, $this->getStatusCode(), 'Returned correct status code.');
+  }
+
+  public function testInvalidSut(): void {
+    $this->packageManager
+      ->exists(self::INVALID_PACKAGE)
+      ->willReturn(FALSE);
+
+    $this->executeCommand(['--sut' => self::INVALID_PACKAGE]);
+
+    $display = sprintf('Error: Invalid value for "--sut" option: "%s".', self::INVALID_PACKAGE) . PHP_EOL;
+    self::assertEquals($display, $this->getDisplay(), 'Displayed correct output.');
+    self::assertEquals(StatusCodeEnum::ERROR, $this->getStatusCode(), 'Returned correct status code.');
+  }
+
+  public function testNoFixtureExists(): void {
+    $this->fixture->exists()
+      ->willReturn(FALSE);
+
+    $this->executeCommand(['--sut' => self::VALID_PACKAGE]);
+
+    $display = implode(PHP_EOL, [
+      sprintf('Error: No fixture exists at %s.', self::FIXTURE_ROOT),
+      'Hint: Use the "fixture:init" command to create one.',
+    ]) . PHP_EOL;
+    self::assertEquals($display, $this->getDisplay(), 'Displayed correct output.');
+    self::assertEquals(StatusCodeEnum::ERROR, $this->getStatusCode(), 'Returned correct status code.');
   }
 
 }

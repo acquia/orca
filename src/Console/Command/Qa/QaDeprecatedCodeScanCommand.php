@@ -3,7 +3,7 @@
 namespace Acquia\Orca\Console\Command\Qa;
 
 use Acquia\Orca\Domain\Package\PackageManager;
-use Acquia\Orca\Domain\Tool\Phpstan\PhpstanTask;
+use Acquia\Orca\Domain\Tool\DrupalCheckTool;
 use Acquia\Orca\Enum\StatusCodeEnum;
 use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
 use Symfony\Component\Console\Command\Command;
@@ -43,11 +43,11 @@ class QaDeprecatedCodeScanCommand extends Command {
   private $packageManager;
 
   /**
-   * The PhpStan task.
+   * The drupal-check tool.
    *
-   * @var \Acquia\Orca\Domain\Tool\Phpstan\PhpstanTask
+   * @var \Acquia\Orca\Domain\Tool\DrupalCheckTool
    */
-  private $phpstan;
+  private $drupalCheck;
 
   /**
    * The "sut" command line option.
@@ -59,27 +59,28 @@ class QaDeprecatedCodeScanCommand extends Command {
   /**
    * Constructs an instance.
    *
+   * @param \Acquia\Orca\Domain\Tool\DrupalCheckTool $drupal_check
+   *   The drupal-check tool.
    * @param \Acquia\Orca\Helper\Filesystem\FixturePathHandler $fixture_path_handler
    *   The fixture path handler.
    * @param \Acquia\Orca\Domain\Package\PackageManager $package_manager
    *   The package manager.
-   * @param \Acquia\Orca\Domain\Tool\Phpstan\PhpstanTask $phpstan
-   *   The PhpStan task.
    */
-  public function __construct(FixturePathHandler $fixture_path_handler, PackageManager $package_manager, PhpstanTask $phpstan) {
+  public function __construct(DrupalCheckTool $drupal_check, FixturePathHandler $fixture_path_handler, PackageManager $package_manager) {
     $this->fixture = $fixture_path_handler;
     $this->packageManager = $package_manager;
-    $this->phpstan = $phpstan;
+    $this->drupalCheck = $drupal_check;
     parent::__construct();
   }
 
   /**
    * {@inheritdoc}
    */
-  protected function configure() {
+  protected function configure(): void {
     $this
       ->setAliases([
         'deprecations',
+        'drupal-check',
         'phpstan',
       ])
       ->setDescription('Scans for deprecated code')
@@ -106,15 +107,7 @@ class QaDeprecatedCodeScanCommand extends Command {
       return StatusCodeEnum::ERROR;
     }
 
-    if ($this->sut) {
-      $this->phpstan->setSut($this->sut);
-    }
-
-    if ($this->contrib) {
-      $this->phpstan->setScanContrib(TRUE);
-    }
-
-    return $this->phpstan->execute();
+    return $this->drupalCheck->run($this->sut, $this->contrib);
   }
 
   /**

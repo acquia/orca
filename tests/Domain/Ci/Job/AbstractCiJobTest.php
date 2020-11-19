@@ -2,12 +2,16 @@
 
 namespace Acquia\Orca\Tests\Domain\Ci\Job;
 
+use Acquia\Orca\Domain\Composer\Version\DrupalCoreVersionResolver;
 use Acquia\Orca\Enum\CiJobEnum;
 use Acquia\Orca\Enum\CiJobPhaseEnum;
 use Acquia\Orca\Tests\_Helper\TestSpy;
 use Acquia\Orca\Tests\Domain\Ci\Job\_Helper\CiJobTestBase;
 use Acquia\Orca\Tests\Domain\Ci\Job\_Helper\CiTestJob;
+use LogicException;
 use Prophecy\Argument;
+use Symfony\Component\Console\Output\NullOutput;
+use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * @property \Acquia\Orca\Domain\Package\PackageManager|\Prophecy\Prophecy\ObjectProphecy $packageManager
@@ -69,6 +73,27 @@ class AbstractCiJobTest extends CiJobTestBase {
     };
 
     $job->run($options);
+  }
+
+  public function testMatchingCoreVersionExistsWithoutDrupalCoreVersion(): void {
+    $job = new class(new TestSpy()) extends CiTestJob {
+
+      public function jobName(): CiJobEnum {
+        // Use the static code analysis job because it doesn't specify a Drupal
+        // core version.
+        return CiJobEnum::STATIC_CODE_ANALYSIS();
+      }
+
+      // phpcs:ignore Generic.CodeAnalysis.UselessOverridingMethod.Found
+      public function matchingCoreVersionExists(DrupalCoreVersionResolver $drupal_core_version_resolver, OutputInterface $output): bool {
+        return parent::matchingCoreVersionExists($drupal_core_version_resolver, $output);
+      }
+
+    };
+    $drupal_core_version_resolver = $this->prophesize(DrupalCoreVersionResolver::class);
+    $this->expectException(LogicException::class);
+
+    $job->matchingCoreVersionExists($drupal_core_version_resolver->reveal(), new NullOutput());
   }
 
 }

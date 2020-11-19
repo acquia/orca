@@ -2,9 +2,9 @@
 
 namespace Acquia\Orca\Helper\Log;
 
+use Acquia\Orca\Domain\Tool\DrupalCheckTool;
 use Acquia\Orca\Domain\Tool\Phpcs\PhpcsTask;
 use Acquia\Orca\Domain\Tool\Phploc\PhplocTask;
-use Acquia\Orca\Domain\Tool\Phpstan\PhpstanTask;
 use Acquia\Orca\Enum\TelemetryEventNameEnum;
 use Acquia\Orca\Helper\Filesystem\OrcaPathHandler;
 use Env;
@@ -74,6 +74,7 @@ class TelemetryEventPropertiesBuilder {
         return $this->buildTravisCiJobProperties();
 
       case TelemetryEventNameEnum::TEST:
+      default:
         return ['example' => TRUE];
     }
   }
@@ -148,7 +149,7 @@ class TelemetryEventPropertiesBuilder {
    * Adds deprecation scanning results to the event properties.
    */
   private function addDeprecationScanningResults(): void {
-    $data = $this->getJsonFileData(PhpstanTask::JSON_LOG_PATH);
+    $data = $this->getJsonFileData(DrupalCheckTool::JSON_LOG_PATH);
 
     if (empty($data['totals']) || !is_array($data['totals'])) {
       return;

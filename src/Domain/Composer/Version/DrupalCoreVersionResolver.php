@@ -118,7 +118,7 @@ class DrupalCoreVersionResolver {
    *
    * @throws \Acquia\Orca\Exception\OrcaVersionNotFoundException
    */
-  public function resolvePredefined(DrupalCoreVersionEnum $version): ?string {
+  public function resolvePredefined(DrupalCoreVersionEnum $version): string {
     switch ($version->getValue()) {
       case DrupalCoreVersionEnum::OLDEST_SUPPORTED():
         return $this->findOldestSupported();
@@ -154,7 +154,7 @@ class DrupalCoreVersionResolver {
   /**
    * Finds the Drupal core version matching the given arbitrary criteria.
    *
-   * @param string|null $version
+   * @param string $version
    *   The core version constraint.
    * @param string $preferred_stability
    *   The stability, both minimum and preferred. Available options (in order of
@@ -169,6 +169,7 @@ class DrupalCoreVersionResolver {
    */
   public function resolveArbitrary(string $version, string $preferred_stability = 'stable', bool $dev = TRUE): string {
     $selector = $this->versionSelectorFactory->create(FALSE, $dev);
+    /* @phan-suppress-next-line PhanTypeMismatchArgumentProbablyReal */
     $package = $selector->findBestCandidate('drupal/core', $version, NULL, $preferred_stability);
     if ($package instanceof PackageInterface) {
       return $package->getPrettyVersion();

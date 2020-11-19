@@ -32,7 +32,7 @@ class CiRunOptionsFactory {
    * @param array $options
    *   An array of options data.
    *
-   * @return \Acquia\Orca\Options\FixtureOptions
+   * @return \Acquia\Orca\Options\CiRunOptions
    *   A fixture options object.
    *
    * @throws \Acquia\Orca\Exception\OrcaInvalidArgumentException
