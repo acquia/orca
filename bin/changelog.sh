@@ -22,8 +22,7 @@ eval "$GITHUB_CHANGELOG_GENERATOR" \
   --output=docs/CHANGELOG.md \
   --no-issues-wo-labels \
   --no-issues-wo-labels \
-  --unreleased-only \
   --exclude-labels=dependencies,duplicate,question,invalid,wontfix \
-  --since-tag=v2.0.0 \
+  --since-tag=v2.11.4 \
   --future-release="$FUTURE_RELEASE" \
   --release-branch=develop

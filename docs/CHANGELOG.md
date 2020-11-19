@@ -1,5 +1,14 @@
 # Changelog
 
+## [v3.1.0](https://github.com/acquia/orca/tree/v3.1.0) (2020-11-19)
+
+[Full Changelog](https://github.com/acquia/orca/compare/v3.0.0...v3.1.0)
+
+**Implemented enhancements:**
+
+- Replace PHPStan with drupal-check for deprecation testing [\#117](https://github.com/acquia/orca/pull/117) ([TravisCarden](https://github.com/TravisCarden))
+- Add support for PHPUnit 9 in Drupal 9.1 [\#116](https://github.com/acquia/orca/pull/116) ([TravisCarden](https://github.com/TravisCarden))
+
 ## [v3.0.0](https://github.com/acquia/orca/tree/v3.0.0) (2020-11-12)
 
 [Full Changelog](https://github.com/acquia/orca/compare/v2.11.4...v3.0.0)
