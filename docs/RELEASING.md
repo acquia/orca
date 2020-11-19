@@ -5,7 +5,7 @@ For project maintainers.
 1. Before committing to a release...
     1. [Check the issue queue](https://github.com/acquia/orca/issues) for critical issues.
     1. Search the codebase for important `@todo` comments.
-1. Run automated tests.
+1. Run automated tests with `composer coverage`.
 1. Create a release tag with [Gitflow](https://github.com/nvie/gitflow):
     1. Choose a [semantic version](https://semver.org/) number (`x.y.z`).
     1. Start the release with `git flow release start x.y.z`.
