@@ -42,7 +42,10 @@ export ORCA_COVERALLS_ENABLE=${ORCA_COVERALLS_ENABLE:=FALSE}
 export ORCA_COVERAGE_ENABLE=${ORCA_COVERAGE_ENABLE:="$ORCA_COVERALLS_ENABLE"}
 export ORCA_FIXTURE_DIR=${ORCA_FIXTURE_DIR:="$ORCA_ROOT/../orca-build"}
 export ORCA_FIXTURE_PROFILE=${ORCA_FIXTURE_PROFILE:="orca"}
-DEFAULT_PROJECT_TEMPLATE=$([[ "$ORCA_JOB" == "D9_READINESS" ]] && echo "acquia/drupal-recommended-project" || echo "acquia/blt-project")
+DEFAULT_PROJECT_TEMPLATE="acquia/blt-project"
+if [[ "$ORCA_JOB" == "CORE_NEXT" || "$ORCA_JOB" == "D9_READINESS" ]]; then
+  DEFAULT_PROJECT_TEMPLATE="acquia/drupal-recommended-project"
+fi
 export ORCA_FIXTURE_PROJECT_TEMPLATE=${ORCA_FIXTURE_PROJECT_TEMPLATE:="$DEFAULT_PROJECT_TEMPLATE"}
 export ORCA_SUT_DIR=${ORCA_SUT_DIR:=${TRAVIS_BUILD_DIR}}
 ORCA_SUT_HAS_NIGHTWATCH_TESTS=$(cd "$ORCA_SUT_DIR"; find . -regex ".*/Nightwatch/.*" -name \*.js)
