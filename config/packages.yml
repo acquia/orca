@@ -214,7 +214,7 @@ drupal/media_acquiadam: []
 drupal/mysql56:
   type: library
   core_matrix:
-    '>=9.0.0':
+    '~9.0.0':
       version: '*'
       version_dev: '*'
     '*':
