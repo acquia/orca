@@ -64,6 +64,8 @@ jobs:
     - { env: ORCA_LIVE_TEST=TRUE, name: "Integrated live test" }
   allow_failures:
     - env: ORCA_JOB=DEPRECATED_CODE_SCAN_W_CONTRIB
+    - env: ORCA_JOB=ISOLATED_TEST_ON_NEXT_MINOR_DEV
+    - env: ORCA_JOB=INTEGRATED_TEST_ON_NEXT_MINOR_DEV
     - env: ORCA_LIVE_TEST=TRUE
 
 before_install:

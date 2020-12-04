@@ -55,6 +55,13 @@ class DrupalCoreVersionResolver {
   private $nextMinor;
 
   /**
+   * The next minor dev version of Drupal core.
+   *
+   * @var string|null
+   */
+  private $nextMinorDev;
+
+  /**
    * The oldest supported version of Drupal core.
    *
    * @var string|null
@@ -300,7 +307,14 @@ class DrupalCoreVersionResolver {
    * @throws \Acquia\Orca\Exception\OrcaVersionNotFoundException
    */
   private function findNextMinorDev(): string {
-    return $this->convertToDev($this->findNextMinor());
+    if ($this->nextMinorDev) {
+      return $this->nextMinorDev;
+    }
+
+    $this->nextMinorDev = $this
+      ->resolveArbitrary(">{$this->findCurrent()}", 'dev', TRUE);
+
+    return $this->nextMinorDev;
   }
 
   /**
