@@ -264,6 +264,10 @@ class FixtureCreator {
       $additions[] = 'phpspec/prophecy-phpunit:^2';
     }
 
+    if ($this->shouldDowngradePhpunit()) {
+      $additions[] = 'phpunit/phpunit:9.4.3';
+    }
+
     // Require additional packages.
     $prefer_source = $this->options->preferSource();
     $no_update = !$this->options->isBare();
@@ -314,6 +318,21 @@ class FixtureCreator {
     $actual = $parser->parseConstraints($core);
 
     return $required->matches($actual);
+  }
+
+  /**
+   * Determines whether or not to downgrade PHPUnit.
+   *
+   * Workaround for "Call to undefined method ::getAnnotations()" error."
+   *
+   * @see https://www.drupal.org/project/drupal/issues/3186443
+   *
+   * @return bool
+   *   Returns TRUE if it should be downgraded, or FALSE if not.
+   */
+  private function shouldDowngradePhpunit(): bool {
+    $version = $this->options->getCoreResolved();
+    return Comparator::equalTo($version, '9.1.0.0');
   }
 
   /**

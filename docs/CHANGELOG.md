@@ -1,5 +1,13 @@
 # Changelog
 
+## [v3.1.2](https://github.com/acquia/orca/tree/v3.1.2) (2020-12-14)
+
+[Full Changelog](https://github.com/acquia/orca/compare/v3.1.1...v3.1.2)
+
+**Fixed bugs:**
+
+- Add workaround for "Call to undefined method ::getAnnotations\(\)" error [\#120](https://github.com/acquia/orca/pull/120) ([TravisCarden](https://github.com/TravisCarden))
+
 ## [v3.1.1](https://github.com/acquia/orca/tree/v3.1.1) (2020-12-04)
 
 [Full Changelog](https://github.com/acquia/orca/compare/v3.1.0...v3.1.1)
