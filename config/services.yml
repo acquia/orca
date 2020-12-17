@@ -32,13 +32,9 @@ services:
     public: false
     resource: ../src
 
-  Acquia\Orca\Domain\Composer\DependencyResolver\DevPool:
-    arguments:
-      $minimumStability: "dev"
+  Acquia\Orca\Domain\Composer\DependencyResolver\DevPool: ~
 
-  Acquia\Orca\Domain\Composer\DependencyResolver\ReleasePool:
-    arguments:
-      $minimumStability: "alpha"
+  Acquia\Orca\Domain\Composer\DependencyResolver\ReleasePool: ~
 
   Acquia\Orca\Helper\Filesystem\FixturePathHandler:
     arguments:
@@ -50,9 +46,7 @@ services:
 
   Composer\Config: ~
 
-  Composer\DependencyResolver\Pool:
-    arguments:
-      $minimumStability: "dev"
+  Composer\DependencyResolver\Pool: ~
 
   Composer\Package\Version\VersionGuesser: ~
 
