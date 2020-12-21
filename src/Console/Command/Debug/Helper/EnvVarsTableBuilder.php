@@ -17,7 +17,7 @@ class EnvVarsTableBuilder {
    *
    * @var \Acquia\Orca\Helper\EnvFacade
    */
-  private $env;
+  private $envFacade;
 
   /**
    * Constructs an instance.
@@ -26,7 +26,7 @@ class EnvVarsTableBuilder {
    *   The ENV facade.
    */
   public function __construct(EnvFacade $env_facade) {
-    $this->env = $env_facade;
+    $this->envFacade = $env_facade;
   }
 
   /**
@@ -55,7 +55,7 @@ class EnvVarsTableBuilder {
     foreach ($this->getVars() as $var) {
       $rows[] = [
         $var->getKey(),
-        $this->env->get($var->getKey()) ?: '~',
+        $this->envFacade->get($var->getKey()) ?: '~',
         $var->getDescription(),
       ];
     }

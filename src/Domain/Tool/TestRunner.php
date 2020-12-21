@@ -8,6 +8,7 @@ use Acquia\Orca\Domain\Package\PackageManager;
 use Acquia\Orca\Domain\Server\ServerStack;
 use Acquia\Orca\Domain\Tool\Phpunit\PhpUnitTask;
 use Acquia\Orca\Exception\OrcaTaskFailureException;
+use Acquia\Orca\Helper\EnvFacade;
 use Acquia\Orca\Helper\SutSettingsTrait;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Filesystem\Filesystem;
@@ -18,6 +19,13 @@ use Symfony\Component\Filesystem\Filesystem;
 class TestRunner {
 
   use SutSettingsTrait;
+
+  /**
+   * The ENV facade.
+   *
+   * @var \Acquia\Orca\Helper\EnvFacade
+   */
+  private $envFacade;
 
   /**
    * A list of test failure descriptions.
@@ -78,6 +86,8 @@ class TestRunner {
   /**
    * Constructs an instance.
    *
+   * @param \Acquia\Orca\Helper\EnvFacade $env_facade
+   *   The ENV facade.
    * @param \Symfony\Component\Filesystem\Filesystem $filesystem
    *   The filesystem.
    * @param \Acquia\Orca\Domain\Fixture\FixtureResetter $fixture_resetter
@@ -91,7 +101,8 @@ class TestRunner {
    * @param \Acquia\Orca\Domain\Server\ServerStack $server_stack
    *   The server stack.
    */
-  public function __construct(Filesystem $filesystem, FixtureResetter $fixture_resetter, SymfonyStyle $output, PhpUnitTask $phpunit, PackageManager $package_manager, ServerStack $server_stack) {
+  public function __construct(EnvFacade $env_facade, Filesystem $filesystem, FixtureResetter $fixture_resetter, SymfonyStyle $output, PhpUnitTask $phpunit, PackageManager $package_manager, ServerStack $server_stack) {
+    $this->envFacade = $env_facade;
     $this->filesystem = $filesystem;
     $this->fixtureResetter = $fixture_resetter;
     $this->output = $output;
@@ -205,7 +216,7 @@ class TestRunner {
       $this->output->comment('Resetting test fixture');
       $this->fixtureResetter->reset();
       $this->output->comment('Running tests');
-      if ($this->sut && $this->isSutOnly) {
+      if ($this->shouldGenerateCodeCoverage()) {
         $framework->generateCodeCoverage(TRUE);
       }
       $framework->execute();
@@ -215,6 +226,24 @@ class TestRunner {
       $this->output->block($failure, 'FAILURE', 'fg=white;bg=red');
       $this->failures[] = $failure;
     }
+  }
+
+  /**
+   * Determines whether or not the test should generate code coverage.
+   *
+   * @return bool
+   *   TRUE to generate code coverage or FALSE not to.
+   */
+  private function shouldGenerateCodeCoverage(): bool {
+    if (!$this->sut) {
+      return FALSE;
+    }
+
+    if (!$this->isSutOnly) {
+      return FALSE;
+    }
+
+    return $this->envFacade->get('ORCA_COVERAGE_ENABLE');
   }
 
   /**
