@@ -8,27 +8,30 @@ use Acquia\Orca\Domain\Server\ServerStack;
 use Acquia\Orca\Domain\Tool\Phpunit\PhpUnitTask;
 use Acquia\Orca\Domain\Tool\TaskInterface;
 use Acquia\Orca\Domain\Tool\TestRunner;
+use Acquia\Orca\Helper\EnvFacade;
 use Acquia\Orca\Helper\Process\ProcessRunner;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
- * @property \Prophecy\Prophecy\ObjectProphecy|\Symfony\Component\Filesystem\Filesystem $filesystem
+ * @property \Acquia\Orca\Helper\EnvFacade|\Prophecy\Prophecy\ObjectProphecy $envFacade
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Domain\Fixture\FixtureResetter $fixtureResetter
- * @property \Prophecy\Prophecy\ObjectProphecy|\Symfony\Component\Console\Style\SymfonyStyle $output
- * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Domain\Tool\Phpunit\PhpUnitTask $phpunit
- * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Helper\Process\ProcessRunner $processRunner
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Domain\Package\PackageManager $packageManager
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Domain\Server\ServerStack $serverStack
+ * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Domain\Tool\Phpunit\PhpUnitTask $phpunit
+ * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Helper\Process\ProcessRunner $processRunner
+ * @property \Prophecy\Prophecy\ObjectProphecy|\Symfony\Component\Console\Style\SymfonyStyle $output
+ * @property \Prophecy\Prophecy\ObjectProphecy|\Symfony\Component\Filesystem\Filesystem $filesystem
  */
 class TestRunnerTest extends TestCase {
 
-  private const PATH = 'var/www/example';
+  private const PATH = '/var/www/example';
 
   private const STATUS_MESSAGE = 'Printing status message';
 
-  protected function setUp() {
+  protected function setUp(): void {
+    $this->envFacade = $this->prophesize(EnvFacade::class);
     $this->filesystem = $this->prophesize(Filesystem::class);
     $this->fixtureResetter = $this->prophesize(FixtureResetter::class);
     $this->output = $this->prophesize(SymfonyStyle::class);
@@ -39,13 +42,14 @@ class TestRunnerTest extends TestCase {
   }
 
   private function createTestRunner(): TestRunner {
+    $env_facade = $this->envFacade->reveal();
     $filesystem = $this->filesystem->reveal();
     $fixture_resetter = $this->fixtureResetter->reveal();
     $output = $this->output->reveal();
     $phpunit = $this->phpunit->reveal();
     $package_manager = $this->packageManager->reveal();
     $server_stack = $this->serverStack->reveal();
-    return new TestRunner($filesystem, $fixture_resetter, $output, $phpunit, $package_manager, $server_stack);
+    return new TestRunner($env_facade, $filesystem, $fixture_resetter, $output, $phpunit, $package_manager, $server_stack);
   }
 
   public function testTaskRunner(): void {
