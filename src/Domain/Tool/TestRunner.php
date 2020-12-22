@@ -243,7 +243,7 @@ class TestRunner {
       return FALSE;
     }
 
-    return $this->envFacade->get('ORCA_COVERAGE_ENABLE');
+    return $this->envFacade->get('ORCA_COVERAGE_ENABLE', FALSE);
   }
 
   /**
