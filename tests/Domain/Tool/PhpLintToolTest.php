@@ -5,7 +5,6 @@ namespace Acquia\Orca\Tests\Domain\Tool;
 use Acquia\Orca\Domain\Tool\PhpLintTool;
 use Acquia\Orca\Exception\OrcaTaskFailureException;
 use Acquia\Orca\Helper\Process\ProcessRunner;
-use Exception;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Symfony\Component\Process\Exception\ProcessFailedException;
@@ -100,8 +99,8 @@ class PhpLintToolTest extends TestCase {
   public function testRunUnexpectedException(): void {
     $this->processRunner
       ->runOrcaVendorBin(Argument::any(), self::PATH)
-      ->willThrow(Exception::class);
-    $this->expectException(Exception::class);
+      ->willThrow(\Exception::class);
+    $this->expectException(\Exception::class);
     $tool = $this->createPhpLintTool();
 
     $tool->run(self::PATH);

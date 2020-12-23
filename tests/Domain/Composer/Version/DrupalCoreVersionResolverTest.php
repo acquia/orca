@@ -10,7 +10,6 @@ use Acquia\Orca\Exception\OrcaVersionNotFoundException;
 use Acquia\Orca\Tests\Enum\DrupalCoreVersionEnumsTestTrait;
 use Composer\Package\PackageInterface;
 use Composer\Package\Version\VersionSelector;
-use LogicException;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 
@@ -217,7 +216,7 @@ class DrupalCoreVersionResolverTest extends TestCase {
       ->findBestCandidate('drupal/core', '*', NULL, 'stable')
       ->willReturn(FALSE)
       ->shouldBeCalledOnce();
-    $this->expectException(LogicException::class);
+    $this->expectException(\LogicException::class);
     $resolver = $this->createDrupalCoreVersionResolver();
 
     $resolver->resolvePredefined($version);

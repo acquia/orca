@@ -7,8 +7,6 @@ use Acquia\Orca\Domain\Package\PackageManager;
 use Acquia\Orca\Helper\Config\ConfigLoader;
 use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
 use Acquia\Orca\Helper\Filesystem\OrcaPathHandler;
-use Exception;
-use SplFileInfo;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
 
@@ -137,7 +135,7 @@ class SubextensionManager {
       try {
         $config = $this->configLoader->load($file->getPathname());
       }
-      catch (Exception $e) {
+      catch (\Exception $e) {
         continue;
       }
 
@@ -199,7 +197,7 @@ class SubextensionManager {
         'vendor',
       ])
       ->name('composer.json')
-      ->filter(function (SplFileInfo $file) {
+      ->filter(function (\SplFileInfo $file) {
         return $this->isSubextensionComposerJson($file);
       });
   }
@@ -214,7 +212,7 @@ class SubextensionManager {
    *   TRUE if the given composer.json file belongs to a subextension or FALSE
    *   if not.
    */
-  private function isSubextensionComposerJson(SplFileInfo $file): bool {
+  private function isSubextensionComposerJson(\SplFileInfo $file): bool {
     try {
       $config = $this->configLoader->load($file->getPathname());
       $name = $config->get('name');
@@ -223,7 +221,7 @@ class SubextensionManager {
       }
       [$vendor_name, $package_name] = explode('/', $name);
     }
-    catch (Exception $e) {
+    catch (\Exception $e) {
       return FALSE;
     }
 

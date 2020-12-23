@@ -7,11 +7,9 @@ use Acquia\Orca\Domain\Package\PackageManager;
 use Acquia\Orca\Enum\CiJobEnum;
 use Acquia\Orca\Enum\CiJobPhaseEnum;
 use Acquia\Orca\Exception\OrcaInvalidArgumentException;
-use Closure;
 use Symfony\Component\OptionsResolver\Exception\InvalidOptionsException;
 use Symfony\Component\OptionsResolver\Exception\UndefinedOptionsException;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use UnexpectedValueException;
 
 /**
  * Encapsulates CI run options.
@@ -92,13 +90,13 @@ class CiRunOptions {
    * @return \Closure
    *   The validation function.
    */
-  private function isValidJobValue(): Closure {
+  private function isValidJobValue(): \Closure {
     return static function ($value): bool {
       try {
         /* @phan-suppress-next-line PhanNoopNew */
         new CiJobEnum($value);
       }
-      catch (UnexpectedValueException $e) {
+      catch (\UnexpectedValueException $e) {
         return FALSE;
       }
       return TRUE;
@@ -111,13 +109,13 @@ class CiRunOptions {
    * @return \Closure
    *   The validation function.
    */
-  private function isValidPhaseValue(): Closure {
+  private function isValidPhaseValue(): \Closure {
     return static function ($value): bool {
       try {
         /* @phan-suppress-next-line PhanNoopNew */
         new CiJobPhaseEnum($value);
       }
-      catch (UnexpectedValueException $e) {
+      catch (\UnexpectedValueException $e) {
         return FALSE;
       }
       return TRUE;
@@ -130,7 +128,7 @@ class CiRunOptions {
    * @return \Closure
    *   The validation function.
    */
-  private function isValidSutValue(): Closure {
+  private function isValidSutValue(): \Closure {
     return function ($value): bool {
       return $this->packageManager->exists($value);
     };

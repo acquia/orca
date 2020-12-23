@@ -116,7 +116,7 @@ class CompanyExtensionEnabler {
       return;
     }
 
-    /* @var \Acquia\Orca\Domain\Package\Package $sut */
+    /** @var \Acquia\Orca\Domain\Package\Package $sut */
     $sut = $this->options->getSut();
     if ($this->options->isSutOnly() && !$sut->isDrupalExtension()) {
       $this->output->warning('No extensions to enable because the fixture is SUT-only and the SUT is not a Drupal extension');

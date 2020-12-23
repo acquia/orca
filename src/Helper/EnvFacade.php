@@ -2,8 +2,6 @@
 
 namespace Acquia\Orca\Helper;
 
-use Env;
-
 /**
  * Provides a facade for environment variables.
  *
@@ -46,7 +44,7 @@ class EnvFacade {
    * @codeCoverageIgnore
    */
   protected function getVar($variable) {
-    return Env::get($variable);
+    return \Env::get($variable);
   }
 
 }
