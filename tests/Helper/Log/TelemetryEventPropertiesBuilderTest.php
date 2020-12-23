@@ -5,7 +5,6 @@ namespace Acquia\Orca\Tests\Helper\Log;
 use Acquia\Orca\Enum\TelemetryEventNameEnum;
 use Acquia\Orca\Helper\Filesystem\OrcaPathHandler;
 use Acquia\Orca\Helper\Log\TelemetryEventPropertiesBuilder;
-use Env;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Filesystem;
 
@@ -17,7 +16,7 @@ use Symfony\Component\Filesystem\Filesystem;
 class TelemetryEventPropertiesBuilderTest extends TestCase {
 
   protected function setUp(): void {
-    $this->env = $this->prophesize(Env::class);
+    $this->env = $this->prophesize(\Env::class);
     $this->filesystem = $this->prophesize(Filesystem::class);
     $this->orca = $this->prophesize(OrcaPathHandler::class);
   }

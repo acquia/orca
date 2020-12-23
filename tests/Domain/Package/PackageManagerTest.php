@@ -6,8 +6,6 @@ use Acquia\Orca\Domain\Package\Package;
 use Acquia\Orca\Domain\Package\PackageManager;
 use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
 use Acquia\Orca\Helper\Filesystem\OrcaPathHandler;
-use InvalidArgumentException;
-use LogicException;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Symfony\Component\Filesystem\Filesystem;
@@ -95,7 +93,7 @@ class PackageManagerTest extends TestCase {
   }
 
   public function testRequestingNonExistentPackage(): void {
-    $this->expectException(InvalidArgumentException::class);
+    $this->expectException(\InvalidArgumentException::class);
     $this->expectExceptionMessage('No such package: nonexistent/package');
 
     $manager = $this->createPackageManager();
@@ -126,7 +124,7 @@ class PackageManagerTest extends TestCase {
     $this->filesystem
       ->exists(self::PACKAGES_CONFIG_FILE)
       ->willReturn(FALSE);
-    $this->expectException(LogicException::class);
+    $this->expectException(\LogicException::class);
 
     $manager = $this->createPackageManager();
     $manager->getAlterData();
@@ -139,7 +137,7 @@ class PackageManagerTest extends TestCase {
     $this->parser
       ->parseFile(self::PACKAGES_CONFIG_FILE)
       ->willReturn(NULL);
-    $this->expectException(LogicException::class);
+    $this->expectException(\LogicException::class);
 
     $manager = $this->createPackageManager();
     $manager->getAlterData();

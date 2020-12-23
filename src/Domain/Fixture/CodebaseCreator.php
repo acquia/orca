@@ -95,7 +95,7 @@ class CodebaseCreator {
       return;
     }
 
-    /* @var \Acquia\Orca\Domain\Package\Package $sut */
+    /** @var \Acquia\Orca\Domain\Package\Package $sut */
     $sut = $this->options->getSut();
     if (!$sut->isProjectTemplate()) {
       $this->composer->createProject($this->options);

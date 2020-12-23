@@ -10,8 +10,6 @@ use Acquia\Orca\Helper\Process\ProcessRunner;
 use Acquia\Orca\Options\FixtureOptions;
 use Composer\Package\Loader\ValidatingArrayLoader;
 use Composer\Semver\VersionParser;
-use InvalidArgumentException;
-use UnexpectedValueException;
 
 /**
  * Provides a facade for Composer.
@@ -129,7 +127,7 @@ class ComposerFacade {
    *   The project template string.
    */
   private function guessSutTemplateString(): string {
-    /* @var \Acquia\Orca\Domain\Package\Package $sut */
+    /** @var \Acquia\Orca\Domain\Package\Package $sut */
     $sut = $this->options->getSut();
 
     $version = $this->versionGuesser
@@ -199,7 +197,7 @@ class ComposerFacade {
       $parser = new VersionParser();
       $parser->parseConstraints($version);
     }
-    catch (UnexpectedValueException $e) {
+    catch (\UnexpectedValueException $e) {
       return FALSE;
     }
     return TRUE;
@@ -226,7 +224,7 @@ class ComposerFacade {
    */
   public function removePackages(array $packages): void {
     if (empty($packages)) {
-      throw new InvalidArgumentException('No packages provided to remove.');
+      throw new \InvalidArgumentException('No packages provided to remove.');
     }
     $this->runComposer([
       'remove',

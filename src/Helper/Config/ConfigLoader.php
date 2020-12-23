@@ -6,7 +6,6 @@ use Acquia\Orca\Exception\OrcaDirectoryNotFoundException;
 use Acquia\Orca\Exception\OrcaException;
 use Acquia\Orca\Exception\OrcaFileNotFoundException;
 use Acquia\Orca\Exception\OrcaParseError;
-use Exception;
 use Noodlehaus\Config;
 use Noodlehaus\Exception\FileNotFoundException as NoodlehausFileNotFoundException;
 use Noodlehaus\Exception\ParseException as NoodlehausParseException;
@@ -108,7 +107,7 @@ class ConfigLoader {
     catch (NoodlehausParseException $e) {
       throw new OrcaParseError($e->getMessage());
     }
-    catch (Exception $e) {
+    catch (\Exception $e) {
       throw new OrcaException($e->getMessage());
     }
   }

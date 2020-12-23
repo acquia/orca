@@ -12,7 +12,6 @@ use Acquia\Orca\Helper\Config\ConfigLoader;
 use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
 use Acquia\Orca\Options\FixtureOptions;
 use Acquia\Orca\Options\FixtureOptionsFactory;
-use LogicException;
 use Noodlehaus\Config;
 use Noodlehaus\Parser\Json;
 use PHPUnit\Framework\TestCase;
@@ -283,7 +282,7 @@ class ComposerJsonHelperTest extends TestCase {
     $this->configLoader
       ->load(self::FILENAME)
       ->willReturn($config);
-    $this->expectException(LogicException::class);
+    $this->expectException(\LogicException::class);
     $composer_json = $this->createComposerJsonHelper();
 
     $composer_json->getFixtureOptions();

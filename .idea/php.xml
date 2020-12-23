@@ -74,7 +74,6 @@
       <path value="$PROJECT_DIR$/vendor/symfony/options-resolver" />
       <path value="$PROJECT_DIR$/vendor/vaimo/binary-chromedriver" />
       <path value="$PROJECT_DIR$/vendor/vaimo/webdriver-binary-downloader" />
-      <path value="$PROJECT_DIR$/vendor/pheromone/phpcs-security-audit" />
       <path value="$PROJECT_DIR$/vendor/myclabs/php-enum" />
       <path value="$PROJECT_DIR$/vendor/drupal/coder" />
       <path value="$PROJECT_DIR$/vendor/symfony/service-contracts" />
@@ -119,8 +118,6 @@
       <path value="$PROJECT_DIR$/vendor/sebastian/finder-facade" />
       <path value="$PROJECT_DIR$/vendor/phploc/phploc" />
       <path value="$PROJECT_DIR$/vendor/theseer/fdomdocument" />
-      <path value="$PROJECT_DIR$/vendor/paragonie/random_compat" />
-      <path value="$PROJECT_DIR$/vendor/symfony/polyfill-php70" />
       <path value="$PROJECT_DIR$/vendor/symfony/polyfill-intl-normalizer" />
       <path value="$PROJECT_DIR$/vendor/symfony/stopwatch" />
       <path value="$PROJECT_DIR$/vendor/php-coveralls/php-coveralls" />

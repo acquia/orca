@@ -452,7 +452,7 @@ class FixtureCreator {
       return;
     }
 
-    /* @var \Acquia\Orca\Domain\Package\Package $sut */
+    /** @var \Acquia\Orca\Domain\Package\Package $sut */
     $sut = $this->options->getSut();
 
     $sut_install_path = $sut->getInstallPathAbsolute();

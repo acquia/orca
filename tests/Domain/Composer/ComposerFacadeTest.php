@@ -11,7 +11,6 @@ use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
 use Acquia\Orca\Helper\Filesystem\OrcaPathHandler;
 use Acquia\Orca\Helper\Process\ProcessRunner;
 use Acquia\Orca\Options\FixtureOptions;
-use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 
@@ -426,7 +425,7 @@ class ComposerFacadeTest extends TestCase {
   }
 
   public function testRemovePackagesEmptyArray(): void {
-    $this->expectException(InvalidArgumentException::class);
+    $this->expectException(\InvalidArgumentException::class);
     $composer = $this->createComposer();
 
     $composer->removePackages([]);

@@ -4,8 +4,6 @@ namespace Acquia\Orca\Domain\Package;
 
 use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
 use Acquia\Orca\Helper\Filesystem\OrcaPathHandler;
-use InvalidArgumentException;
-use LogicException;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Yaml\Parser;
 
@@ -117,7 +115,7 @@ class PackageManager {
    */
   public function get(string $package_name): Package {
     if (empty($this->packages[$package_name])) {
-      throw new InvalidArgumentException(sprintf('No such package: %s', $package_name));
+      throw new \InvalidArgumentException(sprintf('No such package: %s', $package_name));
     }
     return $this->packages[$package_name];
   }
@@ -204,11 +202,11 @@ class PackageManager {
    */
   private function parseYamlFile(string $file): array {
     if (!$this->filesystem->exists($file)) {
-      throw new LogicException("No such file: {$file}");
+      throw new \LogicException("No such file: {$file}");
     }
     $data = $this->parser->parseFile($file);
     if (!is_array($data)) {
-      throw new LogicException("Incorrect schema in {$file}. See config/packages.yml.");
+      throw new \LogicException("Incorrect schema in {$file}. See config/packages.yml.");
     }
     return $data;
   }

@@ -8,13 +8,11 @@ use Acquia\Orca\Domain\Package\Package;
 use Acquia\Orca\Domain\Package\PackageManager;
 use Acquia\Orca\Enum\DrupalCoreVersionEnum;
 use Acquia\Orca\Exception\OrcaInvalidArgumentException;
-use Closure;
 use Composer\Semver\Comparator;
 use Composer\Semver\VersionParser;
 use Symfony\Component\OptionsResolver\Exception\InvalidOptionsException;
 use Symfony\Component\OptionsResolver\Exception\UndefinedOptionsException;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use UnexpectedValueException;
 
 /**
  * Encapsulates fixture options.
@@ -152,7 +150,7 @@ class FixtureOptions {
    * @return \Closure
    *   The validation function.
    */
-  private function isValidCoreValue(): Closure {
+  private function isValidCoreValue(): \Closure {
     return static function ($value): bool {
       if ($value === NULL) {
         return TRUE;
@@ -170,7 +168,7 @@ class FixtureOptions {
    * @return \Closure
    *   The validation function.
    */
-  private function isValidProfileValue(): Closure {
+  private function isValidProfileValue(): \Closure {
     return static function ($value): bool {
       if ($value === NULL) {
         return TRUE;
@@ -186,7 +184,7 @@ class FixtureOptions {
    * @return \Closure
    *   The validation function.
    */
-  private function isValidProjectTemplateValue(): Closure {
+  private function isValidProjectTemplateValue(): \Closure {
     return static function ($value): bool {
       if ($value === NULL) {
         return TRUE;
@@ -201,7 +199,7 @@ class FixtureOptions {
    * @return \Closure
    *   The validation function.
    */
-  private function isValidSutValue(): Closure {
+  private function isValidSutValue(): \Closure {
     return function ($value): bool {
       if ($value === NULL) {
         return TRUE;
@@ -327,10 +325,10 @@ class FixtureOptions {
       $version = $parser->normalize($core);
       // Catch dev versions being treated as exact instead of ranges.
       if (strpos($version, 'dev') !== FALSE) {
-        throw new UnexpectedValueException('Version is a dev version.');
+        throw new \UnexpectedValueException('Version is a dev version.');
       }
     }
-    catch (UnexpectedValueException $e) {
+    catch (\UnexpectedValueException $e) {
       // The core version is a range. Get the best match.
       $stability = $this->isDev() ? 'dev' : 'stable';
       $version = $this->drupalCoreVersionResolver

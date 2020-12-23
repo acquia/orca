@@ -18,7 +18,6 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Filesystem\Filesystem;
-use UnexpectedValueException;
 
 /**
  * Provides a command.
@@ -173,7 +172,7 @@ class QaStaticAnalysisCommand extends Command {
       $this->configureTaskRunner($input);
     }
     // Catch an invalid command option value.
-    catch (UnexpectedValueException $e) {
+    catch (\UnexpectedValueException $e) {
       $output->writeln($e->getMessage());
       return StatusCodeEnum::ERROR;
     }
@@ -237,12 +236,12 @@ class QaStaticAnalysisCommand extends Command {
     try {
       $standard = new PhpcsStandardEnum($standard);
     }
-    catch (UnexpectedValueException $e) {
+    catch (\UnexpectedValueException $e) {
       $error_message = sprintf('Error: Invalid value for "--phpcs-standard" option: "%s".', $standard);
       if (!$input->getParameterOption('--phpcs-standard')) {
         $error_message = sprintf('Error: Invalid value for $ORCA_PHPCS_STANDARD environment variable: "%s".', $standard);
       }
-      throw new UnexpectedValueException($error_message, 0, $e);
+      throw new \UnexpectedValueException($error_message, 0, $e);
     }
     return $standard;
   }

@@ -10,12 +10,10 @@ use Acquia\Orca\Exception\OrcaFileNotFoundException;
 use Acquia\Orca\Helper\Config\ConfigLoader;
 use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
 use Acquia\Orca\Helper\Filesystem\OrcaPathHandler;
-use Exception;
 use Noodlehaus\Config;
 use Noodlehaus\Parser\Json;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
-use RuntimeException;
 
 /**
  * @property \Acquia\Orca\Domain\Package\Package $package
@@ -118,7 +116,7 @@ class SutPreconditionsTesterTest extends TestCase {
     return [
       [OrcaFileNotFoundException::class, OrcaFileNotFoundException::class],
       [OrcaException::class, OrcaException::class],
-      [Exception::class, RuntimeException::class],
+      [\Exception::class, \RuntimeException::class],
     ];
   }
 

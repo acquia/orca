@@ -7,8 +7,6 @@ use Acquia\Orca\Exception\OrcaException;
 use Acquia\Orca\Exception\OrcaFileNotFoundException;
 use Acquia\Orca\Helper\Config\ConfigLoader;
 use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
-use Exception;
-use RuntimeException;
 
 /**
  * Tests a SUT for preconditions of use.
@@ -93,8 +91,8 @@ class SutPreconditionsTester {
     catch (OrcaException $e) {
       throw $e;
     }
-    catch (Exception $e) {
-      throw new RuntimeException('An unknown error occurred while testing the SUT for preconditions of fixture creation');
+    catch (\Exception $e) {
+      throw new \RuntimeException('An unknown error occurred while testing the SUT for preconditions of fixture creation');
     }
   }
 
