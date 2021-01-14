@@ -9,7 +9,6 @@ use Acquia\Orca\Helper\Config\ConfigLoader;
 use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
 use Acquia\Orca\Options\FixtureOptions;
 use Acquia\Orca\Options\FixtureOptionsFactory;
-use LogicException;
 use Noodlehaus\Config;
 
 /**
@@ -119,7 +118,7 @@ class ComposerJsonHelper {
     $raw_options = $config->get(self::EXTRA_ORCA_OPTIONS);
 
     if (!$raw_options) {
-      throw new LogicException('Fixture composer.json is missing fixture options data.');
+      throw new \LogicException('Fixture composer.json is missing fixture options data.');
     }
 
     $this->fixtureOptions = $this->fixtureOptionsFactory

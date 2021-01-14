@@ -11,7 +11,6 @@ use Acquia\Orca\Exception\OrcaVersionNotFoundException;
 use Acquia\Orca\Helper\EnvFacade;
 use Acquia\Orca\Helper\Process\ProcessRunner;
 use Acquia\Orca\Options\CiRunOptions;
-use LogicException;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
@@ -235,7 +234,7 @@ abstract class AbstractCiJob {
   protected function matchingCoreVersionExists(DrupalCoreVersionResolver $drupal_core_version_resolver, OutputInterface $output): bool {
     $version = $this->getDrupalCoreVersion();
     if (!$version) {
-      throw new LogicException("Can't test for a matching Drupal core version with a job that doesn't specify one.");
+      throw new \LogicException("Can't test for a matching Drupal core version with a job that doesn't specify one.");
     }
     try {
       $drupal_core_version_resolver->resolvePredefined($version);

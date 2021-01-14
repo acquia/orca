@@ -7,6 +7,8 @@
 [![Coverage Status](https://coveralls.io/repos/github/acquia/orca/badge.svg?branch=develop)](https://coveralls.io/github/acquia/orca?branch=develop)
 [![Build Status](https://travis-ci.org/acquia/orca.svg?branch=master)](https://travis-ci.org/acquia/orca)
 
+![ORCA Logo](images/logo-wide.png)
+
 ORCA (Official Representative Customer Application) is a tool for testing a company's Drupal-adjacent software packages. It ensures their cross compatibility and correct functioning by installing all of them together into a realistic, functioning, best practices Drupal build and running automated tests and static code analysis on them. Its guiding design principle is to use company packages as a customer would. It installs the latest recommended versions via Composer and performs no manual setup or configuration.
 
 | What does it do? | What is the value? |

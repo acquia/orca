@@ -75,7 +75,7 @@ class RedundantJobChecker {
    * @throws \Acquia\Orca\Exception\OrcaVersionNotFoundException
    */
   private function getResolvedVersions(): array {
-    /* @var \Acquia\Orca\Enum\DrupalCoreVersionEnum[] $ci_jobs */
+    /** @var \Acquia\Orca\Enum\DrupalCoreVersionEnum[] $ci_jobs */
     $ci_jobs = [
       CiJobEnum::INTEGRATED_TEST_ON_OLDEST_SUPPORTED => CiJobEnum::INTEGRATED_TEST_ON_OLDEST_SUPPORTED()
         ->getDrupalCoreVersion(),

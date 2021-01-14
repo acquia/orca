@@ -5,7 +5,6 @@ namespace Acquia\Orca\Domain\Composer\Version;
 use Acquia\Orca\Enum\DrupalCoreVersionEnum;
 use Acquia\Orca\Exception\OrcaVersionNotFoundException;
 use Composer\Package\PackageInterface;
-use LogicException;
 
 /**
  * Finds a range of Drupal core versions.
@@ -262,7 +261,7 @@ class DrupalCoreVersionResolver {
       $candidate = $this->resolveArbitrary('*', 'stable');
     }
     catch (OrcaVersionNotFoundException $e) {
-      throw new LogicException('Could not find current version of Drupal core.');
+      throw new \LogicException('Could not find current version of Drupal core.');
     }
     $this->current = $candidate;
 

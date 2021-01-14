@@ -7,13 +7,11 @@ use Acquia\Orca\Domain\Package\PackageManager;
 use Acquia\Orca\Enum\DrupalCoreVersionEnum;
 use Acquia\Orca\Enum\StatusCodeEnum;
 use Composer\Semver\VersionParser;
-use InvalidArgumentException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use UnexpectedValueException;
 
 /**
  * Provides a command.
@@ -91,7 +89,7 @@ class DebugPackagesCommand extends Command {
     try {
       $this->handleCoreArgument($argument);
     }
-    catch (InvalidArgumentException $e) {
+    catch (\InvalidArgumentException $e) {
       $output->writeln([
         sprintf('Error: Invalid value for "core" option: "%s".', $argument),
         sprintf('Hint: Acceptable values are "%s", or any version string Composer understands.', implode('", "', DrupalCoreVersionEnum::values())),
@@ -119,7 +117,7 @@ class DebugPackagesCommand extends Command {
     }
 
     if (!is_string($argument)) {
-      throw new InvalidArgumentException();
+      throw new \InvalidArgumentException();
     }
 
     if (DrupalCoreVersionEnum::isValid($argument)) {
@@ -131,8 +129,8 @@ class DebugPackagesCommand extends Command {
       $this->versionParser->parseConstraints($argument);
       $this->coreVersion = $argument;
     }
-    catch (UnexpectedValueException $e) {
-      throw new InvalidArgumentException();
+    catch (\UnexpectedValueException $e) {
+      throw new \InvalidArgumentException();
     }
   }
 

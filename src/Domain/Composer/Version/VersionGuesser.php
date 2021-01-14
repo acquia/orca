@@ -7,7 +7,6 @@ use Acquia\Orca\Exception\OrcaFileNotFoundException;
 use Acquia\Orca\Exception\OrcaParseError;
 use Acquia\Orca\Helper\Config\ConfigLoader;
 use Composer\Package\Version\VersionGuesser as ComposerVersionGuesser;
-use Exception;
 use Noodlehaus\Exception\FileNotFoundException as NoodlehausFileNotFoundException;
 use Noodlehaus\Exception\ParseException;
 
@@ -69,7 +68,7 @@ class VersionGuesser {
     catch (ParseException $e) {
       throw new OrcaParseError("Cannot parse {$composer_json_path}");
     }
-    catch (Exception $e) {
+    catch (\Exception $e) {
       throw new OrcaException("Unknown error guessing version at {$path}");
     }
 

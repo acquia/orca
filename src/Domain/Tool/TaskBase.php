@@ -7,7 +7,6 @@ use Acquia\Orca\Helper\Config\ConfigFileOverrider;
 use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
 use Acquia\Orca\Helper\Filesystem\OrcaPathHandler;
 use Acquia\Orca\Helper\Process\ProcessRunner;
-use LogicException;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Filesystem\Filesystem;
 
@@ -154,7 +153,7 @@ abstract class TaskBase implements TaskInterface {
    */
   public function getPath(): string {
     if (!$this->path) {
-      throw new LogicException(sprintf('Path not set in %s:%s().', get_class($this), debug_backtrace()[1]['function']));
+      throw new \LogicException(sprintf('Path not set in %s:%s().', get_class($this), debug_backtrace()[1]['function']));
     }
     return $this->path;
   }

@@ -54,6 +54,7 @@ class PhpcbfToolTest extends TestCase {
 
   /**
    * @covers ::run
+   * @covers ::setStandard
    */
   public function testRunSuccess(): void {
     $this->phpcsConfigurator
@@ -71,6 +72,7 @@ class PhpcbfToolTest extends TestCase {
       ->shouldBeCalledOnce();
     $tool = $this->createPhpcbfTool();
 
+    $tool->setStandard($this->phpcsStandard);
     $tool->run(self::PATH);
   }
 

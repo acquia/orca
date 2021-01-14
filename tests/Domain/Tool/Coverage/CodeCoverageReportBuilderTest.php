@@ -10,7 +10,6 @@ use Acquia\Orca\Exception\OrcaParseError;
 use Acquia\Orca\Helper\Config\ConfigLoader;
 use Acquia\Orca\Helper\Filesystem\FinderFactory;
 use Acquia\Orca\Helper\Filesystem\OrcaPathHandler;
-use ArrayIterator;
 use Noodlehaus\Config;
 use Noodlehaus\Exception\FileNotFoundException as NoodlehausFileNotFoundException;
 use Noodlehaus\Exception\ParseException;
@@ -115,7 +114,7 @@ class CodeCoverageReportBuilderTest extends TestCase {
       ->notPath(Argument::any())
       ->willReturn($this->phpFinder);
     $php_file = $this->prophesize(SplFileInfo::class);
-    $this->phpIterator = new ArrayIterator([$php_file->reveal()]);
+    $this->phpIterator = new \ArrayIterator([$php_file->reveal()]);
 
     $this->testFinder = $this->prophesize(Finder::class);
     $this->testFinder
@@ -131,7 +130,7 @@ class CodeCoverageReportBuilderTest extends TestCase {
       ->contains(Argument::any())
       ->willReturn($this->testFinder);
     $test_file = $this->prophesize(SplFileInfo::class);
-    $this->testIterator = new ArrayIterator([$test_file->reveal()]);
+    $this->testIterator = new \ArrayIterator([$test_file->reveal()]);
   }
 
   private function createBuilder(): CodeCoverageReportBuilder {
@@ -181,7 +180,7 @@ class CodeCoverageReportBuilderTest extends TestCase {
       ->willReturn('self::assertTrue(TRUE);');
     $file_info = $file_info->reveal();
     $files = array_fill(0, $assertions, $file_info);
-    $this->testIterator = new ArrayIterator($files);
+    $this->testIterator = new \ArrayIterator($files);
     $builder = $this->createBuilder();
 
     $report = $builder->build($path);
@@ -222,7 +221,7 @@ class CodeCoverageReportBuilderTest extends TestCase {
   }
 
   public function testNoFilesFoundToScan(): void {
-    $this->phpIterator = new ArrayIterator([]);
+    $this->phpIterator = new \ArrayIterator([]);
     $this->expectException(OrcaFileNotFoundException::class);
     $builder = $this->createBuilder();
 

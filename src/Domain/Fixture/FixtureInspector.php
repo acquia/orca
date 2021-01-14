@@ -182,7 +182,7 @@ class FixtureInspector {
       return 'None';
     }
 
-    /* @var \Acquia\Orca\Domain\Package\Package $sut */
+    /** @var \Acquia\Orca\Domain\Package\Package $sut */
     $sut = $this->options->getSut();
     return $sut->getPackageName();
   }

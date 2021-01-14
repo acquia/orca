@@ -41,7 +41,7 @@ abstract class TestFrameworkBase extends TaskBase implements TestFrameworkInterf
    * @return bool
    *   TRUE to generate code coverage or FALSE not to.
    */
-  protected function isToGenerateCodeCoverage(): bool {
+  protected function shouldGenerateCodeCoverage(): bool {
     return $this->isToGenerateCodeCoverage;
   }
 

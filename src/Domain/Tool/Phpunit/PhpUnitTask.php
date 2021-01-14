@@ -6,8 +6,6 @@ use Acquia\Orca\Domain\Server\WebServer;
 use Acquia\Orca\Domain\Tool\TestFrameworkBase;
 use Acquia\Orca\Exception\OrcaTaskFailureException;
 use Acquia\Orca\Helper\SutSettingsTrait;
-use DOMDocument;
-use DOMXPath;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 
 /**
@@ -61,9 +59,9 @@ class PhpUnitTask extends TestFrameworkBase {
    */
   private function ensurePhpUnitConfig(): void {
     $path = $this->fixture->getPath('docroot/core/phpunit.xml');
-    $this->doc = new DOMDocument($path);
+    $this->doc = new \DOMDocument($path);
     $this->doc->load($path);
-    $this->xpath = new DOMXPath($this->doc);
+    $this->xpath = new \DOMXPath($this->doc);
 
     $this->ensureSimpleTestDirectory();
     $this->setSimpletestSettings();
@@ -222,7 +220,7 @@ class PhpUnitTask extends TestFrameworkBase {
         'phpunit',
         '--verbose',
       ];
-      if ($this->isToGenerateCodeCoverage()) {
+      if ($this->shouldGenerateCodeCoverage()) {
         $command[] = "--coverage-clover={$this->cloverCoverage}";
       }
       $command = array_merge($command, [

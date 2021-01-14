@@ -296,7 +296,6 @@ class FixtureOptionsTest extends TestCase {
   public function providerCoreResolvedRange(): array {
     return [
       ['~8', FALSE, 'stable'],
-      ['8.0.0@dev', FALSE, 'stable'],
       ['8.0.x-dev', FALSE, 'stable'],
       ['>8 <9', FALSE, 'stable'],
       ['~9', FALSE, 'stable'],

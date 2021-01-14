@@ -7,7 +7,6 @@ use Acquia\Orca\Exception\OrcaException;
 use Acquia\Orca\Exception\OrcaFileNotFoundException;
 use Acquia\Orca\Exception\OrcaParseError;
 use Acquia\Orca\Helper\Config\ConfigLoader;
-use Exception;
 use Noodlehaus\Config;
 use Noodlehaus\Exception\FileNotFoundException as NoodlehausFileNotFoundException;
 use Noodlehaus\Exception\ParseException as NoodlehausParseException;
@@ -101,7 +100,7 @@ class ConfigLoaderTest extends TestCase {
     return [
       'File not found' => [new NoodlehausFileNotFoundException(), OrcaFileNotFoundException::class],
       'Parse error' => [new NoodlehausParseException(['message' => '']), OrcaParseError::class],
-      'Unknown error' => [new Exception(), OrcaException::class],
+      'Unknown error' => [new \Exception(), OrcaException::class],
     ];
   }
 
