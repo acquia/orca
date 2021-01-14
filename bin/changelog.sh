@@ -23,7 +23,7 @@ eval "$GITHUB_CHANGELOG_GENERATOR" \
   --project=orca \
   --output=docs/CHANGELOG.md \
   --no-issues-wo-labels \
-  --exclude-labels=dependencies,duplicate,question,invalid,wontfix \
+  --exclude-labels=duplicate,question,invalid,wontfix \
   --exclude-tags-regex='v[1-2].*' \
   --future-release="$FUTURE_RELEASE" \
   --release-branch=develop

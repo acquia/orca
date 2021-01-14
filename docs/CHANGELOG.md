@@ -1,5 +1,21 @@
 # Changelog
 
+## [v3.2.0](https://github.com/acquia/orca/tree/v3.2.0) (2021-01-14)
+
+[Full Changelog](https://github.com/acquia/orca/compare/v3.1.2...v3.2.0)
+
+**Breaking changes:**
+
+- Update libraries, incl. coding standards [\#124](https://github.com/acquia/orca/pull/124) ([TravisCarden](https://github.com/TravisCarden))
+
+**Implemented enhancements:**
+
+- Update Drupal core version compatibility for drupal/mysql56 [\#125](https://github.com/acquia/orca/pull/125) ([TravisCarden](https://github.com/TravisCarden))
+
+**Fixed bugs:**
+
+- Fix test runner trying to generate code coverage regardless of environment variable [\#122](https://github.com/acquia/orca/pull/122) ([TravisCarden](https://github.com/TravisCarden))
+
 ## [v3.1.2](https://github.com/acquia/orca/tree/v3.1.2) (2020-12-14)
 
 [Full Changelog](https://github.com/acquia/orca/compare/v3.1.1...v3.1.2)
@@ -52,6 +68,10 @@
 **Removed:**
 
 - Remove CUSTOM ORCA\_JOB [\#114](https://github.com/acquia/orca/pull/114) ([TravisCarden](https://github.com/TravisCarden))
+
+**Merged pull requests:**
+
+- Update version of acquia/coding-standards [\#111](https://github.com/acquia/orca/pull/111) ([TravisCarden](https://github.com/TravisCarden))
 
 
 
