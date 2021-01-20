@@ -6,6 +6,7 @@ use Acquia\Orca\Domain\Composer\Version\VersionGuesser;
 use Acquia\Orca\Domain\Package\Package;
 use Acquia\Orca\Domain\Package\PackageManager;
 use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
+use Acquia\Orca\Helper\Filesystem\OrcaPathHandler;
 use Acquia\Orca\Helper\Process\ProcessRunner;
 use Acquia\Orca\Options\FixtureOptions;
 use Composer\Package\Loader\ValidatingArrayLoader;
@@ -38,6 +39,13 @@ class ComposerFacade {
   private $packageManager;
 
   /**
+   * The ORCA path handler.
+   *
+   * @var \Acquia\Orca\Helper\Filesystem\OrcaPathHandler
+   */
+  private $orca;
+
+  /**
    * The process runner.
    *
    * @var \Acquia\Orca\Helper\Process\ProcessRunner
@@ -56,6 +64,8 @@ class ComposerFacade {
    *
    * @param \Acquia\Orca\Helper\Filesystem\FixturePathHandler $fixture_path_handler
    *   The fixture path handler.
+   * @param \Acquia\Orca\Helper\Filesystem\OrcaPathHandler $orca
+   *   The ORCA path handler.
    * @param \Acquia\Orca\Domain\Package\PackageManager $package_manager
    *   The package manager.
    * @param \Acquia\Orca\Helper\Process\ProcessRunner $process_runner
@@ -63,8 +73,9 @@ class ComposerFacade {
    * @param \Acquia\Orca\Domain\Composer\Version\VersionGuesser $version_guesser
    *   The version guesser.
    */
-  public function __construct(FixturePathHandler $fixture_path_handler, PackageManager $package_manager, ProcessRunner $process_runner, VersionGuesser $version_guesser) {
+  public function __construct(FixturePathHandler $fixture_path_handler, OrcaPathHandler $orca, PackageManager $package_manager, ProcessRunner $process_runner, VersionGuesser $version_guesser) {
     $this->fixture = $fixture_path_handler;
+    $this->orca = $orca;
     $this->packageManager = $package_manager;
     $this->processRunner = $process_runner;
     $this->versionGuesser = $version_guesser;
@@ -84,8 +95,7 @@ class ComposerFacade {
       $stability = 'dev';
     }
 
-    $this->processRunner->runOrcaVendorBin([
-      'composer',
+    $this->processRunner->runExecutable('composer', [
       'create-project',
       "--stability={$stability}",
       '--no-dev',
@@ -94,7 +104,7 @@ class ComposerFacade {
       '--no-interaction',
       $this->getProjectTemplateString(),
       $this->fixture->getPath(),
-    ]);
+    ], $this->orca->getPath());
   }
 
   /**
@@ -171,8 +181,7 @@ class ComposerFacade {
         'symlink' => FALSE,
       ],
     ]);
-    $this->processRunner->runOrcaVendorBin([
-      'composer',
+    $this->processRunner->runExecutable('composer', [
       'create-project',
       '--stability=dev',
       "--repository={$repository}",
@@ -182,7 +191,7 @@ class ComposerFacade {
       '--no-interaction',
       "{$package->getPackageName()}:{$version}",
       $this->fixture->getPath(),
-    ]);
+    ], $this->orca->getPath());
   }
 
   /**
@@ -261,10 +270,11 @@ class ComposerFacade {
    * Updates composer.lock.
    */
   public function updateLockFile(): void {
-    $this->runComposer([
-      'update',
-      '--lock',
-    ]);
+    $this->processRunner
+      ->runExecutable('composer', [
+        'update',
+        '--lock',
+      ], $this->fixture->getPath());
   }
 
   /**
@@ -276,10 +286,9 @@ class ComposerFacade {
    *   A list of of command arguments, e.g., ['vendor/package'].
    */
   private function runComposer(array $command, array $args = []): void {
-    array_unshift($command, 'composer');
     $command = array_merge($command, $args);
     $this->processRunner
-      ->runOrcaVendorBin($command, $this->fixture->getPath());
+      ->runExecutable('composer', $command, $this->fixture->getPath());
   }
 
 }

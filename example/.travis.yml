@@ -163,7 +163,7 @@ before_install:
   # Set Node.js to a version compatible with Drupal 9 + Nightwatch.js.
   - nvm use 12.13.1
   # Force the build to use Composer 1 until the ecosystem is ready for v2.
-  - composer self-update 1.10.16
+  - composer self-update --1
   - composer create-project --no-dev acquia/orca ../orca "$ORCA_VERSION"
   - ../orca/bin/travis/before_install.sh
   # For custom testing needs, add your own scripts here. See the example script
