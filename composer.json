@@ -62,8 +62,7 @@
         "enlightn/security-checker": "^1.4",
         "phan/phan": "^3.2",
         "phpstan/phpstan": "^0.12.54",
-        "phpunit/phpunit": "^6.5",
-        "taptima/phalyfusion": "dev-master"
+        "phpunit/phpunit": "^6.5"
     },
     "config": {
         "discard-changes": true,
@@ -105,12 +104,13 @@
         "changelog": "./bin/changelog.sh",
         "coverage": "phpunit --coverage-html var/coverage-report; open var/coverage-report/index.html",
         "open-coverage": "open var/coverage-report/index.html",
+        "phan": "vendor/bin/phan -k phan.php --allow-polyfill-parser",
         "phpcbf": "phpcbf",
         "phpcs": "phpcs -s --cache=var/cache/phpcs.json",
         "phplint": "parallel-lint --exclude vendor --ignore-fails .",
         "phpmd": "phpmd . text phpmd.xml.dist --ignore-violations-on-exit",
+        "phpstan": "vendor/bin/phpstan analyse src",
         "phpunit": "phpunit",
-        "stan": "phalyfusion --config=phalyfusion.neon",
         "update-docs": "./bin/orca --format=md > docs/commands.md"
     },
     "support": {

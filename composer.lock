@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "5c229ad6b56ce08e61db093002ea61d1",
+    "content-hash": "040cf398403ef3b4c477772cf5cecfea",
     "packages": [
         {
             "name": "acquia/coding-standards",
@@ -8051,9 +8051,7 @@
     ],
     "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": {
-        "taptima/phalyfusion": 20
-    },
+    "stability-flags": [],
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
