@@ -121,6 +121,8 @@ class ComposerFacade {
   }
 
   /**
+   * Gets the project template string when the template is the SUT.
+   *
    * Gets the project template string based on Composer's guess of its version.
    *
    * @return string
