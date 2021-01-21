@@ -1,0 +1,55 @@
+<?php
+
+namespace Acquia\Orca\Console\Command\Dev;
+
+use Acquia\Orca\Enum\StatusCodeEnum;
+use Composer\IO\NullIO;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
+
+/**
+ * Provides a command.
+ *
+ * @codeCoverageIgnore
+ */
+class WipCommand extends Command {
+
+  /**
+   * {@inheritdoc}
+   */
+  protected static $defaultName = 'dev:wip';
+
+  /**
+   * The IOInterface.
+   *
+   * @var \Composer\IO\NullIO
+   */
+  private $io;
+
+  /**
+   * Constructs an instance.
+   */
+  public function __construct() {
+    parent::__construct();
+    $this->io = new NullIO();
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  protected function configure() {
+    $this
+      ->setHidden(TRUE)
+      ->setAliases(['wip'])
+      ->setDescription('Provides a place to test work-in-progress code');
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function execute(InputInterface $input, OutputInterface $output): int {
+    return StatusCodeEnum::OK;
+  }
+
+}

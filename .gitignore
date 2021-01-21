@@ -1,6 +1,7 @@
 /.idea/workspace.xml
 /.idea/dictionaries/*
 !/.idea/dictionaries/orca.xml
+/src/Console/Command/Dev/WipCommand.php
 /var/*
 /vendor
 !/**/.gitkeep
