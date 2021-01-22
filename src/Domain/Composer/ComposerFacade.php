@@ -2,7 +2,6 @@
 
 namespace Acquia\Orca\Domain\Composer;
 
-use Acquia\Orca\Domain\Composer\Version\VersionGuesser;
 use Acquia\Orca\Domain\Package\Package;
 use Acquia\Orca\Domain\Package\PackageManager;
 use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
@@ -53,13 +52,6 @@ class ComposerFacade {
   private $processRunner;
 
   /**
-   * The version guesser.
-   *
-   * @var \Acquia\Orca\Domain\Composer\Version\VersionGuesser
-   */
-  private $versionGuesser;
-
-  /**
    * Constructs an instance.
    *
    * @param \Acquia\Orca\Helper\Filesystem\FixturePathHandler $fixture_path_handler
@@ -70,15 +62,12 @@ class ComposerFacade {
    *   The package manager.
    * @param \Acquia\Orca\Helper\Process\ProcessRunner $process_runner
    *   The process runner.
-   * @param \Acquia\Orca\Domain\Composer\Version\VersionGuesser $version_guesser
-   *   The version guesser.
    */
-  public function __construct(FixturePathHandler $fixture_path_handler, OrcaPathHandler $orca, PackageManager $package_manager, ProcessRunner $process_runner, VersionGuesser $version_guesser) {
+  public function __construct(FixturePathHandler $fixture_path_handler, OrcaPathHandler $orca, PackageManager $package_manager, ProcessRunner $process_runner) {
     $this->fixture = $fixture_path_handler;
     $this->orca = $orca;
     $this->packageManager = $package_manager;
     $this->processRunner = $process_runner;
-    $this->versionGuesser = $version_guesser;
   }
 
   /**

@@ -4,7 +4,6 @@ namespace Acquia\Orca\Tests\Domain\Composer;
 
 use Acquia\Orca\Domain\Composer\ComposerFacade;
 use Acquia\Orca\Domain\Composer\Version\DrupalCoreVersionResolver;
-use Acquia\Orca\Domain\Composer\Version\VersionGuesser;
 use Acquia\Orca\Domain\Package\Package;
 use Acquia\Orca\Domain\Package\PackageManager;
 use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
@@ -15,7 +14,6 @@ use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 
 /**
- * @property \Acquia\Orca\Domain\Composer\Version\VersionGuesser|\Prophecy\Prophecy\ObjectProphecy $versionGuesser
  * @property \Acquia\Orca\Domain\Composer\Version\DrupalCoreVersionResolver|\Prophecy\Prophecy\ObjectProphecy $drupalCoreVersionFinder
  * @property \Acquia\Orca\Domain\Package\PackageManager|\Prophecy\Prophecy\ObjectProphecy $packageManager
  * @property \Acquia\Orca\Domain\Package\Package|\Prophecy\Prophecy\ObjectProphecy $blt
@@ -66,7 +64,6 @@ class ComposerFacadeTest extends TestCase {
     $this->processRunner
       ->runOrcaVendorBin(Argument::any())
       ->willReturn(0);
-    $this->versionGuesser = $this->prophesize(VersionGuesser::class);
   }
 
   private function createComposer(): ComposerFacade {
@@ -74,8 +71,7 @@ class ComposerFacadeTest extends TestCase {
     $orca_path_handler = $this->orca->reveal();
     $package_manager = $this->packageManager->reveal();
     $process_runner = $this->processRunner->reveal();
-    $version_guesser = $this->versionGuesser->reveal();
-    return new ComposerFacade($fixture_path_handler, $orca_path_handler, $package_manager, $process_runner, $version_guesser);
+    return new ComposerFacade($fixture_path_handler, $orca_path_handler, $package_manager, $process_runner);
   }
 
   private function createFixtureOptions($options): FixtureOptions {
@@ -141,47 +137,6 @@ class ComposerFacadeTest extends TestCase {
   /**
    * @covers ::createProject
    * @covers ::getProjectTemplateString
-   * @covers ::guessSutTemplateString
-   */
-  public function testCreateProjectWithProjectTemplateSut(): void {
-    $project_template = 'test/example';
-    $guess = '9999999-dev';
-    $package = $this->createPackage([
-      'type' => 'project-template',
-    ], $project_template);
-    $this->packageManager
-      ->exists($project_template)
-      ->willReturn(TRUE);
-    $this->packageManager
-      ->get($project_template)
-      ->willReturn($package);
-    $this->versionGuesser
-      ->guessVersion(Argument::any())
-      ->willReturn($guess);
-    $options = $this->createFixtureOptions([
-      'project-template' => $project_template,
-      'sut' => $project_template,
-    ]);
-    $this->processRunner
-      ->runExecutable('composer', [
-        'create-project',
-        '--stability=alpha',
-        '--no-dev',
-        '--no-scripts',
-        '--no-install',
-        '--no-interaction',
-        "{$project_template}:{$guess}",
-        self::FIXTURE_PATH,
-      ], self::ORCA_PATH)
-      ->shouldBeCalledOnce();
-    $composer = $this->createComposer();
-
-    $composer->createProject($options);
-  }
-
-  /**
-   * @covers ::createProject
-   * @covers ::getProjectTemplateString
    */
   public function testCreateProjectWithNonProjectTemplateSut(): void {
     $package_name = 'test/example';
@@ -215,121 +170,14 @@ class ComposerFacadeTest extends TestCase {
   }
 
   /**
-   * @dataProvider providerCreateProjectBlt
-   * @covers ::createProject
-   * @covers ::getBltProjectTemplateString
-   * @covers ::getProjectTemplateString
-   * @covers ::guessSutTemplateString
-   */
-  public function testCreateProjectBlt($options, $stability, $version, $should_guess_version, $should_ask_version_dev, $should_ask_version_recommended, $project_template_string): void {
-    $core_version = '8.9.x';
-    $this->blt->getVersionDev($core_version)
-      ->shouldBeCalledTimes((int) $should_ask_version_dev)
-      ->willReturn($version);
-    $this->blt->getVersionRecommended($core_version)
-      ->shouldBeCalledTimes((int) $should_ask_version_recommended)
-      ->willReturn($version);
-    $blt = $this->blt->reveal();
-    $this->packageManager
-      ->get(Argument::any())
-      ->willReturn($blt);
-    $this->packageManager
-      ->getBlt()
-      ->willReturn($blt);
-    $this->drupalCoreVersionFinder
-      ->resolvePredefined(Argument::any())
-      ->willReturn($core_version);
-    $this->versionGuesser
-      ->guessVersion(Argument::any())
-      ->shouldBeCalledTimes((int) $should_guess_version)
-      ->willReturn($version);
-    $options = $this->createFixtureOptions($options);
-    $this->processRunner
-      ->runExecutable('composer', [
-        'create-project',
-        "--stability={$stability}",
-        '--no-dev',
-        '--no-scripts',
-        '--no-install',
-        '--no-interaction',
-        $project_template_string,
-        self::FIXTURE_PATH,
-      ], self::ORCA_PATH)
-      ->shouldBeCalledOnce();
-    $composer = $this->createComposer();
-
-    $composer->createProject($options);
-  }
-
-  public function providerCreateProjectBlt(): array {
-    return [
-      'BLT project as SUT, dev fixture' => [
-        'options' => [
-          'dev' => TRUE,
-          'project-template' => 'acquia/blt-project',
-          'sut' => 'acquia/blt-project',
-        ],
-        'stability' => 'dev',
-        'version' => '9999999-dev',
-        'should_guess_version' => TRUE,
-        'should_ask_version_dev' => FALSE,
-        'should_ask_version_recommended' => FALSE,
-        'project_template_string' => 'acquia/blt-project:9999999-dev',
-      ],
-
-      'BLT project as SUT, stable fixture' => [
-        'options' => [
-          'dev' => FALSE,
-          'project-template' => 'acquia/blt-project',
-          'sut' => 'acquia/blt-project',
-        ],
-        'stability' => 'alpha',
-        'version' => '9999999-dev',
-        'should_guess_version' => TRUE,
-        'should_ask_version_dev' => FALSE,
-        'should_ask_version_recommended' => FALSE,
-        'project_template_string' => 'acquia/blt-project:9999999-dev',
-      ],
-
-      'BLT project as non-SUT, dev fixture' => [
-        'options' => [
-          'dev' => TRUE,
-          'project-template' => 'acquia/blt-project',
-        ],
-        'stability' => 'dev',
-        'version' => '1.x',
-        'should_guess_version' => FALSE,
-        'should_ask_version_dev' => TRUE,
-        'should_ask_version_recommended' => FALSE,
-        'project_template_string' => 'acquia/blt-project:1.x',
-      ],
-
-      'BLT project as non-SUT, stable fixture' => [
-        'options' => [
-          'project-template' => 'acquia/blt-project',
-        ],
-        'stability' => 'alpha',
-        'version' => '1.x',
-        'should_guess_version' => FALSE,
-        'should_ask_version_dev' => FALSE,
-        'should_ask_version_recommended' => TRUE,
-        'project_template_string' => 'acquia/blt-project:1.x',
-      ],
-    ];
-  }
-
-  /**
    * @dataProvider providerCreateProjectFromPackage
    */
-  public function testCreateProjectFromPackage($package_name, $repository_url, $guess, $directory): void {
+  public function testCreateProjectFromPackage($package_name, $repository_url, $directory): void {
     $package = $this->prophesize(Package::class);
     $package->getPackageName()
       ->willReturn($package_name);
     $package->getRepositoryUrlAbsolute()
       ->willReturn($repository_url);
-    $this->versionGuesser
-      ->guessVersion(Argument::any())
-      ->willReturn($guess);
     $this->fixture
       ->getPath()
       ->shouldBeCalledOnce()
