@@ -506,13 +506,13 @@ class FixtureCreator {
 
       // Always symlink a Composer requirable SUT.
       if ($package === $sut) {
-        $package = $this->getLocalPackageString($package);
+        $package = $package->getPackageName();
         continue;
       }
 
       // If configured to symlink all and package exists locally, symlink it.
       if ($this->shouldSymlinkNonSut($package)) {
-        $package = $this->getLocalPackageString($package);
+        $package = $package->getPackageName();
         continue;
       }
 
@@ -588,33 +588,6 @@ class FixtureCreator {
     }
     return $this->versionFinder
       ->findLatestVersion($package->getPackageName(), $constraint, $this->options->isDev());
-  }
-
-  /**
-   * Gets the package string for a given local package..
-   *
-   * @param \Acquia\Orca\Domain\Package\Package $package
-   *   The local package.
-   *
-   * @return string
-   *   The package string for the given package, e.g., "drupal/example:*".
-   */
-  private function getLocalPackageString(Package $package): string {
-    return $package->getPackageName() . ':' . $this->getLocalPackageVersion($package);
-  }
-
-  /**
-   * Gets the version of a given local package.
-   *
-   * @param \Acquia\Orca\Domain\Package\Package $package
-   *   The local package.
-   *
-   * @return string
-   *   The versions of the given package, e.g., "@dev" or "dev-8.x-1.x".
-   */
-  private function getLocalPackageVersion(Package $package): string {
-    $path = $package->getRepositoryUrlAbsolute();
-    return $this->versionGuesser->guessVersion($path);
   }
 
   /**

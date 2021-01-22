@@ -339,6 +339,7 @@ class ComposerFacadeTest extends TestCase {
       'url' => $repository_url,
       'options' => [
         'symlink' => FALSE,
+        'canonical' => TRUE,
       ],
     ]);
     $this->processRunner
@@ -350,7 +351,7 @@ class ComposerFacadeTest extends TestCase {
         '--no-scripts',
         '--no-install',
         '--no-interaction',
-        "{$package_name}:{$guess}",
+        $package_name,
         $directory,
       ], self::ORCA_PATH)
       ->shouldBeCalledOnce();
@@ -361,8 +362,16 @@ class ComposerFacadeTest extends TestCase {
 
   public function providerCreateProjectFromPackage(): array {
     return [
-      ['example/drupal-recommended-project', '/var/www/drupal-recommended-project', 'dev-develop', '/var/www/orca-build1'],
-      ['example/drupal-minimal-project', '/var/www/drupal-minimal-project', '9999999-dev', '/var/www/orca-build2'],
+      [
+        'package_name' => 'example/drupal-recommended-project',
+        'repository_url' => '/var/www/drupal-recommended-project',
+        'directory' => '/var/www/orca-build1',
+      ],
+      [
+        'package_name' => 'example/drupal-minimal-project',
+        'repository_url' => '/var/www/drupal-minimal-project',
+        'directory' => '/var/www/orca-build2',
+      ],
     ];
   }
 

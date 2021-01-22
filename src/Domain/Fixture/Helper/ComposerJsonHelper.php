@@ -177,6 +177,10 @@ class ComposerJsonHelper {
       $name => [
         'type' => $type,
         'url' => $url,
+        // Ensure that Composer stops looking for matches once it identifies the
+        // path repository.
+        // @see https://getcomposer.org/doc/articles/repository-priorities.md#canonical-repositories
+        'canonical' => TRUE,
       ],
     ] + $config->get($key, []));
 

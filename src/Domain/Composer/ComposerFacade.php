@@ -119,7 +119,7 @@ class ComposerFacade {
 
     // The project template is the SUT.
     if ($sut && $sut->isProjectTemplate()) {
-      return $this->guessSutTemplateString();
+      return $this->options->getProjectTemplate();
     }
 
     // The project template is BLT project.
@@ -128,23 +128,6 @@ class ComposerFacade {
     }
 
     return $project_template;
-  }
-
-  /**
-   * Gets the project template string when the template is the SUT.
-   *
-   * Gets the project template string based on Composer's guess of its version.
-   *
-   * @return string
-   *   The project template string.
-   */
-  private function guessSutTemplateString(): string {
-    /** @var \Acquia\Orca\Domain\Package\Package $sut */
-    $sut = $this->options->getSut();
-
-    $version = $this->versionGuesser
-      ->guessVersion($sut->getRepositoryUrlAbsolute());
-    return $this->options->getProjectTemplate() . ':' . $version;
   }
 
   /**
@@ -157,7 +140,7 @@ class ComposerFacade {
     $project_template = $this->options->getProjectTemplate();
     $blt = $this->packageManager->getBlt();
     if ($this->options->isDev()) {
-      return $project_template . ':' . $blt->getVersionDev($this->options->getCore());
+      return $project_template;
     }
     return $project_template . ':' . $blt->getVersionRecommended($this->options->getCore());
   }
@@ -173,12 +156,12 @@ class ComposerFacade {
    * @throws \Acquia\Orca\Exception\OrcaParseError
    */
   public function createProjectFromPackage(Package $package): void {
-    $version = $this->versionGuesser->guessVersion($package->getRepositoryUrlAbsolute());
     $repository = json_encode([
       'type' => 'path',
       'url' => $package->getRepositoryUrlAbsolute(),
       'options' => [
         'symlink' => FALSE,
+        'canonical' => TRUE,
       ],
     ]);
     $this->processRunner->runExecutable('composer', [
@@ -189,7 +172,7 @@ class ComposerFacade {
       '--no-scripts',
       '--no-install',
       '--no-interaction',
-      "{$package->getPackageName()}:{$version}",
+      $package->getPackageName(),
       $this->fixture->getPath(),
     ], $this->orca->getPath());
   }

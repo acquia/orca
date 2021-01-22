@@ -123,10 +123,12 @@ class ComposerJsonHelperTest extends TestCase {
       'drupal/example_two' => [
         'type' => $type,
         'url' => $url,
+        'canonical' => TRUE,
       ],
       'drupal/example_one' => [
         'type' => $type,
         'url' => $url,
+        'canonical' => TRUE,
       ],
       'drupal' => [
         'type' => 'composer',
