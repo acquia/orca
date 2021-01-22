@@ -4,7 +4,6 @@ namespace Acquia\Orca\Tests\Domain\Fixture;
 
 use Acquia\Orca\Domain\Composer\ComposerFacade;
 use Acquia\Orca\Domain\Composer\Version\VersionFinder;
-use Acquia\Orca\Domain\Composer\Version\VersionGuesser;
 use Acquia\Orca\Domain\Fixture\CloudHooksInstaller;
 use Acquia\Orca\Domain\Fixture\CodebaseCreator;
 use Acquia\Orca\Domain\Fixture\FixtureCreator;
@@ -24,7 +23,6 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 /**
  * @property \Acquia\Orca\Domain\Composer\ComposerFacade|\Prophecy\Prophecy\ObjectProphecy $composer
  * @property \Acquia\Orca\Domain\Composer\Version\VersionFinder|\Prophecy\Prophecy\ObjectProphecy $versionFinder
- * @property \Acquia\Orca\Domain\Composer\Version\VersionGuesser|\Prophecy\Prophecy\ObjectProphecy $versionGuesser
  * @property \Acquia\Orca\Domain\Fixture\CloudHooksInstaller|\Prophecy\Prophecy\ObjectProphecy $cloudHooksInstaller
  * @property \Acquia\Orca\Domain\Fixture\CodebaseCreator|\Prophecy\Prophecy\ObjectProphecy $codebaseCreator
  * @property \Acquia\Orca\Domain\Fixture\FixtureInspector|\Prophecy\Prophecy\ObjectProphecy $fixtureInspector
@@ -56,7 +54,6 @@ class FixtureCreatorTest extends TestCase {
     $this->siteInstaller = $this->prophesize(SiteInstaller::class);
     $this->subextensionManager = $this->prophesize(SubextensionManager::class);
     $this->versionFinder = $this->prophesize(VersionFinder::class);
-    $this->versionGuesser = $this->prophesize(VersionGuesser::class);
     $this->output = $this->prophesize(SymfonyStyle::class);
   }
 
@@ -75,8 +72,7 @@ class FixtureCreatorTest extends TestCase {
     $output = $this->output->reveal();
     $subextension_manager = $this->subextensionManager->reveal();
     $version_finder = $this->versionFinder->reveal();
-    $version_guesser = $this->versionGuesser->reveal();
-    return new FixtureCreator($cloud_hooks_installer, $codebase_creator, $composer_facade, $composer_json_helper, $drupal_settings_helper, $fixture, $fixture_inspector, $git, $site_installer, $output, $process_runner, $package_manager, $subextension_manager, $version_finder, $version_guesser);
+    return new FixtureCreator($cloud_hooks_installer, $codebase_creator, $composer_facade, $composer_json_helper, $drupal_settings_helper, $fixture, $fixture_inspector, $git, $site_installer, $output, $process_runner, $package_manager, $subextension_manager, $version_finder);
   }
 
   public function testInstantiation(): void {
