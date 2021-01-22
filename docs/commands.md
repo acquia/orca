@@ -8,7 +8,6 @@
 * [`enexts`](#fixtureenable-extensions)
 * [`env`](#debugenv-vars)
 * [`fix`](#qafixer)
-* [`guess`](#debugguess-version)
 * [`help`](#help)
 * [`init`](#fixtureinit)
 * [`jobs`](#debugci-jobs)
@@ -36,7 +35,6 @@
 * [`debug:ci-phases`](#debugci-phases)
 * [`debug:core-versions`](#debugcore-versions)
 * [`debug:env-vars`](#debugenv-vars)
-* [`debug:guess-version`](#debugguess-version)
 * [`debug:packages`](#debugpackages)
 
 **fixture:**
@@ -627,93 +625,6 @@ Displays ORCA environment variables
 * `vars`
 
 Displays ORCA environment variables
-
-### Options
-
-#### `--help|-h`
-
-Display this help message
-
-* Accept value: no
-* Is value required: no
-* Is multiple: no
-* Default: `false`
-
-#### `--quiet|-q`
-
-Do not output any message
-
-* Accept value: no
-* Is value required: no
-* Is multiple: no
-* Default: `false`
-
-#### `--verbose|-v|-vv|-vvv`
-
-Increase the verbosity of messages: 1 for normal output, 2 for more verbose output and 3 for debug
-
-* Accept value: no
-* Is value required: no
-* Is multiple: no
-* Default: `false`
-
-#### `--version|-V`
-
-Display this application version
-
-* Accept value: no
-* Is value required: no
-* Is multiple: no
-* Default: `false`
-
-#### `--ansi`
-
-Force ANSI output
-
-* Accept value: no
-* Is value required: no
-* Is multiple: no
-* Default: `false`
-
-#### `--no-ansi`
-
-Disable ANSI output
-
-* Accept value: no
-* Is value required: no
-* Is multiple: no
-* Default: `false`
-
-#### `--no-interaction|-n`
-
-Do not ask any interactive question
-
-* Accept value: no
-* Is value required: no
-* Is multiple: no
-* Default: `false`
-
-`debug:guess-version`
----------------------
-
-Gets the version Composer guesses for a given path repository
-
-### Usage
-
-* `debug:guess-version <path>`
-* `guess`
-
-Gets the version Composer guesses for a given path repository
-
-### Arguments
-
-#### `path`
-
-The path to guess the version for
-
-* Is required: yes
-* Is array: no
-* Default: `NULL`
 
 ### Options
 
