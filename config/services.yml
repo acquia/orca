@@ -54,8 +54,6 @@ services:
     arguments:
       $minimumStability: "dev"
 
-  Composer\Package\Version\VersionGuesser: ~
-
   Composer\Semver\VersionParser: ~
 
   Composer\Util\ProcessExecutor: ~

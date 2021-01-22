@@ -5,7 +5,6 @@ namespace Acquia\Orca\Domain\Fixture;
 use Acquia\Orca\Console\Helper\StatusTable;
 use Acquia\Orca\Domain\Composer\ComposerFacade;
 use Acquia\Orca\Domain\Composer\Version\VersionFinder;
-use Acquia\Orca\Domain\Composer\Version\VersionGuesser;
 use Acquia\Orca\Domain\Fixture\Helper\ComposerJsonHelper;
 use Acquia\Orca\Domain\Fixture\Helper\DrupalSettingsHelper;
 use Acquia\Orca\Domain\Git\GitFacade;
@@ -132,13 +131,6 @@ class FixtureCreator {
   private $versionFinder;
 
   /**
-   * The version guesser.
-   *
-   * @var \Acquia\Orca\Domain\Composer\Version\VersionGuesser
-   */
-  private $versionGuesser;
-
-  /**
    * Constructs an instance.
    *
    * @param \Acquia\Orca\Domain\Fixture\CloudHooksInstaller $cloud_hooks_installer
@@ -169,10 +161,8 @@ class FixtureCreator {
    *   The subextension manager.
    * @param \Acquia\Orca\Domain\Composer\Version\VersionFinder $version_finder
    *   The version finder.
-   * @param \Acquia\Orca\Domain\Composer\Version\VersionGuesser $version_guesser
-   *   The version guesser.
    */
-  public function __construct(CloudHooksInstaller $cloud_hooks_installer, CodebaseCreator $codebase_creator, ComposerFacade $composer, ComposerJsonHelper $composer_json_helper, DrupalSettingsHelper $drupal_settings_helper, FixturePathHandler $fixture_path_handler, FixtureInspector $fixture_inspector, GitFacade $git, SiteInstaller $site_installer, SymfonyStyle $output, ProcessRunner $process_runner, PackageManager $package_manager, SubextensionManager $subextension_manager, VersionFinder $version_finder, VersionGuesser $version_guesser) {
+  public function __construct(CloudHooksInstaller $cloud_hooks_installer, CodebaseCreator $codebase_creator, ComposerFacade $composer, ComposerJsonHelper $composer_json_helper, DrupalSettingsHelper $drupal_settings_helper, FixturePathHandler $fixture_path_handler, FixtureInspector $fixture_inspector, GitFacade $git, SiteInstaller $site_installer, SymfonyStyle $output, ProcessRunner $process_runner, PackageManager $package_manager, SubextensionManager $subextension_manager, VersionFinder $version_finder) {
     $this->cloudHooksInstaller = $cloud_hooks_installer;
     $this->codebaseCreator = $codebase_creator;
     $this->composer = $composer;
@@ -187,7 +177,6 @@ class FixtureCreator {
     $this->siteInstaller = $site_installer;
     $this->subextensionManager = $subextension_manager;
     $this->versionFinder = $version_finder;
-    $this->versionGuesser = $version_guesser;
   }
 
   /**
@@ -506,13 +495,13 @@ class FixtureCreator {
 
       // Always symlink a Composer requirable SUT.
       if ($package === $sut) {
-        $package = $this->getLocalPackageString($package);
+        $package = $package->getPackageName();
         continue;
       }
 
       // If configured to symlink all and package exists locally, symlink it.
       if ($this->shouldSymlinkNonSut($package)) {
-        $package = $this->getLocalPackageString($package);
+        $package = $package->getPackageName();
         continue;
       }
 
@@ -588,33 +577,6 @@ class FixtureCreator {
     }
     return $this->versionFinder
       ->findLatestVersion($package->getPackageName(), $constraint, $this->options->isDev());
-  }
-
-  /**
-   * Gets the package string for a given local package..
-   *
-   * @param \Acquia\Orca\Domain\Package\Package $package
-   *   The local package.
-   *
-   * @return string
-   *   The package string for the given package, e.g., "drupal/example:*".
-   */
-  private function getLocalPackageString(Package $package): string {
-    return $package->getPackageName() . ':' . $this->getLocalPackageVersion($package);
-  }
-
-  /**
-   * Gets the version of a given local package.
-   *
-   * @param \Acquia\Orca\Domain\Package\Package $package
-   *   The local package.
-   *
-   * @return string
-   *   The versions of the given package, e.g., "@dev" or "dev-8.x-1.x".
-   */
-  private function getLocalPackageVersion(Package $package): string {
-    $path = $package->getRepositoryUrlAbsolute();
-    return $this->versionGuesser->guessVersion($path);
   }
 
   /**

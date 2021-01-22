@@ -9,6 +9,8 @@
 # DESCRIPTION
 #     Configures the Travis CI environment, installs ORCA, and prepares the SUT.
 
+HOST_COMPOSER=$(command -v composer)
+
 cd "$(dirname "$0")" || exit; source _includes.sh
 
 # The remaining before_install commands should only be run on Travis CI.
@@ -48,6 +50,9 @@ gem install travis
 # with the old method of installing ORCA via `git clone` rather than the newer
 # `composer create-project` approach.
 [[ -d "$ORCA_ROOT/vendor" ]] || composer -d"$ORCA_ROOT" install
+
+# Revert to Composer 2.
+"$HOST_COMPOSER" self-update --2
 
 # Display ORCA version and configuration values.
 orca --version

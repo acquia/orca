@@ -2,10 +2,10 @@
 
 namespace Acquia\Orca\Domain\Composer;
 
-use Acquia\Orca\Domain\Composer\Version\VersionGuesser;
 use Acquia\Orca\Domain\Package\Package;
 use Acquia\Orca\Domain\Package\PackageManager;
 use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
+use Acquia\Orca\Helper\Filesystem\OrcaPathHandler;
 use Acquia\Orca\Helper\Process\ProcessRunner;
 use Acquia\Orca\Options\FixtureOptions;
 use Composer\Package\Loader\ValidatingArrayLoader;
@@ -38,6 +38,13 @@ class ComposerFacade {
   private $packageManager;
 
   /**
+   * The ORCA path handler.
+   *
+   * @var \Acquia\Orca\Helper\Filesystem\OrcaPathHandler
+   */
+  private $orca;
+
+  /**
    * The process runner.
    *
    * @var \Acquia\Orca\Helper\Process\ProcessRunner
@@ -45,29 +52,22 @@ class ComposerFacade {
   private $processRunner;
 
   /**
-   * The version guesser.
-   *
-   * @var \Acquia\Orca\Domain\Composer\Version\VersionGuesser
-   */
-  private $versionGuesser;
-
-  /**
    * Constructs an instance.
    *
    * @param \Acquia\Orca\Helper\Filesystem\FixturePathHandler $fixture_path_handler
    *   The fixture path handler.
+   * @param \Acquia\Orca\Helper\Filesystem\OrcaPathHandler $orca
+   *   The ORCA path handler.
    * @param \Acquia\Orca\Domain\Package\PackageManager $package_manager
    *   The package manager.
    * @param \Acquia\Orca\Helper\Process\ProcessRunner $process_runner
    *   The process runner.
-   * @param \Acquia\Orca\Domain\Composer\Version\VersionGuesser $version_guesser
-   *   The version guesser.
    */
-  public function __construct(FixturePathHandler $fixture_path_handler, PackageManager $package_manager, ProcessRunner $process_runner, VersionGuesser $version_guesser) {
+  public function __construct(FixturePathHandler $fixture_path_handler, OrcaPathHandler $orca, PackageManager $package_manager, ProcessRunner $process_runner) {
     $this->fixture = $fixture_path_handler;
+    $this->orca = $orca;
     $this->packageManager = $package_manager;
     $this->processRunner = $process_runner;
-    $this->versionGuesser = $version_guesser;
   }
 
   /**
@@ -84,8 +84,7 @@ class ComposerFacade {
       $stability = 'dev';
     }
 
-    $this->processRunner->runOrcaVendorBin([
-      'composer',
+    $this->processRunner->runExecutable('composer', [
       'create-project',
       "--stability={$stability}",
       '--no-dev',
@@ -94,7 +93,7 @@ class ComposerFacade {
       '--no-interaction',
       $this->getProjectTemplateString(),
       $this->fixture->getPath(),
-    ]);
+    ], $this->orca->getPath());
   }
 
   /**
@@ -109,7 +108,7 @@ class ComposerFacade {
 
     // The project template is the SUT.
     if ($sut && $sut->isProjectTemplate()) {
-      return $this->guessSutTemplateString();
+      return $this->options->getProjectTemplate();
     }
 
     // The project template is BLT project.
@@ -118,21 +117,6 @@ class ComposerFacade {
     }
 
     return $project_template;
-  }
-
-  /**
-   * Gets the project template string based on Composer's guess of its version.
-   *
-   * @return string
-   *   The project template string.
-   */
-  private function guessSutTemplateString(): string {
-    /** @var \Acquia\Orca\Domain\Package\Package $sut */
-    $sut = $this->options->getSut();
-
-    $version = $this->versionGuesser
-      ->guessVersion($sut->getRepositoryUrlAbsolute());
-    return $this->options->getProjectTemplate() . ':' . $version;
   }
 
   /**
@@ -145,7 +129,7 @@ class ComposerFacade {
     $project_template = $this->options->getProjectTemplate();
     $blt = $this->packageManager->getBlt();
     if ($this->options->isDev()) {
-      return $project_template . ':' . $blt->getVersionDev($this->options->getCore());
+      return $project_template;
     }
     return $project_template . ':' . $blt->getVersionRecommended($this->options->getCore());
   }
@@ -161,16 +145,15 @@ class ComposerFacade {
    * @throws \Acquia\Orca\Exception\OrcaParseError
    */
   public function createProjectFromPackage(Package $package): void {
-    $version = $this->versionGuesser->guessVersion($package->getRepositoryUrlAbsolute());
     $repository = json_encode([
       'type' => 'path',
       'url' => $package->getRepositoryUrlAbsolute(),
       'options' => [
         'symlink' => FALSE,
+        'canonical' => TRUE,
       ],
     ]);
-    $this->processRunner->runOrcaVendorBin([
-      'composer',
+    $this->processRunner->runExecutable('composer', [
       'create-project',
       '--stability=dev',
       "--repository={$repository}",
@@ -178,9 +161,9 @@ class ComposerFacade {
       '--no-scripts',
       '--no-install',
       '--no-interaction',
-      "{$package->getPackageName()}:{$version}",
+      $package->getPackageName(),
       $this->fixture->getPath(),
-    ]);
+    ], $this->orca->getPath());
   }
 
   /**
@@ -259,10 +242,11 @@ class ComposerFacade {
    * Updates composer.lock.
    */
   public function updateLockFile(): void {
-    $this->runComposer([
-      'update',
-      '--lock',
-    ]);
+    $this->processRunner
+      ->runExecutable('composer', [
+        'update',
+        '--lock',
+      ], $this->fixture->getPath());
   }
 
   /**
@@ -274,10 +258,9 @@ class ComposerFacade {
    *   A list of of command arguments, e.g., ['vendor/package'].
    */
   private function runComposer(array $command, array $args = []): void {
-    array_unshift($command, 'composer');
     $command = array_merge($command, $args);
     $this->processRunner
-      ->runOrcaVendorBin($command, $this->fixture->getPath());
+      ->runExecutable('composer', $command, $this->fixture->getPath());
   }
 
 }
