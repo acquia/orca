@@ -2,7 +2,7 @@
 
 namespace Acquia\Orca\Domain\Tool\Coverage;
 
-use Acquia\Orca\Console\Helper\StatusTable;
+use Acquia\Orca\Console\Helper\BorderlessTable;
 use Acquia\Orca\Domain\Tool\TaskInterface;
 use Acquia\Orca\Exception\OrcaFileNotFoundException;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -52,7 +52,7 @@ class CoverageTask implements TaskInterface {
   public function execute(): void {
     try {
       $rows = $this->builder->build($this->path);
-      (new StatusTable($this->output))
+      (new BorderlessTable($this->output))
         ->setRows($rows)
         ->render();
     }
@@ -81,7 +81,7 @@ class CoverageTask implements TaskInterface {
    * {@inheritdoc}
    */
   public function statusMessage(): string {
-    return 'Estimating Code Coverage';
+    return 'Generating health score';
   }
 
 }
