@@ -1,5 +1,13 @@
 # Changelog
 
+## [v3.4.0](https://github.com/acquia/orca/tree/v3.4.0) (2021-01-29)
+
+[Full Changelog](https://github.com/acquia/orca/compare/v3.3.0...v3.4.0)
+
+**Implemented enhancements:**
+
+- Update "health score" \(formerly "magic number"\) logic to account for config files [\#128](https://github.com/acquia/orca/pull/128) ([TravisCarden](https://github.com/TravisCarden))
+
 ## [v3.3.0](https://github.com/acquia/orca/tree/v3.3.0) (2021-01-22)
 
 [Full Changelog](https://github.com/acquia/orca/compare/v3.2.0...v3.3.0)
