@@ -15,18 +15,21 @@ use Noodlehaus\Exception\FileNotFoundException as NoodlehausFileNotFoundExceptio
 use Noodlehaus\Exception\ParseException;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
-use Symfony\Component\Console\Helper\TableSeparator;
 use Symfony\Component\Finder\Exception\DirectoryNotFoundException as FinderDirectoryNotFoundException;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 
 /**
+ * @property \Acquia\Orca\Helper\Config\ConfigLoader|\Prophecy\Prophecy\ObjectProphecy $configLoader
  * @property \Acquia\Orca\Helper\Filesystem\FinderFactory|\Prophecy\Prophecy\ObjectProphecy $finderFactory
  * @property \Acquia\Orca\Helper\Filesystem\OrcaPathHandler|\Prophecy\Prophecy\ObjectProphecy $orca
- * @property \Acquia\Orca\Helper\Config\ConfigLoader|\Prophecy\Prophecy\ObjectProphecy $configLoader
+ * @property \ArrayIterator $configIterator
+ * @property \ArrayIterator $extensionIterator
  * @property \ArrayIterator $phpIterator
  * @property \ArrayIterator $testIterator
  * @property \Noodlehaus\Config|\Prophecy\Prophecy\ObjectProphecy $config
+ * @property \Symfony\Component\Finder\Finder|\Prophecy\Prophecy\ObjectProphecy $configFinder
+ * @property \Symfony\Component\Finder\Finder|\Prophecy\Prophecy\ObjectProphecy $extensionFinder
  * @property \Symfony\Component\Finder\Finder|\Prophecy\Prophecy\ObjectProphecy $phpFinder
  * @property \Symfony\Component\Finder\Finder|\Prophecy\Prophecy\ObjectProphecy $testFinder
  * @coversDefaultClass \Acquia\Orca\Domain\Tool\Coverage\CodeCoverageReportBuilder
@@ -131,6 +134,38 @@ class CodeCoverageReportBuilderTest extends TestCase {
       ->willReturn($this->testFinder);
     $test_file = $this->prophesize(SplFileInfo::class);
     $this->testIterator = new \ArrayIterator([$test_file->reveal()]);
+
+    $this->extensionFinder = $this->prophesize(Finder::class);
+    $this->extensionFinder
+      ->in(Argument::any())
+      ->willReturn($this->extensionFinder);
+    $this->extensionFinder
+      ->name(Argument::any())
+      ->willReturn($this->extensionFinder);
+    $this->extensionFinder
+      ->notPath(Argument::any())
+      ->willReturn($this->extensionFinder);
+    $this->extensionFinder
+      ->files()
+      ->willReturn($this->extensionFinder);
+    $extension_info_file = $this->prophesize(SplFileInfo::class);
+    $this->extensionIterator = new \ArrayIterator([$extension_info_file->reveal()]);
+
+    $this->configFinder = $this->prophesize(Finder::class);
+    $this->configFinder
+      ->in(Argument::any())
+      ->willReturn($this->configFinder);
+    $this->configFinder
+      ->name(Argument::any())
+      ->willReturn($this->configFinder);
+    $this->configFinder
+      ->notPath(Argument::any())
+      ->willReturn($this->configFinder);
+    $this->configFinder
+      ->files()
+      ->willReturn($this->configFinder);
+    $config_file = $this->prophesize(SplFileInfo::class);
+    $this->configIterator = new \ArrayIterator([$config_file->reveal()]);
   }
 
   private function createBuilder(): CodeCoverageReportBuilder {
@@ -150,11 +185,23 @@ class CodeCoverageReportBuilderTest extends TestCase {
       ->getIterator()
       ->willReturn($this->testIterator);
     $test_finder = $this->testFinder->reveal();
+    $this->extensionFinder
+      ->getIterator()
+      ->willReturn($this->extensionIterator);
+    $extension_finder = $this->extensionFinder->reveal();
+    $this->configFinder
+      ->getIterator()
+      ->willReturn($this->configIterator);
+    $config_finder = $this->configFinder->reveal();
     $this->finderFactory
       ->create()
+      // @todo This temporal coupling (i.e., dependence on the order of
+      //   execution) suggests suboptimal design in the production code.
       ->willReturn(
         $php_finder,
-        $test_finder
+        $test_finder,
+        $extension_finder,
+        $config_finder
       );
     $finder_factory = $this->finderFactory->reveal();
     $orca_path_handler = $this->orca->reveal();
@@ -164,7 +211,10 @@ class CodeCoverageReportBuilderTest extends TestCase {
   /**
    * @dataProvider providerHappyPath
    */
-  public function testHappyPath(string $path, int $assertions, int $complexity, string $score): void {
+  public function testHappyPath($path, $numerator, $assertions, $denominator, $complexity, $config_file_count, $score): void {
+    // @todo The following unwieldy test arrangement is mostly setting up
+    //   FinderFactories and Finders. This complexity may point to a need to
+    //   reconsider the corresponding production code design.
     $this->phplocData['ccn'] = $complexity;
     $this->testFinder
       ->in($path)
@@ -174,36 +224,177 @@ class CodeCoverageReportBuilderTest extends TestCase {
       ->name('*Test.php')
       ->shouldBeCalledOnce()
       ->willReturn($this->testFinder);
-    $file_info = $this->prophesize(SplFileInfo::class);
-    $file_info
+    $test_file_info = $this->prophesize(SplFileInfo::class);
+    $test_file_info
       ->getContents()
       ->willReturn('self::assertTrue(TRUE);');
-    $file_info = $file_info->reveal();
-    $files = array_fill(0, $assertions, $file_info);
-    $this->testIterator = new \ArrayIterator($files);
+    $test_file_info = $test_file_info->reveal();
+    $test_files = array_fill(0, $assertions, $test_file_info);
+    $this->testIterator = new \ArrayIterator($test_files);
+    $this->extensionFinder
+      ->in(Argument::any())
+      ->shouldBeCalledOnce()
+      ->willReturn($this->extensionFinder);
+    $this->extensionFinder
+      ->name('*.info.yml')
+      ->shouldBeCalledOnce()
+      ->willReturn($this->extensionFinder);
+    $this->extensionFinder
+      ->notPath(Argument::any())
+      ->shouldBeCalledTimes(2)
+      ->willReturn($this->extensionFinder);
+    $this->extensionFinder
+      ->notPath('tests')
+      ->shouldBeCalledOnce()
+      ->willReturn($this->extensionFinder);
+    $this->extensionFinder
+      ->files()
+      ->shouldBeCalledOnce()
+      ->willReturn($this->extensionFinder);
+    $extensions_file_info = $this->prophesize(SplFileInfo::class);
+    $extensions_file_info
+      ->getPath()
+      ->willReturn('/example/path');
+    $extensions_file_info = $extensions_file_info->reveal();
+    $extension_files = array_fill(0, 1, $extensions_file_info);
+    $this->extensionIterator = new \ArrayIterator($extension_files);
+    $this->configFinder
+      ->in($path)
+      ->willReturn($this->configFinder);
+    $this->configFinder
+      ->path('config')
+      ->willReturn($this->configFinder);
+    $this->configFinder
+      ->name('*.yml')
+      ->willReturn($this->configFinder);
+    $config_file_info = $this->prophesize(SplFileInfo::class);
+    $config_file_info = $config_file_info->reveal();
+    $config_files = array_fill(0, $config_file_count, $config_file_info);
+    $this->configIterator = new \ArrayIterator($config_files);
     $builder = $this->createBuilder();
 
     $report = $builder->build($path);
 
     self::assertEquals([
-      ['  Test assertions', $assertions],
-      ['÷ Cyclomatic complexity', $complexity],
-      new TableSeparator(),
-      ['  Magic number', $score],
+      ['Health score', $score],
+      ['  Numerator', $numerator],
+      ['    Test assertions', $assertions],
+      ['  Denominator', $denominator],
+      ['    Cyclomatic complexity', $complexity],
+      ['    Exported config files', $config_file_count],
     ], $report, 'Returned correct report data.');
   }
 
   public function providerHappyPath(): array {
     return [
-      ['test/example', 100, 100, '1.00'],
-      ['test/example', 200, 100, '2.00'],
-      ['test/example', 100, 200, '0.50'],
-      ['test/example', 100, 1, '100.00'],
-      ['test/example', 0, 100, '0.00'],
-      ['test/example', 100, 0, '0.00'],
-      ['test/example', 33, 375, '0.09'],
-      ['test/example', 161, 387, '0.42'],
-      ['lorem/ipsum', 1, 1, '1.00'],
+      [
+        'path' => 'test/example',
+        'numerator' => 100,
+        'assertions' => 100,
+        'denominator' => 100,
+        'complexity' => 100,
+        'config_file_count' => 0,
+        'score' => '1.00',
+      ],
+      [
+        'path' => 'test/example',
+        'numerator' => 200,
+        'assertions' => 200,
+        'denominator' => 100,
+        'complexity' => 100,
+        'config_file_count' => 0,
+        'score' => '2.00',
+      ],
+      [
+        'path' => 'test/example',
+        'numerator' => 100,
+        'assertions' => 100,
+        'denominator' => 200,
+        'complexity' => 200,
+        'config_file_count' => 0,
+        'score' => '0.50',
+      ],
+      [
+        'path' => 'test/example',
+        'numerator' => 100,
+        'assertions' => 100,
+        'denominator' => 1,
+        'complexity' => 1,
+        'config_file_count' => 0,
+        'score' => '100.00',
+      ],
+      [
+        'path' => 'test/example',
+        'numerator' => 0,
+        'assertions' => 0,
+        'denominator' => 100,
+        'complexity' => 100,
+        'config_file_count' => 0,
+        'score' => '0.00',
+      ],
+      [
+        'path' => 'test/example',
+        'numerator' => 100,
+        'assertions' => 100,
+        'denominator' => 0,
+        'complexity' => 0,
+        'config_file_count' => 0,
+        'score' => '0.00',
+      ],
+      [
+        'path' => 'test/example',
+        'numerator' => 33,
+        'assertions' => 33,
+        'denominator' => 375,
+        'complexity' => 375,
+        'config_file_count' => 0,
+        'score' => '0.09',
+      ],
+      [
+        'path' => 'test/example',
+        'numerator' => 161,
+        'assertions' => 161,
+        'denominator' => 387,
+        'complexity' => 387,
+        'config_file_count' => 0,
+        'score' => '0.42',
+      ],
+      [
+        'path' => 'lorem/ipsum',
+        'numerator' => 1,
+        'assertions' => 1,
+        'denominator' => 1,
+        'complexity' => 1,
+        'config_file_count' => 0,
+        'score' => '1.00',
+      ],
+      [
+        'path' => 'lorem/ipsum',
+        'numerator' => 10,
+        'assertions' => 10,
+        'denominator' => 2,
+        'complexity' => 1,
+        'config_file_count' => 1,
+        'score' => '5.00',
+      ],
+      [
+        'path' => 'lorem/ipsum',
+        'numerator' => 10,
+        'assertions' => 10,
+        'denominator' => 100,
+        'complexity' => 1,
+        'config_file_count' => 99,
+        'score' => '0.10',
+      ],
+      [
+        'path' => 'lorem/ipsum',
+        'numerator' => 20,
+        'assertions' => 20,
+        'denominator' => 20,
+        'complexity' => 10,
+        'config_file_count' => 10,
+        'score' => '1.00',
+      ],
     ];
   }
 

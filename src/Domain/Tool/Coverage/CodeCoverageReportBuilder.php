@@ -11,7 +11,6 @@ use Acquia\Orca\Helper\Filesystem\FinderFactory;
 use Acquia\Orca\Helper\Filesystem\OrcaPathHandler;
 use Noodlehaus\Exception\FileNotFoundException as NoodlehausFileNotFoundException;
 use Noodlehaus\Exception\ParseException as NoodlehausParseException;
-use Symfony\Component\Console\Helper\TableSeparator;
 use Symfony\Component\Finder\Exception\DirectoryNotFoundException as FinderDirectoryNotFoundException;
 
 /**
@@ -55,6 +54,13 @@ class CodeCoverageReportBuilder {
   private $finderFactory;
 
   /**
+   * The number of exported config files.
+   *
+   * @var int
+   */
+  private $numConfigFiles = 0;
+
+  /**
    * The ORCA path handler.
    *
    * @var \Acquia\Orca\Helper\Filesystem\OrcaPathHandler
@@ -78,7 +84,7 @@ class CodeCoverageReportBuilder {
   /**
    * The data on tests.
    *
-   * @var int[]
+   * @var array
    */
   private $testsData = [
     'classes' => 0,
@@ -147,8 +153,14 @@ class CodeCoverageReportBuilder {
    *   In case of error.
    */
   private function compileData(): void {
-    $this->getPhplocData();
-    $this->getTestsData();
+    try {
+      $this->getPhplocData();
+      $this->getTestsData();
+      $this->getConfigFilesData();
+    }
+    catch (FinderDirectoryNotFoundException $e) {
+      throw new OrcaDirectoryNotFoundException($e->getMessage());
+    }
   }
 
   /**
@@ -182,16 +194,11 @@ class CodeCoverageReportBuilder {
    */
   private function getTestsData(): void {
     $finder = $this->finderFactory->create();
-    try {
-      $classes = $finder
-        ->in($this->path)
-        ->name('*Test.php')
-        ->notPath(self::FINDER_PATH_EXCLUSIONS)
-        ->contains('public function test');
-    }
-    catch (FinderDirectoryNotFoundException $e) {
-      throw new OrcaDirectoryNotFoundException($e->getMessage());
-    }
+    $classes = $finder
+      ->in($this->path)
+      ->name('*Test.php')
+      ->notPath(self::FINDER_PATH_EXCLUSIONS)
+      ->contains('public function test');
 
     $this->testsData['classes'] = iterator_count($classes);
 
@@ -203,19 +210,69 @@ class CodeCoverageReportBuilder {
   }
 
   /**
+   * Gets the config files data.
+   */
+  private function getConfigFilesData(): void {
+    $paths = $this->getExtensionPaths();
+    foreach ($paths as $path) {
+      $this->countConfigFiles($path);
+    }
+  }
+
+  /**
+   * Gets the paths to Drupal extensions.
+   */
+  private function getExtensionPaths(): array {
+    $paths = [];
+
+    $finder = $this->finderFactory->create();
+    $info_files = $finder
+      ->in($this->path)
+      ->name('*.info.yml')
+      ->notPath(self::FINDER_PATH_EXCLUSIONS)
+      ->notPath('tests')
+      ->files();
+
+    foreach ($info_files as $file) {
+      $paths[] = $file->getPath();
+    }
+
+    return $paths;
+  }
+
+  /**
+   * Counts exported configuration files under the given path.
+   *
+   * @param string $path
+   *   The path to search for config files.
+   *
+   * @throws \Acquia\Orca\Exception\OrcaDirectoryNotFoundException
+   */
+  private function countConfigFiles(string $path): void {
+    $finder = $this->finderFactory->create();
+    $config_files = $finder
+      ->in($path)
+      ->path('config')
+      ->name('*.yml')
+      ->notPath(self::FINDER_PATH_EXCLUSIONS)
+      ->notPath('tests');
+    $this->numConfigFiles += iterator_count($config_files);
+  }
+
+  /**
    * Compiles the report data into a table array.
    *
    * @return array
    *   The report data array.
    */
   private function buildTable(): array {
-    $complexity = $this->phplocData['ccn'];
-    $assertions = $this->testsData['assertions'];
     return [
-      ['  Test assertions', $assertions],
-      ['÷ Cyclomatic complexity', $complexity],
-      new TableSeparator(),
-      ['  Magic number', $this->computeMagicNumber()],
+      ['Health score', $this->computeHealthScore()],
+      ['  Numerator', $this->computeNumerator()],
+      ['    Test assertions', $this->getAssertions()],
+      ['  Denominator', $this->computeDenominator()],
+      ['    Cyclomatic complexity', $this->getComplexity()],
+      ['    Exported config files', $this->numConfigFiles],
     ];
   }
 
@@ -225,15 +282,55 @@ class CodeCoverageReportBuilder {
    * @return float
    *   The score as a floating point number.
    */
-  private function computeMagicNumber(): float {
-    $assertions = $this->testsData['assertions'];
-    $complexity = $this->phplocData['ccn'];
+  private function computeHealthScore(): float {
+    $numerator = $this->computeNumerator();
+    $denominator = $this->computeDenominator();
 
-    if (!$assertions || !$complexity) {
+    if (!$numerator || !$denominator) {
       return 0;
     }
 
-    return (float) number_format($assertions / $complexity, 2);
+    return (float) number_format($numerator / $denominator, 2);
+  }
+
+  /**
+   * Computes the health score numerator.
+   *
+   * @return int
+   *   The numerator.
+   */
+  private function computeNumerator(): int {
+    return $this->getAssertions();
+  }
+
+  /**
+   * Computes the health score ratio denominator.
+   *
+   * @return int
+   *   The denominator.
+   */
+  private function computeDenominator(): int {
+    return $this->getComplexity() + $this->numConfigFiles;
+  }
+
+  /**
+   * Gets the number of test assertions.
+   *
+   * @return int
+   *   The number of assetions.
+   */
+  private function getAssertions(): int {
+    return $this->testsData['assertions'];
+  }
+
+  /**
+   * Gets the cyclomatic complexity.
+   *
+   * @return int
+   *   The cyclomatic complexity.
+   */
+  private function getComplexity(): int {
+    return $this->phplocData['ccn'];
   }
 
 }
