@@ -59,10 +59,10 @@
     },
     "require-dev": {
         "brainmaestro/composer-git-hooks": "^2.5",
+        "enlightn/security-checker": "^1.4",
         "phan/phan": "^3.2",
         "phpstan/phpstan": "^0.12.54",
         "phpunit/phpunit": "^6.5",
-        "sensiolabs/security-checker": "^5.0",
         "taptima/phalyfusion": "dev-master"
     },
     "config": {

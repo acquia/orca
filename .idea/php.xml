@@ -141,6 +141,7 @@
       <path value="$PROJECT_DIR$/vendor/jean85/pretty-package-versions" />
       <path value="$PROJECT_DIR$/vendor/mglaman/phpstan-drupal" />
       <path value="$PROJECT_DIR$/vendor/mglaman/drupal-check" />
+      <path value="$PROJECT_DIR$/vendor/enlightn/security-checker" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="7.2" />
