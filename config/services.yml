@@ -32,14 +32,6 @@ services:
     public: false
     resource: ../src
 
-  Acquia\Orca\Domain\Composer\DependencyResolver\DevPool:
-    arguments:
-      $minimumStability: "dev"
-
-  Acquia\Orca\Domain\Composer\DependencyResolver\ReleasePool:
-    arguments:
-      $minimumStability: "alpha"
-
   Acquia\Orca\Helper\Filesystem\FixturePathHandler:
     arguments:
       $base_path: "%env(ORCA_FIXTURE_DIR)%"
@@ -48,15 +40,9 @@ services:
     arguments:
       $base_path: "%kernel.project_dir%"
 
-  Composer\Config: ~
-
-  Composer\DependencyResolver\Pool:
-    arguments:
-      $minimumStability: "dev"
+  Composer\Console\Application: ~
 
   Composer\Semver\VersionParser: ~
-
-  Composer\Util\ProcessExecutor: ~
 
   Env:
     class: Env
@@ -80,6 +66,6 @@ services:
   Symfony\Component\Yaml\Parser: ~
 
   Symfony\Contracts\HttpClient\HttpClientInterface:
-    factory: ['Symfony\Component\HttpClient\HttpClient', "create"]
+    factory: ['Symfony\Component\HttpClient\HttpClient', 'create']
 
   Zumba\Amplitude\Amplitude: ~

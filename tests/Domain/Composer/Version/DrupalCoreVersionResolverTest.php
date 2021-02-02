@@ -37,10 +37,10 @@ class DrupalCoreVersionResolverTest extends TestCase {
     $package = $this->package->reveal();
     $this->selector = $this->prophesize(VersionSelector::class);
     $this->selector
-      ->findBestCandidate('drupal/core', Argument::any(), NULL, Argument::any())
+      ->findBestCandidate('drupal/core', Argument::any(), Argument::any())
       ->willReturn($package);
     $this->selector
-      ->findBestCandidate('drupal/core', '*', NULL, 'stable')
+      ->findBestCandidate('drupal/core', '*', 'stable')
       ->willReturn($package);
     $this->selectorFactory = $this->prophesize(VersionSelectorFactory::class);
   }
@@ -49,7 +49,7 @@ class DrupalCoreVersionResolverTest extends TestCase {
     $drupal_dot_org_api_client = $this->drupalDotOrgApiClient->reveal();
     $selector = $this->selector->reveal();
     $this->selectorFactory
-      ->create(FALSE, Argument::any())
+      ->create(Argument::any(), Argument::any())
       ->willReturn($selector);
     $version_selector_factory = $this->selectorFactory->reveal();
     return new DrupalCoreVersionResolver($drupal_dot_org_api_client, $version_selector_factory);
@@ -57,13 +57,13 @@ class DrupalCoreVersionResolverTest extends TestCase {
 
   private function expectGetCurrentToBeCalledOnce(): void {
     $this->selector
-      ->findBestCandidate('drupal/core', '*', NULL, 'stable')
+      ->findBestCandidate('drupal/core', '*', 'stable')
       ->shouldBeCalledOnce();
   }
 
   public function testExistsPredefinedTrue(): void {
     $this->selector
-      ->findBestCandidate('drupal/core', Argument::any(), NULL, Argument::any())
+      ->findBestCandidate('drupal/core', Argument::any(), Argument::any())
       ->shouldBeCalledOnce()
       ->willReturn($this->package->reveal());
     $resolver = $this->createDrupalCoreVersionResolver();
@@ -75,7 +75,7 @@ class DrupalCoreVersionResolverTest extends TestCase {
 
   public function testExistsPredefinedFalse(): void {
     $this->selector
-      ->findBestCandidate('drupal/core', Argument::any(), NULL, Argument::any())
+      ->findBestCandidate('drupal/core', Argument::any(), Argument::any())
       ->shouldBeCalledOnce()
       ->willReturn(FALSE);
     $resolver = $this->createDrupalCoreVersionResolver();
@@ -95,7 +95,7 @@ class DrupalCoreVersionResolverTest extends TestCase {
     $package = $this->package->reveal();
     $this->selector = $this->prophesize(VersionSelector::class);
     $this->selector
-      ->findBestCandidate('drupal/core', $constraint, NULL, $stability)
+      ->findBestCandidate('drupal/core', $constraint, $stability)
       ->willReturn($package);
     $resolver = $this->createDrupalCoreVersionResolver();
 
@@ -143,7 +143,7 @@ class DrupalCoreVersionResolverTest extends TestCase {
       ->willReturn('8.8.0')
       ->shouldBeCalledOnce();
     $this->selector
-      ->findBestCandidate('drupal/core', '8.8.x', NULL, 'stable')
+      ->findBestCandidate('drupal/core', '8.8.x', 'stable')
       ->willReturn($this->package->reveal())
       ->shouldBeCalledOnce();
     $resolver = $this->createDrupalCoreVersionResolver();
@@ -161,7 +161,7 @@ class DrupalCoreVersionResolverTest extends TestCase {
       ->willReturn('9.1.0', '8.9.7')
       ->shouldBeCalledTimes(2);
     $this->selector
-      ->findBestCandidate('drupal/core', '<9', NULL, 'stable')
+      ->findBestCandidate('drupal/core', '<9', 'stable')
       ->willReturn($this->package->reveal())
       ->shouldBeCalledOnce();
     $this->expectGetCurrentToBeCalledOnce();
@@ -180,7 +180,7 @@ class DrupalCoreVersionResolverTest extends TestCase {
       ->willReturn('9.1.0', '9.0.0')
       ->shouldBeCalledTimes(2);
     $this->selector
-      ->findBestCandidate('drupal/core', '<9.1', NULL, 'stable')
+      ->findBestCandidate('drupal/core', '<9.1', 'stable')
       ->willReturn($this->package->reveal())
       ->shouldBeCalledOnce();
     $this->expectGetCurrentToBeCalledOnce();
@@ -213,7 +213,7 @@ class DrupalCoreVersionResolverTest extends TestCase {
    */
   public function testResolvePredefinedCurrentNoneFound($version): void {
     $this->selector
-      ->findBestCandidate('drupal/core', '*', NULL, 'stable')
+      ->findBestCandidate('drupal/core', '*', 'stable')
       ->willReturn(FALSE)
       ->shouldBeCalledOnce();
     $this->expectException(\LogicException::class);
@@ -250,7 +250,7 @@ class DrupalCoreVersionResolverTest extends TestCase {
       ->getPrettyVersion()
       ->willReturn('9.1.0', '9.2.0-alpha1')
       ->shouldBeCalledTimes(2);
-    $this->selector->findBestCandidate('drupal/core', '>9.1.0', NULL, 'alpha')
+    $this->selector->findBestCandidate('drupal/core', '>9.1.0', 'alpha')
       ->willReturn($this->package->reveal())
       ->shouldBeCalledOnce();
     $resolver = $this->createDrupalCoreVersionResolver();
@@ -267,7 +267,7 @@ class DrupalCoreVersionResolverTest extends TestCase {
     $this->package
       ->getPrettyVersion()
       ->willReturn('9.2.x-dev');
-    $this->selector->findBestCandidate('drupal/core', '>9.1.0', NULL, 'dev')
+    $this->selector->findBestCandidate('drupal/core', '>9.1.0', 'dev')
       ->willReturn($this->package->reveal());
     $resolver = $this->createDrupalCoreVersionResolver();
 
@@ -283,7 +283,7 @@ class DrupalCoreVersionResolverTest extends TestCase {
     $this->package
       ->getPrettyVersion()
       ->willReturn('9.1.0', '10.0.0-beta1');
-    $this->selector->findBestCandidate('drupal/core', '^10', NULL, 'beta')
+    $this->selector->findBestCandidate('drupal/core', '^10', 'beta')
       ->willReturn($this->package->reveal())
       ->shouldBeCalledOnce();
     $resolver = $this->createDrupalCoreVersionResolver();
@@ -302,7 +302,7 @@ class DrupalCoreVersionResolverTest extends TestCase {
       ->getPrettyVersion()
       ->willReturn('9.1.0', '10.0.x-dev')
       ->shouldBeCalledTimes(2);
-    $this->selector->findBestCandidate('drupal/core', '^10', NULL, 'dev')
+    $this->selector->findBestCandidate('drupal/core', '^10', 'dev')
       ->willReturn($this->package->reveal())
       ->shouldBeCalledOnce();
 
@@ -321,7 +321,7 @@ class DrupalCoreVersionResolverTest extends TestCase {
       ->getPrettyVersion()
       ->willReturn('9.1.0', NULL);
     $this->selector
-      ->findBestCandidate('drupal/core', Argument::any(), NULL, Argument::any())
+      ->findBestCandidate('drupal/core', Argument::any(), Argument::any())
       ->willReturn('9.1.0', FALSE);
     $resolver = $this->createDrupalCoreVersionResolver();
     $this->expectException(OrcaVersionNotFoundException::class);
