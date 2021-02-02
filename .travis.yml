@@ -22,7 +22,7 @@ branches:
   only:
     - master
     - develop
-    - support/2
+    - /support\/\d+/
     - wip
 
 env:
