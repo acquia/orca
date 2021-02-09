@@ -14,7 +14,7 @@
 #
 # 4. Strip the (now unnecessary) comments:
 #
-#    $ sed -i '' '/^[[:blank:]]*#/d;s/#.*//' .travis.yml
+#    $ sed -i'.bak' -e '/^[[:blank:]]*#/d;s/#.*//' .travis.yml && rm .travis.yml.bak
 #
 # For advanced needs,
 # @see https://github.com/acquia/orca/blob/master/docs/advanced-usage.md
