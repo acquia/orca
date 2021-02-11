@@ -59,7 +59,6 @@
     },
     "require-dev": {
         "brainmaestro/composer-git-hooks": "^2.5",
-        "enlightn/security-checker": "^1.4",
         "phan/phan": "^3.2",
         "phpstan/phpstan": "^0.12.54",
         "phpunit/phpunit": "^6.5"
