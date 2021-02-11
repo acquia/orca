@@ -18,7 +18,6 @@ if [[ "$ORCA_JOB" == "STATIC_CODE_ANALYSIS" ]]; then
   ./vendor/bin/phpcs
   ./vendor/bin/parallel-lint --exclude vendor .
   ./vendor/bin/phpmd . text phpmd.xml.dist --ignore-violations-on-exit
-  ./vendor/bin/security-checker security:check
 
   echo
 
