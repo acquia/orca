@@ -14,7 +14,7 @@
 #
 # 4. Strip the (now unnecessary) comments:
 #
-#    $ sed -i '' '/^[[:blank:]]*#/d;s/#.*//' .travis.yml
+#    $ sed -i'.bak' -e '/^[[:blank:]]*#/d;s/#.*//' .travis.yml && rm .travis.yml.bak
 #
 # For advanced needs,
 # @see https://github.com/acquia/orca/blob/master/docs/advanced-usage.md
@@ -162,8 +162,6 @@ jobs:
 before_install:
   # Set Node.js to a version compatible with Drupal 9 + Nightwatch.js.
   - nvm use 12.13.1
-  # Force the build to use Composer 1 until the ecosystem is ready for v2.
-  - composer self-update --1
   - composer create-project --no-dev acquia/orca ../orca "$ORCA_VERSION"
   - ../orca/bin/travis/before_install.sh
   # For custom testing needs, add your own scripts here. See the example script

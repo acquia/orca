@@ -2,24 +2,19 @@
 
 namespace Acquia\Orca\Tests\Domain\Composer\Version;
 
-use Acquia\Orca\Domain\Composer\DependencyResolver\PoolFactory;
 use Acquia\Orca\Domain\Composer\Version\VersionSelectorFactory;
-use Composer\DependencyResolver\Pool;
+use Acquia\Orca\Tests\_Helper\TestSpy;
+use Composer\Repository\RepositorySet;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @property \Acquia\Orca\Domain\Composer\DependencyResolver\PoolFactory|\Prophecy\Prophecy\ObjectProphecy $poolFactory
+ * @property \Composer\Composer|\Prophecy\Prophecy\ObjectProphecy $composer
  * @coversDefaultClass \Acquia\Orca\Domain\Composer\Version\VersionSelectorFactory
  */
 class VersionSelectorFactoryTest extends TestCase {
 
-  protected function setUp(): void {
-    $this->poolFactory = $this->prophesize(PoolFactory::class);
-  }
-
   protected function createVersionSelectorFactory(): VersionSelectorFactory {
-    $pool_factory = $this->poolFactory->reveal();
-    return new VersionSelectorFactory($pool_factory);
+    return new VersionSelectorFactory();
   }
 
   /**
@@ -27,15 +22,36 @@ class VersionSelectorFactoryTest extends TestCase {
    * @covers ::create
    */
   public function testCreate($include_drupal_dot_org, $dev): void {
-    $pool = $this->prophesize(Pool::class)->reveal();
-    $this->poolFactory
-      ->create($include_drupal_dot_org, $dev)
-      ->shouldBeCalledOnce()
-      ->willReturn($pool);
+    $spy = $this->prophesize(TestSpy::class);
+    $spy
+      ->call($dev)
+      ->shouldBeCalledOnce();
+    $spy
+      ->call('addDrupalDotOrgRepository')
+      ->shouldBeCalledTimes((int) $include_drupal_dot_org);
 
-    $selector_factory = $this->createVersionSelectorFactory();
+    $selector_factory = new class ($spy->reveal()) extends VersionSelectorFactory {
+
+      private $spy;
+
+      public function __construct(TestSpy $spy) {
+        $this->spy = $spy;
+      }
+
+      protected function createDefaultRepositorySet(bool $dev): RepositorySet {
+        $this->spy->call($dev);
+        return parent::createDefaultRepositorySet($dev);
+      }
+
+      protected function addDrupalDotOrgRepository(RepositorySet $repository_set): void {
+        $this->spy->call('addDrupalDotOrgRepository');
+        parent::addDrupalDotOrgRepository($repository_set);
+      }
+
+    };
 
     $selector_factory->create($include_drupal_dot_org, $dev);
+
   }
 
   public function providerCreate(): array {
