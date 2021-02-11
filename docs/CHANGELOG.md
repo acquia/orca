@@ -1,5 +1,13 @@
 # Changelog
 
+## [v3.5.0](https://github.com/acquia/orca/tree/v3.5.0) (2021-02-11)
+
+[Full Changelog](https://github.com/acquia/orca/compare/v3.4.0...v3.5.0)
+
+**Implemented enhancements:**
+
+- Completely convert to Composer 2 [\#135](https://github.com/acquia/orca/pull/135) ([TravisCarden](https://github.com/TravisCarden))
+
 ## [v3.4.0](https://github.com/acquia/orca/tree/v3.4.0) (2021-01-29)
 
 [Full Changelog](https://github.com/acquia/orca/compare/v3.3.0...v3.4.0)
