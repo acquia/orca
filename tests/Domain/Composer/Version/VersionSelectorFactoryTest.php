@@ -24,10 +24,7 @@ class VersionSelectorFactoryTest extends TestCase {
   public function testCreate($include_drupal_dot_org, $dev): void {
     $spy = $this->prophesize(TestSpy::class);
     $spy
-      ->call($dev)
-      ->shouldBeCalledOnce();
-    $spy
-      ->call('addDrupalDotOrgRepository')
+      ->call()
       ->shouldBeCalledTimes((int) $include_drupal_dot_org);
 
     $selector_factory = new class ($spy->reveal()) extends VersionSelectorFactory {
@@ -38,13 +35,8 @@ class VersionSelectorFactoryTest extends TestCase {
         $this->spy = $spy;
       }
 
-      protected function createDefaultRepositorySet(bool $dev): RepositorySet {
-        $this->spy->call($dev);
-        return parent::createDefaultRepositorySet($dev);
-      }
-
       protected function addDrupalDotOrgRepository(RepositorySet $repository_set): void {
-        $this->spy->call('addDrupalDotOrgRepository');
+        $this->spy->call();
         parent::addDrupalDotOrgRepository($repository_set);
       }
 
