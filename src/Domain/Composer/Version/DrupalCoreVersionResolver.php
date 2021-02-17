@@ -310,8 +310,12 @@ class DrupalCoreVersionResolver {
       return $this->nextMinorDev;
     }
 
+    // Constrain the version to "<9999999-dev" to work around a bug in Composer
+    // that treated 8.9 as greater than 9.2 at the time of this writing.
+    // @see https://github.com/composer/composer/issues/9705
+    $version = ">{$this->findCurrent()} <9999999-dev";
     $this->nextMinorDev = $this
-      ->resolveArbitrary(">{$this->findCurrent()}", 'dev', TRUE);
+      ->resolveArbitrary($version, 'dev', TRUE);
 
     return $this->nextMinorDev;
   }
