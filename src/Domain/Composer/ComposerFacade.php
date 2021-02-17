@@ -89,6 +89,7 @@ class ComposerFacade {
       "--stability={$stability}",
       '--no-dev',
       '--no-scripts',
+      '--no-progress',
       '--no-install',
       '--no-interaction',
       $this->getProjectTemplateString(),
@@ -230,6 +231,7 @@ class ComposerFacade {
     if ($prefer_source) {
       $command[] = '--prefer-source';
     }
+    $command[] = '--no-progress';
     if ($no_update) {
       $command[] = '--no-update';
     }

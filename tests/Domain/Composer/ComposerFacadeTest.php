@@ -101,6 +101,7 @@ class ComposerFacadeTest extends TestCase {
         "--stability={$stability}",
         '--no-dev',
         '--no-scripts',
+        '--no-progress',
         '--no-install',
         '--no-interaction',
         $project_template_string,
@@ -158,6 +159,7 @@ class ComposerFacadeTest extends TestCase {
         "--stability=alpha",
         '--no-dev',
         '--no-scripts',
+        '--no-progress',
         '--no-install',
         '--no-interaction',
         $project_template,
@@ -298,6 +300,7 @@ class ComposerFacadeTest extends TestCase {
     $this->processRunner
       ->runExecutable('composer', array_merge([
         'require',
+        '--no-progress',
         '--no-interaction',
       ], $packages), self::FIXTURE_PATH)
       ->shouldBeCalledOnce();
@@ -310,7 +313,6 @@ class ComposerFacadeTest extends TestCase {
    * @dataProvider providerRequirePackagesOptions
    */
   public function testRequirePackagesOptions($prefer_source, $no_update, $options): void {
-    $options[] = '--no-interaction';
     $packages = ['test1/example1', 'test2/example2'];
     $command = array_merge([
       'require',
@@ -328,25 +330,35 @@ class ComposerFacadeTest extends TestCase {
       [
         'prefer_source' => FALSE,
         'no_update' => FALSE,
-        'options' => [],
+        'options' => [
+          '--no-progress',
+          '--no-interaction',
+        ],
       ],
       [
         'prefer_source' => FALSE,
         'no_update' => FALSE,
-        'options' => [],
+        'options' => [
+          '--no-progress',
+          '--no-interaction',
+        ],
       ],
       [
         'prefer_source' => TRUE,
         'no_update' => FALSE,
         'options' => [
           '--prefer-source',
+          '--no-progress',
+          '--no-interaction',
         ],
       ],
       [
         'prefer_source' => FALSE,
         'no_update' => TRUE,
         'options' => [
+          '--no-progress',
           '--no-update',
+          '--no-interaction',
         ],
       ],
       [
@@ -354,13 +366,18 @@ class ComposerFacadeTest extends TestCase {
         'no_update' => TRUE,
         'options' => [
           '--prefer-source',
+          '--no-progress',
           '--no-update',
+          '--no-interaction',
         ],
       ],
       [
         'prefer_source' => NULL,
         'no_update' => NULL,
-        'options' => [],
+        'options' => [
+          '--no-progress',
+          '--no-interaction',
+        ],
       ],
     ];
   }
@@ -372,6 +389,7 @@ class ComposerFacadeTest extends TestCase {
     $this->processRunner
       ->runExecutable('composer', array_merge([
         'require',
+        '--no-progress',
         '--no-interaction',
       ], []), self::FIXTURE_PATH)
       ->shouldBeCalledOnce();
