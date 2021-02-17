@@ -1,5 +1,13 @@
 # Changelog
 
+## [v3.5.2](https://github.com/acquia/orca/tree/v3.5.2) (2021-02-17)
+
+[Full Changelog](https://github.com/acquia/orca/compare/v3.5.1...v3.5.2)
+
+**Fixed bugs:**
+
+- Fix "next minor" jobs installing old version of Drupal core [\#137](https://github.com/acquia/orca/pull/137) ([TravisCarden](https://github.com/TravisCarden))
+
 ## [v3.5.1](https://github.com/acquia/orca/tree/v3.5.1) (2021-02-12)
 
 [Full Changelog](https://github.com/acquia/orca/compare/v3.5.0...v3.5.1)
