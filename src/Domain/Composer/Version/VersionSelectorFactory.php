@@ -26,13 +26,27 @@ class VersionSelectorFactory {
    *   The version selector.
    */
   public function create($include_drupal_dot_org, bool $dev): VersionSelector {
-    $repository_set = new RepositorySet('dev', []);
+    $repository_set = $this->createDefaultRepositorySet($dev);
 
     if ($include_drupal_dot_org) {
       $this->addDrupalDotOrgRepository($repository_set);
     }
 
     return new VersionSelector($repository_set);
+  }
+
+  /**
+   * Creates the default repository set.
+   *
+   * @param bool $dev
+   *   TRUE for a minimum stability of dev or FALSE for alpha.
+   *
+   * @return \Composer\Repository\RepositorySet
+   *   The repository set.
+   */
+  protected function createDefaultRepositorySet(bool $dev): RepositorySet {
+    $stability = $dev ? 'dev' : 'alpha';
+    return new RepositorySet($stability, []);
   }
 
   /**
