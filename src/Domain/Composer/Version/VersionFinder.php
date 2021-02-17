@@ -10,11 +10,11 @@ use Acquia\Orca\Exception\OrcaVersionNotFoundException;
 class VersionFinder {
 
   /**
-   * The version selector.
+   * The version selector factory.
    *
-   * @var \Composer\Package\Version\VersionSelector
+   * @var \Acquia\Orca\Domain\Composer\Version\VersionSelectorFactory
    */
-  private $versionSelector;
+  private $versionSelectorFactory;
 
   /**
    * Constructs an instance.
@@ -23,7 +23,7 @@ class VersionFinder {
    *   The version selector factory.
    */
   public function __construct(VersionSelectorFactory $version_selector_factory) {
-    $this->versionSelector = $version_selector_factory->create(TRUE, FALSE);
+    $this->versionSelectorFactory = $version_selector_factory;
   }
 
   /**
@@ -42,13 +42,15 @@ class VersionFinder {
    * @throws \Acquia\Orca\Exception\OrcaVersionNotFoundException
    */
   public function findLatestVersion(string $package_name, ?string $constraint, bool $dev): string {
+    $version_selector = $this->versionSelectorFactory->create(TRUE, $dev);
+
     $stability = 'alpha';
     if ($dev) {
       $stability = 'dev';
     }
 
     /* @phan-suppress-next-line PhanTypeMismatchArgumentProbablyReal */
-    $candidate = $this->versionSelector->findBestCandidate($package_name, $constraint, $stability);
+    $candidate = $version_selector->findBestCandidate($package_name, $constraint, $stability);
 
     if (!$candidate) {
       throw new OrcaVersionNotFoundException(sprintf('No available version could be found for "%s:%s".', $package_name, $constraint));
