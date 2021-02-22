@@ -104,7 +104,7 @@ acquia/coding-standards:
   url: ../coding-standards-php
 
 acquia/drupal-environment-detector:
-  type: package
+  type: library
   version_dev: "dev-master"
 
 drupal/cog:
