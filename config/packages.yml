@@ -11,6 +11,7 @@
 #   - "drupal-drush": Drush commands.
 #   - "drupal-library": A Drupal library.
 #   - "project-template": A Composer project template.
+#   - "library": Anything else installed in the "vendor" directory.
 # - "install_path": (optional) The path the package gets installed at relative
 #   to the fixture root, e.g., docroot/modules/contrib/example.
 #   Used internally for Drupal subextensions. Defaults by "type" to match the
@@ -109,9 +110,6 @@ acquia/coding-standards:
   type: phpcodesniffer-standard
   url: ../coding-standards-php
 
-acquia/drupal-environment-detector:
-  type: library
-
 drupal/cog:
   type: drupal-theme
   core_matrix:
@@ -121,6 +119,9 @@ drupal/cog:
     '*':
       version: '*'
       version_dev: '*'
+
+acquia/drupal-environment-detector:
+  type: library
 
 acquia/drupal-spec-tool:
   type: behat-extension
