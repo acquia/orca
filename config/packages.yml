@@ -4,7 +4,13 @@
 # "drupal/example", and has a corresponding array value that may contain the
 # following key-value pairs:
 # - "type": (optional) The package type, corresponding to the "type" property in
-#   its composer.json file. Defaults to "drupal-module".
+#   its composer.json file. The most common types are these:
+#   - "drupal-module": A Drupal module. (default)
+#   - "drupal-theme": A Drupal theme.
+#   - "drupal-profile": A Drupal installation profile.
+#   - "drupal-drush": Drush commands.
+#   - "drupal-library": A Drupal library.
+#   - "project-template": A Composer project template.
 # - "install_path": (optional) The path the package gets installed at relative
 #   to the fixture root, e.g., docroot/modules/contrib/example.
 #   Used internally for Drupal subextensions. Defaults by "type" to match the
