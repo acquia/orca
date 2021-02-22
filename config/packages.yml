@@ -105,7 +105,6 @@ acquia/coding-standards:
 
 acquia/drupal-environment-detector:
   type: library
-  version_dev: "dev-master"
 
 drupal/cog:
   type: drupal-theme
