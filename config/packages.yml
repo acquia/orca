@@ -109,6 +109,9 @@ acquia/coding-standards:
   type: phpcodesniffer-standard
   url: ../coding-standards-php
 
+acquia/drupal-environment-detector:
+  type: library
+
 drupal/cog:
   type: drupal-theme
   core_matrix:
