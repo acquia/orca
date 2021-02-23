@@ -72,14 +72,14 @@
     },
     "extra": {
         "hooks": {
+            "post-install-cmd": "vendor/bin/cghooks add --ignore-lock",
+            "post-update-cmd": "vendor/bin/cghooks update",
             "pre-commit": [
                 "set -e",
                 "vendor/bin/parallel-lint --exclude vendor --no-progress .",
                 "vendor/bin/phpcs --cache=var/cache/phpcs.json"
             ],
-            "pre-push": "vendor/bin/phpcs",
-            "post-install-cmd": "vendor/bin/cghooks add --ignore-lock",
-            "post-update-cmd": "vendor/bin/cghooks update"
+            "pre-push": "vendor/bin/phpcs"
         },
         "phpcodesniffer-search-depth": 4
     },
