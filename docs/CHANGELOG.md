@@ -1,5 +1,22 @@
 # Changelog
 
+## [v3.6.0](https://github.com/acquia/orca/tree/v3.6.0) (2021-02-26)
+
+[Full Changelog](https://github.com/acquia/orca/compare/v3.5.2...v3.6.0)
+
+**Implemented enhancements:**
+
+- Update versions of drupal/acquia\_connector and drupal/acquia\_search in packages.yml [\#139](https://github.com/acquia/orca/pull/139) ([japerry](https://github.com/japerry))
+- Add acquia/drupal-environment-detector to packages [\#132](https://github.com/acquia/orca/pull/132) ([danepowell](https://github.com/danepowell))
+
+**Fixed bugs:**
+
+- Fix command not found error in before\_cache.sh [\#130](https://github.com/acquia/orca/pull/130) ([danepowell](https://github.com/danepowell))
+
+**Merged pull requests:**
+
+- Update Composer libraries [\#138](https://github.com/acquia/orca/pull/138) ([TravisCarden](https://github.com/TravisCarden))
+
 ## [v3.5.2](https://github.com/acquia/orca/tree/v3.5.2) (2021-02-17)
 
 [Full Changelog](https://github.com/acquia/orca/compare/v3.5.1...v3.5.2)
