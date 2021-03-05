@@ -40,6 +40,10 @@ ORCA doesn't install dev dependencies because Composer provides no means of doin
 1. Click the "Add Repos" menu link.
 1. Click the !["Add your repository to Coveralls"](images/coveralls-button.png) button next to your repository.
 
+### What if my GitHub repository is private?
+
+Copy [`example/.coveralls.yml`](../example/.coveralls.yml) into your repository root and uncomment the indicated line.
+
 ## Drupal
 
 ### Why doesn't ORCA enable my submodule/subtheme?
