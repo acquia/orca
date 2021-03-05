@@ -11,6 +11,7 @@
     <exclude name="BooleanArgumentFlag"/>
     <exclude name="ElseExpression"/>
     <exclude name="StaticAccess"/>
+    <exclude name="MissingImport"/>
   </rule>
   <rule ref="rulesets/codesize.xml"/>
   <rule ref="rulesets/design.xml"/>
