@@ -112,10 +112,12 @@ jobs:
     - { env: ORCA_JOB=INTEGRATED_UPGRADE_TEST_FROM_PREVIOUS_MINOR, name: "Integrated upgrade test from previous minor" }
     - { env: ORCA_JOB=ISOLATED_TEST_ON_CURRENT, name: "Isolated test on current Drupal core version" }
     # To send PHPUnit test coverage data to Coveralls (coveralls.io), configure
-    # your GitHub repository and uncomment the following line. The job on the
-    # line immediately before is otherwise identical and can be removed. Note:
-    # this setting implies ORCA_COVERAGE_ENABLE, which need not be set
-    # separately.
+    # your GitHub repository according to the FAQ below and uncomment the
+    # following line. By default this job is allowed to fail (see below) so that
+    # the total build can be marked finished sooner, because it will have the
+    # same testing outcome as the above ISOLATED_TEST_ON_CURRENT but may take
+    # significantly longer. Note: this setting implies ORCA_COVERAGE_ENABLE,
+    # which need not be set separately.
     # @see https://github.com/acquia/orca/blob/master/docs/faq.md#coveralls
     # @see https://github.com/acquia/orca/blob/master/docs/advanced-usage.md#ORCA_COVERALLS_ENABLE
     # @see https://github.com/acquia/orca/blob/master/docs/advanced-usage.md#ORCA_COVERAGE_ENABLE
@@ -149,6 +151,7 @@ jobs:
   # build. They should still be watched for advance notice of future problems.
   # @see https://docs.travis-ci.com/user/customizing-the-build#rows-that-are-allowed-to-fail
   allow_failures:
+    - env: ORCA_JOB=ISOLATED_TEST_ON_CURRENT ORCA_COVERALLS_ENABLE=TRUE
     - env: ORCA_JOB=INTEGRATED_UPGRADE_TEST_TO_NEXT_MINOR_DEV
     - env: ORCA_JOB=LOOSE_DEPRECATED_CODE_SCAN
     - env: ORCA_JOB=DEPRECATED_CODE_SCAN_W_CONTRIB
