@@ -17,6 +17,8 @@ cd ../../../ || exit 1
 if [[ "$ORCA_JOB" == "STATIC_CODE_ANALYSIS" ]]; then
   ./vendor/bin/phpcs
   ./vendor/bin/parallel-lint --exclude vendor .
+  ./vendor/bin/phpstan analyse src
+  ./vendor/bin/phan -k phan.php --allow-polyfill-parser
   ./vendor/bin/phpmd . text phpmd.xml.dist --ignore-violations-on-exit
 
   echo
