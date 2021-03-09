@@ -42,7 +42,8 @@ ORCA doesn't install dev dependencies because Composer provides no means of doin
 
 ### What if my GitHub repository is private?
 
-Copy [`example/.coveralls.yml`](../example/.coveralls.yml) into your repository root and uncomment the indicated line.
+1. Set the `COVERALLS_REPO_TOKEN` environment variable [in your Travis CI repository settings](https://docs.travis-ci.com/user/environment-variables/#defining-variables-in-repository-settings) to the [secret repo token](https://docs.coveralls.io/api-introduction#referencing-a-repository) found at the bottom of your repository's page on Coveralls.
+1. Copy [`example/.coveralls.yml`](../example/.coveralls.yml) into your repository root and uncomment the indicated line.
 
 ## Drupal
 
