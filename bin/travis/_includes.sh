@@ -72,6 +72,8 @@ export PATH="$ORCA_ROOT/bin:$PATH"
 export PATH="$ORCA_ROOT/vendor/bin:$PATH"
 export PATH="$ORCA_FIXTURE_DIR/vendor/bin:$PATH"
 export PATH="$TRAVIS_BUILD_DIR/vendor/bin:$PATH"
+# Put this last to ensure that the host's Composer is preferred.
+export PATH="$HOME/.phpenv/shims/:$PATH"
 
 # Add convenient aliases.
 alias drush='drush -r "$ORCA_FIXTURE_DIR"'
