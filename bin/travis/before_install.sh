@@ -41,9 +41,6 @@ yes | pecl install yaml
 # Display PHP information.
 php -i
 
-# Install Travis command line client.
-gem install travis
-
 # Download and install ORCA libraries if necessary. This provides compatibility
 # with the old method of installing ORCA via `git clone` rather than the newer
 # `composer create-project` approach.
