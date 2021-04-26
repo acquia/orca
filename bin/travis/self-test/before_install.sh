@@ -18,6 +18,7 @@ cd "$(dirname "$0")" || exit 1; source ../_includes.sh
   git init
   git add --all
   git commit --message="Initial commit."
-  git branch --move master feature/example
+  BRANCH=$(git rev-parse --abbrev-ref HEAD)
+  git branch --move "$BRANCH" feature/example
   git remote add origin git@github.com:example/example.git
 )

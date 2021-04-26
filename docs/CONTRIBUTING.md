@@ -16,11 +16,11 @@
   ```
 
 * [Make a pull request](https://help.github.com/articles/about-pull-requests/)!
-* Switch back to master and pull in the latest changes
+* Switch back to main and pull in the latest changes
 
   ```
-  git checkout master
-  git pull upstream master
+  git checkout main
+  git pull upstream main
   ```
 
 * Our [issue queue](https://github.com/acquia/orca/issues) is public and you already have the required permissions to participate.

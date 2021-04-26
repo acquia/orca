@@ -72,7 +72,7 @@ class InternalLogJobCommand extends Command {
     if (!$simulate && !$this->telemetryClient->isReady()) {
       $output->writeln([
         'Notice: Nothing logged. Telemetry is disabled.',
-        'Hint: https://github.com/acquia/orca/blob/master/docs/advanced-usage.md#ORCA_TELEMETRY_ENABLE',
+        'Hint: https://github.com/acquia/orca/blob/main/docs/advanced-usage.md#ORCA_TELEMETRY_ENABLE',
       ]);
       return StatusCodeEnum::OK;
     }
