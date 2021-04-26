@@ -84,7 +84,8 @@ class ComposerFacade {
       $stability = 'dev';
     }
 
-    $this->processRunner->runExecutable('composer', [
+    $this->processRunner->runOrcaVendorBin([
+      'composer',
       'create-project',
       "--stability={$stability}",
       '--no-dev',
@@ -154,7 +155,8 @@ class ComposerFacade {
         'canonical' => TRUE,
       ],
     ]);
-    $this->processRunner->runExecutable('composer', [
+    $this->processRunner->runOrcaVendorBin([
+      'composer',
       'create-project',
       '--stability=dev',
       "--repository={$repository}",
@@ -245,7 +247,8 @@ class ComposerFacade {
    */
   public function updateLockFile(): void {
     $this->processRunner
-      ->runExecutable('composer', [
+      ->runOrcaVendorBin([
+        'composer',
         'update',
         '--lock',
       ], $this->fixture->getPath());
@@ -261,8 +264,8 @@ class ComposerFacade {
    */
   private function runComposer(array $command, array $args = []): void {
     $command = array_merge($command, $args);
-    $this->processRunner
-      ->runExecutable('composer', $command, $this->fixture->getPath());
+    array_unshift($command, 'composer');
+    $this->processRunner->runOrcaVendorBin($command, $this->fixture->getPath());
   }
 
 }

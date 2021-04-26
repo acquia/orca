@@ -1,5 +1,23 @@
 # Changelog
 
+## [v3.7.0](https://github.com/acquia/orca/tree/v3.7.0) (2021-04-26)
+
+[Full Changelog](https://github.com/acquia/orca/compare/v3.6.0...v3.7.0)
+
+**Implemented enhancements:**
+
+- Use ORCA's Composer bin for shell commands [\#143](https://github.com/acquia/orca/pull/143) ([TravisCarden](https://github.com/TravisCarden))
+- Add documentation and example for integrating private repositories with Coveralls [\#140](https://github.com/acquia/orca/pull/140) ([TravisCarden](https://github.com/TravisCarden))
+- Exclude MissingImport rule from PHPMD [\#133](https://github.com/acquia/orca/pull/133) ([danepowell](https://github.com/danepowell))
+
+**Fixed bugs:**
+
+- Prevent scripts from using the wrong Composer version on Travis CI [\#141](https://github.com/acquia/orca/pull/141) ([TravisCarden](https://github.com/TravisCarden))
+
+**Removed:**
+
+- Remove travis Ruby gem [\#142](https://github.com/acquia/orca/pull/142) ([TravisCarden](https://github.com/TravisCarden))
+
 ## [v3.6.0](https://github.com/acquia/orca/tree/v3.6.0) (2021-02-26)
 
 [Full Changelog](https://github.com/acquia/orca/compare/v3.5.2...v3.6.0)

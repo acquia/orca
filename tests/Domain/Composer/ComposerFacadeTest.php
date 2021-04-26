@@ -96,7 +96,8 @@ class ComposerFacadeTest extends TestCase {
     $options = $this->createFixtureOptions($options);
 
     $this->processRunner
-      ->runExecutable('composer', [
+      ->runOrcaVendorBin([
+        'composer',
         'create-project',
         "--stability={$stability}",
         '--no-dev',
@@ -154,7 +155,8 @@ class ComposerFacadeTest extends TestCase {
       'sut' => $package_name,
     ]);
     $this->processRunner
-      ->runExecutable('composer', [
+      ->runOrcaVendorBin([
+        'composer',
         'create-project',
         "--stability=alpha",
         '--no-dev',
@@ -193,7 +195,8 @@ class ComposerFacadeTest extends TestCase {
       ],
     ]);
     $this->processRunner
-      ->runExecutable('composer', [
+      ->runOrcaVendorBin([
+        'composer',
         'create-project',
         '--stability=dev',
         "--repository={$repository}",
@@ -276,7 +279,8 @@ class ComposerFacadeTest extends TestCase {
       ->runOrcaVendorBin(Argument::any())
       ->willReturn(0);
     $this->processRunner
-      ->runExecutable('composer', array_merge([
+      ->runOrcaVendorBin(array_merge([
+        'composer',
         'remove',
         '--no-update',
       ], $packages), self::FIXTURE_PATH)
@@ -298,7 +302,8 @@ class ComposerFacadeTest extends TestCase {
    */
   public function testRequirePackages(array $packages): void {
     $this->processRunner
-      ->runExecutable('composer', array_merge([
+      ->runOrcaVendorBin(array_merge([
+        'composer',
         'require',
         '--no-progress',
         '--no-interaction',
@@ -318,7 +323,7 @@ class ComposerFacadeTest extends TestCase {
       'require',
     ], $options, $packages);
     $this->processRunner
-      ->runExecutable('composer', $command, self::FIXTURE_PATH)
+      ->runOrcaVendorBin(array_merge(['composer'], $command), self::FIXTURE_PATH)
       ->shouldBeCalledOnce();
     $composer = $this->createComposer();
 
@@ -387,7 +392,8 @@ class ComposerFacadeTest extends TestCase {
    */
   public function testRequirePackagesEmptyArray(): void {
     $this->processRunner
-      ->runExecutable('composer', array_merge([
+      ->runOrcaVendorBin(array_merge([
+        'composer',
         'require',
         '--no-progress',
         '--no-interaction',
@@ -400,7 +406,8 @@ class ComposerFacadeTest extends TestCase {
 
   public function testUpdateLockFile(): void {
     $this->processRunner
-      ->runExecutable('composer', [
+      ->runOrcaVendorBin([
+        'composer',
         'update',
         '--lock',
       ], self::FIXTURE_PATH)

@@ -81,6 +81,8 @@ class PhpUnitTask extends TestFrameworkBase {
 
   /**
    * Sets Simpletest settings.
+   *
+   * @suppress PhanUndeclaredMethod
    */
   private function setSimpletestSettings(): void {
     $this->xpath->query('//phpunit/php/env[@name="SIMPLETEST_BASE_URL"]')
@@ -113,6 +115,7 @@ class PhpUnitTask extends TestFrameworkBase {
     // The bootstrap script is located in ORCA's vendor directory, not the
     // fixture's, since ORCA controls the available test frameworks and
     // infrastructure.
+    // @phan-suppress-next-line PhanUndeclaredMethod */
     $this->xpath->query('//phpunit')
       ->item(0)
       ->setAttribute('bootstrap', $this->orca->getPath('vendor/weitzman/drupal-test-traits/src/bootstrap.php'));
@@ -141,6 +144,7 @@ class PhpUnitTask extends TestFrameworkBase {
 
     if ($result->length) {
       $element = $result->item(0);
+      // @phan-suppress-next-line PhanUndeclaredMethod */
       $element->setAttribute('value', $value);
     }
     else {
