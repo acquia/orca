@@ -63,7 +63,7 @@ class InternalLogJobCommandTest extends CommandTestBase {
     $this->executeCommand();
 
     self::assertEquals('Notice: Nothing logged. Telemetry is disabled.' . PHP_EOL .
-      'Hint: https://github.com/acquia/orca/blob/master/docs/advanced-usage.md#ORCA_TELEMETRY_ENABLE' . PHP_EOL, $this->getDisplay(), 'Displayed correct output.');
+      'Hint: https://github.com/acquia/orca/blob/main/docs/advanced-usage.md#ORCA_TELEMETRY_ENABLE' . PHP_EOL, $this->getDisplay(), 'Displayed correct output.');
     self::assertEquals(StatusCodeEnum::OK, $this->getStatusCode(), 'Returned correct status code.');
   }
 

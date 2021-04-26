@@ -5,7 +5,7 @@
 [![Latest Unstable Version](https://poser.pugx.org/acquia/orca/v/unstable)](https://packagist.org/packages/acquia/orca)
 [![License](https://poser.pugx.org/acquia/orca/license)](https://packagist.org/packages/acquia/orca)
 [![Coverage Status](https://coveralls.io/repos/github/acquia/orca/badge.svg?branch=develop)](https://coveralls.io/github/acquia/orca?branch=develop)
-[![Build Status](https://travis-ci.org/acquia/orca.svg?branch=master)](https://travis-ci.org/acquia/orca)
+[![Build Status](https://travis-ci.org/acquia/orca.svg?branch=main)](https://travis-ci.org/acquia/orca)
 
 ![ORCA Logo](images/logo-wide.png)
 

@@ -17,7 +17,7 @@
 #    $ sed -i'.bak' -e '/^[[:blank:]]*#/d;s/#.*//' .travis.yml && rm .travis.yml.bak
 #
 # For advanced needs,
-# @see https://github.com/acquia/orca/blob/master/docs/advanced-usage.md
+# @see https://github.com/acquia/orca/blob/main/docs/advanced-usage.md
 #
 # For all Travis CI build config options,
 # @see https://config.travis-ci.com/
@@ -58,7 +58,7 @@ env:
     # this value to make Composer resolve dependencies correctly on pull
     # requests and topic branches.
     - ORCA_SUT_BRANCH=8.x-1.x
-    # Specify the version of ORCA to use. Use dev-master to track the latest
+    # Specify the version of ORCA to use. Use dev-main to track the latest
     # release, dev-develop to track Dev/HEAD, or any other Composer version
     # string. Since ORCA uses Semantic Versioning, the current major version
     # branch is recommended in order to receive new features but not unexpected
@@ -71,30 +71,30 @@ env:
     # If your package isn't in ORCA's packages.yml or conflicts with details
     # that are, you can modify the active packages configuration at runtime by
     # uncommenting the following line and specifying your own alter file.
-    # @see https://github.com/acquia/orca/blob/master/docs/advanced-usage.md#ORCA_PACKAGES_CONFIG_ALTER
+    # @see https://github.com/acquia/orca/blob/main/docs/advanced-usage.md#ORCA_PACKAGES_CONFIG_ALTER
     # - ORCA_PACKAGES_CONFIG_ALTER=../example/tests/packages_alter.yml
     #
     # If your package is a Drupal installation profile, uncomment the following
     # line and specify its machine name.
-    # @see https://github.com/acquia/orca/blob/master/docs/advanced-usage.md#ORCA_FIXTURE_PROFILE
+    # @see https://github.com/acquia/orca/blob/main/docs/advanced-usage.md#ORCA_FIXTURE_PROFILE
     # - ORCA_FIXTURE_PROFILE=example
     #
     # If your package is a Composer project template or requires a different
     # one to test with, uncomment the following line and specify its Packagist
     # name.
-    # @see https://github.com/acquia/orca/blob/master/docs/advanced-usage.md#ORCA_FIXTURE_PROJECT_TEMPLATE
+    # @see https://github.com/acquia/orca/blob/main/docs/advanced-usage.md#ORCA_FIXTURE_PROJECT_TEMPLATE
     # - ORCA_FIXTURE_PROJECT_TEMPLATE=acquia/drupal-minimal-project
     #
     # Change the PHP Code Sniffer standard used for static analysis. Acceptable
     # values are "AcquiaPHP", "AcquiaDrupalStrict", and
     # "AcquiaDrupalTransitional". Defaults to "AcquiaDrupalTransitional".
-    # @see https://github.com/acquia/orca/blob/master/docs/advanced-usage.md#ORCA_PHPCS_STANDARD
+    # @see https://github.com/acquia/orca/blob/main/docs/advanced-usage.md#ORCA_PHPCS_STANDARD
     # - ORCA_PHPCS_STANDARD=AcquiaDrupalTransitional
     #
     # To enable telemetry with Amplitude on cron runs, uncomment the following
     # line and set ORCA_AMPLITUDE_API_KEY in your Travis CI repository settings:
-    # @see https://github.com/acquia/orca/blob/master/docs/advanced-usage.md#ORCA_TELEMETRY_ENABLE
-    # @see https://github.com/acquia/orca/blob/master/docs/advanced-usage.md#ORCA_AMPLITUDE_API_KEY
+    # @see https://github.com/acquia/orca/blob/main/docs/advanced-usage.md#ORCA_TELEMETRY_ENABLE
+    # @see https://github.com/acquia/orca/blob/main/docs/advanced-usage.md#ORCA_AMPLITUDE_API_KEY
     # - ORCA_TELEMETRY_ENABLE=TRUE
 
 # Execution time is drastically reduced by splitting the build into multiple
@@ -103,7 +103,7 @@ jobs:
   # Mark the build as finished once the only remaining jobs are allowed to fail.
   fast_finish: true
   # The standard ORCA jobs provide broad out-of-the-box coverage.
-  # @see https://github.com/acquia/orca/blob/master/docs/understanding-orca.md#continuous-integration
+  # @see https://github.com/acquia/orca/blob/main/docs/understanding-orca.md#continuous-integration
   include:
     - { env: ORCA_JOB=STATIC_CODE_ANALYSIS, name: "Static code analysis" }
     - { env: ORCA_JOB=INTEGRATED_TEST_ON_OLDEST_SUPPORTED, name: "Integrated test on oldest supported Drupal core version" }
@@ -118,9 +118,9 @@ jobs:
     # same testing outcome as the above ISOLATED_TEST_ON_CURRENT but may take
     # significantly longer. Note: this setting implies ORCA_COVERAGE_ENABLE,
     # which need not be set separately.
-    # @see https://github.com/acquia/orca/blob/master/docs/faq.md#coveralls
-    # @see https://github.com/acquia/orca/blob/master/docs/advanced-usage.md#ORCA_COVERALLS_ENABLE
-    # @see https://github.com/acquia/orca/blob/master/docs/advanced-usage.md#ORCA_COVERAGE_ENABLE
+    # @see https://github.com/acquia/orca/blob/main/docs/faq.md#coveralls
+    # @see https://github.com/acquia/orca/blob/main/docs/advanced-usage.md#ORCA_COVERALLS_ENABLE
+    # @see https://github.com/acquia/orca/blob/main/docs/advanced-usage.md#ORCA_COVERAGE_ENABLE
     # - { env: ORCA_JOB=ISOLATED_TEST_ON_CURRENT ORCA_COVERALLS_ENABLE=TRUE, name: "Isolated test on current Drupal core version with test coverage" }
     #
     # To generate test coverage data to send somewhere other than Coveralls, use

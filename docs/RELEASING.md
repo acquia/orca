@@ -14,7 +14,7 @@ For project maintainers.
     1. Update `commands.md` with `composer update-docs` and commit.
     1. Finish the release with `git flow release finish x.y.z`.
     1. Return the version to dev in `config/VERSION`, i.e., `x.y.z-dev` and commit.
-    1. Push the release tag to GitHub along with the updated `develop` and `master` branches.
+    1. Push the release tag to GitHub along with the updated `develop` and `main` branches.
 1. [Create a GitHub release.](https://help.github.com/articles/creating-releases/)
     1. Set the tag version and release title both to the new version number.
     1. Use the changelog for the description.

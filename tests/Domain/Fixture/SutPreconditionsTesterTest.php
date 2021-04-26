@@ -33,7 +33,7 @@ class SutPreconditionsTesterTest extends TestCase {
     'require' => [],
     'extra' => [
       'branch-alias' => [
-        'dev-master' => '1.x-dev',
+        'dev-main' => '1.x-dev',
       ],
     ],
     'minimum-stability' => 'dev',
