@@ -250,7 +250,7 @@ class DrupalCoreVersionResolverTest extends TestCase {
       ->getPrettyVersion()
       ->willReturn('9.1.0', '9.2.0-alpha1')
       ->shouldBeCalledTimes(2);
-    $this->selector->findBestCandidate('drupal/core', '>9.1.0', 'alpha')
+    $this->selector->findBestCandidate('drupal/core', '~9.2.0', 'alpha')
       ->willReturn($this->package->reveal())
       ->shouldBeCalledOnce();
     $resolver = $this->createDrupalCoreVersionResolver();
@@ -266,8 +266,8 @@ class DrupalCoreVersionResolverTest extends TestCase {
     $this->expectGetCurrentToBeCalledOnce();
     $this->package
       ->getPrettyVersion()
-      ->willReturn('9.2.x-dev');
-    $this->selector->findBestCandidate('drupal/core', '>9.1.0', 'dev')
+      ->willReturn('9.1.x-dev');
+    $this->selector->findBestCandidate('drupal/core', '*', 'stable')
       ->willReturn($this->package->reveal());
     $resolver = $this->createDrupalCoreVersionResolver();
 
@@ -331,7 +331,11 @@ class DrupalCoreVersionResolverTest extends TestCase {
 
   public function providerResolvePredefinedVersionNotFound(): array {
     $data = $this->providerVersions();
-    unset($data[DrupalCoreVersionEnum::CURRENT], $data[DrupalCoreVersionEnum::CURRENT_DEV]);
+    unset(
+      $data[DrupalCoreVersionEnum::CURRENT],
+      $data[DrupalCoreVersionEnum::CURRENT_DEV],
+      $data[DrupalCoreVersionEnum::NEXT_MINOR_DEV]
+    );
     return $data;
   }
 

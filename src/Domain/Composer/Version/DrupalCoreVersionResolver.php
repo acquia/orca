@@ -292,9 +292,21 @@ class DrupalCoreVersionResolver {
     }
 
     $this->nextMinor = $this
-      ->resolveArbitrary(">{$this->findCurrent()}", 'alpha', FALSE);
+      ->resolveArbitrary("~{$this->findNextMinorUnresolved()}", 'alpha', FALSE);
 
     return $this->nextMinor;
+  }
+
+  /**
+   * Finds the next minor version unresolved, e.g., 9.2.0 for 9.1.7.
+   *
+   * @return string
+   *   The semver string.
+   */
+  private function findNextMinorUnresolved(): string {
+    $current_minor = (float) ($this->findCurrent());
+    $current_minor = (string) ($current_minor + 0.1);
+    return "{$current_minor}.0";
   }
 
   /**
@@ -310,12 +322,8 @@ class DrupalCoreVersionResolver {
       return $this->nextMinorDev;
     }
 
-    // Constrain the version to "<9999999-dev" to work around a bug in Composer
-    // that treated 8.9 as greater than 9.2 at the time of this writing.
-    // @see https://github.com/composer/composer/issues/9705
-    $version = ">{$this->findCurrent()} <9999999-dev";
-    $this->nextMinorDev = $this
-      ->resolveArbitrary($version, 'dev', TRUE);
+    $next_minor = $this->findNextMinorUnresolved();
+    $this->nextMinorDev = $this->convertToDev($next_minor);
 
     return $this->nextMinorDev;
   }
