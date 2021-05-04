@@ -1,5 +1,17 @@
 # Changelog
 
+## [v3.7.1](https://github.com/acquia/orca/tree/v3.7.1) (2021-05-04)
+
+[Full Changelog](https://github.com/acquia/orca/compare/v3.7.0...v3.7.1)
+
+**Fixed bugs:**
+
+- Fix Drupal core 9.3.x becoming NEXT\_MINOR\_DEV too soon [\#145](https://github.com/acquia/orca/pull/145) ([TravisCarden](https://github.com/TravisCarden))
+
+**Merged pull requests:**
+
+- Bump composer/composer from 2.0.10 to 2.0.13 [\#144](https://github.com/acquia/orca/pull/144) ([dependabot[bot]](https://github.com/apps/dependabot))
+
 ## [v3.7.0](https://github.com/acquia/orca/tree/v3.7.0) (2021-04-26)
 
 [Full Changelog](https://github.com/acquia/orca/compare/v3.6.0...v3.7.0)
