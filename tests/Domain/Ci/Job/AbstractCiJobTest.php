@@ -2,9 +2,13 @@
 
 namespace Acquia\Orca\Tests\Domain\Ci\Job;
 
+use Acquia\Orca\Domain\Ci\Job\AbstractCiJob;
 use Acquia\Orca\Domain\Composer\Version\DrupalCoreVersionResolver;
+use Acquia\Orca\Domain\Fixture\FixtureCreator;
 use Acquia\Orca\Enum\CiJobEnum;
 use Acquia\Orca\Enum\CiJobPhaseEnum;
+use Acquia\Orca\Helper\EnvFacade;
+use Acquia\Orca\Helper\Process\ProcessRunner;
 use Acquia\Orca\Tests\_Helper\TestSpy;
 use Acquia\Orca\Tests\Domain\Ci\Job\_Helper\CiJobTestBase;
 use Acquia\Orca\Tests\Domain\Ci\Job\_Helper\CiTestJob;
@@ -93,6 +97,63 @@ class AbstractCiJobTest extends CiJobTestBase {
     $this->expectException(\LogicException::class);
 
     $job->matchingCoreVersionExists($drupal_core_version_resolver->reveal(), new NullOutput());
+  }
+
+  /**
+   * @dataProvider providerRunOrcaQaAutomatedTestsWithInstallProfile
+   */
+  public function testRunOrcaQaAutomatedTestsWithInstallProfile($profile, $command): void {
+    $job = new class() extends AbstractCiJob {
+
+      public function jobName(): CiJobEnum {
+        return CiJobEnum::STATIC_CODE_ANALYSIS();
+      }
+
+      // phpcs:ignore Generic.CodeAnalysis.UselessOverridingMethod.Found
+      public function runOrcaQaAutomatedTests(array $command, EnvFacade $env_facade, ProcessRunner $process_runner): void {
+        parent::runOrcaQaAutomatedTests($command, $env_facade, $process_runner);
+      }
+
+    };
+    $env_facade = $this->prophesize(EnvFacade::class);
+    $env_facade
+      ->get('ORCA_FIXTURE_PROFILE')
+      ->willReturn($profile);
+    $env_facade = $env_facade->reveal();
+    $process_runner = $this->prophesize(ProcessRunner::class);
+    $process_runner
+      ->runOrca(Argument::cetera())
+      ->willReturn(0);
+    $process_runner
+      ->runOrca($command)
+      ->shouldBeCalledOnce();
+    $process_runner = $process_runner->reveal();
+
+    $job->runOrcaQaAutomatedTests([], $env_facade, $process_runner);
+  }
+
+  public function providerRunOrcaQaAutomatedTestsWithInstallProfile(): array {
+    return [
+      [
+        'profile' => NULL,
+        'command' => [
+          'qa:automated-tests',
+        ],
+      ],
+      [
+        'profile' => 'arbitrary_profile',
+        'command' => [
+          'qa:automated-tests',
+          '--sut-only',
+        ],
+      ],
+      [
+        'profile' => FixtureCreator::DEFAULT_PROFILE,
+        'command' => [
+          'qa:automated-tests',
+        ],
+      ],
+    ];
   }
 
 }
