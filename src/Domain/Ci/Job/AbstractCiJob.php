@@ -4,6 +4,7 @@ namespace Acquia\Orca\Domain\Ci\Job;
 
 use Acquia\Orca\Domain\Ci\Job\Helper\RedundantJobChecker;
 use Acquia\Orca\Domain\Composer\Version\DrupalCoreVersionResolver;
+use Acquia\Orca\Domain\Fixture\FixtureCreator;
 use Acquia\Orca\Enum\CiJobEnum;
 use Acquia\Orca\Enum\CiJobPhaseEnum;
 use Acquia\Orca\Enum\DrupalCoreVersionEnum;
@@ -281,19 +282,17 @@ abstract class AbstractCiJob {
    *
    * @param array $command
    *   An array of command arguments.
-   * @param \Acquia\Orca\Options\CiRunOptions $options
-   *   The CI run options.
    * @param \Acquia\Orca\Helper\EnvFacade $env_facade
    *   The ENV facade.
    * @param \Acquia\Orca\Helper\Process\ProcessRunner $process_runner
    *   The process runner.
    */
-  protected function runOrcaQaAutomatedTests(array $command, CiRunOptions $options, EnvFacade $env_facade, ProcessRunner $process_runner): void {
+  protected function runOrcaQaAutomatedTests(array $command, EnvFacade $env_facade, ProcessRunner $process_runner): void {
     array_unshift($command, 'qa:automated-tests');
 
     $already_sut_only = in_array('--sut-only', $command, TRUE);
-    $profile = $env_facade->get('ORCA_FIXTURE_PROFILE');
-    if (!$already_sut_only && $profile) {
+    $profile = $env_facade->get('ORCA_FIXTURE_PROFILE') ?: FixtureCreator::DEFAULT_PROFILE;
+    if (!$already_sut_only && $profile !== FixtureCreator::DEFAULT_PROFILE) {
       $command[] = '--sut-only';
     }
 
