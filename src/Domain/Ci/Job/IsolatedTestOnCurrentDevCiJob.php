@@ -69,7 +69,7 @@ class IsolatedTestOnCurrentDevCiJob extends AbstractCiJob {
     $this->runOrcaQaAutomatedTests([
       "--sut={$options->getSut()->getPackageName()}",
       '--sut-only',
-    ], $options, $this->envFacade, $this->processRunner);
+    ], $this->envFacade, $this->processRunner);
   }
 
 }

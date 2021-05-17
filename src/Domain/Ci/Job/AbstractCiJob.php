@@ -281,14 +281,12 @@ abstract class AbstractCiJob {
    *
    * @param array $command
    *   An array of command arguments.
-   * @param \Acquia\Orca\Options\CiRunOptions $options
-   *   The CI run options.
    * @param \Acquia\Orca\Helper\EnvFacade $env_facade
    *   The ENV facade.
    * @param \Acquia\Orca\Helper\Process\ProcessRunner $process_runner
    *   The process runner.
    */
-  protected function runOrcaQaAutomatedTests(array $command, CiRunOptions $options, EnvFacade $env_facade, ProcessRunner $process_runner): void {
+  protected function runOrcaQaAutomatedTests(array $command, EnvFacade $env_facade, ProcessRunner $process_runner): void {
     array_unshift($command, 'qa:automated-tests');
 
     $already_sut_only = in_array('--sut-only', $command, TRUE);

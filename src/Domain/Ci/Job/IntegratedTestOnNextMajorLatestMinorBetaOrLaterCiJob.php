@@ -95,7 +95,7 @@ class IntegratedTestOnNextMajorLatestMinorBetaOrLaterCiJob extends AbstractCiJob
 
     $this->runOrcaQaAutomatedTests([
       "--sut={$options->getSut()->getPackageName()}",
-    ], $options, $this->envFacade, $this->processRunner);
+    ], $this->envFacade, $this->processRunner);
   }
 
 }
