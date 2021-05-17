@@ -1,5 +1,13 @@
 # Changelog
 
+## [v3.7.2](https://github.com/acquia/orca/tree/v3.7.2) (2021-05-17)
+
+[Full Changelog](https://github.com/acquia/orca/compare/v3.7.1...v3.7.2)
+
+**Fixed bugs:**
+
+- Fix integrated jobs running SUT-only tests on Travis CI [\#146](https://github.com/acquia/orca/pull/146) ([TravisCarden](https://github.com/TravisCarden))
+
 ## [v3.7.1](https://github.com/acquia/orca/tree/v3.7.1) (2021-05-04)
 
 [Full Changelog](https://github.com/acquia/orca/compare/v3.7.0...v3.7.1)
