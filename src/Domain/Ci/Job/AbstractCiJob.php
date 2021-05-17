@@ -4,6 +4,7 @@ namespace Acquia\Orca\Domain\Ci\Job;
 
 use Acquia\Orca\Domain\Ci\Job\Helper\RedundantJobChecker;
 use Acquia\Orca\Domain\Composer\Version\DrupalCoreVersionResolver;
+use Acquia\Orca\Domain\Fixture\FixtureCreator;
 use Acquia\Orca\Enum\CiJobEnum;
 use Acquia\Orca\Enum\CiJobPhaseEnum;
 use Acquia\Orca\Enum\DrupalCoreVersionEnum;
@@ -290,8 +291,8 @@ abstract class AbstractCiJob {
     array_unshift($command, 'qa:automated-tests');
 
     $already_sut_only = in_array('--sut-only', $command, TRUE);
-    $profile = $env_facade->get('ORCA_FIXTURE_PROFILE');
-    if (!$already_sut_only && $profile) {
+    $profile = $env_facade->get('ORCA_FIXTURE_PROFILE') ?: FixtureCreator::DEFAULT_PROFILE;
+    if (!$already_sut_only && $profile !== FixtureCreator::DEFAULT_PROFILE) {
       $command[] = '--sut-only';
     }
 
