@@ -63,6 +63,13 @@ class TestRunner {
   private $phpunit;
 
   /**
+   * The run all tests flag.
+   *
+   * @var bool
+   */
+  private $runAllTests;
+
+  /**
    * The run PHPUnit flag.
    *
    * @var bool
@@ -141,6 +148,16 @@ class TestRunner {
   }
 
   /**
+   * Sets the run all tests flag.
+   *
+   * @param bool $run_all_tests
+   *   TRUE to run all tests or FALSE not to.
+   */
+  public function setRunAllTests(bool $run_all_tests): void {
+    $this->runAllTests = $run_all_tests;
+  }
+
+  /**
    * Sets the run PHPUnit flag.
    *
    * @param bool $run_phpunit
@@ -193,7 +210,7 @@ class TestRunner {
         continue;
       }
       foreach ($this->getFrameworks() as $framework) {
-        $this->execute($framework, $package, TRUE);
+        $this->execute($framework, $package, !$this->runAllTests);
       }
     }
   }
