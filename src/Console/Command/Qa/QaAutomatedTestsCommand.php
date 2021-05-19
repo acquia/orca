@@ -23,6 +23,13 @@ class QaAutomatedTestsCommand extends Command {
   protected static $defaultName = 'qa:automated-tests';
 
   /**
+   * The "all" command line option.
+   *
+   * @var bool
+   */
+  private $all;
+
+  /**
    * The fixture path handler.
    *
    * @var \Acquia\Orca\Helper\Filesystem\FixturePathHandler
@@ -84,12 +91,13 @@ class QaAutomatedTestsCommand extends Command {
   /**
    * {@inheritdoc}
    */
-  protected function configure() {
+  protected function configure(): void {
     $this
       ->setAliases(['test'])
       ->setDescription('Runs automated tests')
       ->addOption('sut', NULL, InputOption::VALUE_REQUIRED, 'The system under test (SUT) in the form of its package name, e.g., "drupal/example"')
       ->addOption('sut-only', NULL, InputOption::VALUE_NONE, 'Run tests from only the system under test (SUT). Omit tests from all other company packages')
+      ->addOption('all', NULL, InputOption::VALUE_NONE, 'Run all tests, public and private (always true for the system under test (SUT))')
       ->addOption('phpunit', NULL, InputOption::VALUE_NONE, 'Run only PHPUnit tests')
       ->addOption('no-servers', NULL, InputOption::VALUE_NONE, "Don't run the ChromeDriver and web servers");
   }
@@ -101,6 +109,7 @@ class QaAutomatedTestsCommand extends Command {
     $this->noServers = $input->getOption('no-servers');
     $this->sut = $input->getOption('sut');
     $this->sutOnly = $input->getOption('sut-only');
+    $this->all = $input->getOption('all');
 
     if (!$this->isValidInput($output)) {
       return StatusCodeEnum::ERROR;
@@ -162,6 +171,10 @@ class QaAutomatedTestsCommand extends Command {
 
     if ($this->sutOnly) {
       $this->testRunner->setSutOnly(TRUE);
+    }
+
+    if ($this->all) {
+      $this->testRunner->setRunAllTests(TRUE);
     }
 
     if ($this->noServers) {
