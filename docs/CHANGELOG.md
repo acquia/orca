@@ -1,5 +1,17 @@
 # Changelog
 
+## [v3.8.0](https://github.com/acquia/orca/tree/v3.8.0) (2021-06-14)
+
+[Full Changelog](https://github.com/acquia/orca/compare/v3.7.2...v3.8.0)
+
+**Implemented enhancements:**
+
+- Add "qa:automated-tests --all" command option [\#147](https://github.com/acquia/orca/pull/147) ([TravisCarden](https://github.com/TravisCarden))
+
+**Merged pull requests:**
+
+- Update acquia/coding-standards [\#148](https://github.com/acquia/orca/pull/148) ([TravisCarden](https://github.com/TravisCarden))
+
 ## [v3.7.2](https://github.com/acquia/orca/tree/v3.7.2) (2021-05-17)
 
 [Full Changelog](https://github.com/acquia/orca/compare/v3.7.1...v3.7.2)
