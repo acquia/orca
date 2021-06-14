@@ -25,7 +25,7 @@
         "ext-dom": "*",
         "ext-json": "*",
         "ext-sqlite3": "*",
-        "acquia/coding-standards": "^0.5.0",
+        "acquia/coding-standards": "^0.7.0",
         "composer/composer": "^2.0",
         "dealerdirect/phpcodesniffer-composer-installer": "^0.7.1",
         "ergebnis/composer-normalize": "^2.0.0",
