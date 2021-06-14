@@ -31,6 +31,7 @@ class QaAutomatedTestsCommandTest extends CommandTestBase {
       ->willReturn(self::FIXTURE_ROOT);
     $this->packageManager = $this->prophesize(PackageManager::class);
     $this->testRunner = $this->prophesize(TestRunner::class);
+    $this->testRunner->run();
   }
 
   protected function createCommand(): Command {
@@ -107,6 +108,30 @@ class QaAutomatedTestsCommandTest extends CommandTestBase {
     return [
       [[], 0],
       [['--phpunit' => 1], 0],
+    ];
+  }
+
+  /**
+   * @dataProvider providerAllOption
+   */
+  public function testAllOption($args, $call_count): void {
+    $this->testRunner
+      ->setRunAllTests(TRUE)
+      ->shouldBeCalledTimes($call_count);
+
+    $this->executeCommand($args);
+  }
+
+  public function providerAllOption(): array {
+    return [
+      [
+        'args' => [],
+        'call_count' => 0,
+      ],
+      [
+        'args' => ['--all' => TRUE],
+        'call_count' => 1,
+      ],
     ];
   }
 
