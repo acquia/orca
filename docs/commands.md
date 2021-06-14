@@ -62,7 +62,7 @@
 `help`
 ------
 
-Displays help for a command
+Display help for a command
 
 ### Usage
 
@@ -174,7 +174,7 @@ Do not ask any interactive question
 `list`
 ------
 
-Lists commands
+List commands
 
 ### Usage
 
@@ -1584,7 +1584,7 @@ Runs automated tests
 
 ### Usage
 
-* `qa:automated-tests [--sut SUT] [--sut-only] [--phpunit] [--no-servers]`
+* `qa:automated-tests [--sut SUT] [--sut-only] [--all] [--phpunit] [--no-servers]`
 * `test`
 
 Runs automated tests
@@ -1603,6 +1603,15 @@ The system under test (SUT) in the form of its package name, e.g., "drupal/examp
 #### `--sut-only`
 
 Run tests from only the system under test (SUT). Omit tests from all other company packages
+
+* Accept value: no
+* Is value required: no
+* Is multiple: no
+* Default: `false`
+
+#### `--all`
+
+Run all tests, public and private (always true for the system under test (SUT))
 
 * Accept value: no
 * Is value required: no
