@@ -44,6 +44,7 @@ jobs:
     - { env: ORCA_JOB=INTEGRATED_TEST_ON_PREVIOUS_MINOR, name: "Integrated test on previous minor Drupal core version" }
     - { env: ORCA_JOB=INTEGRATED_UPGRADE_TEST_FROM_PREVIOUS_MINOR, name: "Integrated upgrade test from previous minor Drupal core version" }
     - { env: ORCA_JOB=ISOLATED_TEST_ON_CURRENT ORCA_ENABLE_NIGHTWATCH=TRUE, name: "Isolated test on current Drupal core version with Nightwatch.js" }
+    - { env: ORCA_JOB=ISOLATED_TEST_ON_CURRENT ORCA_ENABLE_NIGHTWATCH=TRUE, php: "8.0", dist: focal, name: "Isolated test on current Drupal core version and PHP 8 with Nightwatch.js" }
     - { env: ORCA_JOB=INTEGRATED_TEST_ON_CURRENT, name: "Integrated test on current Drupal core version" }
     - { env: ORCA_JOB=INTEGRATED_UPGRADE_TEST_TO_NEXT_MINOR, name: "Integrated upgrade test to next minor Drupal core version" }
     - { env: ORCA_JOB=INTEGRATED_UPGRADE_TEST_TO_NEXT_MINOR_DEV, name: "Integrated upgrade test to next minor dev Drupal core version" }
@@ -70,7 +71,7 @@ jobs:
     - env: ORCA_LIVE_TEST=TRUE
 
 before_install:
-  - nvm use 12.13.1
+  - nvm install 12.13.1; nvm use 12.13.1
   - ../orca/bin/travis/self-test/before_install.sh
   - ../orca/bin/travis/before_install.sh
 
