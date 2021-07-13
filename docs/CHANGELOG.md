@@ -1,5 +1,13 @@
 # Changelog
 
+## [v3.9.0](https://github.com/acquia/orca/tree/v3.9.0) (2021-07-13)
+
+[Full Changelog](https://github.com/acquia/orca/compare/v3.8.0...v3.9.0)
+
+**Implemented enhancements:**
+
+- Add a PHP 8 Travis CI job [\#149](https://github.com/acquia/orca/pull/149) ([TravisCarden](https://github.com/TravisCarden))
+
 ## [v3.8.0](https://github.com/acquia/orca/tree/v3.8.0) (2021-06-14)
 
 [Full Changelog](https://github.com/acquia/orca/compare/v3.7.2...v3.8.0)
