@@ -19,7 +19,7 @@ ORCA's primary use case is in a continuous integration workflow, running against
 * **[`before_cache.sh`](../bin/travis/before_cache.sh)** is reserved for future use.
 * **[`after_success.sh`](../bin/travis/after_success.sh)** is reserved for future use.
 * **[`after_failure.sh`](../bin/travis/after_failure.sh)** displays debugging information in case of failure.
-* **[`after_script.sh`](../bin/travis/after_script.sh)** conditionally logs the job and displays upstream ORCA status.
+* **[`after_script.sh`](../bin/travis/after_script.sh)** conditionally logs the job.
 
 See [`example/.travis.yml`](../example/.travis.yml) for an example Travis CI configuration. Features are explained in the comments.
 
