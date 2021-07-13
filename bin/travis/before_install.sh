@@ -44,7 +44,7 @@ php -i
 # Download and install ORCA libraries if necessary. This provides compatibility
 # with the old method of installing ORCA via `git clone` rather than the newer
 # `composer create-project` approach.
-[[ -d "$ORCA_ROOT/vendor" ]] || composer -d"$ORCA_ROOT" install
+[[ -d "$ORCA_ROOT/vendor" ]] || composer -d"$ORCA_ROOT" --ignore-platform-req=php install
 
 # Display ORCA version and configuration values.
 orca --version

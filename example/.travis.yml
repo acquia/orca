@@ -111,6 +111,7 @@ jobs:
     - { env: ORCA_JOB=INTEGRATED_TEST_ON_PREVIOUS_MINOR, name: "Integrated test on previous minor Drupal core version" }
     - { env: ORCA_JOB=INTEGRATED_UPGRADE_TEST_FROM_PREVIOUS_MINOR, name: "Integrated upgrade test from previous minor" }
     - { env: ORCA_JOB=ISOLATED_TEST_ON_CURRENT, name: "Isolated test on current Drupal core version" }
+    - { env: ORCA_JOB=ISOLATED_TEST_ON_CURRENT, php: "8.0", dist: focal, name: "Isolated test on current Drupal core version and PHP 8" }
     # To send PHPUnit test coverage data to Coveralls (coveralls.io), configure
     # your GitHub repository according to the FAQ below and uncomment the
     # following line. By default this job is allowed to fail (see below) so that
@@ -164,8 +165,8 @@ jobs:
 # Install ORCA and prepare the environment.
 before_install:
   # Set Node.js to a version compatible with Drupal 9 + Nightwatch.js.
-  - nvm use 12.13.1
-  - composer create-project --no-dev acquia/orca ../orca "$ORCA_VERSION"
+  - nvm install 12.13.1; nvm use 12.13.1
+  - composer create-project --no-dev --ignore-platform-req=php acquia/orca ../orca "$ORCA_VERSION"
   - ../orca/bin/travis/before_install.sh
   # For custom testing needs, add your own scripts here. See the example script
   # for more details.
