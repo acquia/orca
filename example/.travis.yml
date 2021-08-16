@@ -81,8 +81,10 @@ env:
     #
     # If your package is a Composer project template or requires a different
     # one to test with, uncomment the following line and specify its Packagist
-    # name.
+    # name. This is recommended if your package is not meant to support Acquia
+    # CMS, which is included in acquia/drupal-recommended-project.
     # @see https://github.com/acquia/orca/blob/main/docs/advanced-usage.md#ORCA_FIXTURE_PROJECT_TEMPLATE
+    # @see https://github.com/acquia/orca/blob/main/docs/faq.md#why-do-i-get-version-conflicts-with-drupalacquia_cms
     # - ORCA_FIXTURE_PROJECT_TEMPLATE=acquia/drupal-minimal-project
     #
     # Change the PHP Code Sniffer standard used for static analysis. Acceptable
