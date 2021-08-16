@@ -1,5 +1,6 @@
 # Project Glossary
 
+* [Acquia CMS](#acquia-cms)
 * [Bare fixture](#bare-fixture)
 * [BLT](#blt)
 * [Fixture](#test-fixture)
@@ -15,6 +16,7 @@
 * [Plumbing interface](#orca-internals)
 * [Porcelain interface](#orca-internals)
 * [Private tests](#private-tests)
+* [Project template](#project-template)
 * [Public tests](#public-tests)
 * [Standard fixture](#standard-fixture)
 * [SUT](#sut)
@@ -22,6 +24,10 @@
 * [SUT-only fixture](#sut-only-fixture)
 * [System Under Test](#sut)
 * [Test fixture](#test-fixture)
+
+## Acquia CMS
+
+[Acquia CMS](https://www.drupal.org/project/acquia_cms) (`drupal/acquia_cms`) is Acquia's opinionated Drupal distribution for running low-code websites on the Acquia hosting platform. It is included in ORCA [test fixtures](#test-fixture) by default by way of [Drupal Recommended Project](#project-template). Cf. [Why do I get version conflicts with drupal/acquia_cms?](faq.md#why-do-i-get-version-conflicts-with-drupalacquia_cms).
 
 ## Bare fixture
 
@@ -70,6 +76,27 @@ A programmer-oriented testing framework used by Drupal. [[Website]](https://phpu
 ## Private tests
 
 Automated tests that ORCA runs only when the package that provides them is the [SUT](#sut). Any test that is not designated [public](#public-tests) or [ignored](#ignored-tests) is automatically treated as private. [Read more in Running automated tests: Tagging/grouping.](getting-started.md#tagginggrouping)
+
+## Project template
+
+A project template is a way to use Composer to create new projects from an existing package. See [composer create-project](https://getcomposer.org/doc/03-cli.md#create-project). In Drupal 8 and later, this is the preferred way to manage Drupal and all dependencies (modules, themes, libraries). See [Using Composer to Install Drupal and Manage Dependencies](https://www.drupal.org/docs/develop/using-composer/using-composer-to-install-drupal-and-manage-dependencies). Acquia provides two project templates:
+
+* <a name="acquia-drupal-recommended-project"</a>[**Acquia Drupal Recommended Project**](https://github.com/acquia/drupal-recommended-project) (`acquia/drupal-recommended-project`) is a project template providing a great out-of-the-box experience for new Drupal 9 projects hosted on Acquia.
+* <a name="acquia-drupal-minimal-project"</a>[**Acquia Drupal Minimal Project**](https://github.com/acquia/drupal-minimal-project) (`acquia/drupal-minimal-project`) provides a minimal Drupal application to be hosted on Acquia.
+
+By default, ORCA uses Acquia Drupal Recommended Project to create [test fixtures](#test-fixture). This behavior can be changed using the `--project-template` option of the [`fixture:init`](advanced-usage.md#fixtureinit) Console command like this, for example:
+
+   ```shell
+   orca fixture:init --project-template=acquia/drupal-minimal-project
+   ```
+
+On Travis CI, it can be changed via the [`ORCA_FIXTURE_PROJECT_TEMPLATE`](advanced-usage.md#ORCA_FIXTURE_PROJECT_TEMPLATE) environment variable in your `.travis.yml` like this:
+
+   ```yaml
+   env:
+     global:
+       - ORCA_FIXTURE_PROJECT_TEMPLATE=acquia/drupal-minimal-project
+   ```
 
 ## Public tests
 

@@ -32,6 +32,23 @@ ORCA doesn't install dev dependencies because Composer provides no means of doin
 
 1. Simply "ignore" tests with unique dependencies and run them apart from ORCA. See [Running automated tests](getting-started.md#tagginggrouping).
 
+### Why do I get version conflicts with drupal/acquia_cms?
+
+As an opinionated [project template](#project-template), [Acquia CMS](glossary.md#acquia-cms) (`drupal/acquia_cms`) has very tight version constraints that can conflict with your dependencies as depicted in this example error:
+
+   ```
+   Problem 1
+     - acquia/acquia_cms[v1.2-rc1, ..., 1.2.5.x-dev] require drupal/acquia_connector ^3 -> satisfiable by drupal/acquia_connector[dev-3.x, 3.0.0-rc1, ..., 3.x-dev (alias of dev-3.x)] from composer repo (https://packages.drupal.org/8) but drupal/acquia_connector[dev-8.x-1.x, 1.x-dev (alias of dev-8.x-1.x)] from path repo (/home/travis/build/acquia/acquia_connector) has higher repository priority. The packages with higher priority do not match your constraint and are therefore not installable. See https://getcomposer.org/repoprio for details and assistance.
+   ```
+
+Acquia CMS is included in ORCA [test fixtures](glossary.md#test-fixture) by default by way of a requirement in [Acquia Drupal Recommended Project](glossary.md#acquia-drupal-recommended-project). If your package or one of its version branches is not meant to support Acquia CMS, you should use a different [project template](glossary.md#project-template). Add the following to your `.travis.yml` to do so on Travis CI:
+
+   ```yaml
+   env:
+     global:
+       - ORCA_FIXTURE_PROJECT_TEMPLATE=acquia/drupal-minimal-project
+   ```
+
 ## Coveralls
 
 ### How do I add my GitHub repository to Coveralls?
