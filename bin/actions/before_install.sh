@@ -21,7 +21,8 @@ google-chrome-stable --version
 yarn --version
 
 # Disable Xdebug except on code coverage jobs.
-[[ "$ORCA_COVERAGE_ENABLE" == TRUE ]] || phpenv config-rm xdebug.ini
+# @todo fix this on Actions
+# [[ "$ORCA_COVERAGE_ENABLE" == TRUE ]] || phpenv config-rm xdebug.ini
 
 # Install the PECL YAML parser for strict YAML parsing.
 yes | pecl install yaml
