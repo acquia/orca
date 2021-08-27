@@ -25,8 +25,9 @@ yarn --version
 # [[ "$ORCA_COVERAGE_ENABLE" == TRUE ]] || phpenv config-rm xdebug.ini
 
 # Install the PECL YAML parser for strict YAML parsing.
-sudo apt-get install libyaml-dev
-yes | sudo pecl install yaml
+# @todo apparently a great way to generate a segfault
+# sudo apt-get install libyaml-dev
+# yes | sudo pecl install yaml
 
 # Display PHP information.
 php -i
