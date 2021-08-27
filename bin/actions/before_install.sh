@@ -26,7 +26,7 @@ yarn --version
 
 # Install the PECL YAML parser for strict YAML parsing.
 sudo apt-get install libyaml-dev
-yes | pecl install yaml
+yes | sudo pecl install yaml
 
 # Display PHP information.
 php -i
