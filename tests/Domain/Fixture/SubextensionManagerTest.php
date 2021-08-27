@@ -19,7 +19,7 @@ use Symfony\Component\Filesystem\Filesystem;
  */
 class SubextensionManagerTest extends TestCase {
 
-  protected function setUp() {
+  protected function setUp(): void {
     $this->configLoader = $this->prophesize(ConfigLoader::class);
     $this->filesystem = $this->prophesize(Filesystem::class);
     $this->fixture = $this->prophesize(FixturePathHandler::class);

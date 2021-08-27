@@ -30,7 +30,7 @@ class DrupalDotOrgApiClientTest extends TestCase {
     <releases></releases>
     </project>';
 
-  public function setUp() {
+  public function setUp(): void {
     $this->httpClient = $this->prophesize(HttpClientInterface::class);
   }
 
