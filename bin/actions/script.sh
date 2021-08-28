@@ -12,7 +12,7 @@
 cd "$(dirname "$0")" || exit; source _includes.sh
 
 if [[ "$ORCA_JOB" ]]; then
-  eval "orca ci:run $ORCA_JOB script $ORCA_SUT_NAME"
+  eval "orca ci:run --no-interaction $ORCA_JOB script $ORCA_SUT_NAME"
 fi
 
 if [[ "$ORCA_ENABLE_NIGHTWATCH" == "TRUE" && "$ORCA_SUT_HAS_NIGHTWATCH_TESTS" && -d "$ORCA_YARN_DIR" ]]; then
