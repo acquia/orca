@@ -12,6 +12,6 @@
 cd "$(dirname "$0")" || exit; source _includes.sh
 
 if [[ "$ORCA_JOB" ]]; then
-  eval "orca ci:run $ORCA_JOB script $ORCA_SUT_NAME"
+  eval "orca ci:run $ORCA_JOB script $ORCA_SUT_NAME -vvv"
 fi
 
