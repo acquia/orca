@@ -174,7 +174,7 @@ class ProcessRunner {
   public function runOrca(array $command): int {
     array_unshift($command, $this->orca->getPath('bin/orca'));
     $process = new Process($command);
-    $process->setTty(Process::isTtySupported());
+    $process->setTty(FALSE);
     $cwd = $this->orca->getPath();
     return $this->run($process, $cwd);
   }
