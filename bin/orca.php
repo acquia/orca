@@ -53,3 +53,4 @@ $application->setVersion(trim(file_get_contents(__DIR__ . '/../config/VERSION'))
 $application->add(new CompletionCommand());
 
 $application->run();
+echo "return2";
