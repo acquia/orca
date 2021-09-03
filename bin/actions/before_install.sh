@@ -21,13 +21,11 @@ google-chrome-stable --version
 yarn --version
 
 # Disable Xdebug except on code coverage jobs.
-# @todo fix this on Actions
-# [[ "$ORCA_COVERAGE_ENABLE" == TRUE ]] || phpenv config-rm xdebug.ini
+[[ "$ORCA_COVERAGE_ENABLE" == TRUE ]] || phpdismod xdebug
 
 # Install the PECL YAML parser for strict YAML parsing.
-# @todo apparently a great way to generate a segfault
-# sudo apt-get install libyaml-dev
-# yes | sudo pecl install yaml
+sudo apt-get install libyaml-dev
+yes | sudo pecl install yaml
 
 # Display PHP information.
 php -i
