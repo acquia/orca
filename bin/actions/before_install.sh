@@ -21,11 +21,9 @@ google-chrome-stable --version
 yarn --version
 
 # Disable Xdebug except on code coverage jobs.
-[[ "$ORCA_COVERAGE_ENABLE" == TRUE ]] || sudo phpdismod -v "$PHP_VERSION" xdebug
+[[ "$ORCA_COVERAGE_ENABLE" == TRUE ]] || sudo phpdismod -v ALL xdebug
 
-# Install the PECL YAML parser for strict YAML parsing.
-sudo apt-get install libyaml-dev
-yes | sudo pecl install yaml
+# Travis CI would install YAML from PECL here, but it's already present in Github Actions.
 
 # Display PHP information.
 php -i
