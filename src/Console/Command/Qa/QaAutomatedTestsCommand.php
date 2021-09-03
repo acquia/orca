@@ -132,7 +132,6 @@ class QaAutomatedTestsCommand extends Command {
       return StatusCodeEnum::ERROR;
     }
 
-    $output->writeln(["return1"]);
     return StatusCodeEnum::OK;
   }
 

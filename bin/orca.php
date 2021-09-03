@@ -51,6 +51,5 @@ $application->setVersion(trim(file_get_contents(__DIR__ . '/../config/VERSION'))
 
 // Add command autocompletion.
 $application->add(new CompletionCommand());
-echo "start1";
+
 $application->run();
-echo "return2";
