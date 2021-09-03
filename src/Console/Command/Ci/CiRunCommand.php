@@ -120,6 +120,7 @@ class CiRunCommand extends Command {
       $output->writeln("Error: {$e->getMessage()}");
       return StatusCodeEnum::ERROR;
     }
+    $output->writeln("ci:run returns");
     return StatusCodeEnum::OK;
   }
 
