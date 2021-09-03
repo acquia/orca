@@ -21,7 +21,7 @@ google-chrome-stable --version
 yarn --version
 
 # Disable Xdebug except on code coverage jobs.
-[[ "$ORCA_COVERAGE_ENABLE" == TRUE ]] || phpdismod xdebug
+[[ "$ORCA_COVERAGE_ENABLE" == TRUE ]] || sudo phpdismod -v $PHP_VERSION xdebug
 
 # Install the PECL YAML parser for strict YAML parsing.
 sudo apt-get install libyaml-dev
