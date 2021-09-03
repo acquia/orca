@@ -46,7 +46,7 @@ class ChromeDriverServer extends ServerBase {
       '--headless',
       '--no-sandbox',
       '--port=4444',
-      ];
+    ];
     return new Process($command);
   }
 
