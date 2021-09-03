@@ -74,10 +74,10 @@ class ProcessRunner {
       $process->setWorkingDirectory($cwd);
     }
 
-    $process
+    $status = $process
       ->setTimeout(NULL)
       ->setIdleTimeout(NULL)
-      ->mustRun(function () {
+      ->run(function () {
         // Write process buffer to output.
         $buffer = func_get_arg(1);
         $this->output->write($buffer);
@@ -90,7 +90,7 @@ class ProcessRunner {
 
     $this->output->newLine();
 
-    return $process->getExitCode();
+    return $status;
   }
 
   /**
