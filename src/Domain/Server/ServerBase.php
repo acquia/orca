@@ -65,7 +65,7 @@ abstract class ServerBase implements ServerInterface {
       // This is necessary for processes to run asynchronously.
       ->disableOutput()
 
-      ->start();
+      ->run();
   }
 
   /**
