@@ -21,6 +21,8 @@ if [[ "$ORCA_ENABLE_NIGHTWATCH" == "TRUE" && "$ORCA_SUT_HAS_NIGHTWATCH_TESTS" &&
     orca fixture:run-server &
     PID=$!
 
+    $ORCA_ROOT/vendor/bin/chromedriver --disable-dev-shm-usage --disable-extensions --disable-gpu --headless --no-sandbox --port=4444 &
+
     eval "yarn test:nightwatch \\
       --headless \\
       --passWithNoTests \\
