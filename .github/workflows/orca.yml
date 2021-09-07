@@ -9,7 +9,9 @@ jobs:
       ORCA_PACKAGES_CONFIG: example/tests/packages.yml
       ORCA_PACKAGES_CONFIG_ALTER: example/tests/packages_alter.yml
       ORCA_ENABLE_NIGHTWATCH: FALSE
-      ORCA_SUT_DIR: ${{ env.GITHUB_WORKSPACE }}/../example
+      # Hardcode path since GITHUB_WORKSPACE can't be used here.
+      # @see https://github.community/t/how-to-use-env-context/16975/9
+      ORCA_SUT_DIR: /home/runner/work/orca/example
       ORCA_SELF_TEST_COVERAGE_CLOVER: $HOME/build/logs/clover-self.xml
       ORCA_JOB: ${{ matrix.orca-job }}
 
