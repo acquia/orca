@@ -77,14 +77,18 @@ jobs:
           coverage: xdebug2
       - name: Before install
         run: |
-          composer create-project --no-dev --ignore-platform-req=php acquia/orca ../orca "$ORCA_VERSION"
+          ../orca/bin/actions/self-test/before_install.sh
           ../orca/bin/actions/before_install.sh
       - name: Install
-        run: ../orca/bin/actions/install.sh
+        run: |
+          ../orca/bin/actions/self-test/install.sh
+          ../orca/bin/actions/install.sh
       - name: Before script
         run: ../orca/bin/actions/before_script.sh
       - name: Script
-        run: ../orca/bin/actions/script.sh
+        run: |
+          ../orca/bin/actions/self-test/script.sh
+          ../orca/bin/actions/script.sh
       - name: After script
         run: ../orca/bin/actions/after_script.sh
       - name: After success
