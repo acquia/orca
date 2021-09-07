@@ -15,6 +15,8 @@ cd "$(dirname "$0")" || exit 1; source ../_includes.sh
   cd ../../../
   cp -R example ../
   cd ../example || exit 1
+  git config --local user.email "action@github.com"
+  git config --local user.name "GitHub Action"
   git init
   git add --all
   git commit --message="Initial commit."
