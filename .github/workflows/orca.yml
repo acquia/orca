@@ -16,7 +16,7 @@ jobs:
     strategy:
       matrix:
         php-version: ["7.3"]
-        orca-job: []
+        orca-job: [""]
         include:
           - name: "Static code analysis"
             orca-job: STATIC_CODE_ANALYSIS
