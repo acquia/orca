@@ -26,6 +26,10 @@ on: [push, pull_request]
 jobs:
   build:
     runs-on: ubuntu-latest
+    # For various reasons, some jobs are allowed to fail without failing the whole
+    # build. They should still be watched for advance notice of future problems.
+    # @see https://docs.travis-ci.com/user/customizing-the-build#rows-that-are-allowed-to-fail
+    continue-on-error: ${{ matrix.allow-failure }}
     # Change the following values for your implementation.
     env:
       # Provide your package's name.
@@ -88,80 +92,46 @@ jobs:
       matrix:
         # The standard ORCA jobs provide broad out-of-the-box coverage.
         # @see https://github.com/acquia/orca/blob/main/docs/understanding-orca.md#continuous-integration
-        #
-        # For various reasons, some jobs are allowed to fail without failing the whole
-        # build. They should still be watched for advance notice of future problems.
-        # @see https://docs.travis-ci.com/user/customizing-the-build#rows-that-are-allowed-to-fail
+        orca-job:
+          - STATIC_CODE_ANALYSIS
+          - INTEGRATED_TEST_ON_OLDEST_SUPPORTED
+          - INTEGRATED_TEST_ON_LATEST_LTS
+          - INTEGRATED_TEST_ON_PREVIOUS_MINOR
+          - INTEGRATED_UPGRADE_TEST_FROM_PREVIOUS_MINOR
+          - ISOLATED_TEST_ON_CURRENT
+          - INTEGRATED_TEST_ON_CURRENT
+          - INTEGRATED_UPGRADE_TEST_TO_NEXT_MINOR
+          - ISOLATED_TEST_ON_CURRENT_DEV
+          - INTEGRATED_TEST_ON_CURRENT_DEV
+          - STRICT_DEPRECATED_CODE_SCAN
+          - ISOLATED_TEST_ON_NEXT_MINOR
+          - INTEGRATED_TEST_ON_NEXT_MINOR
+          - ISOLATED_UPGRADE_TEST_TO_NEXT_MAJOR_BETA_OR_LATER
+        php-version: ["7.3"]
+        allow-failure: [false]
+        # When manually specifying a job to include, you must include all parameters (there are no default / inherited values from the job matrix).
         include:
-          - name: "Static code analysis"
-            orca-job: STATIC_CODE_ANALYSIS
-            php-version: "7.3"
-          - name: "Integrated test on oldest supported Drupal core version"
-            orca-job: INTEGRATED_TEST_ON_OLDEST_SUPPORTED
-            php-version: "7.3"
-          - name: "Integrated test on latest LTS Drupal core version"
-            orca-job: INTEGRATED_TEST_ON_LATEST_LTS
-            php-version: "7.3"
-          - name: "Integrated test on previous minor Drupal core version"
-            orca-job: INTEGRATED_TEST_ON_PREVIOUS_MINOR
-            php-version: "7.3"
-          - name: "Integrated upgrade test from previous minor"
-            orca-job: INTEGRATED_UPGRADE_TEST_FROM_PREVIOUS_MINOR
-            php-version: "7.3"
-          - name: "Isolated test on current Drupal core version"
-            orca-job: ISOLATED_TEST_ON_CURRENT
-            php-version: "7.3"
-          - name: "Isolated test on current Drupal core version and PHP 8"
-            orca-job: ISOLATED_TEST_ON_CURRENT
+          - orca-job: ISOLATED_TEST_ON_CURRENT
             php-version: "8.0"
-          - name: "Integrated test on current Drupal core version"
-            orca-job: INTEGRATED_TEST_ON_CURRENT
+            allow-failure: false
+          - orca-job: INTEGRATED_UPGRADE_TEST_TO_NEXT_MINOR_DEV
             php-version: "7.3"
-          - name: "Integrated upgrade test to next minor Drupal core version"
-            orca-job: INTEGRATED_UPGRADE_TEST_TO_NEXT_MINOR
+            allow-failure: true
+          - orca-job: LOOSE_DEPRECATED_CODE_SCAN
             php-version: "7.3"
-          - name: "Integrated upgrade test to next minor dev Drupal core version"
-            orca-job: INTEGRATED_UPGRADE_TEST_TO_NEXT_MINOR_DEV
+            allow-failure: true
+          - orca-job: DEPRECATED_CODE_SCAN_W_CONTRIB
             php-version: "7.3"
-            continue-on-error: true
-          - name: "Isolated test on current dev Drupal core version"
-            orca-job: ISOLATED_TEST_ON_CURRENT_DEV
+            allow-failure: true
+          - orca-job: ISOLATED_TEST_ON_NEXT_MINOR_DEV
             php-version: "7.3"
-          - name: "Integrated test on current dev Drupal core version"
-            orca-job: INTEGRATED_TEST_ON_CURRENT_DEV
+            allow-failure: true
+          - orca-job: INTEGRATED_TEST_ON_NEXT_MINOR_DEV
             php-version: "7.3"
-          - name: "Loose deprecated code scan"
-            orca-job: LOOSE_DEPRECATED_CODE_SCAN
+            allow-failure: true
+          - orca-job: ISOLATED_UPGRADE_TEST_TO_NEXT_MAJOR_DEV
             php-version: "7.3"
-            continue-on-error: true
-          - name: "Strict deprecated code scan"
-            orca-job: STRICT_DEPRECATED_CODE_SCAN
-            php-version: "7.3"
-          - name: "Deprecated code scan w/ contrib"
-            orca-job: DEPRECATED_CODE_SCAN_W_CONTRIB
-            php-version: "7.3"
-            continue-on-error: true
-          - name: "Isolated test on next minor Drupal core version"
-            orca-job: ISOLATED_TEST_ON_NEXT_MINOR
-            php-version: "7.3"
-          - name: "Integrated test on next minor Drupal core version"
-            orca-job: INTEGRATED_TEST_ON_NEXT_MINOR
-            php-version: "7.3"
-          - name: "Isolated test on next minor dev Drupal core version"
-            orca-job: ISOLATED_TEST_ON_NEXT_MINOR_DEV
-            php-version: "7.3"
-            continue-on-error: true
-          - name: "Integrated test on next minor dev Drupal core version"
-            orca-job: INTEGRATED_TEST_ON_NEXT_MINOR_DEV
-            php-version: "7.3"
-            continue-on-error: true
-          - name: "Isolated upgrade test to next major beta-or-later Drupal core version"
-            orca-job: ISOLATED_UPGRADE_TEST_TO_NEXT_MAJOR_BETA_OR_LATER
-            php-version: "7.3"
-          - name: "Isolated upgrade test to next major dev Drupal core version"
-            orca-job: ISOLATED_UPGRADE_TEST_TO_NEXT_MAJOR_DEV
-            php-version: "7.3"
-            continue-on-error: true
+            allow-failure: true
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
