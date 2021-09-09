@@ -21,8 +21,9 @@
 #
 # For all Github Actions build config options,
 # @see https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions
+---
 name: ORCA CI
-on: [push, pull_request]
+on: [ push, pull_request ]
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -107,8 +108,8 @@ jobs:
           - ISOLATED_TEST_ON_NEXT_MINOR
           - INTEGRATED_TEST_ON_NEXT_MINOR
           - ISOLATED_UPGRADE_TEST_TO_NEXT_MAJOR_BETA_OR_LATER
-        php-version: ["7.3"]
-        allow-failure: [false]
+        php-version: [ "7.3" ]
+        allow-failure: [ false ]
         # When manually specifying a job to include, you must include all parameters (there are no default / inherited values from the job matrix).
         include:
           - orca-job: ISOLATED_TEST_ON_CURRENT
