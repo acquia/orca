@@ -54,54 +54,69 @@ jobs:
           - orca-job: ISOLATED_TEST_ON_CURRENT
             php-version: "8.0"
             allow-failure: false
+
           - orca-job: INTEGRATED_UPGRADE_TEST_TO_NEXT_MINOR_DEV
             php-version: "7.3"
             allow-failure: true
+
           - orca-job: LOOSE_DEPRECATED_CODE_SCAN
             php-version: "7.3"
             allow-failure: true
+
           - orca-job: DEPRECATED_CODE_SCAN_W_CONTRIB
             php-version: "7.3"
             allow-failure: true
+
           - orca-job: ISOLATED_TEST_ON_NEXT_MINOR_DEV
             php-version: "7.3"
             allow-failure: true
+
           - orca-job: INTEGRATED_TEST_ON_NEXT_MINOR_DEV
             php-version: "7.3"
             allow-failure: true
+
           - orca-job: ISOLATED_UPGRADE_TEST_TO_NEXT_MAJOR_DEV
             php-version: "7.3"
             allow-failure: true
     steps:
       - uses: actions/checkout@v2
+
       - uses: actions/setup-node@v2
         with:
           node-version: 12.x
+
       - uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php-version }}
           coverage: xdebug2
+
       - name: Before install
         run: |
           ../orca/bin/actions/self-test/before_install.sh
           ../orca/bin/actions/before_install.sh
+
       - name: Install
         run: |
           ../orca/bin/actions/self-test/install.sh
           ../orca/bin/actions/install.sh
+
       - name: Before script
         run: ../orca/bin/actions/before_script.sh
+
       - name: Script
         run: |
           ../orca/bin/actions/self-test/script.sh
           ../orca/bin/actions/script.sh
+
       - name: After script
         run: ../orca/bin/actions/after_script.sh
+
       - name: After success
         if: ${{ success() }}
         run: |
           ../orca/bin/actions/self-test/after_success.sh
           ../orca/bin/actions/after_success.sh
+
       - name: After failure
         if: ${{ failure() }}
         run: ../orca/bin/actions/after_failure.sh
