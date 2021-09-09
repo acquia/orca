@@ -7,11 +7,11 @@
 #     before_install.sh
 #
 # DESCRIPTION
-#     Configures the Github Actions environment, installs ORCA, and prepares the SUT.
+#     Configures the GitHub Actions environment, installs ORCA, and prepares the SUT.
 
 cd "$(dirname "$0")" || exit; source _includes.sh
 
-# The remaining before_install commands should only be run on Github Actions.
+# The remaining before_install commands should only be run on GitHub Actions.
 [[ "$GITHUB_ACTIONS" ]] || exit 0
 
 # Display the Google Chrome version.
@@ -23,7 +23,7 @@ yarn --version
 # Disable Xdebug except on code coverage jobs.
 [[ "$ORCA_COVERAGE_ENABLE" == TRUE ]] || sudo phpdismod -v ALL xdebug
 
-# Travis CI would install YAML from PECL here, but it's already present in Github Actions.
+# Travis CI would install YAML from PECL here, but it's already present in GitHub Actions.
 
 # Display PHP information.
 php -i

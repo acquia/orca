@@ -1,4 +1,4 @@
-# Example Github Actions configuration.
+# Example GitHub Actions configuration.
 #
 # This configuration file will cover ORCA integration for most packages almost
 # without modification. Use as follows:
@@ -19,7 +19,7 @@
 # For advanced needs,
 # @see https://github.com/acquia/orca/blob/main/docs/advanced-usage.md
 #
-# For all Github Actions build config options,
+# For all GitHub Actions build config options,
 # @see https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions
 ---
 name: ORCA CI
@@ -28,7 +28,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     # For various reasons, some jobs are allowed to fail. They should still be
-    # watched for advance notice of future problems. In Github (unlike Travis CI),
+    # watched for advance notice of future problems. In GitHub (unlike Travis CI),
     # this will report as a build failure but still allow for PR merges.
     #
     # @see https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobsjob_idcontinue-on-error
@@ -80,7 +80,7 @@ jobs:
       # ORCA_PHPCS_STANDARD: AcquiaDrupalTransitional
       #
       # To enable telemetry with Amplitude on cron runs, uncomment the following
-      # line and set ORCA_AMPLITUDE_API_KEY in your Github Actions settings:
+      # line and set ORCA_AMPLITUDE_API_KEY in your GitHub Actions settings:
       # @see https://github.com/acquia/orca/blob/main/docs/advanced-usage.md#ORCA_TELEMETRY_ENABLE
       # @see https://github.com/acquia/orca/blob/main/docs/advanced-usage.md#ORCA_AMPLITUDE_API_KEY
       # ORCA_TELEMETRY_ENABLE: TRUE
@@ -91,7 +91,7 @@ jobs:
     # Execution time is drastically reduced by splitting the build into multiple
     # concurrent jobs.
     #
-    # By default, Github will cancel the build as soon as any job fails.
+    # By default, GitHub will cancel the build as soon as any job fails.
     # @see https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobsjob_idstrategyfail-fast
     strategy:
       matrix:

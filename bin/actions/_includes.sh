@@ -7,7 +7,7 @@
 #     cd "$(dirname "$0")" || exit; source _includes.sh
 #
 # DESCRIPTION
-#     Includes common features used by the Github Actions scripts.
+#     Includes common features used by the GitHub Actions scripts.
 
 # Outputs a formatted error message and exits with an error code if a given
 # condition is not met.

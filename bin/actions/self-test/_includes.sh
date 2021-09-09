@@ -7,7 +7,7 @@
 #     cd "$(dirname "$0")" || exit; source _includes.sh
 #
 # DESCRIPTION
-#     Includes common features used by the Github Actions scripts.
+#     Includes common features used by the GitHub Actions scripts.
 
 source ../_includes.sh
 

@@ -1,6 +1,6 @@
 # Getting Started
 
-1. [Configuring Travis CI and Github Actions](#configuring-travis-ci)
+1. [Configuring Travis CI and GitHub Actions](#configuring-travis-ci)
 1. [Local installation](#local-installation)
 1. [Making ORCA aware of your package](#making-orca-aware-of-your-package)
 1. [Running automated tests](#running-automated-tests)
@@ -10,7 +10,7 @@
 
 ## Configuring Travis CI
 
-ORCA's primary use case is in a continuous integration workflow, running against pull requests and commits. It provides several scripts in `bin/travis` and `bin/actions` corresponding to build phases and steps in Travis CI and Github Actions, respectively:
+ORCA's primary use case is in a continuous integration workflow, running against pull requests and commits. It provides several scripts in `bin/travis` and `bin/actions` corresponding to build phases and steps in Travis CI and GitHub Actions, respectively:
 
 * **`before_install.sh`** ([travis](../bin/travis/before_install.sh)|[actions](../bin/actions/before_install.sh)) configures the Travis CI environment, installs ORCA, and prepares the SUT.
 * **`install.sh`** ([travis](../bin/travis/install.sh)|[actions](../bin/actions/install.sh)) creates the test fixture and places the SUT.
@@ -21,7 +21,7 @@ ORCA's primary use case is in a continuous integration workflow, running against
 * **`after_failure.sh`** ([travis](../bin/travis/after_failure.sh)|[actions](../bin/actions/after_failure.sh)) displays debugging information in case of failure.
 * **`after_script.sh`** ([travis](../bin/travis/after_script.sh)|[actions](../bin/actions/after_script.sh)) conditionally logs the job.
 
-See [`example/.travis.yml`](../example/.travis.yml) for an example Travis CI configuration and [`example/.github/workflows/orca.yml`](../example/.github/workflows/orca.yml) for an example Github Actions configuration. Features are explained in the comments.
+See [`example/.travis.yml`](../example/.travis.yml) for an example Travis CI configuration and [`example/.github/workflows/orca.yml`](../example/.github/workflows/orca.yml) for an example GitHub Actions configuration. Features are explained in the comments.
 
 For more complex testing needs, ORCA commands can be invoked directly. [See this this example from Lightning.](https://github.com/acquia/lightning-core/blob/8.x-3.11/tests/travis/before_script.sh)
 
