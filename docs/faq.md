@@ -16,7 +16,7 @@ ORCA doesn't install dev dependencies because Composer provides no means of doin
 
    ```yaml
    install:
-     - ../orca/bin/travis/install.sh
+     - ../orca/bin/common/install.sh
 
      # Add the physical dependency to the codebase.
      - cd "$TRAVIS_BUILD_DIR/../orca-build"
