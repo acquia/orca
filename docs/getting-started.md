@@ -13,9 +13,9 @@
 ORCA's primary use case is in a continuous integration workflow, running against pull requests and commits. It provides several scripts in `bin/travis` and `bin/actions` corresponding to build phases and steps in Travis CI and GitHub Actions, respectively:
 
 * **`before_install.sh`** ([travis](../bin/travis/before_install.sh)|[actions](../bin/actions/before_install.sh)) configures the Travis CI environment, installs ORCA, and prepares the SUT.
-* **`install.sh`** ([travis](../bin/travis/install.sh)|[actions](../bin/actions/install.sh)) creates the test fixture and places the SUT.
-* **`before_script.sh`** ([travis](../bin/travis/before_script.sh)|[actions](../bin/actions/before_script.sh)) displays details about the fixture for debugging purposes.
-* **`script.sh`** ([travis](../bin/travis/script.sh)|[actions](../bin/actions/script.sh)) runs static code analysis and automated tests.
+* **`install.sh`** ([travis](../bin/common/install.sh)|[actions](../bin/actions/install.sh)) creates the test fixture and places the SUT.
+* **`before_script.sh`** ([travis](../bin/common/before_script.sh)|[actions](../bin/actions/before_script.sh)) displays details about the fixture for debugging purposes.
+* **`script.sh`** ([travis](../bin/common/script.sh)|[actions](../bin/actions/script.sh)) runs static code analysis and automated tests.
 * **`before_cache.sh`** ([travis](../bin/travis/before_cache.sh)|[actions](../bin/actions/before_cache.sh)) is reserved for future use.
 * **`after_success.sh`** ([travis](../bin/travis/after_success.sh)|[actions](../bin/actions/after_success.sh)) is reserved for future use.
 * **`after_failure.sh`** ([travis](../bin/travis/after_failure.sh)|[actions](../bin/actions/after_failure.sh)) displays debugging information in case of failure.
@@ -72,7 +72,7 @@ ORCA can also be installed and run locally for testing and development. Follow t
     source <(/path/to/orca _completion --generate-hook)
     ```
 
-Invoke ORCA from the terminal (`bin/orca`). Use the `--help` command option to learn more about the various commands or see how they're used in [`bin/travis/script.sh`](../bin/travis/script.sh). Use the `fixture:run-server` command to run the web server for local development.
+Invoke ORCA from the terminal (`bin/orca`). Use the `--help` command option to learn more about the various commands or see how they're used in [`bin/travis/script.sh`](../bin/common/script.sh). Use the `fixture:run-server` command to run the web server for local development.
 
 ## Making ORCA aware of your package
 

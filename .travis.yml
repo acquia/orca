@@ -72,27 +72,27 @@ jobs:
 
 before_install:
   - nvm install 12.13.1; nvm use 12.13.1
-  - ../orca/bin/travis/self-test/before_install.sh
-  - ../orca/bin/travis/before_install.sh
+  - ../orca/bin/common/self-test/before_install.sh
+  - ../orca/bin/common/before_install.sh
 
 install:
-  - ../orca/bin/travis/self-test/install.sh
-  - ../orca/bin/travis/install.sh
+  - ../orca/bin/common/self-test/install.sh
+  - ../orca/bin/common/install.sh
 
-before_script: ../orca/bin/travis/before_script.sh
+before_script: ../orca/bin/common/before_script.sh
 
 script:
-  - ../orca/bin/travis/self-test/script.sh
-  - ../orca/bin/travis/script.sh
+  - ../orca/bin/common/self-test/script.sh
+  - ../orca/bin/common/script.sh
 
 after_script:
-  - ../orca/bin/travis/before_cache.sh
-  - ../orca/bin/travis/self-test/after_success.sh
+  - ../orca/bin/common/before_cache.sh
+  - ../orca/bin/common/self-test/after_success.sh
   - unset ORCA_COVERAGE_ENABLE
   - unset ORCA_COVERALLS_ENABLE
-  - ../orca/bin/travis/after_success.sh
-  - ../orca/bin/travis/after_failure.sh
-  - ../orca/bin/travis/after_script.sh
+  - ../orca/bin/common/after_success.sh
+  - ../orca/bin/common/after_failure.sh
+  - ../orca/bin/common/after_script.sh
 
 notifications:
   slack:

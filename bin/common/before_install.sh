@@ -7,23 +7,42 @@
 #     before_install.sh
 #
 # DESCRIPTION
-#     Configures the GitHub Actions environment, installs ORCA, and prepares the SUT.
+#     Configures the CI environment, installs ORCA, and prepares the SUT.
 
 cd "$(dirname "$0")" || exit; source _includes.sh
 
-# The remaining before_install commands should only be run on GitHub Actions.
-[[ "$GITHUB_ACTIONS" ]] || exit 0
+# The remaining before_install commands should only be run on CI.
+[[ "$CI" ]] || exit 0
 
 # Display the Google Chrome version.
 google-chrome-stable --version
+
+# Display the Node version.
+echo "$TRAVIS_NODE_VERSION"
 
 # Display the Yarn version.
 yarn --version
 
 # Disable Xdebug except on code coverage jobs.
-[[ "$ORCA_COVERAGE_ENABLE" == TRUE ]] || sudo phpdismod -v ALL xdebug
+if [[ ! "$ORCA_COVERAGE_ENABLE" ]]; then
+  if [[ "$TRAVIS" ]]; then phpenv config-rm xdebug.ini; fi
+  if [[ "$GITHUB_ACTIONS" ]]; then sudo phpdismod -v ALL xdebug; fi
+fi
 
-# Travis CI would install YAML from PECL here, but it's already present in GitHub Actions.
+# Travis CI installs YAML from PECL, but it's already present in GitHub Actions.
+if [[ "$TRAVIS" ]]; then
+  {
+    # Remove PHP memory limit.
+    echo 'memory_limit = -1'
+    # Prevent email errors.
+    echo 'sendmail_path = /bin/true'
+    # Prevent PHPStan warnings about APCu constants.
+    echo 'extension = apcu.so'
+  } >> "$HOME/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini"
+
+  # Install the PECL YAML parser for strict YAML parsing.
+  yes | pecl install yaml
+fi
 
 # Display PHP information.
 php -i
