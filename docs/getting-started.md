@@ -12,14 +12,14 @@
 
 ORCA's primary use case is in a continuous integration workflow, running against pull requests and commits. It provides several scripts in `bin/travis` and `bin/actions` corresponding to build phases and steps in Travis CI and Github Actions, respectively:
 
-* **[`before_install.sh`](../bin/travis/before_install.sh)** configures the Travis CI environment, installs ORCA, and prepares the SUT.
-* **[`install.sh`](../bin/travis/install.sh)** creates the test fixture and places the SUT.
-* **[`before_script.sh`](../bin/travis/before_script.sh)** displays details about the fixture for debugging purposes.
-* **[`script.sh`](../bin/travis/script.sh)** runs static code analysis and automated tests.
-* **[`before_cache.sh`](../bin/travis/before_cache.sh)** is reserved for future use.
-* **[`after_success.sh`](../bin/travis/after_success.sh)** is reserved for future use.
-* **[`after_failure.sh`](../bin/travis/after_failure.sh)** displays debugging information in case of failure.
-* **[`after_script.sh`](../bin/travis/after_script.sh)** conditionally logs the job.
+* **`before_install.sh`** ([travis](../bin/travis/before_install.sh)|[actions](../bin/actions/before_install.sh)) configures the Travis CI environment, installs ORCA, and prepares the SUT.
+* **`install.sh`** ([travis](../bin/travis/install.sh)|[actions](../bin/actions/install.sh)) creates the test fixture and places the SUT.
+* **`before_script.sh`** ([travis](../bin/travis/before_script.sh)|[actions](../bin/actions/before_script.sh)) displays details about the fixture for debugging purposes.
+* **`script.sh`** ([travis](../bin/travis/script.sh)|[actions](../bin/actions/script.sh)) runs static code analysis and automated tests.
+* **`before_cache.sh`** ([travis](../bin/travis/before_cache.sh)|[actions](../bin/actions/before_cache.sh)) is reserved for future use.
+* **`after_success.sh`** ([travis](../bin/travis/after_success.sh)|[actions](../bin/actions/after_success.sh)) is reserved for future use.
+* **`after_failure.sh`** ([travis](../bin/travis/after_failure.sh)|[actions](../bin/actions/after_failure.sh)) displays debugging information in case of failure.
+* **`after_script.sh`** ([travis](../bin/travis/after_script.sh)|[actions](../bin/actions/after_script.sh)) conditionally logs the job.
 
 See [`example/.travis.yml`](../example/.travis.yml) for an example Travis CI configuration and [`example/.github/workflows/orca.yml`](../example/.github/workflows/orca.yml) for an example Github Actions configuration. Features are explained in the comments.
 
