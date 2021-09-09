@@ -30,6 +30,7 @@ jobs:
       ORCA_SUT_DIR: /home/runner/work/orca/example
       ORCA_SELF_TEST_COVERAGE_CLOVER: $HOME/build/logs/clover-self.xml
       ORCA_JOB: ${{ matrix.orca-job }}
+      ORCA_LIVE_TEST: ${{ matrix.orca-live-test }}
 
     strategy:
       matrix:
@@ -78,6 +79,11 @@ jobs:
           - orca-job: ISOLATED_UPGRADE_TEST_TO_NEXT_MAJOR_DEV
             php-version: "7.3"
             allow-failure: true
+
+          - orca-live-test: TRUE
+            php-version: "7.3"
+            allow-failure: true
+
     steps:
       - uses: actions/checkout@v2
 
