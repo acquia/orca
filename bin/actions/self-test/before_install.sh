@@ -17,7 +17,7 @@ cd "$(dirname "$0")" || exit 1; source ../_includes.sh
   cd ../example || exit 1
   git init
   git config --local user.email "action@github.com"
-  git config --local user.name "GitHub Action"
+  git config --local user.name "GitHub Actions"
   git add --all
   git commit --message="Initial commit."
   BRANCH=$(git rev-parse --abbrev-ref HEAD)

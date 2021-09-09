@@ -8,7 +8,7 @@
     1. [Nightwatch.js](#nightwatchjs)
     1. [Tagging/grouping](#tagginggrouping)
 
-## Configuring Travis CI
+## Configuring Travis CI and GitHub Actions
 
 ORCA's primary use case is in a continuous integration workflow, running against pull requests and commits. It provides several scripts in `bin/travis` and `bin/actions` corresponding to build phases and steps in Travis CI and GitHub Actions, respectively:
 

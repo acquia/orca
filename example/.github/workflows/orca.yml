@@ -114,7 +114,8 @@ jobs:
           - ISOLATED_UPGRADE_TEST_TO_NEXT_MAJOR_BETA_OR_LATER
         php-version: [ "7.3" ]
         allow-failure: [ false ]
-        # When manually specifying a job to include, you must include all parameters (there are no default / inherited values from the job matrix).
+        # When manually specifying a job to include, you must include all
+        # parameters. They are not inherited from matrix defaults.
         include:
           - orca-job: ISOLATED_TEST_ON_CURRENT
             php-version: "8.0"
