@@ -99,7 +99,9 @@ jobs:
         run: ../orca/bin/actions/after_script.sh
       - name: After success
         if: ${{ success() }}
-        run: ../orca/bin/actions/after_success.sh
+        run: |
+          ../orca/bin/actions/self-test/after_success.sh
+          ../orca/bin/actions/after_success.sh
       - name: After failure
         if: ${{ failure() }}
         run: ../orca/bin/actions/after_failure.sh
