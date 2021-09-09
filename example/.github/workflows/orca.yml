@@ -92,6 +92,7 @@ jobs:
     # concurrent jobs.
     #
     # By default, Github will cancel the build as soon as any job fails.
+    # @see https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobsjob_idstrategyfail-fast
     strategy:
       matrix:
         # The standard ORCA jobs provide broad out-of-the-box coverage.
