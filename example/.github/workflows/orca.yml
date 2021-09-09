@@ -27,9 +27,12 @@ on: [ push, pull_request ]
 jobs:
   build:
     runs-on: ubuntu-latest
-    # For various reasons, some jobs are allowed to fail without failing the whole
-    # build. They should still be watched for advance notice of future problems.
-    # @see https://docs.travis-ci.com/user/customizing-the-build#rows-that-are-allowed-to-fail
+    # For various reasons, some jobs are allowed to fail. They should still be
+    # watched for advance notice of future problems. In Github (unlike Travis CI),
+    # this will report as a build failure but still allow for PR merges.
+    #
+    # @see https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobsjob_idcontinue-on-error
+    # @see https://github.com/actions/toolkit/issues/399
     continue-on-error: ${{ matrix.allow-failure }}
     # Change the following values for your implementation.
     env:
@@ -77,7 +80,7 @@ jobs:
       # ORCA_PHPCS_STANDARD: AcquiaDrupalTransitional
       #
       # To enable telemetry with Amplitude on cron runs, uncomment the following
-      # line and set ORCA_AMPLITUDE_API_KEY in your Travis CI repository settings:
+      # line and set ORCA_AMPLITUDE_API_KEY in your Github Actions settings:
       # @see https://github.com/acquia/orca/blob/main/docs/advanced-usage.md#ORCA_TELEMETRY_ENABLE
       # @see https://github.com/acquia/orca/blob/main/docs/advanced-usage.md#ORCA_AMPLITUDE_API_KEY
       # ORCA_TELEMETRY_ENABLE: TRUE
