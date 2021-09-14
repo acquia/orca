@@ -56,14 +56,6 @@ jobs:
             php-version: "8.0"
             allow-failure: false
 
-          - orca-job: INTEGRATED_UPGRADE_TEST_TO_NEXT_MINOR_DEV
-            php-version: "7.3"
-            allow-failure: true
-
-          - orca-job: LOOSE_DEPRECATED_CODE_SCAN
-            php-version: "7.3"
-            allow-failure: true
-
           - orca-job: DEPRECATED_CODE_SCAN_W_CONTRIB
             php-version: "7.3"
             allow-failure: true
@@ -73,10 +65,6 @@ jobs:
             allow-failure: true
 
           - orca-job: INTEGRATED_TEST_ON_NEXT_MINOR_DEV
-            php-version: "7.3"
-            allow-failure: true
-
-          - orca-job: ISOLATED_UPGRADE_TEST_TO_NEXT_MAJOR_DEV
             php-version: "7.3"
             allow-failure: true
 
