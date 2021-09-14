@@ -114,15 +114,10 @@ jobs:
           ../orca/bin/common/self-test/script.sh
           ../orca/bin/common/script.sh
 
+      # These two jobs need to run regardless of success or failure in ORCA's self-tests in order to exercise the code.
       - name: After script
-        run: ../orca/bin/common/after_script.sh
-
-      - name: After success
-        if: ${{ success() }}
         run: |
           ../orca/bin/common/self-test/after_success.sh
           ../orca/bin/common/after_success.sh
-
-      - name: After failure
-        if: ${{ failure() }}
-        run: ../orca/bin/common/after_failure.sh
+          ../orca/bin/common/after_failure.sh
+          ../orca/bin/common/after_script.sh
