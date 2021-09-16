@@ -167,33 +167,33 @@ jobs:
       - name: Before install
         run: |
           composer create-project --no-dev --ignore-platform-req=php acquia/orca ../orca "$ORCA_VERSION"
-          ../orca/bin/common/before_install.sh
+          ../orca/bin/ci/before_install.sh
         # For custom testing needs, add your own scripts here. See the example script
         # for more details.
-        # - ./bin/common/example.sh
+        # - ./bin/ci/example.sh
 
       # Create the test fixture and place the SUT.
       - name: Install
-        run: ../orca/bin/common/install.sh
+        run: ../orca/bin/ci/install.sh
 
       # Display details about the fixture.
       - name: Before script
-        run: ../orca/bin/common/before_script.sh
+        run: ../orca/bin/ci/before_script.sh
 
       # Run the test script.
       - name: Script
-        run: ../orca/bin/common/script.sh
+        run: ../orca/bin/ci/script.sh
 
       # Perform final, post-script tasks.
       - name: After script
-        run: ../orca/bin/common/after_script.sh
+        run: ../orca/bin/ci/after_script.sh
 
       # Conditionally send code coverage data to Coveralls.
       - name: After success
         if: ${{ success() }}
-        run: ../orca/bin/common/after_success.sh
+        run: ../orca/bin/ci/after_success.sh
 
       # Display debugging information in case of failure.
       - name: After failure
         if: ${{ failure() }}
-        run: ../orca/bin/common/after_failure.sh
+        run: ../orca/bin/ci/after_failure.sh

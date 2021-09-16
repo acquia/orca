@@ -86,26 +86,26 @@ jobs:
 
       - name: Before install
         run: |
-          ../orca/bin/common/self-test/before_install.sh
-          ../orca/bin/common/before_install.sh
+          ../orca/bin/ci/self-test/before_install.sh
+          ../orca/bin/ci/before_install.sh
 
       - name: Install
         run: |
-          ../orca/bin/common/self-test/install.sh
-          ../orca/bin/common/install.sh
+          ../orca/bin/ci/self-test/install.sh
+          ../orca/bin/ci/install.sh
 
       - name: Before script
-        run: ../orca/bin/common/before_script.sh
+        run: ../orca/bin/ci/before_script.sh
 
       - name: Script
         run: |
-          ../orca/bin/common/self-test/script.sh
-          ../orca/bin/common/script.sh
+          ../orca/bin/ci/self-test/script.sh
+          ../orca/bin/ci/script.sh
 
       # These two jobs need to run regardless of success or failure in ORCA's self-tests in order to exercise the code.
       - name: After script
         run: |
-          ../orca/bin/common/self-test/after_success.sh
-          ../orca/bin/common/after_success.sh
-          ../orca/bin/common/after_failure.sh
-          ../orca/bin/common/after_script.sh
+          ../orca/bin/ci/self-test/after_success.sh
+          ../orca/bin/ci/after_success.sh
+          ../orca/bin/ci/after_failure.sh
+          ../orca/bin/ci/after_script.sh
