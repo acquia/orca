@@ -7,7 +7,7 @@
 #     cd "$(dirname "$0")" || exit; source _includes.sh
 #
 # DESCRIPTION
-#     Includes common features used by the Travis CI scripts.
+#     Includes common features used by ORCA scripts.
 
 # Outputs a formatted error message and exits with an error code if a given
 # condition is not met.
@@ -30,10 +30,23 @@ function notice {
 # Assert that necessary environment variables are set.
 if [[ "$ORCA_JOB" ]]; then
   assert "$ORCA_SUT_NAME" "Missing required ORCA_SUT_NAME environment variable.\nHint: ORCA_SUT_NAME=drupal/example"
-  if [[ "$TRAVIS" ]]; then assert "$ORCA_SUT_BRANCH" "Missing required ORCA_SUT_BRANCH environment variable.\nHint: ORCA_SUT_BRANCH=8.x-1.x"; fi
+  if [[ "$CI" ]]; then assert "$ORCA_SUT_BRANCH" "Missing required ORCA_SUT_BRANCH environment variable.\nHint: ORCA_SUT_BRANCH=8.x-1.x"; fi
 fi
-if [[ ! "$TRAVIS" && "$ORCA_JOB" = "STATIC_CODE_ANALYSIS" ]]; then
+if [[ ! "$CI" && "$ORCA_JOB" = "STATIC_CODE_ANALYSIS" ]]; then
   assert "$ORCA_SUT_DIR" "Missing required ORCA_SUT_DIR environment variable.\nHint: ORCA_SUT_DIR=~/Projects/example"
+fi
+
+# Set working directory
+if [[ "$GITHUB_WORKSPACE" ]]; then
+  CI_WORKSPACE="$GITHUB_WORKSPACE"
+fi
+if [[ "$TRAVIS_BUILD_DIR" ]]; then
+  CI_WORKSPACE="$TRAVIS_BUILD_DIR"
+fi
+
+# Set event type
+if [[ "$GITHUB_EVENT_NAME" = "schedule" || "$TRAVIS_EVENT_TYPE" = "cron" ]]; then
+  export CI_EVENT="cron"
 fi
 
 # Set environment variables.
@@ -44,7 +57,7 @@ export ORCA_COVERALLS_ENABLE=${ORCA_COVERALLS_ENABLE:=FALSE}
 export ORCA_COVERAGE_ENABLE=${ORCA_COVERAGE_ENABLE:="$ORCA_COVERALLS_ENABLE"}
 export ORCA_FIXTURE_DIR=${ORCA_FIXTURE_DIR:="$ORCA_ROOT/../orca-build"}
 export ORCA_FIXTURE_PROFILE=${ORCA_FIXTURE_PROFILE:="orca"}
-export ORCA_SUT_DIR=${ORCA_SUT_DIR:=${TRAVIS_BUILD_DIR}}
+export ORCA_SUT_DIR=${ORCA_SUT_DIR:=${CI_WORKSPACE}}
 ORCA_SUT_HAS_NIGHTWATCH_TESTS=$(cd "$ORCA_SUT_DIR"; find . -regex ".*/Nightwatch/.*" -name \*.js)
 export ORCA_SUT_HAS_NIGHTWATCH_TESTS
 export ORCA_SUT_MACHINE_NAME=${ORCA_SUT_NAME##*\/}
@@ -71,7 +84,7 @@ export PATH="$HOME/.composer/vendor/bin:$PATH"
 export PATH="$ORCA_ROOT/bin:$PATH"
 export PATH="$ORCA_ROOT/vendor/bin:$PATH"
 export PATH="$ORCA_FIXTURE_DIR/vendor/bin:$PATH"
-export PATH="$TRAVIS_BUILD_DIR/vendor/bin:$PATH"
+export PATH="$CI_WORKSPACE/vendor/bin:$PATH"
 # Put this last to ensure that the host's Composer is preferred.
 export PATH="$HOME/.phpenv/shims/:$PATH"
 
@@ -80,5 +93,4 @@ alias drush='drush -r "$ORCA_FIXTURE_DIR"'
 
 # Exit as soon as one command returns a non-zero exit code and make the shell
 # print all lines in the script before executing them.
-# @see https://docs.travis-ci.com/user/job-lifecycle/#complex-build-commands
 set -ev

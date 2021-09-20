@@ -1,6 +1,6 @@
 # Getting Started
 
-1. [Configuring Travis CI](#configuring-travis-ci)
+1. [Configuring Travis CI and GitHub Actions](#configuring-travis-ci)
 1. [Local installation](#local-installation)
 1. [Making ORCA aware of your package](#making-orca-aware-of-your-package)
 1. [Running automated tests](#running-automated-tests)
@@ -8,20 +8,20 @@
     1. [Nightwatch.js](#nightwatchjs)
     1. [Tagging/grouping](#tagginggrouping)
 
-## Configuring Travis CI
+## Configuring Travis CI and GitHub Actions
 
-ORCA's primary use case is in a continuous integration workflow, running against pull requests and commits. It provides several scripts in `bin/travis` corresponding to Travis CI phases:
+ORCA's primary use case is in a continuous integration workflow, running against pull requests and commits. It provides several scripts in `bin/common` corresponding to build phases and steps in Travis CI and GitHub Actions, respectively:
 
-* **[`before_install.sh`](../bin/travis/before_install.sh)** configures the Travis CI environment, installs ORCA, and prepares the SUT.
-* **[`install.sh`](../bin/travis/install.sh)** creates the test fixture and places the SUT.
-* **[`before_script.sh`](../bin/travis/before_script.sh)** displays details about the fixture for debugging purposes.
-* **[`script.sh`](../bin/travis/script.sh)** runs static code analysis and automated tests.
-* **[`before_cache.sh`](../bin/travis/before_cache.sh)** is reserved for future use.
-* **[`after_success.sh`](../bin/travis/after_success.sh)** is reserved for future use.
-* **[`after_failure.sh`](../bin/travis/after_failure.sh)** displays debugging information in case of failure.
-* **[`after_script.sh`](../bin/travis/after_script.sh)** conditionally logs the job.
+* **[`before_install.sh`](../bin/common/before_install.sh)** configures the Travis CI environment, installs ORCA, and prepares the SUT.
+* **[`install.sh`](../bin/common/install.sh)** creates the test fixture and places the SUT.
+* **[`before_script.sh`](../bin/common/before_script.sh)** displays details about the fixture for debugging purposes.
+* **[`script.sh`](../bin/common/script.sh)** runs static code analysis and automated tests.
+* **[`before_cache.sh`](../bin/common/before_cache.sh)** is reserved for future use.
+* **[`after_success.sh`](../bin/common/after_success.sh)** is reserved for future use.
+* **[`after_failure.sh`](../bin/common/after_failure.sh)** displays debugging information in case of failure.
+* **[`after_script.sh`](../bin/common/after_script.sh)** conditionally logs the job.
 
-See [`example/.travis.yml`](../example/.travis.yml) for an example Travis CI configuration. Features are explained in the comments.
+See [`example/.travis.yml`](../example/.travis.yml) for an example Travis CI configuration and [`example/.github/workflows/orca.yml`](../example/.github/workflows/orca.yml) for an example GitHub Actions configuration. Features are explained in the comments.
 
 For more complex testing needs, ORCA commands can be invoked directly. [See this this example from Lightning.](https://github.com/acquia/lightning-core/blob/8.x-3.11/tests/travis/before_script.sh)
 
@@ -72,7 +72,7 @@ ORCA can also be installed and run locally for testing and development. Follow t
     source <(/path/to/orca _completion --generate-hook)
     ```
 
-Invoke ORCA from the terminal (`bin/orca`). Use the `--help` command option to learn more about the various commands or see how they're used in [`bin/travis/script.sh`](../bin/travis/script.sh). Use the `fixture:run-server` command to run the web server for local development.
+Invoke ORCA from the terminal (`bin/orca`). Use the `--help` command option to learn more about the various commands or see how they're used in [`bin/travis/script.sh`](../bin/common/script.sh). Use the `fixture:run-server` command to run the web server for local development.
 
 ## Making ORCA aware of your package
 

@@ -169,31 +169,31 @@ before_install:
   # Set Node.js to a version compatible with Drupal 9 + Nightwatch.js.
   - nvm install 12.13.1; nvm use 12.13.1
   - composer create-project --no-dev --ignore-platform-req=php acquia/orca ../orca "$ORCA_VERSION"
-  - ../orca/bin/travis/before_install.sh
+  - ../orca/bin/common/before_install.sh
   # For custom testing needs, add your own scripts here. See the example script
   # for more details.
-  # - ./bin/travis/example.sh
+  # - ./bin/common/example.sh
 
 # Create the test fixture and place the SUT.
-install: ../orca/bin/travis/install.sh
+install: ../orca/bin/common/install.sh
 
 # Display details about the fixture.
-before_script: ../orca/bin/travis/before_script.sh
+before_script: ../orca/bin/common/before_script.sh
 
 # Run the test script.
-script: ../orca/bin/travis/script.sh
+script: ../orca/bin/common/script.sh
 
 # Reserved for future use.
-before_cache: ../orca/bin/travis/before_cache.sh
+before_cache: ../orca/bin/common/before_cache.sh
 
 # Conditionally send code coverage data to Coveralls.
-after_success: ../orca/bin/travis/after_success.sh
+after_success: ../orca/bin/common/after_success.sh
 
 # Display debugging information in case of failure.
-after_failure: ../orca/bin/travis/after_failure.sh
+after_failure: ../orca/bin/common/after_failure.sh
 
 # Perform final, post-script tasks.
-after_script: ../orca/bin/travis/after_script.sh
+after_script: ../orca/bin/common/after_script.sh
 
 # Get build notifications.
 # @see https://docs.travis-ci.com/user/notifications

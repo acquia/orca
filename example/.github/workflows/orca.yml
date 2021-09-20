@@ -1,0 +1,199 @@
+# Example GitHub Actions configuration.
+#
+# This configuration file will cover ORCA integration for most packages almost
+# without modification. Use as follows:
+#
+# 1. Copy this file to your package root:
+#
+#    $ cp example/.github/workflows/orca.yml ../my_package/.github/workflows/orca.yml
+#
+# 2. Change the values in jobs.build.env for your package. No other changes are
+#    strictly necessary for a basic integration.
+#
+# 3. Review the other comments in the file for additional configuration options.
+#
+# 4. Strip the (now unnecessary) comments:
+#
+#    $ sed -i'.bak' -e '/^[[:blank:]]*#/d;s/#.*//' orca.yml && rm orca.yml.bak
+#
+# For advanced needs,
+# @see https://github.com/acquia/orca/blob/main/docs/advanced-usage.md
+#
+# For all GitHub Actions build config options,
+# @see https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions
+---
+name: ORCA CI
+on: [ push, pull_request ]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    # For various reasons, some jobs are allowed to fail. They should still be
+    # watched for advance notice of future problems. In GitHub (unlike Travis CI),
+    # this will report as a build failure but still allow for PR merges.
+    #
+    # @see https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobsjob_idcontinue-on-error
+    # @see https://github.com/actions/toolkit/issues/399
+    continue-on-error: ${{ matrix.allow-failure }}
+    # Change the following values for your implementation.
+    env:
+      # Provide your package's name.
+      ORCA_SUT_NAME: drupal/example
+      # Specify the name of the nearest Git version branch, e.g., 1.x or 8.x-1.x.
+      # This may be the destination branch of a pull request or the nearest
+      # ancestor of a topic branch. ORCA will rename the checked out Git branch to
+      # this value to make Composer resolve dependencies correctly on pull
+      # requests and topic branches.
+      ORCA_SUT_BRANCH: 8.x-1.x
+      # Specify the version of ORCA to use. Use dev-main to track the latest
+      # release, dev-develop to track Dev/HEAD, or any other Composer version
+      # string. Since ORCA uses Semantic Versioning, the current major version
+      # branch is recommended in order to receive new features but not unexpected
+      # backward compatibility breaking changes.
+      # @see https://getcomposer.org/doc/articles/versions.md
+      # @see https://semver.org/
+      # It is also recommended to watch ORCA releases.
+      # @see https://help.github.com/en/enterprise/2.20/user/github/receiving-notifications-about-activity-on-github/watching-and-unwatching-releases-for-a-repository
+      ORCA_VERSION: ^3
+      # If your package isn't in ORCA's packages.yml or conflicts with details
+      # that are, you can modify the active packages configuration at runtime by
+      # uncommenting the following line and specifying your own alter file.
+      # @see https://github.com/acquia/orca/blob/main/docs/advanced-usage.md#ORCA_PACKAGES_CONFIG_ALTER
+      # ORCA_PACKAGES_CONFIG_ALTER: ../example/tests/packages_alter.yml
+      #
+      # If your package is a Drupal installation profile, uncomment the following
+      # line and specify its machine name.
+      # @see https://github.com/acquia/orca/blob/main/docs/advanced-usage.md#ORCA_FIXTURE_PROFILE
+      # ORCA_FIXTURE_PROFILE: example
+      #
+      # If your package is a Composer project template or requires a different
+      # one to test with, uncomment the following line and specify its Packagist
+      # name. This is recommended if your package is not meant to support Acquia
+      # CMS, which is included in acquia/drupal-recommended-project.
+      # @see https://github.com/acquia/orca/blob/main/docs/advanced-usage.md#ORCA_FIXTURE_PROJECT_TEMPLATE
+      # @see https://github.com/acquia/orca/blob/main/docs/faq.md#why-do-i-get-version-conflicts-with-drupalacquia_cms
+      # ORCA_FIXTURE_PROJECT_TEMPLATE: acquia/drupal-minimal-project
+      #
+      # Change the PHP Code Sniffer standard used for static analysis. Acceptable
+      # values are "AcquiaPHP", "AcquiaDrupalStrict", and
+      # "AcquiaDrupalTransitional". Defaults to "AcquiaDrupalTransitional".
+      # @see https://github.com/acquia/orca/blob/main/docs/advanced-usage.md#ORCA_PHPCS_STANDARD
+      # ORCA_PHPCS_STANDARD: AcquiaDrupalTransitional
+      #
+      # To enable telemetry with Amplitude on cron runs, uncomment the following
+      # line and set ORCA_AMPLITUDE_API_KEY in your GitHub Actions settings:
+      # @see https://github.com/acquia/orca/blob/main/docs/advanced-usage.md#ORCA_TELEMETRY_ENABLE
+      # @see https://github.com/acquia/orca/blob/main/docs/advanced-usage.md#ORCA_AMPLITUDE_API_KEY
+      # ORCA_TELEMETRY_ENABLE: TRUE
+      #
+      # Do not modify the following line. It uses the build matrix to set ORCA_JOB for each job.
+      ORCA_JOB: ${{ matrix.orca-job }}
+
+    # Execution time is drastically reduced by splitting the build into multiple
+    # concurrent jobs.
+    #
+    # By default, GitHub will cancel the build as soon as any job fails.
+    # @see https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobsjob_idstrategyfail-fast
+    strategy:
+      matrix:
+        # The standard ORCA jobs provide broad out-of-the-box coverage.
+        # @see https://github.com/acquia/orca/blob/main/docs/understanding-orca.md#continuous-integration
+        orca-job:
+          - STATIC_CODE_ANALYSIS
+          - INTEGRATED_TEST_ON_OLDEST_SUPPORTED
+          - INTEGRATED_TEST_ON_LATEST_LTS
+          - INTEGRATED_TEST_ON_PREVIOUS_MINOR
+          - INTEGRATED_UPGRADE_TEST_FROM_PREVIOUS_MINOR
+          - ISOLATED_TEST_ON_CURRENT
+          - INTEGRATED_TEST_ON_CURRENT
+          - INTEGRATED_UPGRADE_TEST_TO_NEXT_MINOR
+          - ISOLATED_TEST_ON_CURRENT_DEV
+          - INTEGRATED_TEST_ON_CURRENT_DEV
+          - STRICT_DEPRECATED_CODE_SCAN
+          - ISOLATED_TEST_ON_NEXT_MINOR
+          - INTEGRATED_TEST_ON_NEXT_MINOR
+          - ISOLATED_UPGRADE_TEST_TO_NEXT_MAJOR_BETA_OR_LATER
+          # - ISOLATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_BETA_OR_LATER
+          # - INTEGRATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_BETA_OR_LATER
+          # - ISOLATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_DEV
+          # - INTEGRATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_DEV
+        # The lowest version of PHP supported by all of Drupal, Acquia, and ORCA itself.
+        # @see https://www.drupal.org/docs/8/system-requirements/php-requirements
+        # @see https://docs.acquia.com/acquia-cloud/arch/tech-platform/
+        php-version: [ "7.3" ]
+        allow-failure: [ false ]
+        # When manually specifying a job to include, you must include all
+        # parameters. They are not inherited from matrix defaults.
+        include:
+          - orca-job: ISOLATED_TEST_ON_CURRENT
+            php-version: "8.0"
+            allow-failure: false
+
+          - orca-job: INTEGRATED_UPGRADE_TEST_TO_NEXT_MINOR_DEV
+            php-version: "7.3"
+            allow-failure: true
+
+          - orca-job: LOOSE_DEPRECATED_CODE_SCAN
+            php-version: "7.3"
+            allow-failure: true
+
+          - orca-job: DEPRECATED_CODE_SCAN_W_CONTRIB
+            php-version: "7.3"
+            allow-failure: true
+
+          - orca-job: ISOLATED_TEST_ON_NEXT_MINOR_DEV
+            php-version: "7.3"
+            allow-failure: true
+
+          - orca-job: INTEGRATED_TEST_ON_NEXT_MINOR_DEV
+            php-version: "7.3"
+            allow-failure: true
+
+          - orca-job: ISOLATED_UPGRADE_TEST_TO_NEXT_MAJOR_DEV
+            php-version: "7.3"
+            allow-failure: true
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 12.x
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-version }}
+          coverage: xdebug2
+
+      # Install ORCA and prepare the environment.
+      - name: Before install
+        run: |
+          composer create-project --no-dev --ignore-platform-req=php acquia/orca ../orca "$ORCA_VERSION"
+          ../orca/bin/ci/before_install.sh
+        # For custom testing needs, add your own scripts here. See the example script
+        # for more details.
+        # - ./bin/ci/example.sh
+
+      # Create the test fixture and place the SUT.
+      - name: Install
+        run: ../orca/bin/ci/install.sh
+
+      # Display details about the fixture.
+      - name: Before script
+        run: ../orca/bin/ci/before_script.sh
+
+      # Run the test script.
+      - name: Script
+        run: ../orca/bin/ci/script.sh
+
+      # Perform final, post-script tasks.
+      - name: After script
+        run: ../orca/bin/ci/after_script.sh
+
+      # Conditionally send code coverage data to Coveralls.
+      - name: After success
+        if: ${{ success() }}
+        run: ../orca/bin/ci/after_success.sh
+
+      # Display debugging information in case of failure.
+      - name: After failure
+        if: ${{ failure() }}
+        run: ../orca/bin/ci/after_failure.sh

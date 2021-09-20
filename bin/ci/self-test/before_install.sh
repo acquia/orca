@@ -16,6 +16,8 @@ cd "$(dirname "$0")" || exit 1; source ../_includes.sh
   cp -R example ../
   cd ../example || exit 1
   git init
+  git config --local user.email "nobody@acquia.com"
+  git config --local user.name "ORCA CI"
   git add --all
   git commit --message="Initial commit."
   BRANCH=$(git rev-parse --abbrev-ref HEAD)
