@@ -38,7 +38,7 @@ fi
 
 # Set working directory
 if [[ "$OLDPWD" ]]; then
-  CI_WORKSPACE="$WORKSPACE/$OLDPWD"
+  CI_WORKSPACE="$WORKSPACE$OLDPWD"
 fi
 if [[ "$GITHUB_WORKSPACE" ]]; then
   CI_WORKSPACE="$GITHUB_WORKSPACE"
