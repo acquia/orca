@@ -37,8 +37,8 @@ if [[ ! "$CI" && "$ORCA_JOB" = "STATIC_CODE_ANALYSIS" ]]; then
 fi
 
 # Set working directory
-if [[ "$WORKSPACE" && $OLDPWD ]]; then
-  CI_WORKSPACE="$WORKSPACE$OLDPWD"
+if [[ "$WORKSPACE" ]]; then
+  CI_WORKSPACE="$WORKSPACE"
 fi
 if [[ "$GITHUB_WORKSPACE" ]]; then
   CI_WORKSPACE="$GITHUB_WORKSPACE"
