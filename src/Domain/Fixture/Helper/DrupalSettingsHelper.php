@@ -15,6 +15,10 @@ class DrupalSettingsHelper {
 
   private const LOCAL_SETTINGS_PATH = 'docroot/sites/default/settings/local.settings.php';
 
+  private const SETTINGS_PHP_PATH = 'docroot/sites/default/settings.php';
+
+  private const DEFAULT_SETTINGS_PHP_PATH = 'docroot/sites/default/default.settings.php';
+
   /**
    * The filesystem.
    *
@@ -54,11 +58,14 @@ class DrupalSettingsHelper {
    *
    * @param \Acquia\Orca\Options\FixtureOptions $options
    *   The fixture options.
+   * @param bool $hasBlt
+   *   Whether the fixture contains BLT
    */
-  public function ensureSettings(FixtureOptions $options): void {
+  public function ensureSettings(FixtureOptions $options, bool $hasBlt): void {
     $this->options = $options;
     $this->ensureCiSettingsFile();
     $this->ensureLocalSettingsFile();
+    $this->ensureSettingsFileInclude($hasBlt);
   }
 
   /**
@@ -79,10 +86,30 @@ class DrupalSettingsHelper {
   private function ensureLocalSettingsFile(): void {
     $path = $this->fixture->getPath(self::LOCAL_SETTINGS_PATH);
 
-    $data = PHP_EOL;
+    $data = null;
+    if ($this->filesystem->exists($path)) {
+      $data .= PHP_EOL;
+    }
+    else {
+      $data .= '<?php' . PHP_EOL . PHP_EOL;
+    }
     $data .= $this->getSettings();
 
     $this->filesystem->appendToFile($path, $data);
+  }
+
+  /**
+   * Ensures that settings.php includes the local settings file we generated.
+   */
+  private function ensureSettingsFileInclude(bool $hasBlt): void {
+    if (!$hasBlt) {
+      $settings_path = $this->fixture->getPath(self::SETTINGS_PHP_PATH);
+      $default_settings_path = $this->fixture->getPath(self::DEFAULT_SETTINGS_PHP_PATH);
+      $this->filesystem->copy($default_settings_path, $settings_path);
+      $data = PHP_EOL;
+      $data .= $this->getSettingsInclude();
+      $this->filesystem->appendToFile($settings_path, $data);
+    }
   }
 
   /**
@@ -132,6 +159,23 @@ $settings['bootstrap_container_definition'] = [
 // SQL variables" errors.
 // @see https://www.drupal.org/project/drupal/issues/2031261
 $settings['cache']['bins']['config'] = 'cache.backend.memory';
+PHP;
+    return $data;
+  }
+
+  /**
+   * Gets the PHP code to add to Drupal's settings.php.
+   *
+   * @return string
+   *   A string of PHP code.
+   */
+  protected function getSettingsInclude(): string {
+    $data = '# ORCA settings.' . PHP_EOL;
+
+    $data .= <<<'PHP'
+if (file_exists($app_root . '/' . $site_path . '/settings/local.settings.php')) {
+  include $app_root . '/' . $site_path . '/settings/local.settings.php';
+}
 PHP;
     return $data;
   }
