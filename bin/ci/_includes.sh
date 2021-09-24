@@ -9,9 +9,8 @@
 # DESCRIPTION
 #     Includes common features used by ORCA scripts.
 
-# Exit as soon as one command returns a non-zero exit code and make the shell
-# print all lines in the script before executing them.
-set -ev
+# Exit as soon as one command returns a non-zero exit code.
+set -e
 
 # Outputs a formatted error message and exits with an error code if a given
 # condition is not met.
