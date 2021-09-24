@@ -95,4 +95,4 @@ export PATH="$HOME/.phpenv/shims/:$PATH"
 alias drush='drush -r "$ORCA_FIXTURE_DIR"'
 
 # Make the shell print all lines in the script before executing them.
-+ set -v
+set -v
