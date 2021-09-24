@@ -20,6 +20,13 @@ class PackageManager {
   private $alterData = [];
 
   /**
+   * The BLT package.
+   *
+   * @var \Acquia\Orca\Domain\Package\Package|null
+   */
+  private $blt;
+
+  /**
    * The fixture path handler.
    *
    * @var \Acquia\Orca\Helper\Filesystem\FixturePathHandler
@@ -124,6 +131,23 @@ class PackageManager {
   }
 
   /**
+   * Gets the BLT package.
+   *
+   * BLT is a special case due to its foundational relationship to the fixture.
+   * It must always be available by direct request, even if absent from the
+   * active packages specification.
+   *
+   * @return \Acquia\Orca\Domain\Package\Package
+   *   The BLT package.
+   */
+  public function getBlt(): Package {
+    if (!$this->blt) {
+      $this->initializeBlt();
+    }
+    return $this->blt;
+  }
+
+  /**
    * Gets the packages config alter data.
    *
    * @return array
@@ -185,6 +209,24 @@ class PackageManager {
       throw new \LogicException("Incorrect schema in {$file}. See config/packages.yml.");
     }
     return $data;
+  }
+
+  /**
+   * Initializes BLT.
+   */
+  private function initializeBlt(): void {
+    $package_name = 'acquia/blt';
+
+    // If it's in the active packages specification, use it.
+    if ($this->exists($package_name)) {
+      $this->blt = $this->get($package_name);
+      return;
+    }
+
+    // Otherwise get it from the default specification.
+    $default_packages_yaml = $this->orca->getPath('config/packages.yml');
+    $data = $this->parser->parseFile($default_packages_yaml);
+    $this->blt = new Package($data[$package_name], $this->fixture, $this->orca, $package_name);
   }
 
 }

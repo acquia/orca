@@ -129,7 +129,7 @@ class ComposerFacade {
    */
   private function getBltProjectTemplateString(): string {
     $project_template = $this->options->getProjectTemplate();
-    $blt = $this->packageManager->get('acquia/blt');
+    $blt = $this->packageManager->getBlt();
     if ($this->options->isDev()) {
       return $project_template;
     }
