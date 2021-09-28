@@ -332,11 +332,6 @@ class FixtureCreator {
    */
   private function getUnwantedPackageList(): array {
     $packages = $this->packageManager->getAll();
-    if ($this->options->isBare() || $this->options->isSutOnly()) {
-      // Don't remove BLT because it won't be replaced in a bare or SUT-only
-      // fixture, and a fixture cannot be successfully built without it.
-      unset($packages['acquia/blt']);
-    }
     return array_keys($packages);
   }
 
@@ -676,8 +671,18 @@ class FixtureCreator {
    */
   protected function ensureDrupalSettings(): void {
     $this->output->section('Ensuring Drupal settings');
-    $this->drupalSettingsHelper->ensureSettings($this->options);
+    $this->drupalSettingsHelper->ensureSettings($this->options, $this->hasBlt());
     $this->git->commitCodeChanges('Ensured Drupal settings');
+  }
+
+  /**
+   * Whether the fixture contains BLT.
+   *
+   * @return bool
+   *   TRUE if the fixture contains BLT, FALSE otherwise.
+   */
+  public function hasBlt(): bool {
+    return (bool) $this->fixtureInspector->getInstalledPackageVersion('acquia/blt');
   }
 
   /**

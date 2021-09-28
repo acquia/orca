@@ -31,11 +31,11 @@
 
 ## Bare fixture
 
-A [test fixture](#test-fixture) that neither includes nor installs any [SUT](#sut) or other company packages (except of course for BLT which is the foundation of all fixtures).
+A [test fixture](#test-fixture) that neither includes nor installs any [SUT](#sut) or other company packages.
 
 ## BLT
 
-Build and Launch Tool: Acquia's toolset for automating Drupal 8 development, testing, and deployment. [[Website]](https://github.com/acquia/blt) Provides the foundation for an ORCA [test fixture](#test-fixture).
+Build and Launch Tool: Acquia's toolset for automating Drupal 8 development, testing, and deployment. [[Website]](https://github.com/acquia/blt) Provides the foundation for an ORCA [test fixture](#test-fixture) prior to Drupal 9.
 
 ## Ignored tests
 
@@ -120,7 +120,7 @@ A [test fixture](#test-fixture) that includes and installs the [SUT](#sut) and o
 
 ## Test fixture
 
-In automated testing, a test fixture is all the things we need to have in place in order to run a test and expect a particular outcome.<sup>[[cit.]](http://xunitpatterns.com/test%20fixture%20-%20xUnit.html)</sup> In the case of ORCA, that means a [BLT](#blt) project with all applicable company software packages in place and Drupal installed. [Read more in Understanding ORCA.](understanding-orca.md#test-fixtures)
+In automated testing, a test fixture is all the things we need to have in place in order to run a test and expect a particular outcome.<sup>[[cit.]](http://xunitpatterns.com/test%20fixture%20-%20xUnit.html)</sup> In the case of ORCA, that means a [project template](#project-template) with all applicable company software packages in place and Drupal installed. [Read more in Understanding ORCA.](understanding-orca.md#test-fixtures)
 
 ---
 

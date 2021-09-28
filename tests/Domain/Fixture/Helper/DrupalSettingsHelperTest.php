@@ -23,6 +23,10 @@ class DrupalSettingsHelperTest extends TestCase {
 
   private const LOCAL_SETTINGS_PATH = 'docroot/sites/default/settings/local.settings.php';
 
+  private const SETTINGS_PHP_PATH = 'docroot/sites/default/settings.php';
+
+  private const DEFAULT_SETTINGS_PHP_PATH = 'docroot/sites/default/default.settings.php';
+
   protected function setUp(): void {
     $this->drupalCoreVersionFinder = $this->prophesize(DrupalCoreVersionResolver::class);
     $this->filesystem = $this->prophesize(Filesystem::class);
@@ -39,6 +43,10 @@ class DrupalSettingsHelperTest extends TestCase {
     return new class ($filesystem, $fixture) extends DrupalSettingsHelper {
 
       protected function getSettings(): string {
+        return 'SETTINGS';
+      }
+
+      protected function getSettingsInclude(): string {
         return 'SETTINGS';
       }
 
@@ -67,17 +75,43 @@ class DrupalSettingsHelperTest extends TestCase {
     return new FixtureOptions($drupal_core_version_finder, $package_manager, $options);
   }
 
-  public function testEnsure(): void {
+  public function testEnsureNoBlt(): void {
+    $this->filesystem
+      ->appendToFile(self::CI_SETTINGS_PATH, '<?php' . PHP_EOL . PHP_EOL . 'SETTINGS')
+      ->shouldBeCalledOnce();
+    $this->filesystem
+      ->appendToFile(self::LOCAL_SETTINGS_PATH, '<?php' . PHP_EOL . PHP_EOL . 'SETTINGS')
+      ->shouldBeCalledOnce();
+    $this->filesystem
+      ->exists(self::LOCAL_SETTINGS_PATH)
+      ->shouldBeCalledOnce();
+    $this->filesystem
+      ->copy(self::DEFAULT_SETTINGS_PHP_PATH, self::SETTINGS_PHP_PATH)
+      ->shouldBeCalledOnce();
+    $this->filesystem
+      ->appendToFile(self::SETTINGS_PHP_PATH, PHP_EOL . 'SETTINGS')
+      ->shouldBeCalledOnce();
+    $options = $this->createFixtureOptions([]);
+    $helper = $this->createDrupalSettingsHelperWithDummyData();
+
+    $helper->ensureSettings($options, FALSE);
+  }
+
+  public function testEnsureBlt(): void {
     $this->filesystem
       ->appendToFile(self::CI_SETTINGS_PATH, '<?php' . PHP_EOL . PHP_EOL . 'SETTINGS')
       ->shouldBeCalledOnce();
     $this->filesystem
       ->appendToFile(self::LOCAL_SETTINGS_PATH, PHP_EOL . 'SETTINGS')
       ->shouldBeCalledOnce();
+    $this->filesystem
+      ->exists(self::LOCAL_SETTINGS_PATH)
+      ->willReturn(TRUE)
+      ->shouldBeCalledOnce();
     $options = $this->createFixtureOptions([]);
     $helper = $this->createDrupalSettingsHelperWithDummyData();
 
-    $helper->ensureSettings($options);
+    $helper->ensureSettings($options, TRUE);
   }
 
   public function testGetSettingsDefault(): void {
