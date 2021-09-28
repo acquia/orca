@@ -58,14 +58,14 @@ class DrupalSettingsHelper {
    *
    * @param \Acquia\Orca\Options\FixtureOptions $options
    *   The fixture options.
-   * @param bool $hasBlt
+   * @param bool $has_blt
    *   Whether the fixture contains BLT.
    */
-  public function ensureSettings(FixtureOptions $options, bool $hasBlt): void {
+  public function ensureSettings(FixtureOptions $options, bool $has_blt): void {
     $this->options = $options;
     $this->ensureCiSettingsFile();
     $this->ensureLocalSettingsFile();
-    $this->ensureSettingsFileInclude($hasBlt);
+    $this->ensureSettingsFileInclude($has_blt);
   }
 
   /**
@@ -101,8 +101,8 @@ class DrupalSettingsHelper {
   /**
    * Ensures that settings.php includes the local settings file we generated.
    */
-  private function ensureSettingsFileInclude(bool $hasBlt): void {
-    if (!$hasBlt) {
+  private function ensureSettingsFileInclude(bool $has_blt): void {
+    if (!$has_blt) {
       $settings_path = $this->fixture->getPath(self::SETTINGS_PHP_PATH);
       $default_settings_path = $this->fixture->getPath(self::DEFAULT_SETTINGS_PHP_PATH);
       $this->filesystem->copy($default_settings_path, $settings_path);
