@@ -26,7 +26,8 @@ yarn --version
 # Disable Xdebug except on code coverage jobs.
 if [[ ! "$ORCA_COVERAGE_ENABLE" ]]; then
   if [[ "$TRAVIS" ]]; then phpenv config-rm xdebug.ini; fi
-  if [[ "$GITHUB_ACTIONS" || "$JENKINS_HOME" ]]; then sudo phpdismod -v ALL xdebug; fi
+  if [[ "$GITHUB_ACTIONS" ]]; then sudo phpdismod -v ALL xdebug; fi
+  if [[ "$JENKINS_HOME" ]]; then phpdismod -v ALL xdebug; fi
 fi
 
 # Travis CI installs YAML from PECL, but it's already present in GitHub Actions.
