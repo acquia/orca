@@ -202,6 +202,11 @@ class TestRunner {
     $message = ($this->sut) ? 'Running public non-SUT tests' : 'Running all public tests';
     $this->output->title($message);
     foreach ($this->packageManager->getAll() as $package) {
+      // Project templates don't provide tests... yet. Attemping to run them
+      // right now would run all Drupal contrib tests.
+      if ($package->isProjectTemplate()) {
+        continue;
+      }
       if ($this->sut && $package->getPackageName() === $this->sut->getPackageName()) {
         continue;
       }
