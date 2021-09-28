@@ -32,7 +32,7 @@ if [[ "$ORCA_JOB" ]]; then
   assert "$ORCA_SUT_NAME" "Missing required ORCA_SUT_NAME environment variable.\nHint: ORCA_SUT_NAME=drupal/example"
   if [[ "$CI" || "$JENKINS_HOME" ]]; then assert "$ORCA_SUT_BRANCH" "Missing required ORCA_SUT_BRANCH environment variable.\nHint: ORCA_SUT_BRANCH=8.x-1.x"; fi
 fi
-if [[ ! "$CI" || ! "$JENKINS_HOME" && "$ORCA_JOB" = "STATIC_CODE_ANALYSIS" ]]; then
+if [[ ! "$CI" && ! "$JENKINS_HOME" && "$ORCA_JOB" = "STATIC_CODE_ANALYSIS" ]]; then
   assert "$ORCA_SUT_DIR" "Missing required ORCA_SUT_DIR environment variable.\nHint: ORCA_SUT_DIR=~/Projects/example"
 fi
 
