@@ -22,7 +22,7 @@ Note: The fixture directory can be changed at runtime via [environment variable]
 
 ## Test fixtures
 
-An ORCA test fixture is comprised of a [BLT](glossary.md#blt) project with one or all company software packages (as specified by default in [`config/packages.yml`](../config/packages.yml) and configurable via [environment variables](advanced-usage.md#ORCA_PACKAGES_CONFIG)) added via Composer. There are two basic kinds:
+An ORCA test fixture is comprised of a [project template](glossary.md#project-template) with one or all company software packages (as specified by default in [`config/packages.yml`](../config/packages.yml) and configurable via [environment variables](advanced-usage.md#ORCA_PACKAGES_CONFIG)) added via Composer. There are two basic kinds:
 
 * A **standard fixture** includes and installs the SUT as well as all other company packages.
 * A **SUT-only fixture** includes and installs the SUT and omits all other non-required company packages.
