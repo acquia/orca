@@ -15,7 +15,7 @@ cd "$(dirname "$0")" || exit; source _includes.sh
 [[ "$CI" || "$JENKINS_HOME" ]] || exit 0
 
 # Display the Google Chrome version.
-#google-chrome-stable --version
+google-chrome-stable --version
 
 # Display the Node version.
 echo "$TRAVIS_NODE_VERSION"
