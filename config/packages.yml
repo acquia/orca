@@ -117,6 +117,12 @@ drupal/cog:
 acquia/drupal-environment-detector:
   type: library
 
+acquia/drupal-minimal-project:
+  type: project-template
+
+acquia/drupal-recommended-project:
+  type: project-template
+
 acquia/drupal-spec-tool:
   type: behat-extension
   core_matrix:

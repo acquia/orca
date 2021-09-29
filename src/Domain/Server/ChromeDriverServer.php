@@ -38,14 +38,16 @@ class ChromeDriverServer extends ServerBase {
    * {@inheritdoc}
    */
   protected function createProcess(): Process {
-    $command = $this->orca->getPath('vendor/bin/chromedriver') . " \\
-      --disable-dev-shm-usage \\
-      --disable-extensions \\
-      --disable-gpu \\
-      --headless \\
-      --no-sandbox \\
-      --port=4444 &";
-    return Process::fromShellCommandline($command);
+    $command = [
+      $this->orca->getPath('vendor/bin/chromedriver'),
+      '--disable-dev-shm-usage',
+      '--disable-extensions',
+      '--disable-gpu',
+      '--headless',
+      '--no-sandbox',
+      '--port=4444',
+    ];
+    return new Process($command);
   }
 
 }

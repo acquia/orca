@@ -13,17 +13,19 @@
 
 cd "$(dirname "$0")/.." || exit
 
-GITHUB_CHANGELOG_GENERATOR=$(find /usr/local/lib/ruby/gems/*/bin/github_changelog_generator | tail -1)
+GITHUB_CHANGELOG_GENERATOR=$(which github_changelog_generator | tail -1)
 FUTURE_RELEASE=$(cat config/VERSION)
 
 set -v
 
 eval "$GITHUB_CHANGELOG_GENERATOR" \
+  --base=docs/HISTORY.md \
   --user=acquia \
   --project=orca \
   --output=docs/CHANGELOG.md \
   --no-issues-wo-labels \
   --exclude-labels=duplicate,question,invalid,wontfix \
   --exclude-tags-regex='v[1-2].*' \
+  --since-tag='v3.9.0' \
   --future-release="$FUTURE_RELEASE" \
   --release-branch=develop

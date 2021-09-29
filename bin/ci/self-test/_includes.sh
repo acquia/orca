@@ -7,7 +7,7 @@
 #     cd "$(dirname "$0")" || exit; source _includes.sh
 #
 # DESCRIPTION
-#     Includes common features used by the Travis CI scripts.
+#     Includes common features used by the GitHub Actions scripts.
 
 source ../_includes.sh
 
