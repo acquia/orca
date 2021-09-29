@@ -13,7 +13,7 @@
 
 cd "$(dirname "$0")/.." || exit
 
-GITHUB_CHANGELOG_GENERATOR=$(find /usr/local/lib/ruby/gems/*/bin/github_changelog_generator | tail -1)
+GITHUB_CHANGELOG_GENERATOR=$(find /usr/local/bin/github_changelog_generator | tail -1)
 FUTURE_RELEASE=$(cat config/VERSION)
 
 set -v
