@@ -12,6 +12,7 @@ events:
       - before_install:
           type: script
           script:
+            - composer global require composer/ca-bundle:^1.2.11
             - git config --global user.name ORCA
             - git config --global user.email no-reply@acquia.com
             - export ORCA_FIXTURE_DIR=$(pwd)
