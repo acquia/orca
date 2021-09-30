@@ -71,6 +71,8 @@ jobs:
     - env: ORCA_LIVE_TEST=TRUE
 
 before_install:
+  - composer self-update
+  - composer global require composer/ca-bundle:^1.2.11
   - nvm install 12.13.1; nvm use 12.13.1
   - ../orca/bin/travis/self-test/before_install.sh
   - ../orca/bin/travis/before_install.sh
