@@ -26,6 +26,7 @@
         "ext-json": "*",
         "ext-sqlite3": "*",
         "acquia/coding-standards": "^0.7.0",
+        "composer/ca-bundle": "^1.2.11",
         "composer/composer": "^2.0",
         "dealerdirect/phpcodesniffer-composer-installer": "^0.7.1",
         "ergebnis/composer-normalize": "^2.0.0",
