@@ -23,6 +23,7 @@ events:
             - composer --version
             - lsb_release -a
             - openssl version
+            - composer create-project --no-interaction acquia/drupal-recommended-project
       - install:
           type: script
           script:
