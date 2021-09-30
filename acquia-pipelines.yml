@@ -20,6 +20,9 @@ events:
             # Composer v1 is installed on the platform. Temporarily override it.
             - ./bin/pipelines/install_composer.sh
             - ./composer.phar install
+            - composer --version
+            - lsb_release -a
+            - openssl version
       - install:
           type: script
           script:
