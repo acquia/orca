@@ -1,5 +1,13 @@
 # Changelog
 
+## [v3.10.1](https://github.com/acquia/orca/tree/v3.10.1) (2021-10-01)
+
+[Full Changelog](https://github.com/acquia/orca/compare/v3.10.0...v3.10.1)
+
+**Fixed bugs:**
+
+- Xdebug never disabled on Travis CI [\#159](https://github.com/acquia/orca/pull/159) ([danepowell](https://github.com/danepowell))
+
 ## [v3.10.0](https://github.com/acquia/orca/tree/v3.10.0) (2021-09-29)
 
 [Full Changelog](https://github.com/acquia/orca/compare/v3.9.0...v3.10.0)
