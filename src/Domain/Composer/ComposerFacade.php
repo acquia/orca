@@ -238,6 +238,7 @@ class ComposerFacade {
       $command[] = '--no-update';
     }
     $command[] = '--no-interaction';
+    $command[] = '--with-all-dependencies';
 
     $this->runComposer($command, $packages);
   }
