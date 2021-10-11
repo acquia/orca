@@ -307,6 +307,7 @@ class ComposerFacadeTest extends TestCase {
         'require',
         '--no-progress',
         '--no-interaction',
+        '--with-all-dependencies',
       ], $packages), self::FIXTURE_PATH)
       ->shouldBeCalledOnce();
     $composer = $this->createComposer();
@@ -397,6 +398,7 @@ class ComposerFacadeTest extends TestCase {
         'require',
         '--no-progress',
         '--no-interaction',
+        '--with-all-dependencies',
       ], []), self::FIXTURE_PATH)
       ->shouldBeCalledOnce();
     $composer = $this->createComposer();
