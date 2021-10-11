@@ -259,8 +259,7 @@ class FixtureCreator {
 
     // Require additional packages.
     $prefer_source = $this->options->preferSource();
-    $no_update = !$this->options->isBare();
-    $this->composer->requirePackages($additions, $prefer_source, $no_update);
+    $this->composer->requirePackages($additions, $prefer_source);
   }
 
   /**
