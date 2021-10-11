@@ -339,6 +339,7 @@ class ComposerFacadeTest extends TestCase {
         'options' => [
           '--no-progress',
           '--no-interaction',
+          '--with-all-dependencies',
         ],
       ],
       [
@@ -347,6 +348,7 @@ class ComposerFacadeTest extends TestCase {
         'options' => [
           '--no-progress',
           '--no-interaction',
+          '--with-all-dependencies',
         ],
       ],
       [
@@ -356,6 +358,7 @@ class ComposerFacadeTest extends TestCase {
           '--prefer-source',
           '--no-progress',
           '--no-interaction',
+          '--with-all-dependencies',
         ],
       ],
       [
@@ -365,6 +368,7 @@ class ComposerFacadeTest extends TestCase {
           '--no-progress',
           '--no-update',
           '--no-interaction',
+          '--with-all-dependencies',
         ],
       ],
       [
@@ -375,6 +379,7 @@ class ComposerFacadeTest extends TestCase {
           '--no-progress',
           '--no-update',
           '--no-interaction',
+          '--with-all-dependencies',
         ],
       ],
       [
@@ -383,6 +388,7 @@ class ComposerFacadeTest extends TestCase {
         'options' => [
           '--no-progress',
           '--no-interaction',
+          '--with-all-dependencies',
         ],
       ],
     ];
