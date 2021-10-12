@@ -326,6 +326,12 @@ class FixtureInspector {
     return $this->composerLock;
   }
 
+  /**
+   * Detect whether composer.lock exists.
+   *
+   * @return bool
+   *   Whether composer.lock exists.
+   */
   public function hasComposerLock(): bool {
     return file_exists($this->fixture->getPath('composer.lock'));
   }
