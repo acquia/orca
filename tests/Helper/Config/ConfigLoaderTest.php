@@ -64,7 +64,7 @@ class ConfigLoaderTest extends TestCase {
       ->willReturn(FALSE);
     $loader = $this->createConfigLoader();
     $this->expectException(OrcaDirectoryNotFoundException::class);
-    $this->expectExceptionMessageRegExp('/SUT is absent from expected location.*/');
+    $this->expectExceptionMessageMatches('/SUT is absent from expected location.*/');
 
     $loader->load(self::CONFIG_FILE_PATH);
 

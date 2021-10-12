@@ -126,7 +126,7 @@ class SutPreconditionsTesterTest extends TestCase {
       ->shouldBeCalledOnce()
       ->willThrow(OrcaFileNotFoundException::class);
     $this->expectException(OrcaFileNotFoundException::class);
-    $this->expectExceptionMessageRegExp('/SUT is missing root composer.json.*/');
+    $this->expectExceptionMessageMatches('/SUT is missing root composer.json.*/');
 
     $tester = $this->createSutPreconditionsTester();
 

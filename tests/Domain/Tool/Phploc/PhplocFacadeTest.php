@@ -40,12 +40,18 @@ class PhplocFacadeTest extends TestCase {
     $this->processRunner
       ->runOrcaVendorBin([
         'phploc',
-        '--names=*.php,*.module,*.theme,*.inc,*.install,*.profile,*.engine',
         '--exclude=tests',
         '--exclude=var',
         '--exclude=vendor',
         '--exclude=docroot',
         '--log-json=' . PhplocFacade::JSON_LOG_PATH,
+        '--suffix=.php',
+        '--suffix=.module',
+        '--suffix=.theme',
+        '--suffix=.inc',
+        '--suffix=.install',
+        '--suffix=.profile',
+        '--suffix=.engine',
         '.',
       ], $path)
       ->shouldBeCalledOnce();
