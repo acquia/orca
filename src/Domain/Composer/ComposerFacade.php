@@ -214,7 +214,6 @@ class ComposerFacade {
     }
     $this->runComposer([
       'remove',
-      '--no-update',
     ], $packages);
   }
 
