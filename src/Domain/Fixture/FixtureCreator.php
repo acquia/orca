@@ -249,6 +249,10 @@ class FixtureCreator {
       $additions[] = "drupal/core-dev:{$this->options->getCore()}";
     }
 
+    if ($this->fixtureInspector->getInstalledPackageVersion('drupal/core-recommended')) {
+      $additions[] = "drupal/core-recommended:{$this->options->getCore()}";
+    }
+
     if ($this->shouldRequireProphecyPhpunit()) {
       $additions[] = 'phpspec/prophecy-phpunit:^2';
     }
