@@ -82,6 +82,7 @@ class CodebaseCreator {
     $this->createProject();
     $this->git->ensureFixtureRepo();
     $this->configureComposerProject();
+    $this->removeComposerLock();
   }
 
   /**
@@ -123,6 +124,21 @@ class CodebaseCreator {
     }
     catch (OrcaParseError $e) {
       throw new OrcaParseError("Cannot parse {$composer_json_path}");
+    }
+  }
+
+  /**
+   * Removes composer.lock from fixture.
+   *
+   * The presence of composer.lock interferes with ORCA's ability to alter
+   * installed versions of Drupal core and other packages.
+   *
+   * @see https://github.com/acquia/orca/issues/164
+   */
+  private function removeComposerLock(): void {
+    $composer_lock_path = $this->fixture->getPath('composer.lock');
+    if (file_exists($composer_lock_path)) {
+      unlink($composer_lock_path);
     }
   }
 
