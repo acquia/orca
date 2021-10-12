@@ -30,8 +30,10 @@ use Prophecy\Argument;
 class CodebaseCreatorTest extends TestCase {
 
   private const COMPOSER_JSON = 'composer.json';
+  private const COMPOSER_LOCK = 'composer.lock';
 
   private const COMPOSER_JSON_PATH = 'var/www/orca-build/composer.json';
+  private const COMPOSER_LOCK_PATH = 'var/www/orca-build/composer.lock';
 
   protected function setUp(): void {
     $this->composer = $this->prophesize(ComposerFacade::class);
@@ -40,6 +42,9 @@ class CodebaseCreatorTest extends TestCase {
     $this->fixture
       ->getPath(self::COMPOSER_JSON)
       ->willReturn(self::COMPOSER_JSON_PATH);
+    $this->fixture
+      ->getPath(self::COMPOSER_LOCK)
+      ->willReturn(self::COMPOSER_LOCK_PATH);
     $this->drupalCoreVersionFinder = $this->prophesize(DrupalCoreVersionResolver::class);
     $this->git = $this->prophesize(GitFacade::class);
     $this->orca = $this->prophesize(OrcaPathHandler::class);
