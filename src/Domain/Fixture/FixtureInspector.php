@@ -326,6 +326,10 @@ class FixtureInspector {
     return $this->composerLock;
   }
 
+  public function hasComposerLock(): bool {
+    return file_exists($this->fixture->getPath('composer.lock'));
+  }
+
   /**
    * Gets the list of installed packages.
    *
