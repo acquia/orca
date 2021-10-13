@@ -10,7 +10,7 @@ use Acquia\Orca\Exception\OrcaVersionNotFoundException;
 use Acquia\Orca\Tests\Enum\DrupalCoreVersionEnumsTestTrait;
 use Composer\Package\PackageInterface;
 use Composer\Package\Version\VersionSelector;
-use PHPUnit\Framework\TestCase;
+use Acquia\Orca\Tests\TestCase;
 use Prophecy\Argument;
 
 /**

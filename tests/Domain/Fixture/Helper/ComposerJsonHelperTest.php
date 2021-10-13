@@ -14,7 +14,7 @@ use Acquia\Orca\Options\FixtureOptions;
 use Acquia\Orca\Options\FixtureOptionsFactory;
 use Noodlehaus\Config;
 use Noodlehaus\Parser\Json;
-use PHPUnit\Framework\TestCase;
+use Acquia\Orca\Tests\TestCase;
 use Prophecy\Argument;
 
 /**

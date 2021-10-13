@@ -5,7 +5,7 @@ namespace Acquia\Orca\Tests\Domain\Drush;
 use Acquia\Orca\Domain\Drush\DrushFacade;
 use Acquia\Orca\Exception\OrcaParseError;
 use Acquia\Orca\Helper\Process\ProcessRunner;
-use PHPUnit\Framework\TestCase;
+use Acquia\Orca\Tests\TestCase;
 use Prophecy\Argument;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process;

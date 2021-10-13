@@ -29,7 +29,7 @@ use Acquia\Orca\Domain\Ci\Job\StaticCodeAnalysisCiJob;
 use Acquia\Orca\Domain\Ci\Job\StrictDeprecatedCodeScanCiJob;
 use Acquia\Orca\Enum\CiJobEnum;
 use Acquia\Orca\Tests\Enum\CiEnumsTestTrait;
-use PHPUnit\Framework\TestCase;
+use Acquia\Orca\Tests\TestCase;
 
 /**
  * @property \Acquia\Orca\Domain\Ci\Job\DeprecatedCodeScanWContribCiJob|\Prophecy\Prophecy\ObjectProphecy $deprecatedCodeScanWContribCiJob

@@ -3,7 +3,7 @@
 namespace Acquia\Orca\Tests\Helper\Filesystem;
 
 use Acquia\Orca\Helper\Filesystem\AbstractPathHandler;
-use PHPUnit\Framework\TestCase;
+use Acquia\Orca\Tests\TestCase;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**

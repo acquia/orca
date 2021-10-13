@@ -9,7 +9,7 @@ use Acquia\Orca\Enum\CiJobPhaseEnum;
 use Acquia\Orca\Exception\OrcaInvalidArgumentException;
 use Acquia\Orca\Options\CiRunOptions;
 use Acquia\Orca\Tests\Enum\CiEnumsTestTrait;
-use PHPUnit\Framework\TestCase;
+use Acquia\Orca\Tests\TestCase;
 use Prophecy\Argument;
 use Symfony\Component\OptionsResolver\Exception\MissingOptionsException;
 

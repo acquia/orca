@@ -60,6 +60,7 @@
     "require-dev": {
         "brainmaestro/composer-git-hooks": "^2.5",
         "phan/phan": "^3.2",
+        "phpspec/prophecy-phpunit": "^2.0",
         "phpstan/phpstan": "^0.12.54",
         "phpunit/phpunit": "^9"
     },

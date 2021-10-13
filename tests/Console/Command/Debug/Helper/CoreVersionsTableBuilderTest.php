@@ -6,7 +6,7 @@ use Acquia\Orca\Console\Command\Debug\Helper\CoreVersionsTableBuilder;
 use Acquia\Orca\Domain\Composer\Version\DrupalCoreVersionResolver;
 use Acquia\Orca\Exception\OrcaVersionNotFoundException;
 use Acquia\Orca\Tests\Enum\_Helper\DrupalCoreVersionTestEnum;
-use PHPUnit\Framework\TestCase;
+use Acquia\Orca\Tests\TestCase;
 use Prophecy\Argument;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Output\NullOutput;

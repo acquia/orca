@@ -7,7 +7,7 @@ use Acquia\Orca\Domain\Server\WebServer;
 use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
 use Acquia\Orca\Helper\Filesystem\OrcaPathHandler;
 use Acquia\Orca\Helper\Process\ProcessRunner;
-use PHPUnit\Framework\TestCase;
+use Acquia\Orca\Tests\TestCase;
 
 class ServersTest extends TestCase {
 

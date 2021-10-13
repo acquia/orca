@@ -124,7 +124,7 @@ class DrupalSettingsHelper {
    * @return string
    *   A string of PHP code.
    */
-  protected function getSettings(): string {
+  public function getSettings(): string {
     $data = '# ORCA settings.' . PHP_EOL;
 
     if ($this->options->useSqlite()) {

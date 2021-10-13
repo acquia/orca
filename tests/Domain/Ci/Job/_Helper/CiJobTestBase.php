@@ -12,7 +12,7 @@ use Acquia\Orca\Exception\OrcaVersionNotFoundException;
 use Acquia\Orca\Helper\EnvFacade;
 use Acquia\Orca\Helper\Process\ProcessRunner;
 use Acquia\Orca\Options\CiRunOptions;
-use PHPUnit\Framework\TestCase;
+use Acquia\Orca\Tests\TestCase;
 use Prophecy\Argument;
 use Symfony\Component\Console\Output\OutputInterface;
 

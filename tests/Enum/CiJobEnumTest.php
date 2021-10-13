@@ -4,7 +4,7 @@ namespace Acquia\Orca\Tests\Enum;
 
 use Acquia\Orca\Enum\CiJobEnum;
 use Acquia\Orca\Enum\DrupalCoreVersionEnum;
-use PHPUnit\Framework\TestCase;
+use Acquia\Orca\Tests\TestCase;
 
 /**
  * @coversDefaultClass \Acquia\Orca\Enum\CiJobEnum

@@ -13,7 +13,7 @@ use Acquia\Orca\Helper\Filesystem\OrcaPathHandler;
 use Noodlehaus\Config;
 use Noodlehaus\Exception\FileNotFoundException as NoodlehausFileNotFoundException;
 use Noodlehaus\Exception\ParseException;
-use PHPUnit\Framework\TestCase;
+use Acquia\Orca\Tests\TestCase;
 use Prophecy\Argument;
 use Symfony\Component\Finder\Exception\DirectoryNotFoundException as FinderDirectoryNotFoundException;
 use Symfony\Component\Finder\Finder;

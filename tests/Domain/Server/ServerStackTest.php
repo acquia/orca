@@ -6,7 +6,7 @@ use Acquia\Orca\Domain\Server\ChromeDriverServer;
 use Acquia\Orca\Domain\Server\ServerStack;
 use Acquia\Orca\Domain\Server\WebServer;
 use Acquia\Orca\Helper\Clock;
-use PHPUnit\Framework\TestCase;
+use Acquia\Orca\Tests\TestCase;
 
 /**
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Domain\Server\ChromeDriverServer $chromeDriverServer

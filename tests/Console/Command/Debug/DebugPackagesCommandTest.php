@@ -77,7 +77,7 @@ class DebugPackagesCommandTest extends CommandTestBase {
 
     $this->executeCommand(['core' => $argument->getKey()]);
 
-    self::assertContains(ltrim("- Drupal {$version} -"), $this->getDisplay(), 'Displayed correct output.');
+    self::assertStringContainsString(ltrim("- Drupal {$version} -"), $this->getDisplay(), 'Displayed correct output.');
     self::assertEquals(StatusCodeEnum::OK, $this->getStatusCode(), 'Returned correct status code.');
   }
 
