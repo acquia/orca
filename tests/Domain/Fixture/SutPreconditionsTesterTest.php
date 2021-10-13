@@ -10,9 +10,9 @@ use Acquia\Orca\Exception\OrcaFileNotFoundException;
 use Acquia\Orca\Helper\Config\ConfigLoader;
 use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
 use Acquia\Orca\Helper\Filesystem\OrcaPathHandler;
+use Acquia\Orca\Tests\TestCase;
 use Noodlehaus\Config;
 use Noodlehaus\Parser\Json;
-use Acquia\Orca\Tests\TestCase;
 use Prophecy\Argument;
 
 /**

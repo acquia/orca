@@ -7,10 +7,10 @@ use Acquia\Orca\Exception\OrcaException;
 use Acquia\Orca\Exception\OrcaFileNotFoundException;
 use Acquia\Orca\Exception\OrcaParseError;
 use Acquia\Orca\Helper\Config\ConfigLoader;
+use Acquia\Orca\Tests\TestCase;
 use Noodlehaus\Config;
 use Noodlehaus\Exception\FileNotFoundException as NoodlehausFileNotFoundException;
 use Noodlehaus\Exception\ParseException as NoodlehausParseException;
-use Acquia\Orca\Tests\TestCase;
 use Prophecy\Argument;
 use Symfony\Component\Filesystem\Filesystem;
 
