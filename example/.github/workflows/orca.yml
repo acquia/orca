@@ -36,6 +36,7 @@ jobs:
     continue-on-error: ${{ matrix.allow-failure }}
     # Change the following values for your implementation.
     env:
+      # Boolean values must be quoted, otherwise they will be converted to lower case and break ORCA scripts.
       # Provide your package's name.
       ORCA_SUT_NAME: drupal/example
       # Specify the name of the nearest Git version branch, e.g., 1.x or 8.x-1.x.
@@ -83,7 +84,7 @@ jobs:
       # line and set ORCA_AMPLITUDE_API_KEY in your GitHub Actions settings:
       # @see https://github.com/acquia/orca/blob/main/docs/advanced-usage.md#ORCA_TELEMETRY_ENABLE
       # @see https://github.com/acquia/orca/blob/main/docs/advanced-usage.md#ORCA_AMPLITUDE_API_KEY
-      # ORCA_TELEMETRY_ENABLE: TRUE
+      # ORCA_TELEMETRY_ENABLE: "TRUE"
       #
       # Do not modify the following line. It uses the build matrix to set ORCA_JOB for each job.
       ORCA_JOB: ${{ matrix.orca-job }}
