@@ -104,16 +104,6 @@ acquia/coding-standards:
   type: phpcodesniffer-standard
   url: ../coding-standards-php
 
-drupal/cog:
-  type: drupal-theme
-  core_matrix:
-    '>=9.0.0':
-      version: ~
-      version_dev: ~
-    '*':
-      version: '*'
-      version_dev: '*'
-
 acquia/drupal-environment-detector:
   type: library
 
