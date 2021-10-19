@@ -121,8 +121,8 @@ jobs:
         # @see https://docs.acquia.com/acquia-cloud/arch/tech-platform/
         php-version: [ "7.3" ]
         allow-failure: [ false ]
-        # When manually specifying a job to include, unspecified parameters will
-        # be null.
+        # When manually specifying a job to include, parameter values (such as for orca-job, php-version, and
+        # allow-failure) are not inherited from the matrix. These values will be null unless explicitly set below.
         include:
           - orca-job: ISOLATED_TEST_ON_CURRENT
             php-version: "8.0"
