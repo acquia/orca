@@ -171,7 +171,14 @@ jobs:
       - name: Before install
         run: |
           composer create-project --no-dev --ignore-platform-req=php acquia/orca ../orca "$ORCA_VERSION"
-          # ORCA can be patched here if necessary:
+          # Custom jobs can be defined by unsetting ORCA_JOB. See ./bin/ci/example.sh for details.
+          # Many customizations can be achieved with out-of-the-box features.
+          # @see https://github.com/acquia/orca/blob/develop/docs/advanced-usage.md
+          # As a last resort or to apply a yet-unreleased bug fix, you can patch ORCA here--but
+          # be aware that doing so will increase your maintenance burden and may cause ORCA to
+          # fail or miss problems it would otherwise have detected. Especially, do NOT use this
+          # approach to circumvent legitimate failures, which is likely to cause other company
+          # packages' builds to fail.
           # curl http://example.com/my.patch | git -C ../orca apply
           ../orca/bin/ci/before_install.sh
         # For custom testing needs, add your own scripts here. See ./bin/ci/example.sh for details.
