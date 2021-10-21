@@ -152,7 +152,8 @@ jobs:
             php-version: "7.3"
             allow-failure: true
 
-          # Custom jobs can be defined by unsetting ORCA_JOB. See ./bin/ci/example.sh for details.
+          # ORCA only executes when ORCA_JOB is set. Leave ORCA_JOB unset to execute custom jobs.
+          # See ./bin/ci/example.sh for details.
           # - php-version: "7.3"
           #   allow-failure: true
     steps:
@@ -171,7 +172,6 @@ jobs:
       - name: Before install
         run: |
           composer create-project --no-dev --ignore-platform-req=php acquia/orca ../orca "$ORCA_VERSION"
-          # Custom jobs can be defined by unsetting ORCA_JOB. See ./bin/ci/example.sh for details.
           # Many customizations can be achieved with out-of-the-box features.
           # @see https://github.com/acquia/orca/blob/develop/docs/advanced-usage.md
           # As a last resort or to apply a yet-unreleased bug fix, you can patch ORCA here--but
