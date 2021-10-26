@@ -144,6 +144,7 @@ class CodebaseCreator {
    * The presence of composer.lock interferes with ORCA's ability to alter
    * installed versions of Drupal core and other packages.
    *
+   * @todo stop altering fixtures at all to better mimic the customer journey
    * @see https://github.com/acquia/orca/issues/164
    */
   private function removeComposerLock(): void {
