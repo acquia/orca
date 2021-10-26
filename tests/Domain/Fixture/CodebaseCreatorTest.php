@@ -16,6 +16,7 @@ use Acquia\Orca\Helper\Filesystem\OrcaPathHandler;
 use Acquia\Orca\Options\FixtureOptions;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
+use Symfony\Component\Filesystem\Filesystem;
 
 /**
  * @property \Acquia\Orca\Domain\Composer\ComposerFacade|\Prophecy\Prophecy\ObjectProphecy $composer
@@ -25,6 +26,7 @@ use Prophecy\Argument;
  * @property \Acquia\Orca\Domain\Package\PackageManager|\Prophecy\Prophecy\ObjectProphecy $packageManager
  * @property \Acquia\Orca\Helper\Filesystem\FixturePathHandler|\Prophecy\Prophecy\ObjectProphecy $fixture
  * @property \Acquia\Orca\Helper\Filesystem\OrcaPathHandler|\Prophecy\Prophecy\ObjectProphecy $orca
+ * @property \Symfony\Component\Filesystem\Filesystem|\Prophecy\Prophecy\ObjectProphecy $filesystem
  * @coversDefaultClass \Acquia\Orca\Domain\Fixture\CodebaseCreator
  */
 class CodebaseCreatorTest extends TestCase {
@@ -48,6 +50,7 @@ class CodebaseCreatorTest extends TestCase {
     $this->drupalCoreVersionFinder = $this->prophesize(DrupalCoreVersionResolver::class);
     $this->git = $this->prophesize(GitFacade::class);
     $this->orca = $this->prophesize(OrcaPathHandler::class);
+    $this->filesystem = $this->prophesize(Filesystem::class);
     $this->packageManager = $this->prophesize(PackageManager::class);
     $this->packageManager
       ->exists(Argument::any())
@@ -59,7 +62,8 @@ class CodebaseCreatorTest extends TestCase {
     $composer_json_helper = $this->composerJsonHelper->reveal();
     $fixture = $this->fixture->reveal();
     $git = $this->git->reveal();
-    return new CodebaseCreator($composer, $composer_json_helper, $fixture, $git);
+    $filesystem = $this->filesystem->reveal();
+    return new CodebaseCreator($composer, $composer_json_helper, $fixture, $git, $filesystem);
   }
 
   private function createFixtureOptions($options): FixtureOptions {
