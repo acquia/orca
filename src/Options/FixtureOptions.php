@@ -296,14 +296,27 @@ class FixtureOptions {
    *   The package name.
    */
   public function getProjectTemplate(): string {
+    // Allow users to override default templates via option.
     if ($this->options['project-template']) {
       return $this->options['project-template'];
     }
+
+    // The new project templates only support D9+. Use BLT Project for D8.
+    // @todo remove D8 / BLT Project support after D8 EOL in November 2021.
     if (Comparator::lessThan($this->getCoreResolved(), '9')) {
       $this->options['project-template'] = 'acquia/blt-project';
       return $this->options['project-template'];
     }
-    $this->options['project-template'] = 'acquia/drupal-recommended-project';
+
+    // Use minimal project for SUT-only (i.e. isolated) jobs, which should have
+    // no other company packages.
+    if ($this->isSutOnly()) {
+      $this->options['project-template'] = 'acquia/drupal-minimal-project';
+    }
+    else {
+      $this->options['project-template'] = 'acquia/drupal-recommended-project';
+    }
+
     return $this->options['project-template'];
   }
 
