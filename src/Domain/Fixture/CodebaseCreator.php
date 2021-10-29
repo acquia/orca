@@ -9,6 +9,7 @@ use Acquia\Orca\Exception\OrcaFileNotFoundException;
 use Acquia\Orca\Exception\OrcaParseError;
 use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
 use Acquia\Orca\Options\FixtureOptions;
+use Symfony\Component\Filesystem\Filesystem;
 
 /**
  * Creates the codebase component of a fixture.
@@ -51,6 +52,13 @@ class CodebaseCreator {
   private $composerJsonHelper;
 
   /**
+   * The filesystem.
+   *
+   * @var \Symfony\Component\Filesystem\Filesystem
+   */
+  private $filesystem;
+
+  /**
    * Constructs an instance.
    *
    * @param \Acquia\Orca\Domain\Composer\ComposerFacade $composer
@@ -61,12 +69,15 @@ class CodebaseCreator {
    *   The fixture path handler.
    * @param \Acquia\Orca\Domain\Git\GitFacade $git
    *   The Git facade.
+   * @param \Symfony\Component\Filesystem\Filesystem $filesystem
+   *   The Symfony Filesystem.
    */
-  public function __construct(ComposerFacade $composer, ComposerJsonHelper $composer_json_helper, FixturePathHandler $fixture_path_handler, GitFacade $git) {
+  public function __construct(ComposerFacade $composer, ComposerJsonHelper $composer_json_helper, FixturePathHandler $fixture_path_handler, GitFacade $git, Filesystem $filesystem) {
     $this->composer = $composer;
     $this->composerJsonHelper = $composer_json_helper;
     $this->fixture = $fixture_path_handler;
     $this->git = $git;
+    $this->filesystem = $filesystem;
   }
 
   /**
@@ -82,6 +93,7 @@ class CodebaseCreator {
     $this->createProject();
     $this->git->ensureFixtureRepo();
     $this->configureComposerProject();
+    $this->removeComposerLock();
   }
 
   /**
@@ -123,6 +135,22 @@ class CodebaseCreator {
     }
     catch (OrcaParseError $e) {
       throw new OrcaParseError("Cannot parse {$composer_json_path}");
+    }
+  }
+
+  /**
+   * Removes composer.lock from fixture.
+   *
+   * The presence of composer.lock interferes with ORCA's ability to alter
+   * installed versions of Drupal core and other packages.
+   *
+   * @todo stop altering fixtures at all to better mimic the customer journey
+   * @see https://github.com/acquia/orca/issues/164
+   */
+  private function removeComposerLock(): void {
+    $composer_lock_path = $this->fixture->getPath('composer.lock');
+    if ($this->filesystem->exists($composer_lock_path)) {
+      $this->filesystem->remove($composer_lock_path);
     }
   }
 
