@@ -12,7 +12,7 @@
 cd "$(dirname "$0")" || exit; source _includes.sh
 
 # The remaining before_install commands should only be run on CI.
-[[ "$CI" || "$JENKINS_HOME" ]] || exit 0
+[[ "$CI" ]] || exit 0
 
 # Display the Google Chrome version.
 google-chrome-stable --version
