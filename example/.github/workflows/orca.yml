@@ -101,8 +101,8 @@ jobs:
           - INTEGRATED_TEST_ON_CURRENT
           - INTEGRATED_UPGRADE_TEST_TO_NEXT_MINOR
           - INTEGRATED_TEST_ON_CURRENT_DEV
-          # STATIC, ISOLATED, and deprecation scans should run. These jobs only run
-          # for the current project, so failures won't affect other ORCA projects.
+          # STATIC, STRICT, and ISOLATED jobs should run. These jobs only run for
+          # the current project, so failures won't affect other ORCA projects.
           - STATIC_CODE_ANALYSIS
           - ISOLATED_TEST_ON_CURRENT
           - ISOLATED_TEST_ON_CURRENT_DEV
