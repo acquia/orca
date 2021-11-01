@@ -92,23 +92,25 @@ jobs:
         # The standard ORCA jobs provide broad out-of-the-box coverage.
         # @see https://github.com/acquia/orca/blob/main/docs/understanding-orca.md#continuous-integration
         orca-job:
-          # These jobs are required for all ORCA projects. Do not disable these jobs,
-          # as this could cause other ORCA project builds to fail.
-          - STATIC_CODE_ANALYSIS
+          # INTEGRATED jobs must run. Do not disable these jobs, as job failures
+          # could cause other ORCA project builds to fail.
           - INTEGRATED_TEST_ON_OLDEST_SUPPORTED
           - INTEGRATED_TEST_ON_LATEST_LTS
           - INTEGRATED_TEST_ON_PREVIOUS_MINOR
           - INTEGRATED_UPGRADE_TEST_FROM_PREVIOUS_MINOR
-          - ISOLATED_TEST_ON_CURRENT
           - INTEGRATED_TEST_ON_CURRENT
           - INTEGRATED_UPGRADE_TEST_TO_NEXT_MINOR
-          - ISOLATED_TEST_ON_CURRENT_DEV
           - INTEGRATED_TEST_ON_CURRENT_DEV
-          - STRICT_DEPRECATED_CODE_SCAN
+          # STATIC, ISOLATED, and deprecation scans should run. These jobs only run
+          # for the current project, so failures won't affect other ORCA projects.
+          - STATIC_CODE_ANALYSIS
+          - ISOLATED_TEST_ON_CURRENT
+          - ISOLATED_TEST_ON_CURRENT_DEV
           - ISOLATED_TEST_ON_NEXT_MINOR
           - ISOLATED_UPGRADE_TEST_TO_NEXT_MAJOR_BETA_OR_LATER
+          - STRICT_DEPRECATED_CODE_SCAN
           - LOOSE_DEPRECATED_CODE_SCAN
-          # These jobs are likely to fail and not enabled by default.
+          # These jobs can run for specific purposes. They are likely to fail and disabled by default.
           # - ISOLATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_BETA_OR_LATER
           # - INTEGRATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_BETA_OR_LATER
           # - ISOLATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_DEV
