@@ -11,7 +11,8 @@
 
 # Exit as soon as one command returns a non-zero exit code.
 set -e
-if [[ "$ORCA_JOB" = "INTEGRATED_TEST_ON_NEXT_MINOR" ]]; then
+allowed_failures=("INTEGRATED_TEST_ON_NEXT_MINOR" "INTEGRATED_TEST_ON_NEXT_MINOR_DEV")
+if [[ " ${allowed_failures[*]} " =~ ${ORCA_JOB} ]]; then
   set +e
 fi
 
