@@ -11,7 +11,15 @@
 
 # Exit as soon as one command returns a non-zero exit code.
 set -e
-allowed_failures=("INTEGRATED_TEST_ON_NEXT_MINOR" "INTEGRATED_TEST_ON_NEXT_MINOR_DEV")
+allowed_failures=(
+  "INTEGRATED_TEST_ON_NEXT_MINOR"
+  "INTEGRATED_TEST_ON_NEXT_MINOR_DEV"
+  "DEPRECATED_CODE_SCAN_W_CONTRIB"
+  "ISOLATED_TEST_ON_NEXT_MINOR_DEV"
+  "INTEGRATED_UPGRADE_TEST_TO_NEXT_MINOR_DEV"
+  "LOOSE_DEPRECATED_CODE_SCAN"
+  "ISOLATED_UPGRADE_TEST_TO_NEXT_MAJOR_DEV"
+)
 if [[ " ${allowed_failures[*]} " =~ ${ORCA_JOB} ]]; then
   set +e
   notice "This job is allowed to fail and will report as passing regardless of outcome."
