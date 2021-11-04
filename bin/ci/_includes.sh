@@ -11,6 +11,9 @@
 
 # Exit as soon as one command returns a non-zero exit code.
 set -e
+if [[ "$ORCA_JOB" = "INTEGRATED_TEST_ON_NEXT_MINOR" ]]; then
+  set +e
+fi
 
 # Outputs a formatted error message and exits with an error code if a given
 # condition is not met.
