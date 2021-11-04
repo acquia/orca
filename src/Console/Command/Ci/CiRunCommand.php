@@ -24,15 +24,6 @@ class CiRunCommand extends Command {
   protected static $defaultName = 'ci:run';
 
   /**
-   * Jobs allowed to fail due to being unstable or broken.
-   *
-   * @var string[]
-   */
-  private static $allowedFailures = [
-    'INTEGRATED_TEST_ON_NEXT_MINOR',
-  ];
-
-  /**
    * The CI job factory.
    *
    * @var \Acquia\Orca\Domain\Ci\CiJobFactory
@@ -128,14 +119,6 @@ class CiRunCommand extends Command {
     catch (OrcaInvalidArgumentException $e) {
       $output->writeln("Error: {$e->getMessage()}");
       return StatusCodeEnum::ERROR;
-    }
-    catch (\Throwable $throwable) {
-      if (in_array($input->getArgument('job'), self::$allowedFailures)) {
-        $output->writeln($throwable->getMessage());
-        $output->writeln('This job is allowed to fail and will report as passing.');
-        return StatusCodeEnum::OK;
-      }
-      throw $throwable;
     }
     return StatusCodeEnum::OK;
   }
