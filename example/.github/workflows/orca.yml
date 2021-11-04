@@ -120,8 +120,8 @@ jobs:
         # @see https://www.drupal.org/docs/8/system-requirements/php-requirements
         # @see https://docs.acquia.com/acquia-cloud/arch/tech-platform/
         php-version: [ "7.3" ]
-        # When manually specifying a job to include, parameter values (such as for orca-job and php-version)
-        # are not inherited from the matrix. These values will be null unless explicitly set below.
+        # When manually specifying a job to include, empty parameter values (such as for orca-job and php-version) may
+        # result in undefined behavior. Make sure to set each parameter explicitly.
         include:
           - orca-job: ISOLATED_TEST_ON_CURRENT
             php-version: "8.0"
