@@ -14,6 +14,7 @@ set -e
 allowed_failures=("INTEGRATED_TEST_ON_NEXT_MINOR" "INTEGRATED_TEST_ON_NEXT_MINOR_DEV")
 if [[ " ${allowed_failures[*]} " =~ ${ORCA_JOB} ]]; then
   set +e
+  notice "This job is allowed to fail and will report as passing regardless of outcome."
 fi
 
 # Outputs a formatted error message and exits with an error code if a given
