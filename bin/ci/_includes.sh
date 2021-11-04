@@ -11,19 +11,6 @@
 
 # Exit as soon as one command returns a non-zero exit code.
 set -e
-allowed_failures=(
-  "INTEGRATED_TEST_ON_NEXT_MINOR"
-  "INTEGRATED_TEST_ON_NEXT_MINOR_DEV"
-  "DEPRECATED_CODE_SCAN_W_CONTRIB"
-  "ISOLATED_TEST_ON_NEXT_MINOR_DEV"
-  "INTEGRATED_UPGRADE_TEST_TO_NEXT_MINOR_DEV"
-  "LOOSE_DEPRECATED_CODE_SCAN"
-  "ISOLATED_UPGRADE_TEST_TO_NEXT_MAJOR_DEV"
-)
-if [[ " ${allowed_failures[*]} " =~ ${ORCA_JOB} ]]; then
-  set +e
-  notice "This job is allowed to fail and will report as passing regardless of outcome."
-fi
 
 # Outputs a formatted error message and exits with an error code if a given
 # condition is not met.
@@ -106,6 +93,26 @@ export PATH="$HOME/.phpenv/shims/:$PATH"
 
 # Add convenient aliases.
 alias drush='drush -r "$ORCA_FIXTURE_DIR"'
+
+# Commands exiting with a non-zero status prior to this point should always be
+# considered an 'error', i.e. an ORCA configuration problem, and fail the job.
+
+# Commands exiting with a non-zero status after this point are considered a
+# 'failure', i.e. a problem with the SUT or test fixture. Some jobs are allowed
+# to fail and will still report as a pass.
+allowed_failures=(
+  "INTEGRATED_TEST_ON_NEXT_MINOR"
+  "INTEGRATED_TEST_ON_NEXT_MINOR_DEV"
+  "DEPRECATED_CODE_SCAN_W_CONTRIB"
+  "ISOLATED_TEST_ON_NEXT_MINOR_DEV"
+  "INTEGRATED_UPGRADE_TEST_TO_NEXT_MINOR_DEV"
+  "LOOSE_DEPRECATED_CODE_SCAN"
+  "ISOLATED_UPGRADE_TEST_TO_NEXT_MAJOR_DEV"
+)
+if [[ " ${allowed_failures[*]} " =~ ${ORCA_JOB} ]]; then
+  set +e
+  notice "This job is allowed to fail and will report as passing regardless of outcome."
+fi
 
 # Make the shell print all lines in the script before executing them.
 set -v
