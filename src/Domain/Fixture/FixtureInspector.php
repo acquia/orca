@@ -225,7 +225,7 @@ class FixtureInspector {
    *
    * @return string
    *   The project template package/constraint string, e.g.,
-   *   acquia/drupal-recommended-project or acquia/blt-project:12.x.
+   *   acquia/drupal-recommended-project.
    */
   private function getProjectTemplate(): string {
     return $this->options->getProjectTemplate();
