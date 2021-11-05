@@ -141,13 +141,6 @@ class FixtureInspector {
       'Drush version',
       $this->getInstalledPackageVersionPretty('drush/drush'),
     ];
-    // Drupal Console is not installed after Drupal 8.
-    if ($this->getInstalledPackageVersion('drupal/console')) {
-      $overview[] = [
-        'Drupal Console version',
-        $this->getInstalledPackageVersionPretty('drupal/console'),
-      ];
-    }
 
     $overview = array_merge($overview, $this->getInstalledPackages());
 
