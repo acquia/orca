@@ -7,7 +7,7 @@ use Acquia\Orca\Domain\Tool\Phpcs\PhpcsConfigurator;
 use Acquia\Orca\Enum\PhpcsStandardEnum;
 use Acquia\Orca\Exception\OrcaTaskFailureException;
 use Acquia\Orca\Helper\Process\ProcessRunner;
-use PHPUnit\Framework\TestCase;
+use Acquia\Orca\Tests\TestCase;
 use Prophecy\Argument;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 

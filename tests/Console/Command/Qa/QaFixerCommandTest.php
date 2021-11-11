@@ -24,7 +24,7 @@ class QaFixerCommandTest extends CommandTestBase {
 
   private $defaultPhpcsStandard = PhpcsStandardEnum::DEFAULT;
 
-  protected function setUp() {
+  protected function setUp(): void {
     $this->composerNormalize = $this->prophesize(ComposerNormalizeTask::class);
     $this->filesystem = $this->prophesize(Filesystem::class);
     $this->phpCodeBeautifierAndFixer = $this->prophesize(PhpcbfTask::class);

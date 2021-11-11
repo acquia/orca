@@ -5,7 +5,7 @@ namespace Acquia\Orca\Tests\Helper\Log;
 use Acquia\Orca\Enum\TelemetryEventNameEnum;
 use Acquia\Orca\Helper\Filesystem\OrcaPathHandler;
 use Acquia\Orca\Helper\Log\TelemetryEventPropertiesBuilder;
-use PHPUnit\Framework\TestCase;
+use Acquia\Orca\Tests\TestCase;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**

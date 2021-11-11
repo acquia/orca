@@ -7,10 +7,10 @@ use Acquia\Orca\Exception\OrcaException;
 use Acquia\Orca\Exception\OrcaFileNotFoundException;
 use Acquia\Orca\Exception\OrcaParseError;
 use Acquia\Orca\Helper\Config\ConfigLoader;
+use Acquia\Orca\Tests\TestCase;
 use Noodlehaus\Config;
 use Noodlehaus\Exception\FileNotFoundException as NoodlehausFileNotFoundException;
 use Noodlehaus\Exception\ParseException as NoodlehausParseException;
-use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Symfony\Component\Filesystem\Filesystem;
 
@@ -64,7 +64,7 @@ class ConfigLoaderTest extends TestCase {
       ->willReturn(FALSE);
     $loader = $this->createConfigLoader();
     $this->expectException(OrcaDirectoryNotFoundException::class);
-    $this->expectExceptionMessageRegExp('/SUT is absent from expected location.*/');
+    $this->expectExceptionMessageMatches('/SUT is absent from expected location.*/');
 
     $loader->load(self::CONFIG_FILE_PATH);
 

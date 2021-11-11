@@ -139,12 +139,12 @@ jobs:
       - uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php-version }}
-          coverage: xdebug2
+          coverage: xdebug
 
       # Install ORCA and prepare the environment.
       - name: Before install
         run: |
-          composer create-project --no-dev --ignore-platform-req=php acquia/orca ../orca "$ORCA_VERSION"
+          composer create-project --no-dev acquia/orca ../orca "$ORCA_VERSION"
           # Many customizations can be achieved with out-of-the-box features.
           # @see https://github.com/acquia/orca/blob/develop/docs/advanced-usage.md
           # As a last resort or to apply a yet-unreleased bug fix, you can patch ORCA here--but

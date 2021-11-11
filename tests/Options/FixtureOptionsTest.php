@@ -9,7 +9,7 @@ use Acquia\Orca\Enum\DrupalCoreVersionEnum;
 use Acquia\Orca\Exception\OrcaInvalidArgumentException;
 use Acquia\Orca\Options\FixtureOptions;
 use Acquia\Orca\Tests\Enum\DrupalCoreVersionEnumsTestTrait;
-use PHPUnit\Framework\TestCase;
+use Acquia\Orca\Tests\TestCase;
 use Prophecy\Argument;
 
 /**

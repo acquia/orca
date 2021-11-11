@@ -4,7 +4,7 @@ namespace Acquia\Orca\Tests\Domain\Fixture;
 
 use Acquia\Orca\Domain\Fixture\FixtureResetter;
 use Acquia\Orca\Domain\Git\GitFacade;
-use PHPUnit\Framework\TestCase;
+use Acquia\Orca\Tests\TestCase;
 
 class FixtureResetterTest extends TestCase {
 

@@ -4,7 +4,7 @@ namespace Acquia\Orca\Tests\Domain\Tool\Phploc;
 
 use Acquia\Orca\Domain\Tool\Phploc\PhplocFacade;
 use Acquia\Orca\Domain\Tool\Phploc\PhplocTask;
-use PHPUnit\Framework\TestCase;
+use Acquia\Orca\Tests\TestCase;
 
 /**
  * @property \Acquia\Orca\Domain\Tool\Phploc\PhplocFacade|\Prophecy\Prophecy\ObjectProphecy $phploc

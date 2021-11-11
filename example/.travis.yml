@@ -169,7 +169,7 @@ jobs:
 before_install:
   # Set Node.js to a version compatible with Drupal 9 + Nightwatch.js.
   - nvm install 12.13.1; nvm use 12.13.1
-  - composer create-project --no-dev --ignore-platform-req=php acquia/orca ../orca "$ORCA_VERSION"
+  - composer create-project --no-dev acquia/orca ../orca "$ORCA_VERSION"
   - ../orca/bin/common/before_install.sh
   # For custom testing needs, add your own scripts here. See the example script
   # for more details.

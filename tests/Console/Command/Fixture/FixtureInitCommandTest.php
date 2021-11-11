@@ -110,7 +110,7 @@ class FixtureInitCommandTest extends CommandTestBase {
     $this->executeCommand();
 
     self::assertEquals(StatusCodeEnum::ERROR, $this->getStatusCode(), 'Returned correct status code.');
-    self::assertContains("[ERROR] {$message}", $this->getDisplay(), 'Displayed correct output.');
+    self::assertStringContainsString("[ERROR] {$message}", $this->getDisplay(), 'Displayed correct output.');
   }
 
   public function testInvalidOptions(): void {

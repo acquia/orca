@@ -14,7 +14,7 @@ use Acquia\Orca\Exception\OrcaParseError;
 use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
 use Acquia\Orca\Helper\Filesystem\OrcaPathHandler;
 use Acquia\Orca\Options\FixtureOptions;
-use PHPUnit\Framework\TestCase;
+use Acquia\Orca\Tests\TestCase;
 use Prophecy\Argument;
 use Symfony\Component\Filesystem\Filesystem;
 

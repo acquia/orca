@@ -4,7 +4,7 @@ namespace Acquia\Orca\Tests\Helper;
 
 use Acquia\Orca\Helper\EnvFacade;
 use Acquia\Orca\Tests\_Helper\TestSpy;
-use PHPUnit\Framework\TestCase;
+use Acquia\Orca\Tests\TestCase;
 
 /**
  * @property \Acquia\Orca\Tests\_Helper\TestSpy|\Prophecy\Prophecy\ObjectProphecy $spy

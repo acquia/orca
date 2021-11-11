@@ -3,7 +3,7 @@
 namespace Acquia\Orca\Tests\Enum;
 
 use Acquia\Orca\Enum\DrupalCoreVersionEnum;
-use PHPUnit\Framework\TestCase;
+use Acquia\Orca\Tests\TestCase;
 
 class DrupalCoreVersionEnumTest extends TestCase {
 

@@ -12,9 +12,9 @@ use Acquia\Orca\Helper\Config\ConfigLoader;
 use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
 use Acquia\Orca\Options\FixtureOptions;
 use Acquia\Orca\Options\FixtureOptionsFactory;
+use Acquia\Orca\Tests\TestCase;
 use Noodlehaus\Config;
 use Noodlehaus\Parser\Json;
-use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 
 /**

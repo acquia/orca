@@ -4,7 +4,7 @@ namespace Acquia\Orca\Tests\Domain\Composer\Version;
 
 use Acquia\Orca\Domain\Composer\Version\DrupalDotOrgApiClient;
 use Acquia\Orca\Exception\OrcaHttpException;
-use PHPUnit\Framework\TestCase;
+use Acquia\Orca\Tests\TestCase;
 use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
@@ -30,7 +30,7 @@ class DrupalDotOrgApiClientTest extends TestCase {
     <releases></releases>
     </project>';
 
-  public function setUp() {
+  public function setUp(): void {
     $this->httpClient = $this->prophesize(HttpClientInterface::class);
   }
 

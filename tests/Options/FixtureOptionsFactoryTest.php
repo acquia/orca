@@ -5,7 +5,7 @@ namespace Acquia\Orca\Tests\Options;
 use Acquia\Orca\Domain\Composer\Version\DrupalCoreVersionResolver;
 use Acquia\Orca\Domain\Package\PackageManager;
 use Acquia\Orca\Options\FixtureOptionsFactory;
-use PHPUnit\Framework\TestCase;
+use Acquia\Orca\Tests\TestCase;
 
 /**
  * @property \Acquia\Orca\Domain\Composer\Version\DrupalCoreVersionResolver|\Prophecy\Prophecy\ObjectProphecy $drupalCoreVersionFinder
