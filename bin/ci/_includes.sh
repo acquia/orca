@@ -96,10 +96,10 @@ alias drush='drush -r "$ORCA_FIXTURE_DIR"'
 
 # Commands exiting with a non-zero status prior to this point constitute an
 # error, i.e. an ORCA configuration problem, and always stop execution.
-
 # Commands exiting with a non-zero status after this point constitute a failure,
 # i.e. a problem with the SUT or test fixture, and may or may not stop execution
 # depending on whether the job is allowed to fail.
+
 allowed_failures=(
   # INTEGRATED_TEST_ON_NEXT_MINOR is temporarily allowed to fail
   # @see https://www.drupal.org/project/acquia_cms/issues/3248967
