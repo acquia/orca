@@ -7,7 +7,7 @@ use Acquia\Orca\Domain\Fixture\Helper\DrupalSettingsHelper;
 use Acquia\Orca\Domain\Package\PackageManager;
 use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
 use Acquia\Orca\Options\FixtureOptions;
-use PHPUnit\Framework\TestCase;
+use Acquia\Orca\Tests\TestCase;
 use Prophecy\Argument;
 use Symfony\Component\Filesystem\Filesystem;
 
@@ -42,7 +42,7 @@ class DrupalSettingsHelperTest extends TestCase {
     $fixture = $this->fixture->reveal();
     return new class ($filesystem, $fixture) extends DrupalSettingsHelper {
 
-      protected function getSettings(): string {
+      public function getSettings(): string {
         return 'SETTINGS';
       }
 
@@ -53,7 +53,7 @@ class DrupalSettingsHelperTest extends TestCase {
     };
   }
 
-  private function createDrupalSettingsHelperWithOptions($filesystem, $fixture, FixtureOptions $options) {
+  private function createDrupalSettingsHelperWithOptions($filesystem, $fixture, FixtureOptions $options): DrupalSettingsHelper {
     return new class ($filesystem, $fixture, $options) extends DrupalSettingsHelper {
 
       public function __construct(Filesystem $filesystem, FixturePathHandler $fixture_path_handler, FixtureOptions $options) {
@@ -122,9 +122,9 @@ class DrupalSettingsHelperTest extends TestCase {
 
     $settings = $helper->getSettings();
 
-    self::assertContains('# ORCA settings.' . PHP_EOL, $settings);
-    self::assertContains('bootstrap_container_definition', $settings);
-    self::assertContains('sqlite', $settings);
+    self::assertStringContainsString('# ORCA settings.' . PHP_EOL, $settings);
+    self::assertStringContainsString('bootstrap_container_definition', $settings);
+    self::assertStringContainsString('sqlite', $settings);
   }
 
   public function testGetSettingsNoSqlite(): void {
@@ -135,7 +135,7 @@ class DrupalSettingsHelperTest extends TestCase {
 
     $settings = $helper->getSettings();
 
-    self::assertNotContains('sqlite', $settings);
+    self::assertStringNotContainsString('sqlite', $settings);
   }
 
 }

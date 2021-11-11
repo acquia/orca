@@ -6,7 +6,7 @@ use Acquia\Orca\Domain\Tool\PhpmdTool;
 use Acquia\Orca\Helper\Config\ConfigFileOverrider;
 use Acquia\Orca\Helper\Filesystem\OrcaPathHandler;
 use Acquia\Orca\Helper\Process\ProcessRunner;
-use PHPUnit\Framework\TestCase;
+use Acquia\Orca\Tests\TestCase;
 use Prophecy\Argument;
 
 /**

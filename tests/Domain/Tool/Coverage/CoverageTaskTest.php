@@ -5,7 +5,7 @@ namespace Acquia\Orca\Tests\Domain\Tool\Coverage;
 use Acquia\Orca\Domain\Tool\Coverage\CodeCoverageReportBuilder;
 use Acquia\Orca\Domain\Tool\Coverage\CoverageTask;
 use Acquia\Orca\Exception\OrcaFileNotFoundException;
-use PHPUnit\Framework\TestCase;
+use Acquia\Orca\Tests\TestCase;
 use Prophecy\Argument;
 use Symfony\Component\Console\Output\OutputInterface;
 

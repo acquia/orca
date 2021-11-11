@@ -159,6 +159,7 @@ jobs:
     - env: ORCA_JOB=LOOSE_DEPRECATED_CODE_SCAN
     - env: ORCA_JOB=DEPRECATED_CODE_SCAN_W_CONTRIB
     - env: ORCA_JOB=ISOLATED_TEST_ON_NEXT_MINOR_DEV
+    - env: ORCA_JOB=INTEGRATED_TEST_ON_NEXT_MINOR
     - env: ORCA_JOB=INTEGRATED_TEST_ON_NEXT_MINOR_DEV
     - env: ORCA_JOB=ISOLATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_DEV
     - env: ORCA_JOB=INTEGRATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_DEV
@@ -168,7 +169,7 @@ jobs:
 before_install:
   # Set Node.js to a version compatible with Drupal 9 + Nightwatch.js.
   - nvm install 12.13.1; nvm use 12.13.1
-  - composer create-project --no-dev --ignore-platform-req=php acquia/orca ../orca "$ORCA_VERSION"
+  - composer create-project --no-dev acquia/orca ../orca "$ORCA_VERSION"
   - ../orca/bin/common/before_install.sh
   # For custom testing needs, add your own scripts here. See the example script
   # for more details.

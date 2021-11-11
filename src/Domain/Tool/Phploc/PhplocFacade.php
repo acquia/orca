@@ -17,7 +17,15 @@ class PhplocFacade {
    *
    * @see \Acquia\Orca\Domain\Tool\Coverage\CodeCoverageReportBuilder::PHP_NAME_PATTERNS
    */
-  private const PHP_EXTENSIONS = '*.php,*.module,*.theme,*.inc,*.install,*.profile,*.engine';
+  private const PHP_EXTENSIONS = [
+    '.php',
+    '.module',
+    '.theme',
+    '.inc',
+    '.install',
+    '.profile',
+    '.engine',
+  ];
 
   /**
    * The process runner.
@@ -53,16 +61,19 @@ class PhplocFacade {
    *   The path to execute on.
    */
   public function execute(string $path): void {
-    $this->processRunner->runOrcaVendorBin([
+    $args = [
       'phploc',
-      '--names=' . self::PHP_EXTENSIONS,
       '--exclude=tests',
       '--exclude=var',
       '--exclude=vendor',
       '--exclude=docroot',
       "--log-json={$this->orca->getPath(self::JSON_LOG_PATH)}",
-      '.',
-    ], $path);
+    ];
+    foreach (self::PHP_EXTENSIONS as $extension) {
+      $args[] = '--suffix=' . $extension;
+    }
+    $args[] = '.';
+    $this->processRunner->runOrcaVendorBin($args, $path);
   }
 
 }

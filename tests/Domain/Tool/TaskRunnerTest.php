@@ -6,7 +6,7 @@ use Acquia\Orca\Domain\Tool\PhpLint\PhpLintTask;
 use Acquia\Orca\Domain\Tool\TaskInterface;
 use Acquia\Orca\Enum\StatusCodeEnum;
 use Acquia\Orca\Helper\Task\TaskRunner;
-use PHPUnit\Framework\TestCase;
+use Acquia\Orca\Tests\TestCase;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**

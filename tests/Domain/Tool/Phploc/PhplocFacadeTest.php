@@ -5,7 +5,7 @@ namespace Acquia\Orca\Tests\Domain\Tool\Phploc;
 use Acquia\Orca\Domain\Tool\Phploc\PhplocFacade;
 use Acquia\Orca\Helper\Filesystem\OrcaPathHandler;
 use Acquia\Orca\Helper\Process\ProcessRunner;
-use PHPUnit\Framework\TestCase;
+use Acquia\Orca\Tests\TestCase;
 use Prophecy\Argument;
 
 /**
@@ -40,12 +40,18 @@ class PhplocFacadeTest extends TestCase {
     $this->processRunner
       ->runOrcaVendorBin([
         'phploc',
-        '--names=*.php,*.module,*.theme,*.inc,*.install,*.profile,*.engine',
         '--exclude=tests',
         '--exclude=var',
         '--exclude=vendor',
         '--exclude=docroot',
         '--log-json=' . PhplocFacade::JSON_LOG_PATH,
+        '--suffix=.php',
+        '--suffix=.module',
+        '--suffix=.theme',
+        '--suffix=.inc',
+        '--suffix=.install',
+        '--suffix=.profile',
+        '--suffix=.engine',
         '.',
       ], $path)
       ->shouldBeCalledOnce();

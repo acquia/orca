@@ -4,7 +4,7 @@ namespace Acquia\Orca\Tests\Domain\Git;
 
 use Acquia\Orca\Domain\Git\GitFacade;
 use Acquia\Orca\Helper\Process\ProcessRunner;
-use PHPUnit\Framework\TestCase;
+use Acquia\Orca\Tests\TestCase;
 use Prophecy\Argument;
 
 /**

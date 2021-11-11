@@ -1,5 +1,26 @@
 # Changelog
 
+## [v3.11.0](https://github.com/acquia/orca/tree/v3.11.0) (2021-11-11)
+
+[Full Changelog](https://github.com/acquia/orca/compare/v3.10.1...v3.11.0)
+
+**Implemented enhancements:**
+
+- Migrate "allowed failure" functionality to ORCA core [\#174](https://github.com/acquia/orca/pull/174) ([danepowell](https://github.com/danepowell))
+- Remove cog theme from core packages [\#168](https://github.com/acquia/orca/pull/168) ([TravisCarden](https://github.com/TravisCarden))
+- Fix \#164: Remove composer.lock from fixtures [\#166](https://github.com/acquia/orca/pull/166) ([danepowell](https://github.com/danepowell))
+- ORCA-197: PHP 8 compatibility [\#163](https://github.com/acquia/orca/pull/163) ([danepowell](https://github.com/danepowell))
+
+**Fixed bugs:**
+
+- Boolean environment variables broken in GitHub Actions [\#169](https://github.com/acquia/orca/pull/169) ([danepowell](https://github.com/danepowell))
+
+**Merged pull requests:**
+
+- Boolean environment variables broken in GitHub Actions [\#169](https://github.com/acquia/orca/pull/169) ([danepowell](https://github.com/danepowell))
+- Add GitHub Actions custom script docs [\#167](https://github.com/acquia/orca/pull/167) ([danepowell](https://github.com/danepowell))
+- Make sed command in example .travis.yml more cross-platform portable [\#131](https://github.com/acquia/orca/pull/131) ([danepowell](https://github.com/danepowell))
+
 ## [v3.10.1](https://github.com/acquia/orca/tree/v3.10.1) (2021-10-01)
 
 [Full Changelog](https://github.com/acquia/orca/compare/v3.10.0...v3.10.1)
