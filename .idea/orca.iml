@@ -26,8 +26,6 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/hassankhan/config" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/jean85/pretty-package-versions" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/justinrainbow/json-schema" />
-      <excludeFolder url="file://$MODULE_DIR$/vendor/lanfest/binary-chromedriver" />
-      <excludeFolder url="file://$MODULE_DIR$/vendor/lanfest/webdriver-binary-downloader" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/localheinz/diff" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/mglaman/drupal-check" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/mglaman/phpstan-drupal" />
