@@ -209,7 +209,14 @@ drupal/lightning_workflow:
 
 drupal/mautic: []
 
-drupal/media_acquiadam: []
+drupal/media_acquiadam:
+  core_matrix:
+    8.9.x:
+      version: 1.x
+      version_dev: 1.x-dev
+    '*':
+      version: 2.x
+      version_dev: 2.x-dev
 
 drupal/mysql56:
   type: library
