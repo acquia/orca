@@ -78,6 +78,11 @@ export DRUPAL_TEST_WEBDRIVER_CHROME_ARGS="--disable-gpu --headless --no-sandbox"
 export DRUPAL_TEST_WEBDRIVER_HOSTNAME="localhost"
 export DRUPAL_TEST_WEBDRIVER_PORT="4444"
 
+# Set TMPDIR on GitHub Actions
+if [[ "$RUNNER_TEMP" ]]; then
+  export TMPDIR="$RUNNER_TEMP"
+fi
+
 # Override the available columns setting to prevent Drush output from wrapping
 # too narrowly.
 export COLUMNS=125
