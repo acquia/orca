@@ -118,9 +118,15 @@ class PhpUnitTask extends TestFrameworkBase {
    */
   private function setCoverageFilter(): void {
     $directory = $this->doc->createElement('directory', $this->getPath());
+    $exclude = $this->doc->createElement('exclude');
+    $exclude_directory = $this->doc->createElement('directory', "{$this->getPath()}/tests");
+    $exclude->appendChild($exclude_directory);
     $this->xpath->query('//phpunit/filter/whitelist')
       ->item(0)
       ->appendChild($directory);
+    $this->xpath->query('//phpunit/filter/whitelist')
+      ->item(0)
+      ->appendChild($exclude);
   }
 
   /**
