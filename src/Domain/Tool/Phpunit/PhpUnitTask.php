@@ -66,6 +66,7 @@ class PhpUnitTask extends TestFrameworkBase {
     $this->ensureSimpleTestDirectory();
     $this->setSimpletestSettings();
     $this->setTestSuite();
+    $this->setCoverageFilter();
     $this->enableDrupalTestTraits();
     $this->disableSymfonyDeprecationsHelper();
     $this->setMinkDriverArguments();
@@ -106,6 +107,20 @@ class PhpUnitTask extends TestFrameworkBase {
     $this->xpath->query('//phpunit/testsuites')
       ->item(0)
       ->appendChild($testsuite);
+  }
+
+  /**
+   * Sets coverage filter in phpunit.xml.
+   *
+   * Drupal's phpunit.xml sets a whitelist for files report via clover.xml, and
+   * this whitelist only supports Drupal modules. ORCA must support non-Drupal
+   * packages as well.
+   */
+  private function setCoverageFilter(): void {
+    $directory = $this->doc->createElement('directory', $this->getPath());
+    $this->xpath->query('//phpunit/filter/whitelist')
+      ->item(0)
+      ->appendChild($directory);
   }
 
   /**
