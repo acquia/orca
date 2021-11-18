@@ -82,6 +82,9 @@ jobs:
       # Do not modify the following lines. They are critical for managing the build matrix.
       ORCA_JOB: ${{ matrix.orca-job }}
       ORCA_COVERALLS_ENABLE: ${{ matrix.coveralls-enable }}
+      # The GITHUB_TOKEN secret is automatically available to GitHub Actions
+      # workflows--it does not need to be manually created or configured anywhere.
+      # @see https://docs.github.com/en/actions/security-guides/automatic-token-authentication
       COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     # Execution time is drastically reduced by splitting the build into multiple
