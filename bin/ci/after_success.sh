@@ -22,7 +22,7 @@ if [[ "$ORCA_COVERAGE_ENABLE" == TRUE && "$ORCA_COVERALLS_ENABLE" == TRUE ]]; th
     # shellcheck disable=SC1004
     eval 'php-coveralls -vv \
       --coverage_clover="$ORCA_COVERAGE_CLOVER" \
-      --json_path="${TMPDIR:-/tmp}/coveralls.json" \
+      --json_path="$ORCA_TEMP_DIR/coveralls.json" \
       --root_dir="$ORCA_SUT_DIR"'
   )
 else
