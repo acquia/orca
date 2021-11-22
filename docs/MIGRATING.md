@@ -1,10 +1,9 @@
-## Migrating from Travis CI to GitHub Actions
+# Migrating from Travis CI to GitHub Actions
 
 ORCA is removing support for [Travis CI](https://travis-ci.org/). [GitHub Actions](https://github.com/features/actions) is the preferred alternative to Travis CI for open-source projects. This document describes how to migrate a project from Travis CI to GitHub Actions.
 
 > n.b. "GitHub Actions" refers both to the CI service as a whole and individual components (lower-case "actions") that can be incorporated into your CI job, as described below.
-> 
-### Comparison of Travis CI and GitHub Actions features
+## Comparison of Travis CI and GitHub Actions features
 
 - GitHub Actions allows you to re-use bundled features ("actions") provided by GitHub and the community. Actions are essentially mini-applications that help accomplish common CI use cases such as checking out code, installing PHP, or creating a GitHub release based on the outcome of a job.
 - Both services execute jobs based on definitions provided via a YAML file. Travis CI reads `.travis.yml` from a repository root directory, whereas GitHub Actions reads YAML files in the `.github/workflows` directory.
@@ -15,13 +14,13 @@ ORCA is removing support for [Travis CI](https://travis-ci.org/). [GitHub Action
 - Travis CI executes jobs in a rigidly-defined series of "stages", whereas GitHub Actions allows defining an arbitrary number of "steps".
 - Both services support build matrices, which dynamically create jobs based on combinations of job variables. However, whereas Travis CI created a build matrix directly from first-class primitives such as PHP versions, GitHub Actions requires defining an intermediary set of [matrix variables](https://docs.github.com/en/actions/learn-github-actions/workflow-syntax-for-github-actions#jobsjob_idstrategymatrix). While this is generally more flexible than Travis CI build matrices, it also requires a little more YAML boilerplate.
 
-### Migrating an ORCA project from Travis CI to GitHub Actions
+## Migrating an ORCA project from Travis CI to GitHub Actions
 
 ORCA provides self-documented template YAML files for Travis CI and GitHub Actions via its [example project](https://github.com/acquia/orca/tree/develop/example). The recommended process to migrate from Travis CI to GitHub Actions is to:
 
-1. Compare your project's `.travis.yml` to the [stock template](https://github.com/acquia/orca/blob/develop/example/.travis.yml) and document any differences (i.e. customizations). Especially, note environment variables such as `ORCA_SUT_NAME` and `ORCA_SUT_BRANCH`.
-2. Remove `.travis.yml` from your project and copy ORCA's [GitHub Actions template workflow](https://github.com/acquia/orca/tree/develop/example/.github/workflows) to the root directory.
-3. Apply to your GitHub Actions workflow any customizations documented in step 1.
+1. Compare your project's `.travis.yml` to the [stock template](https://github.com/acquia/orca/blob/develop/example/.travis.yml) and document any differences (i.e., customizations). Especially, note environment variables such as `ORCA_SUT_NAME` and `ORCA_SUT_BRANCH`.
+1. Remove `.travis.yml` from your project and copy ORCA's [GitHub Actions template workflow](https://github.com/acquia/orca/tree/develop/example/.github/workflows) to the root directory.
+1. Apply to your GitHub Actions workflow any customizations documented in step 1.
 
 Be aware of the following differences in how ORCA behaves between Travis CI and GitHub Actions:
 
@@ -30,7 +29,7 @@ Be aware of the following differences in how ORCA behaves between Travis CI and 
 - Travis CI had a concept of "allowed failures", i.e. jobs that were allowed to fail without failing the entire build. GitHub Actions does not support allowed failures. Thus, ORCA now natively handles allowed failures in GitHub Actions. Jobs that are allowed to fail ([as defined by ORCA itself](https://github.com/acquia/orca/blob/bf93dbfb13897ac523d4e9cb1df8dee9f7e7aade/bin/ci/_includes.sh#L103)) will always report as passing even in the case of failures.
 - Caching is no longer provided out of the box in GitHub Actions, as it provides no appreciable performance improvement for most projects. Refer to the [GitHub Actions cache documentation](https://github.com/actions/cache) if you need this feature.
 
-### Getting help
+## Getting help
 
 If you have any trouble with the migration, consult the following resources:
 
