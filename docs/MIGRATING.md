@@ -3,6 +3,7 @@
 ORCA is removing support for [Travis CI](https://travis-ci.org/). [GitHub Actions](https://github.com/features/actions) is the preferred alternative to Travis CI for open-source projects. This document describes how to migrate a project from Travis CI to GitHub Actions.
 
 > n.b. "GitHub Actions" refers both to the CI service as a whole and individual components (lower-case "actions") that can be incorporated into your CI job, as described below.
+
 ## Comparison of Travis CI and GitHub Actions features
 
 - GitHub Actions allows you to re-use bundled features ("actions") provided by GitHub and the community. Actions are essentially mini-applications that help accomplish common CI use cases such as checking out code, installing PHP, or creating a GitHub release based on the outcome of a job.
