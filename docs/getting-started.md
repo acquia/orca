@@ -31,7 +31,7 @@ See also [Continuous integration](understanding-orca.md#continuous-integration).
 
 ORCA can also be installed and run locally for testing and development. Follow these steps to set it up:
 
-1. Ensure you have PHP 7.2 or later (PHP 7.3 or later is recommended) with at least 256 MB of memory allocated to it and [Composer](https://getcomposer.org) installed.
+1. Ensure you have PHP 7.4 or later with at least 256 MB of memory allocated to it and [Composer](https://getcomposer.org) installed.
 
 1. Choose a directory to contain your package(s), e.g.:
 
