@@ -124,7 +124,7 @@ jobs:
         # The lowest version of PHP supported by all of Drupal, Acquia, and ORCA itself.
         # @see https://www.drupal.org/docs/8/system-requirements/php-requirements
         # @see https://docs.acquia.com/acquia-cloud/arch/tech-platform/
-        php-version: [ "7.3" ]
+        php-version: [ "7.4" ]
         coveralls-enable: [ "FALSE" ]
         # When manually specifying a job to include, empty parameter values (such as for orca-job and php-version) may
         # result in undefined behavior. Make sure to set each parameter explicitly.
@@ -148,7 +148,7 @@ jobs:
 
           # ORCA only executes when ORCA_JOB is set. Leave ORCA_JOB unset to execute custom jobs.
           # See ./bin/ci/example.sh for details.
-          # - php-version: "7.3"
+          # - php-version: "7.4"
     steps:
       - uses: actions/checkout@v2
 
