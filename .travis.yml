@@ -2,7 +2,7 @@
 language: php
 
 os: [ linux ]
-dist: bionic
+dist: focal
 
 version: ~> 1.0
 
