@@ -78,6 +78,19 @@ export DRUPAL_TEST_WEBDRIVER_CHROME_ARGS="--disable-gpu --headless --no-sandbox"
 export DRUPAL_TEST_WEBDRIVER_HOSTNAME="localhost"
 export DRUPAL_TEST_WEBDRIVER_PORT="4444"
 
+if [[ ! "$ORCA_TEMP_DIR" ]]; then
+  # Travis CI.
+  if [[ "$TMPDIR" ]]; then
+    export ORCA_TEMP_DIR="$TMPDIR"
+  # GitHub Actions.
+  elif [[ "$RUNNER_TEMP" ]]; then
+    export ORCA_TEMP_DIR="$RUNNER_TEMP"
+  # Fallback default.
+  else
+    export ORCA_TEMP_DIR="/tmp"
+  fi
+fi
+
 # Override the available columns setting to prevent Drush output from wrapping
 # too narrowly.
 export COLUMNS=125

@@ -79,8 +79,13 @@ jobs:
       # @see https://github.com/acquia/orca/blob/main/docs/advanced-usage.md#ORCA_AMPLITUDE_API_KEY
       # ORCA_TELEMETRY_ENABLE: "TRUE"
       #
-      # Do not modify the following line. It uses the build matrix to set ORCA_JOB for each job.
+      # Do not modify the following lines. They are critical for managing the build matrix.
       ORCA_JOB: ${{ matrix.orca-job }}
+      ORCA_COVERALLS_ENABLE: ${{ matrix.coveralls-enable }}
+      # The GITHUB_TOKEN secret is automatically available to GitHub Actions
+      # workflows--it does not need to be manually created or configured anywhere.
+      # @see https://docs.github.com/en/actions/security-guides/automatic-token-authentication
+      COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     # Execution time is drastically reduced by splitting the build into multiple
     # concurrent jobs.
@@ -119,16 +124,31 @@ jobs:
         # The lowest version of PHP supported by all of Drupal, Acquia, and ORCA itself.
         # @see https://www.drupal.org/docs/8/system-requirements/php-requirements
         # @see https://docs.acquia.com/acquia-cloud/arch/tech-platform/
-        php-version: [ "7.3" ]
+        php-version: [ "7.4" ]
+        coveralls-enable: [ "FALSE" ]
         # When manually specifying a job to include, empty parameter values (such as for orca-job and php-version) may
         # result in undefined behavior. Make sure to set each parameter explicitly.
         include:
           - orca-job: ISOLATED_TEST_ON_CURRENT
             php-version: "8.0"
+            coveralls-enable: "FALSE"
+          # To send PHPUnit test coverage data to Coveralls (coveralls.io), configure
+          # your GitHub repository according to the FAQ below and uncomment the
+          # following line. By default this job is allowed to fail (see below) so that
+          # the total build can be marked finished sooner, because it will have the
+          # same testing outcome as the above ISOLATED_TEST_ON_CURRENT but may take
+          # significantly longer. Note: this setting implies ORCA_COVERAGE_ENABLE,
+          # which need not be set separately.
+          # @see https://github.com/acquia/orca/blob/main/docs/faq.md#coveralls
+          # @see https://github.com/acquia/orca/blob/main/docs/advanced-usage.md#ORCA_COVERALLS_ENABLE
+          # @see https://github.com/acquia/orca/blob/main/docs/advanced-usage.md#ORCA_COVERAGE_ENABLE
+          - orca-job: ISOLATED_TEST_ON_CURRENT
+            php-version: "7.3"
+            coveralls-enable: "TRUE"
 
           # ORCA only executes when ORCA_JOB is set. Leave ORCA_JOB unset to execute custom jobs.
           # See ./bin/ci/example.sh for details.
-          # - php-version: "7.3"
+          # - php-version: "7.4"
     steps:
       - uses: actions/checkout@v2
 
