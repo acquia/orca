@@ -1,5 +1,19 @@
 # Changelog
 
+## [v3.12.0](https://github.com/acquia/orca/tree/v3.12.0) (2021-11-29)
+
+[Full Changelog](https://github.com/acquia/orca/compare/v3.11.0...v3.12.0)
+
+**Implemented enhancements:**
+
+- Bump PHP versions from 7.3 to 7.4 [\#181](https://github.com/acquia/orca/pull/181) ([TravisCarden](https://github.com/TravisCarden))
+- ORCA-228: Enable Coveralls for GitHub Actions [\#178](https://github.com/acquia/orca/pull/178) ([danepowell](https://github.com/danepowell))
+
+**Merged pull requests:**
+
+- Document migration process from Travis CI to GitHub Actions [\#180](https://github.com/acquia/orca/pull/180) ([danepowell](https://github.com/danepowell))
+- Restrict media\_acquiadam versions [\#177](https://github.com/acquia/orca/pull/177) ([danepowell](https://github.com/danepowell))
+
 ## [v3.11.0](https://github.com/acquia/orca/tree/v3.11.0) (2021-11-11)
 
 [Full Changelog](https://github.com/acquia/orca/compare/v3.10.1...v3.11.0)
