@@ -124,7 +124,7 @@ allowed_failures=(
   "LOOSE_DEPRECATED_CODE_SCAN"
   "ISOLATED_UPGRADE_TEST_TO_NEXT_MAJOR_DEV"
 )
-if [[ " ${allowed_failures[*]} " =~ ${ORCA_JOB} && ! $TRAVIS ]]; then
+if [[ " ${allowed_failures[*]} " =~ " ${ORCA_JOB} " && ! $TRAVIS ]]; then
   set +e
   notice "This job is allowed to fail and will report as passing regardless of outcome."
 fi
