@@ -174,8 +174,8 @@ jobs:
           # packages' builds to fail.
           # curl http://example.com/my.patch | git -C ../orca apply
           ../orca/bin/ci/before_install.sh
-        # For custom testing needs, add your own scripts here. See ./bin/ci/example.sh for details.
-        # - ./bin/ci/example.sh
+          # For custom testing needs, add your own scripts here. See ./bin/ci/example.sh for details.
+          # ./bin/ci/example.sh
 
       # Create the test fixture and place the SUT.
       - name: Install
