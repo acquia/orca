@@ -120,7 +120,7 @@ allowed_failures=(
   "INTEGRATED_UPGRADE_TEST_TO_NEXT_MINOR_DEV"
   "LOOSE_DEPRECATED_CODE_SCAN"
   "ISOLATED_UPGRADE_TEST_TO_NEXT_MAJOR_DEV"
-  # These jobs temporarily allowed to fail
+  # NEXT_MINOR jobs temporarily allowed to fail
   # @see https://www.drupal.org/project/acquia_cms/issues/3248967
   "INTEGRATED_TEST_ON_NEXT_MINOR"
   "ISOLATED_TEST_ON_NEXT_MINOR"
