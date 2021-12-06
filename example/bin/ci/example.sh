@@ -21,7 +21,7 @@
 cd "$(dirname "$0")" || exit 1
 
 # Reuse ORCA's own includes for its $PATH additions and environment variables.
-source ../../../orca/bin/ci/_includes.sh
+source ../../../orca/bin/ci/_includes.sh || exit 1
 
 # ORCA provides numerous general purpose environment variables you can use.
 echo "The SUT is cloned at $CI_WORKSPACE"
