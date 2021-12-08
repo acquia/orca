@@ -1,5 +1,21 @@
 # Changelog
 
+## [v3.12.1](https://github.com/acquia/orca/tree/v3.12.1) (2021-12-08)
+
+[Full Changelog](https://github.com/acquia/orca/compare/v3.12.0...v3.12.1)
+
+**Implemented enhancements:**
+
+- Improve error message on failure to find available package version [\#184](https://github.com/acquia/orca/pull/184) ([secretsayan](https://github.com/secretsayan))
+
+**Fixed bugs:**
+
+- Jobs incorrectly allowed to fail [\#183](https://github.com/acquia/orca/pull/183) ([danepowell](https://github.com/danepowell))
+
+**Merged pull requests:**
+
+- Protect against missing includes in example code [\#182](https://github.com/acquia/orca/pull/182) ([danepowell](https://github.com/danepowell))
+
 ## [v3.12.0](https://github.com/acquia/orca/tree/v3.12.0) (2021-11-29)
 
 [Full Changelog](https://github.com/acquia/orca/compare/v3.11.0...v3.12.0)
