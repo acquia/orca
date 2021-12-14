@@ -1,0 +1,43 @@
+name: 'ORCA action'
+author: acquia
+description: 'ORCA (Official Representative Customer Application)'
+inputs:
+  sut_name:
+    description: 'Package name'
+    required: true
+  sut_branch:
+    description: 'Package name'
+    required: true
+  sut_dir:
+    description: ''
+    default: ''
+    required: false
+  job:
+    description: 'The ORCA job to run'
+    required: true
+  packages_config:
+    description: ''
+    default: ''
+    required: false
+  packages_config_alter:
+    description: ''
+    default: ''
+    required: false
+  enable_nightwatch:
+    description: ''
+    default: 'FALSE'
+    required: false
+  self_test_coverage_clover:
+    description: ''
+    default: ''
+    required: false
+  live_test:
+    description: ''
+    default: ''
+    required: false
+runs:
+  using: 'node12'
+  main: 'action/dist/index.js'
+branding:
+  icon: 'box'
+  color: 'blue'

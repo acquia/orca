@@ -1,0 +1,26 @@
+name: npm
+on:
+  push:
+    branches: [main, develop, wip, support/**]
+    paths-ignore:
+      - .idea/**
+      - docs/**
+  pull_request:
+    branches: [develop]
+    paths-ignore:
+      - .idea/**
+      - docs/**
+jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12.x
+      - run: npm ci
+        working-directory: action
+      - run: npm test
+        working-directory: action

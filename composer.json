@@ -111,7 +111,8 @@
         "phpmd": "phpmd . text phpmd.xml.dist --ignore-violations-on-exit",
         "phpstan": "vendor/bin/phpstan analyse src",
         "phpunit": "phpunit",
-        "update-docs": "./bin/orca --format=md > docs/commands.md"
+        "update-docs": "./bin/orca --format=md > docs/commands.md",
+        "action": "act -P ubuntu-latest=shivammathur/node:latest --job action"
     },
     "support": {
         "issues": "https://github.com/acquia/orca/issues",

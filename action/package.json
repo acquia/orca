@@ -1,0 +1,36 @@
+{
+    "name": "@acquia/orca",
+    "version": "1.0.0",
+    "description": "ORCA (Official Representative Customer Application)",
+    "main": "dist/index.js",
+    "scripts": {
+      "test": "jest",
+      "build": "ncc build src/index.js --license licenses.txt && git add dist/",
+      "debug:run": "npm run build && act -P ubuntu-latest=shivammathur/node:latest --job run"
+    },
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/acquia/orca.git"
+    },
+    "keywords": [
+      "actions",
+      "drupal",
+      "setup"
+    ],
+    "author": "Acquia Engineering",
+    "license": "GPL-2.0-or-later",
+    "bugs": {
+      "url": "https://github.com/acquia/orca/issues"
+    },
+    "homepage": "https://github.com/acquia/orca#readme",
+    "dependencies": {
+      "@actions/core": "^1.2.6",
+      "@actions/exec": "^1.0.4",
+      "@actions/github": "^4.0.0",
+      "semver": "^7.3.4"
+    },
+    "devDependencies": {
+      "@vercel/ncc": "^0.27.0",
+      "jest": "^26.6.3"
+    }
+  }

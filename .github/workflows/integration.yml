@@ -1,0 +1,85 @@
+---
+name: ORCA Action
+on:
+    push:
+        branches: [ main, develop, wip, support/** ]
+        paths-ignore:
+            - .idea/**
+            - docs/**
+    pull_request:
+        branches: [ develop ]
+        paths-ignore:
+            - .idea/**
+            - docs/**
+    schedule:
+        # Daily at 00:00:00 UTC.
+        # @see https://crontab.cronhub.io/
+        -   cron: "0 0 * * *"
+jobs:
+  action:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        orca-job:
+          - STATIC_CODE_ANALYSIS
+          - INTEGRATED_TEST_ON_OLDEST_SUPPORTED
+          - INTEGRATED_TEST_ON_LATEST_LTS
+          - INTEGRATED_TEST_ON_PREVIOUS_MINOR
+          - INTEGRATED_UPGRADE_TEST_FROM_PREVIOUS_MINOR
+          - ISOLATED_TEST_ON_CURRENT
+          - INTEGRATED_TEST_ON_CURRENT
+          - INTEGRATED_UPGRADE_TEST_TO_NEXT_MINOR
+          - ISOLATED_TEST_ON_CURRENT_DEV
+          - INTEGRATED_TEST_ON_CURRENT_DEV
+          - STRICT_DEPRECATED_CODE_SCAN
+          - ISOLATED_TEST_ON_NEXT_MINOR
+          - INTEGRATED_TEST_ON_NEXT_MINOR
+          - ISOLATED_UPGRADE_TEST_TO_NEXT_MAJOR_BETA_OR_LATER
+          - ISOLATED_UPGRADE_TEST_TO_NEXT_MAJOR_DEV
+          - DEPRECATED_CODE_SCAN_W_CONTRIB
+          - INTEGRATED_TEST_ON_NEXT_MINOR_DEV
+          - ISOLATED_TEST_ON_NEXT_MINOR_DEV
+          - INTEGRATED_UPGRADE_TEST_TO_NEXT_MINOR_DEV
+          - LOOSE_DEPRECATED_CODE_SCAN
+          # - ISOLATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_BETA_OR_LATER
+          # - INTEGRATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_BETA_OR_LATER
+          # - ISOLATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_DEV
+          # - INTEGRATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_DEV
+        php-version: [ "7.4" ]
+        include:
+          - orca-job: ISOLATED_TEST_ON_CURRENT
+            php-version: "8.0"
+
+          - orca-job: ""
+            orca-live-test: "TRUE"
+            php-version: "7.4"
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 12.x
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-version }}
+          coverage: xdebug
+
+      # Execute out script directly without `uses`
+      # core.getInput() checks for environment variablts prefixed INPUT_*
+      # process.env[`INPUT_${name.replace(/ /g, '_').toUpperCase()}`] || ''
+      - name: ORCA
+        run: node action/dist/index.js
+        env:
+          INPUT_SUT_NAME: drupal/example
+          INPUT_SUT_BRANCH: main
+          INPUT_PACKAGES_CONFIG: example/tests/packages.yml
+          INPUT_PACKAGES_CONFIG_ALTER: example/tests/packages_alter.yml
+          INPUT_ENABLE_NIGHTWATCH: "FALSE"
+          # Hardcode path since GITHUB_WORKSPACE can't be used here.
+          # @see https://github.community/t/how-to-use-env-context/16975/9
+          INPUT_SUT_DIR: /home/runner/work/orca/example
+          INPUT_SELF_TEST_COVERAGE_CLOVER: $HOME/build/logs/clover-self.xml
+          INPUT_JOB: ${{ matrix.orca-job }}
+          INPUT_LIVE_TEST: ${{ matrix.orca-live-test }}
