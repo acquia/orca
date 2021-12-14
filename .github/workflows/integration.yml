@@ -50,9 +50,10 @@ jobs:
           - orca-job: ISOLATED_TEST_ON_CURRENT
             php-version: "8.0"
 
-          - orca-job: ""
-            orca-live-test: "TRUE"
-            php-version: "7.4"
+          # @TODO uncomment. is ORCA_JOB not required?
+          # - orca-job: ""
+          #   orca-live-test: "TRUE"
+          #   php-version: "7.4"
 
     steps:
       - uses: actions/checkout@v2
