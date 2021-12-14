@@ -2876,9 +2876,14 @@ async function run() {
     '../bin/ci/after_failure.sh',
     '../bin/ci/after_script.sh',
   ];
-  scripts.forEach(async script => {
-    await exec.exec(['bash', utils.resolvePath(script)].join(' '));
-  })
+
+  try {
+    scripts.forEach(async script => {
+      await exec.exec(['bash', utils.resolvePath(script)].join(' '));
+    })
+  } catch (error) {
+    core.setFailed(error.message);
+  }
 }
 
 (async () => {
