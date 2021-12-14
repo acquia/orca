@@ -34,24 +34,26 @@ async function run() {
     core.exportVariable(`ORCA_${input.toUpperCase()}`, core.getInput(input));
   })
 
+  await exec.exec('composer', ['install'])
+
   // @todo figure out the self-test things.
   const scripts = [
-    '../bin/ci/self-test/before_install.sh',
-    '../bin/ci/before_install.sh',
-    '../bin/ci/self-test/install.sh',
-    '../bin/ci/install.sh',
-    '../bin/ci/before_script.sh',
-    '../bin/ci/self-test/script.sh',
-    '../bin/ci/script.sh',
-    '../bin/ci/self-test/after_success.sh',
-    '../bin/ci/after_success.sh',
-    '../bin/ci/after_failure.sh',
-    '../bin/ci/after_script.sh',
+    './bin/ci/self-test/before_install.sh',
+    './bin/ci/before_install.sh',
+    './bin/ci/self-test/install.sh',
+    './bin/ci/install.sh',
+    './bin/ci/before_script.sh',
+    './bin/ci/self-test/script.sh',
+    './bin/ci/script.sh',
+    './bin/ci/self-test/after_success.sh',
+    './bin/ci/after_success.sh',
+    './bin/ci/after_failure.sh',
+    './bin/ci/after_script.sh',
   ];
 
   try {
     scripts.forEach(async script => {
-      await exec.exec(['bash', utils.resolvePath(script)].join(' '));
+      await exec.exec('bash', utils.resolvePath(script));
     })
   } catch (error) {
     core.setFailed(error.message);

@@ -66,20 +66,17 @@ jobs:
           php-version: ${{ matrix.php-version }}
           coverage: xdebug
 
-      # Execute out script directly without `uses`
-      # core.getInput() checks for environment variablts prefixed INPUT_*
-      # process.env[`INPUT_${name.replace(/ /g, '_').toUpperCase()}`] || ''
       - name: ORCA
-        run: node action/dist/index.js
-        env:
-          INPUT_SUT_NAME: drupal/example
-          INPUT_SUT_BRANCH: main
-          INPUT_PACKAGES_CONFIG: example/tests/packages.yml
-          INPUT_PACKAGES_CONFIG_ALTER: example/tests/packages_alter.yml
-          INPUT_ENABLE_NIGHTWATCH: "FALSE"
+        uses: ./
+        with:
+          sut_name: drupal/example
+          sut_branch: main
+          packages_config: example/tests/packages.yml
+          packages_config_alter: example/tests/packages_alter.yml
+          enable_nightwatch: "FALSE"
           # Hardcode path since GITHUB_WORKSPACE can't be used here.
           # @see https://github.community/t/how-to-use-env-context/16975/9
-          INPUT_SUT_DIR: /home/runner/work/orca/example
-          INPUT_SELF_TEST_COVERAGE_CLOVER: $HOME/build/logs/clover-self.xml
-          INPUT_JOB: ${{ matrix.orca-job }}
-          INPUT_LIVE_TEST: ${{ matrix.orca-live-test }}
+          sut_dir: /home/runner/work/orca/example
+          self_test_coverage_clover: $HOME/build/logs/clover-self.xml
+          job: ${{ matrix.orca-job }}
+          live_test: ${{ matrix.orca-live-test }}
