@@ -257,6 +257,9 @@ class FixtureCreator {
       $additions[] = 'phpunit/phpunit:9.4.3';
     }
 
+    // Hack to support Acquia CMS.
+    $additions[] = 'weitzman/drupal-test-traits';
+
     // Require additional packages.
     $prefer_source = $this->options->preferSource();
     $no_update = !$this->options->isBare();
