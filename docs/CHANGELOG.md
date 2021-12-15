@@ -1,5 +1,15 @@
 # Changelog
 
+## [v3.12.2](https://github.com/acquia/orca/tree/v3.12.2) (2021-12-15)
+
+[Full Changelog](https://github.com/acquia/orca/compare/v3.12.1...v3.12.2)
+
+**Fixed bugs:**
+
+- ORCA jobs not using latest Acquia CMS [\#186](https://github.com/acquia/orca/pull/186) ([danepowell](https://github.com/danepowell))
+- Code coverage support for non-module packages [\#179](https://github.com/acquia/orca/pull/179) ([danepowell](https://github.com/danepowell))
+- Fix phploc scanning of projects with no code [\#176](https://github.com/acquia/orca/pull/176) ([danepowell](https://github.com/danepowell))
+
 ## [v3.12.1](https://github.com/acquia/orca/tree/v3.12.1) (2021-12-08)
 
 [Full Changelog](https://github.com/acquia/orca/compare/v3.12.0...v3.12.1)
