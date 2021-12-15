@@ -257,7 +257,7 @@ class FixtureCreator {
       $additions[] = 'phpunit/phpunit:9.4.3';
     }
 
-    // Acquia CMS uses drupal-test-traits as a dev dependency, so it must be included here.
+    // Acquia CMS uses drupal-test-traits as a dev dependency.
     // @todo remove this via ORCA-298
     $additions[] = 'weitzman/drupal-test-traits';
 
