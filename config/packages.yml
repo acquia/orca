@@ -93,7 +93,9 @@ acquia/blt:
   core_matrix:
     '>=9.0.0':
       version: 13.x
-      version_dev: 13.x-dev
+      # Yeah I know, it's weird that the dev version is lower than stable. It's because of a stale branch alias.
+      # @see https://github.com/acquia/orca/pull/175
+      version_dev: 12.x-dev
     '>=8.8.0':
       version: 11.x
       version_dev: 11.x-dev
