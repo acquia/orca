@@ -27,6 +27,7 @@
         "ext-sqlite3": "*",
         "acquia/coding-standards": "^0.7.0",
         "composer/composer": "^2.0",
+        "cweagans/composer-patches": "^1.7",
         "dealerdirect/phpcodesniffer-composer-installer": "^0.7.1",
         "ergebnis/composer-normalize": "^2.0.0",
         "hassankhan/config": "^2.1",
@@ -36,7 +37,7 @@
         "php-coveralls/php-coveralls": "^2.2",
         "php-parallel-lint/php-console-highlighter": "^0.5.0",
         "php-parallel-lint/php-parallel-lint": "^1.2.0",
-        "phploc/phploc": "^7.0",
+        "phploc/phploc": "7.0.2",
         "phpmd/phpmd": "^2.6",
         "stecman/symfony-console-completion": "^0.10.1",
         "symfony/config": "^4.1",
@@ -81,6 +82,11 @@
                 "vendor/bin/phpcs --cache=var/cache/phpcs.json"
             ],
             "pre-push": "vendor/bin/phpcs"
+        },
+        "patches": {
+            "phploc/phploc": [
+                "https://patch-diff.githubusercontent.com/raw/sebastianbergmann/phploc/pull/227.patch"
+            ]
         },
         "phpcodesniffer-search-depth": 4
     },
