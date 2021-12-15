@@ -23,7 +23,7 @@ events:
       - install:
           type: script
           script:
-            - ./bin/orca fixture:init --no-sqlite --profile=orca
+            - ./bin/orca fixture:init --no-sqlite
             - cd ${ORCA_FIXTURE_DIR}
             - ./vendor/bin/drush sql:dump --result-file=db.sql
             - echo db.sql | tee -a .gitignore
