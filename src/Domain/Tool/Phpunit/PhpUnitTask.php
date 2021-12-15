@@ -110,21 +110,41 @@ class PhpUnitTask extends TestFrameworkBase {
   }
 
   /**
-   * Sets coverage filter in phpunit.xml.
+   * Sets code coverage filters to support non-Drupal module SUTs.
    *
-   * Drupal's phpunit.xml sets a whitelist for files report via clover.xml, and
-   * this whitelist only supports Drupal modules. ORCA must support non-Drupal
-   * packages as well.
+   * Drupal core's phpunit.xml.dist sets a code coverage whitelist with test
+   * files exclusion for Drupal modules, but it does not support themes,
+   * profiles, or non-Drupal packages. Since ORCA must report test coverage for
+   * all these, it must manually add the appropriate directories for the SUT.
+   * The resulting additions look like the following:
+   *
+   * ```xml
+   * <phpunit>
+   *   <filter>
+   *     <whitelist>
+   *       <directory>/var/www/docroot/modules/contrib/example</directory>
+   *       <exclude>
+   *         <directory>/var/www/docroot/modules/contrib/example/tests</directory>
+   *       </exclude>
+   *     </whitelist>
+   *   </filter>
+   * </phpunit>
+   * ```
    */
   private function setCoverageFilter(): void {
-    $directory = $this->doc->createElement('directory', $this->getPath());
-    $exclude = $this->doc->createElement('exclude');
-    $exclude_directory = $this->doc->createElement('directory', "{$this->getPath()}/tests");
+    $directory = $this->doc
+      ->createElement('directory', $this->getPath());
+    $exclude = $this->doc
+      ->createElement('exclude');
+    $exclude_directory = $this->doc
+      ->createElement('directory', "{$this->getPath()}/tests");
     $exclude->appendChild($exclude_directory);
-    $this->xpath->query('//phpunit/filter/whitelist')
+    $this->xpath
+      ->query('//phpunit/filter/whitelist')
       ->item(0)
       ->appendChild($directory);
-    $this->xpath->query('//phpunit/filter/whitelist')
+    $this->xpath
+      ->query('//phpunit/filter/whitelist')
       ->item(0)
       ->appendChild($exclude);
   }
