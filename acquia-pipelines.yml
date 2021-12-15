@@ -1,10 +1,12 @@
 ---
-version: 1.2.0
+version: 1.3.0
 
 services:
   - mysql
   - php:
       version: 7.4
+  - composer:
+      version: 2
 
 events:
   build:
@@ -17,14 +19,11 @@ events:
             - export ORCA_FIXTURE_DIR=$(pwd)
             - mv ${ORCA_FIXTURE_DIR} ../orca
             - cd ../orca
-            # Composer v1 is installed on the platform. Temporarily override it.
-            - ./bin/pipelines/install_composer.sh
-            - ./composer.phar install
+            - composer install
       - install:
           type: script
           script:
-            - export ORCA_PACKAGES_CONFIG_ALTER=bin/pipelines/packages_alter.yml
-            - ./bin/orca fixture:init --no-sqlite --profile=lightning
+            - ./bin/orca fixture:init --no-sqlite --profile=orca
             - cd ${ORCA_FIXTURE_DIR}
             - ./vendor/bin/drush sql:dump --result-file=db.sql
             - echo db.sql | tee -a .gitignore
