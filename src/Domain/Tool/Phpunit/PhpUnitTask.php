@@ -122,9 +122,9 @@ class PhpUnitTask extends TestFrameworkBase {
    * <phpunit>
    *   <filter>
    *     <whitelist>
-   *       <directory>/var/www/docroot/modules/contrib/example</directory>
+   *       <directory>/var/www/docroot/themes/contrib/example</directory>
    *       <exclude>
-   *         <directory>/var/www/docroot/modules/contrib/example/tests</directory>
+   *         <directory>/var/www/docroot/themes/contrib/example/tests</directory>
    *       </exclude>
    *     </whitelist>
    *   </filter>
