@@ -114,6 +114,7 @@ alias drush='drush -r "$ORCA_FIXTURE_DIR"'
 # depending on whether the job is allowed to fail.
 
 allowed_failures=(
+  "INTEGRATED_TEST_ON_LATEST_LTS"
   "INTEGRATED_TEST_ON_NEXT_MINOR_DEV"
   "DEPRECATED_CODE_SCAN_W_CONTRIB"
   "ISOLATED_TEST_ON_NEXT_MINOR_DEV"
