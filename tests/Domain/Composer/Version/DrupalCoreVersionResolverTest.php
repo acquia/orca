@@ -123,7 +123,7 @@ class DrupalCoreVersionResolverTest extends TestCase {
   public function testResolvePredefinedAcceptsAllVersions($version): void {
     $this->package
       ->getPrettyVersion()
-      ->willReturn('9.1.0')
+      ->willReturn('10.1.0')
       ->shouldBeCalled();
     $resolver = $this->createDrupalCoreVersionResolver();
 
@@ -158,10 +158,10 @@ class DrupalCoreVersionResolverTest extends TestCase {
   public function testResolvePredefinedLatestLts(): void {
     $this->package
       ->getPrettyVersion()
-      ->willReturn('9.1.0', '8.9.7')
+      ->willReturn('10.1.0', '9.9.7')
       ->shouldBeCalledTimes(2);
     $this->selector
-      ->findBestCandidate('drupal/core', '<9', 'stable')
+      ->findBestCandidate('drupal/core', '<10', 'stable')
       ->willReturn($this->package->reveal())
       ->shouldBeCalledOnce();
     $this->expectGetCurrentToBeCalledOnce();
@@ -171,7 +171,7 @@ class DrupalCoreVersionResolverTest extends TestCase {
     // Call again to test value caching.
     $resolver->resolvePredefined(DrupalCoreVersionEnum::LATEST_LTS());
 
-    self::assertSame('8.9.7', $actual);
+    self::assertSame('9.9.7', $actual);
   }
 
   public function testResolvePredefinedPreviousMinor(): void {
