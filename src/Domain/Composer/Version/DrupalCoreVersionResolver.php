@@ -228,6 +228,7 @@ class DrupalCoreVersionResolver {
       $message = 'No Drupal core version satisfies the given constraints: version=9, stability=stable';
       throw new OrcaVersionNotFoundException($message);
     }
+    // @todo do not assume that a branch is supported just because it's stable.
     $this->latestLts = $this->resolveArbitrary("<{$current_major}", 'stable');
 
     return $this->latestLts;
