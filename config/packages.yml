@@ -49,7 +49,12 @@
 
 acquia/acquia_cms:
   type: drupal-profile
-  version_dev: dev-develop
+  core_matrix:
+    '>=9.0.0':
+      version_dev: dev-develop
+    '8.9.x':
+      version: ~
+      version_dev: ~
 
 drupal/acquia_connector:
   version: 3.x
