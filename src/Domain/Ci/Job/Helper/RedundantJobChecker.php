@@ -4,6 +4,7 @@ namespace Acquia\Orca\Domain\Ci\Job\Helper;
 
 use Acquia\Orca\Domain\Composer\Version\DrupalCoreVersionResolver;
 use Acquia\Orca\Enum\CiJobEnum;
+use Acquia\Orca\Exception\OrcaVersionNotFoundException;
 
 /**
  * Determines whether essentially redundant jobs exist.
@@ -85,8 +86,14 @@ class RedundantJobChecker {
         ->getDrupalCoreVersion(),
     ];
     foreach ($ci_jobs as $key => $ci_job) {
-      /* @phan-suppress-next-line PhanTypeMismatchArgumentNullable */
-      $job = $this->drupalCoreVersionResolver->resolvePredefined($ci_job);
+      try {
+        /* @phan-suppress-next-line PhanTypeMismatchArgumentNullable */
+        $job = $this->drupalCoreVersionResolver->resolvePredefined($ci_job);
+      }
+      catch (OrcaVersionNotFoundException $e) {
+        // Some versions may not exist, such as LTS. Ignore these.
+        continue;
+      }
       $ci_jobs[$key] = $job;
     }
     return $ci_jobs;

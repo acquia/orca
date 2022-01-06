@@ -141,13 +141,6 @@ class FixtureInspector {
       'Drush version',
       $this->getInstalledPackageVersionPretty('drush/drush'),
     ];
-    // Drupal Console is not installed after Drupal 8.
-    if ($this->getInstalledPackageVersion('drupal/console')) {
-      $overview[] = [
-        'Drupal Console version',
-        $this->getInstalledPackageVersionPretty('drupal/console'),
-      ];
-    }
 
     $overview = array_merge($overview, $this->getInstalledPackages());
 
@@ -225,7 +218,7 @@ class FixtureInspector {
    *
    * @return string
    *   The project template package/constraint string, e.g.,
-   *   acquia/drupal-recommended-project or acquia/blt-project:12.x.
+   *   acquia/drupal-recommended-project.
    */
   private function getProjectTemplate(): string {
     return $this->options->getProjectTemplate();
