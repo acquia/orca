@@ -1,5 +1,19 @@
 # Changelog
 
+## [v3.13.0](https://github.com/acquia/orca/tree/v3.13.0) (2022-01-06)
+
+[Full Changelog](https://github.com/acquia/orca/compare/v3.12.2...v3.13.0)
+
+**Fixed bugs:**
+
+- Support case where Drupal core does not have an LTS release [\#190](https://github.com/acquia/orca/pull/190) ([danepowell](https://github.com/danepowell))
+
+**Merged pull requests:**
+
+- Allow INTEGRATED\_TEST\_ON\_LATEST\_LTS CI job to fail on GitHub Actions [\#188](https://github.com/acquia/orca/pull/188) ([TravisCarden](https://github.com/TravisCarden))
+- Modifying comments for better understanding [\#187](https://github.com/acquia/orca/pull/187) ([secretsayan](https://github.com/secretsayan))
+- Audit packages.yml and D8 EOL [\#175](https://github.com/acquia/orca/pull/175) ([danepowell](https://github.com/danepowell))
+
 ## [v3.12.2](https://github.com/acquia/orca/tree/v3.12.2) (2021-12-15)
 
 [Full Changelog](https://github.com/acquia/orca/compare/v3.12.1...v3.12.2)
