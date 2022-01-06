@@ -35,7 +35,7 @@ A [test fixture](#test-fixture) that neither includes nor installs any [SUT](#su
 
 ## BLT
 
-Build and Launch Tool: Acquia's toolset for automating Drupal 8 development, testing, and deployment. [[Website]](https://github.com/acquia/blt) Provides the foundation for an ORCA [test fixture](#test-fixture) prior to Drupal 9.
+Build and Launch Tool: Acquia's toolset for automating Drupal 9 development, testing, and deployment. [[Website]](https://github.com/acquia/blt)
 
 ## Ignored tests
 
@@ -79,7 +79,7 @@ Automated tests that ORCA runs only when the package that provides them is the [
 
 ## Project template
 
-A project template is a way to use Composer to create new projects from an existing package. See [composer create-project](https://getcomposer.org/doc/03-cli.md#create-project). In Drupal 8 and later, this is the preferred way to manage Drupal and all dependencies (modules, themes, libraries). See [Using Composer to Install Drupal and Manage Dependencies](https://www.drupal.org/docs/develop/using-composer/using-composer-to-install-drupal-and-manage-dependencies). Acquia provides two project templates:
+A project template is a way to use Composer to create new projects from an existing package. See [composer create-project](https://getcomposer.org/doc/03-cli.md#create-project). This is the preferred way to manage Drupal and all dependencies (modules, themes, libraries). See [Using Composer to Install Drupal and Manage Dependencies](https://www.drupal.org/docs/develop/using-composer/using-composer-to-install-drupal-and-manage-dependencies). Acquia provides two project templates:
 
 * <a name="acquia-drupal-recommended-project"</a>[**Acquia Drupal Recommended Project**](https://github.com/acquia/drupal-recommended-project) (`acquia/drupal-recommended-project`) is a project template providing a great out-of-the-box experience for new Drupal 9 projects hosted on Acquia.
 * <a name="acquia-drupal-minimal-project"</a>[**Acquia Drupal Minimal Project**](https://github.com/acquia/drupal-minimal-project) (`acquia/drupal-minimal-project`) provides a minimal Drupal application to be hosted on Acquia.

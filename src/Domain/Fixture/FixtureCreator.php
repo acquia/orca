@@ -231,23 +231,12 @@ class FixtureCreator {
       $additions[] = 'drush/drush:dev-master || 10.x-dev || 9.x-dev || 9.5.x-dev';
     }
 
-    if ($this->shouldRequireDrupalConsole()) {
-      // Add Drupal Console as a soft dependency akin to Drush.
-      $drupal_console_version = '~1.0';
-      if ($this->options->isDev()) {
-        $drupal_console_version = 'dev-master';
-      }
-      $additions[] = "drupal/console:{$drupal_console_version}";
-    }
-
     // Install a specific version of Drupal core.
     if ($this->options->getCore()) {
       $additions[] = "drupal/core:{$this->options->getCore()}";
     }
 
-    if ($this->shouldRequireDrupalCoreDev()) {
-      $additions[] = "drupal/core-dev:{$this->options->getCore()}";
-    }
+    $additions[] = "drupal/core-dev:{$this->options->getCore()}";
 
     if ($this->shouldRequireProphecyPhpunit()) {
       $additions[] = 'phpspec/prophecy-phpunit:^2';
@@ -265,34 +254,6 @@ class FixtureCreator {
     $prefer_source = $this->options->preferSource();
     $no_update = !$this->options->isBare();
     $this->composer->requirePackages($additions, $prefer_source, $no_update);
-  }
-
-  /**
-   * Determines whether or not to require drupal/console.
-   *
-   * Only require it for Drupal 8. It's not compatible with Drupal 9 at the time
-   * of this writing.
-   *
-   * @return bool
-   *   Returns TRUE if it should be required, or FALSE if not.
-   */
-  private function shouldRequireDrupalConsole(): bool {
-    $version = $this->options->getCoreResolved();
-    return Comparator::lessThan($version, '9');
-  }
-
-  /**
-   * Determines whether or not to require drupal/core-dev.
-   *
-   * Require it for Drupal 8.8 and later. (Before that BLT required
-   * webflo/drupal-core-require-dev, which it supersedes.)
-   *
-   * @return bool
-   *   Returns TRUE if it should be required, or FALSE if not.
-   */
-  private function shouldRequireDrupalCoreDev(): bool {
-    $version = $this->options->getCoreResolved();
-    return Comparator::greaterThanOrEqualTo($version, '8.8');
   }
 
   /**

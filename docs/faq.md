@@ -64,6 +64,10 @@ Acquia CMS is included in ORCA [test fixtures](glossary.md#test-fixture) by defa
 
 ## Drupal
 
+### What versions of Drupal core does ORCA support?
+
+ORCA supports testing using any actively-maintained version of Drupal core, as specified by the [Drupal core release policy](https://www.drupal.org/about/core/policies/core-release-cycles/schedule).  
+
 ### Why doesn't ORCA enable my submodule/subtheme?
 
 ORCA automatically discovers and enables any subextension that satisfies the following criteria:

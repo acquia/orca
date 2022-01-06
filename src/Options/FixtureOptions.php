@@ -8,7 +8,6 @@ use Acquia\Orca\Domain\Package\Package;
 use Acquia\Orca\Domain\Package\PackageManager;
 use Acquia\Orca\Enum\DrupalCoreVersionEnum;
 use Acquia\Orca\Exception\OrcaInvalidArgumentException;
-use Composer\Semver\Comparator;
 use Composer\Semver\VersionParser;
 use Symfony\Component\OptionsResolver\Exception\InvalidOptionsException;
 use Symfony\Component\OptionsResolver\Exception\UndefinedOptionsException;
@@ -298,13 +297,6 @@ class FixtureOptions {
   public function getProjectTemplate(): string {
     // Allow users to override default templates via option.
     if ($this->options['project-template']) {
-      return $this->options['project-template'];
-    }
-
-    // The new project templates only support D9+. Use BLT Project for D8.
-    // @todo remove D8 / BLT Project support after D8 EOL in November 2021.
-    if (Comparator::lessThan($this->getCoreResolved(), '9')) {
-      $this->options['project-template'] = 'acquia/blt-project';
       return $this->options['project-template'];
     }
 

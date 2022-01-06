@@ -113,27 +113,7 @@ class ComposerFacade {
       return $this->options->getProjectTemplate();
     }
 
-    // The project template is BLT project.
-    if ($project_template === 'acquia/blt-project') {
-      return $this->getBltProjectTemplateString();
-    }
-
     return $project_template;
-  }
-
-  /**
-   * Gets the project template string for BLT project.
-   *
-   * @return string
-   *   The project template string.
-   */
-  private function getBltProjectTemplateString(): string {
-    $project_template = $this->options->getProjectTemplate();
-    $blt = $this->packageManager->getBlt();
-    if ($this->options->isDev()) {
-      return $project_template;
-    }
-    return $project_template . ':' . $blt->getVersionRecommended($this->options->getCore());
   }
 
   /**
