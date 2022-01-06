@@ -391,34 +391,6 @@ class FixtureOptionsTest extends TestCase {
   }
 
   /**
-   * @dataProvider providerProjectTemplateSelectionByCoreVersion
-   *
-   * @covers ::getCoreResolved
-   * @covers ::getProjectTemplate
-   * @covers ::resolve
-   */
-  public function testProjectTemplateSelectionByCoreVersion($core, $expected): void {
-    $this->drupalCoreVersionFinder
-      ->resolveArbitrary($core, Argument::any())
-      ->willReturnArgument();
-
-    $options = $this->createFixtureOptions(['core' => $core]);
-
-    self::assertEquals($expected, $options->getProjectTemplate(), 'Selected correct project template for core version.');
-  }
-
-  public function providerProjectTemplateSelectionByCoreVersion(): array {
-    return [
-      ['8.0.0@dev', 'acquia/blt-project'],
-      ['8.0.x-dev', 'acquia/blt-project'],
-      ['8.0.0', 'acquia/blt-project'],
-      ['8.0.x-dev', 'acquia/blt-project'],
-      ['9.0.0', 'acquia/drupal-recommended-project'],
-      ['9.0.0@dev', 'acquia/drupal-recommended-project'],
-    ];
-  }
-
-  /**
    * @covers ::getSut
    * @covers ::hasSut
    * @covers ::isValidSutValue
