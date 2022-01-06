@@ -3,7 +3,7 @@
 namespace Acquia\Orca\Tests\Helper\Filesystem;
 
 use Acquia\Orca\Helper\Filesystem\FinderFactory;
-use PHPUnit\Framework\TestCase;
+use Acquia\Orca\Tests\TestCase;
 
 /**
  * @coversDefaultClass \Acquia\Orca\Helper\Filesystem\FinderFactory

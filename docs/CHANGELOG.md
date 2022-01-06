@@ -1,5 +1,66 @@
 # Changelog
 
+## [v3.12.2](https://github.com/acquia/orca/tree/v3.12.2) (2021-12-15)
+
+[Full Changelog](https://github.com/acquia/orca/compare/v3.12.1...v3.12.2)
+
+**Fixed bugs:**
+
+- ORCA jobs not using latest Acquia CMS [\#186](https://github.com/acquia/orca/pull/186) ([danepowell](https://github.com/danepowell))
+- Code coverage support for non-module packages [\#179](https://github.com/acquia/orca/pull/179) ([danepowell](https://github.com/danepowell))
+- Fix phploc scanning of projects with no code [\#176](https://github.com/acquia/orca/pull/176) ([danepowell](https://github.com/danepowell))
+
+## [v3.12.1](https://github.com/acquia/orca/tree/v3.12.1) (2021-12-08)
+
+[Full Changelog](https://github.com/acquia/orca/compare/v3.12.0...v3.12.1)
+
+**Implemented enhancements:**
+
+- Improve error message on failure to find available package version [\#184](https://github.com/acquia/orca/pull/184) ([secretsayan](https://github.com/secretsayan))
+
+**Fixed bugs:**
+
+- Jobs incorrectly allowed to fail [\#183](https://github.com/acquia/orca/pull/183) ([danepowell](https://github.com/danepowell))
+
+**Merged pull requests:**
+
+- Protect against missing includes in example code [\#182](https://github.com/acquia/orca/pull/182) ([danepowell](https://github.com/danepowell))
+
+## [v3.12.0](https://github.com/acquia/orca/tree/v3.12.0) (2021-11-29)
+
+[Full Changelog](https://github.com/acquia/orca/compare/v3.11.0...v3.12.0)
+
+**Implemented enhancements:**
+
+- Bump PHP versions from 7.3 to 7.4 [\#181](https://github.com/acquia/orca/pull/181) ([TravisCarden](https://github.com/TravisCarden))
+- ORCA-228: Enable Coveralls for GitHub Actions [\#178](https://github.com/acquia/orca/pull/178) ([danepowell](https://github.com/danepowell))
+
+**Merged pull requests:**
+
+- Document migration process from Travis CI to GitHub Actions [\#180](https://github.com/acquia/orca/pull/180) ([danepowell](https://github.com/danepowell))
+- Restrict media\_acquiadam versions [\#177](https://github.com/acquia/orca/pull/177) ([danepowell](https://github.com/danepowell))
+
+## [v3.11.0](https://github.com/acquia/orca/tree/v3.11.0) (2021-11-11)
+
+[Full Changelog](https://github.com/acquia/orca/compare/v3.10.1...v3.11.0)
+
+**Implemented enhancements:**
+
+- Migrate "allowed failure" functionality to ORCA core [\#174](https://github.com/acquia/orca/pull/174) ([danepowell](https://github.com/danepowell))
+- Remove cog theme from core packages [\#168](https://github.com/acquia/orca/pull/168) ([TravisCarden](https://github.com/TravisCarden))
+- Fix \#164: Remove composer.lock from fixtures [\#166](https://github.com/acquia/orca/pull/166) ([danepowell](https://github.com/danepowell))
+- ORCA-197: PHP 8 compatibility [\#163](https://github.com/acquia/orca/pull/163) ([danepowell](https://github.com/danepowell))
+
+**Fixed bugs:**
+
+- Boolean environment variables broken in GitHub Actions [\#169](https://github.com/acquia/orca/pull/169) ([danepowell](https://github.com/danepowell))
+
+**Merged pull requests:**
+
+- Boolean environment variables broken in GitHub Actions [\#169](https://github.com/acquia/orca/pull/169) ([danepowell](https://github.com/danepowell))
+- Add GitHub Actions custom script docs [\#167](https://github.com/acquia/orca/pull/167) ([danepowell](https://github.com/danepowell))
+- Make sed command in example .travis.yml more cross-platform portable [\#131](https://github.com/acquia/orca/pull/131) ([danepowell](https://github.com/danepowell))
+
 ## [v3.10.1](https://github.com/acquia/orca/tree/v3.10.1) (2021-10-01)
 
 [Full Changelog](https://github.com/acquia/orca/compare/v3.10.0...v3.10.1)

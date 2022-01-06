@@ -10,7 +10,7 @@ For project maintainers.
     1. Make sure local `develop` and `main` branches are current with upstream.
     1. Choose a [semantic version](https://semver.org/) number (`x.y.z`).
     1. Start the release with `git flow release start x.y.z`.
-    1. Set the version to `x.y.z` in in `config/VERSION` and commit.
+    1. Set the version to `x.y.z` in `config/VERSION` and commit.
     1. Update the changelog with `composer changelog` and commit.
     1. Update `commands.md` with `composer update-docs` and commit.
     1. Finish the release with `git flow release finish x.y.z`.

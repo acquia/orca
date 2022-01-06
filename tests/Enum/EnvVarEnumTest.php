@@ -3,7 +3,7 @@
 namespace Acquia\Orca\Tests\Enum;
 
 use Acquia\Orca\Enum\EnvVarEnum;
-use PHPUnit\Framework\TestCase;
+use Acquia\Orca\Tests\TestCase;
 
 /**
  * @coversDefaultClass \Acquia\Orca\Enum\EnvVarEnum

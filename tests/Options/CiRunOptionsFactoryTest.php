@@ -5,7 +5,7 @@ namespace Acquia\Orca\Tests\Options;
 use Acquia\Orca\Domain\Package\PackageManager;
 use Acquia\Orca\Options\CiRunOptionsFactory;
 use Acquia\Orca\Tests\Enum\CiEnumsTestTrait;
-use PHPUnit\Framework\TestCase;
+use Acquia\Orca\Tests\TestCase;
 
 /**
  * @property \Acquia\Orca\Domain\Package\PackageManager|\Prophecy\Prophecy\ObjectProphecy $packageManager

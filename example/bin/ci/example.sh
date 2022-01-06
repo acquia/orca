@@ -8,10 +8,16 @@
 #
 # DESCRIPTION
 #     Provides an example of customizing an ORCA build by adding or
-#     modifying jobs. See live working examples:
-#     - https://github.com/acquia/coding-standards-php/tree/v0.5.0/bin/travis
-#     - https://github.com/acquia/drupal-spec-tool/tree/4.0.1/bin/travis
-#     - https://github.com/acquia/orca/tree/v2.11.3/bin/travis/self-test
+#     modifying jobs. See real working examples:
+#
+#     - https://github.com/acquia/coding-standards-php/blob/v0.5.0/.travis.yml#L52 and
+#       https://github.com/acquia/coding-standards-php/tree/v0.5.0/bin/travis
+#
+#     - https://github.com/acquia/drupal-spec-tool/blob/4.0.1/.travis.yml#L45 and
+#       https://github.com/acquia/drupal-spec-tool/tree/4.0.1/bin/travis
+#
+#     - https://github.com/acquia/orca/blob/v3.12.2/.travis.yml#L89 and
+#       https://github.com/acquia/orca/tree/v3.12.2/bin/ci/self-test
 #
 #     Remember to make your script executable! E.g.:
 #     chmod u+x bin/ci/example.sh
@@ -21,7 +27,7 @@
 cd "$(dirname "$0")" || exit 1
 
 # Reuse ORCA's own includes for its $PATH additions and environment variables.
-source ../../../orca/bin/ci/_includes.sh
+source ../../../orca/bin/ci/_includes.sh || exit 1
 
 # ORCA provides numerous general purpose environment variables you can use.
 echo "The SUT is cloned at $CI_WORKSPACE"

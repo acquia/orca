@@ -25,7 +25,7 @@
 language: php
 
 os: linux
-dist: bionic
+dist: focal
 
 # Activate build config validation.
 # @see https://docs.travis-ci.com/user/build-config-validation
@@ -34,7 +34,7 @@ version: ~> 1.0
 # The lowest version of PHP supported by all of Drupal, Acquia, and ORCA itself.
 # @see https://www.drupal.org/docs/8/system-requirements/php-requirements
 # @see https://docs.acquia.com/acquia-cloud/arch/tech-platform/
-php: "7.3"
+php: "7.4"
 
 addons:
   # Chrome is used via ChromeDriver for web testing and browser automation.
@@ -159,6 +159,7 @@ jobs:
     - env: ORCA_JOB=LOOSE_DEPRECATED_CODE_SCAN
     - env: ORCA_JOB=DEPRECATED_CODE_SCAN_W_CONTRIB
     - env: ORCA_JOB=ISOLATED_TEST_ON_NEXT_MINOR_DEV
+    - env: ORCA_JOB=INTEGRATED_TEST_ON_NEXT_MINOR
     - env: ORCA_JOB=INTEGRATED_TEST_ON_NEXT_MINOR_DEV
     - env: ORCA_JOB=ISOLATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_DEV
     - env: ORCA_JOB=INTEGRATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_DEV
@@ -168,32 +169,32 @@ jobs:
 before_install:
   # Set Node.js to a version compatible with Drupal 9 + Nightwatch.js.
   - nvm install 12.13.1; nvm use 12.13.1
-  - composer create-project --no-dev --ignore-platform-req=php acquia/orca ../orca "$ORCA_VERSION"
-  - ../orca/bin/common/before_install.sh
+  - composer create-project --no-dev acquia/orca ../orca "$ORCA_VERSION"
+  - ../orca/bin/ci/before_install.sh
   # For custom testing needs, add your own scripts here. See the example script
   # for more details.
-  # - ./bin/common/example.sh
+  # - ./bin/ci/example.sh
 
 # Create the test fixture and place the SUT.
-install: ../orca/bin/common/install.sh
+install: ../orca/bin/ci/install.sh
 
 # Display details about the fixture.
-before_script: ../orca/bin/common/before_script.sh
+before_script: ../orca/bin/ci/before_script.sh
 
 # Run the test script.
-script: ../orca/bin/common/script.sh
+script: ../orca/bin/ci/script.sh
 
 # Reserved for future use.
-before_cache: ../orca/bin/common/before_cache.sh
+before_cache: ../orca/bin/ci/before_cache.sh
 
 # Conditionally send code coverage data to Coveralls.
-after_success: ../orca/bin/common/after_success.sh
+after_success: ../orca/bin/ci/after_success.sh
 
 # Display debugging information in case of failure.
-after_failure: ../orca/bin/common/after_failure.sh
+after_failure: ../orca/bin/ci/after_failure.sh
 
 # Perform final, post-script tasks.
-after_script: ../orca/bin/common/after_script.sh
+after_script: ../orca/bin/ci/after_script.sh
 
 # Get build notifications.
 # @see https://docs.travis-ci.com/user/notifications
@@ -227,3 +228,4 @@ after_script: ../orca/bin/common/after_script.sh
 #     on_failure: change
 #     # Limit to the major version branches.
 #     if: branch = env(ORCA_SUT_BRANCH)
+

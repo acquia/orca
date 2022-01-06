@@ -4,8 +4,8 @@ namespace Acquia\Orca\Tests\Domain\Composer\Version;
 
 use Acquia\Orca\Domain\Composer\Version\VersionSelectorFactory;
 use Acquia\Orca\Tests\_Helper\TestSpy;
+use Acquia\Orca\Tests\TestCase;
 use Composer\Repository\RepositorySet;
-use PHPUnit\Framework\TestCase;
 
 /**
  * @property \Composer\Composer|\Prophecy\Prophecy\ObjectProphecy $composer

@@ -18,7 +18,7 @@ if [[ "$ORCA_COVERAGE_ENABLE" == TRUE && "$ORCA_COVERALLS_ENABLE" == TRUE ]]; th
   # shellcheck disable=SC1004
   eval 'php-coveralls -vv \
     --coverage_clover="$ORCA_SELF_TEST_COVERAGE_CLOVER" \
-    --json_path="${TMPDIR:-/tmp}/coveralls.json"'
+    --json_path="$ORCA_TEMP_DIR/coveralls.json"'
 else
   notice "No coverage data sent to Coveralls."
 fi

@@ -10,9 +10,9 @@ use Acquia\Orca\Exception\OrcaFileNotFoundException;
 use Acquia\Orca\Helper\Config\ConfigLoader;
 use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
 use Acquia\Orca\Helper\Filesystem\OrcaPathHandler;
+use Acquia\Orca\Tests\TestCase;
 use Noodlehaus\Config;
 use Noodlehaus\Parser\Json;
-use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 
 /**
@@ -126,7 +126,7 @@ class SutPreconditionsTesterTest extends TestCase {
       ->shouldBeCalledOnce()
       ->willThrow(OrcaFileNotFoundException::class);
     $this->expectException(OrcaFileNotFoundException::class);
-    $this->expectExceptionMessageRegExp('/SUT is missing root composer.json.*/');
+    $this->expectExceptionMessageMatches('/SUT is missing root composer.json.*/');
 
     $tester = $this->createSutPreconditionsTester();
 

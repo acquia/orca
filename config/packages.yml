@@ -47,6 +47,10 @@
 # config/services.yml for the relevant code or bin/self-test for a usage
 # example.
 
+acquia/acquia_cms:
+  type: drupal-profile
+  version_dev: dev-develop
+
 drupal/acquia_connector:
   version: 3.x
   version_dev: 3.x-dev
@@ -114,7 +118,14 @@ drupal/lightning_workflow:
 
 drupal/mautic: []
 
-drupal/media_acquiadam: []
+drupal/media_acquiadam:
+  core_matrix:
+    8.9.x:
+      version: 1.x
+      version_dev: 1.x-dev
+    '*':
+      version: 2.x
+      version_dev: 2.x-dev
 
 drupal/mysql56:
   type: library

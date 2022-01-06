@@ -5,7 +5,7 @@ namespace Acquia\Orca\Tests\Console\Command\Debug\Helper;
 use Acquia\Orca\Console\Command\Debug\Helper\EnvVarsTableBuilder;
 use Acquia\Orca\Helper\EnvFacade;
 use Acquia\Orca\Tests\Enum\_Helper\EnvVarTestEnum;
-use PHPUnit\Framework\TestCase;
+use Acquia\Orca\Tests\TestCase;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Output\NullOutput;
 

@@ -53,7 +53,8 @@ class VersionFinder {
     $candidate = $version_selector->findBestCandidate($package_name, $constraint, $stability);
 
     if (!$candidate) {
-      throw new OrcaVersionNotFoundException(sprintf('No available version could be found for "%s:%s".', $package_name, $constraint));
+      $constraint = $constraint ?? "*";
+      throw new OrcaVersionNotFoundException(sprintf('No available version could be found for "%s:%s@%s".', $package_name, $constraint, $stability));
     }
 
     return $candidate->getPrettyVersion();

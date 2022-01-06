@@ -212,6 +212,8 @@ class DrupalCoreVersionResolver {
    *
    * @return string
    *   The semver version string, e.g., 8.9.7.
+   *
+   * @throws \Acquia\Orca\Exception\OrcaVersionNotFoundException
    */
   private function findLatestLts(): string {
     if ($this->latestLts) {
@@ -220,6 +222,13 @@ class DrupalCoreVersionResolver {
 
     $parts = explode('.', $this->findCurrent());
     $current_major = array_shift($parts);
+    // Drupal 8 is still marked as supported in the API even though it's EOL.
+    // @todo remove this block once D8 is EOL in the updates API.
+    if ($current_major === '9') {
+      $message = 'No Drupal core version satisfies the given constraints: version=<9, stability=stable';
+      throw new OrcaVersionNotFoundException($message);
+    }
+    // @todo Do not assume that a branch is supported just because it's stable.
     $this->latestLts = $this->resolveArbitrary("<{$current_major}", 'stable');
 
     return $this->latestLts;

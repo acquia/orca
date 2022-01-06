@@ -5,7 +5,7 @@ namespace Acquia\Orca\Tests\Domain\Tool;
 use Acquia\Orca\Domain\Tool\PhpLintTool;
 use Acquia\Orca\Exception\OrcaTaskFailureException;
 use Acquia\Orca\Helper\Process\ProcessRunner;
-use PHPUnit\Framework\TestCase;
+use Acquia\Orca\Tests\TestCase;
 use Prophecy\Argument;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process;

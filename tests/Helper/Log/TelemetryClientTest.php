@@ -3,7 +3,7 @@
 namespace Acquia\Orca\Tests\Helper\Log;
 
 use Acquia\Orca\Helper\Log\TelemetryClient;
-use PHPUnit\Framework\TestCase;
+use Acquia\Orca\Tests\TestCase;
 use Zumba\Amplitude\Amplitude;
 
 /**

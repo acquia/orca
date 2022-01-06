@@ -66,6 +66,7 @@ class PhpUnitTask extends TestFrameworkBase {
     $this->ensureSimpleTestDirectory();
     $this->setSimpletestSettings();
     $this->setTestSuite();
+    $this->setCoverageFilter();
     $this->enableDrupalTestTraits();
     $this->disableSymfonyDeprecationsHelper();
     $this->setMinkDriverArguments();
@@ -106,6 +107,46 @@ class PhpUnitTask extends TestFrameworkBase {
     $this->xpath->query('//phpunit/testsuites')
       ->item(0)
       ->appendChild($testsuite);
+  }
+
+  /**
+   * Sets code coverage filters to support non-Drupal module SUTs.
+   *
+   * Drupal core's phpunit.xml.dist sets a code coverage whitelist with test
+   * files exclusion for Drupal modules, but it does not support themes,
+   * profiles, or non-Drupal packages. Since ORCA must report test coverage for
+   * all these, it must manually add the appropriate directories for the SUT.
+   * The resulting additions look like the following:
+   *
+   * ```xml
+   * <phpunit>
+   *   <filter>
+   *     <whitelist>
+   *       <directory>/var/www/docroot/themes/contrib/example</directory>
+   *       <exclude>
+   *         <directory>/var/www/docroot/themes/contrib/example/tests</directory>
+   *       </exclude>
+   *     </whitelist>
+   *   </filter>
+   * </phpunit>
+   * ```
+   */
+  private function setCoverageFilter(): void {
+    $directory = $this->doc
+      ->createElement('directory', $this->getPath());
+    $exclude = $this->doc
+      ->createElement('exclude');
+    $exclude_directory = $this->doc
+      ->createElement('directory', "{$this->getPath()}/tests");
+    $exclude->appendChild($exclude_directory);
+    $this->xpath
+      ->query('//phpunit/filter/whitelist')
+      ->item(0)
+      ->appendChild($directory);
+    $this->xpath
+      ->query('//phpunit/filter/whitelist')
+      ->item(0)
+      ->appendChild($exclude);
   }
 
   /**
