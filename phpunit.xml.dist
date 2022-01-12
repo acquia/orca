@@ -4,6 +4,7 @@
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
          colors="true"
+         cacheResultFile="var/phpunit/test-results"
          bootstrap="vendor/autoload.php"
 >
 
@@ -17,6 +18,16 @@
       <directory>tests</directory>
     </testsuite>
   </testsuites>
+
+  <coverage cacheDirectory="var/phpunit/coverage-cache"
+            processUncoveredFiles="true">
+    <include>
+      <directory suffix=".php">src</directory>
+    </include>
+    <report>
+      <clover outputFile="var/phpunit/clover.xml"/>
+    </report>
+  </coverage>
 
   <filter>
     <whitelist>
