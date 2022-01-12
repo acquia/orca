@@ -106,6 +106,12 @@
         "post-update-cmd": [
             "@composer normalize"
         ],
+        "all": [
+            "@phplint",
+            "@phpcs",
+            "@stan",
+            "@phpunit"
+        ],
         "cghooks": "cghooks --ansi",
         "changelog": "./bin/changelog.sh",
         "coverage": "phpunit --coverage-html var/coverage-report; open var/coverage-report/index.html",
@@ -117,6 +123,12 @@
         "phpmd": "phpmd . text phpmd.xml.dist --ignore-violations-on-exit",
         "phpstan": "vendor/bin/phpstan analyse src",
         "phpunit": "phpunit",
+        "stan": [
+            "@phplint",
+            "@phpcs",
+            "@phpstan"
+        ],
+        "test": "phpunit",
         "update-docs": "./bin/orca --format=md > docs/commands.md"
     },
     "support": {
