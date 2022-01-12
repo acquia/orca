@@ -43,6 +43,8 @@ if (in_array($input->getFirstArgument(), ['cache:clear', 'cc'])) {
   exit;
 }
 
+// The below approach has been discussed here:
+// @see https://github.com/TravisCarden/stackoverflow-a-50356503
 $kernel->boot();
 $container = $kernel->getContainer();
 $application = $container->get(Application::class);
