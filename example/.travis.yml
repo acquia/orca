@@ -93,6 +93,9 @@ env:
     # @see https://github.com/acquia/orca/blob/main/docs/advanced-usage.md#ORCA_PHPCS_STANDARD
     # - ORCA_PHPCS_STANDARD=AcquiaDrupalTransitional
     #
+    # Enable Nightwatch.js testing. Acceptable values are "TRUE" and "FALSE".
+    # - ORCA_ENABLE_NIGHTWATCH=TRUE
+    #
     # To enable telemetry with Amplitude on cron runs, uncomment the following
     # line and set ORCA_AMPLITUDE_API_KEY in your Travis CI repository settings:
     # @see https://github.com/acquia/orca/blob/main/docs/advanced-usage.md#ORCA_TELEMETRY_ENABLE
