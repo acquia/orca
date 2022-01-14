@@ -96,6 +96,9 @@ acquia/drupal-spec-tool:
   version: 4.x
   version_dev: 4.x-dev
 
+acquia/memcache-settings:
+  type: library
+
 drupal/lightning_api:
   version: 4.x
   version_dev: 4.x-dev
