@@ -66,6 +66,13 @@
         "phpunit/phpunit": "^9"
     },
     "config": {
+        "allow-plugins": {
+            "cweagans/composer-patches": true,
+            "dealerdirect/phpcodesniffer-composer-installer": true,
+            "ergebnis/composer-normalize": true,
+            "lanfest/binary-chromedriver": true,
+            "webdriver-binary/binary-chromedriver": true
+        },
         "discard-changes": true,
         "preferred-install": {
             "*": "dist"
