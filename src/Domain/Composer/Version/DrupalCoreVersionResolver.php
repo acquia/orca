@@ -233,7 +233,6 @@ class DrupalCoreVersionResolver {
 
     $message = "No Drupal core version satisfies the given constraints: oldest supported ($oldestSupported) less than current major ($current_major)";
     throw new OrcaVersionNotFoundException($message);
-
   }
 
   /**
