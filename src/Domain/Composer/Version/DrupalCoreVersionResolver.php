@@ -222,16 +222,18 @@ class DrupalCoreVersionResolver {
 
     $parts = explode('.', $this->findCurrent());
     $current_major = array_shift($parts);
-    // Drupal 8 is still marked as supported in the API even though it's EOL.
-    // @todo remove this block once D8 is EOL in the updates API.
-    if ($current_major === '9') {
-      $message = 'No Drupal core version satisfies the given constraints: version=<9, stability=stable';
-      throw new OrcaVersionNotFoundException($message);
-    }
-    // @todo Do not assume that a branch is supported just because it's stable.
-    $this->latestLts = $this->resolveArbitrary("<{$current_major}", 'stable');
 
-    return $this->latestLts;
+    // Gets the oldest supported version of Drupal Core.
+    $oldestSupported = $this->findOldestSupported();
+    // If oldest supported Drupal Core version is less than current major.
+    if ((int) $oldestSupported < (int) $current_major) {
+      $this->latestLts = $oldestSupported;
+      return $this->latestLts;
+    }
+
+    $message = "No Drupal core version satisfies the given constraints: oldest supported ($oldestSupported) less than current major ($current_major)";
+    throw new OrcaVersionNotFoundException($message);
+
   }
 
   /**
