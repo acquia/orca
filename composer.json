@@ -109,7 +109,7 @@
         "all": [
             "@phplint",
             "@phpcs",
-            "@stan",
+            "@phpstan",
             "@phpunit"
         ],
         "cghooks": "cghooks --ansi",
