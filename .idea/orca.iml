@@ -130,6 +130,8 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/nikic/php-parser" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/webdriver-binary/binary-chromedriver" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/webdriver-binary/webdriver-binary-downloader" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/tysonandre/var_representation_polyfill" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/cweagans/composer-patches" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
