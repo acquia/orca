@@ -228,7 +228,7 @@ class FixtureCreator {
 
     if ($this->options->isDev()) {
       // Install the dev version of Drush.
-      $additions[] = 'drush/drush:dev-master || 10.x-dev || 9.x-dev || 9.5.x-dev';
+      $additions[] = 'drush/drush:dev-master || 11.x-dev || 10.x-dev || 9.x-dev || 9.5.x-dev';
     }
 
     // Install a specific version of Drupal core.
