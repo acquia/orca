@@ -1,5 +1,5 @@
 {
-    "name": "acquia/orca",
+    "name": "Rajeshreeputra/orca",
     "description": "A tool for testing a company's software packages together in the context of a realistic, functioning, best practices Drupal build",
     "keywords": [
         "ci",
@@ -132,7 +132,7 @@
         "update-docs": "./bin/orca --format=md > docs/commands.md"
     },
     "support": {
-        "issues": "https://github.com/acquia/orca/issues",
-        "source": "https://github.com/acquia/orca"
+        "issues": "https://github.com/Rajeshreeputra/orca/issues",
+        "source": "https://github.com/Rajeshreeputra/orca"
     }
 }
