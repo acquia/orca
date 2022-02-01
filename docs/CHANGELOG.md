@@ -4,7 +4,7 @@
 
 [Full Changelog](https://github.com/acquia/orca/compare/v3.13.0...v3.14.0)
 
-- **Implemented enhancements:**
+**Implemented enhancements:**
 
 - Update composer/composer to 2.2.x and allow Composer plugins [\#198](https://github.com/acquia/orca/pull/198) ([secretsayan](https://github.com/secretsayan))
 - Improve Drupal core Latest LTS version resolution [\#197](https://github.com/acquia/orca/pull/197) ([secretsayan](https://github.com/secretsayan))
