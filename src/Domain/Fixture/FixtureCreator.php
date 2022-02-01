@@ -192,6 +192,7 @@ class FixtureCreator {
     $this->options = $options;
     $this->createComposerProject();
     $this->fixDefaultDependencies();
+    $this->addAllowedComposerPlugins();
     $this->addCompanyPackages();
     $this->composer->updateLockFile();
     $this->installCloudHooks();
@@ -298,6 +299,20 @@ class FixtureCreator {
   private function getUnwantedPackageList(): array {
     $packages = $this->packageManager->getAll();
     return array_keys($packages);
+  }
+
+  /**
+   * Adds packages to composer "allow-plugins" config.
+   */
+  private function addAllowedComposerPlugins(): void {
+    $allowedComposerPlugins = [];
+    foreach ($this->packageManager->getAll() as $package) {
+      if ($package->getType() === "composer-plugin") {
+        $allowedComposerPlugins[] = $package->getPackageName();
+      }
+    }
+
+    $this->composerJsonHelper->addAllowedComposerPlugins($allowedComposerPlugins);
   }
 
   /**
