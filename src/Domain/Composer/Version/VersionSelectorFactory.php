@@ -52,6 +52,13 @@ class VersionSelectorFactory {
   /**
    * Adds the Drupal.org Composer Facade to the repository set.
    *
+   * This makes the version selector include the Drupal.org Composer Facade when
+   * searching for version matches. It is akin to the below command:
+   *
+   * ```
+   * composer config repositories.0 composer https://packages.drupal.org/8
+   * ```
+   *
    * @param \Composer\Repository\RepositorySet $repository_set
    *   The repository set.
    */

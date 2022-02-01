@@ -1,5 +1,25 @@
 # Changelog
 
+## [v3.14.0](https://github.com/acquia/orca/tree/v3.14.0) (2022-02-01)
+
+[Full Changelog](https://github.com/acquia/orca/compare/v3.13.0...v3.14.0)
+
+- **Implemented enhancements:**
+
+- Update composer/composer to 2.2.x and allow Composer plugins [\#198](https://github.com/acquia/orca/pull/198) ([secretsayan](https://github.com/secretsayan))
+- Improve Drupal core Latest LTS version resolution [\#197](https://github.com/acquia/orca/pull/197) ([secretsayan](https://github.com/secretsayan))
+
+**Fixed bugs:**
+
+- Make Nightwatch.js test detection more robust [\#194](https://github.com/acquia/orca/pull/194) ([secretsayan](https://github.com/secretsayan))
+
+**Merged pull requests:**
+
+- Add acquia/memcache-settings [\#195](https://github.com/acquia/orca/pull/195) ([danepowell](https://github.com/danepowell))
+- Improve Comments on Version Selector for better understanding [\#193](https://github.com/acquia/orca/pull/193) ([secretsayan](https://github.com/secretsayan))
+- Add comment explaining Symfony kernel configuration [\#191](https://github.com/acquia/orca/pull/191) ([secretsayan](https://github.com/secretsayan))
+- Apply Composer library security update [\#192](https://github.com/acquia/orca/pull/192) ([secretsayan](https://github.com/secretsayan))
+
 ## [v3.13.0](https://github.com/acquia/orca/tree/v3.13.0) (2022-01-06)
 
 [Full Changelog](https://github.com/acquia/orca/compare/v3.12.2...v3.13.0)

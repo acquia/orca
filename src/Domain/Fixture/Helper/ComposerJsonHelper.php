@@ -69,6 +69,25 @@ class ComposerJsonHelper {
   }
 
   /**
+   * Writes the "allow-plugins" configurations to composer.
+   *
+   * @param string[] $values
+   *   The packages required to be added to "allow-plugins" config.
+   *
+   * @throws \Acquia\Orca\Exception\OrcaFileNotFoundException
+   * @throws \Acquia\Orca\Exception\OrcaFixtureNotExistsException
+   * @throws \Acquia\Orca\Exception\OrcaParseError
+   */
+  public function addAllowedComposerPlugins(array $values): void {
+    $config = $this->loadFile();
+    foreach ($values as $value) {
+      $config->set("config.allow-plugins." . $value, TRUE);
+    }
+
+    $this->writeFile($config);
+  }
+
+  /**
    * Adds an installer path.
    *
    * @param string $path

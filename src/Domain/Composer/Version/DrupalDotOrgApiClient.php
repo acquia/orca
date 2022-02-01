@@ -65,11 +65,6 @@ class DrupalDotOrgApiClient {
     $config = new Config($xml, new Xml(), TRUE);
     $supported_branches = $config->get('supported_branches');
     $parts = explode(',', $supported_branches);
-    // Drupal 8 is still marked as supported in the API even though it's EOL.
-    // @todo Remove this block once D8 is EOL in the updates API.
-    if ($parts[0] === '8.9.') {
-      array_shift($parts);
-    }
     $this->oldestSupportedDrupalCoreBranch = $parts[0] . 'x';
     return $this->oldestSupportedDrupalCoreBranch;
   }

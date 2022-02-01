@@ -107,6 +107,25 @@ class ComposerJsonHelperTest extends TestCase {
     return json_encode($this->getTestComposerJsonDataWithFixtureOptions());
   }
 
+  public function testAddAllowedComposerPlugins(): void {
+    $config = $this->prophesize(Config::class);
+    $config->set("config.allow-plugins.test/example", TRUE)
+      ->shouldBeCalledOnce();
+    $config->set("config.allow-plugins.lorem/ipsum", TRUE)
+      ->shouldBeCalledOnce();
+    $config->set("config.allow-plugins.acquia/blt", TRUE)
+      ->shouldBeCalledOnce();
+    $config->toFile(self::FILENAME)
+      ->shouldBeCalledOnce();
+    $config = $config->reveal();
+    $this->configLoader
+      ->load(self::FILENAME)
+      ->willReturn($config);
+
+    $composer_json = $this->createComposerJsonHelper();
+    $composer_json->addAllowedComposerPlugins(["test/example", "lorem/ipsum", "acquia/blt"]);
+  }
+
   public function testAddRepository(): void {
     $config = new Config($this->getTestComposerJsonRaw(), new Json(), TRUE);
     $this->configLoader

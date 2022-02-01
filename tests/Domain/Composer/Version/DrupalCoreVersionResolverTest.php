@@ -123,7 +123,7 @@ class DrupalCoreVersionResolverTest extends TestCase {
   public function testResolvePredefinedAcceptsAllVersions($version): void {
     $this->package
       ->getPrettyVersion()
-      ->willReturn('10.1.0')
+      ->willReturn('10.1.0', '9.1.0')
       ->shouldBeCalled();
     $resolver = $this->createDrupalCoreVersionResolver();
 
@@ -160,10 +160,6 @@ class DrupalCoreVersionResolverTest extends TestCase {
       ->getPrettyVersion()
       ->willReturn('10.1.0', '9.9.7')
       ->shouldBeCalledTimes(2);
-    $this->selector
-      ->findBestCandidate('drupal/core', '<10', 'stable')
-      ->willReturn($this->package->reveal())
-      ->shouldBeCalledOnce();
     $this->expectGetCurrentToBeCalledOnce();
     $resolver = $this->createDrupalCoreVersionResolver();
 
@@ -172,6 +168,17 @@ class DrupalCoreVersionResolverTest extends TestCase {
     $resolver->resolvePredefined(DrupalCoreVersionEnum::LATEST_LTS());
 
     self::assertSame('9.9.7', $actual);
+  }
+
+  public function testResolvePredefinedLatestLtsNotFound(): void {
+    $this->expectException(OrcaVersionNotFoundException::class);
+    $this->package
+      ->getPrettyVersion()
+      ->willReturn('9.3.3', '9.2.11')
+      ->shouldBeCalled();
+    $resolver = $this->createDrupalCoreVersionResolver();
+
+    $resolver->resolvePredefined(DrupalCoreVersionEnum::LATEST_LTS());
   }
 
   public function testResolvePredefinedPreviousMinor(): void {

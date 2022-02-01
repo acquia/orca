@@ -26,7 +26,7 @@
         "ext-json": "*",
         "ext-sqlite3": "*",
         "acquia/coding-standards": "^0.7.0",
-        "composer/composer": "^2.0",
+        "composer/composer": "~2.2.5",
         "cweagans/composer-patches": "^1.7",
         "dealerdirect/phpcodesniffer-composer-installer": "^0.7.1",
         "ergebnis/composer-normalize": "^2.0.0",
@@ -60,12 +60,18 @@
     },
     "require-dev": {
         "brainmaestro/composer-git-hooks": "^2.5",
-        "phan/phan": "^3.2",
+        "phan/phan": "^5.3",
         "phpspec/prophecy-phpunit": "^2.0",
         "phpstan/phpstan": "^0.12.54",
         "phpunit/phpunit": "^9"
     },
     "config": {
+        "allow-plugins": {
+            "cweagans/composer-patches": true,
+            "dealerdirect/phpcodesniffer-composer-installer": true,
+            "ergebnis/composer-normalize": true,
+            "webdriver-binary/binary-chromedriver": true
+        },
         "discard-changes": true,
         "preferred-install": {
             "*": "dist"
@@ -106,6 +112,12 @@
         "post-update-cmd": [
             "@composer normalize"
         ],
+        "all": [
+            "@phplint",
+            "@phpcs",
+            "@phpstan",
+            "@phpunit"
+        ],
         "cghooks": "cghooks --ansi",
         "changelog": "./bin/changelog.sh",
         "coverage": "phpunit --coverage-html var/coverage-report; open var/coverage-report/index.html",
@@ -117,6 +129,12 @@
         "phpmd": "phpmd . text phpmd.xml.dist --ignore-violations-on-exit",
         "phpstan": "vendor/bin/phpstan analyse src",
         "phpunit": "phpunit",
+        "stan": [
+            "@phplint",
+            "@phpcs",
+            "@phpstan"
+        ],
+        "test": "phpunit",
         "update-docs": "./bin/orca --format=md > docs/commands.md"
     },
     "support": {
