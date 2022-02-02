@@ -228,7 +228,7 @@ class FixtureCreator {
 
     if ($this->options->isDev()) {
       // Install the dev version of Drush.
-      $additions[] = 'drush/drush:dev-master || 11.x-dev || 10.x-dev || 9.x-dev || 9.5.x-dev';
+      // $additions[] = 'drush/drush:dev-master || 11.x-dev || 10.x-dev || 9.x-dev || 9.5.x-dev';
     }
 
     // Install a specific version of Drupal core.
@@ -249,6 +249,7 @@ class FixtureCreator {
     // Acquia CMS uses drupal-test-traits as a dev dependency.
     // @todo remove this via ORCA-298
     $additions[] = 'weitzman/drupal-test-traits';
+    $additions[] = 'drush/drush:^11';
 
     // Require additional packages.
     $prefer_source = $this->options->preferSource();
