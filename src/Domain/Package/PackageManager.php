@@ -173,13 +173,7 @@ class PackageManager {
   private function initializePackages(FixturePathHandler $fixture_path_handler, string $packages_config, ?string $packages_config_alter): void {
     $data = $this->parseYamlFile($this->orca->getPath($packages_config));
     if ($packages_config_alter) {
-      // Check if given an absolute path, else assume relative path.
-      if (file_exists($packages_config_alter)) {
-        $alter_path = $packages_config_alter;
-      }
-      else {
-        $alter_path = $this->orca->getPath($packages_config_alter);
-      }
+      $alter_path = $this->orca->getPath($packages_config_alter);
       $this->alterData = $this->parseYamlFile($alter_path);
       $data = array_merge($data, $this->alterData);
     }

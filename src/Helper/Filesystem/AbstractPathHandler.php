@@ -63,9 +63,11 @@ abstract class AbstractPathHandler {
     if (!$sub_path) {
       return $this->normalizePath($this->basePath);
     }
-    $path = $this->normalizePath($sub_path);
-    // If the directory does not exist, prepend base path for relative paths.
-    if (!is_dir($sub_path)) {
+
+    if (strpos($sub_path, '/') === 0) {
+      $path = $sub_path;
+    }
+    else {
       $path = "{$this->basePath}/{$sub_path}";
     }
     return $this->normalizePath($path);
