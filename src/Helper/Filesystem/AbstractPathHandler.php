@@ -60,23 +60,35 @@ abstract class AbstractPathHandler {
    *   The base path with sub-path appended if provided.
    */
   public function getPath(?string $sub_path = NULL): string {
-    $path = $this->basePath;
-
-    // Append optional sub-path.
-    if ($sub_path) {
-      $path .= "/{$sub_path}";
+    if (!$sub_path) {
+      return $this->normalizePath($this->basePath);
     }
+    $path = $this->normalizePath($sub_path);
+    // If the directory does not exist, prepend base path for relative paths.
+    if (!is_dir($sub_path)) {
+      $path = "{$this->basePath}/{$sub_path}";
+    }
+    return $this->normalizePath($path);
+  }
 
-    // Approximate realpath() without requiring the path parts to exist yet.
-    // @see https://stackoverflow.com/a/14354948/895083
+  /**
+   * Approximate realpath() without requiring the path parts to exist yet.
+   *
+   * @param string $path
+   *   The path.
+   *
+   * @return string
+   *   The normalized path.
+   *
+   * @see https://stackoverflow.com/a/14354948/895083
+   */
+  private function normalizePath(string $path): string {
     $patterns = ['~/{2,}~', '~/(\./)+~', '~([^/\.]+/(?R)*\.{2,}/)~', '~\.\./~'];
     $replacements = ['/', '/', '', ''];
     $path = preg_replace($patterns, $replacements, $path);
 
     // Remove trailing slashes.
-    $path = rtrim($path, '/');
-
-    return $path;
+    return rtrim($path, '/');
   }
 
 }
