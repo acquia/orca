@@ -131,7 +131,7 @@ class SutPreconditionsTester {
   }
 
   /**
-   * Asserts the the SUT's composer.json does not specify a "version".
+   * Asserts the SUT's composer.json does not specify a "version".
    *
    * @throws \Acquia\Orca\Exception\OrcaException
    */
