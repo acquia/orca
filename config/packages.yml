@@ -69,6 +69,8 @@ drupal/acquia_purge:
 
 drupal/acsf: []
 
+drupal/acsf_sso: ~
+
 drupal/acquia_search:
   version: 3.x
   version_dev: 3.x-dev
