@@ -36,9 +36,9 @@
 #   core version constraint is satisfied. Mappings are processed in order, and
 #   the first match wins.
 #   @see \Acquia\Orca\Tests\Fixture\PackageTest::testConditionalVersions
-# - "enable": (internal) true if the package is a Drupal module that should be
-#   automatically enabled or false if not. Defaults to true for modules. Always
-#   false for anything else.
+# - "enable": Whether to enable the extension in Drupal. Defaults to true for
+#   modules but can be overridden. Anything else is always false and cannot be
+#   overridden.
 #
 # These are converted to \Acquia\Orca\Fixture\Package objects by
 # \Acquia\Orca\Fixture\PackageManager. A different specification can be
