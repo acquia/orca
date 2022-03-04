@@ -64,10 +64,9 @@ jobs:
           - orca-job: ISOLATED_TEST_ON_CURRENT
             php-version: "8.0"
 
-          # @TODO Enable the below commented out lines after https://backlog.acquia.com/browse/ORCA-324 is resolved.
-          # - orca-job: ""
-          #   orca-live-test: "TRUE"
-          #   php-version: "7.4"
+          - orca-job: ""
+            orca-live-test: "TRUE"
+            php-version: "7.4"
 
     steps:
       - uses: actions/checkout@v2
