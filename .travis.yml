@@ -73,7 +73,7 @@ jobs:
     - env: ORCA_JOB=ISOLATED_TEST_ON_CURRENT_DEV ORCA_ENABLE_NIGHTWATCH=TRUE
 
 before_install:
-  - nvm install 12.13.1; nvm use 12.13.1
+  - nvm install 12.20.0; nvm use 12.20.0
   - ../orca/bin/travis/self-test/before_install.sh
   - ../orca/bin/travis/before_install.sh
 
