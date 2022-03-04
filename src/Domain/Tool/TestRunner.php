@@ -201,20 +201,9 @@ class TestRunner {
   private function runNonSutTests(): void {
     $message = ($this->sut) ? 'Running public non-SUT tests' : 'Running all public tests';
     $this->output->title($message);
-
-    print_r([
-      "\Acquia\Orca\Domain\Tool\TestRunner::runNonSutTests",
-      "package-all" => $this->packageManager->getAll(),
-    ]);
-
     foreach ($this->packageManager->getAll() as $package) {
       // Project templates don't provide tests... yet. Attemping to run them
       // right now would run all Drupal contrib tests.
-      print_r([
-        "\Acquia\Orca\Domain\Tool\TestRunner::runNonSutTests",
-        "package-name" => $package->getPackageName(),
-      ]);
-
       if ($package->isProjectTemplate()) {
         continue;
       }
