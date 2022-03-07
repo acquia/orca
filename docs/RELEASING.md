@@ -2,14 +2,12 @@
 
 For project maintainers.
 
-1. Before starting the release process ensure that you have checked out the
-"develop" branch and that is up-to-date with the upstream.
+1. Make sure local `develop` and `main` branches are current with upstream.
 2. Before committing to a release...
     1. [Check the issue queue](https://github.com/acquia/orca/issues) for critical issues.
     1. Search the codebase for important `@todo` comments.
 3. Run automated tests with `composer coverage`.
 4. Create a release tag with [Gitflow](https://github.com/nvie/gitflow):
-    1. Make sure local `develop` and `main` branches are current with upstream.
     1. Choose a [semantic version](https://semver.org/) number (`x.y.z`).
     1. Start the release with `git flow release start x.y.z`.
     1. Set the version to `x.y.z` in `config/VERSION` and commit.
