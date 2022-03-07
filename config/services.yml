@@ -23,7 +23,7 @@ services:
       $default_phpcs_standard: "%env(ORCA_PHPCS_STANDARD)%"
       $fixture_dir: "%env(ORCA_FIXTURE_DIR)%"
       $packages_config: "@=container.hasParameter('ORCA_PACKAGES_CONFIG') ? parameter('ORCA_PACKAGES_CONFIG') : 'config/packages.yml'"
-      $packages_config_alter: "@=container.hasParameter('ORCA_PACKAGES_CONFIG_ALTER') ? parameter('ORCA_PACKAGES_CONFIG_ALTER') : null"
+      $packages_config_alter: "%env(ORCA_PACKAGES_CONFIG_ALTER)%"
       $telemetry_is_enabled: "%env(bool:ORCA_TELEMETRY_ENABLE)%"
     public: true
 
