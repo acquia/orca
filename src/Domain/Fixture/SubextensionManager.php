@@ -141,6 +141,8 @@ class SubextensionManager {
 
       $name = $config->get('name');
 
+      // Skip subextension if it has been removed with a NULL value in our
+      // alter data, for example, "drupal/example_subextension: ~".
       if (array_key_exists($name, $this->alterData) && $this->alterData[$name] === NULL) {
         continue;
       }
@@ -157,8 +159,18 @@ class SubextensionManager {
         'enable' => $config->get('extra.orca.enable', TRUE),
       ];
 
+      // Check if any subextension is disabled in packages.yml,
+      // for example, "drupal/example_subextension.enable: false".
+      if (array_key_exists($name, $this->topLevelExtensions)) {
+        $package_subextension = $this->topLevelExtensions[$name];
+        $package_data['enable'] = $package_subextension->shouldGetEnabled();
+      }
+
+      // Checking for any alterations of a subextension mentioned in
+      // packages_alter.yml.
       if (isset($this->alterData[$name])) {
         $alter_data = array_intersect_key($this->alterData[$name], $package_data);
+        /* @noinspection SlowArrayOperationsInLoopInspection */
         $package_data = array_replace($package_data, $alter_data);
       }
 
