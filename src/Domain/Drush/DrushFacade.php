@@ -77,7 +77,11 @@ class DrushFacade {
     $data = json_decode($json, TRUE);
 
     if (json_last_error()) {
-      throw new OrcaParseError('Invalid Drush output.');
+      throw new OrcaParseError(sprintf(
+        'Invalid Drush JSON output: (%s) %s',
+        json_last_error(),
+        json_last_error_msg()
+      ));
     }
 
     return $data;
