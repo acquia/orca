@@ -72,9 +72,10 @@ drupal/acsf: []
 drupal/acsf_sso:
   enable: false
 
-drupal/acquia_search:
-  version: 3.x
-  version_dev: 3.x-dev
+# @todo Temporarily remove drupal/acquia_search due to conflicts with drupal/acquia_cms.
+#drupal/acquia_search:
+#  version: 3.x
+#  version_dev: 3.x-dev
 
 acquia/blt:
   type: composer-plugin
