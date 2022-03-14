@@ -149,6 +149,8 @@ class DrupalCheckTool {
       'drupal-check',
       '-d',
       "--drupal-root={$this->fixture->getPath()}",
+      "-e",
+      "*/tests/*",
     ];
     if ($sut_name) {
       $sut = $this->packageManager->get($sut_name);

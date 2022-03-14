@@ -88,6 +88,8 @@ class DrupalCheckToolTest extends TestCase {
         'drupal-check',
         '-d',
         sprintf('--drupal-root=%s', self::FIXTURE_PATH),
+        '-e',
+        '*/tests/*',
         self::PACKAGE_PATH,
       ])
       ->shouldBeCalledOnce();
@@ -105,6 +107,8 @@ class DrupalCheckToolTest extends TestCase {
         'drupal-check',
         '-d',
         sprintf('--drupal-root=%s', self::FIXTURE_PATH),
+        '-e',
+        '*/tests/*',
         'docroot/modules/contrib',
         'docroot/profiles/contrib',
         'docroot/themes/contrib',
@@ -127,6 +131,8 @@ class DrupalCheckToolTest extends TestCase {
         'drupal-check',
         '-d',
         sprintf('--drupal-root=%s', self::FIXTURE_PATH),
+        '-e',
+        '*/tests/*',
         self::PACKAGE_PATH,
         'docroot/modules/contrib',
         'docroot/profiles/contrib',
@@ -175,6 +181,8 @@ class DrupalCheckToolTest extends TestCase {
         'drupal-check',
         '-d',
         sprintf('--drupal-root=%s', self::FIXTURE_PATH),
+        '-e',
+        '*/tests/*',
         self::PACKAGE_PATH,
         '--format=json',
       ])

@@ -34,4 +34,17 @@ class ExampleUnitTest extends TestCase {
     self::fail('Ran ignored test.');
   }
 
+  /**
+   * Demonstrates ignoring deprecated code in test files.
+   *
+   * This function is private so that it will not be run by PHPUnit
+   * because this is only for static analysis.
+   *
+   * phpcs:disable DrupalPractice.Objects.UnusedPrivateMethod.UnusedMethod
+   */
+  private function testDeprecateCodeInTestFiles(): void {
+    // This is a deprecated function which should not be caught by drupal-check.
+    file_create_url("https://example.com");
+  }
+
 }
