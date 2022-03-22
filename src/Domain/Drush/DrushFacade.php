@@ -35,12 +35,11 @@ class DrushFacade {
    *   A list of module machine names.
    */
   public function enableModules(array $list): void {
-    $this->processRunner->runFixtureVendorBin([
+    $this->processRunner->runFixtureVendorBin(array_merge([
       'drush',
       'pm:enable',
       '--yes',
-      implode(',', $list),
-    ]);
+    ], $list));
   }
 
   /**
