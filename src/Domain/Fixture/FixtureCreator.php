@@ -219,11 +219,12 @@ class FixtureCreator {
 
     // Remove unwanted packages.
     $packages = $this->getUnwantedPackageList();
-    // The Lightning profile requirement conflicts with individual Lightning
-    // component requirements--namely, it prevents them from being symlinked
-    // via a local "path" repository.
-    array_unshift($packages, 'acquia/lightning');
-    $this->composer->removePackages($packages);
+    // Get packages required by composer, and remove only those.
+    $composer_required_packages = $this->composerJsonHelper->getRequiredPackages();
+    $packages_to_remove = array_intersect($packages, $composer_required_packages);
+    if (!empty($packages_to_remove)) {
+      $this->composer->removePackages($packages_to_remove);
+    }
 
     $additions = [];
 

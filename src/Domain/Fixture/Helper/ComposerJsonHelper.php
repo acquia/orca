@@ -24,6 +24,8 @@ class ComposerJsonHelper {
 
   private const EXTRA_ORCA_OPTIONS = 'extra.orca.options';
 
+  private const REQUIRE = 'require';
+
   /**
    * The config loader.
    *
@@ -143,6 +145,18 @@ class ComposerJsonHelper {
     $this->fixtureOptions = $this->fixtureOptionsFactory
       ->create($raw_options);
     return $this->fixtureOptions;
+  }
+
+  /**
+   * Get packages required by composer.
+   *
+   * @throws \Acquia\Orca\Exception\OrcaFileNotFoundException
+   * @throws \Acquia\Orca\Exception\OrcaFixtureNotExistsException
+   * @throws \Acquia\Orca\Exception\OrcaParseError
+   */
+  public function getRequiredPackages(): array {
+    $config = $this->loadFile();
+    return array_keys($config->get(self::REQUIRE));
   }
 
   /**
