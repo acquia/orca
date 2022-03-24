@@ -59,14 +59,14 @@ class DrushFacadeTest extends TestCase {
   /**
    * @dataProvider providerEnableExtensions
    */
-  public function testEnableModules(array $modules, string $argument): void {
+  public function testEnableModules(array $modules, array $argument): void {
     $this->processRunner
-      ->runFixtureVendorBin([
+      ->runFixtureVendorBin(array_merge([
         'drush',
         'pm:enable',
         '--yes',
-        $argument,
-      ])
+      ],
+        $argument))
       ->shouldBeCalledOnce();
 
     $drush = $this->createDrush();
@@ -74,7 +74,7 @@ class DrushFacadeTest extends TestCase {
   }
 
   /**
-   * @dataProvider providerEnableExtensions
+   * @dataProvider providerEnableThemes
    */
   public function testEnableThemes(array $themes, string $argument): void {
     $this->processRunner
@@ -90,6 +90,13 @@ class DrushFacadeTest extends TestCase {
   }
 
   public function providerEnableExtensions(): array {
+    return [
+      [['test', 'example'], ['test', 'example']],
+      [['example', 'test'], ['example', 'test']],
+    ];
+  }
+
+  public function providerEnableThemes(): array {
     return [
       [['test', 'example'], 'test,example'],
       [['example', 'test'], 'example,test'],
