@@ -24,8 +24,8 @@
 ---
 name: ORCA CI
 on:
-  push:
-  pull_request:
+  push: ~
+  pull_request: ~
   schedule:
     # Daily at 00:00:00 UTC.
     # @see https://crontab.cronhub.io/
