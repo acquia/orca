@@ -266,7 +266,7 @@ class PhpUnitTask extends TestFrameworkBase {
         '--verbose',
       ];
       if ($this->shouldGenerateCodeCoverage()) {
-        $command[] = "--coverage-clover={$this->cloverCoverage}";
+        $command[] = "--coverage-clover={$this->cloverCoverage} --log-junit={$this->junitLog}";
       }
       $command = array_merge($command, [
         '--colors=always',
