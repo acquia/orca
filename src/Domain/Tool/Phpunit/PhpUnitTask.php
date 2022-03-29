@@ -99,7 +99,8 @@ class PhpUnitTask extends TestFrameworkBase {
    */
   private function setTestSuite(): void {
     $directory = $this->doc->createElement('directory', $this->getPath());
-    $exclude = $this->doc->createElement('exclude', "{$this->getPath()}/vendor");
+    $exclude =
+      $this->doc->createElement('exclude', "{$this->getPath()}/vendor");
     $testsuite = $this->doc->createElement('testsuite');
     $testsuite->setAttribute('name', 'orca');
     $testsuite->appendChild($directory);
@@ -134,10 +135,8 @@ class PhpUnitTask extends TestFrameworkBase {
   private function setCoverageFilter(): void {
 
     // Removing default "whitelist" element.
-    $whitelist = $this->xpath
-      ->query('//phpunit/filter/whitelist')
-      ->item(0);
-    assert ($whitelist instanceof \DOMElement);
+    $whitelist = $this->xpath->query('//phpunit/filter/whitelist')->item(0);
+    assert($whitelist instanceof \DOMElement);
     $whitelist->parentNode->removeChild($whitelist);
 
     // Creating new "whitelist" element.
@@ -146,35 +145,39 @@ class PhpUnitTask extends TestFrameworkBase {
     // Excluding tests directories.
     $exclude = $this->doc->createElement('exclude');
 
-    $exclude_directory = $this->doc
-      ->createElement('directory', '../modules/*/tests');
+    $exclude_directory =
+      $this->doc->createElement('directory', '../modules/*/tests');
     $exclude->appendChild($exclude_directory);
 
-    $exclude_directory = $this->doc
-      ->createElement('directory', '../modules/*/*/tests');
+    $exclude_directory =
+      $this->doc->createElement('directory', '../modules/*/*/tests');
     $exclude->appendChild($exclude_directory);
 
-    $exclude_directory = $this->doc
-      ->createElement('directory', '../*/contrib/*/tests');
+    $exclude_directory =
+      $this->doc->createElement('directory', '../*/contrib/*/tests');
     $exclude->appendChild($exclude_directory);
 
     // Appending the excluded directories to "whitelist" element.
     $whitelist->appendChild($exclude);
 
     // Adding suffixes to "whitelist" element.
-    $suffixes = ['.php', '.inc', '.module', '.install'];
+    $suffixes = [
+      '.php',
+      '.inc',
+      '.module',
+      '.install',
+      '.theme',
+      '.profile',
+      'engine',
+    ];
     foreach ($suffixes as $suffix) {
-      $directory = $this->doc
-        ->createElement('directory', $this->getPath());
+      $directory = $this->doc->createElement('directory', $this->getPath());
       $directory->setAttribute('suffix', $suffix);
       $whitelist->appendChild($directory);
     }
 
     // Writing "whitelist" element to file.
-    $this->xpath
-      ->query('//phpunit/filter')
-      ->item(0)
-      ->appendChild($whitelist);
+    $this->xpath->query('//phpunit/filter')->item(0)->appendChild($whitelist);
   }
 
   /**
@@ -209,7 +212,8 @@ class PhpUnitTask extends TestFrameworkBase {
    *   The value of the variable to set.
    */
   private function setEnvironmentVariable(string $name, string $value): void {
-    $result = $this->xpath->query(sprintf('//phpunit/php/env[@name="%s"]', $name));
+    $result =
+      $this->xpath->query(sprintf('//phpunit/php/env[@name="%s"]', $name));
 
     if ($result->length) {
       $element = $result->item(0);
@@ -220,9 +224,7 @@ class PhpUnitTask extends TestFrameworkBase {
       $element = $this->doc->createElement('env');
       $element->setAttribute('name', $name);
       $element->setAttribute('value', $value);
-      $this->xpath->query('//phpunit/php')
-        ->item(0)
-        ->appendChild($element);
+      $this->xpath->query('//phpunit/php')->item(0)->appendChild($element);
     }
   }
 
@@ -317,10 +319,7 @@ class PhpUnitTask extends TestFrameworkBase {
    * Overrides the active configuration.
    */
   public function overrideConfig(): void {
-    $this->configFileOverrider->setPaths(
-      $this->fixture->getPath('docroot/core/phpunit.xml.dist'),
-      $this->fixture->getPath('docroot/core/phpunit.xml')
-    );
+    $this->configFileOverrider->setPaths($this->fixture->getPath('docroot/core/phpunit.xml.dist'), $this->fixture->getPath('docroot/core/phpunit.xml'));
     $this->configFileOverrider->override();
   }
 
