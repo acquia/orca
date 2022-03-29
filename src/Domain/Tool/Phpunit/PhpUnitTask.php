@@ -132,21 +132,49 @@ class PhpUnitTask extends TestFrameworkBase {
    * ```
    */
   private function setCoverageFilter(): void {
-    $directory = $this->doc
-      ->createElement('directory', $this->getPath());
-    $exclude = $this->doc
-      ->createElement('exclude');
+
+    // Removing default "whitelist" element.
+    $whitelist = $this->xpath
+      ->query('//phpunit/filter/whitelist')
+      ->item(0);
+    assert ($whitelist instanceof \DOMElement);
+    $whitelist->parentNode->removeChild($whitelist);
+
+    // Creating new "whitelist" element.
+    $whitelist = $this->doc->createElement('whitelist');
+
+    // Excluding tests directories.
+    $exclude = $this->doc->createElement('exclude');
+
     $exclude_directory = $this->doc
-      ->createElement('directory', "{$this->getPath()}/tests");
+      ->createElement('directory', '../modules/*/tests');
     $exclude->appendChild($exclude_directory);
+
+    $exclude_directory = $this->doc
+      ->createElement('directory', '../modules/*/*/tests');
+    $exclude->appendChild($exclude_directory);
+
+    $exclude_directory = $this->doc
+      ->createElement('directory', '../*/contrib/*/tests');
+    $exclude->appendChild($exclude_directory);
+
+    // Appending the excluded directories to "whitelist" element.
+    $whitelist->appendChild($exclude);
+
+    // Adding suffixes to "whitelist" element.
+    $suffixes = ['.php', '.inc', '.module', '.install'];
+    foreach ($suffixes as $suffix) {
+      $directory = $this->doc
+        ->createElement('directory', $this->getPath());
+      $directory->setAttribute('suffix', $suffix);
+      $whitelist->appendChild($directory);
+    }
+
+    // Writing "whitelist" element to file.
     $this->xpath
-      ->query('//phpunit/filter/whitelist')
+      ->query('//phpunit/filter')
       ->item(0)
-      ->appendChild($directory);
-    $this->xpath
-      ->query('//phpunit/filter/whitelist')
-      ->item(0)
-      ->appendChild($exclude);
+      ->appendChild($whitelist);
   }
 
   /**
