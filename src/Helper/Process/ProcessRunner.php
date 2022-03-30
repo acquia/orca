@@ -231,7 +231,7 @@ class ProcessRunner {
    * @param string $envVars
    *   The environment variables required to be set.
    */
-  public function setEnvVars($envVars): void {
+  public function setEnvVars(string $envVars): void {
     $this->envVars = $envVars;
     $this->isEnvVarsSet = TRUE;
   }
@@ -252,7 +252,10 @@ class ProcessRunner {
     }
 
     if ($this->isEnvVarsSet === TRUE) {
-      array_unshift($command, $this->envVars);
+      $command = array_merge([
+        $this->envVars,
+        "php",
+      ], $command);
     }
 
     return new Process($command);
