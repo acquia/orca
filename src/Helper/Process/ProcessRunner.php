@@ -37,6 +37,20 @@ class ProcessRunner {
   private $output;
 
   /**
+   * Environment Variables.
+   *
+   * @var string
+   */
+  private $envVars;
+
+  /**
+   * Flag to check if environment variables are set.
+   *
+   * @var bool
+   */
+  private $isEnvVarsSet = FALSE;
+
+  /**
    * Constructs an instance.
    *
    * @param \Acquia\Orca\Helper\Filesystem\FixturePathHandler $fixture_path_handler
@@ -212,6 +226,17 @@ class ProcessRunner {
   }
 
   /**
+   * Set environment variables.
+   *
+   * @param string $envVars
+   *   The environment variables required to be set.
+   */
+  public function setEnvVars($envVars): void {
+    $this->envVars = $envVars;
+    $this->isEnvVarsSet = TRUE;
+  }
+
+  /**
    * Creates a process for a given vendor binary command.
    *
    * @param array $command
@@ -224,6 +249,10 @@ class ProcessRunner {
   protected function createVendorBinProcess(array $command): Process {
     if (!file_exists($command[0])) {
       throw new RuntimeException(sprintf('Could not find vendor binary: %s.', $command[0]));
+    }
+
+    if ($this->isEnvVarsSet === TRUE) {
+      array_unshift($command, $this->envVars);
     }
 
     return new Process($command);
