@@ -65,7 +65,10 @@ class DrupalDotOrgApiClient {
     $config = new Config($xml, new Xml(), TRUE);
     $supported_branches = $config->get('supported_branches');
     $parts = explode(',', $supported_branches);
-    $this->oldestSupportedDrupalCoreBranch = $parts[0] . 'x';
+    $parts = array_map(static function ($part): string {
+      return rtrim($part, '.');
+    }, $parts);
+    $this->oldestSupportedDrupalCoreBranch = min($parts) . '.x';
     return $this->oldestSupportedDrupalCoreBranch;
   }
 
