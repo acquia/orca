@@ -267,7 +267,7 @@ class PhpUnitTask extends TestFrameworkBase {
       ];
       if ($this->shouldGenerateCodeCoverage()) {
         $command[] = "--coverage-clover={$this->cloverCoverage}";
-        $this->processRunner->setEnvVars("XDEBUG_MODE=coverage");
+        $this->processRunner->setEnvVars("XDEBUG_MODE", "coverage");
       }
       $command = array_merge($command, [
         '--colors=always',

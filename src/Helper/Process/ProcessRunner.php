@@ -37,18 +37,11 @@ class ProcessRunner {
   private $output;
 
   /**
-   * Environment Variables.
+   * Array of Environment Variables.
    *
-   * @var string
+   * @var array
    */
-  private $envVars;
-
-  /**
-   * Flag to check if environment variables are set.
-   *
-   * @var bool
-   */
-  private $isEnvVarsSet = FALSE;
+  private $envVars = [];
 
   /**
    * Constructs an instance.
@@ -228,12 +221,13 @@ class ProcessRunner {
   /**
    * Set environment variables.
    *
-   * @param string $envVars
-   *   The environment variables required to be set.
+   * @param string $name
+   *   The name of the environment variables required to be set.
+   * @param string $value
+   *   The value of the environment variables required to be set.
    */
-  public function setEnvVars(string $envVars): void {
-    $this->envVars = $envVars;
-    $this->isEnvVarsSet = TRUE;
+  public function setEnvVars(string $name, string $value): void {
+    $this->envVars[$name] = $value;
   }
 
   /**
@@ -251,7 +245,7 @@ class ProcessRunner {
       throw new RuntimeException(sprintf('Could not find vendor binary: %s.', $command[0]));
     }
 
-    return new Process($command, null, $this->envVars);
+    return new Process($command, NULL, $this->envVars);
   }
 
 }
