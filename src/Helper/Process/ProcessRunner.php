@@ -251,14 +251,7 @@ class ProcessRunner {
       throw new RuntimeException(sprintf('Could not find vendor binary: %s.', $command[0]));
     }
 
-    if ($this->isEnvVarsSet === TRUE) {
-      $command = array_merge([
-        $this->envVars,
-        "php",
-      ], $command);
-    }
-
-    return new Process($command);
+    return new Process($command, null, $this->envVars);
   }
 
 }
