@@ -37,7 +37,7 @@ class ProcessRunner {
   private $output;
 
   /**
-   * Array of Environment Variables.
+   * An array of environment variables.
    *
    * @var array
    */
@@ -219,14 +219,14 @@ class ProcessRunner {
   }
 
   /**
-   * Set environment variables.
+   * Adds an environment variable.
    *
    * @param string $name
-   *   The name of the environment variables required to be set.
+   *   The name of the environment variable.
    * @param string $value
-   *   The value of the environment variables required to be set.
+   *   The value of the environment variable.
    */
-  public function setEnvVars(string $name, string $value): void {
+  public function addEnvVar(string $name, string $value): void {
     $this->envVars[$name] = $value;
   }
 
