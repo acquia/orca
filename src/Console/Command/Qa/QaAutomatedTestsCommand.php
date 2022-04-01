@@ -30,6 +30,13 @@ class QaAutomatedTestsCommand extends Command {
   private $all;
 
   /**
+   * The "cron" command line option.
+   *
+   * @var bool
+   */
+  private $cron;
+
+  /**
    * The fixture path handler.
    *
    * @var \Acquia\Orca\Helper\Filesystem\FixturePathHandler
@@ -49,6 +56,13 @@ class QaAutomatedTestsCommand extends Command {
    * @var \Acquia\Orca\Domain\Package\PackageManager
    */
   private $packageManager;
+
+  /**
+   * The "phpunit" command line option.
+   *
+   * @var bool
+   */
+  private $phpunit;
 
   /**
    * The "sut" command line option.
@@ -99,7 +113,8 @@ class QaAutomatedTestsCommand extends Command {
       ->addOption('sut-only', NULL, InputOption::VALUE_NONE, 'Run tests from only the system under test (SUT). Omit tests from all other company packages')
       ->addOption('all', NULL, InputOption::VALUE_NONE, 'Run all tests, public and private (always true for the system under test (SUT))')
       ->addOption('phpunit', NULL, InputOption::VALUE_NONE, 'Run only PHPUnit tests')
-      ->addOption('no-servers', NULL, InputOption::VALUE_NONE, "Don't run the ChromeDriver and web servers");
+      ->addOption('no-servers', NULL, InputOption::VALUE_NONE, "Don't run the ChromeDriver and web servers")
+      ->addOption('cron', NULL, InputOption::VALUE_NONE, "Runs cron via drush");
   }
 
   /**
@@ -110,6 +125,8 @@ class QaAutomatedTestsCommand extends Command {
     $this->sut = $input->getOption('sut');
     $this->sutOnly = $input->getOption('sut-only');
     $this->all = $input->getOption('all');
+    $this->cron = $input->getOption('cron');
+    $this->phpunit = $input->getOption('phpunit');
 
     if (!$this->isValidInput($output)) {
       return StatusCodeEnum::ERROR;
@@ -177,9 +194,19 @@ class QaAutomatedTestsCommand extends Command {
       $this->testRunner->setRunAllTests(TRUE);
     }
 
+    if ($this->cron) {
+      $this->testRunner->setRunCron(TRUE);
+      $this->testRunner->setRunPhpunit(FALSE);
+    }
+
+    if ($this->phpunit) {
+      $this->testRunner->setRunPhpunit(TRUE);
+    }
+
     if ($this->noServers) {
       $this->testRunner->setRunServers(FALSE);
     }
+
   }
 
 }

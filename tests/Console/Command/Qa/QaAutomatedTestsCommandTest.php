@@ -95,7 +95,7 @@ class QaAutomatedTestsCommandTest extends CommandTestBase {
    */
   public function testFrameworkFlags($args, $call_set_run_phpunit): void {
     $this->testRunner
-      ->setRunPhpunit(FALSE)
+      ->setRunPhpunit(TRUE)
       ->shouldBeCalledTimes($call_set_run_phpunit);
     $this->testRunner
       ->run()
@@ -107,7 +107,7 @@ class QaAutomatedTestsCommandTest extends CommandTestBase {
   public function providerFrameworkFlags(): array {
     return [
       [[], 0],
-      [['--phpunit' => 1], 0],
+      [['--phpunit' => 1], 1],
     ];
   }
 

@@ -2,6 +2,7 @@
 
 namespace Acquia\Orca\Domain\Tool;
 
+use Acquia\Orca\Domain\Drush\DrushFacade;
 use Acquia\Orca\Domain\Fixture\FixtureResetter;
 use Acquia\Orca\Domain\Package\Package;
 use Acquia\Orca\Domain\Package\PackageManager;
@@ -20,6 +21,13 @@ class TestRunner {
 
   use SutSettingsTrait;
 
+  /**
+   * The drush facade.
+   *
+   * @var \Acquia\Orca\Domain\Drush\DrushFacade
+   */
+
+  private $drushFacade;
   /**
    * The ENV facade.
    *
@@ -70,6 +78,13 @@ class TestRunner {
   private $runAllTests;
 
   /**
+   * The run cron flag.
+   *
+   * @var bool
+   */
+  private $runCron = FALSE;
+
+  /**
    * The run PHPUnit flag.
    *
    * @var bool
@@ -93,6 +108,8 @@ class TestRunner {
   /**
    * Constructs an instance.
    *
+   * @param \Acquia\Orca\Domain\Drush\DrushFacade $drush_facade
+   *   The drush facade.
    * @param \Acquia\Orca\Helper\EnvFacade $env_facade
    *   The ENV facade.
    * @param \Symfony\Component\Filesystem\Filesystem $filesystem
@@ -108,7 +125,8 @@ class TestRunner {
    * @param \Acquia\Orca\Domain\Server\ServerStack $server_stack
    *   The server stack.
    */
-  public function __construct(EnvFacade $env_facade, Filesystem $filesystem, FixtureResetter $fixture_resetter, SymfonyStyle $output, PhpUnitTask $phpunit, PackageManager $package_manager, ServerStack $server_stack) {
+  public function __construct(DrushFacade $drush_facade, EnvFacade $env_facade, Filesystem $filesystem, FixtureResetter $fixture_resetter, SymfonyStyle $output, PhpUnitTask $phpunit, PackageManager $package_manager, ServerStack $server_stack) {
+    $this->drushFacade = $drush_facade;
     $this->envFacade = $env_facade;
     $this->filesystem = $filesystem;
     $this->fixtureResetter = $fixture_resetter;
@@ -116,6 +134,7 @@ class TestRunner {
     $this->phpunit = $phpunit;
     $this->packageManager = $package_manager;
     $this->serverStack = $server_stack;
+
   }
 
   /**
@@ -128,10 +147,13 @@ class TestRunner {
       $this->startServers();
     }
 
+    if ($this->runCron || $this->runAllTests) {
+      $this->runCronTests();
+    }
     if ($this->sut && !$this->sut->isProjectTemplate()) {
       $this->runSutTests();
     }
-    if (!$this->isSutOnly) {
+    if (!$this->isSutOnly && (!$this->runCron || $this->runPhpunit)) {
       $this->runNonSutTests();
     }
 
@@ -178,6 +200,16 @@ class TestRunner {
   }
 
   /**
+   * Set the run cron flag.
+   *
+   * @param bool $cron
+   *   TRUE to run cron or FALSE not to.
+   */
+  public function setRunCron(bool $cron): void {
+    $this->runCron = $cron;
+  }
+
+  /**
    * Starts servers.
    */
   private function startServers(): void {
@@ -202,7 +234,7 @@ class TestRunner {
     $message = ($this->sut) ? 'Running public non-SUT tests' : 'Running all public tests';
     $this->output->title($message);
     foreach ($this->packageManager->getAll() as $package) {
-      // Project templates don't provide tests... yet. Attemping to run them
+      // Project templates don't provide tests... yet. Attempting to run them
       // right now would run all Drupal contrib tests.
       if ($package->isProjectTemplate()) {
         continue;
@@ -218,6 +250,15 @@ class TestRunner {
         $this->execute($framework, $package, !$this->runAllTests);
       }
     }
+  }
+
+  /**
+   * Runs cron amd tests for all packages.
+   */
+  private function runCronTests(): void {
+    $this->output->title('Running cron tests');
+    // Running cron via Drush.
+    $this->drushFacade->runCron();
   }
 
   /**

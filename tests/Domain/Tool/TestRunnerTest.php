@@ -2,6 +2,7 @@
 
 namespace Acquia\Orca\Tests\Domain\Tool;
 
+use Acquia\Orca\Domain\Drush\DrushFacade;
 use Acquia\Orca\Domain\Fixture\FixtureResetter;
 use Acquia\Orca\Domain\Package\PackageManager;
 use Acquia\Orca\Domain\Server\ServerStack;
@@ -16,6 +17,7 @@ use Symfony\Component\Filesystem\Filesystem;
 
 /**
  * @property \Acquia\Orca\Helper\EnvFacade|\Prophecy\Prophecy\ObjectProphecy $envFacade
+ * @property \Acquia\Orca\Domain\Drush\DrushFacade|\Prophecy\Prophecy\ObjectProphecy $drushFacade
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Domain\Fixture\FixtureResetter $fixtureResetter
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Domain\Package\PackageManager $packageManager
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Domain\Server\ServerStack $serverStack
@@ -31,6 +33,7 @@ class TestRunnerTest extends TestCase {
   private const STATUS_MESSAGE = 'Printing status message';
 
   protected function setUp(): void {
+    $this->drushFacade = $this->prophesize(DrushFacade::class);
     $this->envFacade = $this->prophesize(EnvFacade::class);
     $this->filesystem = $this->prophesize(Filesystem::class);
     $this->fixtureResetter = $this->prophesize(FixtureResetter::class);
@@ -42,6 +45,7 @@ class TestRunnerTest extends TestCase {
   }
 
   private function createTestRunner(): TestRunner {
+    $drush_facade = $this->drushFacade->reveal();
     $env_facade = $this->envFacade->reveal();
     $filesystem = $this->filesystem->reveal();
     $fixture_resetter = $this->fixtureResetter->reveal();
@@ -49,7 +53,7 @@ class TestRunnerTest extends TestCase {
     $phpunit = $this->phpunit->reveal();
     $package_manager = $this->packageManager->reveal();
     $server_stack = $this->serverStack->reveal();
-    return new TestRunner($env_facade, $filesystem, $fixture_resetter, $output, $phpunit, $package_manager, $server_stack);
+    return new TestRunner($drush_facade, $env_facade, $filesystem, $fixture_resetter, $output, $phpunit, $package_manager, $server_stack);
   }
 
   public function testTaskRunner(): void {

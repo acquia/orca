@@ -129,4 +129,14 @@ class DrushFacade {
     }
   }
 
+  /**
+   * Runs cron via Drush.
+   */
+  public function runCron() {
+    $this->processRunner->runFixtureVendorBin([
+      'drush',
+      'cron',
+    ]);
+  }
+
 }
