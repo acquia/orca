@@ -99,8 +99,7 @@ class PhpUnitTask extends TestFrameworkBase {
    */
   private function setTestSuite(): void {
     $directory = $this->doc->createElement('directory', $this->getPath());
-    $exclude =
-      $this->doc->createElement('exclude', "{$this->getPath()}/vendor");
+    $exclude = $this->doc->createElement('exclude', "{$this->getPath()}/vendor");
     $testsuite = $this->doc->createElement('testsuite');
     $testsuite->setAttribute('name', 'orca');
     $testsuite->appendChild($directory);
@@ -212,8 +211,7 @@ class PhpUnitTask extends TestFrameworkBase {
    *   The value of the variable to set.
    */
   private function setEnvironmentVariable(string $name, string $value): void {
-    $result =
-      $this->xpath->query(sprintf('//phpunit/php/env[@name="%s"]', $name));
+    $result = $this->xpath->query(sprintf('//phpunit/php/env[@name="%s"]', $name));
 
     if ($result->length) {
       $element = $result->item(0);
@@ -224,7 +222,9 @@ class PhpUnitTask extends TestFrameworkBase {
       $element = $this->doc->createElement('env');
       $element->setAttribute('name', $name);
       $element->setAttribute('value', $value);
-      $this->xpath->query('//phpunit/php')->item(0)->appendChild($element);
+      $this->xpath->query('//phpunit/php')
+        ->item(0)
+        ->appendChild($element);
     }
   }
 
@@ -319,7 +319,10 @@ class PhpUnitTask extends TestFrameworkBase {
    * Overrides the active configuration.
    */
   public function overrideConfig(): void {
-    $this->configFileOverrider->setPaths($this->fixture->getPath('docroot/core/phpunit.xml.dist'), $this->fixture->getPath('docroot/core/phpunit.xml'));
+    $this->configFileOverrider->setPaths(
+      $this->fixture->getPath('docroot/core/phpunit.xml.dist'),
+      $this->fixture->getPath('docroot/core/phpunit.xml')
+    );
     $this->configFileOverrider->override();
   }
 
