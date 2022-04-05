@@ -167,7 +167,7 @@ class PhpUnitTask extends TestFrameworkBase {
       '.install',
       '.theme',
       '.profile',
-      'engine',
+      '.engine',
     ];
     foreach ($suffixes as $suffix) {
       $directory = $this->doc->createElement('directory', $this->getPath());
