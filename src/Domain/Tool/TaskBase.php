@@ -44,6 +44,13 @@ abstract class TaskBase implements TaskInterface {
   protected $fixture;
 
   /**
+   * The JUNIT XML path.
+   *
+   * @var string
+   */
+  protected $junitLog;
+
+  /**
    * The ORCA path handler.
    *
    * @var \Acquia\Orca\Helper\Filesystem\OrcaPathHandler
@@ -110,6 +117,8 @@ abstract class TaskBase implements TaskInterface {
    *   The filesystem.
    * @param \Acquia\Orca\Helper\Filesystem\FixturePathHandler $fixture_path_handler
    *   The fixture path handler.
+   * @param string $junit_log
+   *   The Junit XML path.
    * @param \Acquia\Orca\Helper\Filesystem\OrcaPathHandler $orca_path_handler
    *   The ORCA path handler.
    * @param \Symfony\Component\Console\Style\SymfonyStyle $output
@@ -125,7 +134,7 @@ abstract class TaskBase implements TaskInterface {
    * @param \Acquia\Orca\Helper\Process\ProcessRunner $process_runner
    *   The process runner.
    */
-  public function __construct(string $clover_coverage, ConfigFileOverrider $config_file_overrider, Filesystem $filesystem, FixturePathHandler $fixture_path_handler, OrcaPathHandler $orca_path_handler, SymfonyStyle $output, PhpcbfTool $phpcbf_tool, PhpcsConfigurator $phpcs_configurator, PhpLintTool $php_lint_tool, PhpmdTool $phpmd_tool, ProcessRunner $process_runner) {
+  public function __construct(string $clover_coverage, ConfigFileOverrider $config_file_overrider, Filesystem $filesystem, FixturePathHandler $fixture_path_handler, string $junit_log, OrcaPathHandler $orca_path_handler, SymfonyStyle $output, PhpcbfTool $phpcbf_tool, PhpcsConfigurator $phpcs_configurator, PhpLintTool $php_lint_tool, PhpmdTool $phpmd_tool, ProcessRunner $process_runner) {
     $this->configFileOverrider = $config_file_overrider;
     $this->filesystem = $filesystem;
     $this->fixture = $fixture_path_handler;
@@ -137,6 +146,7 @@ abstract class TaskBase implements TaskInterface {
     //   not all of its its children use them. This is an indication for
     //   refactoring to use some form of composition instead of inheritance.
     $this->cloverCoverage = $clover_coverage;
+    $this->junitLog = $junit_log;
     $this->phpcsConfigurator = $phpcs_configurator;
 
     $this->phpcbfTool = $phpcbf_tool;
