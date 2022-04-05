@@ -118,14 +118,24 @@ class PhpUnitTask extends TestFrameworkBase {
    * all these, it must manually add the appropriate directories for the SUT.
    * The resulting additions look like the following:
    *
+   * phpcs:disable Drupal.Files.LineLength.TooLong
+   *
    * ```xml
    * <phpunit>
    *   <filter>
    *     <whitelist>
-   *       <directory>/var/www/docroot/themes/contrib/example</directory>
    *       <exclude>
-   *         <directory>/var/www/docroot/themes/contrib/example/tests</directory>
+   *         <directory>../modules/* /tests</directory>
+   *         <directory>../modules/* /* /tests</directory>
+   *         <directory>../* /contrib/* /tests</directory>
    *       </exclude>
+   *       <directory suffix=".php">/var/www/docroot/profiles/contrib/example</directory>
+   *       <directory suffix=".inc">/var/www/docroot/profiles/contrib/example</directory>
+   *       <directory suffix=".module">/var/www/docroot/profiles/contrib/example</directory>
+   *       <directory suffix=".install">/var/www/docroot/profiles/contrib/example</directory>
+   *       <directory suffix=".theme">/var/www/docroot/profiles/contrib/example</directory>
+   *       <directory suffix=".profile">/var/www/docroot/profiles/contrib/example</directory>
+   *       <directory suffix=".engine">/var/www/docroot/profiles/contrib/example</directory>
    *     </whitelist>
    *   </filter>
    * </phpunit>
