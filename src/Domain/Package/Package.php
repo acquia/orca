@@ -115,6 +115,7 @@ class Package {
         'version_dev',
         'core_matrix',
         'enable',
+        'cron',
       ])
       ->setDefaults([
         'type' => 'drupal-module',
@@ -122,6 +123,7 @@ class Package {
         'version_dev' => '*@dev',
         'core_matrix' => [],
         'enable' => TRUE,
+        'cron' => TRUE,
       ])
       ->setAllowedTypes('type', 'string')
       ->setAllowedTypes('install_path', 'string')
@@ -129,7 +131,8 @@ class Package {
       ->setAllowedTypes('version', ['string', 'null'])
       ->setAllowedTypes('version_dev', ['string', 'null'])
       ->setAllowedTypes('core_matrix', 'array')
-      ->setAllowedTypes('enable', 'boolean');
+      ->setAllowedTypes('enable', 'boolean')
+      ->setAllowedTypes('cron', 'boolean');
     return $resolver->resolve($data);
   }
 
@@ -324,6 +327,16 @@ class Package {
    */
   public function getVersionRecommended(string $core_version = NULL): ?string {
     return $this->getVersion('version', $core_version);
+  }
+
+  /**
+   * Determine whether the package is included in cron.
+   *
+   * @return bool
+   *   Returns TRUE if it is, or FALSE if not.
+   */
+  public function isCronEnabled(): bool {
+    return $this->data['cron'];
   }
 
   /**
