@@ -118,35 +118,75 @@ class PhpUnitTask extends TestFrameworkBase {
    * all these, it must manually add the appropriate directories for the SUT.
    * The resulting additions look like the following:
    *
+   * phpcs:disable Drupal.Files.LineLength.TooLong
+   *
    * ```xml
    * <phpunit>
    *   <filter>
    *     <whitelist>
-   *       <directory>/var/www/docroot/themes/contrib/example</directory>
    *       <exclude>
-   *         <directory>/var/www/docroot/themes/contrib/example/tests</directory>
+   *         <directory>../modules/* /tests</directory>
+   *         <directory>../modules/* /* /tests</directory>
+   *         <directory>../* /contrib/* /tests</directory>
    *       </exclude>
+   *       <directory suffix=".php">/var/www/docroot/profiles/contrib/example</directory>
+   *       <directory suffix=".inc">/var/www/docroot/profiles/contrib/example</directory>
+   *       <directory suffix=".module">/var/www/docroot/profiles/contrib/example</directory>
+   *       <directory suffix=".install">/var/www/docroot/profiles/contrib/example</directory>
+   *       <directory suffix=".theme">/var/www/docroot/profiles/contrib/example</directory>
+   *       <directory suffix=".profile">/var/www/docroot/profiles/contrib/example</directory>
+   *       <directory suffix=".engine">/var/www/docroot/profiles/contrib/example</directory>
    *     </whitelist>
    *   </filter>
    * </phpunit>
    * ```
    */
   private function setCoverageFilter(): void {
-    $directory = $this->doc
-      ->createElement('directory', $this->getPath());
-    $exclude = $this->doc
-      ->createElement('exclude');
-    $exclude_directory = $this->doc
-      ->createElement('directory', "{$this->getPath()}/tests");
+
+    // Removing default "whitelist" element.
+    $whitelist = $this->xpath->query('//phpunit/filter/whitelist')->item(0);
+    assert($whitelist instanceof \DOMElement);
+    $whitelist->parentNode->removeChild($whitelist);
+
+    // Creating new "whitelist" element.
+    $whitelist = $this->doc->createElement('whitelist');
+
+    // Excluding tests directories.
+    $exclude = $this->doc->createElement('exclude');
+
+    $exclude_directory =
+      $this->doc->createElement('directory', '../modules/*/tests');
     $exclude->appendChild($exclude_directory);
-    $this->xpath
-      ->query('//phpunit/filter/whitelist')
-      ->item(0)
-      ->appendChild($directory);
-    $this->xpath
-      ->query('//phpunit/filter/whitelist')
-      ->item(0)
-      ->appendChild($exclude);
+
+    $exclude_directory =
+      $this->doc->createElement('directory', '../modules/*/*/tests');
+    $exclude->appendChild($exclude_directory);
+
+    $exclude_directory =
+      $this->doc->createElement('directory', '../*/contrib/*/tests');
+    $exclude->appendChild($exclude_directory);
+
+    // Appending the excluded directories to "whitelist" element.
+    $whitelist->appendChild($exclude);
+
+    // Adding suffixes to "whitelist" element.
+    $suffixes = [
+      '.php',
+      '.inc',
+      '.module',
+      '.install',
+      '.theme',
+      '.profile',
+      '.engine',
+    ];
+    foreach ($suffixes as $suffix) {
+      $directory = $this->doc->createElement('directory', $this->getPath());
+      $directory->setAttribute('suffix', $suffix);
+      $whitelist->appendChild($directory);
+    }
+
+    // Writing "whitelist" element to file.
+    $this->xpath->query('//phpunit/filter')->item(0)->appendChild($whitelist);
   }
 
   /**
@@ -267,6 +307,8 @@ class PhpUnitTask extends TestFrameworkBase {
       ];
       if ($this->shouldGenerateCodeCoverage()) {
         $command[] = "--coverage-clover={$this->cloverCoverage}";
+        $command[] = "--log-junit={$this->junitLog}";
+        $this->processRunner->addEnvVar("XDEBUG_MODE", "coverage");
       }
       $command = array_merge($command, [
         '--colors=always',

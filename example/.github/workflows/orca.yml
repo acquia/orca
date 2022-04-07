@@ -23,7 +23,13 @@
 # @see https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions
 ---
 name: ORCA CI
-on: [ push, pull_request ]
+on:
+  push: ~
+  pull_request: ~
+  schedule:
+    # Daily at 00:00:00 UTC.
+    # @see https://crontab.cronhub.io/
+    - cron: "0 0 * * *"
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -48,6 +54,14 @@ jobs:
       # It is also recommended to watch ORCA releases.
       # @see https://help.github.com/en/enterprise/2.20/user/github/receiving-notifications-about-activity-on-github/watching-and-unwatching-releases-for-a-repository
       ORCA_VERSION: ^3
+      # If you want to completely replace the list of packages ORCA installs in
+      # fixtures and runs tests on, you can specify your own packages file at
+      # runtime by uncommenting the following line. Acceptable values are any
+      # valid path to a YAML file relative to ORCA itself, e.g.,
+      # ../example/tests/packages.yml.
+      # @see https://github.com/acquia/orca/blob/develop/config/packages.yml
+      # ORCA_PACKAGES_CONFIG: ../example/tests/packages.yml
+      #
       # If your package isn't in ORCA's packages.yml or conflicts with details
       # that are, you can modify the active packages configuration at runtime by
       # uncommenting the following line and specifying your own alter file.

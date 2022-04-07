@@ -37,6 +37,13 @@ class ProcessRunner {
   private $output;
 
   /**
+   * An array of environment variables.
+   *
+   * @var array
+   */
+  private $envVars = [];
+
+  /**
    * Constructs an instance.
    *
    * @param \Acquia\Orca\Helper\Filesystem\FixturePathHandler $fixture_path_handler
@@ -212,6 +219,18 @@ class ProcessRunner {
   }
 
   /**
+   * Adds an environment variable.
+   *
+   * @param string $name
+   *   The name of the environment variable.
+   * @param string $value
+   *   The value of the environment variable.
+   */
+  public function addEnvVar(string $name, string $value): void {
+    $this->envVars[$name] = $value;
+  }
+
+  /**
    * Creates a process for a given vendor binary command.
    *
    * @param array $command
@@ -226,7 +245,7 @@ class ProcessRunner {
       throw new RuntimeException(sprintf('Could not find vendor binary: %s.', $command[0]));
     }
 
-    return new Process($command);
+    return new Process($command, NULL, $this->envVars);
   }
 
 }

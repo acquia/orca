@@ -6,6 +6,7 @@ parameters:
   env(ORCA_AMPLITUDE_USER_ID): ~
   env(ORCA_COVERAGE_CLOVER): "%kernel.project_dir%/var/coverage/clover.xml"
   env(ORCA_FIXTURE_DIR): "%app.fixture_dir%"
+  env(ORCA_JUNIT_LOG): "%kernel.project_dir%/var/junit/junitLog.xml"
   env(ORCA_PACKAGES_CONFIG): config/packages.yml
   env(ORCA_PACKAGES_CONFIG_ALTER): ~
   env(ORCA_PHPCS_STANDARD): "AcquiaDrupalTransitional"
@@ -22,6 +23,7 @@ services:
       $clover_coverage: "%env(ORCA_COVERAGE_CLOVER)%"
       $default_phpcs_standard: "%env(ORCA_PHPCS_STANDARD)%"
       $fixture_dir: "%env(ORCA_FIXTURE_DIR)%"
+      $junit_log: "%env(ORCA_JUNIT_LOG)%"
       $packages_config: "@=container.hasParameter('ORCA_PACKAGES_CONFIG') ? parameter('ORCA_PACKAGES_CONFIG') : 'config/packages.yml'"
       $packages_config_alter: "%env(ORCA_PACKAGES_CONFIG_ALTER)%"
       $telemetry_is_enabled: "%env(bool:ORCA_TELEMETRY_ENABLE)%"
