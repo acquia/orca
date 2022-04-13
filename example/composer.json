@@ -1,13 +1,21 @@
 {
     "name": "drupal/example",
-    "type": "drupal-module",
     "description": "Provides an example module for testing and illustration purposes.",
     "license": "GPL-2.0-or-later",
+    "type": "drupal-module",
     "require": {},
+    "minimum-stability": "dev",
+    "config": {
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true,
+            "ergebnis/composer-normalize": true,
+            "cweagans/composer-patches": true,
+            "webdriver-binary/binary-chromedriver": true
+        }
+    },
     "extra": {
         "branch-alias": {
             "dev-main": "1.x-dev"
         }
-    },
-    "minimum-stability": "dev"
+    }
 }

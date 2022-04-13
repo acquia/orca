@@ -1,6 +1,7 @@
 {
     "name": "acquia/orca",
     "description": "A tool for testing a company's software packages together in the context of a realistic, functioning, best practices Drupal build",
+    "license": "GPL-2.0-or-later",
     "keywords": [
         "ci",
         "cli",
@@ -8,7 +9,6 @@
         "drupal",
         "testing"
     ],
-    "license": "GPL-2.0-or-later",
     "authors": [
         {
             "name": "Acquia Engineering",
@@ -20,6 +20,10 @@
             "role": "Creator & Maintainer"
         }
     ],
+    "support": {
+        "issues": "https://github.com/acquia/orca/issues",
+        "source": "https://github.com/acquia/orca"
+    },
     "require": {
         "php": ">=7.2",
         "ext-dom": "*",
@@ -29,7 +33,7 @@
         "composer/composer": "~2.2.5",
         "cweagans/composer-patches": "^1.7",
         "dealerdirect/phpcodesniffer-composer-installer": "^0.7.1",
-        "ergebnis/composer-normalize": "^2.0.0",
+        "ergebnis/composer-normalize": "^2.25.0",
         "hassankhan/config": "^2.1",
         "mglaman/drupal-check": "^1.3",
         "myclabs/php-enum": "^1.7",
@@ -56,15 +60,27 @@
         "weitzman/drupal-test-traits": "^1.3",
         "zumba/amplitude-php": "^1.0"
     },
-    "conflict": {
-        "symfony/symfony": "*"
-    },
     "require-dev": {
         "brainmaestro/composer-git-hooks": "^2.5",
         "phan/phan": "^5.3",
         "phpspec/prophecy-phpunit": "^2.0",
         "phpstan/phpstan": "^1.4",
         "phpunit/phpunit": "^9"
+    },
+    "conflict": {
+        "symfony/symfony": "*"
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "autoload": {
+        "psr-4": {
+            "Acquia\\Orca\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Acquia\\Orca\\Tests\\": "tests/"
+        }
     },
     "config": {
         "allow-plugins": {
@@ -97,18 +113,6 @@
         },
         "phpcodesniffer-search-depth": 4
     },
-    "autoload": {
-        "psr-4": {
-            "Acquia\\Orca\\": "src/"
-        }
-    },
-    "autoload-dev": {
-        "psr-4": {
-            "Acquia\\Orca\\Tests\\": "tests/"
-        }
-    },
-    "minimum-stability": "dev",
-    "prefer-stable": true,
     "scripts": {
         "post-update-cmd": [
             "@composer normalize"
@@ -136,9 +140,5 @@
         ],
         "test": "phpunit",
         "update-docs": "./bin/orca --format=md > docs/commands.md"
-    },
-    "support": {
-        "issues": "https://github.com/acquia/orca/issues",
-        "source": "https://github.com/acquia/orca"
     }
 }
