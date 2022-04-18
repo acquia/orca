@@ -79,7 +79,6 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/sirbrillig/phpcs-variable-analysis" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/slevomat/coding-standard" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/squizlabs/php_codesniffer" />
-      <excludeFolder url="file://$MODULE_DIR$/vendor/stecman/symfony-console-completion" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/browser-kit" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/config" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/console" />
