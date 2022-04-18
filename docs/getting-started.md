@@ -60,18 +60,7 @@ ORCA can also be installed and run locally for testing and development. Follow t
         alias orca="/path/to/orca/bin/orca"
         ```
 
-      (Add this to your `.bash_profile`/`.bashrc` or equivalent to make it permanent.)
-
-1. Optionally add command autocompletion to your shell:
-
-    ```bash
-    # Bash:
-    bash $(/path/to/orca _completion --generate-hook)
-
-    # Zsh:
-    source <(/path/to/orca _completion --generate-hook)
-    ```
-
+      (Add this to your `.bash_profile`/`.bashrc` or equivalent to make it permanent.)    
 Invoke ORCA from the terminal (`bin/orca`). Use the `--help` command option to learn more about the various commands or see how they're used in [`bin/travis/script.sh`](../bin/common/script.sh). Use the `fixture:run-server` command to run the web server for local development.
 
 ## Making ORCA aware of your package
