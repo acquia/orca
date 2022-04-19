@@ -153,10 +153,6 @@ class ComposerJsonHelperTest extends TestCase {
         'type' => 'composer',
         'url' => 'https://packages.drupal.org/8',
       ],
-      'asset-packagist' => [
-        'type' => 'composer',
-        'url' => 'https://asset-packagist.org',
-      ],
     ];
     /** @var \Noodlehaus\Config $config */
     $config = $composer_json->getConfig();
