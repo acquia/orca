@@ -115,8 +115,8 @@ drupal/lightning_layout:
   version_dev: 2.x-dev
 
 drupal/lightning_media:
-  version: 4.x
-  version_dev: 4.x-dev
+  version: ~
+  version_dev: 5.0.x-dev
 
 drupal/lightning_workflow:
   version: 3.x
