@@ -85,7 +85,8 @@ class PackageManager {
     $this->fixture = $fixture_path_handler;
     $this->orca = $orca_path_handler;
     $this->parser = $parser;
-    $this->initializePackages($fixture_path_handler, $packages_config, $packages_config_alter);
+    // @todo FIX ME! :) (Replace $packages_config_alter as third argument.)
+    $this->initializePackages($fixture_path_handler, $packages_config, NULL);
   }
 
   /**

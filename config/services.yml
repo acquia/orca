@@ -4,9 +4,9 @@ parameters:
   # Environment variables for dynamic configuration override:
   env(ORCA_AMPLITUDE_API_KEY): ~
   env(ORCA_AMPLITUDE_USER_ID): ~
-  env(ORCA_COVERAGE_CLOVER): "%kernel.project_dir%/var/coverage/clover.xml"
+  env(ORCA_COVERAGE_CLOVER): "%app.project_dir%/var/coverage/clover.xml"
   env(ORCA_FIXTURE_DIR): "%app.fixture_dir%"
-  env(ORCA_JUNIT_LOG): "%kernel.project_dir%/var/junit/junitLog.xml"
+  env(ORCA_JUNIT_LOG): "%app.project_dir%/var/junit/junitLog.xml"
   env(ORCA_PACKAGES_CONFIG): config/packages.yml
   env(ORCA_PACKAGES_CONFIG_ALTER): ~
   env(ORCA_PHPCS_STANDARD): "AcquiaDrupalTransitional"
@@ -30,9 +30,13 @@ services:
     public: true
 
   Acquia\Orca\:
-    exclude: ../src/Kernel.php
-    public: false
+    public: true
     resource: ../src
+    exclude:
+      - ../src/Domain/Package/Package.php
+      - ../src/Enum
+      - ../src/Options/FixtureOptions.php
+      - ../src/Options/CiRunOptions.php
 
   Acquia\Orca\Helper\Filesystem\FixturePathHandler:
     arguments:
@@ -40,7 +44,7 @@ services:
 
   Acquia\Orca\Helper\Filesystem\OrcaPathHandler:
     arguments:
-      $base_path: "%kernel.project_dir%"
+      $base_path: "%app.project_dir%"
 
   Composer\Console\Application: ~
 
