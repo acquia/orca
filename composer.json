@@ -84,7 +84,7 @@
             "pre-commit": [
                 "set -e",
                 "vendor/bin/parallel-lint --exclude vendor --no-progress .",
-                "vendor/bin/phpcs --cache=var/cache/phpcs.json"
+                "vendor/bin/phpcs --no-cache"
             ],
             "pre-push": "vendor/bin/phpcs"
         },
@@ -122,7 +122,7 @@
         "open-coverage": "open var/coverage-report/index.html",
         "phan": "vendor/bin/phan -k phan.php --allow-polyfill-parser",
         "phpcbf": "phpcbf",
-        "phpcs": "phpcs -s --cache=var/cache/phpcs.json",
+        "phpcs": "phpcs -s",
         "phplint": "parallel-lint --exclude vendor --ignore-fails .",
         "phpmd": "phpmd . text phpmd.xml.dist --ignore-violations-on-exit",
         "phpstan": "vendor/bin/phpstan analyse src",
