@@ -153,7 +153,6 @@ class DrupalCoreVersionResolver {
 
       case DrupalCoreVersionEnum::NEXT_MAJOR_LATEST_MINOR_DEV():
         return $this->findNextMajorLatestMinorDev();
-
     }
   }
 
@@ -358,6 +357,10 @@ class DrupalCoreVersionResolver {
     $this->nextMajorLatestMinorBetaOrLater = $this
       ->resolveArbitrary("^{$major}", 'beta');
 
+    $this->validateNextMajorLatestMinorBetaOrLater(
+      $this->nextMajorLatestMinorBetaOrLater
+    );
+
     return $this->nextMajorLatestMinorBetaOrLater;
   }
 
@@ -398,6 +401,22 @@ class DrupalCoreVersionResolver {
     array_pop($parts);
     $parts[] = 'x-dev';
     return implode('.', $parts);
+  }
+
+  /**
+   * Validates if the version is "NEXT MAJOR LATEST MINOR BETA OR LATER".
+   *
+   * @param string $version
+   *   The version to validate.
+   *
+   * @throws \Acquia\Orca\Exception\OrcaVersionNotFoundException
+   */
+  private function validateNextMajorLatestMinorBetaOrLater($version): void {
+    $parts = explode('.', $version);
+    $stability = end($parts);
+    if ((strpos($stability, "alpha") !== FALSE) || (strpos($stability, "dev") !== FALSE)) {
+      throw new OrcaVersionNotFoundException();
+    }
   }
 
 }
