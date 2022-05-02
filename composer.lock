@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "03b2c5470b46a489020fcdcffc6ba65c",
+    "content-hash": "31f0884cac3d8595d31a63234c1c5e2e",
     "packages": [
         {
             "name": "acquia/coding-standards",
@@ -1569,26 +1569,27 @@
         },
         {
             "name": "hassankhan/config",
-            "version": "2.2.0",
+            "version": "3.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/hassankhan/config.git",
-                "reference": "62b0fd17540136efa94ab6b39f04044c6dc5e4a7"
+                "reference": "82421bb17d21cb0c10b98b89ea54aa4027adfc3f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/hassankhan/config/zipball/62b0fd17540136efa94ab6b39f04044c6dc5e4a7",
-                "reference": "62b0fd17540136efa94ab6b39f04044c6dc5e4a7",
+                "url": "https://api.github.com/repos/hassankhan/config/zipball/82421bb17d21cb0c10b98b89ea54aa4027adfc3f",
+                "reference": "82421bb17d21cb0c10b98b89ea54aa4027adfc3f",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.5.9"
             },
             "require-dev": {
-                "phpunit/phpunit": "~4.8.36 || ~5.7 || ~6.5 || ~7.5",
+                "phpunit/phpunit": "~4.8.36 || ~5.7 || ~6.5 || ~7.5 || ~8.5",
                 "scrutinizer/ocular": "~1.1",
                 "squizlabs/php_codesniffer": "~2.2",
-                "symfony/yaml": "~3.4"
+                "symfony/yaml": "~3.4",
+                "yoast/phpunit-polyfills": "^1.0"
             },
             "suggest": {
                 "symfony/yaml": "~3.4"
@@ -1625,9 +1626,9 @@
             ],
             "support": {
                 "issues": "https://github.com/hassankhan/config/issues",
-                "source": "https://github.com/hassankhan/config/tree/2.2.0"
+                "source": "https://github.com/hassankhan/config/tree/3.0.1"
             },
-            "time": "2020-12-07T16:04:15+00:00"
+            "time": "2022-03-26T19:37:50+00:00"
         },
         {
             "name": "jean85/pretty-package-versions",
