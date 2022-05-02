@@ -30,7 +30,7 @@
         "cweagans/composer-patches": "^1.7",
         "dealerdirect/phpcodesniffer-composer-installer": "^0.7.1",
         "ergebnis/composer-normalize": "^2.0.0",
-        "hassankhan/config": "^2.1",
+        "hassankhan/config": "^3.0",
         "mglaman/drupal-check": "^1.3",
         "myclabs/php-enum": "^1.7",
         "oscarotero/env": "^1.2",
