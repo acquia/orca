@@ -357,9 +357,7 @@ class DrupalCoreVersionResolver {
     $this->nextMajorLatestMinorBetaOrLater = $this
       ->resolveArbitrary("^{$major}", 'beta');
 
-    $this->validateNextMajorLatestMinorBetaOrLater(
-      $this->nextMajorLatestMinorBetaOrLater
-    );
+    $this->assertNextMajorLatestMinorBetaOrLaterExists();
 
     return $this->nextMajorLatestMinorBetaOrLater;
   }
@@ -404,18 +402,18 @@ class DrupalCoreVersionResolver {
   }
 
   /**
-   * Validates if the version is "NEXT MAJOR LATEST MINOR BETA OR LATER".
-   *
-   * @param string $version
-   *   The version to validate.
+   * Asserts next major, latest minor beta-or-later Drupal core version exists.
    *
    * @throws \Acquia\Orca\Exception\OrcaVersionNotFoundException
    */
-  private function validateNextMajorLatestMinorBetaOrLater($version): void {
-    $parts = explode('.', $version);
+  private function assertNextMajorLatestMinorBetaOrLaterExists(): void {
+    $parts = explode('.', $this->nextMajorLatestMinorBetaOrLater);
     $stability = end($parts);
-    if ((strpos($stability, "alpha") !== FALSE) || (strpos($stability, "dev") !== FALSE)) {
-      throw new OrcaVersionNotFoundException();
+    $is_alpha = strpos($stability, "alpha");
+    $is_dev = strpos($stability, "dev");
+    if ($is_alpha || $is_dev) {
+      $message = "No Drupal core version satisfies the given constraints: next major, latest minor version ($this->nextMajorLatestMinorBetaOrLater) is beta or later. ";
+      throw new OrcaVersionNotFoundException($message);
     }
   }
 
