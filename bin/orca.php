@@ -31,11 +31,7 @@ $container->setParameter('app.fixture_dir', dirname(__DIR__) . '/../orca-build')
 
 $container->compile(TRUE);
 
-/**
- * Console application class.
- *
- * @var \Symfony\Component\Console\Application $application
- */
+/** @var \Symfony\Component\Console\Application $application */
 $application = $container->get(Application::class);
 $application->setName('ORCA');
 $application->setVersion(trim(file_get_contents(__DIR__ . '/../config/VERSION')));
