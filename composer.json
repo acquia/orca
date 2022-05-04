@@ -85,7 +85,7 @@
             "pre-commit": [
                 "set -e",
                 "vendor/bin/parallel-lint --exclude vendor --no-progress .",
-                "vendor/bin/phpcs --no-cache"
+                "vendor/bin/phpcs --cache=var/cache/phpcs.json"
             ],
             "pre-push": "vendor/bin/phpcs"
         },
