@@ -123,7 +123,7 @@
         "open-coverage": "open var/coverage-report/index.html",
         "phan": "vendor/bin/phan -k phan.php --allow-polyfill-parser",
         "phpcbf": "phpcbf",
-        "phpcs": "phpcs -s",
+        "phpcs": "phpcs -s --cache=var/cache/phpcs.json",
         "phplint": "parallel-lint --exclude vendor --ignore-fails .",
         "phpmd": "phpmd . text phpmd.xml.dist --ignore-violations-on-exit",
         "phpstan": "vendor/bin/phpstan analyse src",
