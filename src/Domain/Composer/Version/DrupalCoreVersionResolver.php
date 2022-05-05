@@ -153,7 +153,6 @@ class DrupalCoreVersionResolver {
 
       case DrupalCoreVersionEnum::NEXT_MAJOR_LATEST_MINOR_DEV():
         return $this->findNextMajorLatestMinorDev();
-
     }
   }
 
@@ -358,6 +357,8 @@ class DrupalCoreVersionResolver {
     $this->nextMajorLatestMinorBetaOrLater = $this
       ->resolveArbitrary("^{$major}", 'beta');
 
+    $this->assertNextMajorLatestMinorBetaOrLaterExists();
+
     return $this->nextMajorLatestMinorBetaOrLater;
   }
 
@@ -398,6 +399,22 @@ class DrupalCoreVersionResolver {
     array_pop($parts);
     $parts[] = 'x-dev';
     return implode('.', $parts);
+  }
+
+  /**
+   * Asserts next major, latest minor beta-or-later Drupal core version exists.
+   *
+   * @throws \Acquia\Orca\Exception\OrcaVersionNotFoundException
+   */
+  private function assertNextMajorLatestMinorBetaOrLaterExists(): void {
+    $parts = explode('.', $this->nextMajorLatestMinorBetaOrLater);
+    $stability = end($parts);
+    $is_alpha = strpos($stability, "alpha");
+    $is_dev = strpos($stability, "dev");
+    if ($is_alpha || $is_dev) {
+      $message = "No next major, latest minor beta-or-later Drupal core version exists.";
+      throw new OrcaVersionNotFoundException($message);
+    }
   }
 
 }
