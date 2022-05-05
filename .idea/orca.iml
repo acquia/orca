@@ -93,7 +93,6 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/yaml" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/nette/neon" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/ergebnis/json-printer" />
-      <excludeFolder url="file://$MODULE_DIR$/vendor/stecman/symfony-console-completion" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/ergebnis/json-schema-validator" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/ergebnis/composer-normalize" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/ergebnis/json-normalizer" />
