@@ -51,6 +51,7 @@
         "symfony/process": "^5.4",
         "symfony/yaml": "^5.4",
         "webdriver-binary/binary-chromedriver": "^6.1.0",
+        "weitzman/drupal-test-traits": "^1.3",
         "zumba/amplitude-php": "^1.0"
     },
     "conflict": {
