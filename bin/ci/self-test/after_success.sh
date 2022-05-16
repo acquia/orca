@@ -9,7 +9,7 @@
 # DESCRIPTION
 #     Conditionally sends code coverage data to Coveralls.
 
-cd "$(dirname "$0")" || exit 1; source ../_includes.sh
+cd "$(dirname "$0")" || exit 1; source _includes.sh
 
 cd ../../../ || exit 1
 
