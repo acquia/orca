@@ -65,6 +65,10 @@ jobs:
             php-version: "8.0"
             orca-enable-nightwatch: "TRUE"
 
+          - orca-job: ISOLATED_TEST_ON_CURRENT
+            php-version: "8.1"
+            orca-enable-nightwatch: "TRUE"
+
           - orca-job: ""
             orca-live-test: "TRUE"
             php-version: "7.4"
