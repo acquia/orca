@@ -44,7 +44,7 @@ jobs:
     - { env: ORCA_JOB=INTEGRATED_TEST_ON_PREVIOUS_MINOR, name: "Integrated test on previous minor Drupal core version" }
     - { env: ORCA_JOB=INTEGRATED_UPGRADE_TEST_FROM_PREVIOUS_MINOR, name: "Integrated upgrade test from previous minor Drupal core version" }
     - { env: ORCA_JOB=ISOLATED_TEST_ON_CURRENT, name: "Isolated test on current Drupal core version" }
-    - { env: ORCA_JOB=ISOLATED_TEST_ON_CURRENT, php: "8.0", dist: focal, name: "Isolated test on current Drupal core version and PHP 8" }
+    - { env: ORCA_JOB=ISOLATED_TEST_ON_CURRENT, php: "8.0", dist: focal, name: "Isolated test on current Drupal core version and PHP 8.0" }
     - { env: ORCA_JOB=ISOLATED_TEST_ON_CURRENT, php: "8.1", dist: focal, name: "Isolated test on current Drupal core version and PHP 8.1" }
     - { env: ORCA_JOB=INTEGRATED_TEST_ON_CURRENT, name: "Integrated test on current Drupal core version" }
     - { env: ORCA_JOB=INTEGRATED_UPGRADE_TEST_TO_NEXT_MINOR, name: "Integrated upgrade test to next minor Drupal core version" }
