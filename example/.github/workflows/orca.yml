@@ -146,6 +146,9 @@ jobs:
           - orca-job: ISOLATED_TEST_ON_CURRENT
             php-version: "8.0"
             coveralls-enable: "FALSE"
+          - orca-job: ISOLATED_TEST_ON_CURRENT
+            php-version: "8.1"
+            coveralls-enable: "FALSE"
           # To send PHPUnit test coverage data to Coveralls (coveralls.io), configure
           # your GitHub repository according to the FAQ below and uncomment the
           # following line. By default this job is allowed to fail (see below) so that
