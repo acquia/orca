@@ -187,18 +187,19 @@ class SubextensionManager {
    * @param \Acquia\Orca\Domain\Package\Package $package
    *   The package to search for dev-dependencies.
    *
-   * @return array|null
+   * @return array
    *   An indexed array of all the dev-dependencies.
    *
    * @throws \Acquia\Orca\Exception\OrcaException
    * @throws \Acquia\Orca\Exception\OrcaFileNotFoundException
    * @throws \Acquia\Orca\Exception\OrcaParseError
    */
-  public function findDevDependenciesByPackage(Package $package): ?array {
+  public function findDevDependenciesByPackage(Package $package): array {
     $parent_path = $package->getInstallPathAbsolute();
     try {
       $config = $this->configLoader->load("$parent_path/composer.json");
-      return $config->get("require-dev");
+      $require_dev = $config->get("require-dev");
+      return $require_dev ?? [];
     }
     catch (OrcaFileNotFoundException $e) {
       throw new OrcaFileNotFoundException("No such file: {$parent_path}/composer.json}");
