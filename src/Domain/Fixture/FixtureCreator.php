@@ -487,7 +487,7 @@ class FixtureCreator {
   private function computeDevDependenciesByPackage(Package $package): ?string {
     $dev_dependencies =
       $this->subextensionManager->findDevDependenciesByPackage($package);
-    if ($dev_dependencies === NULL || count($dev_dependencies) === 0) {
+    if ($dev_dependencies === NULL || $dev_dependencies === []) {
       $this->output->writeln("No packages found in require-dev for {$package->getPackageName()}");
       return NULL;
     }
