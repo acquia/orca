@@ -459,13 +459,10 @@ class FixtureCreator {
     }
     $subextensions = $this->subextensionManager->getByParent($package);
 
-    do {
-      $dev_dependencies[] = $this->computeDevDependenciesByPackage($package);
-      if (count($subextensions) <= 0) {
-        break;
-      }
-      $package = array_shift($subextensions);
-    } while (1);
+    foreach ($subextensions as $subextension) {
+      $dev_dependencies[] = $this->computeDevDependenciesByPackage($subextension);
+    }
+    $dev_dependencies[] = $this->computeDevDependenciesByPackage($package);
 
     $this->composer->requirePackages(array_values(array_filter($dev_dependencies)));
 
