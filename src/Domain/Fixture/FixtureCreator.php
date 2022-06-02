@@ -496,7 +496,7 @@ class FixtureCreator {
       $dev_dependencies[$dev_dependency_name] =
         $dev_dependency_name . ":" . $dev_dependency_version;
     }
-    return implode("", array_values($dev_dependencies));
+    return implode(' ', array_values($dev_dependencies));
   }
 
   /**
