@@ -344,6 +344,7 @@ class FixtureCreator {
    */
   private function addTopLevelAcquiaPackages(): void {
     $this->addPathRepositories();
+    $this->addAssetPackagistPathRepositories();
     $this->configureComposerForTopLevelCompanyPackages();
     $this->composerRequireTopLevelCompanyPackages();
     $this->verifySut();
@@ -389,6 +390,23 @@ class FixtureCreator {
       $packages[$package_name] = $package;
     }
     return $packages;
+  }
+
+  /**
+   * Adding asset-packagist in path repo.
+   *
+   * @see https://backlog.acquia.com/browse/ORCA-383
+   *
+   * @throws \Acquia\Orca\Exception\OrcaFixtureNotExistsException
+   * @throws \Acquia\Orca\Exception\OrcaFileNotFoundException
+   * @throws \Acquia\Orca\Exception\OrcaParseError
+   */
+  private function addAssetPackagistPathRepositories(): void {
+    $this->composerJsonHelper->addRepository(
+     'asset-packagist',
+      'composer',
+      'https://asset-packagist.org'
+    );
   }
 
   /**
