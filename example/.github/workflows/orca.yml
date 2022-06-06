@@ -222,5 +222,5 @@ jobs:
     runs-on: ubuntu-latest
     needs: [build]
     steps:
-    - name: note that all tests succeeded
+    - name: All checks successful
       run: echo "🎉"
