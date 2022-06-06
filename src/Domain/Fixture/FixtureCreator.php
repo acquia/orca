@@ -477,14 +477,22 @@ class FixtureCreator {
     }
     $subextensions = $this->subextensionManager->getByParent($package);
 
+    $dev_dependencies_subextension = [];
     foreach ($subextensions as $subextension) {
-      $dev_dependencies[] = $this->computeDevDependenciesByPackage($subextension);
+      $dev_dependencies_subextension = $this->computeDevDependenciesByPackage($subextension);
+      if (!empty($dev_dependencies_subextension)) {
+        $dev_dependencies = array_merge($dev_dependencies, $dev_dependencies_subextension);
+      }
     }
-    $dev_dependencies[] = $this->computeDevDependenciesByPackage($package);
-
-    $dev_dependencies = array_values(array_filter($dev_dependencies));
-    $this->composer->requirePackages($dev_dependencies);
-
+    $dev_dependencies_sut = $this->computeDevDependenciesByPackage($package);
+    $dev_dependencies = array_merge($dev_dependencies, $dev_dependencies_sut);
+    $dev_dependencies = array_values(array_unique(array_filter($dev_dependencies)));
+    if (!empty($dev_dependencies)) {
+      $this->composer->requirePackages($dev_dependencies);
+    }
+    else {
+      $this->output->writeln("No dev-dependencies added.");
+    }
   }
 
   /**
@@ -493,26 +501,26 @@ class FixtureCreator {
    * @param \Acquia\Orca\Domain\Package\Package $package
    *   The Package in question.
    *
-   * @return string|null
+   * @return array
    *   List of dev-dependencies found.
    *
    * @throws \Acquia\Orca\Exception\OrcaException
    * @throws \Acquia\Orca\Exception\OrcaFileNotFoundException
    * @throws \Acquia\Orca\Exception\OrcaParseError
    */
-  private function computeDevDependenciesByPackage(Package $package): ?string {
+  private function computeDevDependenciesByPackage(Package $package): array {
     $dev_dependencies =
       $this->subextensionManager->findDevDependenciesByPackage($package);
     if ($dev_dependencies === []) {
       $this->output->writeln("No packages found in require-dev for {$package->getPackageName()}");
-      return NULL;
+      return [];
     }
 
     foreach ($dev_dependencies as $dev_dependency_name => $dev_dependency_version) {
       $dev_dependencies[$dev_dependency_name] =
         $dev_dependency_name . ":" . $dev_dependency_version;
     }
-    return implode(' ', array_values($dev_dependencies));
+    return array_values($dev_dependencies);
   }
 
   /**
