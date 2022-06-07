@@ -500,7 +500,6 @@ class FixtureCreator {
    * @throws \Acquia\Orca\Exception\OrcaFileNotFoundException
    */
   private function getDevDependencies(Package $package): array {
-
     $dev_dependencies_sut = $this->getDevDependenciesSut($package);
     $dev_dependencies_subextensions = $this->getDevDependenciesSutSubExtensions($package);
 
