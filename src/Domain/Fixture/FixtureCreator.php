@@ -468,23 +468,88 @@ class FixtureCreator {
    */
   private function composerRequireSutDevDependencies(): void {
     $this->output->section('Adding dev-dependencies of SUT');
-    $dev_dependencies = [];
+
     $package = $this->options->getSut();
 
     if ($package === NULL) {
       $this->output->writeln("No SUT defined");
       return;
     }
+    $dev_dependencies = $this->getDevDependencies($package);
+
+    if (!empty($dev_dependencies)) {
+      $dev_dependencies = array_values(array_unique(array_filter($dev_dependencies)));
+      $this->composer->requirePackages($dev_dependencies);
+    }
+    else {
+      $this->output->writeln("No dev-dependencies added.");
+    }
+  }
+
+  /**
+   * Get dev-dependencies of the package.
+   *
+   * @param \Acquia\Orca\Domain\Package\Package $package
+   *   The Package in question.
+   *
+   * @return string[]
+   *   List of dev-dependencies found.
+   *
+   * @throws \Acquia\Orca\Exception\OrcaException
+   * @throws \Acquia\Orca\Exception\OrcaParseError
+   * @throws \Acquia\Orca\Exception\OrcaFileNotFoundException
+   */
+  private function getDevDependencies(Package $package): array {
+    $dev_dependencies_sut = $this->getDevDependenciesSut($package);
+    $dev_dependencies_subextensions = $this->getDevDependenciesSutSubExtensions($package);
+
+    return array_merge($dev_dependencies_sut, $dev_dependencies_subextensions);
+  }
+
+  /**
+   * Get dev-dependencies of SUT.
+   *
+   * @param \Acquia\Orca\Domain\Package\Package $package
+   *   The Package in question.
+   *
+   * @return string[]
+   *   List of dev-dependencies found.
+   *
+   * @throws \Acquia\Orca\Exception\OrcaFileNotFoundException
+   * @throws \Acquia\Orca\Exception\OrcaParseError
+   * @throws \Acquia\Orca\Exception\OrcaException
+   */
+  private function getDevDependenciesSut(Package $package): array {
+    return $this->computeDevDependenciesByPackage($package);
+  }
+
+  /**
+   * Get dev-dependencies of sub extensions.
+   *
+   * @param \Acquia\Orca\Domain\Package\Package $package
+   *   The package in question.
+   *
+   * @return string[]
+   *   List of dev-dependencies found.
+   *
+   * @throws \Acquia\Orca\Exception\OrcaException
+   * @throws \Acquia\Orca\Exception\OrcaFileNotFoundException
+   * @throws \Acquia\Orca\Exception\OrcaParseError
+   */
+  private function getDevDependenciesSutSubExtensions(Package $package): array {
     $subextensions = $this->subextensionManager->getByParent($package);
 
+    $dev_dependencies = [];
     foreach ($subextensions as $subextension) {
-      $dev_dependencies[] = $this->computeDevDependenciesByPackage($subextension);
+      $dev_dependencies_subextension =
+        $this->computeDevDependenciesByPackage($subextension);
+
+      if (!empty($dev_dependencies_subextension)) {
+        $dev_dependencies =
+          array_merge($dev_dependencies, $dev_dependencies_subextension);
+      }
     }
-    $dev_dependencies[] = $this->computeDevDependenciesByPackage($package);
-
-    $dev_dependencies = array_values(array_filter($dev_dependencies));
-    $this->composer->requirePackages($dev_dependencies);
-
+    return $dev_dependencies;
   }
 
   /**
@@ -493,26 +558,26 @@ class FixtureCreator {
    * @param \Acquia\Orca\Domain\Package\Package $package
    *   The Package in question.
    *
-   * @return string|null
+   * @return string[]
    *   List of dev-dependencies found.
    *
    * @throws \Acquia\Orca\Exception\OrcaException
    * @throws \Acquia\Orca\Exception\OrcaFileNotFoundException
    * @throws \Acquia\Orca\Exception\OrcaParseError
    */
-  private function computeDevDependenciesByPackage(Package $package): ?string {
+  private function computeDevDependenciesByPackage(Package $package): array {
     $dev_dependencies =
       $this->subextensionManager->findDevDependenciesByPackage($package);
     if ($dev_dependencies === []) {
       $this->output->writeln("No packages found in require-dev for {$package->getPackageName()}");
-      return NULL;
+      return [];
     }
 
     foreach ($dev_dependencies as $dev_dependency_name => $dev_dependency_version) {
       $dev_dependencies[$dev_dependency_name] =
         $dev_dependency_name . ":" . $dev_dependency_version;
     }
-    return implode(' ', array_values($dev_dependencies));
+    return array_values($dev_dependencies);
   }
 
   /**
