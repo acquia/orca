@@ -2,6 +2,7 @@
 
 namespace Acquia\Orca\Tests\Domain\Tool;
 
+use Acquia\Orca\Domain\Composer\ComposerFacade;
 use Acquia\Orca\Domain\Tool\ComposerValidate\ComposerValidateTask;
 use Acquia\Orca\Domain\Tool\PhpcbfTool;
 use Acquia\Orca\Domain\Tool\Phpcs\PhpcsConfigurator;
@@ -27,6 +28,7 @@ class TasksTest extends TestCase {
   public function testConstruction($class): void {
     $clover_coverage = '/var/coverage/clover.xml';
     $config_file_overrider = $this->prophesize(ConfigFileOverrider::class)->reveal();
+    $composer_facade = $this->prophesize(ComposerFacade::class)->reveal();
     $filesystem = $this->prophesize(Filesystem::class)->reveal();
     $fixture = $this->prophesize(FixturePathHandler::class)->reveal();
     $junit_log = '/var/junit/junitLog.xml';
@@ -38,7 +40,7 @@ class TasksTest extends TestCase {
     $phpmd_tool = $this->prophesize(PhpmdTool::class)->reveal();
     $process_runner = $this->prophesize(ProcessRunner::class)->reveal();
 
-    $object = new $class($clover_coverage, $config_file_overrider, $filesystem, $fixture, $junit_log, $orca_path_handler, $output, $phpcbf_tool, $phpcs_configurator, $php_lint_tool, $phpmd_tool, $process_runner);
+    $object = new $class($clover_coverage, $config_file_overrider, $composer_facade, $filesystem, $fixture, $junit_log, $orca_path_handler, $output, $phpcbf_tool, $phpcs_configurator, $php_lint_tool, $phpmd_tool, $process_runner);
 
     self::assertInstanceOf($class, $object, sprintf('Successfully instantiated class: %s.', $class));
   }
