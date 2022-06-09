@@ -115,17 +115,8 @@ class ComposerValidateTask extends TaskBase {
    */
   private function normalize(string $path): void {
     try {
-      $this->processRunner->runOrcaVendorBin([
-        'composer',
-        '--ansi',
-        'normalize',
-        '--dry-run',
-        '--indent-size=4',
-        '--indent-style=space',
-        $path,
-        // The cwd must be the ORCA project directory in order for Composer to
-        // find the "normalize" command.
-      ], $this->orca->getPath());
+      $args = ['--dry-run'];
+      $this->composerFacade->normalize($path, $args);
     }
     catch (ProcessFailedException $e) {
       $this->failures = TRUE;

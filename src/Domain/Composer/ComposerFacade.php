@@ -251,14 +251,38 @@ class ComposerFacade {
   }
 
   /**
-   * Validates composer.json.
+   * Validates a composer.json.
+   *
+   * @param string $path
+   *   The path to the fixture.
    */
   public function validate(string $path): void {
     $command = [
       '--ansi',
       'validate',
     ];
-    $this->runComposer($command, [$path]);
+    $this->runComposer($command, [$path], $this->orca->getPath());
+  }
+
+  /**
+   * Normalizes a composer.json.
+   *
+   * @param string $path
+   *   The path to the fixture.
+   * @param string[] $args
+   *   Any extra argument required for ex. '--dry-run'.
+   */
+  public function normalize(string $path, array $args = []): void {
+    $command = [
+      '--ansi',
+      'normalize',
+      '--indent-size=4',
+      '--indent-style=space',
+    ];
+    $command = array_merge($command, $args);
+    // The cwd must be the ORCA project directory in order for Composer to
+    // find the "normalize" command.
+    $this->runComposer($command, [$path], $this->orca->getPath());
   }
 
 }
