@@ -84,8 +84,7 @@ class ComposerFacade {
       $stability = 'dev';
     }
 
-    $this->processRunner->runOrcaVendorBin([
-      'composer',
+    $this->runComposer([
       'create-project',
       "--stability={$stability}",
       '--no-dev',
@@ -93,6 +92,7 @@ class ComposerFacade {
       '--no-progress',
       '--no-install',
       '--no-interaction',
+    ], [
       $this->getProjectTemplateString(),
       $this->fixture->getPath(),
     ], $this->orca->getPath());
@@ -135,8 +135,7 @@ class ComposerFacade {
         'canonical' => TRUE,
       ],
     ]);
-    $this->processRunner->runOrcaVendorBin([
-      'composer',
+    $this->runComposer([
       'create-project',
       '--stability=dev',
       "--repository={$repository}",
@@ -144,6 +143,7 @@ class ComposerFacade {
       '--no-scripts',
       '--no-install',
       '--no-interaction',
+    ], [
       $package->getPackageName(),
       $this->fixture->getPath(),
     ], $this->orca->getPath());
@@ -226,12 +226,10 @@ class ComposerFacade {
    * Updates composer.lock.
    */
   public function updateLockFile(): void {
-    $this->processRunner
-      ->runOrcaVendorBin([
-        'composer',
-        'update',
-        '--lock',
-      ], $this->fixture->getPath());
+    $this->runComposer([
+      'update',
+      '--lock',
+    ]);
   }
 
   /**
@@ -240,12 +238,51 @@ class ComposerFacade {
    * @param string[] $command
    *   A list of command parts, e.g., ['require', '--no-interaction'].
    * @param string[] $args
-   *   A list of of command arguments, e.g., ['vendor/package'].
+   *   A list of command arguments, e.g., ['vendor/package'].
+   * @param string|null $cwd
+   *   Current working directory for the composer process.
    */
-  private function runComposer(array $command, array $args = []): void {
+  private function runComposer(array $command, array $args = [], string $cwd = NULL): void {
     $command = array_merge($command, $args);
-    array_unshift($command, 'composer');
-    $this->processRunner->runOrcaVendorBin($command, $this->fixture->getPath());
+    if ($cwd === NULL) {
+      $cwd = $this->fixture->getPath();
+    }
+    $this->processRunner->runExecutable('composer', $command, $cwd);
+  }
+
+  /**
+   * Validates a composer.json.
+   *
+   * @param string $path
+   *   The path to the fixture.
+   */
+  public function validate(string $path): void {
+    $command = [
+      '--ansi',
+      'validate',
+    ];
+    $this->runComposer($command, [$path], $this->orca->getPath());
+  }
+
+  /**
+   * Normalizes a composer.json.
+   *
+   * @param string $path
+   *   The path to the fixture.
+   * @param string[] $args
+   *   Any extra argument required for ex. '--dry-run'.
+   */
+  public function normalize(string $path, array $args = []): void {
+    $command = [
+      '--ansi',
+      'normalize',
+      '--indent-size=4',
+      '--indent-style=space',
+    ];
+    $command = array_merge($command, $args);
+    // The cwd must be the ORCA project directory in order for Composer to
+    // find the "normalize" command.
+    $this->runComposer($command, [$path], $this->orca->getPath());
   }
 
 }
