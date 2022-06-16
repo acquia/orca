@@ -332,6 +332,7 @@ class FixtureCreator {
 
     $this->output->section('Adding company packages');
     $this->addTopLevelAcquiaPackages();
+    $this->output->section('Adding company sub extensions');
     $this->addCompanySubextensions();
     $this->git->commitCodeChanges('Added company packages.');
   }
@@ -344,9 +345,11 @@ class FixtureCreator {
    */
   private function addTopLevelAcquiaPackages(): void {
     $this->addPathRepositories();
+    $this->addAssetPackagistPathRepositories();
     $this->configureComposerForTopLevelCompanyPackages();
     $this->composerRequireTopLevelCompanyPackages();
     $this->verifySut();
+    $this->composerRequireSutDevDependencies();
   }
 
   /**
@@ -389,6 +392,23 @@ class FixtureCreator {
       $packages[$package_name] = $package;
     }
     return $packages;
+  }
+
+  /**
+   * Adding asset-packagist in path repo.
+   *
+   * @see https://backlog.acquia.com/browse/ORCA-383
+   *
+   * @throws \Acquia\Orca\Exception\OrcaFixtureNotExistsException
+   * @throws \Acquia\Orca\Exception\OrcaFileNotFoundException
+   * @throws \Acquia\Orca\Exception\OrcaParseError
+   */
+  private function addAssetPackagistPathRepositories(): void {
+    $this->composerJsonHelper->addRepository(
+     'asset-packagist',
+      'composer',
+      'https://asset-packagist.org'
+    );
   }
 
   /**
@@ -435,6 +455,129 @@ class FixtureCreator {
     if (!is_link($sut_install_path)) {
       throw new OrcaException('Failed to symlink SUT via local path repository.');
     }
+  }
+
+  /**
+   * Composer require all the dev-dependencies of SUT.
+   *
+   * @see https://backlog.acquia.com/browse/ORCA-353
+   *
+   * @throws \Acquia\Orca\Exception\OrcaFileNotFoundException
+   * @throws \Acquia\Orca\Exception\OrcaParseError
+   * @throws \Acquia\Orca\Exception\OrcaException
+   */
+  private function composerRequireSutDevDependencies(): void {
+    $this->output->section('Adding dev-dependencies of SUT');
+
+    $package = $this->options->getSut();
+
+    if ($package === NULL) {
+      $this->output->writeln("No SUT defined");
+      return;
+    }
+    $dev_dependencies = $this->getDevDependencies($package);
+
+    if (!empty($dev_dependencies)) {
+      $dev_dependencies = array_values(array_unique(array_filter($dev_dependencies)));
+      $this->composer->requirePackages($dev_dependencies);
+    }
+    else {
+      $this->output->writeln("No dev-dependencies added.");
+    }
+  }
+
+  /**
+   * Get dev-dependencies of the package.
+   *
+   * @param \Acquia\Orca\Domain\Package\Package $package
+   *   The Package in question.
+   *
+   * @return string[]
+   *   List of dev-dependencies found.
+   *
+   * @throws \Acquia\Orca\Exception\OrcaException
+   * @throws \Acquia\Orca\Exception\OrcaParseError
+   * @throws \Acquia\Orca\Exception\OrcaFileNotFoundException
+   */
+  private function getDevDependencies(Package $package): array {
+    $dev_dependencies_sut = $this->getDevDependenciesSut($package);
+    $dev_dependencies_subextensions = $this->getDevDependenciesSutSubExtensions($package);
+
+    return array_merge($dev_dependencies_sut, $dev_dependencies_subextensions);
+  }
+
+  /**
+   * Get dev-dependencies of SUT.
+   *
+   * @param \Acquia\Orca\Domain\Package\Package $package
+   *   The Package in question.
+   *
+   * @return string[]
+   *   List of dev-dependencies found.
+   *
+   * @throws \Acquia\Orca\Exception\OrcaFileNotFoundException
+   * @throws \Acquia\Orca\Exception\OrcaParseError
+   * @throws \Acquia\Orca\Exception\OrcaException
+   */
+  private function getDevDependenciesSut(Package $package): array {
+    return $this->computeDevDependenciesByPackage($package);
+  }
+
+  /**
+   * Get dev-dependencies of sub extensions.
+   *
+   * @param \Acquia\Orca\Domain\Package\Package $package
+   *   The package in question.
+   *
+   * @return string[]
+   *   List of dev-dependencies found.
+   *
+   * @throws \Acquia\Orca\Exception\OrcaException
+   * @throws \Acquia\Orca\Exception\OrcaFileNotFoundException
+   * @throws \Acquia\Orca\Exception\OrcaParseError
+   */
+  private function getDevDependenciesSutSubExtensions(Package $package): array {
+    $subextensions = $this->subextensionManager->getByParent($package);
+
+    $dev_dependencies = [];
+    foreach ($subextensions as $subextension) {
+      $dev_dependencies_subextension =
+        $this->computeDevDependenciesByPackage($subextension);
+
+      if (!empty($dev_dependencies_subextension)) {
+        $dev_dependencies =
+          array_merge($dev_dependencies, $dev_dependencies_subextension);
+      }
+    }
+    return $dev_dependencies;
+  }
+
+  /**
+   * Computes the dev-dependencies of a given package.
+   *
+   * @param \Acquia\Orca\Domain\Package\Package $package
+   *   The Package in question.
+   *
+   * @return string[]
+   *   List of dev-dependencies found.
+   *
+   * @throws \Acquia\Orca\Exception\OrcaException
+   * @throws \Acquia\Orca\Exception\OrcaFileNotFoundException
+   * @throws \Acquia\Orca\Exception\OrcaParseError
+   */
+  private function computeDevDependenciesByPackage(Package $package): array {
+    $dev_dependencies =
+      $this->subextensionManager->findDevDependenciesByPackage($package);
+    if ($dev_dependencies === []) {
+      $this->output->writeln("No packages found in require-dev for {$package->getPackageName()}");
+      return [];
+    }
+
+    foreach ($dev_dependencies as $dev_dependency_name => $dev_dependency_version) {
+      $dev_dependencies[$dev_dependency_name] =
+        $dev_dependency_name . ":" . $dev_dependency_version;
+    }
+    return array_values($dev_dependencies);
   }
 
   /**

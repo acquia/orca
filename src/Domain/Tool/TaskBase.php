@@ -2,6 +2,7 @@
 
 namespace Acquia\Orca\Domain\Tool;
 
+use Acquia\Orca\Domain\Composer\ComposerFacade;
 use Acquia\Orca\Domain\Tool\Phpcs\PhpcsConfigurator;
 use Acquia\Orca\Helper\Config\ConfigFileOverrider;
 use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
@@ -107,12 +108,21 @@ abstract class TaskBase implements TaskInterface {
   protected $processRunner;
 
   /**
+   * The Composer facade.
+   *
+   * @var \Acquia\Orca\Domain\Composer\ComposerFacade
+   */
+  protected $composerFacade;
+
+  /**
    * Constructs an instance.
    *
    * @param string $clover_coverage
    *   The Clover coverage XML path.
    * @param \Acquia\Orca\Helper\Config\ConfigFileOverrider $config_file_overrider
    *   The config file overrider.
+   * @param \Acquia\Orca\Domain\Composer\ComposerFacade $composer_facade
+   *   The composer facade.
    * @param \Symfony\Component\Filesystem\Filesystem $filesystem
    *   The filesystem.
    * @param \Acquia\Orca\Helper\Filesystem\FixturePathHandler $fixture_path_handler
@@ -134,7 +144,7 @@ abstract class TaskBase implements TaskInterface {
    * @param \Acquia\Orca\Helper\Process\ProcessRunner $process_runner
    *   The process runner.
    */
-  public function __construct(string $clover_coverage, ConfigFileOverrider $config_file_overrider, Filesystem $filesystem, FixturePathHandler $fixture_path_handler, string $junit_log, OrcaPathHandler $orca_path_handler, SymfonyStyle $output, PhpcbfTool $phpcbf_tool, PhpcsConfigurator $phpcs_configurator, PhpLintTool $php_lint_tool, PhpmdTool $phpmd_tool, ProcessRunner $process_runner) {
+  public function __construct(string $clover_coverage, ConfigFileOverrider $config_file_overrider, ComposerFacade $composer_facade, Filesystem $filesystem, FixturePathHandler $fixture_path_handler, string $junit_log, OrcaPathHandler $orca_path_handler, SymfonyStyle $output, PhpcbfTool $phpcbf_tool, PhpcsConfigurator $phpcs_configurator, PhpLintTool $php_lint_tool, PhpmdTool $phpmd_tool, ProcessRunner $process_runner) {
     $this->configFileOverrider = $config_file_overrider;
     $this->filesystem = $filesystem;
     $this->fixture = $fixture_path_handler;
@@ -146,6 +156,7 @@ abstract class TaskBase implements TaskInterface {
     //   not all of its its children use them. This is an indication for
     //   refactoring to use some form of composition instead of inheritance.
     $this->cloverCoverage = $clover_coverage;
+    $this->composerFacade = $composer_facade;
     $this->junitLog = $junit_log;
     $this->phpcsConfigurator = $phpcs_configurator;
 
@@ -153,6 +164,7 @@ abstract class TaskBase implements TaskInterface {
     $this->phpLintTool = $php_lint_tool;
     $this->phpmdTool = $phpmd_tool;
     $this->processRunner = $process_runner;
+
   }
 
   /**

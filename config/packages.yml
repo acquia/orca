@@ -49,7 +49,8 @@
 
 acquia/acquia_cms:
   type: drupal-profile
-  version_dev: dev-develop
+  version: ~
+  version_dev: ~
 
 drupal/acquia_connector:
   version: 3.x
@@ -96,8 +97,8 @@ acquia/drupal-recommended-project:
 
 acquia/drupal-spec-tool:
   type: behat-extension
-  version: 4.x
-  version_dev: 4.x-dev
+  version: 5.x
+  version_dev: 5.x-dev
 
 acquia/memcache-settings:
   type: library
@@ -115,7 +116,7 @@ drupal/lightning_layout:
   version_dev: 2.x-dev
 
 drupal/lightning_media:
-  version: ~
+  version: 4.x
   version_dev: 5.0.x-dev
 
 drupal/lightning_workflow:

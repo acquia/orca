@@ -66,8 +66,7 @@ class ComposerValidateTask extends TaskBase {
    *   A Finder query for all module info files.
    */
   private function getFiles(): Finder {
-    return (new Finder())
-      ->files()
+    return (new Finder())->files()
       ->followLinks()
       ->in($this->getPath())
       ->notPath(['tests', 'vendor'])
@@ -84,7 +83,8 @@ class ComposerValidateTask extends TaskBase {
    *   If there is no corresponding composer.json file.
    */
   private function checkForMissingComposerJson(SplFileInfo $info_file): void {
-    $composer_json = str_replace($info_file->getFilename(), 'composer.json', $info_file->getPathname());
+    $composer_json =
+      str_replace($info_file->getFilename(), 'composer.json', $info_file->getPathname());
     if (!$this->filesystem->exists($composer_json)) {
       $this->failures = TRUE;
       $this->output->error("Missing required {$composer_json}.");
@@ -100,12 +100,7 @@ class ComposerValidateTask extends TaskBase {
    */
   private function validate(string $path): void {
     try {
-      $this->processRunner->runOrcaVendorBin([
-        'composer',
-        '--ansi',
-        'validate',
-        $path,
-      ]);
+      $this->composerFacade->validate($path);
     }
     catch (ProcessFailedException $e) {
       $this->failures = TRUE;
@@ -120,17 +115,8 @@ class ComposerValidateTask extends TaskBase {
    */
   private function normalize(string $path): void {
     try {
-      $this->processRunner->runOrcaVendorBin([
-        'composer',
-        '--ansi',
-        'normalize',
-        '--dry-run',
-        '--indent-size=4',
-        '--indent-style=space',
-        $path,
-        // The cwd must be the ORCA project directory in order for Composer to
-        // find the "normalize" command.
-      ], $this->orca->getPath());
+      $args = ['--dry-run'];
+      $this->composerFacade->normalize($path, $args);
     }
     catch (ProcessFailedException $e) {
       $this->failures = TRUE;
