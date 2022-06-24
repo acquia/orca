@@ -275,6 +275,7 @@ class ComposerFacade {
   public function normalize(string $path, array $args = []): void {
     $command = [
       '--ansi',
+      '--dry-run',
       'normalize',
       '--indent-size=4',
       '--indent-style=space',

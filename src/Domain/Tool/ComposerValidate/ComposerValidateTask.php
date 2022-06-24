@@ -115,8 +115,7 @@ class ComposerValidateTask extends TaskBase {
    */
   private function normalize(string $path): void {
     try {
-      $args = ['--dry-run'];
-      $this->composerFacade->normalize($path, $args);
+      $this->composerFacade->normalize($path);
     }
     catch (ProcessFailedException $e) {
       $this->failures = TRUE;
