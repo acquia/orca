@@ -261,7 +261,7 @@ class ComposerFacade {
       '--ansi',
       'validate',
     ];
-    $this->runComposer($command, [$path], dirname($this->fixture->getPath()));
+    $this->runComposer($command, [$path], $this->fixture->getPath('../'));
   }
 
   /**
