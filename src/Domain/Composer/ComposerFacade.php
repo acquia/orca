@@ -95,7 +95,7 @@ class ComposerFacade {
     ], [
       $this->getProjectTemplateString(),
       $this->fixture->getPath(),
-    ], $this->orca->getPath());
+    ], $this->orca->getPath('../'));
   }
 
   /**
@@ -146,7 +146,7 @@ class ComposerFacade {
     ], [
       $package->getPackageName(),
       $this->fixture->getPath(),
-    ], $this->orca->getPath());
+    ], $this->orca->getPath('../'));
   }
 
   /**
