@@ -283,7 +283,12 @@ class ComposerFacade {
     $command = array_merge($command, $args);
     // The cwd must be the ORCA project directory in order for Composer to
     // find the "normalize" command.
-    $this->runComposer($command, [$path], $this->orca->getPath());
+    try {
+      $this->runComposer($command, [$path], $this->orca->getPath());
+    }
+    catch (\Exception $e) {
+      return;
+    }
   }
 
 }
