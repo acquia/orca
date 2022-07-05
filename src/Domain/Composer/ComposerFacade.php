@@ -4,7 +4,6 @@ namespace Acquia\Orca\Domain\Composer;
 
 use Acquia\Orca\Domain\Package\Package;
 use Acquia\Orca\Domain\Package\PackageManager;
-use Acquia\Orca\Exception\OrcaException;
 use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
 use Acquia\Orca\Helper\Filesystem\OrcaPathHandler;
 use Acquia\Orca\Helper\Process\ProcessRunner;
@@ -289,7 +288,7 @@ class ComposerFacade {
       $this->runComposer($command, [$path], $this->orca->getPath());
     }
     catch (\Exception $e) {
-      throw new OrcaException($e->getMessage());
+      return;
     }
   }
 
