@@ -4,6 +4,7 @@ namespace Acquia\Orca\Domain\Composer;
 
 use Acquia\Orca\Domain\Package\Package;
 use Acquia\Orca\Domain\Package\PackageManager;
+use Acquia\Orca\Exception\OrcaException;
 use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
 use Acquia\Orca\Helper\Filesystem\OrcaPathHandler;
 use Acquia\Orca\Helper\Process\ProcessRunner;
@@ -271,6 +272,8 @@ class ComposerFacade {
    *   The path to the fixture.
    * @param string[] $args
    *   Any extra argument required for ex. '--dry-run'.
+   *
+   * @throws \Acquia\Orca\Exception\OrcaException
    */
   public function normalize(string $path, array $args = []): void {
     $command = [
@@ -282,7 +285,12 @@ class ComposerFacade {
     $command = array_merge($command, $args);
     // The cwd must be the ORCA project directory in order for Composer to
     // find the "normalize" command.
-    $this->runComposer($command, [$path], $this->orca->getPath());
+    try {
+      $this->runComposer($command, [$path], $this->orca->getPath());
+    }
+    catch (\Exception $e) {
+      throw new OrcaException($e->getMessage());
+    }
   }
 
 }
