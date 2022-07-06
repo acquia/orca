@@ -300,20 +300,16 @@ class FixtureOptions {
       return $this->options['project-template'];
     }
 
-    // Switching to minimal project for all builds till acms conflict with
-    // drupal/core:9.4.0 has been addressed.
-    return 'acquia/drupal-minimal-project';
-
     // Use minimal project for SUT-only (i.e. isolated) jobs, which should
     // have no other company packages.
-    /*    if ($this->isSutOnly()) {
-    $this->options['project-template'] = 'acquia/drupal-minimal-project';
+    if ($this->isSutOnly()) {
+      $this->options['project-template'] = 'acquia/drupal-minimal-project';
     }
     else {
-    $this->options['project-template'] = 'acquia/drupal-recommended-project';
+      $this->options['project-template'] = 'acquia/drupal-recommended-project';
     }
 
-    return $this->options['project-template'];*/
+    return $this->options['project-template'];
   }
 
   /**

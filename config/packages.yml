@@ -49,8 +49,8 @@
 
 acquia/acquia_cms:
   type: drupal-profile
-  version: ~
-  version_dev: ~
+  version: 1.x
+  version_dev: 1.5.x
 
 drupal/acquia_connector:
   version: 3.x
