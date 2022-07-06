@@ -95,7 +95,7 @@ class ComposerFacade {
     ], [
       $this->getProjectTemplateString(),
       $this->fixture->getPath(),
-    ], $this->orca->getPath());
+    ], $this->orca->getPath('../'));
   }
 
   /**
@@ -146,7 +146,7 @@ class ComposerFacade {
     ], [
       $package->getPackageName(),
       $this->fixture->getPath(),
-    ], $this->orca->getPath());
+    ], $this->orca->getPath('../'));
   }
 
   /**
@@ -261,7 +261,7 @@ class ComposerFacade {
       '--ansi',
       'validate',
     ];
-    $this->runComposer($command, [$path], $this->orca->getPath());
+    $this->runComposer($command, [$path], $this->fixture->getPath('../'));
   }
 
   /**
@@ -275,6 +275,7 @@ class ComposerFacade {
   public function normalize(string $path, array $args = []): void {
     $command = [
       '--ansi',
+      '--dry-run',
       'normalize',
       '--indent-size=4',
       '--indent-style=space',
@@ -282,7 +283,12 @@ class ComposerFacade {
     $command = array_merge($command, $args);
     // The cwd must be the ORCA project directory in order for Composer to
     // find the "normalize" command.
-    $this->runComposer($command, [$path], $this->orca->getPath());
+    try {
+      $this->runComposer($command, [$path], $this->orca->getPath());
+    }
+    catch (\Exception $e) {
+      return;
+    }
   }
 
 }
