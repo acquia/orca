@@ -316,12 +316,6 @@ class FixtureCreator {
       }
     }
 
-    // @todo Adding this to allowed-plugins, to counter the error in our
-    //   integrated builds. This should be removed when
-    //   drupal-recommended-project is re-enabled using PR
-    //   https://github.com/acquia/orca/pull/257.
-    $allowedComposerPlugins[] = 'oomphinc/composer-installers-extender';
-
     $this->composerJsonHelper->addAllowedComposerPlugins($allowedComposerPlugins);
   }
 
