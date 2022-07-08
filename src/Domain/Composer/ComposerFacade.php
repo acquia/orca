@@ -273,12 +273,14 @@ class ComposerFacade {
    *   Any extra argument required for ex. '--dry-run'.
    */
   public function normalize(string $path, array $args = []): void {
+    $this->addGlobalNormalize();
     $command = [
       '--ansi',
       '--dry-run',
       'normalize',
       '--indent-size=4',
       '--indent-style=space',
+      '--working-dir=' . $this->orca->getPath('../'),
     ];
     $command = array_merge($command, $args);
     // The cwd must be the ORCA project directory in order for Composer to
@@ -289,6 +291,51 @@ class ComposerFacade {
     catch (\Exception $e) {
       return;
     }
+    finally {
+      $this->removeGlobalNormalize();
+    }
+  }
+
+  /**
+   * Add composer normalize to global config.
+   */
+  public function addGlobalNormalize(): void {
+    $command = [
+      'global',
+      'config',
+      'allow-plugins.ergebnis/composer-normalize',
+      'true',
+      '--no-plugins',
+    ];
+    $this->runComposer($command, [], $this->orca->getPath());
+    $command = [
+      'global',
+      'require',
+      'ergebnis/composer-normalize',
+      '--no-plugins',
+    ];
+    $this->runComposer($command, [], $this->orca->getPath());
+  }
+
+  /**
+   * Removes composer normalize from global config.
+   */
+  public function removeGlobalNormalize(): void {
+    $command = [
+      'global',
+      'config',
+      'allow-plugins.ergebnis/composer-normalize',
+      '--unset',
+      '--no-plugins',
+    ];
+    $this->runComposer($command, [], $this->orca->getPath());
+    $command = [
+      'global',
+      'remove',
+      'ergebnis/composer-normalize',
+      '--no-plugins',
+    ];
+    $this->runComposer($command, [], $this->orca->getPath());
   }
 
 }
