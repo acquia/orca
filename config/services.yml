@@ -8,6 +8,7 @@ parameters:
   env(ORCA_FIXTURE_DIR): "%app.fixture_dir%"
   env(ORCA_JUNIT_LOG): "%app.project_dir%/var/junit/junitLog.xml"
   env(ORCA_PACKAGES_CONFIG): config/packages.yml
+  ORCA_PACKAGES_CONFIG: "%env(ORCA_PACKAGES_CONFIG)%"
   env(ORCA_PACKAGES_CONFIG_ALTER): ~
   env(ORCA_PHPCS_STANDARD): "AcquiaDrupalTransitional"
   env(ORCA_TELEMETRY_ENABLE): "false"
@@ -24,7 +25,7 @@ services:
       $default_phpcs_standard: "%env(ORCA_PHPCS_STANDARD)%"
       $fixture_dir: "%env(ORCA_FIXTURE_DIR)%"
       $junit_log: "%env(ORCA_JUNIT_LOG)%"
-      $packages_config: "@=container.hasParameter('ORCA_PACKAGES_CONFIG') ? parameter('ORCA_PACKAGES_CONFIG') : 'config/packages.yml'"
+      $packages_config: "@=container.getParameter('ORCA_PACKAGES_CONFIG') === '' ? 'config/packages.yml' : parameter('ORCA_PACKAGES_CONFIG')"
       $packages_config_alter: "%env(ORCA_PACKAGES_CONFIG_ALTER)%"
       $telemetry_is_enabled: "%env(bool:ORCA_TELEMETRY_ENABLE)%"
     public: true
