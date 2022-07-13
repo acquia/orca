@@ -233,7 +233,7 @@ class FixtureCreator {
       $additions[] = 'drush/drush:dev-master || 11.x-dev || 10.x-dev';
     }
     else {
-      $additions[] = 'drush/drush';
+      $additions[] = 'drush/drush:~11.0.0';
     }
 
     // Install a specific version of Drupal core.
