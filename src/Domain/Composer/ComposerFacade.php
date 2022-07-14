@@ -279,6 +279,7 @@ class ComposerFacade {
       'normalize',
       '--indent-size=4',
       '--indent-style=space',
+      '-vvv',
     ];
     $command = array_merge($command, $args);
     // The cwd must be the ORCA project directory in order for Composer to
