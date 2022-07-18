@@ -207,6 +207,31 @@ class SubextensionManager {
   }
 
   /**
+   * Finds the plugins configured in allow-plugins config of a given package.
+   *
+   * @param \Acquia\Orca\Domain\Package\Package $package
+   *   The package to search for dev-dependencies.
+   *
+   * @return array
+   *   An indexed array of all the dev-dependencies.
+   *
+   * @throws \Acquia\Orca\Exception\OrcaFileNotFoundException
+   * @throws \Acquia\Orca\Exception\OrcaException
+   * @throws \Acquia\Orca\Exception\OrcaParseError
+   */
+  public function findAllowPluginsByPackage(Package $package): array {
+    $parent_path = $package->getInstallPathAbsolute();
+    try {
+      $config = $this->configLoader->load("$parent_path/composer.json");
+      $allow_plugins = $config->get("config.allow-plugins");
+      return $allow_plugins ?? [];
+    }
+    catch (OrcaFileNotFoundException $e) {
+      throw new OrcaFileNotFoundException("No such file: {$parent_path}/composer.json}");
+    }
+  }
+
+  /**
    * Finds all company Drupal subextension composer.json files.
    *
    * @param string $path

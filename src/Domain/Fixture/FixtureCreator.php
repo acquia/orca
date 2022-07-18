@@ -320,6 +320,28 @@ class FixtureCreator {
   }
 
   /**
+   * Add packages defined in "allow-plugins" config of SUT to root composer.
+   */
+  private function addSutAllowedPluginsToRootComposer(): void {
+
+    $package = $this->options->getSut();
+    if ($package === NULL) {
+      return;
+    }
+
+    try {
+      // Get plugins configured in "allow-plugins" config of SUT.
+      $allowedComposerPlugins = $this->subextensionManager
+        ->findAllowPluginsByPackage($package);
+      // Add plugins to the root composer fo fixture.
+      $this->composerJsonHelper->addAllowedComposerPlugins(array_keys($allowedComposerPlugins));
+    }
+    catch (\Exception $e) {
+      $this->output->writeln("Exception: " . $e->getMessage());
+    }
+  }
+
+  /**
    * Adds company packages to the codebase.
    *
    * @throws \Acquia\Orca\Exception\OrcaException
@@ -349,6 +371,7 @@ class FixtureCreator {
     $this->configureComposerForTopLevelCompanyPackages();
     $this->composerRequireTopLevelCompanyPackages();
     $this->verifySut();
+    $this->addSutAllowedPluginsToRootComposer();
     $this->composerRequireSutDevDependencies();
   }
 

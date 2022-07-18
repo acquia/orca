@@ -109,12 +109,22 @@ class ComposerJsonHelperTest extends TestCase {
 
   public function testAddAllowedComposerPlugins(): void {
     $config = $this->prophesize(Config::class);
+
+    $config->get("config.allow-plugins.test/example")
+      ->shouldBeCalledOnce();
     $config->set("config.allow-plugins.test/example", TRUE)
+      ->shouldBeCalledOnce();
+
+    $config->get("config.allow-plugins.lorem/ipsum")
       ->shouldBeCalledOnce();
     $config->set("config.allow-plugins.lorem/ipsum", TRUE)
       ->shouldBeCalledOnce();
+
+    $config->get("config.allow-plugins.acquia/blt")
+      ->shouldBeCalledOnce();
     $config->set("config.allow-plugins.acquia/blt", TRUE)
       ->shouldBeCalledOnce();
+
     $config->toFile(self::FILENAME)
       ->shouldBeCalledOnce();
     $config = $config->reveal();

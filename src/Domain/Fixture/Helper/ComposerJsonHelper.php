@@ -83,7 +83,11 @@ class ComposerJsonHelper {
   public function addAllowedComposerPlugins(array $values): void {
     $config = $this->loadFile();
     foreach ($values as $value) {
-      $config->set("config.allow-plugins." . $value, TRUE);
+      // Add plugin only when it is not already present in "allow-plugins"
+      // config.
+      if ($config->get("config.allow-plugins." . $value) === NULL) {
+        $config->set("config.allow-plugins." . $value, TRUE);
+      }
     }
 
     $this->writeFile($config);
