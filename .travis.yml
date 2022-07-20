@@ -23,6 +23,8 @@ branches:
     - main
     - develop
     - /support\/\d+/
+    - /release\/**/
+    - /hotfix\/**/
     - wip
 
 env:
