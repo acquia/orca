@@ -2,7 +2,7 @@
 name: ORCA CI
 on:
     push:
-        branches: [ main, develop, wip, support/** ]
+        branches: [ main, develop, wip, support/**, release/**, hotfix/** ]
         paths-ignore:
             - .idea/**
             - docs/**
