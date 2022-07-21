@@ -332,24 +332,19 @@ class FixtureCreator {
       return;
     }
 
-    try {
-      // Get plugins configured in "allow-plugins" config of SUT.
-      $allowedComposerPlugins = $this->subextensionManager
-        ->findAllowPluginsByPackage($package);
-      // Add plugins to the root composer fo fixture.
-      if (empty($allowedComposerPlugins)) {
-        $this->output->writeln("No plugins to add.");
-        return;
-      }
+    // Get plugins configured in "allow-plugins" config of SUT.
+    $allowedComposerPlugins = $this->subextensionManager
+      ->findAllowPluginsByPackage($package);
+    // Add plugins to the root composer fo fixture.
+    if (empty($allowedComposerPlugins)) {
+      $this->output->writeln("No plugins to add.");
+      return;
+    }
 
-      $this->output->writeln("Plugins found in allow-plugins config of SUT:\n");
-      $this->output->writeln(array_keys($allowedComposerPlugins));
-      $this->composerJsonHelper->addAllowedComposerPlugins(array_keys($allowedComposerPlugins));
-      $this->output->writeln("\nSuccessfully added plugins. ");
-    }
-    catch (\Exception $e) {
-      $this->output->writeln("Exception: " . $e->getMessage());
-    }
+    $this->output->writeln("Plugins found in allow-plugins config of SUT:\n");
+    $this->output->writeln($allowedComposerPlugins);
+    $this->composerJsonHelper->addAllowedComposerPlugins($allowedComposerPlugins);
+    $this->output->writeln("\nSuccessfully added plugins. ");
   }
 
   /**

@@ -210,7 +210,7 @@ class SubextensionManager {
    * Finds the plugins configured in allow-plugins config of a given package.
    *
    * @param \Acquia\Orca\Domain\Package\Package $package
-   *   The package to search for dev-dependencies.
+   *   The package to search for plugins.
    *
    * @return array
    *   An indexed array of all the dev-dependencies.
@@ -224,7 +224,7 @@ class SubextensionManager {
     try {
       $config = $this->configLoader->load("$parent_path/composer.json");
       $allow_plugins = $config->get("config.allow-plugins");
-      return $allow_plugins ?? [];
+      return $allow_plugins ? array_keys($allow_plugins) : [];
     }
     catch (OrcaFileNotFoundException $e) {
       throw new OrcaFileNotFoundException("No such file: {$parent_path}/composer.json}");
