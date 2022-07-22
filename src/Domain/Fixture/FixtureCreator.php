@@ -333,18 +333,18 @@ class FixtureCreator {
     }
 
     // Get plugins configured in "allow-plugins" config of SUT.
-    $allowedComposerPlugins = $this->subextensionManager
+    $allowed_composer_plugins = $this->subextensionManager
       ->findAllowPluginsByPackage($package);
     // Add plugins to the root composer fo fixture.
-    if (empty($allowedComposerPlugins)) {
+    if (empty($allowed_composer_plugins)) {
       $this->output->writeln("No plugins to add.");
       return;
     }
 
     $this->output->writeln("Plugins found in allow-plugins config of SUT:\n");
-    $this->output->writeln($allowedComposerPlugins);
-    $this->composerJsonHelper->addAllowedComposerPlugins($allowedComposerPlugins);
-    $this->output->writeln("\nSuccessfully added plugins. ");
+    $this->output->writeln($allowed_composer_plugins);
+    $this->composerJsonHelper->addAllowedComposerPlugins($allowed_composer_plugins);
+    $this->output->writeln("\nSuccessfully added plugins.");
   }
 
   /**

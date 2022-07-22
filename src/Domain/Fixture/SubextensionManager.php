@@ -223,8 +223,8 @@ class SubextensionManager {
     $parent_path = $package->getInstallPathAbsolute();
     try {
       $config = $this->configLoader->load("$parent_path/composer.json");
-      $allow_plugins = $config->get("config.allow-plugins");
-      return $allow_plugins ? array_keys($allow_plugins) : [];
+      $allow_plugins = $config->get("config.allow-plugins", []);
+      return array_keys($allow_plugins);
     }
     catch (OrcaFileNotFoundException $e) {
       throw new OrcaFileNotFoundException("No such file: {$parent_path}/composer.json}");
