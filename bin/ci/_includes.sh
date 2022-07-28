@@ -125,6 +125,7 @@ allowed_failures=(
   # @see https://www.drupal.org/project/acquia_cms/issues/3248967
   "INTEGRATED_TEST_ON_NEXT_MINOR"
   "ISOLATED_TEST_ON_NEXT_MINOR"
+  "INTEGRATED_TEST_ON_CURRENT_DEV"
 )
 if [[ " ${allowed_failures[*]} " =~ " ${ORCA_JOB} " && ! $TRAVIS ]]; then
   set +e
