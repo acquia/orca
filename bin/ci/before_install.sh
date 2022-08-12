@@ -50,7 +50,7 @@ if [[ "$TRAVIS" ]]; then
   } >> "$HOME/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini"
 
   # Install the PECL YAML parser for strict YAML parsing.
-  yes | pecl install yaml
+  #yes | pecl install yaml
 fi
 
 # Display PHP information.
