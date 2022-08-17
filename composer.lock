@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "41ea9d37ab51d2324f0ec05e2d8ef748",
+    "content-hash": "7dbc08fb3880c4b0238d1926c4a4b4c7",
     "packages": [
         {
             "name": "acquia/coding-standards",
-            "version": "v0.9.0",
+            "version": "v1.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/acquia/coding-standards-php.git",
-                "reference": "b19cbfde8d2f4ced3ce2e5f98ae44d1318303672"
+                "reference": "81ded5bf94829265eae688d1a8e41c08577b5fb1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/acquia/coding-standards-php/zipball/b19cbfde8d2f4ced3ce2e5f98ae44d1318303672",
-                "reference": "b19cbfde8d2f4ced3ce2e5f98ae44d1318303672",
+                "url": "https://api.github.com/repos/acquia/coding-standards-php/zipball/81ded5bf94829265eae688d1a8e41c08577b5fb1",
+                "reference": "81ded5bf94829265eae688d1a8e41c08577b5fb1",
                 "shasum": ""
             },
             "require": {
@@ -62,7 +62,7 @@
                 "issues": "https://github.com/acquia/coding-standards/issues",
                 "source": "https://github.com/acquia/coding-standards"
             },
-            "time": "2022-05-11T20:13:31+00:00"
+            "time": "2022-05-12T15:06:06+00:00"
         },
         {
             "name": "behat/mink",
