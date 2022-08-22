@@ -48,9 +48,8 @@
 # example.
 
 acquia/acquia_cms:
-  type: drupal-profile
-  version: 1.x
-  version_dev: 1.5.x
+  version: 2.x
+  version_dev: 2.0.x
 
 drupal/acquia_connector:
   version: 3.x

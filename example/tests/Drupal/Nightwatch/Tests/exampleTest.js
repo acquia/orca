@@ -12,6 +12,6 @@ module.exports = {
       .drupalRelativeURL('/')
       .waitForElementVisible('body', 1000)
       .assert.containsText('body', 'Log in')
-      .drupalLogAndEnd({ onlyOnError: false });
+      .drupalLogAndEnd({ onlyOnError: "FALSE" });
   },
 };
