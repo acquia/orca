@@ -30,7 +30,6 @@ jobs:
       ORCA_SUT_DIR: /home/runner/work/orca/example
       ORCA_SELF_TEST_COVERAGE_CLOVER: $HOME/build/logs/clover-self.xml
       ORCA_JOB: ${{ matrix.orca-job }}
-      ORCA_LIVE_TEST: ${{ matrix.orca-live-test }}
 
     strategy:
       matrix:
@@ -76,11 +75,6 @@ jobs:
           - orca-job: INTEGRATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_DEV
             php-version: "8.1"
             orca-enable-nightwatch: "TRUE"
-
-          - orca-job: ""
-            orca-live-test: "TRUE"
-            php-version: "7.4"
-            orca-enable-nightwatch: "FALSE"
 
     steps:
       - uses: actions/checkout@v2
