@@ -129,7 +129,7 @@ allowed_failures=(
   "INTEGRATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_DEV"
   "INTEGRATED_TEST_ON_CURRENT_DEV"
 )
-if [[ " ${allowed_failures[*]} " =~ " ${ORCA_JOB} " || "${ORCA_LIVE_TEST}" == "TRUE"  && ! $TRAVIS ]]; then
+if [[ " ${allowed_failures[*]} " =~ " ${ORCA_JOB} " && ! $TRAVIS ]]; then
   set +e
   notice "This job is allowed to fail and will report as passing regardless of outcome."
 fi
