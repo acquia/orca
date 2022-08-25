@@ -39,7 +39,7 @@ class ChromeDriverServer extends ServerBase {
    */
   protected function createProcess(): Process {
     $command = [
-      $this->orca->getPath('vendor/bin/chromedriver'),
+      $this->orca->getPath('chromedriver'),
       '--disable-dev-shm-usage',
       '--disable-extensions',
       '--disable-gpu',
