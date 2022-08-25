@@ -70,6 +70,9 @@
             "ergebnis/composer-normalize": true
         },
         "discard-changes": true,
+        "platform": {
+            "php": "7.4"
+        },
         "preferred-install": {
             "*": "dist"
         },
