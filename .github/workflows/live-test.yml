@@ -22,8 +22,6 @@ jobs:
       # Boolean values must be quoted, otherwise they will be converted to lower case and break ORCA scripts.
       ORCA_SUT_NAME: drupal/example
       ORCA_SUT_BRANCH: main
-#      ORCA_PACKAGES_CONFIG: example/tests/packages.yml
-#      ORCA_PACKAGES_CONFIG_ALTER: example/tests/packages_alter.yml
       ORCA_ENABLE_NIGHTWATCH: "FALSE"
       # Hardcode path since GITHUB_WORKSPACE can't be used here.
       # @see https://github.community/t/how-to-use-env-context/16975/9
