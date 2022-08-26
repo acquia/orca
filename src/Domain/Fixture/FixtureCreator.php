@@ -819,7 +819,7 @@ class FixtureCreator {
   private function installCloudHooks(): void {
     $this->output->section('Installing Cloud Hooks');
     $this->cloudHooksInstaller->install();
-    $this->git->commitCodeChanges('Installed Cloud Hooks.');
+    $this->output->writeln('Installed Cloud Hooks.');
   }
 
   /**
