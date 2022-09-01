@@ -191,6 +191,7 @@ class FixtureCreator {
   public function create(FixtureOptions $options): void {
     $this->options = $options;
     $this->createComposerProject();
+    $this->removeComposerConfigPlatform();
     $this->fixDefaultDependencies();
     $this->addAllowedComposerPlugins();
     $this->addCompanyPackages();
@@ -209,6 +210,19 @@ class FixtureCreator {
   private function createComposerProject(): void {
     $this->output->section('Creating Composer project');
     $this->codebaseCreator->create($this->options);
+  }
+
+  /**
+   * Remove "config.platform" parameter from fixture root composer.json.
+   */
+  private function removeComposerConfigPlatform(): void {
+    $this->output->writeln("Removing Platform Dependencies");
+    try {
+      $this->composer->removeConfig(['platform']);
+    }
+    catch (\Exception $e) {
+      $this->output->writeln("Operation failed.");
+    }
   }
 
   /**

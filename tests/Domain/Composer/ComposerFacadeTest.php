@@ -257,6 +257,34 @@ class ComposerFacadeTest extends TestCase {
     self::assertEquals($expected, $actual, 'Correctly determined validity of version constraint.');
   }
 
+  public function configList(): array {
+    return [
+      [['platform']],
+    ];
+  }
+
+  /**
+   * @dataProvider configList
+   */
+  public function testRemoveConfig(array $config): void {
+    $this->processRunner
+      ->runExecutable('composer', array_merge([
+        'config',
+        '--unset',
+      ], $config), self::FIXTURE_PATH)
+      ->shouldBeCalledOnce();
+
+    $composer = $this->createComposer();
+    $composer->removeConfig($config);
+  }
+
+  public function testRemoveConfigEmptyArray(): void {
+    $this->expectException(\InvalidArgumentException::class);
+
+    $composer = $this->createComposer();
+    $composer->removeConfig([]);
+  }
+
   public function providerIsValidVersionConstraint(): array {
     return [
       [TRUE, '^1.0'],

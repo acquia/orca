@@ -187,8 +187,7 @@ class SiteInstaller {
       'help',
       'toolbar',
     ]);
-    $this->addItems($info_file, 'themes', ['seven']);
-
+    $this->addItems($info_file, 'themes', ['claro']);
     $info_file->toFile($path, new Yaml());
   }
 

@@ -300,10 +300,14 @@ class FixtureOptions {
       return $this->options['project-template'];
     }
 
-    // Use minimal project for SUT-only (i.e. isolated) jobs, which should
-    // have no other company packages.
-    if ($this->isSutOnly()) {
-      $this->options['project-template'] = 'acquia/drupal-minimal-project';
+    $parser = new VersionParser();
+    $core = $this->getCoreResolved();
+
+    $required = $parser->parseConstraints('^10');
+    $actual = $parser->parseConstraints($core);
+
+    if ($required->matches($actual)) {
+      $this->options['project-template'] = 'acquia/drupal-recommended-project:dev-drupal10';
     }
     else {
       $this->options['project-template'] = 'acquia/drupal-recommended-project';
