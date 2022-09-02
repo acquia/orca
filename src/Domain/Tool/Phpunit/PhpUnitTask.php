@@ -143,13 +143,25 @@ class PhpUnitTask extends TestFrameworkBase {
    */
   private function setCoverageFilter(): void {
 
-    // Removing default "whitelist" element.
     $whitelist = $this->xpath->query('//phpunit/filter/whitelist')->item(0);
-    assert($whitelist instanceof \DOMElement);
-    $whitelist->parentNode->removeChild($whitelist);
 
-    // Creating new "whitelist" element.
-    $whitelist = $this->doc->createElement('whitelist');
+    if ($whitelist instanceof \DOMElement) {
+      $whitelist->parentNode->removeChild($whitelist);
+      $appendTo = "//phpunit/filter";
+
+      // Creating new "whitelist" element.
+      $whitelist = $this->doc->createElement('whitelist');
+    }
+    else {
+      // Checking Drupal 10 case.
+      $whitelist = $this->xpath->query('//phpunit/coverage')->item(0);
+      assert($whitelist instanceof \DOMElement);
+      $whitelist->parentNode->removeChild($whitelist);
+      $appendTo = "//phpunit";
+
+      // Creating new "whitelist" element.
+      $whitelist = $this->doc->createElement('coverage');
+    }
 
     // Excluding tests directories.
     $exclude = $this->doc->createElement('exclude');
@@ -186,7 +198,7 @@ class PhpUnitTask extends TestFrameworkBase {
     }
 
     // Writing "whitelist" element to file.
-    $this->xpath->query('//phpunit/filter')->item(0)->appendChild($whitelist);
+    $this->xpath->query($appendTo)->item(0)->appendChild($whitelist);
   }
 
   /**
