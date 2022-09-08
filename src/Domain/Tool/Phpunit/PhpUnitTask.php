@@ -144,6 +144,16 @@ class PhpUnitTask extends TestFrameworkBase {
   private function setCoverageFilter(): void {
 
     $whitelist = $this->xpath->query('//phpunit/filter/whitelist')->item(0);
+    // Adding suffixes to "whitelist" element.
+    $suffixes = [
+      '.php',
+      '.inc',
+      '.module',
+      '.install',
+      '.theme',
+      '.profile',
+      '.engine',
+    ];
 
     if ($whitelist instanceof \DOMElement) {
       $whitelist->parentNode->removeChild($whitelist);
@@ -151,6 +161,12 @@ class PhpUnitTask extends TestFrameworkBase {
 
       // Creating new "whitelist" element.
       $whitelist = $this->doc->createElement('whitelist');
+
+      foreach ($suffixes as $suffix) {
+        $directory = $this->doc->createElement('directory', $this->getPath());
+        $directory->setAttribute('suffix', $suffix);
+        $whitelist->appendChild($directory);
+      }
     }
     else {
       // Checking Drupal 10 case.
@@ -161,6 +177,16 @@ class PhpUnitTask extends TestFrameworkBase {
 
       // Creating new "whitelist" element.
       $whitelist = $this->doc->createElement('coverage');
+
+      // Include directories
+      $include = $this->doc->createElement('include');
+
+      foreach ($suffixes as $suffix) {
+        $directory = $this->doc->createElement('directory', $this->getPath());
+        $directory->setAttribute('suffix', $suffix);
+        $include->appendChild($directory);
+      }
+      $whitelist->appendChild($include);
     }
 
     // Excluding tests directories.
@@ -181,21 +207,6 @@ class PhpUnitTask extends TestFrameworkBase {
     // Appending the excluded directories to "whitelist" element.
     $whitelist->appendChild($exclude);
 
-    // Adding suffixes to "whitelist" element.
-    $suffixes = [
-      '.php',
-      '.inc',
-      '.module',
-      '.install',
-      '.theme',
-      '.profile',
-      '.engine',
-    ];
-    foreach ($suffixes as $suffix) {
-      $directory = $this->doc->createElement('directory', $this->getPath());
-      $directory->setAttribute('suffix', $suffix);
-      $whitelist->appendChild($directory);
-    }
 
     // Writing "whitelist" element to file.
     $this->xpath->query($appendTo)->item(0)->appendChild($whitelist);
