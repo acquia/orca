@@ -188,6 +188,7 @@ class SiteInstaller {
       'toolbar',
     ]);
     $this->addItems($info_file, 'themes', ['claro']);
+
     $info_file->toFile($path, new Yaml());
   }
 

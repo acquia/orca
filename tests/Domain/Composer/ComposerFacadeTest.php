@@ -257,14 +257,19 @@ class ComposerFacadeTest extends TestCase {
     self::assertEquals($expected, $actual, 'Correctly determined validity of version constraint.');
   }
 
-  public function configList(): array {
+  public function providerIsValidVersionConstraint(): array {
     return [
-      [['platform']],
+      [TRUE, '^1.0'],
+      [TRUE, '~1.0'],
+      [TRUE, '>=1.0'],
+      [TRUE, 'dev-topic-branch'],
+      [FALSE, 'garbage'],
+      [FALSE, '1.0.x-garbage'],
     ];
   }
 
   /**
-   * @dataProvider configList
+   * @dataProvider providerRemoveConfig
    */
   public function testRemoveConfig(array $config): void {
     $this->processRunner
@@ -285,14 +290,9 @@ class ComposerFacadeTest extends TestCase {
     $composer->removeConfig([]);
   }
 
-  public function providerIsValidVersionConstraint(): array {
+  public function providerRemoveConfig(): array {
     return [
-      [TRUE, '^1.0'],
-      [TRUE, '~1.0'],
-      [TRUE, '>=1.0'],
-      [TRUE, 'dev-topic-branch'],
-      [FALSE, 'garbage'],
-      [FALSE, '1.0.x-garbage'],
+      [['platform']],
     ];
   }
 

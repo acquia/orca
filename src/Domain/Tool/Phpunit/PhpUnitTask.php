@@ -169,16 +169,16 @@ class PhpUnitTask extends TestFrameworkBase {
       }
     }
     else {
-      // Checking Drupal 10 case.
+      // Checking for Drupal 10 style "phpunit.xml" structure.
       $whitelist = $this->xpath->query('//phpunit/coverage')->item(0);
       assert($whitelist instanceof \DOMElement);
       $whitelist->parentNode->removeChild($whitelist);
       $appendTo = "//phpunit";
 
-      // Creating new "whitelist" element.
+      // Creating new "coverage" element.
       $whitelist = $this->doc->createElement('coverage');
 
-      // Include directories
+      // Create new include element.
       $include = $this->doc->createElement('include');
 
       foreach ($suffixes as $suffix) {
@@ -204,11 +204,10 @@ class PhpUnitTask extends TestFrameworkBase {
       $this->doc->createElement('directory', '../*/contrib/*/tests');
     $exclude->appendChild($exclude_directory);
 
-    // Appending the excluded directories to "whitelist" element.
+    // Appending the excluded directories to "whitelist/coverage" element.
     $whitelist->appendChild($exclude);
 
-
-    // Writing "whitelist" element to file.
+    // Writing "whitelist/coverage" element to file.
     $this->xpath->query($appendTo)->item(0)->appendChild($whitelist);
   }
 

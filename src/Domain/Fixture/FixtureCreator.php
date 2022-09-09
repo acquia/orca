@@ -216,12 +216,12 @@ class FixtureCreator {
    * Remove "config.platform" parameter from fixture root composer.json.
    */
   private function removeComposerConfigPlatform(): void {
-    $this->output->writeln("Removing Platform Dependencies");
+    $this->output->writeln("Removing Composer platform requirements.");
     try {
       $this->composer->removeConfig(['platform']);
     }
     catch (\Exception $e) {
-      $this->output->writeln("Operation failed.");
+      $this->output->writeln("Failed to remove Composer platform requirements.");
     }
   }
 
@@ -266,7 +266,7 @@ class FixtureCreator {
     }
 
     // Acquia CMS uses drupal-test-traits as a dev dependency.
-    // Add only when drupal core version is NOT 10.
+    // Add only when Drupal core version is NOT 10.
     // @todo remove this via ORCA-298
     if (!$this->options->coreVersionParsedMatches('^10')) {
       $additions[] = 'weitzman/drupal-test-traits';

@@ -342,10 +342,10 @@ class FixtureOptions {
   }
 
   /**
-   * Check if core version resolves to the constraint provided.
+   * Checks if core version resolves to the constraint provided.
    *
    * @param string $constraints
-   *   The constraint to check for.
+   *   The constraints to check for.
    *
    * @return bool
    *   TRUE if it does or FALSE if not.
