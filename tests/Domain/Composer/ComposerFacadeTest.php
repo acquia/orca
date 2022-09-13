@@ -269,6 +269,34 @@ class ComposerFacadeTest extends TestCase {
   }
 
   /**
+   * @dataProvider providerRemoveConfig
+   */
+  public function testRemoveConfig(array $config): void {
+    $this->processRunner
+      ->runExecutable('composer', array_merge([
+        'config',
+        '--unset',
+      ], $config), self::FIXTURE_PATH)
+      ->shouldBeCalledOnce();
+
+    $composer = $this->createComposer();
+    $composer->removeConfig($config);
+  }
+
+  public function testRemoveConfigEmptyArray(): void {
+    $this->expectException(\InvalidArgumentException::class);
+
+    $composer = $this->createComposer();
+    $composer->removeConfig([]);
+  }
+
+  public function providerRemoveConfig(): array {
+    return [
+      [['platform']],
+    ];
+  }
+
+  /**
    * @dataProvider providerPackageList
    */
   public function testRemovePackages(array $packages): void {

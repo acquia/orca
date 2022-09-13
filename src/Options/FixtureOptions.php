@@ -300,10 +300,8 @@ class FixtureOptions {
       return $this->options['project-template'];
     }
 
-    // Use minimal project for SUT-only (i.e. isolated) jobs, which should
-    // have no other company packages.
-    if ($this->isSutOnly()) {
-      $this->options['project-template'] = 'acquia/drupal-minimal-project';
+    if ($this->coreVersionParsedMatches('^10')) {
+      $this->options['project-template'] = 'acquia/drupal-recommended-project:dev-drupal10';
     }
     else {
       $this->options['project-template'] = 'acquia/drupal-recommended-project';
@@ -341,6 +339,27 @@ class FixtureOptions {
     }
     $this->coreResolved = $version;
     return $version;
+  }
+
+  /**
+   * Checks if core version resolves to the constraint provided.
+   *
+   * @param string $constraints
+   *   The constraints to check for.
+   *
+   * @return bool
+   *   TRUE if it does or FALSE if not.
+   */
+  public function coreVersionParsedMatches(string $constraints): bool {
+    $parser = new VersionParser();
+    $core = $this->getCoreResolved();
+
+    $required = $parser->parseConstraints($constraints);
+    $actual = $parser->parseConstraints($core);
+    if ($required->matches($actual)) {
+      return TRUE;
+    }
+    return FALSE;
   }
 
   /**
