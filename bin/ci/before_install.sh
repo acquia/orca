@@ -51,6 +51,18 @@ if [[ "$TRAVIS" ]]; then
 
   # Install the PECL YAML parser for strict YAML parsing.
   yes | pecl install yaml
+
+  # Install chromedriver.
+  CHROMEDRIVER="$( google-chrome-stable --version)"
+  echo "$CHROMEDRIVER"
+  CHROMEDRIVER_VERSION="$(echo "$CHROMEDRIVER" | awk '{print $3}')"
+  echo "$CHROMEDRIVER_VERSION"
+  wget -N https://chromedriver.storage.googleapis.com/${CHROMEDRIVER_VERSION}/chromedriver_linux64.zip -P ~/
+  unzip ~/chromedriver_linux64.zip -d ~/
+  rm ~/chromedriver_linux64.zip
+  sudo mv -f ~/chromedriver /usr/local/share/
+  sudo chmod +x /usr/local/share/chromedriver
+  sudo ln -s /usr/local/share/chromedriver /usr/local/bin/chromedriver
 fi
 
 # Display PHP information.
