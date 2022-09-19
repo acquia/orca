@@ -270,6 +270,13 @@ class FixtureCreator {
     // @todo remove this via ORCA-298
     if (!$this->options->coreVersionParsedMatches('^10')) {
       $additions[] = 'weitzman/drupal-test-traits';
+      $this->output->writeln("Adding Gitlab-Oauth");
+      $this->composer->addGitlabOauth();
+      $this->composerJsonHelper->addRepository(
+        'weitzman/drupal-test-traits',
+        'gitlab',
+        'https://gitlab.com/weitzman/drupal-test-traits.git'
+      );
     }
 
     // Require additional packages.

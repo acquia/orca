@@ -71,6 +71,20 @@ class ComposerFacade {
   }
 
   /**
+   * Add Gitlab-Oauth token to Composer config.
+   */
+  public function addGitlabOauth(): void {
+    // @todo how to hide this
+    $token = "############";
+
+    $this->runComposer([
+      'config',
+      '-g',
+      'gitlab-token.gitlab.com',
+    ], [$token]);
+  }
+
+  /**
    * Creates the Composer project.
    *
    * @param \Acquia\Orca\Options\FixtureOptions $options
