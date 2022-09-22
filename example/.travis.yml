@@ -74,13 +74,13 @@ env:
     # valid path to a YAML file relative to ORCA itself, e.g.,
     # ../example/tests/packages.yml.
     # @see https://github.com/acquia/orca/blob/develop/config/packages.yml
-    # - ORCA_PACKAGES_CONFIG: ../example/tests/packages.yml
+    - ORCA_PACKAGES_CONFIG=../example/tests/packages.yml
     #
     # If your package isn't in ORCA's packages.yml or conflicts with details
     # that are, you can modify the active packages configuration at runtime by
     # uncommenting the following line and specifying your own alter file.
     # @see https://github.com/acquia/orca/blob/main/docs/advanced-usage.md#ORCA_PACKAGES_CONFIG_ALTER
-    # - ORCA_PACKAGES_CONFIG_ALTER=../example/tests/packages_alter.yml
+    - ORCA_PACKAGES_CONFIG_ALTER=../example/tests/packages_alter.yml
     #
     # If your package is a Drupal installation profile, uncomment the following
     # line and specify its machine name.
@@ -102,13 +102,21 @@ env:
     # - ORCA_PHPCS_STANDARD=AcquiaDrupalTransitional
     #
     # Enable Nightwatch.js testing. Acceptable values are "TRUE" and "FALSE".
-    # - ORCA_ENABLE_NIGHTWATCH=TRUE
+    - ORCA_ENABLE_NIGHTWATCH=TRUE
     #
     # To enable telemetry with Amplitude on cron runs, uncomment the following
     # line and set ORCA_AMPLITUDE_API_KEY in your Travis CI repository settings:
     # @see https://github.com/acquia/orca/blob/main/docs/advanced-usage.md#ORCA_TELEMETRY_ENABLE
     # @see https://github.com/acquia/orca/blob/main/docs/advanced-usage.md#ORCA_AMPLITUDE_API_KEY
     # - ORCA_TELEMETRY_ENABLE=TRUE
+    #
+    # Change the path where ORCA looks for the SUT. Accepted values are any valid directory path,
+    # e.g., /var/www/example, or ../example.
+    - ORCA_SUT_DIR=${TRAVIS_BUILD_DIR}/example
+    #
+    # Change the path where ORCA stores Clover file,
+    # e.g., logs/clover-self.xml
+    - ORCA_COVERAGE_CLOVER=$HOME/build/logs/clover-self.xml
 
 # Execution time is drastically reduced by splitting the build into multiple
 # concurrent jobs.
