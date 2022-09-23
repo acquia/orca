@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "7a18bf1b6cb755e0b93bdd42306d0a55",
+    "content-hash": "77b6762f034b0c33437b04959a1a83f5",
     "packages": [
         {
             "name": "acquia/coding-standards",
@@ -7782,115 +7782,6 @@
                 }
             ],
             "time": "2021-07-28T10:34:58+00:00"
-        },
-        {
-            "name": "webdriver-binary/binary-chromedriver",
-            "version": "6.1.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/webdriver-binary/binary-chromedriver.git",
-                "reference": "087e848caf22f79279c7c18a0c03ffd832f7c70d"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/webdriver-binary/binary-chromedriver/zipball/087e848caf22f79279c7c18a0c03ffd832f7c70d",
-                "reference": "087e848caf22f79279c7c18a0c03ffd832f7c70d",
-                "shasum": ""
-            },
-            "require": {
-                "composer-plugin-api": "^1.0 | ^2.0",
-                "php": ">=7.2",
-                "webdriver-binary/webdriver-binary-downloader": "^4.0.0"
-            },
-            "replace": {
-                "lanfest/binary-chromedriver": "*",
-                "lbaey/chromedriver": "*",
-                "vaimo/binary-chromedriver": "*"
-            },
-            "type": "composer-plugin",
-            "extra": {
-                "class": "WebdriverBinary\\ChromeDriver\\Plugin"
-            },
-            "autoload": {
-                "psr-4": {
-                    "WebdriverBinary\\ChromeDriver\\": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "description": "Utility for downloading Chrome Driver binary for current os/platform",
-            "keywords": [
-                "Browser Testing",
-                "Chromedriver",
-                "acceptance testing",
-                "binary",
-                "binary downloader",
-                "browser driver",
-                "chrome automation",
-                "composer extension",
-                "composer plugin",
-                "downloader",
-                "test-automation",
-                "testing",
-                "webdriver"
-            ],
-            "support": {
-                "docs": "https://github.com/webdriver-binary/binary-chromedriver",
-                "issues": "https://github.com/webdriver-binary/binary-chromedriver/issues",
-                "source": "https://github.com/webdriver-binary/binary-chromedriver"
-            },
-            "time": "2021-10-14T19:21:16+00:00"
-        },
-        {
-            "name": "webdriver-binary/webdriver-binary-downloader",
-            "version": "4.0.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/webdriver-binary/webdriver-binary-downloader.git",
-                "reference": "e8b495bc2c23b8c8eea6228a95baf847fa64b3ce"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/webdriver-binary/webdriver-binary-downloader/zipball/e8b495bc2c23b8c8eea6228a95baf847fa64b3ce",
-                "reference": "e8b495bc2c23b8c8eea6228a95baf847fa64b3ce",
-                "shasum": ""
-            },
-            "require": {
-                "composer-plugin-api": "^1.0 | ^2.0",
-                "composer/composer": "^1.0 | ^2.0",
-                "php": ">=7.2"
-            },
-            "replace": {
-                "bolt/webdriver-binary-downloader": "*",
-                "lanfest/webdriver-binary-downloader": "*",
-                "vaimo/webdriver-binary-downloader": "*"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "WebdriverBinary\\WebDriverBinaryDownloader\\": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "description": "General-issue library that enables building any kind of WebDriver binary downloader",
-            "keywords": [
-                "binary",
-                "binary downloader",
-                "browser driver",
-                "downloader",
-                "webdriver"
-            ],
-            "support": {
-                "docs": "https://github.com/webdriver-binary/webdriver-binary-downloader",
-                "issues": "https://github.com/webdriver-binary/webdriver-binary-downloader/issues",
-                "source": "https://github.com/webdriver-binary/webdriver-binary-downloader"
-            },
-            "time": "2021-10-14T19:01:18+00:00"
         },
         {
             "name": "webflo/drupal-finder",

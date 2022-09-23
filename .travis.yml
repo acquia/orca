@@ -8,9 +8,6 @@ version: ~> 1.0
 
 php: "7.4"
 
-addons:
-  chrome: stable
-
 cache:
   directories:
     - "$HOME/.composer/cache"
