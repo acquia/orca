@@ -52,8 +52,9 @@ if [[ "$TRAVIS" ]]; then
   # Install the PECL YAML parser for strict YAML parsing.
   yes | pecl install yaml
 
-  # Install chromedriver following https://chromedriver.chromium.org/downloads/version-selection.
-  # Getting google chrome version.
+  # Install ChroneDriver.
+  # @see https://chromedriver.chromium.org/downloads/version-selection
+  # Get Google Chrome version.
   CHROMEDRIVER="$( google-chrome-stable --version)"
   echo "$CHROMEDRIVER"
   CHROMEDRIVER_VERSION="$(echo "$CHROMEDRIVER" | awk '{print $3}')"
