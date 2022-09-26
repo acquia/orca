@@ -52,12 +52,20 @@ if [[ "$TRAVIS" ]]; then
   # Install the PECL YAML parser for strict YAML parsing.
   yes | pecl install yaml
 
-  # Install chromedriver.
+  # Install chromedriver following https://chromedriver.chromium.org/downloads/version-selection.
+  # Getting google chrome version.
   CHROMEDRIVER="$( google-chrome-stable --version)"
   echo "$CHROMEDRIVER"
   CHROMEDRIVER_VERSION="$(echo "$CHROMEDRIVER" | awk '{print $3}')"
-  echo "$CHROMEDRIVER_VERSION"
-  wget -N https://chromedriver.storage.googleapis.com/${CHROMEDRIVER_VERSION}/chromedriver_linux64.zip -P ~/
+  echo "CHROMEDRIVER_VERSION=$CHROMEDRIVER_VERSION"
+  # Cut off last part from google chrome version.
+  CHROMEDRIVER_VERSION_FAMILY="$(echo "$CHROMEDRIVER_VERSION" | awk -F'.' '{print $1,$2,$3}' OFS='.' )"
+  echo "VERSION_FAMILY=$CHROMEDRIVER_VERSION_FAMILY"
+  # check latest_release
+  VERSION=$(curl -f --silent https://chromedriver.storage.googleapis.com/LATEST_RELEASE_${CHROMEDRIVER_VERSION_FAMILY})
+  echo "FINAL_VERSION=$VERSION"
+  # Download driver
+  wget -N https://chromedriver.storage.googleapis.com/${VERSION}/chromedriver_linux64.zip -P ~/
   unzip ~/chromedriver_linux64.zip -d ~/
   rm ~/chromedriver_linux64.zip
   sudo mv -f ~/chromedriver /usr/local/share/
