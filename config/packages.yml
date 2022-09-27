@@ -60,8 +60,8 @@ drupal/acquia_contenthub:
   version_dev: 2.x-dev
 
 drupal/acquia_lift:
-  version: ~
-  version_dev: ~
+  version: 4.x
+  version_dev: 4.x-dev
 
 drupal/acquia_purge:
   version: 1.x

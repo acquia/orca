@@ -131,8 +131,8 @@ jobs:
           - ISOLATED_TEST_ON_NEXT_MINOR_DEV
           - INTEGRATED_UPGRADE_TEST_TO_NEXT_MINOR_DEV
           - LOOSE_DEPRECATED_CODE_SCAN
-          # - ISOLATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_BETA_OR_LATER
-          # - INTEGRATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_BETA_OR_LATER
+          - ISOLATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_BETA_OR_LATER
+          - INTEGRATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_BETA_OR_LATER
           - ISOLATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_DEV
           - INTEGRATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_DEV
         # The lowest version of PHP supported by all of Drupal, Acquia, and ORCA itself.
@@ -155,6 +155,11 @@ jobs:
           - orca-job: INTEGRATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_DEV
             php-version: "8.1"
             orca-enable-nightwatch: "TRUE"
+          - orca-job: ISOLATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_BETA_OR_LATER
+            php-version: "8.1"
+            orca-enable-nightwatch: "TRUE"
+          - orca-job: INTEGRATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_BETA_OR_LATER
+            php-version: "8.1"
           # To send PHPUnit test coverage data to Coveralls (coveralls.io), configure
           # your GitHub repository according to the FAQ below and uncomment the
           # following line. By default this job is allowed to fail (see below) so that

@@ -50,7 +50,6 @@
         "symfony/phpunit-bridge": "^6.0",
         "symfony/process": "^5.4",
         "symfony/yaml": "^5.4",
-        "webdriver-binary/binary-chromedriver": "^6.1.0",
         "weitzman/drupal-test-traits": "^1.3",
         "zumba/amplitude-php": "^1.0"
     },
@@ -68,8 +67,7 @@
         "allow-plugins": {
             "cweagans/composer-patches": true,
             "dealerdirect/phpcodesniffer-composer-installer": true,
-            "ergebnis/composer-normalize": true,
-            "webdriver-binary/binary-chromedriver": true
+            "ergebnis/composer-normalize": true
         },
         "discard-changes": true,
         "preferred-install": {

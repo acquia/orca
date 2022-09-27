@@ -104,6 +104,8 @@ export PATH="$ORCA_FIXTURE_DIR/vendor/bin:$PATH"
 export PATH="$CI_WORKSPACE/vendor/bin:$PATH"
 # Put this last to ensure that the host's Composer is preferred.
 export PATH="$HOME/.phpenv/shims/:$PATH"
+export PATH="/usr/local/bin/:$PATH"
+export PATH="/usr/bin/:$PATH"
 
 # Add convenient aliases.
 alias drush='drush -r "$ORCA_FIXTURE_DIR"'
@@ -128,8 +130,10 @@ allowed_failures=(
   "ISOLATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_DEV"
   "INTEGRATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_DEV"
   "INTEGRATED_TEST_ON_CURRENT_DEV"
+  "ISOLATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_BETA_OR_LATER"
+  "INTEGRATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_BETA_OR_LATER"
 )
-if [[ " ${allowed_failures[*]} " =~ " ${ORCA_JOB} " || "${ORCA_LIVE_TEST}" == "TRUE"  && ! $TRAVIS ]]; then
+if [[ " ${allowed_failures[*]} " =~ " ${ORCA_JOB} " && ! $TRAVIS ]]; then
   set +e
   notice "This job is allowed to fail and will report as passing regardless of outcome."
 fi

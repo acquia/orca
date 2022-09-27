@@ -143,13 +143,51 @@ class PhpUnitTask extends TestFrameworkBase {
    */
   private function setCoverageFilter(): void {
 
-    // Removing default "whitelist" element.
     $whitelist = $this->xpath->query('//phpunit/filter/whitelist')->item(0);
-    assert($whitelist instanceof \DOMElement);
-    $whitelist->parentNode->removeChild($whitelist);
+    // Adding suffixes to "whitelist" element.
+    $suffixes = [
+      '.php',
+      '.inc',
+      '.module',
+      '.install',
+      '.theme',
+      '.profile',
+      '.engine',
+    ];
 
-    // Creating new "whitelist" element.
-    $whitelist = $this->doc->createElement('whitelist');
+    if ($whitelist instanceof \DOMElement) {
+      $whitelist->parentNode->removeChild($whitelist);
+      $appendTo = "//phpunit/filter";
+
+      // Creating new "whitelist" element.
+      $whitelist = $this->doc->createElement('whitelist');
+
+      foreach ($suffixes as $suffix) {
+        $directory = $this->doc->createElement('directory', $this->getPath());
+        $directory->setAttribute('suffix', $suffix);
+        $whitelist->appendChild($directory);
+      }
+    }
+    else {
+      // Checking for Drupal 10 style "phpunit.xml" structure.
+      $whitelist = $this->xpath->query('//phpunit/coverage')->item(0);
+      assert($whitelist instanceof \DOMElement);
+      $whitelist->parentNode->removeChild($whitelist);
+      $appendTo = "//phpunit";
+
+      // Creating new "coverage" element.
+      $whitelist = $this->doc->createElement('coverage');
+
+      // Create new include element.
+      $include = $this->doc->createElement('include');
+
+      foreach ($suffixes as $suffix) {
+        $directory = $this->doc->createElement('directory', $this->getPath());
+        $directory->setAttribute('suffix', $suffix);
+        $include->appendChild($directory);
+      }
+      $whitelist->appendChild($include);
+    }
 
     // Excluding tests directories.
     $exclude = $this->doc->createElement('exclude');
@@ -166,27 +204,11 @@ class PhpUnitTask extends TestFrameworkBase {
       $this->doc->createElement('directory', '../*/contrib/*/tests');
     $exclude->appendChild($exclude_directory);
 
-    // Appending the excluded directories to "whitelist" element.
+    // Appending the excluded directories to "whitelist/coverage" element.
     $whitelist->appendChild($exclude);
 
-    // Adding suffixes to "whitelist" element.
-    $suffixes = [
-      '.php',
-      '.inc',
-      '.module',
-      '.install',
-      '.theme',
-      '.profile',
-      '.engine',
-    ];
-    foreach ($suffixes as $suffix) {
-      $directory = $this->doc->createElement('directory', $this->getPath());
-      $directory->setAttribute('suffix', $suffix);
-      $whitelist->appendChild($directory);
-    }
-
-    // Writing "whitelist" element to file.
-    $this->xpath->query('//phpunit/filter')->item(0)->appendChild($whitelist);
+    // Writing "whitelist/coverage" element to file.
+    $this->xpath->query($appendTo)->item(0)->appendChild($whitelist);
   }
 
   /**

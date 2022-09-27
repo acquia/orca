@@ -12,6 +12,8 @@
 source ../_includes.sh
 
 if [[ "$ORCA_LIVE_TEST" ]]; then
+  set +e
+  notice "This job is allowed to fail and will report as passing regardless of outcome."
   unset ORCA_PACKAGES_CONFIG
   unset ORCA_PACKAGES_CONFIG_ALTER
 fi
