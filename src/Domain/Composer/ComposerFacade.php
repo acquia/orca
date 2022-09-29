@@ -79,14 +79,8 @@ class ComposerFacade {
   public function createProject(FixtureOptions $options): void {
     $this->options = $options;
 
-    $stability = 'alpha';
-    if ($options->isDev()) {
-      $stability = 'dev';
-    }
-
     $this->runComposer([
       'create-project',
-      "--stability={$stability}",
       '--no-dev',
       '--no-scripts',
       '--no-progress',
@@ -137,7 +131,6 @@ class ComposerFacade {
     ]);
     $this->runComposer([
       'create-project',
-      '--stability=dev',
       "--repository={$repository}",
       '--no-dev',
       '--no-scripts',
