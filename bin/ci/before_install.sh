@@ -75,6 +75,7 @@ if [[ "$TRAVIS" ]]; then
 fi
 
 # Display PHP information.
+which php
 php -i
 
 # Download and install ORCA libraries if necessary. This provides compatibility
