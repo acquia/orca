@@ -92,13 +92,12 @@ class ComposerFacadeTest extends TestCase {
    * @covers ::createProject
    * @covers ::getProjectTemplateString
    */
-  public function testCreateProjectWithoutSut($options, $stability, $project_template_string): void {
+  public function testCreateProjectWithoutSut($options, $project_template_string): void {
     $options = $this->createFixtureOptions($options);
 
     $this->processRunner
       ->runExecutable('composer', [
         'create-project',
-        "--stability={$stability}",
         '--no-dev',
         '--no-scripts',
         '--no-progress',
@@ -120,7 +119,6 @@ class ComposerFacadeTest extends TestCase {
           'project-template' => 'test/example1',
           'dev' => FALSE,
         ],
-        'stability' => 'alpha',
         'project_template_string' => 'test/example1',
       ],
 
@@ -129,7 +127,6 @@ class ComposerFacadeTest extends TestCase {
           'project-template' => 'test/example2',
           'dev' => TRUE,
         ],
-        'stability' => 'dev',
         'project_template_string' => 'test/example2',
       ],
     ];
@@ -156,7 +153,6 @@ class ComposerFacadeTest extends TestCase {
     $this->processRunner
       ->runExecutable('composer', [
         'create-project',
-        "--stability=alpha",
         '--no-dev',
         '--no-scripts',
         '--no-progress',
@@ -195,7 +191,6 @@ class ComposerFacadeTest extends TestCase {
     $this->processRunner
       ->runExecutable('composer', [
         'create-project',
-        '--stability=dev',
         "--repository={$repository}",
         '--no-dev',
         '--no-scripts',
