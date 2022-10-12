@@ -71,9 +71,16 @@ if [[ "$JENKINS_HOME" || "$TRAVIS" ]]; then
     wget -N https://chromedriver.storage.googleapis.com/${VERSION}/chromedriver_linux64.zip -P ~/
     unzip ~/chromedriver_linux64.zip -d ~/
     rm ~/chromedriver_linux64.zip
-    sudo mv -f ~/chromedriver /usr/local/share/
-    sudo chmod +x /usr/local/share/chromedriver
-    sudo ln -s /usr/local/share/chromedriver /usr/local/bin/chromedriver
+
+    if [ "$JENKINS_HOME" ]; then
+      mv -f ~/chromedriver /usr/local/share/
+      chmod +x /usr/local/share/chromedriver
+      ln -s /usr/local/share/chromedriver /usr/local/bin/chromedriver
+    else
+      sudo mv -f ~/chromedriver /usr/local/share/
+      sudo chmod +x /usr/local/share/chromedriver
+      sudo ln -s /usr/local/share/chromedriver /usr/local/bin/chromedriver
+    fi
 fi
 
 
