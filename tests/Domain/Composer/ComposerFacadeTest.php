@@ -191,6 +191,7 @@ class ComposerFacadeTest extends TestCase {
     $this->processRunner
       ->runExecutable('composer', [
         'create-project',
+        '--stability=dev',
         "--repository={$repository}",
         '--no-dev',
         '--no-scripts',

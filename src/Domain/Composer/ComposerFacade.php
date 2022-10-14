@@ -131,7 +131,7 @@ class ComposerFacade {
     ]);
     $this->runComposer([
       'create-project',
-      "stability=dev",
+      '--stability=dev',
       "--repository={$repository}",
       '--no-dev',
       '--no-scripts',
