@@ -242,12 +242,19 @@ class FixtureCreator {
 
     $additions = [];
 
-    if ($this->options->isDev()) {
-      // Install the dev version of Drush.
-      $additions[] = 'drush/drush:dev-master || 11.x-dev || 10.x-dev';
+    // @todo The following code needs to be reverted via ORCA-458.
+    // For Drupal 10 version, pin drush to 11.2.1.
+    if (!$this->options->coreVersionParsedMatches('^10')) {
+      if ($this->options->isDev()) {
+        // Install the dev version of Drush.
+        $additions[] = 'drush/drush:dev-master || 11.x-dev || 10.x-dev';
+      }
+      else {
+        $additions[] = 'drush/drush';
+      }
     }
     else {
-      $additions[] = 'drush/drush';
+      $additions[] = 'drush/drush:11.2.1';
     }
 
     // Install a specific version of Drupal core.
