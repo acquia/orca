@@ -48,8 +48,8 @@
 # example.
 
 acquia/acquia_cms:
-  version: 2.x
-  version_dev: 2.0.x
+  version: ~
+  version_dev: ~
 
 drupal/acquia_connector:
   version: 3.x
