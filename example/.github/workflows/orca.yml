@@ -60,13 +60,13 @@ jobs:
       # valid path to a YAML file relative to ORCA itself, e.g.,
       # ../example/tests/packages.yml.
       # @see https://github.com/acquia/orca/blob/develop/config/packages.yml
-      ORCA_PACKAGES_CONFIG: ../example/tests/packages.yml
+      # ORCA_PACKAGES_CONFIG: ../example/tests/packages.yml
       #
       # If your package isn't in ORCA's packages.yml or conflicts with details
       # that are, you can modify the active packages configuration at runtime by
       # uncommenting the following line and specifying your own alter file.
       # @see https://github.com/acquia/orca/blob/main/docs/advanced-usage.md#ORCA_PACKAGES_CONFIG_ALTER
-      ORCA_PACKAGES_CONFIG_ALTER: ../example/tests/packages_alter.yml
+      # ORCA_PACKAGES_CONFIG_ALTER: ../example/tests/packages_alter.yml
       #
       # If your package is a Drupal installation profile, uncomment the following
       # line and specify its machine name.
@@ -93,7 +93,7 @@ jobs:
       # @see https://github.com/acquia/orca/blob/main/docs/advanced-usage.md#ORCA_AMPLITUDE_API_KEY
       # ORCA_TELEMETRY_ENABLE: "TRUE"
       #
-      # Enable Nightwatch.js testing. Acceptable values are "TRUE" and "FALSE".
+      # Do not modify the following line. They are critical for toggling night watch configuration in jobs.
       ORCA_ENABLE_NIGHTWATCH: ${{ matrix.orca-enable-nightwatch }}
       # Do not modify the following lines. They are critical for managing the build matrix.
       ORCA_JOB: ${{ matrix.orca-job }}
