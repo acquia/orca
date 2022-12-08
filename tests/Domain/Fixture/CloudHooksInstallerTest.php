@@ -45,6 +45,7 @@ class CloudHooksInstallerTest extends TestCase {
     $tarball = 'hooks.tar.gz';
     $this->processRunner
       ->runExecutable('curl', [
+        '-f',
         '-L',
         '-o',
         $tarball,

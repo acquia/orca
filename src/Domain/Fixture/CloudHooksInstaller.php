@@ -58,6 +58,7 @@ class CloudHooksInstaller {
     $tarball = 'hooks.tar.gz';
 
     $this->processRunner->runExecutable('curl', [
+      '-f',
       '-L',
       '-o',
       $tarball,
