@@ -93,6 +93,8 @@ jobs:
       # @see https://github.com/acquia/orca/blob/main/docs/advanced-usage.md#ORCA_AMPLITUDE_API_KEY
       # ORCA_TELEMETRY_ENABLE: "TRUE"
       #
+      # Do not modify the following line. They are critical for toggling night watch configuration in jobs.
+      ORCA_ENABLE_NIGHTWATCH: ${{ matrix.orca-enable-nightwatch }}
       # Do not modify the following lines. They are critical for managing the build matrix.
       ORCA_JOB: ${{ matrix.orca-job }}
       ORCA_COVERALLS_ENABLE: ${{ matrix.coveralls-enable }}
@@ -171,9 +173,9 @@ jobs:
           # @see https://github.com/acquia/orca/blob/main/docs/advanced-usage.md#ORCA_COVERALLS_ENABLE
           # @see https://github.com/acquia/orca/blob/main/docs/advanced-usage.md#ORCA_COVERAGE_ENABLE
           - orca-job: ISOLATED_TEST_ON_CURRENT
-            php-version: "7.3"
+            php-version: "7.4"
             coveralls-enable: "TRUE"
-
+            orca-enable-nightwatch: "TRUE"
           # ORCA only executes when ORCA_JOB is set. Leave ORCA_JOB unset to execute custom jobs.
           # See ./bin/ci/example.sh for details.
           # - php-version: "7.4"
