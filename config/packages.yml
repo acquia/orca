@@ -88,6 +88,8 @@ drupal/acsf:
 
 drupal/acsf_sso:
   enable: false
+  version: 2.x
+  version_dev: ~
 
 drupal/acquia_search:
   core_matrix:
