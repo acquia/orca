@@ -116,6 +116,11 @@ acquia/drupal-recommended-project:
 
 acquia/drupal-spec-tool:
   type: behat-extension
+  core_matrix:
+    10.x:
+      version: ~
+      version_dev: 6.x-dev
+    '*': []
 
 acquia/memcache-settings:
   type: library
