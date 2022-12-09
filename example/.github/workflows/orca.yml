@@ -113,53 +113,51 @@ jobs:
         orca-job:
           - STATIC_CODE_ANALYSIS
           - INTEGRATED_TEST_ON_OLDEST_SUPPORTED
-          - INTEGRATED_TEST_ON_LATEST_LTS
+          #- INTEGRATED_TEST_ON_LATEST_LTS
           - INTEGRATED_TEST_ON_PREVIOUS_MINOR
-          - INTEGRATED_UPGRADE_TEST_FROM_PREVIOUS_MINOR
-          - ISOLATED_TEST_ON_CURRENT
+          # - INTEGRATED_UPGRADE_TEST_FROM_PREVIOUS_MINOR
           - INTEGRATED_TEST_ON_CURRENT
-          - INTEGRATED_UPGRADE_TEST_TO_NEXT_MINOR
+          # - INTEGRATED_UPGRADE_TEST_TO_NEXT_MINOR
           - ISOLATED_TEST_ON_CURRENT_DEV
           - INTEGRATED_TEST_ON_CURRENT_DEV
           - STRICT_DEPRECATED_CODE_SCAN
           - ISOLATED_TEST_ON_NEXT_MINOR
           - INTEGRATED_TEST_ON_NEXT_MINOR
-          - ISOLATED_UPGRADE_TEST_TO_NEXT_MAJOR_BETA_OR_LATER
-          - ISOLATED_UPGRADE_TEST_TO_NEXT_MAJOR_DEV
+          # - ISOLATED_UPGRADE_TEST_TO_NEXT_MAJOR_BETA_OR_LATER
+          # - ISOLATED_UPGRADE_TEST_TO_NEXT_MAJOR_DEV
           - DEPRECATED_CODE_SCAN_W_CONTRIB
           - INTEGRATED_TEST_ON_NEXT_MINOR_DEV
           - ISOLATED_TEST_ON_NEXT_MINOR_DEV
-          - INTEGRATED_UPGRADE_TEST_TO_NEXT_MINOR_DEV
+          # - INTEGRATED_UPGRADE_TEST_TO_NEXT_MINOR_DEV
           - LOOSE_DEPRECATED_CODE_SCAN
-          - ISOLATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_BETA_OR_LATER
-          - INTEGRATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_BETA_OR_LATER
-          - ISOLATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_DEV
-          - INTEGRATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_DEV
+          # - ISOLATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_BETA_OR_LATER
+          # - INTEGRATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_BETA_OR_LATER
+          # - ISOLATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_DEV
+          # - INTEGRATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_DEV
         # The lowest version of PHP supported by all of Drupal, Acquia, and ORCA itself.
         # @see https://www.drupal.org/docs/8/system-requirements/php-requirements
         # @see https://docs.acquia.com/acquia-cloud/arch/tech-platform/
-        php-version: [ "7.4" ]
+        php-version: [ "8.1" ]
         coveralls-enable: [ "FALSE" ]
         # When manually specifying a job to include, empty parameter values (such as for orca-job and php-version) may
         # result in undefined behavior. Make sure to set each parameter explicitly.
         include:
           - orca-job: ISOLATED_TEST_ON_CURRENT
+            php-version: "8.1"
+            orca-enable-nightwatch: "TRUE"
+
+          - orca-job: INTEGRATED_TEST_ON_OLDEST_SUPPORTED
             php-version: "8.0"
-            coveralls-enable: "FALSE"
-          - orca-job: ISOLATED_TEST_ON_CURRENT
-            php-version: "8.1"
-            coveralls-enable: "FALSE"
-          - orca-job: ISOLATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_DEV
-            php-version: "8.1"
+
+          - orca-job: INTEGRATED_TEST_ON_PREVIOUS_MINOR
+            php-version: "8.0"
+
+          - orca-job: INTEGRATED_TEST_ON_OLDEST_SUPPORTED
+            php-version: "7.4"
+
+          - orca-job: INTEGRATED_TEST_ON_PREVIOUS_MINOR
+            php-version: "7.4"
             orca-enable-nightwatch: "TRUE"
-          - orca-job: INTEGRATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_DEV
-            php-version: "8.1"
-            orca-enable-nightwatch: "TRUE"
-          - orca-job: ISOLATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_BETA_OR_LATER
-            php-version: "8.1"
-            orca-enable-nightwatch: "TRUE"
-          - orca-job: INTEGRATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_BETA_OR_LATER
-            php-version: "8.1"
           # To send PHPUnit test coverage data to Coveralls (coveralls.io), configure
           # your GitHub repository according to the FAQ below and uncomment the
           # following line. By default this job is allowed to fail (see below) so that
