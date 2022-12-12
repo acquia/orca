@@ -126,7 +126,7 @@ jobs:
     - { env: ORCA_JOB=INTEGRATED_TEST_ON_PREVIOUS_MINOR, php: "8.0", name: "Integrated test on previous minor Drupal core version in php 8.0" }
     - { env: ORCA_JOB=INTEGRATED_TEST_ON_PREVIOUS_MINOR, name: "Integrated test on previous minor Drupal core version" }
     # - { env: ORCA_JOB=INTEGRATED_UPGRADE_TEST_FROM_PREVIOUS_MINOR, name: "Integrated upgrade test from previous minor" }
-    - { env: ORCA_JOB=ISOLATED_TEST_ON_CURRENT ORCA_COVERALLS_ENABLE=TRUE, name: "Isolated test on current Drupal core version" }
+    - { env: ORCA_JOB=ISOLATED_TEST_ON_CURRENT ORCA_ENABLE_NIGHTWATCH=TRUE, name: "Isolated test on current Drupal core version" }
     # - { env: ORCA_JOB=ISOLATED_TEST_ON_CURRENT, php: "8.0", dist: focal, name: "Isolated test on current Drupal core version and PHP 8.0" }
     # - { env: ORCA_JOB=ISOLATED_TEST_ON_CURRENT, php: "8.1", dist: focal, name: "Isolated test on current Drupal core version and PHP 8.1" }
     # To send PHPUnit test coverage data to Coveralls (coveralls.io), configure
@@ -156,7 +156,7 @@ jobs:
     - { env: ORCA_JOB=LOOSE_DEPRECATED_CODE_SCAN, name: "Loose deprecated code scan" }
     - { env: ORCA_JOB=STRICT_DEPRECATED_CODE_SCAN, name: "Strict deprecated code scan" }
     - { env: ORCA_JOB=DEPRECATED_CODE_SCAN_W_CONTRIB, name: "Deprecated code scan w/ contrib" }
-    - { env: ORCA_JOB=STATIC_CODE_ANALYSIS, name: "Static code analysis with Coveralls" }
+    - { env: ORCA_JOB=STATIC_CODE_ANALYSIS ORCA_COVERALLS_ENABLE=TRUE, name: "Static code analysis with Coveralls" }
     # Uncomment the following four lines to enable the corresponding tests once
     # the next major version of Drupal core has an alpha release or earlier.
     # Until then it's wasteful to use CI jobs on them, even if they exit early.

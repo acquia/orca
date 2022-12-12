@@ -142,10 +142,6 @@ jobs:
         # When manually specifying a job to include, empty parameter values (such as for orca-job and php-version) may
         # result in undefined behavior. Make sure to set each parameter explicitly.
         include:
-          - orca-job: ISOLATED_TEST_ON_CURRENT
-            php-version: "8.1"
-            orca-enable-nightwatch: "TRUE"
-
           - orca-job: INTEGRATED_TEST_ON_OLDEST_SUPPORTED
             php-version: "8.0"
 
@@ -169,8 +165,9 @@ jobs:
           # @see https://github.com/acquia/orca/blob/main/docs/advanced-usage.md#ORCA_COVERALLS_ENABLE
           # @see https://github.com/acquia/orca/blob/main/docs/advanced-usage.md#ORCA_COVERAGE_ENABLE
           - orca-job: ISOLATED_TEST_ON_CURRENT
-            php-version: "7.3"
+            php-version: "8.1"
             coveralls-enable: "TRUE"
+            orca-enable-nightwatch: "TRUE"
 
           # ORCA only executes when ORCA_JOB is set. Leave ORCA_JOB unset to execute custom jobs.
           # See ./bin/ci/example.sh for details.

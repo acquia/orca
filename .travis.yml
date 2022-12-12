@@ -40,31 +40,31 @@ jobs:
     - { env: ORCA_JOB=INTEGRATED_TEST_ON_OLDEST_SUPPORTED, php: "7.4", name: "Integrated test on oldest supported Drupal core version in php 7.4" }
     - { env: ORCA_JOB=INTEGRATED_TEST_ON_OLDEST_SUPPORTED, php: "8.0", name: "Integrated test on oldest supported Drupal core version in php 8.0" }
     - { env: ORCA_JOB=INTEGRATED_TEST_ON_OLDEST_SUPPORTED, name: "Integrated test on oldest supported Drupal core version" }
-#    - { env: ORCA_JOB=INTEGRATED_TEST_ON_LATEST_LTS, name: "Integrated test on latest LTS Drupal core version" }
+    # - { env: ORCA_JOB=INTEGRATED_TEST_ON_LATEST_LTS, name: "Integrated test on latest LTS Drupal core version" }
     - { env: ORCA_JOB=INTEGRATED_TEST_ON_PREVIOUS_MINOR, php: "7.4", name: "Integrated test on previous minor Drupal core version in php 7.4" }
     - { env: ORCA_JOB=INTEGRATED_TEST_ON_PREVIOUS_MINOR, php: "8.0", name: "Integrated test on previous minor Drupal core version in php 8.0" }
     - { env: ORCA_JOB=INTEGRATED_TEST_ON_PREVIOUS_MINOR, name: "Integrated test on previous minor Drupal core version" }
-#    - { env: ORCA_JOB=INTEGRATED_UPGRADE_TEST_FROM_PREVIOUS_MINOR, name: "Integrated upgrade test from previous minor Drupal core version" }
-    - { env: ORCA_JOB=ISOLATED_TEST_ON_CURRENT ORCA_COVERALLS_ENABLE=TRUE ORCA_ENABLE_NIGHTWATCH=TRUE, name: "Isolated test on current Drupal core version" }
+    # - { env: ORCA_JOB=INTEGRATED_UPGRADE_TEST_FROM_PREVIOUS_MINOR, name: "Integrated upgrade test from previous minor Drupal core version" }
+    - { env: ORCA_JOB=ISOLATED_TEST_ON_CURRENT ORCA_ENABLE_NIGHTWATCH=TRUE, name: "Isolated test on current Drupal core version" }
     - { env: ORCA_JOB=INTEGRATED_TEST_ON_CURRENT, name: "Integrated test on current Drupal core version" }
-#    - { env: ORCA_JOB=INTEGRATED_UPGRADE_TEST_TO_NEXT_MINOR, name: "Integrated upgrade test to next minor Drupal core version" }
-#    - { env: ORCA_JOB=INTEGRATED_UPGRADE_TEST_TO_NEXT_MINOR_DEV, name: "Integrated upgrade test to next minor dev Drupal core version" }
+    # - { env: ORCA_JOB=INTEGRATED_UPGRADE_TEST_TO_NEXT_MINOR, name: "Integrated upgrade test to next minor Drupal core version" }
+    # - { env: ORCA_JOB=INTEGRATED_UPGRADE_TEST_TO_NEXT_MINOR_DEV, name: "Integrated upgrade test to next minor dev Drupal core version" }
     - { env: ORCA_JOB=ISOLATED_TEST_ON_CURRENT_DEV, name: "Isolated test on current dev Drupal core version" }
     - { env: ORCA_JOB=INTEGRATED_TEST_ON_CURRENT_DEV, name: "Integrated test on current dev Drupal core version" }
     - { env: ORCA_JOB=ISOLATED_TEST_ON_NEXT_MINOR, name: "Isolated test on next minor Drupal core version" }
     - { env: ORCA_JOB=INTEGRATED_TEST_ON_NEXT_MINOR, name: "Integrated test on next minor Drupal core version" }
     - { env: ORCA_JOB=ISOLATED_TEST_ON_NEXT_MINOR_DEV, name: "Isolated test on next minor dev Drupal core version" }
     - { env: ORCA_JOB=INTEGRATED_TEST_ON_NEXT_MINOR_DEV, name: "Integrated test on next minor dev Drupal core version" }
-#    - { env: ORCA_JOB=ISOLATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_BETA_OR_LATER, php: "8.1", name: "Isolated test on next major, latest minor beta-or-later Drupal core version" }
-#    - { env: ORCA_JOB=INTEGRATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_BETA_OR_LATER, php: "8.1", name: "Integrated test on next major, latest minor beta-or-later Drupal core version" }
-#    - { env: ORCA_JOB=ISOLATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_DEV, php: "8.1",  name: "Isolated test on next major, latest minor dev Drupal core version" }
-#    - { env: ORCA_JOB=INTEGRATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_DEV, php: "8.1", name: "Integrated test on next major, latest minor dev Drupal core version" }
-#    - { env: ORCA_JOB=ISOLATED_UPGRADE_TEST_TO_NEXT_MAJOR_BETA_OR_LATER, name: "Isolated upgrade test to next major beta-or-later Drupal core version" }
-#    - { env: ORCA_JOB=ISOLATED_UPGRADE_TEST_TO_NEXT_MAJOR_DEV, name: "Isolated upgrade test to next major dev Drupal core version" }
+    # - { env: ORCA_JOB=ISOLATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_BETA_OR_LATER, php: "8.1", name: "Isolated test on next major, latest minor beta-or-later Drupal core version" }
+    # - { env: ORCA_JOB=INTEGRATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_BETA_OR_LATER, php: "8.1", name: "Integrated test on next major, latest minor beta-or-later Drupal core version" }
+    # - { env: ORCA_JOB=ISOLATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_DEV, php: "8.1",  name: "Isolated test on next major, latest minor dev Drupal core version" }
+    # - { env: ORCA_JOB=INTEGRATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_DEV, php: "8.1", name: "Integrated test on next major, latest minor dev Drupal core version" }
+    # - { env: ORCA_JOB=ISOLATED_UPGRADE_TEST_TO_NEXT_MAJOR_BETA_OR_LATER, name: "Isolated upgrade test to next major beta-or-later Drupal core version" }
+    # - { env: ORCA_JOB=ISOLATED_UPGRADE_TEST_TO_NEXT_MAJOR_DEV, name: "Isolated upgrade test to next major dev Drupal core version" }
     - { env: ORCA_JOB=LOOSE_DEPRECATED_CODE_SCAN, name: "Loose deprecated code scan" }
     - { env: ORCA_JOB=STRICT_DEPRECATED_CODE_SCAN, name: "Strict deprecated code scan" }
     - { env: ORCA_JOB=DEPRECATED_CODE_SCAN_W_CONTRIB, name: "Deprecated code scan w/ contrib" }
-    - { env: ORCA_JOB=STATIC_CODE_ANALYSIS, name: "Static code analysis with Coveralls" }
+    - { env: ORCA_JOB=STATIC_CODE_ANALYSIS  ORCA_COVERALLS_ENABLE=TRUE, name: "Static code analysis with Coveralls" }
     - { env: ORCA_LIVE_TEST=TRUE ORCA_PACKAGES_CONFIG= ORCA_PACKAGES_CONFIG_ALTER= , name: "Integrated live test" }
   allow_failures:
     - env: ORCA_JOB=LOOSE_DEPRECATED_CODE_SCAN
