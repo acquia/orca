@@ -52,29 +52,53 @@ acquia/acquia_cms:
   version_dev: ~
 
 drupal/acquia_connector:
-  version: 3.x
-  version_dev: 3.x-dev
+  core_matrix:
+    10.x:
+      version: ~
+      version_dev: ~
+    '*':
+      version: 4.x
+      version_dev: 4.x-dev
 
 drupal/acquia_contenthub:
-  version: 2.x
-  version_dev: 2.x-dev
+  core_matrix:
+    10.x:
+      version: ~
+      version_dev: ~
+    '*':
+      version: 2.x
+      version_dev: 2.x-dev
 
 drupal/acquia_lift:
-  version: 4.x
-  version_dev: 4.x-dev
+  core_matrix:
+    10.x:
+      version: ~
+      version_dev: ~
+    '*':
+      version: 4.x
+      version_dev: 4.x-dev
 
 drupal/acquia_purge:
   version: 1.x
   version_dev: 1.x-dev
 
-drupal/acsf: []
+drupal/acsf:
+  version: 2.x
+  version_dev: ~
 
 drupal/acsf_sso:
   enable: false
+  version: 2.x
+  version_dev: ~
 
 drupal/acquia_search:
-  version: 3.0.x
-  version_dev: 3.x-dev
+  core_matrix:
+    10.x:
+      version: ~
+      version_dev: ~
+    '*':
+      version: 3.0.x
+      version_dev: 3.x-dev
 
 acquia/blt:
   type: composer-plugin
@@ -96,34 +120,23 @@ acquia/drupal-recommended-project:
 
 acquia/drupal-spec-tool:
   type: behat-extension
-  version: 5.x
-  version_dev: 5.x-dev
+  core_matrix:
+    10.x:
+      version: ~
+      version_dev: 6.x-dev
+    '*':
+      version: 5.x
+      version_dev: 5.x-dev
 
 acquia/memcache-settings:
   type: library
 
-# Temporarily remove Lightning components due to related service disruption.
-#drupal/lightning_api:
-#  version: 4.x
-#  version_dev: 4.x-dev
-#
-#drupal/lightning_core:
-#  version: 5.x
-#  version_dev: 5.x-dev
-#
-#drupal/lightning_layout:
-#  version: 2.x
-#  version_dev: 2.x-dev
-#
-#drupal/lightning_media:
-#  version: 4.x
-#  version_dev: 5.0.x-dev
-#
-#drupal/lightning_workflow:
-#  version: 3.x
-#  version_dev: 3.x-dev
-
-drupal/mautic: []
+drupal/mautic:
+  core_matrix:
+    10.x:
+      version: ~
+      version_dev: ~
+    '*': []
 
 drupal/media_acquiadam:
   core_matrix:
@@ -133,6 +146,15 @@ drupal/media_acquiadam:
     '*':
       version: 2.x
       version_dev: 2.x-dev
+
+drupal/acquia_dam:
+  core_matrix:
+    10.x:
+      version: ~
+      version_dev: ~
+    '*':
+      version: 1.x
+      version_dev: 1.0.x-dev
 
 drupal/mysql56:
   type: library

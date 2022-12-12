@@ -24,69 +24,77 @@ jobs:
       ORCA_SUT_BRANCH: main
       ORCA_PACKAGES_CONFIG: example/tests/packages.yml
       ORCA_PACKAGES_CONFIG_ALTER: example/tests/packages_alter.yml
-      ORCA_ENABLE_NIGHTWATCH: ${{ matrix.orca-enable-nightwatch }}
       # Hardcode path since GITHUB_WORKSPACE can't be used here.
       # @see https://github.community/t/how-to-use-env-context/16975/9
       ORCA_SUT_DIR: /home/runner/work/orca/example
-      ORCA_SELF_TEST_COVERAGE_CLOVER: $HOME/build/logs/clover-self.xml
+      ORCA_SELF_TEST_COVERAGE_CLOVER: /home/runner/build/logs/clover.xml
       ORCA_JOB: ${{ matrix.orca-job }}
+      ORCA_COVERALLS_ENABLE: ${{ matrix.orca-coveralls-enable }}
+      COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      ORCA_ENABLE_NIGHTWATCH: ${{ matrix.orca-enable-nightwatch }}
 
     strategy:
       matrix:
         orca-job:
           - STATIC_CODE_ANALYSIS
           - INTEGRATED_TEST_ON_OLDEST_SUPPORTED
-          - INTEGRATED_TEST_ON_LATEST_LTS
           - INTEGRATED_TEST_ON_PREVIOUS_MINOR
-          - INTEGRATED_UPGRADE_TEST_FROM_PREVIOUS_MINOR
-          - ISOLATED_TEST_ON_CURRENT
+          # - INTEGRATED_UPGRADE_TEST_FROM_PREVIOUS_MINOR
           - INTEGRATED_TEST_ON_CURRENT
-          - INTEGRATED_UPGRADE_TEST_TO_NEXT_MINOR
+          # - INTEGRATED_UPGRADE_TEST_TO_NEXT_MINOR
           - ISOLATED_TEST_ON_CURRENT_DEV
           - INTEGRATED_TEST_ON_CURRENT_DEV
           - STRICT_DEPRECATED_CODE_SCAN
           - ISOLATED_TEST_ON_NEXT_MINOR
           - INTEGRATED_TEST_ON_NEXT_MINOR
-          - ISOLATED_UPGRADE_TEST_TO_NEXT_MAJOR_BETA_OR_LATER
-          - ISOLATED_UPGRADE_TEST_TO_NEXT_MAJOR_DEV
+          # - ISOLATED_UPGRADE_TEST_TO_NEXT_MAJOR_BETA_OR_LATER
+          # - ISOLATED_UPGRADE_TEST_TO_NEXT_MAJOR_DEV
           - DEPRECATED_CODE_SCAN_W_CONTRIB
           - INTEGRATED_TEST_ON_NEXT_MINOR_DEV
           - ISOLATED_TEST_ON_NEXT_MINOR_DEV
-          - INTEGRATED_UPGRADE_TEST_TO_NEXT_MINOR_DEV
+          # - INTEGRATED_UPGRADE_TEST_TO_NEXT_MINOR_DEV
           - LOOSE_DEPRECATED_CODE_SCAN
-          # - ISOLATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_BETA_OR_LATER
-          # - INTEGRATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_BETA_OR_LATER
-          # - ISOLATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_DEV
-          # - INTEGRATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_DEV
-        php-version: [ "7.4" ]
+          - INTEGRATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_BETA_OR_LATER
+          - ISOLATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_DEV
+          - INTEGRATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_DEV
+        php-version: [ "8.1" ]
+        orca-coveralls-enable: [ "FALSE" ]
+        orca-enable-nightwatch: [ "FALSE" ]
         include:
-          - orca-job: ISOLATED_TEST_ON_CURRENT
+          - orca-job: STATIC_CODE_ANALYSIS
+            php-version: "8.1"
+            orca-coveralls-enable: "TRUE"
+            orca-enable-nightwatch: "FALSE"
+
+          - orca-job: INTEGRATED_TEST_ON_OLDEST_SUPPORTED
+            php-version: "7.4"
+            orca-enable-nightwatch: "FALSE"
+            orca-coveralls-enable: "FALSE"
+
+          - orca-job: INTEGRATED_TEST_ON_OLDEST_SUPPORTED
             php-version: "8.0"
-            orca-enable-nightwatch: "TRUE"
-
-          - orca-job: ISOLATED_TEST_ON_CURRENT
-            php-version: "8.1"
-            orca-enable-nightwatch: "TRUE"
-
-          - orca-job: ISOLATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_DEV
-            php-version: "8.1"
-            orca-enable-nightwatch: "TRUE"
-
-          - orca-job: INTEGRATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_DEV
-            php-version: "8.1"
-            orca-enable-nightwatch: "TRUE"
+            orca-enable-nightwatch: "FALSE"
+            orca-coveralls-enable: "FALSE"
 
           - orca-job: ISOLATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_BETA_OR_LATER
             php-version: "8.1"
+            orca-coveralls-enable: "FALSE"
             orca-enable-nightwatch: "TRUE"
 
-          - orca-job: INTEGRATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_BETA_OR_LATER
+          - orca-job: INTEGRATED_TEST_ON_LATEST_LTS
+            php-version: "7.4"
+            orca-coveralls-enable: "FALSE"
+            orca-enable-nightwatch: "FALSE"
+
+          - orca-job: ISOLATED_TEST_ON_CURRENT
             php-version: "8.1"
+            orca-enable-nightwatch: "TRUE"
+            orca-coveralls-enable: "FALSE"
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
-      - uses: actions/setup-node@v2
+      - uses: actions/setup-node@v3
         with:
           node-version: 16.x
 
@@ -117,6 +125,8 @@ jobs:
       - name: After script
         run: |
           ../orca/bin/ci/self-test/after_success.sh
+          unset ORCA_COVERAGE_ENABLE
+          unset ORCA_COVERALLS_ENABLE
           ../orca/bin/ci/after_success.sh
           ../orca/bin/ci/after_failure.sh
           ../orca/bin/ci/after_script.sh
