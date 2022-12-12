@@ -30,7 +30,7 @@ env:
     - ORCA_SUT_BRANCH=main
     - ORCA_PACKAGES_CONFIG=example/tests/packages.yml
     - ORCA_PACKAGES_CONFIG_ALTER=example/tests/packages_alter.yml
-    - ORCA_ENABLE_NIGHTWATCH=TRUE
+    - ORCA_ENABLE_NIGHTWATCH=FALSE
     - ORCA_SUT_DIR=${TRAVIS_BUILD_DIR}/example
     - ORCA_SELF_TEST_COVERAGE_CLOVER=$HOME/build/logs/clover-self.xml
 
@@ -45,7 +45,7 @@ jobs:
     - { env: ORCA_JOB=INTEGRATED_TEST_ON_PREVIOUS_MINOR, php: "8.0", name: "Integrated test on previous minor Drupal core version in php 8.0" }
     - { env: ORCA_JOB=INTEGRATED_TEST_ON_PREVIOUS_MINOR, name: "Integrated test on previous minor Drupal core version" }
 #    - { env: ORCA_JOB=INTEGRATED_UPGRADE_TEST_FROM_PREVIOUS_MINOR, name: "Integrated upgrade test from previous minor Drupal core version" }
-    - { env: ORCA_JOB=ISOLATED_TEST_ON_CURRENT, name: "Isolated test on current Drupal core version" }
+    - { env: ORCA_JOB=ISOLATED_TEST_ON_CURRENT ORCA_COVERALLS_ENABLE=TRUE ORCA_ENABLE_NIGHTWATCH=TRUE, name: "Isolated test on current Drupal core version" }
     - { env: ORCA_JOB=INTEGRATED_TEST_ON_CURRENT, name: "Integrated test on current Drupal core version" }
 #    - { env: ORCA_JOB=INTEGRATED_UPGRADE_TEST_TO_NEXT_MINOR, name: "Integrated upgrade test to next minor Drupal core version" }
 #    - { env: ORCA_JOB=INTEGRATED_UPGRADE_TEST_TO_NEXT_MINOR_DEV, name: "Integrated upgrade test to next minor dev Drupal core version" }
@@ -64,8 +64,8 @@ jobs:
     - { env: ORCA_JOB=LOOSE_DEPRECATED_CODE_SCAN, name: "Loose deprecated code scan" }
     - { env: ORCA_JOB=STRICT_DEPRECATED_CODE_SCAN, name: "Strict deprecated code scan" }
     - { env: ORCA_JOB=DEPRECATED_CODE_SCAN_W_CONTRIB, name: "Deprecated code scan w/ contrib" }
-    - { env: ORCA_JOB=STATIC_CODE_ANALYSIS ORCA_COVERALLS_ENABLE=TRUE, name: "Static code analysis with Coveralls" }
-    - { env: ORCA_LIVE_TEST=TRUE ORCA_PACKAGES_CONFIG= ORCA_PACKAGES_CONFIG_ALTER= ORCA_ENABLE_NIGHTWATCH=FALSE, name: "Integrated live test" }
+    - { env: ORCA_JOB=STATIC_CODE_ANALYSIS, name: "Static code analysis with Coveralls" }
+    - { env: ORCA_LIVE_TEST=TRUE ORCA_PACKAGES_CONFIG= ORCA_PACKAGES_CONFIG_ALTER= , name: "Integrated live test" }
   allow_failures:
     - env: ORCA_JOB=LOOSE_DEPRECATED_CODE_SCAN
     - env: ORCA_JOB=DEPRECATED_CODE_SCAN_W_CONTRIB
@@ -75,7 +75,7 @@ jobs:
     - env: ORCA_JOB=INTEGRATED_TEST_ON_NEXT_MINOR
     - env: ORCA_JOB=ISOLATED_TEST_ON_CURRENT_DEV
     - env: ORCA_JOB=INTEGRATED_TEST_ON_CURRENT_DEV
-    - env: ORCA_LIVE_TEST=TRUE ORCA_PACKAGES_CONFIG= ORCA_PACKAGES_CONFIG_ALTER= ORCA_ENABLE_NIGHTWATCH=FALSE
+    - env: ORCA_LIVE_TEST=TRUE ORCA_PACKAGES_CONFIG= ORCA_PACKAGES_CONFIG_ALTER=
 
 before_install:
   - nvm install 16; nvm use 16

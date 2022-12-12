@@ -29,6 +29,7 @@ jobs:
       # @see https://github.community/t/how-to-use-env-context/16975/9
       ORCA_SUT_DIR: /home/runner/work/orca/example
       ORCA_SELF_TEST_COVERAGE_CLOVER: $HOME/build/logs/clover-self.xml
+      ORCA_COVERALLS_ENABLE: ${{ matrix.orca-coveralls-enable }}
       ORCA_JOB: ${{ matrix.orca-job }}
 
     strategy:
@@ -62,6 +63,7 @@ jobs:
           - orca-job: ISOLATED_TEST_ON_CURRENT
             php-version: "8.1"
             orca-enable-nightwatch: "TRUE"
+            orca-coveralls-enable: "TRUE"
 
           - orca-job: INTEGRATED_TEST_ON_OLDEST_SUPPORTED
             php-version: "8.0"
@@ -74,7 +76,6 @@ jobs:
 
           - orca-job: INTEGRATED_TEST_ON_PREVIOUS_MINOR
             php-version: "7.4"
-            orca-enable-nightwatch: "TRUE"
 
     steps:
       - uses: actions/checkout@v3
