@@ -41,8 +41,6 @@ jobs:
     - { env: ORCA_JOB=INTEGRATED_TEST_ON_OLDEST_SUPPORTED, php: "8.0", name: "Integrated test on oldest supported Drupal core version in php 8.0" }
     - { env: ORCA_JOB=INTEGRATED_TEST_ON_OLDEST_SUPPORTED, name: "Integrated test on oldest supported Drupal core version" }
     - { env: ORCA_JOB=INTEGRATED_TEST_ON_LATEST_LTS, php: "7.4", name: "Integrated test on latest LTS Drupal core version" }
-    - { env: ORCA_JOB=INTEGRATED_TEST_ON_PREVIOUS_MINOR, php: "7.4", name: "Integrated test on previous minor Drupal core version in php 7.4" }
-    - { env: ORCA_JOB=INTEGRATED_TEST_ON_PREVIOUS_MINOR, php: "8.0", name: "Integrated test on previous minor Drupal core version in php 8.0" }
     - { env: ORCA_JOB=INTEGRATED_TEST_ON_PREVIOUS_MINOR, name: "Integrated test on previous minor Drupal core version" }
     # - { env: ORCA_JOB=INTEGRATED_UPGRADE_TEST_FROM_PREVIOUS_MINOR, name: "Integrated upgrade test from previous minor Drupal core version" }
     - { env: ORCA_JOB=ISOLATED_TEST_ON_CURRENT ORCA_ENABLE_NIGHTWATCH=TRUE, name: "Isolated test on current Drupal core version" }

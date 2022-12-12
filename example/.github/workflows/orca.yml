@@ -163,15 +163,6 @@ jobs:
             orca-coveralls-enable: "FALSE"
             orca-enable-nightwatch: "FALSE"
 
-          - orca-job: INTEGRATED_TEST_ON_PREVIOUS_MINOR
-            php-version: "7.4"
-            orca-coveralls-enable: "FALSE"
-            orca-enable-nightwatch: "FALSE"
-
-          - orca-job: INTEGRATED_TEST_ON_PREVIOUS_MINOR
-            php-version: "8.0"
-            orca-coveralls-enable: "FALSE"
-            orca-enable-nightwatch: "FALSE"
           # To send PHPUnit test coverage data to Coveralls (coveralls.io), configure
           # your GitHub repository according to the FAQ below and uncomment the
           # following line. By default this job is allowed to fail (see below) so that
