@@ -28,8 +28,10 @@ jobs:
       # Hardcode path since GITHUB_WORKSPACE can't be used here.
       # @see https://github.community/t/how-to-use-env-context/16975/9
       ORCA_SUT_DIR: /home/runner/work/orca/example
-      ORCA_SELF_TEST_COVERAGE_CLOVER: $HOME/build/logs/clover-self.xml
+      ORCA_SELF_TEST_COVERAGE_CLOVER: /home/runner/build/logs/clover-self.xml
       ORCA_JOB: ${{ matrix.orca-job }}
+      ORCA_COVERALLS_ENABLE: ${{ matrix.coveralls-enable }}
+      COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     strategy:
       matrix:
@@ -82,6 +84,14 @@ jobs:
 
           - orca-job: INTEGRATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_BETA_OR_LATER
             php-version: "8.1"
+
+          - orca-job: STATIC_CODE_ANALYSIS
+            php-version: "7.4"
+            coveralls-enable: "TRUE"
+
+          - orca-job: STATIC_CODE_ANALYSIS
+            php-version: "8.1"
+            coveralls-enable: "TRUE"
 
     steps:
       - uses: actions/checkout@v3
