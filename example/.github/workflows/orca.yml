@@ -145,7 +145,7 @@ jobs:
         include:
           - orca-job: STATIC_CODE_ANALYSIS
             php-version: "8.1"
-            orca-coveralls-enable: "TRUE"
+            orca-coveralls-enable: "FALSE"
             orca-enable-nightwatch: "FALSE"
 
           - orca-job: INTEGRATED_TEST_ON_OLDEST_SUPPORTED
@@ -175,7 +175,7 @@ jobs:
           # @see https://github.com/acquia/orca/blob/main/docs/advanced-usage.md#ORCA_COVERAGE_ENABLE
           - orca-job: ISOLATED_TEST_ON_CURRENT
             php-version: "8.1"
-            orca-coveralls-enable: "TRUE"
+            orca-coveralls-enable: "FALSE"
             orca-enable-nightwatch: "TRUE"
 
           # ORCA only executes when ORCA_JOB is set. Leave ORCA_JOB unset to execute custom jobs.
