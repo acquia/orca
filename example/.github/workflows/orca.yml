@@ -95,11 +95,12 @@ jobs:
       #
       # Do not modify the following lines. They are critical for managing the build matrix.
       ORCA_JOB: ${{ matrix.orca-job }}
-      ORCA_COVERALLS_ENABLE: ${{ matrix.coveralls-enable }}
+      ORCA_COVERALLS_ENABLE: ${{ matrix.orca-coveralls-enable }}
       # The GITHUB_TOKEN secret is automatically available to GitHub Actions
       # workflows--it does not need to be manually created or configured anywhere.
       # @see https://docs.github.com/en/actions/security-guides/automatic-token-authentication
       COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      ORCA_ENABLE_NIGHTWATCH: ${{ matrix.orca-enable-nightwatch }}
 
     # Execution time is drastically reduced by splitting the build into multiple
     # concurrent jobs.
@@ -137,7 +138,8 @@ jobs:
         # @see https://www.drupal.org/docs/8/system-requirements/php-requirements
         # @see https://docs.acquia.com/acquia-cloud/arch/tech-platform/
         php-version: [ "8.1" ]
-        coveralls-enable: [ "FALSE" ]
+        orca-coveralls-enable: [ "FALSE" ]
+        orca-enable-nightwatch: [ "FALSE" ]
         # When manually specifying a job to include, empty parameter values (such as for orca-job and php-version) may
         # result in undefined behavior. Make sure to set each parameter explicitly.
         include:
@@ -165,7 +167,7 @@ jobs:
           # @see https://github.com/acquia/orca/blob/main/docs/advanced-usage.md#ORCA_COVERAGE_ENABLE
           - orca-job: ISOLATED_TEST_ON_CURRENT
             php-version: "8.1"
-            coveralls-enable: "TRUE"
+            orca-coveralls-enable: "TRUE"
             orca-enable-nightwatch: "TRUE"
 
           - orca-job: STATIC_CODE_ANALYSIS
