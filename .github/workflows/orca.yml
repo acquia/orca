@@ -62,40 +62,40 @@ jobs:
         orca-coveralls-enable: [ "FALSE" ]
         orca-enable-nightwatch: [ "FALSE" ]
         include:
-          - orca-job: ISOLATED_TEST_ON_CURRENT
-            php-version: "8.1"
-            orca-enable-nightwatch: "TRUE"
-            orca-coveralls-enable: "FALSE"
-
-          - orca-job: INTEGRATED_TEST_ON_OLDEST_SUPPORTED
-            php-version: "8.0"
-            orca-enable-nightwatch: "FALSE"
-            orca-coveralls-enable: "FALSE"
-
-          - orca-job: INTEGRATED_TEST_ON_PREVIOUS_MINOR
-            php-version: "8.0"
-            orca-enable-nightwatch: "FALSE"
-            orca-coveralls-enable: "FALSE"
-
-          - orca-job: INTEGRATED_TEST_ON_OLDEST_SUPPORTED
-            php-version: "7.4"
-            orca-enable-nightwatch: "FALSE"
-            orca-coveralls-enable: "FALSE"
-
-          - orca-job: INTEGRATED_TEST_ON_PREVIOUS_MINOR
-            php-version: "7.4"
-            orca-enable-nightwatch: "FALSE"
-            orca-coveralls-enable: "FALSE"
-
           - orca-job: STATIC_CODE_ANALYSIS
             php-version: "8.1"
             orca-coveralls-enable: "TRUE"
             orca-enable-nightwatch: "FALSE"
 
+          - orca-job: INTEGRATED_TEST_ON_OLDEST_SUPPORTED
+            php-version: "7.4"
+            orca-enable-nightwatch: "FALSE"
+            orca-coveralls-enable: "FALSE"
+
+          - orca-job: INTEGRATED_TEST_ON_OLDEST_SUPPORTED
+            php-version: "8.0"
+            orca-enable-nightwatch: "FALSE"
+            orca-coveralls-enable: "FALSE"
+
           - orca-job: INTEGRATED_TEST_ON_LATEST_LTS
             php-version: "7.4"
             orca-coveralls-enable: "FALSE"
             orca-enable-nightwatch: "FALSE"
+
+          - orca-job: INTEGRATED_TEST_ON_PREVIOUS_MINOR
+            php-version: "7.4"
+            orca-enable-nightwatch: "FALSE"
+            orca-coveralls-enable: "FALSE"
+
+          - orca-job: INTEGRATED_TEST_ON_PREVIOUS_MINOR
+            php-version: "8.0"
+            orca-enable-nightwatch: "FALSE"
+            orca-coveralls-enable: "FALSE"
+
+          - orca-job: ISOLATED_TEST_ON_CURRENT
+            php-version: "8.1"
+            orca-enable-nightwatch: "TRUE"
+            orca-coveralls-enable: "FALSE"
 
     steps:
       - uses: actions/checkout@v3
