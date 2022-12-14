@@ -61,22 +61,12 @@ drupal/acquia_connector:
   version_dev: 4.x-dev
 
 drupal/acquia_contenthub:
-  core_matrix:
-    10.x:
-      version: ~
-      version_dev: ~
-    '*':
-      version: 3.x
-      version_dev: 3.x-dev
+  version: 2.x
+  version_dev: 2.x-dev
 
 drupal/acquia_lift:
-  core_matrix:
-    10.x:
-      version: ~
-      version_dev: ~
-    '*':
-      version: 4.x
-      version_dev: 4.x-dev
+  version: 4.x
+  version_dev: 4.x-dev
 
 drupal/acquia_purge:
   version: 1.x
