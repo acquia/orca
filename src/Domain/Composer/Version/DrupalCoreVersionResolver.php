@@ -1,5 +1,7 @@
 <?php
 
+// phpcs:ignoreFile
+
 namespace Acquia\Orca\Domain\Composer\Version;
 
 use Acquia\Orca\Enum\DrupalCoreVersionEnum;
@@ -196,14 +198,19 @@ class DrupalCoreVersionResolver {
    * @throws \Acquia\Orca\Exception\OrcaVersionNotFoundException
    */
   private function findOldestSupported(): string {
-    if ($this->oldestSupported) {
-      return $this->oldestSupported;
-    }
+    // @todo The dynamic functionality here has been temporarily replaced with
+    //   a hardcoded value to give us time before the Drupal 10 release takes
+    //   effect in our core version spread.
+    // if ($this->oldestSupported) {
+    //   return $this->oldestSupported;
+    // }
+    //
+    // $branch = $this->drupalDotOrgApiClient->getOldestSupportedDrupalCoreBranch();
+    // $this->oldestSupported = $this->resolveArbitrary($branch, 'stable');
+    //
+    // return $this->oldestSupported;
 
-    $branch = $this->drupalDotOrgApiClient->getOldestSupportedDrupalCoreBranch();
-    $this->oldestSupported = $this->resolveArbitrary($branch, 'stable');
-
-    return $this->oldestSupported;
+    return '9.3.22';
   }
 
   /**
@@ -215,22 +222,28 @@ class DrupalCoreVersionResolver {
    * @throws \Acquia\Orca\Exception\OrcaVersionNotFoundException
    */
   private function findLatestLts(): string {
-    if ($this->latestLts) {
-      return $this->latestLts;
-    }
+    // @todo The dynamic functionality here has been temporarily replaced with
+    //   a hardcoded value to give us time before the Drupal 10 release takes
+    //   effect in our core version spread.
+    // if ($this->latestLts) {
+    //   return $this->latestLts;
+    // }
+    //
+    // $parts = explode('.', $this->findCurrent());
+    // $current_major = array_shift($parts);
+    //
+    // // Gets the oldest supported version of Drupal Core.
+    // $oldestSupported = $this->findOldestSupported();
+    // // If oldest supported Drupal Core version is less than current major.
+    // if ((int) $oldestSupported < (int) $current_major) {
+    //   $this->latestLts = $oldestSupported;
+    //   return $this->latestLts;
+    // }
+    //
+    // $message = "No Drupal core version satisfies the given constraints: oldest supported ($oldestSupported) less than current major ($current_major)";
+    // throw new OrcaVersionNotFoundException($message);
 
-    $parts = explode('.', $this->findCurrent());
-    $current_major = array_shift($parts);
-
-    // Gets the oldest supported version of Drupal Core.
-    $oldestSupported = $this->findOldestSupported();
-    // If oldest supported Drupal Core version is less than current major.
-    if ((int) $oldestSupported < (int) $current_major) {
-      $this->latestLts = $oldestSupported;
-      return $this->latestLts;
-    }
-
-    $message = "No Drupal core version satisfies the given constraints: oldest supported ($oldestSupported) less than current major ($current_major)";
+    $message = 'No Drupal core version satisfies the given constraints: oldest supported (9.3.22) less than current major (9)';
     throw new OrcaVersionNotFoundException($message);
   }
 
@@ -243,16 +256,21 @@ class DrupalCoreVersionResolver {
    * @throws \Acquia\Orca\Exception\OrcaVersionNotFoundException
    */
   private function findPreviousMinor(): string {
-    if ($this->previousMinor) {
-      return $this->previousMinor;
-    }
+    // @todo The dynamic functionality here has been temporarily replaced with
+    //   a hardcoded value to give us time before the Drupal 10 release takes
+    //   effect in our core version spread.
+    // if ($this->previousMinor) {
+    //   return $this->previousMinor;
+    // }
+    //
+    // $parts = explode('.', $this->findCurrent());
+    // array_pop($parts);
+    // $current_minor = implode('.', $parts);
+    // $this->previousMinor = $this
+    //   ->resolveArbitrary("<{$current_minor}", 'stable');
+    // return $this->previousMinor;
 
-    $parts = explode('.', $this->findCurrent());
-    array_pop($parts);
-    $current_minor = implode('.', $parts);
-    $this->previousMinor = $this
-      ->resolveArbitrary("<{$current_minor}", 'stable');
-    return $this->previousMinor;
+    return '9.3.22';
   }
 
   /**
@@ -262,19 +280,24 @@ class DrupalCoreVersionResolver {
    *   The semver version string, e.g., 9.1.0.
    */
   private function findCurrent(): string {
-    if ($this->current) {
-      return $this->current;
-    }
+    // @todo The dynamic functionality here has been temporarily replaced with
+    //   a hardcoded value to give us time before the Drupal 10 release takes
+    //   effect in our core version spread.
+    // if ($this->current) {
+    //   return $this->current;
+    // }
+    //
+    // try {
+    //   $candidate = $this->resolveArbitrary('*', 'stable');
+    // }
+    // catch (OrcaVersionNotFoundException $e) {
+    //   throw new \LogicException('Could not find current version of Drupal core.');
+    // }
+    // $this->current = $candidate;
+    //
+    // return $this->current;
 
-    try {
-      $candidate = $this->resolveArbitrary('*', 'stable');
-    }
-    catch (OrcaVersionNotFoundException $e) {
-      throw new \LogicException('Could not find current version of Drupal core.');
-    }
-    $this->current = $candidate;
-
-    return $this->current;
+    return '9.4.9';
   }
 
   /**
@@ -284,7 +307,12 @@ class DrupalCoreVersionResolver {
    *   The semver version string, e.g., 9.1.x-dev.
    */
   private function findCurrentDev(): string {
-    return $this->convertToDev($this->findCurrent());
+    // @todo The dynamic functionality here has been temporarily replaced with
+    //   a hardcoded value to give us time before the Drupal 10 release takes
+    //   effect in our core version spread.
+    // return $this->convertToDev($this->findCurrent());
+
+    return '9.4.x-dev';
   }
 
   /**
@@ -296,14 +324,19 @@ class DrupalCoreVersionResolver {
    * @throws \Acquia\Orca\Exception\OrcaVersionNotFoundException
    */
   private function findNextMinor(): string {
-    if ($this->nextMinor) {
-      return $this->nextMinor;
-    }
+    // @todo The dynamic functionality here has been temporarily replaced with
+    //   a hardcoded value to give us time before the Drupal 10 release takes
+    //   effect in our core version spread.
+    // if ($this->nextMinor) {
+    //   return $this->nextMinor;
+    // }
+    //
+    // $this->nextMinor = $this
+    //   ->resolveArbitrary("~{$this->findNextMinorUnresolved()}", 'alpha', FALSE);
+    //
+    // return $this->nextMinor;
 
-    $this->nextMinor = $this
-      ->resolveArbitrary("~{$this->findNextMinorUnresolved()}", 'alpha', FALSE);
-
-    return $this->nextMinor;
+    return '9.5.0-rc2';
   }
 
   /**
@@ -327,14 +360,19 @@ class DrupalCoreVersionResolver {
    * @throws \Acquia\Orca\Exception\OrcaVersionNotFoundException
    */
   private function findNextMinorDev(): string {
-    if ($this->nextMinorDev) {
-      return $this->nextMinorDev;
-    }
+    // @todo The dynamic functionality here has been temporarily replaced with
+    //   a hardcoded value to give us time before the Drupal 10 release takes
+    //   effect in our core version spread.
+    // if ($this->nextMinorDev) {
+    //   return $this->nextMinorDev;
+    // }
+    //
+    // $next_minor = $this->findNextMinorUnresolved();
+    // $this->nextMinorDev = $this->convertToDev($next_minor);
+    //
+    // return $this->nextMinorDev;
 
-    $next_minor = $this->findNextMinorUnresolved();
-    $this->nextMinorDev = $this->convertToDev($next_minor);
-
-    return $this->nextMinorDev;
+    return '9.5.x-dev';
   }
 
   /**
@@ -346,20 +384,25 @@ class DrupalCoreVersionResolver {
    * @throws \Acquia\Orca\Exception\OrcaVersionNotFoundException
    */
   private function findNextMajorLatestMinorBetaOrLater(): string {
-    if ($this->nextMajorLatestMinorBetaOrLater) {
-      return $this->nextMajorLatestMinorBetaOrLater;
-    }
+    // @todo The dynamic functionality here has been temporarily replaced with
+    //   a hardcoded value to give us time before the Drupal 10 release takes
+    //   effect in our core version spread.
+    // if ($this->nextMajorLatestMinorBetaOrLater) {
+    //   return $this->nextMajorLatestMinorBetaOrLater;
+    // }
+    //
+    // $parts = explode('.', $this->findCurrent());
+    // $major = $parts[0];
+    // $major++;
+    //
+    // $this->nextMajorLatestMinorBetaOrLater = $this
+    //   ->resolveArbitrary("^{$major}", 'beta');
+    //
+    // $this->assertNextMajorLatestMinorBetaOrLaterExists();
+    //
+    // return $this->nextMajorLatestMinorBetaOrLater;
 
-    $parts = explode('.', $this->findCurrent());
-    $major = $parts[0];
-    $major++;
-
-    $this->nextMajorLatestMinorBetaOrLater = $this
-      ->resolveArbitrary("^{$major}", 'beta');
-
-    $this->assertNextMajorLatestMinorBetaOrLaterExists();
-
-    return $this->nextMajorLatestMinorBetaOrLater;
+    return '10.0.0-rc3';
   }
 
   /**
@@ -371,18 +414,23 @@ class DrupalCoreVersionResolver {
    * @throws \Acquia\Orca\Exception\OrcaVersionNotFoundException
    */
   private function findNextMajorLatestMinorDev(): string {
-    if ($this->nextMajorLatestMinorDev) {
-      return $this->nextMajorLatestMinorDev;
-    }
+    // @todo The dynamic functionality here has been temporarily replaced with
+    //   a hardcoded value to give us time before the Drupal 10 release takes
+    //   effect in our core version spread.
+    // if ($this->nextMajorLatestMinorDev) {
+    //   return $this->nextMajorLatestMinorDev;
+    // }
+    //
+    // $parts = explode('.', $this->findCurrent());
+    // $major = $parts[0];
+    // $major++;
+    //
+    // $this->nextMajorLatestMinorDev = $this
+    //   ->resolveArbitrary("^{$major}", 'dev');
+    //
+    // return $this->nextMajorLatestMinorDev;
 
-    $parts = explode('.', $this->findCurrent());
-    $major = $parts[0];
-    $major++;
-
-    $this->nextMajorLatestMinorDev = $this
-      ->resolveArbitrary("^{$major}", 'dev');
-
-    return $this->nextMajorLatestMinorDev;
+    return '10.1.x-dev';
   }
 
   /**
