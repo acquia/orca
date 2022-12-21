@@ -246,4 +246,3 @@ after_script: ../orca/bin/ci/after_script.sh
 #     on_failure: change
 #     # Limit to the major version branches.
 #     if: branch = env(ORCA_SUT_BRANCH)
-
