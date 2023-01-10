@@ -59,7 +59,7 @@ See [Running automated tests](getting-started.md#running-automated-tests).
 
 ## Continuous integration
 
-ORCA includes out-of-the-box support for Travis CI for continuous integration. The default implementation runs the following concurrent jobs per build:
+ORCA includes out-of-the-box support for GITHUB Actions for continuous integration. The default implementation runs the following concurrent jobs per build:
 
 ![Job Matrix](images/job-matrix.png)
 
@@ -88,7 +88,7 @@ ORCA includes out-of-the-box support for Travis CI for continuous integration. T
 - `ISOLATED_UPGRADE_TEST_TO_NEXT_MAJOR_BETA_OR_LATER` - Isolated upgrade test to next major beta-or-later Drupal core version
 - `ISOLATED_UPGRADE_TEST_TO_NEXT_MAJOR_DEV` - Isolated upgrade test to next major dev Drupal core version
 
-See [Configuring Travis CI](getting-started.md#configuring-travis-ci).
+See [Configuring CI](getting-started.md#configuring-ci).
 
 ---
 

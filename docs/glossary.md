@@ -90,7 +90,7 @@ By default, ORCA uses Acquia Drupal Recommended Project to create [test fixtures
    orca fixture:init --project-template=acquia/drupal-minimal-project
    ```
 
-On Travis CI and GitHub Actions, it can be changed via the [`ORCA_FIXTURE_PROJECT_TEMPLATE`](advanced-usage.md#ORCA_FIXTURE_PROJECT_TEMPLATE) environment variable in your `.travis.yml` or `orca.yml` like this:
+On GitHub Actions, it can be changed via the [`ORCA_FIXTURE_PROJECT_TEMPLATE`](advanced-usage.md#ORCA_FIXTURE_PROJECT_TEMPLATE) environment variable in your `orca.yml` like this:
 
    ```yaml
    env:

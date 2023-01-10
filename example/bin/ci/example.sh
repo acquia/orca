@@ -10,13 +10,13 @@
 #     Provides an example of customizing an ORCA build by adding or
 #     modifying jobs. See real working examples:
 #
-#     - https://github.com/acquia/coding-standards-php/blob/v0.5.0/.travis.yml#L52 and
+#     - https://github.com/acquia/coding-standards-php/blob/develop/.github/workflows/orca.yml#L97 and
 #       https://github.com/acquia/coding-standards-php/tree/v0.5.0/bin/travis
 #
-#     - https://github.com/acquia/drupal-spec-tool/blob/4.0.1/.travis.yml#L45 and
+#     - https://github.com/acquia/drupal-spec-tool/blob/develop/.github/workflows/orca.yml#L91 and
 #       https://github.com/acquia/drupal-spec-tool/tree/4.0.1/bin/travis
 #
-#     - https://github.com/acquia/orca/blob/v3.12.2/.travis.yml#L89 and
+#     - https://github.com/acquia/orca/blob/develop/.github/workflows/orca.yml#L125 and
 #       https://github.com/acquia/orca/tree/v3.12.2/bin/ci/self-test
 #
 #     Remember to make your script executable! E.g.:

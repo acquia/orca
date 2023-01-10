@@ -1,6 +1,6 @@
 # Getting Started
 
-1. [Configuring Travis CI and GitHub Actions](#configuring-travis-ci)
+1. [Configuring GitHub Actions](#configuring-github-actions)
 1. [Local installation](#local-installation)
 1. [Making ORCA aware of your package](#making-orca-aware-of-your-package)
 1. [Running automated tests](#running-automated-tests)
@@ -8,11 +8,11 @@
     1. [Nightwatch.js](#nightwatchjs)
     1. [Tagging/grouping](#tagginggrouping)
 
-## Configuring Travis CI and GitHub Actions
+## Configuring GitHub Actions
 
-ORCA's primary use case is in a continuous integration workflow, running against pull requests and commits. It provides several scripts in `bin/common` corresponding to build phases and steps in Travis CI and GitHub Actions, respectively:
+ORCA's primary use case is in a continuous integration workflow, running against pull requests and commits. It provides several scripts in `bin/common` corresponding to build phases and steps in GitHub Actions, respectively:
 
-* **[`before_install.sh`](../bin/common/before_install.sh)** configures the Travis CI environment, installs ORCA, and prepares the SUT.
+* **[`before_install.sh`](../bin/common/before_install.sh)** configures the CI environment, installs ORCA, and prepares the SUT.
 * **[`install.sh`](../bin/common/install.sh)** creates the test fixture and places the SUT.
 * **[`before_script.sh`](../bin/common/before_script.sh)** displays details about the fixture for debugging purposes.
 * **[`script.sh`](../bin/common/script.sh)** runs static code analysis and automated tests.
@@ -21,7 +21,7 @@ ORCA's primary use case is in a continuous integration workflow, running against
 * **[`after_failure.sh`](../bin/common/after_failure.sh)** displays debugging information in case of failure.
 * **[`after_script.sh`](../bin/common/after_script.sh)** conditionally logs the job.
 
-See [`example/.travis.yml`](../example/.travis.yml) for an example Travis CI configuration and [`example/.github/workflows/orca.yml`](../example/.github/workflows/orca.yml) for an example GitHub Actions configuration. Features are explained in the comments.
+See  [`example/.github/workflows/orca.yml`](../example/.github/workflows/orca.yml) for an example GitHub Actions configuration. Features are explained in the comments.
 
 For more complex testing needs, ORCA commands can be invoked directly. [See this this example from Lightning.](https://github.com/acquia/lightning-core/blob/8.x-3.11/tests/travis/before_script.sh)
 
@@ -61,7 +61,7 @@ ORCA can also be installed and run locally for testing and development. Follow t
         ```
 
       (Add this to your `.bash_profile`/`.bashrc` or equivalent to make it permanent.)    
-Invoke ORCA from the terminal (`bin/orca`). Use the `--help` command option to learn more about the various commands or see how they're used in [`bin/travis/script.sh`](../bin/common/script.sh). Use the `fixture:run-server` command to run the web server for local development.
+Invoke ORCA from the terminal (`bin/orca`). Use the `--help` command option to learn more about the various commands or see how they're used in [`bin/ci/script.sh`](../bin/ci/script.sh). Use the `fixture:run-server` command to run the web server for local development.
 
 ## Making ORCA aware of your package
 
@@ -72,7 +72,7 @@ $ orca init --sut=drupal/example
 Error: Invalid value for "--sut" option: "drupal/example".
 ```
 
-To make ORCA aware of your package you'll need to dynamically add it to the list using [environment variables](advanced-usage.md#ORCA_PACKAGES_CONFIG_ALTER). Doing this on Travis CI is covered in the `env.global` section of the [example Travis configuration](../example/.travis.yml). Locally, you must set the appropriate variable(s) in your terminal session. The assignments can be copied right from your `.travis.yml`. Just prefix them with the `export` command, e.g.:
+To make ORCA aware of your package you'll need to dynamically add it to the list using [environment variables](advanced-usage.md#ORCA_PACKAGES_CONFIG_ALTER). Doing this on CI is covered in the `env.global` section of the [example CI configuration](../example/.github/workflows/orca.yml). Locally, you must set the appropriate variable(s) in your terminal session. The assignments can be copied right from your `orca.yml`. Just prefix them with the `export` command, e.g.:
 
 ```bash
 export ORCA_PACKAGES_CONFIG_ALTER=../example/tests/packages_alter.yml
