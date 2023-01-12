@@ -21,7 +21,7 @@ ORCA's primary use case is in a continuous integration workflow, running against
 * **[`after_failure.sh`](../bin/common/after_failure.sh)** displays debugging information in case of failure.
 * **[`after_script.sh`](../bin/common/after_script.sh)** conditionally logs the job.
 
-See  [`example/.github/workflows/orca.yml`](../example/.github/workflows/orca.yml) for an example GitHub Actions configuration. Features are explained in the comments.
+See [`example/.github/workflows/orca.yml`](../example/.github/workflows/orca.yml) for an example GitHub Actions configuration. Features are explained in the comments.
 
 For more complex testing needs, ORCA commands can be invoked directly. [See this this example from Lightning.](https://github.com/acquia/lightning-core/blob/8.x-3.11/tests/travis/before_script.sh)
 
