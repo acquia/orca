@@ -41,7 +41,7 @@ As an opinionated [project template](glossary.md#project-template), [Acquia CMS]
      - acquia/acquia_cms[v1.2-rc1, ..., 1.2.5.x-dev] require drupal/acquia_connector ^3 -> satisfiable by drupal/acquia_connector[dev-3.x, 3.0.0-rc1, ..., 3.x-dev (alias of dev-3.x)] from composer repo (https://packages.drupal.org/8) but drupal/acquia_connector[dev-8.x-1.x, 1.x-dev (alias of dev-8.x-1.x)] from path repo (/home/runner/build/acquia/acquia_connector) has higher repository priority. The packages with higher priority do not match your constraint and are therefore not installable. See https://getcomposer.org/repoprio for details and assistance.
    ```
 
-Acquia CMS is included in ORCA [test fixtures](glossary.md#test-fixture) by default by way of a requirement in [Acquia Drupal Recommended Project](glossary.md#acquia-drupal-recommended-project). If your package or one of its version branches is not meant to support Acquia CMS, you should use a different [project template](glossary.md#project-template). Add the following to your `.orca.yml` to do so on Github Actions:
+Acquia CMS is included in ORCA [test fixtures](glossary.md#test-fixture) by default by way of a requirement in [Acquia Drupal Recommended Project](glossary.md#acquia-drupal-recommended-project). If your package or one of its version branches is not meant to support Acquia CMS, you should use a different [project template](glossary.md#project-template). Add the following to your `.orca.yml` to do so on GitHub Actions:
 
    ```yaml
    env:
