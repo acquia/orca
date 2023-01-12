@@ -59,7 +59,7 @@ See [Running automated tests](getting-started.md#running-automated-tests).
 
 ## Continuous integration
 
-ORCA includes out-of-the-box support for GITHUB Actions for continuous integration. The default implementation runs the following concurrent jobs per build:
+ORCA includes out-of-the-box support for GitHub Actions for continuous integration. The default implementation runs the following concurrent jobs per build:
 
 ![Job Matrix](images/job-matrix.png)
 
