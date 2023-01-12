@@ -2,7 +2,7 @@
 
 ## Altering ORCA's behavior
 
-Various aspects of ORCA's behavior can be altered at runtime through the use of environment variables. These can be set or exported in a local terminal session or [in various ways on GTHUB ACTIONS](https://docs.github.com/en/actions/learn-github-actions/variables#about-variables).
+Various aspects of ORCA's behavior can be altered at runtime through the use of environment variables. These can be set or exported in a local terminal session or [in various ways on GitHub Actions](https://docs.github.com/en/actions/learn-github-actions/variables#about-variables).
 
 ### Command-line application
 
