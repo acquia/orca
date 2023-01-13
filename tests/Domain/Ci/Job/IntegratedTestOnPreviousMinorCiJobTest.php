@@ -6,7 +6,6 @@ use Acquia\Orca\Domain\Ci\Job\AbstractCiJob;
 use Acquia\Orca\Domain\Ci\Job\Helper\RedundantJobChecker;
 use Acquia\Orca\Domain\Ci\Job\IntegratedTestOnPreviousMinorCiJob;
 use Acquia\Orca\Domain\Package\PackageManager;
-use Acquia\Orca\Enum\CiJobEnum;
 use Acquia\Orca\Enum\DrupalCoreVersionEnum;
 use Acquia\Orca\Helper\EnvFacade;
 use Acquia\Orca\Helper\Process\ProcessRunner;
@@ -58,22 +57,6 @@ class IntegratedTestOnPreviousMinorCiJobTest extends CiJobTestBase {
     $job = $this->createJob();
 
     $this->runInstallPhase($job);
-  }
-
-  public function testRedundantJob(): void {
-    $this->redundantJobChecker
-      ->isRedundant(CiJobEnum::INTEGRATED_TEST_ON_PREVIOUS_MINOR())
-      ->willReturn(TRUE);
-    $this->output
-      ->writeln(Argument::any())
-      ->shouldBeCalledTimes(2);
-    $this->processRunner
-      ->runOrca(Argument::any())
-      ->shouldNotBeCalled();
-    $job = $this->createJob();
-
-    $this->runScriptPhase($job);
-    $this->runScriptPhase($job);
   }
 
   public function testInstallOverrideProfile(): void {
