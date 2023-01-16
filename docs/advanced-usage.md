@@ -44,12 +44,12 @@ For special testing needs, custom jobs can be added and existing ones modified t
 
    ```yaml
    before_script:
-     - ../orca/bin/common/before_script.sh
+     - ../orca/bin/ci/before_script.sh
      # Your custom script:
-     - ./bin/common/before_script.sh
+     - ./bin/ci/before_script.sh
    ```
 
-See [the example script](https://github.com/acquia/orca/blob/main/example/bin/common/example.sh) for more details.
+See [the example script](https://github.com/acquia/orca/blob/main/example/bin/ci/example.sh) for more details.
 
 ---
 

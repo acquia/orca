@@ -1,6 +1,6 @@
 # Getting Started
 
-1. [Configuring GitHub Actions](#configuring-github-actions)
+1. [Configuring CI](#configuring-ci)
 1. [Local installation](#local-installation)
 1. [Making ORCA aware of your package](#making-orca-aware-of-your-package)
 1. [Running automated tests](#running-automated-tests)
@@ -8,18 +8,18 @@
     1. [Nightwatch.js](#nightwatchjs)
     1. [Tagging/grouping](#tagginggrouping)
 
-## Configuring GitHub Actions
+## Configuring CI
 
-ORCA's primary use case is in a continuous integration workflow, running against pull requests and commits. It provides several scripts in `bin/common` corresponding to build phases and steps in GitHub Actions, respectively:
+ORCA's primary use case is in a continuous integration workflow, running against pull requests and commits. It provides several scripts in `bin/ci` corresponding to build phases and steps in GitHub Actions, respectively:
 
-* **[`before_install.sh`](../bin/common/before_install.sh)** configures the CI environment, installs ORCA, and prepares the SUT.
-* **[`install.sh`](../bin/common/install.sh)** creates the test fixture and places the SUT.
-* **[`before_script.sh`](../bin/common/before_script.sh)** displays details about the fixture for debugging purposes.
-* **[`script.sh`](../bin/common/script.sh)** runs static code analysis and automated tests.
-* **[`before_cache.sh`](../bin/common/before_cache.sh)** is reserved for future use.
-* **[`after_success.sh`](../bin/common/after_success.sh)** is reserved for future use.
-* **[`after_failure.sh`](../bin/common/after_failure.sh)** displays debugging information in case of failure.
-* **[`after_script.sh`](../bin/common/after_script.sh)** conditionally logs the job.
+* **[`before_install.sh`](../bin/ci/before_install.sh)** configures the CI environment, installs ORCA, and prepares the SUT.
+* **[`install.sh`](../bin/ci/install.sh)** creates the test fixture and places the SUT.
+* **[`before_script.sh`](../bin/ci/before_script.sh)** displays details about the fixture for debugging purposes.
+* **[`script.sh`](../bin/ci/script.sh)** runs static code analysis and automated tests.
+* **[`before_cache.sh`](../bin/ci/before_cache.sh)** is reserved for future use.
+* **[`after_success.sh`](../bin/ci/after_success.sh)** is reserved for future use.
+* **[`after_failure.sh`](../bin/ci/after_failure.sh)** displays debugging information in case of failure.
+* **[`after_script.sh`](../bin/ci/after_script.sh)** conditionally logs the job.
 
 See [`example/.github/workflows/orca.yml`](../example/.github/workflows/orca.yml) for an example GitHub Actions configuration. Features are explained in the comments.
 

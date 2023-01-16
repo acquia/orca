@@ -16,7 +16,7 @@ ORCA doesn't install dev dependencies because Composer provides no means of doin
 
    ```yaml
    install:
-     - ../orca/bin/common/install.sh
+     - ../orca/bin/ci/install.sh
 
      # Add the physical dependency to the codebase.
      - cd "$ORCA_FIXTURE_DIR"

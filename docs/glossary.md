@@ -93,9 +93,10 @@ By default, ORCA uses Acquia Drupal Recommended Project to create [test fixtures
 On GitHub Actions, it can be changed via the [`ORCA_FIXTURE_PROJECT_TEMPLATE`](advanced-usage.md#ORCA_FIXTURE_PROJECT_TEMPLATE) environment variable in your `orca.yml` like this:
 
    ```yaml
-   env:
-     global:
-       - ORCA_FIXTURE_PROJECT_TEMPLATE=acquia/drupal-minimal-project
+   jobs:
+     build:
+       env:
+        ORCA_FIXTURE_PROJECT_TEMPLATE: acquia/drupal-minimal-project
    ```
 
 ## Public tests

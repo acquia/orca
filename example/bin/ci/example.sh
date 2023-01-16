@@ -16,7 +16,7 @@
 #     - https://github.com/acquia/drupal-spec-tool/blob/develop/.github/workflows/orca.yml#L91 and
 #       https://github.com/acquia/drupal-spec-tool/tree/4.0.1/bin/travis
 #
-#     - https://github.com/acquia/orca/blob/develop/.github/workflows/orca.yml#L125 and
+#     - https://github.com/acquia/orca/blob/v3.27.0/.github/workflows/orca.yml#L125 and
 #       https://github.com/acquia/orca/tree/v3.12.2/bin/ci/self-test
 #
 #     Remember to make your script executable! E.g.:
