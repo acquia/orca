@@ -72,7 +72,7 @@ $ orca init --sut=drupal/example
 Error: Invalid value for "--sut" option: "drupal/example".
 ```
 
-To make ORCA aware of your package you'll need to dynamically add it to the list using [environment variables](advanced-usage.md#ORCA_PACKAGES_CONFIG_ALTER). Doing this on CI is covered in the `env.global` section of the [example CI configuration](../example/.github/workflows/orca.yml). Locally, you must set the appropriate variable(s) in your terminal session. The assignments can be copied right from your `orca.yml`. Just prefix them with the `export` command, e.g.:
+To make ORCA aware of your package you'll need to dynamically add it to the list using [environment variables](advanced-usage.md#ORCA_PACKAGES_CONFIG_ALTER). Doing this on CI is covered in the `jobs.build.env` section of the [example CI configuration](../example/.github/workflows/orca.yml). Locally, you must set the appropriate variable(s) in your terminal session. The assignments can be copied right from your `orca.yml`. Just prefix them with the `export` command, e.g.:
 
 ```bash
 export ORCA_PACKAGES_CONFIG_ALTER=../example/tests/packages_alter.yml
