@@ -30,6 +30,15 @@ if [[ "$ORCA_ENABLE_NIGHTWATCH" == "TRUE" && "$ORCA_SUT_HAS_NIGHTWATCH_TESTS" &&
       --passWithNoTests \\
       --tag=$ORCA_SUT_MACHINE_NAME"
 
+    if [[ "$ORCA_SUT_NAME" == "drupal/example" ]]; then
+      (
+        eval "yarn test:nightwatch \\
+          --headless \\
+          --passWithNoTests \\
+          --tag=core"
+      )
+    fi
+
     kill -0 $SERVER_PID
     kill -0 $CHROMEDRIVER_PID
   )
