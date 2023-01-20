@@ -48,8 +48,13 @@
 # example.
 
 acquia/acquia_cms:
-  version: ~
-  version_dev: ~
+  core_matrix:
+    10.x:
+      version: ~
+      version_dev: ~
+    '*':
+      version: 2.0.x
+      version_dev: 2.0.x-dev
 
 drupal/acquia_connector:
   version: 4.x
