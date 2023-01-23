@@ -122,7 +122,7 @@ acquia/drupal-spec-tool:
   type: behat-extension
   core_matrix:
     10.x:
-      version: ~
+      version: 6.x
       version_dev: 6.x-dev
     '*':
       version: 5.x
