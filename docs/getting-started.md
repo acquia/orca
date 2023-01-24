@@ -10,7 +10,7 @@
 
 ## Configuring CI
 
-ORCA's primary use case is in a continuous integration workflow, running against pull requests and commits. It provides several scripts in `bin/ci` corresponding to build phases and steps in GitHub Actions, respectively:
+ORCA's primary use case is in a continuous integration workflow, running against pull requests and commits. It provides several scripts in `bin/ci` corresponding to build phases and steps in GitHub Actions:
 
 * **[`before_install.sh`](../bin/ci/before_install.sh)** configures the CI environment, installs ORCA, and prepares the SUT.
 * **[`install.sh`](../bin/ci/install.sh)** creates the test fixture and places the SUT.
