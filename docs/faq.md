@@ -12,14 +12,14 @@ ORCA doesn't install dev dependencies because Composer provides no means of doin
 
 1. For conditional functionality (i.e., behavior that manifests only in the presence of dependencies, such as optional Drupal modules), move the functionality into a submodule and require those conditions in its `composer.json`. ORCA will automatically discover the submodule and install the dependencies with Composer. This design may be considered an expression of [the Common Reuse Principle (CRP) of package cohesion](https://en.wikipedia.org/wiki/Package_principles#Principles_of_package_cohesion), in which sense the "no dev dependencies" limitation actually encourages good system design.
 
-1. Invoke `composer require` manually in your `.travis.yml` (or in a script called by it) to add the dependency after it's created, e.g.:
+1. Invoke `composer require` manually in your `.orca.yml` (or in a script called by it) to add the dependency after it's created, e.g.:
 
    ```yaml
    install:
-     - ../orca/bin/common/install.sh
+     - ../orca/bin/ci/install.sh
 
      # Add the physical dependency to the codebase.
-     - cd "$TRAVIS_BUILD_DIR/../orca-build"
+     - cd "$ORCA_FIXTURE_DIR"
      - composer require drupal/dev_only_dependency
 
      # Install Drupal modules and themes.
@@ -38,10 +38,10 @@ As an opinionated [project template](glossary.md#project-template), [Acquia CMS]
 
    ```
    Problem 1
-     - acquia/acquia_cms[v1.2-rc1, ..., 1.2.5.x-dev] require drupal/acquia_connector ^3 -> satisfiable by drupal/acquia_connector[dev-3.x, 3.0.0-rc1, ..., 3.x-dev (alias of dev-3.x)] from composer repo (https://packages.drupal.org/8) but drupal/acquia_connector[dev-8.x-1.x, 1.x-dev (alias of dev-8.x-1.x)] from path repo (/home/travis/build/acquia/acquia_connector) has higher repository priority. The packages with higher priority do not match your constraint and are therefore not installable. See https://getcomposer.org/repoprio for details and assistance.
+     - acquia/acquia_cms[v1.2-rc1, ..., 1.2.5.x-dev] require drupal/acquia_connector ^3 -> satisfiable by drupal/acquia_connector[dev-3.x, 3.0.0-rc1, ..., 3.x-dev (alias of dev-3.x)] from composer repo (https://packages.drupal.org/8) but drupal/acquia_connector[dev-8.x-1.x, 1.x-dev (alias of dev-8.x-1.x)] from path repo (/home/runner/build/acquia/acquia_connector) has higher repository priority. The packages with higher priority do not match your constraint and are therefore not installable. See https://getcomposer.org/repoprio for details and assistance.
    ```
 
-Acquia CMS is included in ORCA [test fixtures](glossary.md#test-fixture) by default by way of a requirement in [Acquia Drupal Recommended Project](glossary.md#acquia-drupal-recommended-project). If your package or one of its version branches is not meant to support Acquia CMS, you should use a different [project template](glossary.md#project-template). Add the following to your `.travis.yml` to do so on Travis CI:
+Acquia CMS is included in ORCA [test fixtures](glossary.md#test-fixture) by default by way of a requirement in [Acquia Drupal Recommended Project](glossary.md#acquia-drupal-recommended-project). If your package or one of its version branches is not meant to support Acquia CMS, you should use a different [project template](glossary.md#project-template). Add the following to your `.orca.yml` to do so on GitHub Actions:
 
    ```yaml
    env:
