@@ -43,12 +43,9 @@ fi
 if [[ "$GITHUB_WORKSPACE" ]]; then
   CI_WORKSPACE="$GITHUB_WORKSPACE"
 fi
-if [[ "$TRAVIS_BUILD_DIR" ]]; then
-  CI_WORKSPACE="$TRAVIS_BUILD_DIR"
-fi
 
 # Set event type
-if [[ "$GITHUB_EVENT_NAME" = "schedule" || "$TRAVIS_EVENT_TYPE" = "cron" ]]; then
+if [[ "$GITHUB_EVENT_NAME" = "schedule" ]]; then
   export CI_EVENT="cron"
 fi
 
@@ -80,11 +77,8 @@ export DRUPAL_TEST_WEBDRIVER_HOSTNAME="localhost"
 export DRUPAL_TEST_WEBDRIVER_PORT="4444"
 
 if [[ ! "$ORCA_TEMP_DIR" ]]; then
-  # Travis CI.
-  if [[ "$TMPDIR" ]]; then
-    export ORCA_TEMP_DIR="$TMPDIR"
   # GitHub Actions.
-  elif [[ "$RUNNER_TEMP" ]]; then
+  if [[ "$RUNNER_TEMP" ]]; then
     export ORCA_TEMP_DIR="$RUNNER_TEMP"
   # Fallback default.
   else
@@ -129,7 +123,7 @@ allowed_failures=(
   "ISOLATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_BETA_OR_LATER"
   "INTEGRATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_BETA_OR_LATER"
 )
-if [[ " ${allowed_failures[*]} " =~ " ${ORCA_JOB} " && ! $TRAVIS ]]; then
+if [[ " ${allowed_failures[*]} " =~ " ${ORCA_JOB} " ]]; then
   set +e
   notice "This job is allowed to fail and will report as passing regardless of outcome."
 fi

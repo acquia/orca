@@ -2,7 +2,7 @@
 
 ## Altering ORCA's behavior
 
-Various aspects of ORCA's behavior can be altered at runtime through the use of environment variables. These can be set or exported in a local terminal session or [in various ways on Travis CI](https://docs.travis-ci.com/user/environment-variables/).
+Various aspects of ORCA's behavior can be altered at runtime through the use of environment variables. These can be set or exported in a local terminal session or [in various ways on GitHub Actions](https://docs.github.com/en/actions/learn-github-actions/variables#about-variables).
 
 ### Command-line application
 
@@ -20,7 +20,7 @@ These affect ORCA in all contexts.
 
 * <a name="ORCA_PACKAGES_CONFIG"></a>**`ORCA_PACKAGES_CONFIG`**: Completely replace the list of packages ORCA installs in fixtures and runs tests on. Acceptable values are any valid path to a YAML file relative to ORCA itself, e.g., `../example/tests/packages.yml`. See [`config/packages.yml`](../config/packages.yml) for an example and explanation of the schema.
 
-* <a name="ORCA_PACKAGES_CONFIG_ALTER"></a>**`ORCA_PACKAGES_CONFIG_ALTER`**: Alter the main list of packages ORCA installs in fixtures and runs tests on (add, remove, or change packages and their properties). Acceptable values are any valid path to a YAML file relative to ORCA itself, e.g., `../example/tests/packages_alter.yml`. See [`.travis.yml`](../.travis.yml) and [`example/tests/packages_alter.yml`](../example/tests/packages_alter.yml) for an example and explanation of the schema. **Note:** This option should be used conservatively as it erodes the uniformity at the heart of ORCA's _representative_ nature.
+* <a name="ORCA_PACKAGES_CONFIG_ALTER"></a>**`ORCA_PACKAGES_CONFIG_ALTER`**: Alter the main list of packages ORCA installs in fixtures and runs tests on (add, remove, or change packages and their properties). Acceptable values are any valid path to a YAML file relative to ORCA itself, e.g., `../example/tests/packages_alter.yml`. See [`orca.yml`](../.github/workflows/orca.yml) and [`example/tests/packages_alter.yml`](../example/tests/packages_alter.yml) for an example and explanation of the schema. **Note:** This option should be used conservatively as it erodes the uniformity at the heart of ORCA's _representative_ nature.
 
 * <a name="ORCA_PHPCS_STANDARD"></a>**`ORCA_PHPCS_STANDARD`**: Change the PHP Code Sniffer standard used by the `qa:static-analysis` and `qa:fixer` commands. Acceptable values are `AcquiaPHP`, `AcquiaDrupalStrict`, and `AcquiaDrupalTransitional`. See [Acquia Coding Standards for PHP](https://packagist.org/packages/acquia/coding-standards) for details.
 
@@ -28,9 +28,9 @@ These affect ORCA in all contexts.
 
 * <a name="ORCA_TELEMETRY_ENABLE"></a>**`ORCA_TELEMETRY_ENABLE`**: Set to `TRUE` to enable telemetry with Amplitude. Requires [`ORCA_AMPLITUDE_API_KEY`](#ORCA_AMPLITUDE_API_KEY) and [`ORCA_AMPLITUDE_USER_ID`](#ORCA_AMPLITUDE_USER_ID) values. On Travis CI, only takes effect for cron events.
 
-### Travis CI scripts
+### CI scripts
 
-These affect ORCA only as invoked via the Travis CI scripts.
+These affect ORCA only as invoked via the CI scripts.
 
 * <a name="ORCA_COVERALLS_ENABLE"></a>**`ORCA_COVERALLS_ENABLE`**: Set to `TRUE` to send test coverage data to [Coveralls](https://coveralls.io/) on the isolated/recommended job. Requires that you [add your repository to Coveralls](https://github.com/acquia/orca/blob/main/docs/faq.md#how-do-i-add-my-github-repository-to-coveralls). It is recommended to [enable notifications](https://docs.coveralls.io/coveralls-notifications). Test coverage generation greatly increases build times, so only enable it on one job--all that makes sense anyway. Note: [`ORCA_COVERAGE_ENABLE`](#ORCA_COVERAGE_ENABLE) is implied by this setting and need not be enabled if this is.
 
@@ -40,16 +40,16 @@ These affect ORCA only as invoked via the Travis CI scripts.
 
 ## Adding and customizing jobs
 
-For special testing needs, custom jobs can be added and existing ones modified through the addition of scripts to your `.travis.yml`, e.g.:
+For special testing needs, custom jobs can be added and existing ones modified through the addition of scripts to your `.orca.yml`, e.g.:
 
    ```yaml
    before_script:
-     - ../orca/bin/common/before_script.sh
+     - ../orca/bin/ci/before_script.sh
      # Your custom script:
-     - ./bin/common/before_script.sh
+     - ./bin/ci/before_script.sh
    ```
 
-See [the example script](https://github.com/acquia/orca/blob/main/example/bin/common/example.sh) for more details.
+See [the example script](https://github.com/acquia/orca/blob/main/example/bin/ci/example.sh) for more details.
 
 ---
 
