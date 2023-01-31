@@ -300,13 +300,14 @@ class FixtureOptions {
       return $this->options['project-template'];
     }
 
-    // @todo Point to latest version of DRP once 2.x for D10 stable fixtures
-    //   and "dev-master" for D10 dev fixtures.
-    if ($this->coreVersionParsedMatches('^10')) {
-      $this->options['project-template'] = 'acquia/drupal-recommended-project:dev-drupal10';
+    if ($this->coreVersionParsedMatches('^9')) {
+      $this->options['project-template'] = 'acquia/drupal-recommended-project:^1';
+    }
+    elseif ($this->coreVersionParsedMatches('^10') && $this->isDev()) {
+      $this->options['project-template'] = 'acquia/drupal-recommended-project:dev-master';
     }
     else {
-      $this->options['project-template'] = 'acquia/drupal-recommended-project:^1';
+      $this->options['project-template'] = 'acquia/drupal-recommended-project';
     }
 
     return $this->options['project-template'];
