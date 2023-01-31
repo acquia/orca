@@ -58,7 +58,7 @@ class FixtureOptionsTest extends TestCase {
    * @covers ::validate
    */
   public function testDefaults(): void {
-    $core = '9.0.0';
+    $core = '10.0.0';
     $this->drupalCoreVersionFinder
       ->resolvePredefined(DrupalCoreVersionEnum::CURRENT())
       ->willReturn($core);
@@ -76,7 +76,7 @@ class FixtureOptionsTest extends TestCase {
     self::assertFalse($options->symlinkAll(), 'Set/got default "symlink-all" option.');
     self::assertEquals($core, $options->getCore(), 'Set/got default "core" option.');
     self::assertEquals('orca', $options->getProfile(), 'Set/got default "profile" option.');
-    self::assertEquals('acquia/drupal-recommended-project:^1', $options->getProjectTemplate(), 'Set/got default "project-template" option.');
+    self::assertEquals('acquia/drupal-recommended-project', $options->getProjectTemplate(), 'Set/got default "project-template" option.');
     self::assertNull($options->getSut(), 'Set/got default "sut" option.');
     self::assertTrue($options->installSite(), 'Set/got default "no-site-install" option.');
     self::assertTrue($options->useSqlite(), 'Set/got default "no-sqlite" option.');
