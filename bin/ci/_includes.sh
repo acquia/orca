@@ -129,5 +129,3 @@ fi
 
 # Make the shell print all lines in the script before executing them.
 set -v
-
-

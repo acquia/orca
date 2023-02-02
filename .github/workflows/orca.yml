@@ -29,7 +29,6 @@ jobs:
       ORCA_SUT_DIR: /home/runner/work/orca/example
       ORCA_SELF_TEST_COVERAGE_CLOVER: /home/runner/build/logs/clover.xml
       ORCA_JOB: ${{ matrix.orca-job }}
-      ORCA_COVERALLS_ENABLE: "FALSE"
       ORCA_ENABLE_NIGHTWATCH: ${{ matrix.orca-enable-nightwatch }}
 
     strategy:
@@ -118,7 +117,6 @@ jobs:
         run: |
           ../orca/bin/ci/self-test/after_success.sh
           unset ORCA_COVERAGE_ENABLE
-          unset ORCA_COVERALLS_ENABLE
           ../orca/bin/ci/after_success.sh
           ../orca/bin/ci/after_failure.sh
           ../orca/bin/ci/after_script.sh

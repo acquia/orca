@@ -95,7 +95,6 @@ jobs:
       #
       # Do not modify the following lines. They are critical for managing the build matrix.
       ORCA_JOB: ${{ matrix.orca-job }}
-      ORCA_COVERALLS_ENABLE: "FALSE"
       ORCA_ENABLE_NIGHTWATCH: ${{ matrix.orca-enable-nightwatch }}
 
     # Execution time is drastically reduced by splitting the build into multiple
