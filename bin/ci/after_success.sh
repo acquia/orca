@@ -6,6 +6,9 @@
 # SYNOPSIS
 #     after_success.sh
 #
+# DESCRIPTION
+#     Reserved for future use.
+
 cd "$(dirname "$0")" || exit 1; source _includes.sh
 
 if [[ "$ORCA_JOB" ]]; then
