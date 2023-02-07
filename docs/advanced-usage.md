@@ -14,7 +14,7 @@ These affect ORCA in all contexts.
 
 * <a name="ORCA_COVERAGE_CLOVER"></a>**`ORCA_COVERAGE_CLOVER`**: Change the path where ORCA saves the PHPUnit test coverage Clover XML file.
 
-* <a name="ORCA_COVERAGE_ENABLE"></a>**`ORCA_COVERAGE_ENABLE`**: Set to `TRUE` to generate test coverage data without automatically sending it to [Coveralls](https://coveralls.io/). The resulting Clover file will be saved at the location set in [`ORCA_COVERAGE_CLOVER`](#ORCA_COVERAGE_CLOVER). Test coverage generation greatly increases build times, so only enable it on one job--all that makes sense anyway. Note: This setting is implied by [`ORCA_COVERALLS_ENABLE`](#ORCA_COVERALLS_ENABLE) and need not be enabled if that is.
+* <a name="ORCA_COVERAGE_ENABLE"></a>**`ORCA_COVERAGE_ENABLE`**: Set to `TRUE` to generate test coverage data . The resulting Clover file will be saved at the location set in [`ORCA_COVERAGE_CLOVER`](#ORCA_COVERAGE_CLOVER). Test coverage generation greatly increases build times, so only enable it on one job--all that makes sense anyway.
 
 * <a name="ORCA_FIXTURE_DIR"></a>**`ORCA_FIXTURE_DIR`**: Change the directory ORCA uses for test fixtures. Acceptable values are any valid, local directory reference, e.g., `/var/www/example`, or `../example`.
 
@@ -31,8 +31,6 @@ These affect ORCA in all contexts.
 ### CI scripts
 
 These affect ORCA only as invoked via the CI scripts.
-
-* <a name="ORCA_COVERALLS_ENABLE"></a>**`ORCA_COVERALLS_ENABLE`**: Set to `TRUE` to send test coverage data to [Coveralls](https://coveralls.io/) on the isolated/recommended job. Requires that you [add your repository to Coveralls](https://github.com/acquia/orca/blob/main/docs/faq.md#how-do-i-add-my-github-repository-to-coveralls). It is recommended to [enable notifications](https://docs.coveralls.io/coveralls-notifications). Test coverage generation greatly increases build times, so only enable it on one job--all that makes sense anyway. Note: [`ORCA_COVERAGE_ENABLE`](#ORCA_COVERAGE_ENABLE) is implied by this setting and need not be enabled if this is.
 
 * <a name="ORCA_FIXTURE_PROFILE"></a>**`ORCA_FIXTURE_PROFILE`**: Change the Drupal installation profile ORCA installs in fixtures. Note: Changing this value will cause non-SUT automated tests to be skipped in all jobs to avoid failures from changing such a fundamental assumption.
 

@@ -1,4 +1,0 @@
-# This file has no functional effect. It is here only to prove and ensure that
-# the example/.coveralls.yml file, which is also "empty" by default, can be
-# copied to new projects without breaking Coveralls integration for public
-# repositories.

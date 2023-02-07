@@ -11,7 +11,6 @@ use MyCLabs\Enum\Enum;
  * @method static EnvVarEnum ORCA_AMPLITUDE_USER_ID()
  * @method static EnvVarEnum ORCA_COVERAGE_CLOVER()
  * @method static EnvVarEnum ORCA_COVERAGE_ENABLE()
- * @method static EnvVarEnum ORCA_COVERALLS_ENABLE()
  * @method static EnvVarEnum ORCA_ENABLE_NIGHTWATCH()
  * @method static EnvVarEnum ORCA_FIXTURE_DIR()
  * @method static EnvVarEnum ORCA_FIXTURE_PROFILE()
@@ -46,8 +45,6 @@ class EnvVarEnum extends Enum {
   public const ORCA_COVERAGE_CLOVER = 'ORCA_COVERAGE_CLOVER';
 
   public const ORCA_COVERAGE_ENABLE = 'ORCA_COVERAGE_ENABLE';
-
-  public const ORCA_COVERALLS_ENABLE = 'ORCA_COVERALLS_ENABLE';
 
   public const ORCA_ENABLE_NIGHTWATCH = 'ORCA_ENABLE_NIGHTWATCH';
 
@@ -109,7 +106,6 @@ class EnvVarEnum extends Enum {
       self::ORCA_AMPLITUDE_USER_ID => 'The Amplitude user ID for telemetry events',
       self::ORCA_COVERAGE_CLOVER => 'The path where ORCA saves the PHPUnit test coverage Clover XML file',
       self::ORCA_COVERAGE_ENABLE => 'Whether or not to generate test coverage data',
-      self::ORCA_COVERALLS_ENABLE => 'Whether or not to send test coverage data to Coveralls. (Implies $ORCA_COVERAGE_ENABLE)',
       self::ORCA_ENABLE_NIGHTWATCH => 'Whether or not to run Nightwatch.js tests',
       self::ORCA_FIXTURE_DIR => 'The directory ORCA uses for test fixtures',
       self::ORCA_FIXTURE_PROFILE => 'The Drupal installation profile ORCA installs in fixtures',
