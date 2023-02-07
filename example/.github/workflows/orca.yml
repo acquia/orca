@@ -87,10 +87,8 @@ jobs:
       # @see https://github.com/acquia/orca/blob/main/docs/advanced-usage.md#ORCA_PHPCS_STANDARD
       # ORCA_PHPCS_STANDARD: AcquiaDrupalTransitional
       #
-      # To enable telemetry with Amplitude on cron runs, uncomment the following
-      # line and set ORCA_AMPLITUDE_API_KEY in your GitHub Actions settings:
+      # To enable telemetry on cron runs, uncomment the following
       # @see https://github.com/acquia/orca/blob/main/docs/advanced-usage.md#ORCA_TELEMETRY_ENABLE
-      # @see https://github.com/acquia/orca/blob/main/docs/advanced-usage.md#ORCA_AMPLITUDE_API_KEY
       # ORCA_TELEMETRY_ENABLE: "TRUE"
       #
       # Do not modify the following lines. They are critical for managing the build matrix.

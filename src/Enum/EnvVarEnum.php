@@ -7,8 +7,6 @@ use MyCLabs\Enum\Enum;
 /**
  * Provides environment variables.
  *
- * @method static EnvVarEnum ORCA_AMPLITUDE_API_KEY()
- * @method static EnvVarEnum ORCA_AMPLITUDE_USER_ID()
  * @method static EnvVarEnum ORCA_COVERAGE_CLOVER()
  * @method static EnvVarEnum ORCA_COVERAGE_ENABLE()
  * @method static EnvVarEnum ORCA_COVERALLS_ENABLE()
@@ -38,10 +36,6 @@ use MyCLabs\Enum\Enum;
  * @method static EnvVarEnum DRUPAL_TEST_WEBDRIVER_PORT()
  */
 class EnvVarEnum extends Enum {
-
-  public const ORCA_AMPLITUDE_API_KEY = 'ORCA_AMPLITUDE_API_KEY';
-
-  public const ORCA_AMPLITUDE_USER_ID = 'ORCA_AMPLITUDE_USER_ID';
 
   public const ORCA_COVERAGE_CLOVER = 'ORCA_COVERAGE_CLOVER';
 
@@ -105,8 +99,6 @@ class EnvVarEnum extends Enum {
    */
   public static function descriptions(): array {
     return [
-      self::ORCA_AMPLITUDE_API_KEY => 'The Amplitude API key for telemetry events',
-      self::ORCA_AMPLITUDE_USER_ID => 'The Amplitude user ID for telemetry events',
       self::ORCA_COVERAGE_CLOVER => 'The path where ORCA saves the PHPUnit test coverage Clover XML file',
       self::ORCA_COVERAGE_ENABLE => 'Whether or not to generate test coverage data',
       self::ORCA_COVERALLS_ENABLE => 'Whether or not to send test coverage data to Coveralls. (Implies $ORCA_COVERAGE_ENABLE)',

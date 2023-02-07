@@ -2,8 +2,6 @@
 parameters:
 
   # Environment variables for dynamic configuration override:
-  env(ORCA_AMPLITUDE_API_KEY): ~
-  env(ORCA_AMPLITUDE_USER_ID): ~
   env(ORCA_COVERAGE_CLOVER): "%app.project_dir%/var/coverage/clover.xml"
   env(ORCA_FIXTURE_DIR): "%app.fixture_dir%"
   env(ORCA_JUNIT_LOG): "%app.project_dir%/var/junit/junitLog.xml"
@@ -19,8 +17,6 @@ services:
     autoconfigure: true
     autowire: true
     bind:
-      $amplitude_api_key: "%env(ORCA_AMPLITUDE_API_KEY)%"
-      $amplitude_user_id: "%env(ORCA_AMPLITUDE_USER_ID)%"
       $clover_coverage: "%env(ORCA_COVERAGE_CLOVER)%"
       $default_phpcs_standard: "%env(ORCA_PHPCS_STANDARD)%"
       $fixture_dir: "%env(ORCA_FIXTURE_DIR)%"
@@ -74,5 +70,3 @@ services:
 
   Symfony\Contracts\HttpClient\HttpClientInterface:
     factory: ['Symfony\Component\HttpClient\HttpClient', 'create']
-
-  Zumba\Amplitude\Amplitude: ~

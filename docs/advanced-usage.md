@@ -8,10 +8,6 @@ Various aspects of ORCA's behavior can be altered at runtime through the use of 
 
 These affect ORCA in all contexts.
 
-* <a name="ORCA_AMPLITUDE_API_KEY"></a>**`ORCA_AMPLITUDE_API_KEY`**: Sets the Amplitude API key for telemetry events (see also [`ORCA_TELEMETRY_ENABLE`](#ORCA_TELEMETRY_ENABLE)). For security on Travis CI, [define the variable in your repository settings](https://docs.travis-ci.com/user/environment-variables/#defining-variables-in-repository-settings).
-
-* <a name="ORCA_AMPLITUDE_USER_ID"></a>**`ORCA_AMPLITUDE_USER_ID`**: Set the Amplitude user ID for telemetry events (see also [`ORCA_TELEMETRY_ENABLE`](#ORCA_TELEMETRY_ENABLE)). Defaults to `$ORCA_SUT_NAME:$ORCA_SUT_BRANCH`, e.g., `drupal/example:8.x-1.x`, on Travis CI.
-
 * <a name="ORCA_COVERAGE_CLOVER"></a>**`ORCA_COVERAGE_CLOVER`**: Change the path where ORCA saves the PHPUnit test coverage Clover XML file.
 
 * <a name="ORCA_COVERAGE_ENABLE"></a>**`ORCA_COVERAGE_ENABLE`**: Set to `TRUE` to generate test coverage data without automatically sending it to [Coveralls](https://coveralls.io/). The resulting Clover file will be saved at the location set in [`ORCA_COVERAGE_CLOVER`](#ORCA_COVERAGE_CLOVER). Test coverage generation greatly increases build times, so only enable it on one job--all that makes sense anyway. Note: This setting is implied by [`ORCA_COVERALLS_ENABLE`](#ORCA_COVERALLS_ENABLE) and need not be enabled if that is.
@@ -26,7 +22,7 @@ These affect ORCA in all contexts.
 
 * <a name="ORCA_SUT_DIR"></a>**`ORCA_SUT_DIR`**: Change the path where ORCA looks for the SUT. Accepted values are any valid directory path, e.g., `/var/www/example`, or `../example`.
 
-* <a name="ORCA_TELEMETRY_ENABLE"></a>**`ORCA_TELEMETRY_ENABLE`**: Set to `TRUE` to enable telemetry with Amplitude. Requires [`ORCA_AMPLITUDE_API_KEY`](#ORCA_AMPLITUDE_API_KEY) and [`ORCA_AMPLITUDE_USER_ID`](#ORCA_AMPLITUDE_USER_ID) values. On Travis CI, only takes effect for cron events.
+* <a name="ORCA_TELEMETRY_ENABLE"></a>**`ORCA_TELEMETRY_ENABLE`**: Set to `TRUE` to enable telemetry.
 
 ### CI scripts
 
