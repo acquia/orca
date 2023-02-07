@@ -66,8 +66,8 @@ drupal/acquia_contenthub:
       version: ~
       version_dev: ~
     '*':
-      version: 2.x
-      version_dev: 2.x-dev
+      version: 3.x
+      version_dev: 3.x-dev
 
 drupal/acquia_lift:
   core_matrix:
