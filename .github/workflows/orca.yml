@@ -110,6 +110,7 @@ jobs:
       - name: Script
         run: |
           ../orca/bin/ci/self-test/script.sh
+          unset ORCA_ENABLE_NIGHTWATCH
           ../orca/bin/ci/script.sh
 
       # These two jobs need to run regardless of success or failure in ORCA's self-tests in order to exercise the code.
