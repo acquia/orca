@@ -37,6 +37,7 @@ class TelemetryClient {
    *   attributes of the event.
    */
   public function logEvent(string $type, array $properties = []): void {
+    // No telemetry provider is currently integrated.
   }
 
 }

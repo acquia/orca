@@ -3031,6 +3031,7 @@
                     "type": "github"
                 }
             ],
+            "abandoned": true,
             "time": "2020-12-07T05:51:20+00:00"
         },
         {

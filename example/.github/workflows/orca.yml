@@ -87,7 +87,7 @@ jobs:
       # @see https://github.com/acquia/orca/blob/main/docs/advanced-usage.md#ORCA_PHPCS_STANDARD
       # ORCA_PHPCS_STANDARD: AcquiaDrupalTransitional
       #
-      # To enable telemetry on cron runs, uncomment the following
+      # To enable telemetry on cron runs, uncomment the following line:
       # @see https://github.com/acquia/orca/blob/main/docs/advanced-usage.md#ORCA_TELEMETRY_ENABLE
       # ORCA_TELEMETRY_ENABLE: "TRUE"
       #
