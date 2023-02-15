@@ -23,6 +23,20 @@ class PackageManagerTest extends TestCase {
   private const PACKAGES_DATA = [
     'drupal/module1' => ['version_dev' => '1.x-dev'],
     'drupal/module2' => ['version' => '~1.0', 'version_dev' => '1.x-dev'],
+    'drupal/module3' => ['version' => '1.x', 'version_dev' => '1.x-dev'],
+    'drupal/module4' => ['version' => '1.x', 'version_dev' => '1.x-dev'],
+    'drupal/module5' => [
+      'core_matrix' => [
+        "10.x" => ['version' => '2.x', 'version_dev' => '2.x-dev'],
+        "9.x" => ['version' => '1.x', 'version_dev' => '1.x-dev'],
+      ],
+    ],
+    'drupal/module6' => [
+      'core_matrix' => [
+        "10.x" => ['version' => '2.x', 'version_dev' => '2.x-dev'],
+        "9.x" => ['version' => '1.x', 'version_dev' => '1.x-dev'],
+      ],
+    ],
     'drupal/drush1' => ['type' => 'drupal-drush', 'version_dev' => '1.x-dev'],
     'drupal/drush2' => ['type' => 'drupal-drush', 'version_dev' => '1.x-dev'],
     'drupal/theme1' => ['type' => 'drupal-theme', 'version_dev' => '1.x-dev'],
@@ -32,6 +46,29 @@ class PackageManagerTest extends TestCase {
 
   private const PACKAGES_DATA_ALTER = [
     'drupal/remove_me' => NULL,
+    'drupal/module3' => ['version' => NULL, 'version_dev' => NULL],
+    // The module 'drupal/module4' should be removed from dev fixtures which
+    // does not happen in this unit tests, but happens ultimately
+    // when the dev fixture is built. Thus including 'drupal/module4' in the
+    // list of all packages.
+    'drupal/module4' => ['version' => '1.x', 'version_dev' => NULL],
+    'drupal/module5' => [
+      'core_matrix' => [
+        "10.x" => ['version' => NULL, 'version_dev' => NULL],
+        "9.x" => ['version' => NULL, 'version_dev' => NULL],
+      ],
+    ],
+    // The module 'drupal/module6' should be removed if core version is anything
+    // other than 9.x. which does not happen in this unit tests, but happens
+    // ultimately when the fixture is built.
+    // Thus including 'drupal/module6' in the list of all packages
+    // which won't be present eventually when fixture is built.
+    'drupal/module6' => [
+      'core_matrix' => [
+        "9.x" => ['version' => '1.x', 'version_dev' => '1.x-dev'],
+        "*" => ['version' => NULL, 'version_dev' => NULL],
+      ],
+    ],
   ];
 
   private const ALL_PACKAGES = [
@@ -39,6 +76,8 @@ class PackageManagerTest extends TestCase {
     'drupal/drush2',
     'drupal/module1',
     'drupal/module2',
+    'drupal/module4',
+    'drupal/module6',
     'drupal/theme1',
     'drupal/theme2',
   ];

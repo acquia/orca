@@ -185,9 +185,23 @@ class PackageManager {
         continue;
       }
 
-      $package = new Package($datum, $fixture_path_handler, $this->orca, $package_name);
-      $this->packages[$package_name] = $package;
+      if ((array_key_exists('version', $datum) || array_key_exists('version_dev', $datum)) && $this->containsValidVersion($datum)) {
+        $this->addPackage($datum, $fixture_path_handler, $package_name);
+        continue;
+      }
+
+      if (isset($datum['core_matrix'])) {
+        $constraints = array_values($datum['core_matrix']);
+        foreach ($constraints as $constraint) {
+          if ($this->containsValidVersion($constraint)) {
+            $this->addPackage($datum, $fixture_path_handler, $package_name);
+            break;
+          }
+        }
+      }
+
     }
+
     ksort($this->packages);
   }
 
@@ -209,6 +223,21 @@ class PackageManager {
       throw new \LogicException("Incorrect schema in {$file}. See config/packages.yml.");
     }
     return $data;
+  }
+
+  /**
+   * Checks if a package is null.
+   */
+  private function containsValidVersion(array $data) : bool {
+    return (array_key_exists('version', $data) && !is_null($data['version'])) || (array_key_exists('version_dev', $data) && !is_null($data['version_dev']));
+  }
+
+  /**
+   * Adds a package to the list of packages.
+   */
+  private function addPackage(array $datum, FixturePathHandler $fixture_path_handler, string $package_name): void {
+    $package = new Package($datum, $fixture_path_handler, $this->orca, $package_name);
+    $this->packages[$package_name] = $package;
   }
 
   /**
