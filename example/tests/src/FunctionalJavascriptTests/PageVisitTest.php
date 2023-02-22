@@ -12,14 +12,6 @@ class PageVisitTest extends BrowserTestBase {
   private $privilegedUser;
 
   public function testPageVisit(): void {
-    // parent::setUp();
-    // $mink = new Mink();
-    // $mink->getSession()->getPage()->findLink('/');
-    // // $page = $mink->getSession()->getPage();
-    // // $page->findLink('Home');
-    // self::assertTrue(TRUE);
-    // Create a privileged user.
-    // $permissions = ['grant content access'];.
     $this->privilegedUser = $this->drupalCreateUser();
     $this->drupalLogin($this->privilegedUser);
 
