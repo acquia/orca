@@ -182,7 +182,7 @@ class TestRunner {
    */
   private function startServers(): void {
     $this->output->comment('Starting servers');
-    $this->serverStack->start();
+    $this->output->comment($this->serverStack->start());
   }
 
   /**

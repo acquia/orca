@@ -56,7 +56,7 @@ abstract class ServerBase implements ServerInterface {
   /**
    * {@inheritdoc}
    */
-  public function start(): void {
+  public function start(): string {
     $this->process = $this->createProcess();
     $this->process
       ->setTimeout(NULL)
@@ -66,6 +66,8 @@ abstract class ServerBase implements ServerInterface {
       ->disableOutput()
 
       ->start();
+
+    return $this->process->getCommandLine();
   }
 
   /**

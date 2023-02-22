@@ -1,17 +1,17 @@
 <?php
 
-namespace Drupal\Tests\example\FunctionalJavascriptTests;
+namespace Drupal\Tests\example\Functional;
 
 // Use Drupal\FunctionalJavascriptTests\WebDriverTestBase;.
 use Drupal\Tests\BrowserTestBase;
 
-class PageVisitTest extends BrowserTestBase {
+class ExampleLoginTest extends BrowserTestBase {
 
   protected $defaultTheme = 'claro';
 
   private $privilegedUser;
 
-  public function testPageVisit(): void {
+  public function testExampleLogin(): void {
     $this->privilegedUser = $this->drupalCreateUser();
     $this->drupalLogin($this->privilegedUser);
 

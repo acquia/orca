@@ -4,15 +4,14 @@ namespace Drupal\Tests\example\FunctionalJavascriptTests;
 
 use Drupal\FunctionalJavascriptTests\WebDriverTestBase;
 
-class HomePageTest extends WebDriverTestBase {
+class ExampleHomeLinkTest extends WebDriverTestBase {
 
   protected $defaultTheme = 'claro';
 
-  public function testHomePageVisit(): void {
+  public function testHomePageLink(): void {
     $page = $this->getSession()->getPage();
     $content = $page->findLink('Home');
     $this->assertTrue($content->isVisible());
-
   }
 
 }

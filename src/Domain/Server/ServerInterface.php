@@ -10,7 +10,7 @@ interface ServerInterface {
   /**
    * Starts the server.
    */
-  public function start(): void;
+  public function start(): string;
 
   /**
    * Stops the server.
