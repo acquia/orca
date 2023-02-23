@@ -86,36 +86,10 @@ class TelemetryEventPropertiesBuilder {
    */
   protected function buildTravisCiJobProperties(): array {
     $this->properties = [];
-    $this->addEnvironmentVariables();
     $this->addPhpcsResults();
     $this->addPhpLocResults();
     $this->addDeprecationScanningResults();
     return $this->properties;
-  }
-
-  /**
-   * Adds environment variables to the event properties.
-   */
-  protected function addEnvironmentVariables(): void {
-    $properties = array_flip([
-      'ORCA_JOB',
-      // Built-in Travis CI environment variables.
-      // @see https://docs.travis-ci.com/user/environment-variables/#default-environment-variables
-      'TRAVIS_ALLOW_FAILURE',
-      'TRAVIS_COMMIT',
-      'TRAVIS_COMMIT_MESSAGE',
-      'TRAVIS_JOB_ID',
-      'TRAVIS_JOB_NAME',
-      'TRAVIS_JOB_NUMBER',
-      'TRAVIS_JOB_WEB_URL',
-      'TRAVIS_PHP_VERSION',
-      'TRAVIS_REPO_SLUG',
-      'TRAVIS_TEST_RESULT',
-    ]);
-    array_walk($properties, function (&$value, $key) {
-      $value = $this->env::get($key);
-    });
-    $this->properties = array_merge($this->properties, $properties);
   }
 
   /**

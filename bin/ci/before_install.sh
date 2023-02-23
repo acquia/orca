@@ -17,15 +17,11 @@ cd "$(dirname "$0")" || exit; source _includes.sh
 # Display the Google Chrome version.
 google-chrome-stable --version
 
-# Display the Node version.
-echo "$TRAVIS_NODE_VERSION"
-
 # Display the Yarn version.
 yarn --version
 
 # Disable Xdebug except on code coverage jobs.
 if [[ ! "$ORCA_COVERAGE_ENABLE" == TRUE ]]; then
-  if [[ "$TRAVIS" ]]; then phpenv config-rm xdebug.ini; fi
   if [[ "$GITHUB_ACTIONS" ]]; then
     # phpdismod would be simpler but flaky
     # @see https://github.com/shivammathur/setup-php/issues/350#issuecomment-735370872
@@ -38,22 +34,7 @@ if [[ ! "$ORCA_COVERAGE_ENABLE" == TRUE ]]; then
   fi
 fi
 
-# Travis CI installs YAML from PECL, but it's already present in GitHub Actions.
-if [[ "$TRAVIS" ]]; then
-  {
-    # Remove PHP memory limit.
-    echo 'memory_limit = -1'
-    # Prevent email errors.
-    echo 'sendmail_path = /bin/true'
-    # Prevent PHPStan warnings about APCu constants.
-    echo 'extension = apcu.so'
-  } >> "$HOME/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini"
-
-  # Install the PECL YAML parser for strict YAML parsing.
-  yes | pecl install yaml
-fi
-
-if [[ "$JENKINS_HOME" || "$TRAVIS" ]]; then
+if [[ "$JENKINS_HOME" ]]; then
     # Install ChromeDriver.
     # @see https://chromedriver.chromium.org/downloads/version-selection
     # Get Google Chrome version.
@@ -71,16 +52,9 @@ if [[ "$JENKINS_HOME" || "$TRAVIS" ]]; then
     wget -N https://chromedriver.storage.googleapis.com/${VERSION}/chromedriver_linux64.zip -P ~/
     unzip ~/chromedriver_linux64.zip -d ~/
     rm ~/chromedriver_linux64.zip
-
-    if [ "$JENKINS_HOME" ]; then
-      mv -f ~/chromedriver /usr/local/share/
-      chmod +x /usr/local/share/chromedriver
-      ln -s /usr/local/share/chromedriver /usr/local/bin/chromedriver
-    else
-      sudo mv -f ~/chromedriver /usr/local/share/
-      sudo chmod +x /usr/local/share/chromedriver
-      sudo ln -s /usr/local/share/chromedriver /usr/local/bin/chromedriver
-    fi
+    mv -f ~/chromedriver /usr/local/share/
+    chmod +x /usr/local/share/chromedriver
+    ln -s /usr/local/share/chromedriver /usr/local/bin/chromedriver
 fi
 
 
