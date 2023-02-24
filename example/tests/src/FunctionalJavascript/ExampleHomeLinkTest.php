@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\Tests\example\FunctionalJavascriptTests;
+namespace Drupal\Tests\example\FunctionalJavascript;
 
 use Drupal\FunctionalJavascriptTests\WebDriverTestBase;
 

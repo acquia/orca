@@ -49,14 +49,14 @@ abstract class ServerBase implements ServerInterface {
    * Creates the server process.
    *
    * @return \Symfony\Component\Process\Process
-   *   The server process.
+   *   The server's process.
    */
   abstract protected function createProcess(): Process;
 
   /**
    * {@inheritdoc}
    */
-  public function start(): string {
+  public function start(): void {
     $this->process = $this->createProcess();
     $this->process
       ->setTimeout(NULL)
@@ -66,8 +66,6 @@ abstract class ServerBase implements ServerInterface {
       ->disableOutput()
 
       ->start();
-
-    return $this->process->getCommandLine();
   }
 
   /**
@@ -106,6 +104,13 @@ abstract class ServerBase implements ServerInterface {
    */
   protected function getProcessRunner(): ProcessRunner {
     return $this->processRunner;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getProcessDetails(): array {
+    return [$this->process];
   }
 
 }

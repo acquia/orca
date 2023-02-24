@@ -44,17 +44,14 @@ class ServerStack implements ServerInterface {
   /**
    * {@inheritdoc}
    */
-  public function start(): string {
-    $status = [];
+  public function start(): void {
     foreach ($this->servers as $server) {
-      $status[] = $server->start();
+      $server->start();
     }
 
     // Give the servers a chance to start up before releasing the thread to
     // tasks that will depend on them.
     $this->clock->sleep(3);
-
-    return implode("\n", $status);
   }
 
   /**
@@ -73,6 +70,19 @@ class ServerStack implements ServerInterface {
     foreach ($this->servers as $server) {
       $server->wait();
     }
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getProcessDetails(): array {
+    $status = [];
+    foreach ($this->servers as $server) {
+      $process = $server->getProcessDetails();
+      $status[] = array_pop($process);
+    }
+
+    return $status;
   }
 
 }

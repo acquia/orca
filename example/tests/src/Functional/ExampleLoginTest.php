@@ -2,7 +2,6 @@
 
 namespace Drupal\Tests\example\Functional;
 
-// Use Drupal\FunctionalJavascriptTests\WebDriverTestBase;.
 use Drupal\Tests\BrowserTestBase;
 
 class ExampleLoginTest extends BrowserTestBase {

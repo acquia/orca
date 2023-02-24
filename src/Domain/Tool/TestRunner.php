@@ -182,7 +182,12 @@ class TestRunner {
    */
   private function startServers(): void {
     $this->output->comment('Starting servers');
-    $this->output->comment($this->serverStack->start());
+    $this->serverStack->start();
+    $processes = $this->serverStack->getProcessDetails();
+    // Prints the command getting invoked while running the servers in the logs.
+    foreach ($processes as $process) {
+      $this->output->comment('Running Command: ' . $process->getCommandLine());
+    }
   }
 
   /**
