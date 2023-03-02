@@ -21,63 +21,71 @@ use Symfony\Component\Yaml\Parser;
 class PackageManagerTest extends TestCase {
 
   private const PACKAGES_DATA = [
-    'drupal/module1' => ['version_dev' => '1.x-dev'],
-    'drupal/module2' => ['version' => '~1.0', 'version_dev' => '1.x-dev'],
-    'drupal/module3' => ['version' => '1.x', 'version_dev' => '1.x-dev'],
-    'drupal/module4' => ['version' => '1.x', 'version_dev' => '1.x-dev'],
-    'drupal/module5' => [
+    'drupal/module1' => [],
+    'drupal/module2' => ['version_dev' => '1.x-dev'],
+    'drupal/module3' => ['version' => '~1.0', 'version_dev' => '1.x-dev'],
+    'drupal/module4' => [
+      'version' => '~1.0',
+      'version_dev' => '1.x-dev',
       'core_matrix' => [
-        "10.x" => ['version' => '2.x', 'version_dev' => '2.x-dev'],
-        "9.x" => ['version' => '1.x', 'version_dev' => '1.x-dev'],
+        '*' => ['version' => '~1.0', 'version_dev' => '1.x-dev'],
       ],
     ],
-    'drupal/module6' => [
+    'drupal/module5' => [
+      'version' => NULL,
+      'version_dev' => NULL,
       'core_matrix' => [
-        "10.x" => ['version' => '2.x', 'version_dev' => '2.x-dev'],
-        "9.x" => ['version' => '1.x', 'version_dev' => '1.x-dev'],
+        '*' => ['version' => '~1.0', 'version_dev' => '1.x-dev'],
       ],
     ],
     'drupal/drush1' => ['type' => 'drupal-drush', 'version_dev' => '1.x-dev'],
     'drupal/drush2' => ['type' => 'drupal-drush', 'version_dev' => '1.x-dev'],
     'drupal/theme1' => ['type' => 'drupal-theme', 'version_dev' => '1.x-dev'],
     'drupal/theme2' => ['type' => 'drupal-theme', 'version_dev' => '1.x-dev'],
-    'drupal/remove_me' => ['version_dev' => '1.x-dev'],
+    'drupal/remove_me1' => [],
+    'drupal/remove_me2' => ['version_dev' => '1.x-dev'],
+    'drupal/remove_me3' => ['version' => '~1.0', 'version_dev' => '1.x-dev'],
+    'drupal/remove_me4' => [
+      'core_matrix' => [
+        '*' => ['version' => '~1.0', 'version_dev' => '1.x-dev'],
+      ],
+    ],
+    'drupal/remove_me5' => [
+      'core_matrix' => [
+        '*' => ['version' => '~1.0', 'version_dev' => '1.x-dev'],
+      ],
+    ],
   ];
 
   private const PACKAGES_DATA_ALTER = [
-    'drupal/remove_me' => NULL,
-    'drupal/module3' => ['version' => NULL, 'version_dev' => NULL],
-    // The module 'drupal/module4' should be removed from dev fixtures which
-    // does not happen in this unit tests, but happens ultimately
-    // when the dev fixture is built. Thus including 'drupal/module4' in the
-    // list of all packages.
-    'drupal/module4' => ['version' => '1.x', 'version_dev' => NULL],
-    'drupal/module5' => [
+    'drupal/add_me1' => [],
+    'drupal/add_me2' => ['version' => '~1.0'],
+    'drupal/add_me3' => ['version' => '~1.0', 'version_dev' => '1.x-dev'],
+    'drupal/remove_me1' => NULL,
+    'drupal/remove_me2' => ['version' => NULL, 'version_dev' => NULL],
+    'drupal/remove_me3' => ['version' => NULL, 'version_dev' => NULL],
+    'drupal/remove_me4' => [
       'core_matrix' => [
-        "10.x" => ['version' => NULL, 'version_dev' => NULL],
-        "9.x" => ['version' => NULL, 'version_dev' => NULL],
+        '*' => ['version' => NULL, 'version_dev' => NULL],
       ],
     ],
-    // The module 'drupal/module6' should be removed if core version is anything
-    // other than 9.x. which does not happen in this unit tests, but happens
-    // ultimately when the fixture is built.
-    // Thus including 'drupal/module6' in the list of all packages
-    // which won't be present eventually when fixture is built.
-    'drupal/module6' => [
-      'core_matrix' => [
-        "9.x" => ['version' => '1.x', 'version_dev' => '1.x-dev'],
-        "*" => ['version' => NULL, 'version_dev' => NULL],
-      ],
+    'drupal/remove_me5' => [
+      'core_matrix' => NULL,
     ],
+    'drupal/no_match' => NULL,
   ];
 
   private const EXPECTED_PACKAGE_LIST = [
+    'drupal/add_me1' => 0,
+    'drupal/add_me2' => 0,
+    'drupal/add_me3' => 0,
     'drupal/drush1' => 0,
     'drupal/drush2' => 0,
     'drupal/module1' => 0,
     'drupal/module2' => 0,
+    'drupal/module3' => 0,
     'drupal/module4' => 0,
-    'drupal/module6' => 0,
+    'drupal/module5' => 0,
     'drupal/theme1' => 0,
     'drupal/theme2' => 0,
   ];
