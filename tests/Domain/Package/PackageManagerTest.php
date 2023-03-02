@@ -71,15 +71,15 @@ class PackageManagerTest extends TestCase {
     ],
   ];
 
-  private const ALL_PACKAGES = [
-    'drupal/drush1',
-    'drupal/drush2',
-    'drupal/module1',
-    'drupal/module2',
-    'drupal/module4',
-    'drupal/module6',
-    'drupal/theme1',
-    'drupal/theme2',
+  private const EXPECTED_PACKAGE_LIST = [
+    'drupal/drush1' => 0,
+    'drupal/drush2' => 0,
+    'drupal/module1' => 0,
+    'drupal/module2' => 0,
+    'drupal/module4' => 0,
+    'drupal/module6' => 0,
+    'drupal/theme1' => 0,
+    'drupal/theme2' => 0,
   ];
 
   private const ORCA_PATH = '/var/www/orca';
@@ -126,7 +126,13 @@ class PackageManagerTest extends TestCase {
     $all_packages = $manager->getAll();
     $package = $manager->get('drupal/module2');
 
-    self::assertEquals(self::ALL_PACKAGES, array_keys($all_packages), 'Set/got all packages.');
+    // Normalize expected package list for clearer comparison.
+    $actual_package_list = [];
+    foreach (array_keys($all_packages) as $name) {
+      $actual_package_list[$name] = 0;
+    }
+
+    self::assertEquals(self::EXPECTED_PACKAGE_LIST, $actual_package_list, 'Set/got all packages.');
     self::assertInstanceOf(Package::class, reset($all_packages), 'Got packages as Package objects.');
     self::assertEquals('drupal/module2', $package->getPackageName(), 'Got package by name.');
   }
