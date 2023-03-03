@@ -5,6 +5,7 @@ namespace Acquia\Orca\Domain\Tool;
 use Acquia\Orca\Domain\Fixture\FixtureResetter;
 use Acquia\Orca\Domain\Package\Package;
 use Acquia\Orca\Domain\Package\PackageManager;
+use Acquia\Orca\Domain\Server\ProcessOutputCallback;
 use Acquia\Orca\Domain\Server\ServerStack;
 use Acquia\Orca\Domain\Tool\Phpunit\PhpUnitTask;
 use Acquia\Orca\Exception\OrcaTaskFailureException;
@@ -91,8 +92,17 @@ class TestRunner {
   private $serverStack;
 
   /**
+   * The Callback to output server details.
+   *
+   * @var \Acquia\Orca\Domain\Server\ProcessOutputCallback
+   */
+  private $callback;
+
+  /**
    * Constructs an instance.
    *
+   * @param \Acquia\Orca\Domain\Server\ProcessOutputCallback $callback
+   *   The callback to output process details.
    * @param \Acquia\Orca\Helper\EnvFacade $env_facade
    *   The ENV facade.
    * @param \Symfony\Component\Filesystem\Filesystem $filesystem
@@ -108,7 +118,8 @@ class TestRunner {
    * @param \Acquia\Orca\Domain\Server\ServerStack $server_stack
    *   The server stack.
    */
-  public function __construct(EnvFacade $env_facade, Filesystem $filesystem, FixtureResetter $fixture_resetter, SymfonyStyle $output, PhpUnitTask $phpunit, PackageManager $package_manager, ServerStack $server_stack) {
+  public function __construct(ProcessOutputCallback $callback, EnvFacade $env_facade, Filesystem $filesystem, FixtureResetter $fixture_resetter, SymfonyStyle $output, PhpUnitTask $phpunit, PackageManager $package_manager, ServerStack $server_stack) {
+    $this->callback = $callback;
     $this->envFacade = $env_facade;
     $this->filesystem = $filesystem;
     $this->fixtureResetter = $fixture_resetter;
@@ -182,12 +193,7 @@ class TestRunner {
    */
   private function startServers(): void {
     $this->output->comment('Starting servers');
-    $this->serverStack->start();
-    $processes = $this->serverStack->getProcessDetails();
-    // Prints the command getting invoked while running the servers in the logs.
-    foreach ($processes as $process) {
-      $this->output->comment('Running Command: ' . $process->getCommandLine());
-    }
+    $this->serverStack->start($this->callback);
   }
 
   /**

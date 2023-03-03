@@ -44,9 +44,9 @@ class ServerStack implements ServerInterface {
   /**
    * {@inheritdoc}
    */
-  public function start(): void {
+  public function start(ProcessOutputCallback $callback): void {
     foreach ($this->servers as $server) {
-      $server->start();
+      $server->start($callback);
     }
 
     // Give the servers a chance to start up before releasing the thread to
@@ -70,19 +70,6 @@ class ServerStack implements ServerInterface {
     foreach ($this->servers as $server) {
       $server->wait();
     }
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function getProcessDetails(): array {
-    $status = [];
-    foreach ($this->servers as $server) {
-      $process = $server->getProcessDetails();
-      $status[] = array_pop($process);
-    }
-
-    return $status;
   }
 
 }

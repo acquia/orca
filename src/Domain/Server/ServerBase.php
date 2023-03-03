@@ -56,7 +56,7 @@ abstract class ServerBase implements ServerInterface {
   /**
    * {@inheritdoc}
    */
-  public function start(): void {
+  public function start(ProcessOutputCallback $callback): void {
     $this->process = $this->createProcess();
     $this->process
       ->setTimeout(NULL)
@@ -66,6 +66,8 @@ abstract class ServerBase implements ServerInterface {
       ->disableOutput()
 
       ->start();
+
+    $callback($this->process);
   }
 
   /**
@@ -104,13 +106,6 @@ abstract class ServerBase implements ServerInterface {
    */
   protected function getProcessRunner(): ProcessRunner {
     return $this->processRunner;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function getProcessDetails(): array {
-    return [$this->process];
   }
 
 }

@@ -4,6 +4,7 @@ namespace Acquia\Orca\Tests\Domain\Tool;
 
 use Acquia\Orca\Domain\Fixture\FixtureResetter;
 use Acquia\Orca\Domain\Package\PackageManager;
+use Acquia\Orca\Domain\Server\ProcessOutputCallback;
 use Acquia\Orca\Domain\Server\ServerStack;
 use Acquia\Orca\Domain\Tool\Phpunit\PhpUnitTask;
 use Acquia\Orca\Domain\Tool\TaskInterface;
@@ -15,6 +16,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
+ * @property  \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Domain\Server\ProcessOutputCallback $callback
  * @property \Acquia\Orca\Helper\EnvFacade|\Prophecy\Prophecy\ObjectProphecy $envFacade
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Domain\Fixture\FixtureResetter $fixtureResetter
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Domain\Package\PackageManager $packageManager
@@ -31,6 +33,7 @@ class TestRunnerTest extends TestCase {
   private const STATUS_MESSAGE = 'Printing status message';
 
   protected function setUp(): void {
+    $this->callback = $this->prophesize(ProcessOutputCallback::class);
     $this->envFacade = $this->prophesize(EnvFacade::class);
     $this->filesystem = $this->prophesize(Filesystem::class);
     $this->fixtureResetter = $this->prophesize(FixtureResetter::class);
@@ -42,6 +45,7 @@ class TestRunnerTest extends TestCase {
   }
 
   private function createTestRunner(): TestRunner {
+    $callback = $this->callback->reveal();
     $env_facade = $this->envFacade->reveal();
     $filesystem = $this->filesystem->reveal();
     $fixture_resetter = $this->fixtureResetter->reveal();
@@ -49,7 +53,7 @@ class TestRunnerTest extends TestCase {
     $phpunit = $this->phpunit->reveal();
     $package_manager = $this->packageManager->reveal();
     $server_stack = $this->serverStack->reveal();
-    return new TestRunner($env_facade, $filesystem, $fixture_resetter, $output, $phpunit, $package_manager, $server_stack);
+    return new TestRunner($callback, $env_facade, $filesystem, $fixture_resetter, $output, $phpunit, $package_manager, $server_stack);
   }
 
   public function testTaskRunner(): void {

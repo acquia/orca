@@ -10,7 +10,7 @@ interface ServerInterface {
   /**
    * Starts the server.
    */
-  public function start(): void;
+  public function start(ProcessOutputCallback $callback): void;
 
   /**
    * Stops the server.
@@ -21,13 +21,5 @@ interface ServerInterface {
    * Halts the server until the process is completed.
    */
   public function wait(): void;
-
-  /**
-   * Gets the process details.
-   *
-   * @return array
-   *   The process or array of processes.
-   */
-  public function getProcessDetails(): array;
 
 }
