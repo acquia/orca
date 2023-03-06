@@ -185,6 +185,11 @@ class PackageManager {
         continue;
       }
 
+      if (is_array($datum) && count($datum) === 0) {
+        $this->addPackage($datum, $fixture_path_handler, $package_name);
+        continue;
+      }
+
       if ((array_key_exists('version', $datum) || array_key_exists('version_dev', $datum)) && $this->containsValidVersion($datum)) {
         $this->addPackage($datum, $fixture_path_handler, $package_name);
         continue;
