@@ -3,6 +3,7 @@
 namespace Acquia\Orca\Tests\Console\Command\Fixture;
 
 use Acquia\Orca\Console\Command\Fixture\FixtureRunServerCommand;
+use Acquia\Orca\Domain\Server\ProcessOutputCallback;
 use Acquia\Orca\Domain\Server\WebServer;
 use Acquia\Orca\Enum\StatusCodeEnum;
 use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
@@ -10,12 +11,14 @@ use Acquia\Orca\Tests\Console\Command\CommandTestBase;
 use Symfony\Component\Console\Command\Command;
 
 /**
+ * @property  \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Domain\Server\ProcessOutputCallback $callback
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Helper\Filesystem\FixturePathHandler $fixture
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Domain\Server\WebServer $webServer
  */
 class FixtureRunServerCommandTest extends CommandTestBase {
 
   protected function setUp(): void {
+    $this->callback = $this->prophesize(ProcessOutputCallback::class);
     $this->fixture = $this->prophesize(FixturePathHandler::class);
     $this->fixture->getPath()
       ->willReturn(self::FIXTURE_ROOT);
@@ -25,9 +28,10 @@ class FixtureRunServerCommandTest extends CommandTestBase {
   }
 
   protected function createCommand(): Command {
+    $callback = $this->callback->reveal();
     $fixture = $this->fixture->reveal();
     $web_server = $this->webServer->reveal();
-    return new FixtureRunServerCommand($fixture, $web_server);
+    return new FixtureRunServerCommand($callback, $fixture, $web_server);
   }
 
   /**
@@ -39,7 +43,7 @@ class FixtureRunServerCommandTest extends CommandTestBase {
       ->shouldBeCalledTimes((int) in_array('exists', $methods_called))
       ->willReturn($fixture_exists);
     $this->webServer
-      ->start()
+      ->start($this->callback)
       ->shouldBeCalledTimes((int) in_array('start', $methods_called));
     $this->webServer
       ->wait()

@@ -3,6 +3,7 @@
 namespace Acquia\Orca\Tests\Domain\Server;
 
 use Acquia\Orca\Domain\Server\ChromeDriverServer;
+use Acquia\Orca\Domain\Server\ProcessOutputCallback;
 use Acquia\Orca\Domain\Server\ServerStack;
 use Acquia\Orca\Domain\Server\WebServer;
 use Acquia\Orca\Helper\Clock;
@@ -29,11 +30,13 @@ class ServerStackTest extends TestCase {
   }
 
   public function testServerStack(): void {
+    $callback = $this->prophesize(ProcessOutputCallback::class)->reveal();
+
     $this->webServer
-      ->start()
+      ->start($callback)
       ->shouldBeCalledTimes(1);
     $this->chromeDriverServer
-      ->start()
+      ->start($callback)
       ->shouldBeCalledTimes(1);
     $this->webServer
       ->stop()
@@ -43,7 +46,7 @@ class ServerStackTest extends TestCase {
       ->shouldBeCalledTimes(1);
 
     $servers = $this->createServerStack();
-    $servers->start();
+    $servers->start($callback);
     $servers->stop();
 
     self::assertInstanceOf(ServerStack::class, $servers, 'Instantiated class.');
