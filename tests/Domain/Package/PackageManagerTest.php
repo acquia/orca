@@ -21,26 +21,73 @@ use Symfony\Component\Yaml\Parser;
 class PackageManagerTest extends TestCase {
 
   private const PACKAGES_DATA = [
-    'drupal/module1' => ['version_dev' => '1.x-dev'],
-    'drupal/module2' => ['version' => '~1.0', 'version_dev' => '1.x-dev'],
+    'drupal/module1' => [],
+    'drupal/module2' => ['version_dev' => '1.x-dev'],
+    'drupal/module3' => ['version' => '~1.0', 'version_dev' => '1.x-dev'],
+    'drupal/module4' => [
+      'version' => '~1.0',
+      'version_dev' => '1.x-dev',
+      'core_matrix' => [
+        '*' => ['version' => '~1.0', 'version_dev' => '1.x-dev'],
+      ],
+    ],
+    'drupal/module5' => [
+      'version' => NULL,
+      'version_dev' => NULL,
+      'core_matrix' => [
+        '*' => ['version' => '~1.0', 'version_dev' => '1.x-dev'],
+      ],
+    ],
     'drupal/drush1' => ['type' => 'drupal-drush', 'version_dev' => '1.x-dev'],
     'drupal/drush2' => ['type' => 'drupal-drush', 'version_dev' => '1.x-dev'],
     'drupal/theme1' => ['type' => 'drupal-theme', 'version_dev' => '1.x-dev'],
     'drupal/theme2' => ['type' => 'drupal-theme', 'version_dev' => '1.x-dev'],
-    'drupal/remove_me' => ['version_dev' => '1.x-dev'],
+    'drupal/remove_me1' => [],
+    'drupal/remove_me2' => ['version_dev' => '1.x-dev'],
+    'drupal/remove_me3' => ['version' => '~1.0', 'version_dev' => '1.x-dev'],
+    'drupal/remove_me4' => [
+      'core_matrix' => [
+        '*' => ['version' => '~1.0', 'version_dev' => '1.x-dev'],
+      ],
+    ],
+    'drupal/remove_me5' => [
+      'core_matrix' => [
+        '*' => ['version' => '~1.0', 'version_dev' => '1.x-dev'],
+      ],
+    ],
   ];
 
   private const PACKAGES_DATA_ALTER = [
-    'drupal/remove_me' => NULL,
+    'drupal/add_me1' => [],
+    'drupal/add_me2' => ['version' => '~1.0'],
+    'drupal/add_me3' => ['version' => '~1.0', 'version_dev' => '1.x-dev'],
+    'drupal/remove_me1' => NULL,
+    'drupal/remove_me2' => ['version' => NULL, 'version_dev' => NULL],
+    'drupal/remove_me3' => ['version' => NULL, 'version_dev' => NULL],
+    'drupal/remove_me4' => [
+      'core_matrix' => [
+        '*' => ['version' => NULL, 'version_dev' => NULL],
+      ],
+    ],
+    'drupal/remove_me5' => [
+      'core_matrix' => NULL,
+    ],
+    'drupal/no_match' => NULL,
   ];
 
-  private const ALL_PACKAGES = [
-    'drupal/drush1',
-    'drupal/drush2',
-    'drupal/module1',
-    'drupal/module2',
-    'drupal/theme1',
-    'drupal/theme2',
+  private const EXPECTED_PACKAGE_LIST = [
+    'drupal/add_me1' => 0,
+    'drupal/add_me2' => 0,
+    'drupal/add_me3' => 0,
+    'drupal/drush1' => 0,
+    'drupal/drush2' => 0,
+    'drupal/module1' => 0,
+    'drupal/module2' => 0,
+    'drupal/module3' => 0,
+    'drupal/module4' => 0,
+    'drupal/module5' => 0,
+    'drupal/theme1' => 0,
+    'drupal/theme2' => 0,
   ];
 
   private const ORCA_PATH = '/var/www/orca';
@@ -87,7 +134,13 @@ class PackageManagerTest extends TestCase {
     $all_packages = $manager->getAll();
     $package = $manager->get('drupal/module2');
 
-    self::assertEquals(self::ALL_PACKAGES, array_keys($all_packages), 'Set/got all packages.');
+    // Normalize expected package list for clearer comparison.
+    $actual_package_list = [];
+    foreach (array_keys($all_packages) as $name) {
+      $actual_package_list[$name] = 0;
+    }
+
+    self::assertEquals(self::EXPECTED_PACKAGE_LIST, $actual_package_list, 'Set/got all packages.');
     self::assertInstanceOf(Package::class, reset($all_packages), 'Got packages as Package objects.');
     self::assertEquals('drupal/module2', $package->getPackageName(), 'Got package by name.');
   }
