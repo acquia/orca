@@ -52,6 +52,9 @@ acquia/acquia_cms:
     9.x:
       version: ~
       version_dev: ~
+    10.1.x:
+      version: ~
+      version_dev: ~
     '*':
       version: 2.x
       version_dev: 2.x-dev
