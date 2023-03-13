@@ -61,8 +61,13 @@ drupal/acquia_connector:
   version_dev: 4.x-dev
 
 drupal/acquia_contenthub:
-  version: 3.0.x
-  version_dev: 3.0.x-dev
+  core_matrix:
+    10.1.x:
+      version: ~
+      version_dev: ~
+    '*':
+      version: 3.0.x
+      version_dev: 3.0.x-dev
 
 drupal/acquia_purge:
   version: 1.x
