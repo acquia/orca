@@ -15,11 +15,13 @@ require __DIR__ . '/../vendor/autoload.php';
 ini_set('memory_limit', -1);
 set_time_limit(0);
 
+use Acquia\Orca\Event\TelemetrySubscriber;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 
 $container = new ContainerBuilder();
 
@@ -28,6 +30,8 @@ $loader->load(__DIR__ . '/../config/services.yml');
 
 $container->setParameter('app.project_dir', dirname(__DIR__));
 $container->setParameter('app.fixture_dir', dirname(__DIR__) . '/../orca-build');
+
+$container->register('telemetry.service', TelemetrySubscriber::class);
 
 $container->compile(TRUE);
 
@@ -40,6 +44,13 @@ foreach ($container->getServiceIds() as $serviceId) {
   $service = $container->get($serviceId);
   if ($service instanceof Command) {
     $application->add($service);
+  }
+
+  if ($service instanceof EventDispatcher) {
+
+    $telemetrySubscriber = $container->get('Acquia\Orca\Event\TelemetrySubscriber');
+    $service->addSubscriber($telemetrySubscriber);
+    $application->setDispatcher($service);
   }
 }
 

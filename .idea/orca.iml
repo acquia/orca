@@ -123,6 +123,9 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/seld/signal-handler" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/ergebnis/json-pointer" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/ergebnis/json" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/event-dispatcher-contracts" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/event-dispatcher" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/psr/event-dispatcher" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
