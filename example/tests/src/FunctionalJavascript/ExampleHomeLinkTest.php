@@ -10,7 +10,7 @@ class ExampleHomeLinkTest extends WebDriverTestBase {
 
   public function testHomePageLink(): void {
     $page = $this->getSession()->getPage();
-    $content = $page->findLink('Home');
+    $content = $page->findLink('Log in');
     $this->assertTrue($content->isVisible());
   }
 
