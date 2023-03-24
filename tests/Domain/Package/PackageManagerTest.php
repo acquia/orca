@@ -8,6 +8,7 @@ use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
 use Acquia\Orca\Helper\Filesystem\OrcaPathHandler;
 use Acquia\Orca\Tests\TestCase;
 use Prophecy\Argument;
+use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Yaml\Parser;
 
@@ -16,6 +17,8 @@ use Symfony\Component\Yaml\Parser;
  * @property \Prophecy\Prophecy\ObjectProphecy|\Symfony\Component\Filesystem\Filesystem $filesystem
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Helper\Filesystem\FixturePathHandler $fixture
  * @property \Prophecy\Prophecy\ObjectProphecy|\Symfony\Component\Yaml\Parser $parser
+ * @property \Prophecy\Prophecy\ObjectProphecy|\Symfony\Component\Console\Output\OutputInterface $output
+ *
  * @coversDefaultClass \Acquia\Orca\Domain\Package\PackageManager
  */
 class PackageManagerTest extends TestCase {
@@ -38,7 +41,7 @@ class PackageManagerTest extends TestCase {
         '*' => ['version' => '~1.0', 'version_dev' => '1.x-dev'],
       ],
     ],
-    'drupal/module6' => ['type' => 'composer-plugin'],
+    'drupal/package' => ['type' => 'composer-plugin'],
     'drupal/drush1' => ['type' => 'drupal-drush', 'version_dev' => '1.x-dev'],
     'drupal/drush2' => ['type' => 'drupal-drush', 'version_dev' => '1.x-dev'],
     'drupal/theme1' => ['type' => 'drupal-theme', 'version_dev' => '1.x-dev'],
@@ -89,7 +92,7 @@ class PackageManagerTest extends TestCase {
     'drupal/module3' => 0,
     'drupal/module4' => 0,
     'drupal/module5' => 0,
-    'drupal/module6' => 0,
+    'drupal/package' => 0,
     'drupal/theme1' => 0,
     'drupal/theme2' => 0,
   ];
@@ -116,6 +119,10 @@ class PackageManagerTest extends TestCase {
     $this->orca
       ->getPath()
       ->willReturn(self::ORCA_PATH);
+    $this->output = $this->prophesize(OutputInterface::class);
+    $this->output
+      ->writeln(Argument::any())
+      ->willReturn(TRUE);
     $this->parser = $this->prophesize(Parser::class);
     $this->parser
       ->parseFile('/var/www/orca/config/packages.yml')
@@ -129,8 +136,9 @@ class PackageManagerTest extends TestCase {
     $filesystem = $this->filesystem->reveal();
     $fixture_path_handler = $this->fixture->reveal();
     $orca_path_handler = $this->orca->reveal();
+    $output = $this->output->reveal();
     $parser = $this->parser->reveal();
-    return new PackageManager($filesystem, $fixture_path_handler, $orca_path_handler, $parser, self::PACKAGES_CONFIG_FILE, self::PACKAGES_CONFIG_ALTER_FILE);
+    return new PackageManager($filesystem, $fixture_path_handler, $orca_path_handler, $output, $parser, self::PACKAGES_CONFIG_FILE, self::PACKAGES_CONFIG_ALTER_FILE);
   }
 
   public function testConstructionAndGetters(): void {
