@@ -95,6 +95,11 @@ class GoogleApiClient {
    */
   public function postData(array $data): void {
 
+    if (!$this->version->existsPredefined($data['version'])) {
+      $this->output->comment("No data to Google sheet as test is skipped.");
+      return;
+    }
+
     $this->output->section("Sending data to Google sheet");
     $data['version'] = $this->version->resolvePredefined($data['version']);
 
