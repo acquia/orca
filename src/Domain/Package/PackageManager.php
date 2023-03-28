@@ -204,7 +204,11 @@ class PackageManager {
       // an array even if they declared a valid version as it will cause ORCA to
       // throw an error in the Options resolver.
       if ((array_key_exists('core_matrix', $datum) && !is_array($datum['core_matrix']))) {
-        $this->output->writeln('Skipping ' . $package_name . 'as core_matrix not defined as an array.');
+        throw new OrcaParseError(sprintf(
+            'Invalid package specification for %s: "core_matrix" must be an array. '
+            . 'See https://github.com/acquia/orca/blob/develop/config/packages.yml',
+            $package_name,
+        ));
         continue;
       }
 
