@@ -213,7 +213,7 @@ class PackageManager {
       }
 
       // Add packages which have defined an empty array.
-      if (is_array($datum) && count($datum) === 0) {
+      if ($datum === []) {
         $this->addPackage($datum, $fixture_path_handler, $package_name);
         continue;
       }
