@@ -226,8 +226,6 @@ class PackageManager {
         continue;
       }
 
-      // If all above conditions are not met we check to see if either of
-      // version and version_dev are defined.
       if ($this->containsValidVersion($datum)) {
         $this->addPackage($datum, $fixture_path_handler, $package_name);
       }
