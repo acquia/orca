@@ -4,7 +4,6 @@ namespace Acquia\Orca\Domain\Package;
 
 use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
 use Acquia\Orca\Helper\Filesystem\OrcaPathHandler;
-use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Yaml\Parser;
 
@@ -63,13 +62,6 @@ class PackageManager {
   private $parser;
 
   /**
-   * The output object.
-   *
-   * @var \Symfony\Component\Console\Output\OutputInterface
-   */
-  private $output;
-
-  /**
    * Constructs an instance.
    *
    * @param \Symfony\Component\Filesystem\Filesystem $filesystem
@@ -78,8 +70,6 @@ class PackageManager {
    *   The fixture path handler.
    * @param \Acquia\Orca\Helper\Filesystem\OrcaPathHandler $orca_path_handler
    *   The ORCA path handler.
-   * @param \Symfony\Component\Console\Output\OutputInterface $output
-   *   The output object.
    * @param \Symfony\Component\Yaml\Parser $parser
    *   The YAML parser.
    * @param string $packages_config
@@ -89,14 +79,11 @@ class PackageManager {
    *   The path to an extra packages configuration file relative to the ORCA
    *   project directory whose contents will be merged into the main packages
    *   configuration.
-   *
-   * @throws \Acquia\Orca\Exception\OrcaParseError
    */
-  public function __construct(Filesystem $filesystem, FixturePathHandler $fixture_path_handler, OrcaPathHandler $orca_path_handler, OutputInterface $output, Parser $parser, string $packages_config, ?string $packages_config_alter) {
+  public function __construct(Filesystem $filesystem, FixturePathHandler $fixture_path_handler, OrcaPathHandler $orca_path_handler, Parser $parser, string $packages_config, ?string $packages_config_alter) {
     $this->filesystem = $filesystem;
     $this->fixture = $fixture_path_handler;
     $this->orca = $orca_path_handler;
-    $this->output = $output;
     $this->parser = $parser;
     $this->initializePackages($fixture_path_handler, $packages_config, $packages_config_alter);
   }
@@ -182,8 +169,6 @@ class PackageManager {
    *   The path to an extra packages configuration file relative to the ORCA
    *   project directory whose contents will be merged into the main packages
    *   configuration.
-   *
-   * @throws \Acquia\Orca\Exception\OrcaParseError
    */
   private function initializePackages(FixturePathHandler $fixture_path_handler, string $packages_config, ?string $packages_config_alter): void {
     $data = $this->parseYamlFile($this->orca->getPath($packages_config));
@@ -197,18 +182,6 @@ class PackageManager {
       // from the active specification at runtime by setting its value to NULL
       // in the packages' configuration alter file.
       if ($datum === NULL) {
-        continue;
-      }
-
-      // Remove packages which have declared core_matrix as something other than
-      // an array even if they declared a valid version as it will cause ORCA to
-      // throw an error in the Options resolver.
-      if ((array_key_exists('core_matrix', $datum) && !is_array($datum['core_matrix']))) {
-        throw new OrcaParseError(sprintf(
-            'Invalid package specification for %s: "core_matrix" must be an array. '
-            . 'See https://github.com/acquia/orca/blob/develop/config/packages.yml',
-            $package_name,
-        ));
         continue;
       }
 

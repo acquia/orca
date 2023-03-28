@@ -8,7 +8,6 @@ use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
 use Acquia\Orca\Helper\Filesystem\OrcaPathHandler;
 use Acquia\Orca\Tests\TestCase;
 use Prophecy\Argument;
-use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Yaml\Parser;
 
@@ -17,8 +16,6 @@ use Symfony\Component\Yaml\Parser;
  * @property \Prophecy\Prophecy\ObjectProphecy|\Symfony\Component\Filesystem\Filesystem $filesystem
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Helper\Filesystem\FixturePathHandler $fixture
  * @property \Prophecy\Prophecy\ObjectProphecy|\Symfony\Component\Yaml\Parser $parser
- * @property \Prophecy\Prophecy\ObjectProphecy|\Symfony\Component\Console\Output\OutputInterface $output
- *
  * @coversDefaultClass \Acquia\Orca\Domain\Package\PackageManager
  */
 class PackageManagerTest extends TestCase {
@@ -54,11 +51,6 @@ class PackageManagerTest extends TestCase {
         '*' => ['version' => '~1.0', 'version_dev' => '1.x-dev'],
       ],
     ],
-    'drupal/remove_me5' => [
-      'core_matrix' => [
-        '*' => ['version' => '~1.0', 'version_dev' => '1.x-dev'],
-      ],
-    ],
   ];
 
   private const PACKAGES_DATA_ALTER = [
@@ -73,9 +65,6 @@ class PackageManagerTest extends TestCase {
       'core_matrix' => [
         '*' => ['version' => NULL, 'version_dev' => NULL],
       ],
-    ],
-    'drupal/remove_me5' => [
-      'core_matrix' => NULL,
     ],
     'drupal/no_match' => NULL,
   ];
@@ -119,10 +108,6 @@ class PackageManagerTest extends TestCase {
     $this->orca
       ->getPath()
       ->willReturn(self::ORCA_PATH);
-    $this->output = $this->prophesize(OutputInterface::class);
-    $this->output
-      ->writeln(Argument::any())
-      ->willReturn(TRUE);
     $this->parser = $this->prophesize(Parser::class);
     $this->parser
       ->parseFile('/var/www/orca/config/packages.yml')
@@ -136,9 +121,8 @@ class PackageManagerTest extends TestCase {
     $filesystem = $this->filesystem->reveal();
     $fixture_path_handler = $this->fixture->reveal();
     $orca_path_handler = $this->orca->reveal();
-    $output = $this->output->reveal();
     $parser = $this->parser->reveal();
-    return new PackageManager($filesystem, $fixture_path_handler, $orca_path_handler, $output, $parser, self::PACKAGES_CONFIG_FILE, self::PACKAGES_CONFIG_ALTER_FILE);
+    return new PackageManager($filesystem, $fixture_path_handler, $orca_path_handler, $parser, self::PACKAGES_CONFIG_FILE, self::PACKAGES_CONFIG_ALTER_FILE);
   }
 
   public function testConstructionAndGetters(): void {
