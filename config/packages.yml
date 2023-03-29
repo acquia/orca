@@ -49,9 +49,6 @@
 
 acquia/acquia_cms:
   core_matrix:
-    9.x:
-      version: ~
-      version_dev: ~
     10.1.x:
       version: ~
       version_dev: ~
