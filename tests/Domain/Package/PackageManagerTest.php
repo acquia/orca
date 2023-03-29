@@ -38,6 +38,7 @@ class PackageManagerTest extends TestCase {
         '*' => ['version' => '~1.0', 'version_dev' => '1.x-dev'],
       ],
     ],
+    'drupal/package' => ['type' => 'composer-plugin'],
     'drupal/drush1' => ['type' => 'drupal-drush', 'version_dev' => '1.x-dev'],
     'drupal/drush2' => ['type' => 'drupal-drush', 'version_dev' => '1.x-dev'],
     'drupal/theme1' => ['type' => 'drupal-theme', 'version_dev' => '1.x-dev'],
@@ -50,17 +51,13 @@ class PackageManagerTest extends TestCase {
         '*' => ['version' => '~1.0', 'version_dev' => '1.x-dev'],
       ],
     ],
-    'drupal/remove_me5' => [
-      'core_matrix' => [
-        '*' => ['version' => '~1.0', 'version_dev' => '1.x-dev'],
-      ],
-    ],
   ];
 
   private const PACKAGES_DATA_ALTER = [
     'drupal/add_me1' => [],
     'drupal/add_me2' => ['version' => '~1.0'],
     'drupal/add_me3' => ['version' => '~1.0', 'version_dev' => '1.x-dev'],
+    'drupal/add_me4' => ['type' => 'library'],
     'drupal/remove_me1' => NULL,
     'drupal/remove_me2' => ['version' => NULL, 'version_dev' => NULL],
     'drupal/remove_me3' => ['version' => NULL, 'version_dev' => NULL],
@@ -69,9 +66,6 @@ class PackageManagerTest extends TestCase {
         '*' => ['version' => NULL, 'version_dev' => NULL],
       ],
     ],
-    'drupal/remove_me5' => [
-      'core_matrix' => NULL,
-    ],
     'drupal/no_match' => NULL,
   ];
 
@@ -79,6 +73,7 @@ class PackageManagerTest extends TestCase {
     'drupal/add_me1' => 0,
     'drupal/add_me2' => 0,
     'drupal/add_me3' => 0,
+    'drupal/add_me4' => 0,
     'drupal/drush1' => 0,
     'drupal/drush2' => 0,
     'drupal/module1' => 0,
@@ -86,6 +81,7 @@ class PackageManagerTest extends TestCase {
     'drupal/module3' => 0,
     'drupal/module4' => 0,
     'drupal/module5' => 0,
+    'drupal/package' => 0,
     'drupal/theme1' => 0,
     'drupal/theme2' => 0,
   ];

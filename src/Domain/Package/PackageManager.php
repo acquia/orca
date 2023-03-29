@@ -180,22 +180,19 @@ class PackageManager {
     foreach ($data as $package_name => $datum) {
       // Skipping a null datum provides for a package to be effectively removed
       // from the active specification at runtime by setting its value to NULL
-      // in the packages configuration alter file.
+      // in the packages' configuration alter file.
       if ($datum === NULL) {
         continue;
       }
 
-      if (is_array($datum) && count($datum) === 0) {
+      // Add packages which have defined an empty array.
+      if ($datum === []) {
         $this->addPackage($datum, $fixture_path_handler, $package_name);
         continue;
       }
 
-      if ((array_key_exists('version', $datum) || array_key_exists('version_dev', $datum)) && $this->containsValidVersion($datum)) {
-        $this->addPackage($datum, $fixture_path_handler, $package_name);
-        continue;
-      }
-
-      if (isset($datum['core_matrix'])) {
+      // Process core_matrix.
+      if (array_key_exists('core_matrix', $datum)) {
         $constraints = array_values($datum['core_matrix']);
         foreach ($constraints as $constraint) {
           if ($this->containsValidVersion($constraint)) {
@@ -203,6 +200,11 @@ class PackageManager {
             break;
           }
         }
+        continue;
+      }
+
+      if ($this->containsValidVersion($datum)) {
+        $this->addPackage($datum, $fixture_path_handler, $package_name);
       }
 
     }
@@ -233,7 +235,16 @@ class PackageManager {
   /**
    * Checks if a package is null.
    */
-  private function containsValidVersion(array $data) : bool {
+  private function containsValidVersion($data) : bool {
+
+    if (!is_array($data)) {
+      return FALSE;
+    }
+
+    if (!array_key_exists('version', $data) && !array_key_exists('version_dev', $data)) {
+      return TRUE;
+    }
+
     return (array_key_exists('version', $data) && !is_null($data['version'])) || (array_key_exists('version_dev', $data) && !is_null($data['version_dev']));
   }
 
