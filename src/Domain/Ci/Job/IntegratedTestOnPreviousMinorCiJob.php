@@ -70,6 +70,15 @@ class IntegratedTestOnPreviousMinorCiJob extends AbstractCiJob {
 
   /**
    * {@inheritdoc}
+   *
+   * @throws \Acquia\Orca\Exception\OrcaVersionNotFoundException
+   */
+  protected function exitEarly(): bool {
+    return $this->isRedundant($this->redundantJobChecker, $this->output);
+  }
+
+  /**
+   * {@inheritdoc}
    */
   protected function install(CiRunOptions $options): void {
     $this->runOrcaFixtureInit([
