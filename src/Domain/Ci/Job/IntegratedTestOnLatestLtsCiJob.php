@@ -2,7 +2,6 @@
 
 namespace Acquia\Orca\Domain\Ci\Job;
 
-use Acquia\Orca\Domain\Ci\Job\Helper\RedundantJobChecker;
 use Acquia\Orca\Domain\Composer\Version\DrupalCoreVersionResolver;
 use Acquia\Orca\Enum\CiJobEnum;
 use Acquia\Orca\Helper\EnvFacade;
@@ -44,13 +43,6 @@ class IntegratedTestOnLatestLtsCiJob extends AbstractCiJob {
   private $processRunner;
 
   /**
-   * The redundant job checker.
-   *
-   * @var \Acquia\Orca\Domain\Ci\Job\Helper\RedundantJobChecker
-   */
-  private $redundantJobChecker;
-
-  /**
    * Constructs an instance.
    *
    * @param \Acquia\Orca\Domain\Composer\Version\DrupalCoreVersionResolver $drupal_core_version_resolver
@@ -61,15 +53,12 @@ class IntegratedTestOnLatestLtsCiJob extends AbstractCiJob {
    *   The output decorator.
    * @param \Acquia\Orca\Helper\Process\ProcessRunner $process_runner
    *   The process runner.
-   * @param \Acquia\Orca\Domain\Ci\Job\Helper\RedundantJobChecker $redundant_job_checker
-   *   The redundant job checker.
    */
-  public function __construct(DrupalCoreVersionResolver $drupal_core_version_resolver, EnvFacade $env_facade, OutputInterface $output, ProcessRunner $process_runner, RedundantJobChecker $redundant_job_checker) {
+  public function __construct(DrupalCoreVersionResolver $drupal_core_version_resolver, EnvFacade $env_facade, OutputInterface $output, ProcessRunner $process_runner) {
     $this->drupalCoreVersionResolver = $drupal_core_version_resolver;
     $this->envFacade = $env_facade;
     $this->output = $output;
     $this->processRunner = $process_runner;
-    $this->redundantJobChecker = $redundant_job_checker;
   }
 
   /**
@@ -81,12 +70,10 @@ class IntegratedTestOnLatestLtsCiJob extends AbstractCiJob {
 
   /**
    * {@inheritdoc}
-   *
-   * @throws \Acquia\Orca\Exception\OrcaVersionNotFoundException
    */
   protected function exitEarly(): bool {
     // An LTS does not always exist.
-    return !$this->matchingCoreVersionExists($this->drupalCoreVersionResolver, $this->output) || $this->isRedundant($this->redundantJobChecker, $this->output);
+    return !$this->matchingCoreVersionExists($this->drupalCoreVersionResolver, $this->output);
   }
 
   /**
