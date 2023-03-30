@@ -82,6 +82,10 @@ jobs:
             php-version: "8.1"
             orca-enable-nightwatch: "TRUE"
 
+          - orca-job: ISOLATED_TEST_ON_CURRENT
+            php-version: "8.2"
+            orca-enable-nightwatch: "TRUE"
+
     steps:
       - uses: actions/checkout@v3
 
