@@ -19,7 +19,7 @@ class CiEvent extends Event {
    *
    * @var array
    */
-  private array $data;
+  private $data;
 
   /**
    * Constructs an instance.

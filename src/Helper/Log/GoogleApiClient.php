@@ -3,7 +3,6 @@
 namespace Acquia\Orca\Helper\Log;
 
 use Acquia\Orca\Domain\Composer\Version\DrupalCoreVersionResolver;
-use Acquia\Orca\Exception\OrcaHttpException;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Contracts\HttpClient\Exception\ExceptionInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
@@ -95,13 +94,22 @@ class GoogleApiClient {
    */
   public function postData(array $data): void {
 
-    if (!$this->version->existsPredefined($data['version'])) {
+    // @todo skip tests that have versions defined but are not running.
+    // If version is null for ex: STATIC_CODE_ANALYSIS jobs then send data
+    // as it is.
+    if (is_null($data['version'])) {
+      // @todo specify something appropriate here.
+      $data['version'] = 'NA';
+    }
+    elseif (!$this->version->existsPredefined($data['version'])) {
       $this->output->comment("No data to Google sheet as test is skipped.");
       return;
     }
+    else {
+      $data['version'] = $this->version->resolvePredefined($data['version']);
+    }
 
     $this->output->section("Sending data to Google sheet");
-    $data['version'] = $this->version->resolvePredefined($data['version']);
 
     $spread_sheet_id = "1CllNKp9W1x0t_B3kKJhsJa5lMAevpxTSgIid4aOz2cE";
     $sheet_id = "Sheet1";
@@ -143,9 +151,13 @@ class GoogleApiClient {
         $this->output->comment("Data successfully posted in google sheet : " .
           implode(',', $response->toArray()['updates']['updatedData']['values'][0]));
       }
+      else {
+        $this->output->comment("Operation unsuccessful!! Error Code: " . $response->getStatusCode());
+      }
     }
     catch (ExceptionInterface $e) {
-      throw new OrcaHttpException('An error occurred accessing the Google Sheet API endpoint.', 0, $e);
+      $this->output->comment('An error occurred accessing the Google Sheet API endpoint.\n' . $e->getMessage());
+      exit;
     }
   }
 
@@ -180,11 +192,15 @@ class GoogleApiClient {
       if ($response->getStatusCode() === 200) {
         $this->output->comment("Access token successfully obtained");
       }
+      else {
+        $this->output->comment("Failed to obtain access token.");
+      }
 
       return $response->toArray()['access_token'];
     }
     catch (ExceptionInterface $e) {
-      throw new OrcaHttpException('An error occurred accessing the auth token from Google API endpoint.', 0, $e);
+      $this->output->comment('An error occurred accessing the auth token from Google API endpoint.\n' . $e->getMessage());
+      exit;
     }
   }
 
