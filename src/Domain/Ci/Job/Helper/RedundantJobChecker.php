@@ -36,7 +36,7 @@ class RedundantJobChecker {
   }
 
   /**
-   * Determines whether or not the given CI job is redundant.
+   * Determines whether the given CI job is redundant.
    *
    * @param \Acquia\Orca\Enum\CiJobEnum $ci_job
    *   The CI job in question.
@@ -53,14 +53,29 @@ class RedundantJobChecker {
 
     $resolved_versions = $this->getResolvedVersions();
 
+    $job_key = $ci_job->getKey();
+
     // Ignore jobs that aren't subject to duplication.
-    if (!array_key_exists($ci_job->getKey(), $resolved_versions)) {
+    if (!array_key_exists($job_key, $resolved_versions)) {
       return $this->cacheAndReturn(FALSE);
     }
 
-    $given_version = $resolved_versions[$ci_job->getKey()];
-    unset($resolved_versions[$ci_job->getKey()]);
-    if (in_array($given_version, $resolved_versions, TRUE)) {
+    $given_version = $resolved_versions[$job_key];
+
+    // If latest_lts and oldest_supported are same skip the latest_lts.
+    if ($job_key === CiJobEnum::INTEGRATED_TEST_ON_LATEST_LTS &&
+      $given_version === $resolved_versions[CiJobEnum::INTEGRATED_TEST_ON_OLDEST_SUPPORTED]) {
+      return $this->cacheAndReturn(TRUE);
+    }
+    // If oldest_supported and previous_minor are same skip the
+    // oldest_supported.
+    if ($job_key === CiJobEnum::INTEGRATED_TEST_ON_OLDEST_SUPPORTED &&
+      $given_version === $resolved_versions[CiJobEnum::INTEGRATED_TEST_ON_PREVIOUS_MINOR]) {
+      return $this->cacheAndReturn(TRUE);
+    }
+    // If latest_lts and previous_minor are same, skip latest_lts.
+    if ($job_key === CiJobEnum::INTEGRATED_TEST_ON_LATEST_LTS &&
+      $given_version === $resolved_versions[CiJobEnum::INTEGRATED_TEST_ON_PREVIOUS_MINOR]) {
       return $this->cacheAndReturn(TRUE);
     }
 
