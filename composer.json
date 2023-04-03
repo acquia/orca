@@ -60,7 +60,7 @@
         "brainmaestro/composer-git-hooks": "^2.8",
         "phan/phan": "^5.3",
         "phpspec/prophecy-phpunit": "^2.0",
-        "phpstan/phpstan": "1.4",
+        "phpstan/phpstan": "^1.10",
         "phpunit/phpunit": "^9.5"
     },
     "config": {
