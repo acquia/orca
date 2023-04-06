@@ -41,7 +41,7 @@
         "symfony/config": "^5.4",
         "symfony/console": "^5.4",
         "symfony/dependency-injection": "^5.4",
-        "symfony/expression-language": "^5.4",
+        "symfony/expression-language": "^6.2",
         "symfony/filesystem": "^5.4",
         "symfony/finder": "^5.4",
         "symfony/http-client": "^5.4",
