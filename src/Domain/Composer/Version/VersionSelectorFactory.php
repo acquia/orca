@@ -78,7 +78,7 @@ class VersionSelectorFactory {
     $drupal_org = RepositoryFactory::createRepo($io, $config, [
       'type' => 'composer',
       'url' => 'https://packages.drupal.org/8',
-    ]);
+    ], $repository_manager);
     $composite_repository->addRepository($drupal_org);
     $repository_set->addRepository($composite_repository);
   }
