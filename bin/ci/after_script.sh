@@ -16,7 +16,7 @@ if [[ "$ORCA_JOB" ]]; then
 fi
 
 # Log the job on cron if telemetry is enabled.
-if [[ "$CI_EVENT" = "cron" && "$ORCA_TELEMETRY_ENABLE" = "TRUE" && "$ORCA_AMPLITUDE_API_KEY" && "$ORCA_AMPLITUDE_USER_ID" ]]; then
+if [[ "$CI_EVENT" = "cron" && "$ORCA_TELEMETRY_ENABLE" = "TRUE"  ]]; then
   orca internal:log-job
 fi
 if [[ "$ORCA_TELEMETRY_ENABLE" = "TRUE" ]]; then

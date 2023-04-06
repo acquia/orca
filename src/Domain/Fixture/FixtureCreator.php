@@ -266,11 +266,8 @@ class FixtureCreator {
     }
 
     // Acquia CMS uses drupal-test-traits as a dev dependency.
-    // Add only when Drupal core version is NOT 10.
     // @todo remove this via ORCA-298
-    if (!$this->options->coreVersionParsedMatches('^10')) {
-      $additions[] = 'weitzman/drupal-test-traits';
-    }
+    $additions[] = 'weitzman/drupal-test-traits';
 
     // Require additional packages.
     $prefer_source = $this->options->preferSource();

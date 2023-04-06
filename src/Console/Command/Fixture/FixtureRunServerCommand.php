@@ -2,6 +2,7 @@
 
 namespace Acquia\Orca\Console\Command\Fixture;
 
+use Acquia\Orca\Domain\Server\ProcessOutputCallback;
 use Acquia\Orca\Domain\Server\WebServer;
 use Acquia\Orca\Enum\StatusCodeEnum;
 use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
@@ -34,14 +35,24 @@ class FixtureRunServerCommand extends Command {
   private $webServer;
 
   /**
+   * The callback to output process details.
+   *
+   * @var \Acquia\Orca\Domain\Server\ProcessOutputCallback
+   */
+  private $callback;
+
+  /**
    * Constructs an instance.
    *
+   * @param \Acquia\Orca\Domain\Server\ProcessOutputCallback $callback
+   *   The callback to output process details.
    * @param \Acquia\Orca\Helper\Filesystem\FixturePathHandler $fixture_path_handler
    *   The fixture path handler.
    * @param \Acquia\Orca\Domain\Server\WebServer $web_server
    *   The web server.
    */
-  public function __construct(FixturePathHandler $fixture_path_handler, WebServer $web_server) {
+  public function __construct(ProcessOutputCallback $callback, FixturePathHandler $fixture_path_handler, WebServer $web_server) {
+    $this->callback = $callback;
     $this->fixture = $fixture_path_handler;
     $this->webServer = $web_server;
     parent::__construct();
@@ -69,7 +80,7 @@ class FixtureRunServerCommand extends Command {
     }
 
     $output->writeln('Starting web server...');
-    $this->webServer->start();
+    $this->webServer->start($this->callback);
     $output->writeln([
       sprintf('Listening on http://%s.', WebServer::WEB_ADDRESS),
       "Document root is {$this->fixture->getPath('docroot')}.",

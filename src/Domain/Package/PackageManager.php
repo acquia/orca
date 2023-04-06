@@ -180,14 +180,35 @@ class PackageManager {
     foreach ($data as $package_name => $datum) {
       // Skipping a null datum provides for a package to be effectively removed
       // from the active specification at runtime by setting its value to NULL
-      // in the packages configuration alter file.
+      // in the packages' configuration alter file.
       if ($datum === NULL) {
         continue;
       }
 
-      $package = new Package($datum, $fixture_path_handler, $this->orca, $package_name);
-      $this->packages[$package_name] = $package;
+      // Add packages which have defined an empty array.
+      if ($datum === []) {
+        $this->addPackage($datum, $fixture_path_handler, $package_name);
+        continue;
+      }
+
+      // Process core_matrix.
+      if (array_key_exists('core_matrix', $datum)) {
+        $constraints = array_values($datum['core_matrix']);
+        foreach ($constraints as $constraint) {
+          if ($this->containsValidVersion($constraint)) {
+            $this->addPackage($datum, $fixture_path_handler, $package_name);
+            break;
+          }
+        }
+        continue;
+      }
+
+      if ($this->containsValidVersion($datum)) {
+        $this->addPackage($datum, $fixture_path_handler, $package_name);
+      }
+
     }
+
     ksort($this->packages);
   }
 
@@ -209,6 +230,30 @@ class PackageManager {
       throw new \LogicException("Incorrect schema in {$file}. See config/packages.yml.");
     }
     return $data;
+  }
+
+  /**
+   * Checks if a package is null.
+   */
+  private function containsValidVersion($data) : bool {
+
+    if (!is_array($data)) {
+      return FALSE;
+    }
+
+    if (!array_key_exists('version', $data) && !array_key_exists('version_dev', $data)) {
+      return TRUE;
+    }
+
+    return (array_key_exists('version', $data) && !is_null($data['version'])) || (array_key_exists('version_dev', $data) && !is_null($data['version_dev']));
+  }
+
+  /**
+   * Adds a package to the list of packages.
+   */
+  private function addPackage(array $datum, FixturePathHandler $fixture_path_handler, string $package_name): void {
+    $package = new Package($datum, $fixture_path_handler, $this->orca, $package_name);
+    $this->packages[$package_name] = $package;
   }
 
   /**

@@ -25,7 +25,6 @@ return [
     'vendor/symfony/options-resolver',
     'vendor/symfony/process',
     'vendor/symfony/yaml',
-    'vendor/zumba/amplitude-php',
   ],
 
   'exclude_file_regex' => '@^vendor/.*/(tests?|Tests?)/@',
