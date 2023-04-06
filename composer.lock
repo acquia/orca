@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "77b6762f034b0c33437b04959a1a83f5",
+    "content-hash": "3b00e919c15cfd618e0238d2c596babd",
     "packages": [
         {
             "name": "acquia/coding-standards",
@@ -3229,20 +3229,20 @@
         },
         {
             "name": "phpstan/phpstan",
-            "version": "1.4.0",
+            "version": "1.10.11",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpstan.git",
-                "reference": "72b04d97b5e6e60a081f17c416fef35bd521120b"
+                "reference": "8aa62e6ea8b58ffb650e02940e55a788cbc3fe21"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/72b04d97b5e6e60a081f17c416fef35bd521120b",
-                "reference": "72b04d97b5e6e60a081f17c416fef35bd521120b",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/8aa62e6ea8b58ffb650e02940e55a788cbc3fe21",
+                "reference": "8aa62e6ea8b58ffb650e02940e55a788cbc3fe21",
                 "shasum": ""
             },
             "require": {
-                "php": "^7.1|^8.0"
+                "php": "^7.2|^8.0"
             },
             "conflict": {
                 "phpstan/phpstan-shim": "*"
@@ -3252,11 +3252,6 @@
                 "phpstan.phar"
             ],
             "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "1.4-dev"
-                }
-            },
             "autoload": {
                 "files": [
                     "bootstrap.php"
@@ -3267,9 +3262,16 @@
                 "MIT"
             ],
             "description": "PHPStan - PHP Static Analysis Tool",
+            "keywords": [
+                "dev",
+                "static analysis"
+            ],
             "support": {
+                "docs": "https://phpstan.org/user-guide/getting-started",
+                "forum": "https://github.com/phpstan/phpstan/discussions",
                 "issues": "https://github.com/phpstan/phpstan/issues",
-                "source": "https://github.com/phpstan/phpstan/tree/1.4.0"
+                "security": "https://github.com/phpstan/phpstan/security/policy",
+                "source": "https://github.com/phpstan/phpstan-src"
             },
             "funding": [
                 {
@@ -3281,15 +3283,11 @@
                     "type": "github"
                 },
                 {
-                    "url": "https://www.patreon.com/phpstan",
-                    "type": "patreon"
-                },
-                {
                     "url": "https://tidelift.com/funding/github/packagist/phpstan/phpstan",
                     "type": "tidelift"
                 }
             ],
-            "time": "2022-01-14T15:58:47+00:00"
+            "time": "2023-04-04T19:17:42+00:00"
         },
         {
             "name": "phpstan/phpstan-deprecation-rules",
