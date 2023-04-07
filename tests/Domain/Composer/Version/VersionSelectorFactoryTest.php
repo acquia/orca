@@ -24,7 +24,7 @@ class VersionSelectorFactoryTest extends TestCase {
   public function testCreate($include_drupal_dot_org, $dev): void {
     $spy = $this->prophesize(TestSpy::class);
     $spy
-      ->call($dev)
+      ->call('createDefaultRepositorySet')
       ->shouldBeCalledOnce();
     $spy
       ->call('addDrupalDotOrgRepository')
@@ -39,7 +39,7 @@ class VersionSelectorFactoryTest extends TestCase {
       }
 
       protected function createDefaultRepositorySet(bool $dev): RepositorySet {
-        $this->spy->call($dev);
+        $this->spy->call('createDefaultRepositorySet');
         return parent::createDefaultRepositorySet($dev);
       }
 
