@@ -12,6 +12,7 @@ use Acquia\Orca\Helper\Process\ProcessRunner;
 use Acquia\Orca\Options\FixtureOptions;
 use Acquia\Orca\Tests\TestCase;
 use Prophecy\Argument;
+use Prophecy\Prophecy\ObjectProphecy;
 
 /**
  * @property \Acquia\Orca\Domain\Composer\Version\DrupalCoreVersionResolver|\Prophecy\Prophecy\ObjectProphecy $drupalCoreVersionFinder
@@ -29,6 +30,12 @@ class ComposerFacadeTest extends TestCase {
   private const ORCA_PATH = '/var/www/orca';
 
   private const PACKAGE_ABSOLUTE_PATH = '/var/www/example';
+  protected DrupalCoreVersionResolver|ObjectProphecy $drupalCoreVersionFinder;
+  protected PackageManager|ObjectProphecy $packageManager;
+  protected Package|ObjectProphecy $blt;
+  protected FixturePathHandler|ObjectProphecy $fixture;
+  protected OrcaPathHandler|ObjectProphecy $orca;
+  protected ProcessRunner|ObjectProphecy $processRunner;
 
   protected function setUp(): void {
     $this->blt = $this->prophesize(Package::class);

@@ -7,6 +7,7 @@ use Acquia\Orca\Exception\OrcaParseError;
 use Acquia\Orca\Helper\Process\ProcessRunner;
 use Acquia\Orca\Tests\TestCase;
 use Prophecy\Argument;
+use Prophecy\Prophecy\ObjectProphecy;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process;
 
@@ -46,6 +47,8 @@ class DrushFacadeTest extends TestCase {
     'private' => '/var/www/orca-build/files-private/default',
     'temp' => '/tmp',
   ];
+
+  protected ProcessRunner|ObjectProphecy $processRunner;
 
   protected function setUp(): void {
     $this->processRunner = $this->prophesize(ProcessRunner::class);

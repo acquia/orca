@@ -9,6 +9,7 @@ use Acquia\Orca\Exception\OrcaTaskFailureException;
 use Acquia\Orca\Helper\Process\ProcessRunner;
 use Acquia\Orca\Tests\TestCase;
 use Prophecy\Argument;
+use Prophecy\Prophecy\ObjectProphecy;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 
 /**
@@ -24,6 +25,10 @@ class PhpcbfToolTest extends TestCase {
   private const TEMP_DIR = '/tmp/example';
 
   private $standard = PhpcsStandardEnum::DEFAULT;
+
+  protected PhpcsConfigurator|ObjectProphecy $phpcsConfigurator;
+  protected PhpcsStandardEnum $phpcsStandard;
+  protected ProcessRunner|ObjectProphecy $processRunner;
 
   protected function setUp(): void {
     $this->phpcsConfigurator = $this->prophesize(PhpcsConfigurator::class);

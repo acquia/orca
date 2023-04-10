@@ -9,6 +9,7 @@ use Acquia\Orca\Helper\Log\TelemetryClient;
 use Acquia\Orca\Helper\Log\TelemetryEventPropertiesBuilder;
 use Acquia\Orca\Tests\Console\Command\CommandTestBase;
 use Prophecy\Argument;
+use Prophecy\Prophecy\ObjectProphecy;
 use Symfony\Component\Console\Command\Command;
 
 /**
@@ -16,6 +17,9 @@ use Symfony\Component\Console\Command\Command;
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Helper\Log\TelemetryEventPropertiesBuilder $telemetryEventBuilder
  */
 class InternalLogJobCommandTest extends CommandTestBase {
+
+  protected ObjectProphecy|TelemetryClient $telemetryClient;
+  protected ObjectProphecy|TelemetryEventPropertiesBuilder $telemetryEventBuilder;
 
   protected function setUp(): void {
     $this->telemetryClient = $this->prophesize(TelemetryClient::class);

@@ -4,6 +4,7 @@ namespace Acquia\Orca\Tests\Helper\Filesystem;
 
 use Acquia\Orca\Helper\Filesystem\AbstractPathHandler;
 use Acquia\Orca\Tests\TestCase;
+use Prophecy\Prophecy\ObjectProphecy;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
@@ -12,6 +13,9 @@ use Symfony\Component\Filesystem\Filesystem;
  * @covers \Acquia\Orca\Helper\Filesystem\AbstractPathHandler
  */
 class PathHandlerTest extends TestCase {
+
+  protected ObjectProphecy|Filesystem $filesystem;
+  protected string $basePath;
 
   protected function setUp(): void {
     $this->filesystem = $this->prophesize(Filesystem::class);

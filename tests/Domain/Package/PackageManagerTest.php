@@ -8,6 +8,7 @@ use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
 use Acquia\Orca\Helper\Filesystem\OrcaPathHandler;
 use Acquia\Orca\Tests\TestCase;
 use Prophecy\Argument;
+use Prophecy\Prophecy\ObjectProphecy;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Yaml\Parser;
 
@@ -91,6 +92,11 @@ class PackageManagerTest extends TestCase {
   private const PACKAGES_CONFIG_FILE = 'config/packages.yml';
 
   private const PACKAGES_CONFIG_ALTER_FILE = '../example/packages.yml';
+
+  protected OrcaPathHandler|ObjectProphecy $orca;
+  protected ObjectProphecy|Filesystem $filesystem;
+  protected ObjectProphecy|FixturePathHandler $fixture;
+  protected ObjectProphecy|Parser $parser;
 
   protected function setUp(): void {
     $this->filesystem = $this->prophesize(Filesystem::class);

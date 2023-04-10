@@ -9,6 +9,7 @@ use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
 use Acquia\Orca\Options\FixtureOptions;
 use Acquia\Orca\Tests\TestCase;
 use Prophecy\Argument;
+use Prophecy\Prophecy\ObjectProphecy;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
@@ -26,6 +27,11 @@ class DrupalSettingsHelperTest extends TestCase {
   private const SETTINGS_PHP_PATH = 'docroot/sites/default/settings.php';
 
   private const DEFAULT_SETTINGS_PHP_PATH = 'docroot/sites/default/default.settings.php';
+
+  protected DrupalCoreVersionResolver|ObjectProphecy $drupalCoreVersionFinder;
+  protected PackageManager|ObjectProphecy $packageManager;
+  protected FixturePathHandler|ObjectProphecy $fixture;
+  protected ObjectProphecy|Filesystem $filesystem;
 
   protected function setUp(): void {
     $this->drupalCoreVersionFinder = $this->prophesize(DrupalCoreVersionResolver::class);

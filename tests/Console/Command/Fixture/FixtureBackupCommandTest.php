@@ -7,6 +7,7 @@ use Acquia\Orca\Domain\Git\GitFacade;
 use Acquia\Orca\Enum\StatusCodeEnum;
 use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
 use Acquia\Orca\Tests\Console\Command\CommandTestBase;
+use Prophecy\Prophecy\ObjectProphecy;
 use Symfony\Component\Console\Command\Command;
 
 /**
@@ -14,6 +15,9 @@ use Symfony\Component\Console\Command\Command;
  * @property \Acquia\Orca\Helper\Filesystem\FixturePathHandler|\Prophecy\Prophecy\ObjectProphecy $fixture
  */
 class FixtureBackupCommandTest extends CommandTestBase {
+
+  protected GitFacade|ObjectProphecy $git;
+  protected FixturePathHandler|ObjectProphecy $fixture;
 
   protected function setUp(): void {
     $this->fixture = $this->prophesize(FixturePathHandler::class);

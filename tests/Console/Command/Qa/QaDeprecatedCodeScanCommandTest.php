@@ -9,6 +9,7 @@ use Acquia\Orca\Enum\StatusCodeEnum;
 use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
 use Acquia\Orca\Tests\Console\Command\CommandTestBase;
 use Prophecy\Argument;
+use Prophecy\Prophecy\ObjectProphecy;
 use Symfony\Component\Console\Command\Command;
 
 /**
@@ -18,6 +19,10 @@ use Symfony\Component\Console\Command\Command;
  * @coversDefaultClass \Acquia\Orca\Console\Command\Qa\QaDeprecatedCodeScanCommand
  */
 class QaDeprecatedCodeScanCommandTest extends CommandTestBase {
+
+  protected ObjectProphecy|PackageManager $packageManager;
+  protected ObjectProphecy|DrupalCheckTool $drupalCheck;
+  protected ObjectProphecy|FixturePathHandler $fixture;
 
   protected function setUp(): void {
     $this->fixture = $this->prophesize(FixturePathHandler::class);

@@ -9,6 +9,7 @@ use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
 use Acquia\Orca\Helper\Process\ProcessRunner;
 use Acquia\Orca\Tests\TestCase;
 use Prophecy\Argument;
+use Prophecy\Prophecy\ObjectProphecy;
 
 /**
  * @property \Acquia\Orca\Domain\Git\GitFacade|\Prophecy\Prophecy\ObjectProphecy $git
@@ -18,6 +19,9 @@ use Prophecy\Argument;
 class CloudHooksInstallerTest extends TestCase {
 
   private const FIXTURE_DIR = '/var/www/orca-build';
+  protected GitFacade|ObjectProphecy $git;
+  protected FixturePathHandler|ObjectProphecy $fixture;
+  protected ProcessRunner|ObjectProphecy $processRunner;
 
   protected function setUp(): void {
     $this->fixture = $this->prophesize(FixturePathHandler::class);

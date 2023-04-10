@@ -6,6 +6,7 @@ use Acquia\Orca\Domain\Package\PackageManager;
 use Acquia\Orca\Options\CiRunOptionsFactory;
 use Acquia\Orca\Tests\Enum\CiEnumsTestTrait;
 use Acquia\Orca\Tests\TestCase;
+use Prophecy\Prophecy\ObjectProphecy;
 
 /**
  * @property \Acquia\Orca\Domain\Package\PackageManager|\Prophecy\Prophecy\ObjectProphecy $packageManager
@@ -15,6 +16,7 @@ use Acquia\Orca\Tests\TestCase;
 class CiRunOptionsFactoryTest extends TestCase {
 
   use CiEnumsTestTrait;
+  protected PackageManager|ObjectProphecy $packageManager;
 
   protected function setUp(): void {
     $this->packageManager = $this->prophesize(PackageManager::class);

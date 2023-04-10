@@ -7,6 +7,7 @@ use Acquia\Orca\Helper\Filesystem\OrcaPathHandler;
 use Acquia\Orca\Helper\Process\ProcessRunner;
 use Acquia\Orca\Tests\TestCase;
 use Prophecy\Argument;
+use Prophecy\Prophecy\ObjectProphecy;
 
 /**
  * @property \Acquia\Orca\Helper\Filesystem\OrcaPathHandler|\Prophecy\Prophecy\ObjectProphecy $orca
@@ -14,6 +15,9 @@ use Prophecy\Argument;
  * @coversDefaultClass \Acquia\Orca\Domain\Tool\Phploc\PhplocFacade
  */
 class PhplocFacadeTest extends TestCase {
+
+  protected OrcaPathHandler|ObjectProphecy $orca;
+  protected ProcessRunner|ObjectProphecy $processRunner;
 
   protected function setUp(): void {
     $this->orca = $this->prophesize(OrcaPathHandler::class);

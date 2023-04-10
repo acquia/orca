@@ -8,6 +8,7 @@ use Acquia\Orca\Domain\Server\WebServer;
 use Acquia\Orca\Enum\StatusCodeEnum;
 use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
 use Acquia\Orca\Tests\Console\Command\CommandTestBase;
+use Prophecy\Prophecy\ObjectProphecy;
 use Symfony\Component\Console\Command\Command;
 
 /**
@@ -16,6 +17,10 @@ use Symfony\Component\Console\Command\Command;
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Domain\Server\WebServer $webServer
  */
 class FixtureRunServerCommandTest extends CommandTestBase {
+
+  protected ObjectProphecy|ProcessOutputCallback $callback;
+  protected ObjectProphecy|FixturePathHandler $fixture;
+  protected ObjectProphecy|WebServer $webServer;
 
   protected function setUp(): void {
     $this->callback = $this->prophesize(ProcessOutputCallback::class);

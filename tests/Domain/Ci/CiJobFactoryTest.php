@@ -30,6 +30,7 @@ use Acquia\Orca\Domain\Ci\Job\StrictDeprecatedCodeScanCiJob;
 use Acquia\Orca\Enum\CiJobEnum;
 use Acquia\Orca\Tests\Enum\CiEnumsTestTrait;
 use Acquia\Orca\Tests\TestCase;
+use Prophecy\Prophecy\ObjectProphecy;
 
 /**
  * @property \Acquia\Orca\Domain\Ci\Job\DeprecatedCodeScanWContribCiJob|\Prophecy\Prophecy\ObjectProphecy $deprecatedCodeScanWContribCiJob
@@ -60,6 +61,30 @@ use Acquia\Orca\Tests\TestCase;
 class CiJobFactoryTest extends TestCase {
 
   use CiEnumsTestTrait;
+  protected DeprecatedCodeScanWContribCiJob|ObjectProphecy $deprecatedCodeScanWContribCiJob;
+  protected IntegratedTestOnCurrentCiJob|ObjectProphecy $integratedTestOnCurrentCiJob;
+  protected IntegratedTestOnCurrentDevCiJob|ObjectProphecy $integratedTestOnCurrentDevCiJob;
+  protected IntegratedTestOnLatestLtsCiJob|ObjectProphecy $integratedTestOnLatestLtsCiJob;
+  protected IntegratedTestOnNextMajorLatestMinorBetaOrLaterCiJob|ObjectProphecy $integratedTestOnNextMajorLatestMinorBetaOrLaterCiJob;
+  protected IntegratedTestOnNextMajorLatestMinorDevCiJob|ObjectProphecy $integratedTestOnNextMajorLatestMinorDevCiJob;
+  protected IntegratedTestOnNextMinorCiJob|ObjectProphecy $integratedTestOnNextMinorCiJob;
+  protected IntegratedTestOnOldestSupportedCiJob|ObjectProphecy $integratedTestOnOldestSupportedCiJob;
+  protected IntegratedTestOnPreviousMinorCiJob|ObjectProphecy $integratedTestOnPreviousMinorCiJob;
+  protected IntegratedUpgradeTestFromPreviousMinorCiJob|ObjectProphecy $integratedUpgradeTestFromPreviousMinorCiJob;
+  protected IntegratedUpgradeTestToNextMinorCiJob|ObjectProphecy $integratedUpgradeTestToNextMinorCiJob;
+  protected IntegratedUpgradeTestToNextMinorDevCiJob|ObjectProphecy $integratedUpgradeTestToNextMinorDevCiJob;
+  protected IsolatedTestOnCurrentCiJob|ObjectProphecy $isolatedTestOnCurrentCiJob;
+  protected IsolatedTestOnCurrentDevCiJob|ObjectProphecy $isolatedTestOnCurrentDevCiJob;
+  protected IsolatedTestOnNextMajorLatestMinorBetaOrLaterCiJob|ObjectProphecy $isolatedTestOnNextMajorLatestMinorBetaOrLaterCiJob;
+  protected IsolatedTestOnNextMajorLatestMinorDevCiJob|ObjectProphecy $isolatedTestOnNextMajorLatestMinorDevCiJob;
+  protected IsolatedTestOnNextMinorCiJob|ObjectProphecy $isolatedTestOnNextMinorCiJob;
+  protected IsolatedTestOnNextMinorDevCiJob|ObjectProphecy $isolatedTestOnNextMinorDevCiJob;
+  protected IsolatedUpgradeTestToNextMajorBetaOrLaterCiJob|ObjectProphecy $isolatedUpgradeToNextMajorBetaOrLaterCiJob;
+  protected IsolatedUpgradeTestToNextMajorDevCiJob|ObjectProphecy $isolatedUpgradeToNextMajorDevCiJob;
+  protected LooseDeprecatedCodeScanCiJob|ObjectProphecy $looseDeprecatedCodeScanCiJob;
+  protected StaticCodeAnalysisCiJob|ObjectProphecy $staticCodeAnalysisCiJob;
+  protected StrictDeprecatedCodeScanCiJob|ObjectProphecy $strictDeprecatedCodeScanCiJob;
+  protected IntegratedTestOnNextMinorDevCiJob|ObjectProphecy $integratedTestOnNextMinorDevCiJob;
 
   protected function setUp(): void {
     $this->deprecatedCodeScanWContribCiJob = $this->prophesize(DeprecatedCodeScanWContribCiJob::class);

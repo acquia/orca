@@ -8,6 +8,7 @@ use Acquia\Orca\Domain\Server\ServerStack;
 use Acquia\Orca\Domain\Server\WebServer;
 use Acquia\Orca\Helper\Clock;
 use Acquia\Orca\Tests\TestCase;
+use Prophecy\Prophecy\ObjectProphecy;
 
 /**
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Domain\Server\ChromeDriverServer $chromeDriverServer
@@ -15,6 +16,10 @@ use Acquia\Orca\Tests\TestCase;
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Domain\Server\WebServer $webServer
  */
 class ServerStackTest extends TestCase {
+
+  protected ObjectProphecy|ChromeDriverServer $chromeDriverServer;
+  protected ObjectProphecy|Clock $clock;
+  protected ObjectProphecy|WebServer $webServer;
 
   protected function setUp(): void {
     $this->chromeDriverServer = $this->prophesize(ChromeDriverServer::class);

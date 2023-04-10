@@ -9,13 +9,14 @@ use Acquia\Orca\Enum\PhpcsStandardEnum;
 use Acquia\Orca\Enum\StatusCodeEnum;
 use Acquia\Orca\Helper\Task\TaskRunner;
 use Acquia\Orca\Tests\Console\Command\CommandTestBase;
+use Prophecy\Prophecy\ObjectProphecy;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
- * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Domain\Tool\ComposerNormalize\ComposerNormalizeTask composerNormalize
+ * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Domain\Tool\ComposerNormalize\ComposerNormalizeTask $composerNormalize
  * @property \Prophecy\Prophecy\ObjectProphecy|\Symfony\Component\Filesystem\Filesystem $filesystem
- * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Domain\Tool\Phpcbf\PhpcbfTask phpCodeBeautifierAndFixer
+ * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Domain\Tool\Phpcbf\PhpcbfTask $phpCodeBeautifierAndFixer
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Helper\Task\TaskRunner $taskRunner
  */
 class QaFixerCommandTest extends CommandTestBase {
@@ -23,6 +24,11 @@ class QaFixerCommandTest extends CommandTestBase {
   private const SUT_PATH = '/var/www/example';
 
   private $defaultPhpcsStandard = PhpcsStandardEnum::DEFAULT;
+
+  protected ObjectProphecy|ComposerNormalizeTask $composerNormalize;
+  protected ObjectProphecy|Filesystem $filesystem;
+  protected ObjectProphecy|PhpcbfTask $phpCodeBeautifierAndFixer;
+  protected ObjectProphecy|TaskRunner $taskRunner;
 
   protected function setUp(): void {
     $this->composerNormalize = $this->prophesize(ComposerNormalizeTask::class);

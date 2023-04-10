@@ -8,6 +8,7 @@ use Acquia\Orca\Helper\Filesystem\OrcaPathHandler;
 use Acquia\Orca\Helper\Process\ProcessRunner;
 use Acquia\Orca\Tests\TestCase;
 use Prophecy\Argument;
+use Prophecy\Prophecy\ObjectProphecy;
 
 /**
  * @property \Acquia\Orca\Helper\Config\ConfigFileOverrider|\Prophecy\Prophecy\ObjectProphecy $configFileOverrider
@@ -18,6 +19,9 @@ use Prophecy\Argument;
 class PhpmdToolTest extends TestCase {
 
   private const PATH = '/var/www/sut';
+  protected ConfigFileOverrider|ObjectProphecy $configFileOverrider;
+  protected OrcaPathHandler|ObjectProphecy $orca;
+  protected ProcessRunner|ObjectProphecy $processRunner;
 
   protected function setUp(): void {
     $this->configFileOverrider = $this->prophesize(ConfigFileOverrider::class);

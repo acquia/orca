@@ -14,6 +14,7 @@ use Acquia\Orca\Helper\Process\ProcessRunner;
 use Acquia\Orca\Options\CiRunOptions;
 use Acquia\Orca\Tests\TestCase;
 use Prophecy\Argument;
+use Prophecy\Prophecy\ObjectProphecy;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
@@ -26,6 +27,12 @@ use Symfony\Component\Console\Output\OutputInterface;
 abstract class CiJobTestBase extends TestCase {
 
   protected const SUT_REPOSITORY_URL_ABSOLUTE = '/var/www/sut';
+
+  protected DrupalCoreVersionResolver|ObjectProphecy $drupalCoreVersionResolver;
+  protected PackageManager|ObjectProphecy $packageManager;
+  protected EnvFacade|ObjectProphecy $envFacade;
+  protected ProcessRunner|ObjectProphecy $processRunner;
+  protected OutputInterface|ObjectProphecy $output;
 
   public function setUp(): void {
     // Drupal core version resolver.

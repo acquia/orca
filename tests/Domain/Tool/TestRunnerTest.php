@@ -12,6 +12,7 @@ use Acquia\Orca\Domain\Tool\TestRunner;
 use Acquia\Orca\Helper\EnvFacade;
 use Acquia\Orca\Helper\Process\ProcessRunner;
 use Acquia\Orca\Tests\TestCase;
+use Prophecy\Prophecy\ObjectProphecy;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Filesystem\Filesystem;
 
@@ -31,6 +32,16 @@ class TestRunnerTest extends TestCase {
   private const PATH = '/var/www/example';
 
   private const STATUS_MESSAGE = 'Printing status message';
+
+  protected ObjectProphecy|ProcessOutputCallback $callback;
+  protected EnvFacade|ObjectProphecy $envFacade;
+  protected ObjectProphecy|FixtureResetter $fixtureResetter;
+  protected ObjectProphecy|PackageManager $packageManager;
+  protected ObjectProphecy|ServerStack $serverStack;
+  protected ObjectProphecy|PhpUnitTask $phpunit;
+  protected ObjectProphecy|ProcessRunner $processRunner;
+  protected ObjectProphecy|SymfonyStyle $output;
+  protected ObjectProphecy|Filesystem $filesystem;
 
   protected function setUp(): void {
     $this->callback = $this->prophesize(ProcessOutputCallback::class);

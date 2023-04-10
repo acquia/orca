@@ -7,6 +7,7 @@ use Acquia\Orca\Console\Command\Debug\Helper\CoreVersionsTableBuilder;
 use Acquia\Orca\Enum\StatusCodeEnum;
 use Acquia\Orca\Tests\Console\Command\CommandTestBase;
 use Prophecy\Argument;
+use Prophecy\Prophecy\ObjectProphecy;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Output\BufferedOutput;
@@ -17,6 +18,8 @@ use Symfony\Component\Console\Output\NullOutput;
  * @coversDefaultClass \Acquia\Orca\Console\Command\Debug\DebugCoreVersionsCommand
  */
 class DebugCoreVersionsCommandTest extends CommandTestBase {
+
+  protected CoreVersionsTableBuilder|ObjectProphecy $coreVersionsTableBuilder;
 
   protected function setUp(): void {
     $table = new Table(new NullOutput());

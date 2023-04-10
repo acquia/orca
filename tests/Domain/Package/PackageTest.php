@@ -6,6 +6,7 @@ use Acquia\Orca\Domain\Package\Package;
 use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
 use Acquia\Orca\Helper\Filesystem\OrcaPathHandler;
 use Acquia\Orca\Tests\TestCase;
+use Prophecy\Prophecy\ObjectProphecy;
 use Symfony\Component\OptionsResolver\Exception\InvalidOptionsException;
 use Symfony\Component\OptionsResolver\Exception\UndefinedOptionsException;
 
@@ -15,6 +16,9 @@ use Symfony\Component\OptionsResolver\Exception\UndefinedOptionsException;
  * @coversDefaultClass \Acquia\Orca\Domain\Package\Package
  */
 class PackageTest extends TestCase {
+
+  private FixturePathHandler|ObjectProphecy $fixture;
+  private OrcaPathHandler|ObjectProphecy $orca;
 
   public function setUp(): void {
     $this->fixture = $this->prophesize(FixturePathHandler::class);
