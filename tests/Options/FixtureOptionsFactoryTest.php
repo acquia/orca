@@ -6,6 +6,7 @@ use Acquia\Orca\Domain\Composer\Version\DrupalCoreVersionResolver;
 use Acquia\Orca\Domain\Package\PackageManager;
 use Acquia\Orca\Options\FixtureOptionsFactory;
 use Acquia\Orca\Tests\TestCase;
+use Prophecy\Prophecy\ObjectProphecy;
 
 /**
  * @property \Acquia\Orca\Domain\Composer\Version\DrupalCoreVersionResolver|\Prophecy\Prophecy\ObjectProphecy $drupalCoreVersionFinder
@@ -14,6 +15,9 @@ use Acquia\Orca\Tests\TestCase;
  * @coversDefaultClass \Acquia\Orca\Options\FixtureOptionsFactory
  */
 class FixtureOptionsFactoryTest extends TestCase {
+
+  protected DrupalCoreVersionResolver|ObjectProphecy $drupalCoreVersionFinder;
+  protected PackageManager|ObjectProphecy $packageManager;
 
   protected function setUp(): void {
     $this->drupalCoreVersionFinder = $this->prophesize(DrupalCoreVersionResolver::class);

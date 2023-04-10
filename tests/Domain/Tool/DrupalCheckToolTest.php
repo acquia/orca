@@ -12,6 +12,7 @@ use Acquia\Orca\Helper\Log\TelemetryClient;
 use Acquia\Orca\Helper\Process\ProcessRunner;
 use Acquia\Orca\Tests\TestCase;
 use Prophecy\Argument;
+use Prophecy\Prophecy\ObjectProphecy;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Process\Exception\ProcessFailedException;
@@ -33,6 +34,14 @@ class DrupalCheckToolTest extends TestCase {
   private const PACKAGE_NAME = 'drupal/example';
 
   private const PACKAGE_PATH = 'docroot/modules/contrib/example';
+
+  protected PackageManager|ObjectProphecy $packageManager;
+  protected FixturePathHandler|ObjectProphecy $fixture;
+  protected OrcaPathHandler|ObjectProphecy $orca;
+  protected TelemetryClient|ObjectProphecy $telemetryClient;
+  protected ProcessRunner|ObjectProphecy $processRunner;
+  protected SymfonyStyle|ObjectProphecy $symfonyStyle;
+  protected Filesystem|ObjectProphecy $filesystem;
 
   protected function setUp(): void {
     $this->filesystem = $this->prophesize(Filesystem::class);

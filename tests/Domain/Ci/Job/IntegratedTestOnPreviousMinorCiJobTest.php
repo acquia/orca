@@ -9,11 +9,14 @@ use Acquia\Orca\Enum\DrupalCoreVersionEnum;
 use Acquia\Orca\Helper\EnvFacade;
 use Acquia\Orca\Helper\Process\ProcessRunner;
 use Acquia\Orca\Tests\Domain\Ci\Job\_Helper\CiJobTestBase;
+use Prophecy\Prophecy\ObjectProphecy;
 
 /**
  * @property \Acquia\Orca\Domain\Ci\Job\Helper\RedundantJobChecker|\Prophecy\Prophecy\ObjectProphecy $redundantJobChecker
  */
 class IntegratedTestOnPreviousMinorCiJobTest extends CiJobTestBase {
+
+  protected RedundantJobChecker|ObjectProphecy $redundantJobChecker;
 
   public function setUp(): void {
     $this->envFacade = $this->prophesize(EnvFacade::class);

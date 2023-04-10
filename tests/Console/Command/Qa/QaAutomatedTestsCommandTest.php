@@ -4,11 +4,17 @@ namespace Acquia\Orca\Tests\Console\Command\Qa;
 
 use Acquia\Orca\Console\Command\Qa\QaAutomatedTestsCommand;
 use Acquia\Orca\Domain\Package\PackageManager;
+use Acquia\Orca\Domain\Server\ChromeDriverServer;
+use Acquia\Orca\Domain\Server\WebServer;
+use Acquia\Orca\Domain\Tool\Phpunit\PhpUnitTask;
 use Acquia\Orca\Domain\Tool\TestRunner;
 use Acquia\Orca\Enum\StatusCodeEnum;
 use Acquia\Orca\Exception\OrcaException;
+use Acquia\Orca\Helper\Clock;
 use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
+use Acquia\Orca\Helper\Task\TaskRunner;
 use Acquia\Orca\Tests\Console\Command\CommandTestBase;
+use Prophecy\Prophecy\ObjectProphecy;
 use Symfony\Component\Console\Command\Command;
 
 /**
@@ -22,6 +28,15 @@ use Symfony\Component\Console\Command\Command;
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Domain\Server\WebServer $webServer
  */
 class QaAutomatedTestsCommandTest extends CommandTestBase {
+
+  protected ObjectProphecy|ChromeDriverServer $chromedriver;
+  protected ObjectProphecy|Clock $clock;
+  protected ObjectProphecy|FixturePathHandler $fixture;
+  protected ObjectProphecy|PhpUnitTask $phpunit;
+  protected ObjectProphecy|PackageManager $packageManager;
+  protected ObjectProphecy|TaskRunner $taskRunner;
+  protected ObjectProphecy|TestRunner $testRunner;
+  protected ObjectProphecy|WebServer $webServer;
 
   protected function setUp(): void {
     $this->fixture = $this->prophesize(FixturePathHandler::class);

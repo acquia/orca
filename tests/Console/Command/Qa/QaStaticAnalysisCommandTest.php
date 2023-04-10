@@ -16,6 +16,7 @@ use Acquia\Orca\Exception\OrcaFileNotFoundException;
 use Acquia\Orca\Helper\Task\TaskRunner;
 use Acquia\Orca\Tests\Console\Command\CommandTestBase;
 use Prophecy\Argument;
+use Prophecy\Prophecy\ObjectProphecy;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Filesystem\Filesystem;
 
@@ -47,6 +48,15 @@ class QaStaticAnalysisCommandTest extends CommandTestBase {
   private const SUT_PATH = '/var/www/example';
 
   private $defaultPhpcsStandard = PhpcsStandardEnum::DEFAULT;
+  protected ComposerValidateTask|ObjectProphecy $composerValidate;
+  protected CoverageTask|ObjectProphecy $coverage;
+  protected PhpcsTask|ObjectProphecy $phpCodeSniffer;
+  protected PhpLintTask|ObjectProphecy $phpLint;
+  protected PhplocTask|ObjectProphecy $phploc;
+  protected PhpmdTask|ObjectProphecy $phpMessDetector;
+  protected YamlLintTask|ObjectProphecy $yamlLint;
+  protected TaskRunner|ObjectProphecy $taskRunner;
+  protected Filesystem|ObjectProphecy $filesystem;
 
   protected function setUp(): void {
     $this->composerValidate = $this->prophesize(ComposerValidateTask::class);

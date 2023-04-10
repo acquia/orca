@@ -7,6 +7,7 @@ use Acquia\Orca\Domain\Tool\Coverage\CoverageTask;
 use Acquia\Orca\Exception\OrcaFileNotFoundException;
 use Acquia\Orca\Tests\TestCase;
 use Prophecy\Argument;
+use Prophecy\Prophecy\ObjectProphecy;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
@@ -15,6 +16,9 @@ use Symfony\Component\Console\Output\OutputInterface;
  * @coversDefaultClass \Acquia\Orca\Domain\Tool\Coverage\CoverageTask
  */
 class CoverageTaskTest extends TestCase {
+
+  protected CodeCoverageReportBuilder|ObjectProphecy $builder;
+  protected OutputInterface|ObjectProphecy $symfonyOutput;
 
   protected function setUp(): void {
     $this->builder = $this->prophesize(CodeCoverageReportBuilder::class);

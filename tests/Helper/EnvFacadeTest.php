@@ -5,11 +5,14 @@ namespace Acquia\Orca\Tests\Helper;
 use Acquia\Orca\Helper\EnvFacade;
 use Acquia\Orca\Tests\_Helper\TestSpy;
 use Acquia\Orca\Tests\TestCase;
+use Prophecy\Prophecy\ObjectProphecy;
 
 /**
  * @property \Acquia\Orca\Tests\_Helper\TestSpy|\Prophecy\Prophecy\ObjectProphecy $spy
  */
 class EnvFacadeTest extends TestCase {
+
+  protected TestSpy|ObjectProphecy $spy;
 
   protected function setUp(): void {
     $this->spy = $this->prophesize(TestSpy::class);

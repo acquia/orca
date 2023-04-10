@@ -6,6 +6,7 @@ use Acquia\Orca\Domain\Git\GitFacade;
 use Acquia\Orca\Helper\Process\ProcessRunner;
 use Acquia\Orca\Tests\TestCase;
 use Prophecy\Argument;
+use Prophecy\Prophecy\ObjectProphecy;
 
 /**
  * @property \Acquia\Orca\Helper\Process\ProcessRunner|\Prophecy\Prophecy\ObjectProphecy $processRunner
@@ -14,6 +15,8 @@ use Prophecy\Argument;
 class GitFacadeTest extends TestCase {
 
   private const FRESH_FIXTURE_TAG = 'fresh-fixture';
+
+  protected ProcessRunner|ObjectProphecy $processRunner;
 
   protected function setUp(): void {
     $this->processRunner = $this->prophesize(ProcessRunner::class);

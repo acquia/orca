@@ -4,6 +4,7 @@ namespace Acquia\Orca\Tests\Console\Command\Ci;
 
 use Acquia\Orca\Console\Command\Ci\CiRunCommand;
 use Acquia\Orca\Domain\Ci\CiJobFactory;
+use Acquia\Orca\Domain\Ci\Job\AbstractCiJob;
 use Acquia\Orca\Enum\CiJobEnum;
 use Acquia\Orca\Enum\CiJobPhaseEnum;
 use Acquia\Orca\Enum\StatusCodeEnum;
@@ -14,6 +15,7 @@ use Acquia\Orca\Tests\Console\Command\CommandTestBase;
 use Acquia\Orca\Tests\Domain\Ci\Job\_Helper\CiTestJob;
 use Acquia\Orca\Tests\Enum\CiEnumsTestTrait;
 use Prophecy\Argument;
+use Prophecy\Prophecy\ObjectProphecy;
 use Symfony\Component\Console\Command\Command;
 
 /**
@@ -26,6 +28,11 @@ use Symfony\Component\Console\Command\Command;
 class CiRunCommandTest extends CommandTestBase {
 
   use CiEnumsTestTrait;
+
+  protected CiJobFactory|ObjectProphecy $ciJobFactory;
+  protected AbstractCiJob|ObjectProphecy $ciJob;
+  protected CiRunOptionsFactory|ObjectProphecy $ciRunOptionsFactory;
+  protected CiRunOptions|ObjectProphecy $ciRunOptions;
 
   protected function setUp(): void {
     $this->ciRunOptions = $this->prophesize(CiRunOptions::class);

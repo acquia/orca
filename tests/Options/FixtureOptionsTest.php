@@ -11,6 +11,7 @@ use Acquia\Orca\Options\FixtureOptions;
 use Acquia\Orca\Tests\Enum\DrupalCoreVersionEnumsTestTrait;
 use Acquia\Orca\Tests\TestCase;
 use Prophecy\Argument;
+use Prophecy\Prophecy\ObjectProphecy;
 
 /**
  * @property \Acquia\Orca\Domain\Composer\Version\DrupalCoreVersionResolver|\Prophecy\Prophecy\ObjectProphecy $drupalCoreVersionFinder
@@ -21,6 +22,9 @@ use Prophecy\Argument;
 class FixtureOptionsTest extends TestCase {
 
   use DrupalCoreVersionEnumsTestTrait;
+
+  protected DrupalCoreVersionResolver|ObjectProphecy $drupalCoreVersionFinder;
+  protected PackageManager|ObjectProphecy $packageManager;
 
   protected function setUp(): void {
     $this->drupalCoreVersionFinder = $this->prophesize(DrupalCoreVersionResolver::class);

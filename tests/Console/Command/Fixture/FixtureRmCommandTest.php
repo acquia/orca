@@ -7,6 +7,7 @@ use Acquia\Orca\Domain\Fixture\FixtureRemover;
 use Acquia\Orca\Enum\StatusCodeEnum;
 use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
 use Acquia\Orca\Tests\Console\Command\CommandTestBase;
+use Prophecy\Prophecy\ObjectProphecy;
 use Symfony\Component\Console\Command\Command;
 
 /**
@@ -14,6 +15,9 @@ use Symfony\Component\Console\Command\Command;
  * @property \Prophecy\Prophecy\ObjectProphecy|\Acquia\Orca\Domain\Fixture\FixtureRemover $fixtureRemover
  */
 class FixtureRmCommandTest extends CommandTestBase {
+
+  protected ObjectProphecy|FixturePathHandler $fixture;
+  protected ObjectProphecy|FixtureRemover $fixtureRemover;
 
   protected function setUp(): void {
     $this->fixtureRemover = $this->prophesize(FixtureRemover::class);

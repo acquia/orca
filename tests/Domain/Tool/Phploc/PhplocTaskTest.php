@@ -5,11 +5,14 @@ namespace Acquia\Orca\Tests\Domain\Tool\Phploc;
 use Acquia\Orca\Domain\Tool\Phploc\PhplocFacade;
 use Acquia\Orca\Domain\Tool\Phploc\PhplocTask;
 use Acquia\Orca\Tests\TestCase;
+use Prophecy\Prophecy\ObjectProphecy;
 
 /**
  * @property \Acquia\Orca\Domain\Tool\Phploc\PhplocFacade|\Prophecy\Prophecy\ObjectProphecy $phploc
  */
 class PhplocTaskTest extends TestCase {
+
+  protected PhplocFacade|ObjectProphecy $phploc;
 
   protected function setUp(): void {
     $this->phploc = $this->prophesize(PhplocFacade::class);
