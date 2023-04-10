@@ -28,7 +28,7 @@
         "acquia/coding-standards": "^1.0.1",
         "composer/composer": "~2.3.5",
         "cweagans/composer-patches": "^1.7",
-        "dealerdirect/phpcodesniffer-composer-installer": "^0.7.2",
+        "dealerdirect/phpcodesniffer-composer-installer": "^1.0.0",
         "ergebnis/composer-normalize": "~2.15.0",
         "hassankhan/config": "^3.0",
         "mglaman/drupal-check": "^1.3",
