@@ -48,35 +48,26 @@
 # example.
 
 acquia/acquia_cms:
-  version: ~
-  version_dev: ~
-
-drupal/acquia_connector:
   core_matrix:
-    10.x:
-      version: ~
-      version_dev: ~
-    '*':
-      version: 4.x
-      version_dev: 4.x-dev
-
-drupal/acquia_contenthub:
-  core_matrix:
-    10.x:
+    10.1.x:
       version: ~
       version_dev: ~
     '*':
       version: 2.x
       version_dev: 2.x-dev
 
-drupal/acquia_lift:
+drupal/acquia_connector:
+  version: 4.x
+  version_dev: 4.x-dev
+
+drupal/acquia_contenthub:
   core_matrix:
-    10.x:
+    10.1.x:
       version: ~
       version_dev: ~
     '*':
-      version: 4.x
-      version_dev: 4.x-dev
+      version: 3.0.x
+      version_dev: 3.0.x-dev
 
 drupal/acquia_purge:
   version: 1.x
@@ -92,13 +83,8 @@ drupal/acsf_sso:
   version_dev: ~
 
 drupal/acquia_search:
-  core_matrix:
-    10.x:
-      version: ~
-      version_dev: ~
-    '*':
-      version: 3.0.x
-      version_dev: 3.x-dev
+  version: 3.1.x
+  version_dev: 3.1.x-dev
 
 acquia/blt:
   type: composer-plugin
@@ -122,7 +108,7 @@ acquia/drupal-spec-tool:
   type: behat-extension
   core_matrix:
     10.x:
-      version: ~
+      version: 6.x
       version_dev: 6.x-dev
     '*':
       version: 5.x

@@ -44,3 +44,28 @@ fi
 if [[ "$ORCA_LIVE_TEST" ]]; then
   orca qa:automated-tests
 fi
+
+if [[ "$ORCA_ENABLE_NIGHTWATCH" == "TRUE" && "$ORCA_SUT_HAS_NIGHTWATCH_TESTS" && -d "$ORCA_YARN_DIR" ]]; then
+  (
+    cd "$ORCA_YARN_DIR" || exit
+    orca fixture:run-server &
+    SERVER_PID=$!
+
+    # @todo could we set DRUPAL_TEST_CHROMEDRIVER_AUTOSTART instead of launching Chromedriver manually?
+    chromedriver --disable-dev-shm-usage --disable-extensions --disable-gpu --headless --no-sandbox --port=4444 &
+    CHROMEDRIVER_PID=$!
+
+    eval "yarn test:nightwatch \\
+      --headless \\
+      --passWithNoTests \\
+      --tag=$ORCA_SUT_MACHINE_NAME"
+
+    eval "yarn test:nightwatch \\
+      --headless \\
+      --passWithNoTests \\
+      --tag=core"
+
+    kill -0 $SERVER_PID
+    kill -0 $CHROMEDRIVER_PID
+  )
+fi

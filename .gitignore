@@ -2,6 +2,7 @@
 /.idea/dictionaries/*
 !/.idea/dictionaries/orca.xml
 /.idea/php.xml
+/.idea/sonarlint/*
 /src/Console/Command/Dev/WipCommand.php
 /var/*
 /vendor

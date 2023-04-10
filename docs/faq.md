@@ -1,7 +1,6 @@
 # Frequently Asked Questions
 
 * [Composer](#composer)
-* [Coveralls](#coveralls)
 * [Drupal](#drupal)
 
 ## Composer
@@ -48,19 +47,6 @@ Acquia CMS is included in ORCA [test fixtures](glossary.md#test-fixture) by defa
      global:
        - ORCA_FIXTURE_PROJECT_TEMPLATE=acquia/drupal-minimal-project
    ```
-
-## Coveralls
-
-### How do I add my GitHub repository to Coveralls?
-
-1. [Sign in to Coveralls](https://coveralls.io/authorize/github) with your GitHub account.
-1. Click the "Add Repos" menu link.
-1. Click the !["Add your repository to Coveralls"](images/coveralls-button.png) button next to your repository.
-
-### What if my GitHub repository is private?
-
-1. Set the `COVERALLS_REPO_TOKEN` environment variable [in your Travis CI repository settings](https://docs.travis-ci.com/user/environment-variables/#defining-variables-in-repository-settings) to the [secret repo token](https://docs.coveralls.io/api-introduction#referencing-a-repository) found at the bottom of your repository's page on Coveralls.
-1. Copy [`example/.coveralls.yml`](../example/.coveralls.yml) into your repository root and uncomment the indicated line.
 
 ## Drupal
 
