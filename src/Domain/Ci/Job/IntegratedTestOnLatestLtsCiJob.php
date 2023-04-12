@@ -64,11 +64,13 @@ class IntegratedTestOnLatestLtsCiJob extends AbstractCiJob {
    * @param \Acquia\Orca\Domain\Ci\Job\Helper\RedundantJobChecker $redundant_job_checker
    *   The redundant job checker.
    */
-  public function __construct(DrupalCoreVersionResolver $drupal_core_version_resolver,
+  public function __construct(
+    DrupalCoreVersionResolver $drupal_core_version_resolver,
     EnvFacade $env_facade,
-  OutputInterface $output,
-  ProcessRunner $process_runner,
-    RedundantJobChecker $redundant_job_checker) {
+    OutputInterface $output,
+    ProcessRunner $process_runner,
+    RedundantJobChecker $redundant_job_checker
+  ) {
     $this->drupalCoreVersionResolver = $drupal_core_version_resolver;
     $this->envFacade = $env_facade;
     $this->output = $output;
