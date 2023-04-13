@@ -3,16 +3,12 @@
 namespace Acquia\Orca\Tests\Domain\Ci\Job;
 
 use Acquia\Orca\Domain\Ci\Job\AbstractCiJob;
-use Acquia\Orca\Domain\Ci\Job\Helper\RedundantJobChecker;
 use Acquia\Orca\Domain\Ci\Job\IntegratedTestOnPreviousMinorCiJob;
 use Acquia\Orca\Domain\Package\PackageManager;
-use Acquia\Orca\Enum\CiJobEnum;
 use Acquia\Orca\Enum\DrupalCoreVersionEnum;
 use Acquia\Orca\Helper\EnvFacade;
 use Acquia\Orca\Helper\Process\ProcessRunner;
 use Acquia\Orca\Tests\Domain\Ci\Job\_Helper\CiJobTestBase;
-use Prophecy\Argument;
-use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * @property \Acquia\Orca\Domain\Ci\Job\Helper\RedundantJobChecker|\Prophecy\Prophecy\ObjectProphecy $redundantJobChecker
@@ -21,22 +17,15 @@ class IntegratedTestOnPreviousMinorCiJobTest extends CiJobTestBase {
 
   public function setUp(): void {
     $this->envFacade = $this->prophesize(EnvFacade::class);
-    $this->output = $this->prophesize(OutputInterface::class);
     $this->packageManager = $this->prophesize(PackageManager::class);
     $this->processRunner = $this->prophesize(ProcessRunner::class);
-    $this->redundantJobChecker = $this->prophesize(RedundantJobChecker::class);
-    $this->redundantJobChecker
-      ->isRedundant(Argument::any())
-      ->willReturn(FALSE);
     parent::setUp();
   }
 
   protected function createJob(): AbstractCiJob {
     $env_facade = $this->envFacade->reveal();
-    $output = $this->output->reveal();
     $process_runner = $this->processRunner->reveal();
-    $redundant_job_checker = $this->redundantJobChecker->reveal();
-    return new IntegratedTestOnPreviousMinorCiJob($env_facade, $output, $process_runner, $redundant_job_checker);
+    return new IntegratedTestOnPreviousMinorCiJob($env_facade, $process_runner);
   }
 
   public function testBasicConfiguration(): void {
@@ -58,22 +47,6 @@ class IntegratedTestOnPreviousMinorCiJobTest extends CiJobTestBase {
     $job = $this->createJob();
 
     $this->runInstallPhase($job);
-  }
-
-  public function testRedundantJob(): void {
-    $this->redundantJobChecker
-      ->isRedundant(CiJobEnum::INTEGRATED_TEST_ON_PREVIOUS_MINOR())
-      ->willReturn(TRUE);
-    $this->output
-      ->writeln(Argument::any())
-      ->shouldBeCalledTimes(2);
-    $this->processRunner
-      ->runOrca(Argument::any())
-      ->shouldNotBeCalled();
-    $job = $this->createJob();
-
-    $this->runScriptPhase($job);
-    $this->runScriptPhase($job);
   }
 
   public function testInstallOverrideProfile(): void {

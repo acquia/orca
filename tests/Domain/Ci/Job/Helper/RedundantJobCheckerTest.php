@@ -63,6 +63,13 @@ class RedundantJobCheckerTest extends TestCase {
         'oldest_supported' => '8.0.0',
         'latest_lts' => '8.0.0',
         'previous_minor' => '9.0.0',
+        'is_redundant' => FALSE,
+      ],
+      'Latest LTS duplicates Oldest supported' => [
+        'ci_job' => CiJobEnum::INTEGRATED_TEST_ON_LATEST_LTS(),
+        'oldest_supported' => '8.0.0',
+        'latest_lts' => '8.0.0',
+        'previous_minor' => '9.0.0',
         'is_redundant' => TRUE,
       ],
       'Oldest supported duplicates previous minor' => [
@@ -84,14 +91,16 @@ class RedundantJobCheckerTest extends TestCase {
         'oldest_supported' => '8.0.0',
         'latest_lts' => '9.0.0',
         'previous_minor' => '9.0.0',
-        'is_redundant' => TRUE,
+        // previous_minor always runs.
+        'is_redundant' => FALSE,
       ],
       'All three are duplicates' => [
         'ci_job' => CiJobEnum::INTEGRATED_TEST_ON_PREVIOUS_MINOR(),
         'oldest_supported' => '8.0.0',
         'latest_lts' => '8.0.0',
         'previous_minor' => '8.0.0',
-        'is_redundant' => TRUE,
+        // previous_minor always runs.
+        'is_redundant' => FALSE,
       ],
       'Inapplicable job' => [
         'ci_job' => CiJobEnum::INTEGRATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_BETA_OR_LATER(),
