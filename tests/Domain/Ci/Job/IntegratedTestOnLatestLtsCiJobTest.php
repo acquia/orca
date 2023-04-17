@@ -12,6 +12,7 @@ use Acquia\Orca\Helper\EnvFacade;
 use Acquia\Orca\Helper\Process\ProcessRunner;
 use Acquia\Orca\Tests\Domain\Ci\Job\_Helper\CiJobTestBase;
 use Prophecy\Argument;
+use Prophecy\Prophecy\ObjectProphecy;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
@@ -20,6 +21,8 @@ use Symfony\Component\Console\Output\OutputInterface;
  * @property \Acquia\Orca\Domain\Ci\Job\Helper\RedundantJobChecker|\Prophecy\Prophecy\ObjectProphecy $redundantJobChecker
  */
 class IntegratedTestOnLatestLtsCiJobTest extends CiJobTestBase {
+
+  private RedundantJobChecker|ObjectProphecy $redundantJobChecker;
 
   public function setUp(): void {
     $this->drupalCoreVersionResolver = $this->prophesize(DrupalCoreVersionResolver::class);
