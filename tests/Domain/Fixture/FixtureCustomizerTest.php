@@ -79,7 +79,6 @@ class FixtureCustomizerTest extends TestCase {
       ->willReturn(Argument::type('string'));
 
     $this->output = $this->prophesize(OutputInterface::class);
-
   }
 
   public function createCustomizer(): FixtureCustomizer {
