@@ -202,6 +202,7 @@ class FixtureCreator {
     $this->options = $options;
     $this->createComposerProject();
     $this->removeComposerConfigPlatform();
+    $this->replaceCoreRecommendedWithCore();
     $this->fixDefaultDependencies();
     $this->addAllowedComposerPlugins();
     $this->addCompanyPackages();
@@ -227,12 +228,31 @@ class FixtureCreator {
    * Remove "config.platform" parameter from fixture root composer.json.
    */
   private function removeComposerConfigPlatform(): void {
-    $this->output->writeln("Removing Composer platform requirements.");
+    $this->output->section("Removing Composer platform requirements.");
     try {
       $this->composer->removeConfig(['platform']);
     }
     catch (\Exception $e) {
       $this->output->writeln("Failed to remove Composer platform requirements.");
+    }
+  }
+
+  /**
+   * Replace drupal/core-recommended with drupal/core for Drupal 9 fixtures.
+   *
+   * Please refer to ORCA-516 for motivation and details.
+   */
+  private function replaceCoreRecommendedWithCore(): void {
+    if (!$this->options->coreVersionParsedMatches('^9')) {
+      return;
+    }
+    $this->output->section("Replacing core-recommended with core.");
+    try {
+      $this->composer->removePackages(['drupal/core-recommended']);
+      $this->composer->requirePackages(['drupal/core:^9'], FALSE, TRUE);
+    }
+    catch (\Exception $e) {
+      $this->output->writeln("Failed to replace core-recommended with core.");
     }
   }
 
