@@ -76,11 +76,23 @@ class FixtureCreatorTest extends TestCase {
     $subextension_manager = $this->subextensionManager->reveal();
     $version_finder = $this->versionFinder->reveal();
     $customizer = $this->customizer->reveal();
-    return new FixtureCreator($cloud_hooks_installer, $codebase_creator, $composer_facade,
-      $composer_json_helper, $drupal_settings_helper, $fixture, $fixture_inspector,
-      $git, $site_installer, $output, $process_runner, $package_manager, $subextension_manager,
-      $version_finder, $customizer);
-  }
+    return new FixtureCreator(
+        $cloud_hooks_installer,
+        $codebase_creator,
+        $composer_facade,
+        $composer_json_helper,
+        $drupal_settings_helper,
+        $fixture,
+        $fixture_inspector,
+        $git,
+        $site_installer,
+        $output,
+        $process_runner,
+        $package_manager,
+        $subextension_manager,
+        $version_finder,
+        $customizer
+    );
 
   public function testInstantiation(): void {
     $creator = $this->createFixtureCreator();
