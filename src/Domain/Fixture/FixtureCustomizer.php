@@ -82,7 +82,6 @@ class FixtureCustomizer {
    * paragraphs module when drupal/acquia_perz is not the SUT.
    */
   public function perzParagraphsRemoval(FixtureOptions $options): void {
-
     $this->output->writeln('Performing drupal/acquia_perz related customisations.');
 
     if (!is_null($options->getSut()) && $options->getSut()->getPackageName() === 'drupal/acquia_perz') {
