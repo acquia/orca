@@ -213,7 +213,6 @@ class FixtureCreator {
     $this->customizeFixture();
     $this->createAndCheckoutBackupTag();
     $this->displayStatus();
-
   }
 
   /**
