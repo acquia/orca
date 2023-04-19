@@ -59,27 +59,29 @@ class FixtureCustomizer {
       FixturePathHandler $fixturePathHandler,
       OutputInterface $output
   ) {
-      $this->finderFactory = $finderFactory;
-      $this->filesystem = $filesystem;
-      $this->fixturePathHandler = $fixturePathHandler;
-      $this->output = $output;
+    $this->finderFactory = $finderFactory;
+    $this->filesystem = $filesystem;
+    $this->fixturePathHandler = $fixturePathHandler;
+    $this->output = $output;
   }
 
   /**
    * Runs all customisations.
    */
   public function runCustomizations(FixtureOptions $options): void {
-    $this->perzParagraphsRemoval($options);
+    $this->removePerzParagraphsTests($options);
   }
 
   /**
    * Removes paragraph module tests from drupal/acquia_perz.
    *
    * The package drupal/acquia_perz requires the paragraphs module for running
-   * its phpunit tests. But paragraph module is only a dev-dependency of
+   * its phpunit tests as it depends on classes only present in the paragraph
+   * module. But paragraphs module is only a dev-dependency of
    * drupal/acquia_perz and thus does not get included in the fixture unless
-   * drupal/acquia-perz is the SUT. So we are removing all tests requiring
-   * paragraphs module when drupal/acquia_perz is not the SUT.
+   * drupal/acquia-perz is the SUT. This causes everyone else's builds to fail.
+   * So we are removing all tests requiring paragraphs module when
+   * drupal/acquia_perz is not the SUT.
    */
   public function removePerzParagraphsTests(FixtureOptions $options): void {
     $this->output->writeln('Performing drupal/acquia_perz related customisations.');

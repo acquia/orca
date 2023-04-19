@@ -93,6 +93,7 @@ class FixtureCreatorTest extends TestCase {
         $version_finder,
         $customizer
     );
+  }
 
   public function testInstantiation(): void {
     $creator = $this->createFixtureCreator();

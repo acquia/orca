@@ -912,7 +912,7 @@ class FixtureCreator {
    */
   public function customizeFixture(): void {
     $this->output->section('Customizing fixture');
-    $this->fixtureCustomizer->runCustomisations($this->options);
+    $this->fixtureCustomizer->runCustomizations($this->options);
   }
 
   /**
