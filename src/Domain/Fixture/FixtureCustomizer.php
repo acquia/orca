@@ -68,7 +68,7 @@ class FixtureCustomizer {
   /**
    * Runs all customisations.
    */
-  public function runCustomisations(FixtureOptions $options): void {
+  public function runCustomizations(FixtureOptions $options): void {
     $this->perzParagraphsRemoval($options);
   }
 
