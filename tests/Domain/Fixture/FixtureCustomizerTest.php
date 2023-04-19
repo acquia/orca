@@ -107,7 +107,6 @@ class FixtureCustomizerTest extends TestCase {
     $customizer = $this->createCustomizer();
     $options = $this->fixtureOptions->reveal();
     $customizer->runCustomisations($options);
-
   }
 
   public function testParagraphsRemovalWhenSutIsPerz(): void {
