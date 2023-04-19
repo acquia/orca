@@ -91,7 +91,6 @@ class FixtureCustomizerTest extends TestCase {
   }
 
   public function testParagraphsRemovalWhenSutIsNotPerz(): void {
-
     $this->package = $this->prophesize(Package::class);
     $this->package
       ->getPackageName()
