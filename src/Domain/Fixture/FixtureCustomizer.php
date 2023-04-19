@@ -85,8 +85,7 @@ class FixtureCustomizer {
     $this->output->writeln('Performing drupal/acquia_perz related customisations.');
 
     if (!is_null($options->getSut()) && $options->getSut()->getPackageName() === 'drupal/acquia_perz') {
-      $this->output->writeln('No customisations required for drupal/acquia_perz
-       as it is the SUT.');
+      $this->output->writeln('No customizations required for drupal/acquia_perz as it is the SUT.');
       return;
     }
 
