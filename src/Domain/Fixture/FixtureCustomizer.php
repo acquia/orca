@@ -81,7 +81,7 @@ class FixtureCustomizer {
    * drupal/acquia-perz is the SUT. So we are removing all tests requiring
    * paragraphs module when drupal/acquia_perz is not the SUT.
    */
-  public function perzParagraphsRemoval(FixtureOptions $options): void {
+  public function removePerzParagraphsTests(FixtureOptions $options): void {
     $this->output->writeln('Performing drupal/acquia_perz related customisations.');
 
     if (!is_null($options->getSut()) && $options->getSut()->getPackageName() === 'drupal/acquia_perz') {
