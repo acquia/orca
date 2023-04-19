@@ -53,14 +53,16 @@ class FixtureCustomizer {
    * @param \Symfony\Component\Console\Output\OutputInterface $output
    *   The output variable.
    */
-  public function __construct(FinderFactory $finderFactory,
-  Filesystem $filesystem,
-    FixturePathHandler $fixturePathHandler,
-    OutputInterface $output) {
-    $this->finderFactory = $finderFactory;
-    $this->filesystem = $filesystem;
-    $this->fixturePathHandler = $fixturePathHandler;
-    $this->output = $output;
+  public function __construct(
+      FinderFactory $finderFactory,
+      Filesystem $filesystem,
+      FixturePathHandler $fixturePathHandler,
+      OutputInterface $output
+  ) {
+      $this->finderFactory = $finderFactory;
+      $this->filesystem = $filesystem;
+      $this->fixturePathHandler = $fixturePathHandler;
+      $this->output = $output;
   }
 
   /**
