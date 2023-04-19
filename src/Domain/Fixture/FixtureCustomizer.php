@@ -97,8 +97,7 @@ class FixtureCustomizer {
         ->contains('Drupal\Tests\paragraphs');
 
       if (iterator_count($paragraph_files) === 0) {
-        $this->output->writeln('No customisations required for drupal/acquia_perz
-         since no files found for removal.');
+        $this->output->writeln('No customizations required for drupal/acquia_perz since no files found for removal.');
         return;
       }
 
