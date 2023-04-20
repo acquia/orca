@@ -106,7 +106,7 @@ class FixtureCustomizerTest extends TestCase {
 
     $customizer = $this->createCustomizer();
     $options = $this->fixtureOptions->reveal();
-    $customizer->runCustomizations($options);
+    $customizer->removePerzParagraphsTests($options);
   }
 
   public function testParagraphsRemovalWhenSutIsPerz(): void {
@@ -124,7 +124,7 @@ class FixtureCustomizerTest extends TestCase {
       ->shouldNotBeCalled();
     $customizer = $this->createCustomizer();
     $options = $this->fixtureOptions->reveal();
-    $customizer->runCustomizations($options);
+    $customizer->removePerzParagraphsTests($options);
   }
 
   public function testPerzParagraphsRemovalWhenSutIsNull(): void {
@@ -138,7 +138,7 @@ class FixtureCustomizerTest extends TestCase {
       ->shouldBeCalled();
     $customizer = $this->createCustomizer();
     $options = $this->fixtureOptions->reveal();
-    $customizer->runCustomizations($options);
+    $customizer->removePerzParagraphsTests($options);
   }
 
 }

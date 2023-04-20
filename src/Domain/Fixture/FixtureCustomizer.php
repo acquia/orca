@@ -70,6 +70,7 @@ class FixtureCustomizer {
    */
   public function runCustomizations(FixtureOptions $options): void {
     $this->removePerzParagraphsTests($options);
+    $this->modifyDrupalKernel();
   }
 
   /**
@@ -114,6 +115,30 @@ class FixtureCustomizer {
     catch (\Exception $e) {
       $this->output->writeln("Customisation unsuccessful. \n" . $e->getMessage());
     }
+
+  }
+
+  /**
+   * Modifies DrupalKernel.php to suppress deprecation warnings.
+   */
+  public function modifyDrupalKernel(): void {
+
+    if (!$this->fixturePathHandler->exists('docroot/core/lib/Drupal/Core/DrupalKernel.php')) {
+      return;
+    }
+
+    $path = $this->fixturePathHandler
+      ->getPath('docroot/core/lib/Drupal/Core/DrupalKernel.php');
+
+    $target = 'error_reporting(E_STRICT | E_ALL)';
+
+    $change = 'error_reporting(E_ALL & ~E_DEPRECATED)';
+
+    $str = file_get_contents($path);
+
+    $str = str_replace($target, $change, $str);
+
+    file_put_contents($path, $str);
 
   }
 
