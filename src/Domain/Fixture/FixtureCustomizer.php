@@ -70,7 +70,7 @@ class FixtureCustomizer {
    */
   public function runCustomizations(FixtureOptions $options): void {
     $this->removePerzParagraphsTests($options);
-    $this->modifyDrupalKernel();
+    $this->modifyDrupalKernel($options);
   }
 
   /**
