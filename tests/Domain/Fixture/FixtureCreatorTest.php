@@ -57,6 +57,7 @@ class FixtureCreatorTest extends TestCase {
   protected OrcaPathHandler|ObjectProphecy $orca;
   protected ProcessRunner|ObjectProphecy $processRunner;
   protected SymfonyStyle|ObjectProphecy $output;
+  protected FixtureCustomizer|ObjectProphecy $customizer;
 
   protected function setUp(): void {
     $this->cloudHooksInstaller = $this->prophesize(CloudHooksInstaller::class);

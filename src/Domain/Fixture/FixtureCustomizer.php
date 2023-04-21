@@ -119,13 +119,18 @@ class FixtureCustomizer {
   }
 
   /**
-   * Modifies DrupalKernel.php to suppress deprecation warnings.
+   * Modifies DrupalKernel.php to suppress Drupal 9 deprecation warnings.
    */
-  public function modifyDrupalKernel(): void {
+  public function modifyDrupalKernel(FixtureOptions $options): void {
+    if(!$options->coreVersionParsedMatches('^9')){
+      return;
+    }
 
     if (!$this->fixturePathHandler->exists('docroot/core/lib/Drupal/Core/DrupalKernel.php')) {
       return;
     }
+
+    $this->output->writeln('Suppressing Drupal 9 deprecation notices.');
 
     $path = $this->fixturePathHandler
       ->getPath('docroot/core/lib/Drupal/Core/DrupalKernel.php');
