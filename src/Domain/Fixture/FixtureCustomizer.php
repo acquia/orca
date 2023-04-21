@@ -54,10 +54,10 @@ class FixtureCustomizer {
    *   The output variable.
    */
   public function __construct(
-      FinderFactory $finderFactory,
-      Filesystem $filesystem,
-      FixturePathHandler $fixturePathHandler,
-      OutputInterface $output
+    FinderFactory $finderFactory,
+    Filesystem $filesystem,
+    FixturePathHandler $fixturePathHandler,
+    OutputInterface $output
   ) {
     $this->finderFactory = $finderFactory;
     $this->filesystem = $filesystem;
@@ -71,6 +71,7 @@ class FixtureCustomizer {
   public function runCustomizations(FixtureOptions $options): void {
     $this->removePerzParagraphsTests($options);
     $this->removeAcquiaDamCkeditorTests($options);
+    $this->modifyDrupalKernel($options);
   }
 
   /**
@@ -87,7 +88,8 @@ class FixtureCustomizer {
   public function removePerzParagraphsTests(FixtureOptions $options): void {
     $this->output->writeln("\nPerforming drupal/acquia_perz related customisations.\n");
 
-    if (!is_null($options->getSut()) && $options->getSut()->getPackageName() === 'drupal/acquia_perz') {
+    if (!is_null($options->getSut()) && $options->getSut()
+        ->getPackageName() === 'drupal/acquia_perz') {
       $this->output->writeln('No customizations required for drupal/acquia_perz as it is the SUT.');
       return;
     }
@@ -109,7 +111,8 @@ class FixtureCustomizer {
   public function removeAcquiaDamCkeditorTests(FixtureOptions $options): void {
     $this->output->writeln("\nPerforming drupal/acquia_dam related customisations.\n");
 
-    if (!is_null($options->getSut()) && $options->getSut()->getPackageName() === 'drupal/acquia_dam') {
+    if (!is_null($options->getSut()) && $options->getSut()
+        ->getPackageName() === 'drupal/acquia_dam') {
       $this->output->writeln("\nNo customizations required for drupal/acquia_dam as it is the SUT.\n");
       return;
     }
@@ -132,7 +135,6 @@ class FixtureCustomizer {
     string $module_name,
     string $search_string
   ): void {
-
     $finder = $this->finderFactory->create();
     // Converting drupal/acquia_dam to acquia_dam.
     $module_name = explode("/", $module_name)[1];
@@ -158,6 +160,34 @@ class FixtureCustomizer {
     catch (\Exception $e) {
       $this->output->writeln("Customisation unsuccessful. \n" . $e->getMessage());
     }
+  }
+
+  /**
+   * Modifies DrupalKernel.php to suppress Drupal 9 deprecation warnings.
+   */
+  public function modifyDrupalKernel(FixtureOptions $options): void {
+    if (!$options->coreVersionParsedMatches('^9')) {
+      return;
+    }
+
+    if (!$this->fixturePathHandler->exists('docroot/core/lib/Drupal/Core/DrupalKernel.php')) {
+      return;
+    }
+
+    $this->output->writeln('Suppressing Drupal 9 deprecation notices.');
+
+    $path = $this->fixturePathHandler
+      ->getPath('docroot/core/lib/Drupal/Core/DrupalKernel.php');
+
+    $target = 'error_reporting(E_STRICT | E_ALL)';
+
+    $change = 'error_reporting(E_ALL & ~E_DEPRECATED)';
+
+    $str = file_get_contents($path);
+
+    $str = str_replace($target, $change, $str);
+
+    file_put_contents($path, $str);
   }
 
 }
