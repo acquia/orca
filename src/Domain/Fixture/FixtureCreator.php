@@ -131,6 +131,13 @@ class FixtureCreator {
   private $versionFinder;
 
   /**
+   * The fixture customizer.
+   *
+   * @var \Acquia\Orca\Domain\Fixture\FixtureCustomizer
+   */
+  private $fixtureCustomizer;
+
+  /**
    * Constructs an instance.
    *
    * @param \Acquia\Orca\Domain\Fixture\CloudHooksInstaller $cloud_hooks_installer
@@ -161,8 +168,10 @@ class FixtureCreator {
    *   The subextension manager.
    * @param \Acquia\Orca\Domain\Composer\Version\VersionFinder $version_finder
    *   The version finder.
+   * @param \Acquia\Orca\Domain\Fixture\FixtureCustomizer $fixtureCustomizer
+   *   The fixture customizer.
    */
-  public function __construct(CloudHooksInstaller $cloud_hooks_installer, CodebaseCreator $codebase_creator, ComposerFacade $composer, ComposerJsonHelper $composer_json_helper, DrupalSettingsHelper $drupal_settings_helper, FixturePathHandler $fixture_path_handler, FixtureInspector $fixture_inspector, GitFacade $git, SiteInstaller $site_installer, SymfonyStyle $output, ProcessRunner $process_runner, PackageManager $package_manager, SubextensionManager $subextension_manager, VersionFinder $version_finder) {
+  public function __construct(CloudHooksInstaller $cloud_hooks_installer, CodebaseCreator $codebase_creator, ComposerFacade $composer, ComposerJsonHelper $composer_json_helper, DrupalSettingsHelper $drupal_settings_helper, FixturePathHandler $fixture_path_handler, FixtureInspector $fixture_inspector, GitFacade $git, SiteInstaller $site_installer, SymfonyStyle $output, ProcessRunner $process_runner, PackageManager $package_manager, SubextensionManager $subextension_manager, VersionFinder $version_finder, FixtureCustomizer $fixtureCustomizer) {
     $this->cloudHooksInstaller = $cloud_hooks_installer;
     $this->codebaseCreator = $codebase_creator;
     $this->composer = $composer;
@@ -177,6 +186,7 @@ class FixtureCreator {
     $this->siteInstaller = $site_installer;
     $this->subextensionManager = $subextension_manager;
     $this->versionFinder = $version_finder;
+    $this->fixtureCustomizer = $fixtureCustomizer;
   }
 
   /**
@@ -200,6 +210,7 @@ class FixtureCreator {
     $this->ensureDrupalSettings();
     $this->installSite();
     $this->setUpFilesDirectories();
+    $this->customizeFixture();
     $this->createAndCheckoutBackupTag();
     $this->displayStatus();
   }
@@ -894,6 +905,14 @@ class FixtureCreator {
       '-R',
       '0770',
     ], $directories));
+  }
+
+  /**
+   * Customize the fixture.
+   */
+  public function customizeFixture(): void {
+    $this->output->section('Customizing fixture');
+    $this->fixtureCustomizer->runCustomizations($this->options);
   }
 
   /**

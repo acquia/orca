@@ -7,6 +7,7 @@ use Acquia\Orca\Domain\Composer\Version\VersionFinder;
 use Acquia\Orca\Domain\Fixture\CloudHooksInstaller;
 use Acquia\Orca\Domain\Fixture\CodebaseCreator;
 use Acquia\Orca\Domain\Fixture\FixtureCreator;
+use Acquia\Orca\Domain\Fixture\FixtureCustomizer;
 use Acquia\Orca\Domain\Fixture\FixtureInspector;
 use Acquia\Orca\Domain\Fixture\Helper\ComposerJsonHelper;
 use Acquia\Orca\Domain\Fixture\Helper\DrupalSettingsHelper;
@@ -36,6 +37,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  * @property \Acquia\Orca\Helper\Filesystem\OrcaPathHandler|\Prophecy\Prophecy\ObjectProphecy $orca
  * @property \Acquia\Orca\Helper\Process\ProcessRunner|\Prophecy\Prophecy\ObjectProphecy $processRunner
  * @property \Symfony\Component\Console\Style\SymfonyStyle|\Prophecy\Prophecy\ObjectProphecy $output
+ * @property \Acquia\Orca\Domain\Fixture\FixtureCustomizer|\Prophecy\Prophecy\ObjectProphecy $customizer
  */
 class FixtureCreatorTest extends TestCase {
 
@@ -55,6 +57,7 @@ class FixtureCreatorTest extends TestCase {
     $this->subextensionManager = $this->prophesize(SubextensionManager::class);
     $this->versionFinder = $this->prophesize(VersionFinder::class);
     $this->output = $this->prophesize(SymfonyStyle::class);
+    $this->customizer = $this->prophesize(FixtureCustomizer::class);
   }
 
   private function createFixtureCreator(): FixtureCreator {
@@ -72,7 +75,24 @@ class FixtureCreatorTest extends TestCase {
     $output = $this->output->reveal();
     $subextension_manager = $this->subextensionManager->reveal();
     $version_finder = $this->versionFinder->reveal();
-    return new FixtureCreator($cloud_hooks_installer, $codebase_creator, $composer_facade, $composer_json_helper, $drupal_settings_helper, $fixture, $fixture_inspector, $git, $site_installer, $output, $process_runner, $package_manager, $subextension_manager, $version_finder);
+    $customizer = $this->customizer->reveal();
+    return new FixtureCreator(
+        $cloud_hooks_installer,
+        $codebase_creator,
+        $composer_facade,
+        $composer_json_helper,
+        $drupal_settings_helper,
+        $fixture,
+        $fixture_inspector,
+        $git,
+        $site_installer,
+        $output,
+        $process_runner,
+        $package_manager,
+        $subextension_manager,
+        $version_finder,
+        $customizer
+    );
   }
 
   public function testInstantiation(): void {
