@@ -70,6 +70,7 @@ class FixtureCustomizer {
    */
   public function runCustomizations(FixtureOptions $options): void {
     $this->removePerzParagraphsTests($options);
+    $this->removeAcquiaDamCkeditorTests($options);
   }
 
   /**
@@ -115,6 +116,50 @@ class FixtureCustomizer {
       $this->output->writeln("Customisation unsuccessful. \n" . $e->getMessage());
     }
 
+  }
+
+  /**
+   * Removes ckeditor tests from drupal/acquia_dam.
+   *
+   * The package drupal/acquia_dam requires the ckeditor module for running
+   * its phpunit tests as it depends on classes only present in the ckeditor
+   * module. But ckeditor module is only a dev-dependency of
+   * drupal/acquia_dam and thus does not get included in the fixture unless
+   * drupal/acquia_dam is the SUT. This causes everyone else's builds to fail.
+   * So we are removing all tests requiring paragraphs module when
+   * drupal/acquia_dam is not the SUT.
+   */
+  public function removeAcquiaDamCkeditorTests(FixtureOptions $options): void {
+    $this->output->writeln('Performing drupal/acquia_dam related customisations.');
+
+    if (!is_null($options->getSut()) && $options->getSut()->getPackageName() === 'drupal/acquia_dam') {
+      $this->output->writeln('No customizations required for drupal/acquia_dam as it is the SUT.');
+      return;
+    }
+
+    $finder = $this->finderFactory->create();
+
+    try {
+      $ckeditor_files = $finder->in($this->fixturePathHandler
+        ->getPath('docroot/modules/contrib/acquia_dam'))
+        ->contains('Drupal\Tests\ckeditor');
+
+      if (iterator_count($ckeditor_files) === 0) {
+        $this->output->writeln('No customizations required for drupal/acquia_dam since no files found for removal.');
+        return;
+      }
+
+      foreach ($ckeditor_files as $file) {
+        $this->output->writeln("Removing $file");
+      }
+
+      $this->filesystem->remove($ckeditor_files);
+
+      $this->output->writeln('Files removed successfully.');
+    }
+    catch (\Exception $e) {
+      $this->output->writeln("Customisation unsuccessful. \n" . $e->getMessage());
+    }
   }
 
 }
