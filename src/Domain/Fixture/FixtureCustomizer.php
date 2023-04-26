@@ -170,14 +170,16 @@ class FixtureCustomizer {
       return;
     }
 
-    if (!$this->fixturePathHandler->exists('docroot/core/lib/Drupal/Core/DrupalKernel.php')) {
+    $drupal_kernel_path = 'docroot/core/lib/Drupal/Core/DrupalKernel.php';
+
+    if (!$this->fixturePathHandler->exists($drupal_kernel_path)) {
       return;
     }
 
     $this->output->writeln('Suppressing Drupal 9 deprecation notices.');
 
     $path = $this->fixturePathHandler
-      ->getPath('docroot/core/lib/Drupal/Core/DrupalKernel.php');
+      ->getPath($drupal_kernel_path);
 
     $target = 'error_reporting(E_STRICT | E_ALL)';
 
@@ -188,6 +190,10 @@ class FixtureCustomizer {
     $str = str_replace($target, $change, $str);
 
     file_put_contents($path, $str);
+  }
+
+  public function modifyPhpunitConfig(){
+
   }
 
 }
