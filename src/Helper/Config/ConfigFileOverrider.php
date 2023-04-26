@@ -117,7 +117,7 @@ class ConfigFileOverrider {
    * Restores the original configuration.
    */
   public function restore(): void {
-    $this->filesystem->remove($this->destPath);
+    //$this->filesystem->remove($this->destPath);
     if ($this->destBackup) {
       file_put_contents($this->destPath, $this->destBackup);
     }

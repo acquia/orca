@@ -72,6 +72,7 @@ class FixtureCustomizer {
     $this->removePerzParagraphsTests($options);
     $this->removeAcquiaDamCkeditorTests($options);
     $this->modifyDrupalKernel($options);
+    $this->modifyPhpunitConfig($options);
   }
 
   /**
@@ -176,7 +177,7 @@ class FixtureCustomizer {
       return;
     }
 
-    $this->output->writeln('Suppressing Drupal 9 deprecation notices.');
+    $this->output->writeln('Suppressing Drupal 9 deprecation notices for functional tests.');
 
     $path = $this->fixturePathHandler
       ->getPath($drupal_kernel_path);
@@ -192,7 +193,31 @@ class FixtureCustomizer {
     file_put_contents($path, $str);
   }
 
-  public function modifyPhpunitConfig(){
+  public function modifyPhpunitConfig($options): void {
+    if (!$options->coreVersionParsedMatches('^9')) {
+      return;
+    }
+
+    $phpunit_xml_path = 'docroot/core/phpunit.xml.dist';
+
+    if (!$this->fixturePathHandler->exists($phpunit_xml_path)) {
+      return;
+    }
+
+    $this->output->writeln('Suppressing Drupal 9 deprecation notices for phpunit tests.');
+
+    $path = $this->fixturePathHandler
+      ->getPath($phpunit_xml_path);
+
+    $target = '<ini name="error_reporting" value="32767"/>';
+
+    $change = '<ini name="error_reporting" value="24575"/>';
+
+    $str = file_get_contents($path);
+
+    $str = str_replace($target, $change, $str);
+
+    file_put_contents($path, $str);
 
   }
 
