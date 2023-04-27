@@ -8,6 +8,9 @@ use Acquia\Orca\Helper\Filesystem\FinderFactory;
 use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
 use Acquia\Orca\Options\FixtureOptions;
 use Acquia\Orca\Tests\TestCase;
+use phpDocumentor\Reflection\Type;
+use phpDocumentor\Reflection\Types\Boolean;
+use phpDocumentor\Reflection\Types\String_;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -57,32 +60,32 @@ class FixtureCustomizerTest extends TestCase {
 
   public function setUp(): void {
     $finder = $this->prophesize(Finder::class);
-    $finder
-      ->in(Argument::any())
-      ->willReturn($finder);
-    $finder
-      ->contains(Argument::any())
-      ->willReturn($finder);
-
-    $file = $this->prophesize(SplFileInfo::class);
-    $file->__toString()
-      ->willReturn(Argument::type('string'));
-    $fileIterator = new \ArrayIterator([$file->reveal()]);
-
-    $finder
-      ->getIterator()
-      ->willReturn($fileIterator);
+    // $finder
+    //   ->in(Argument::any())
+    //   ->willReturn($finder);
+    // $finder
+    //   ->contains(Argument::any())
+    //   ->willReturn($finder);
+    //
+    // $file = $this->prophesize(SplFileInfo::class);
+    // $file->__toString()
+    //   ->willReturn(Argument::type('string'));
+    // $fileIterator = new \ArrayIterator([$file->reveal()]);
+    //
+    // $finder
+    //   ->getIterator()
+    //   ->willReturn($fileIterator);
 
     $this->finderFactory = $this->prophesize(FinderFactory::class);
     $this->finderFactory
       ->create()
       ->willReturn($finder);
-
-    $this->fixturePathHandler = $this->prophesize(FixturePathHandler::class);
-    $this->fixturePathHandler
-      ->getPath(Argument::type('string'))
-      ->willReturn(Argument::type('string'));
-
+    //
+    // $this->fixturePathHandler = $this->prophesize(FixturePathHandler::class);
+    // $this->fixturePathHandler
+    //   ->getPath(Argument::type('string'))
+    //   ->willReturn(Argument::type('string'));
+    //
     $this->output = $this->prophesize(OutputInterface::class);
     $this->filesystem = $this->prophesize(Filesystem::class);
   }

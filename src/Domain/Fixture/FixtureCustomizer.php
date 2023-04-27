@@ -186,13 +186,23 @@ class FixtureCustomizer {
 
     $change = 'error_reporting(E_ALL & ~E_DEPRECATED)';
 
+<<<<<<< HEAD
     $str = file_get_contents($path);
 
     $str = str_replace($target, $change, $str);
 
     file_put_contents($path, $str);
+=======
+    $this->swapStringInFile($target, $change, $path);
+
+>>>>>>> 66cce29 (save tests)
   }
 
+  /**
+   * Modify phpunit.xml.dist to suppress any D9 phpunit deprecation warnings.
+   *
+   * @param $options
+   */
   public function modifyPhpunitConfig($options): void {
     if (!$options->coreVersionParsedMatches('^9')) {
       return;
@@ -213,12 +223,16 @@ class FixtureCustomizer {
 
     $change = '<ini name="error_reporting" value="24575"/>';
 
+    $this->swapStringInFile($target, $change, $path);
+
+  }
+
+  public function swapStringInFile($old, $new, $path): void {
     $str = file_get_contents($path);
 
-    $str = str_replace($target, $change, $str);
+    $str = str_replace($old, $new, $str);
 
     file_put_contents($path, $str);
-
   }
 
 }
