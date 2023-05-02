@@ -90,7 +90,7 @@ class FixtureCustomizer {
     $this->output->writeln("\nPerforming drupal/acquia_perz related customisations.\n");
 
     if (!is_null($options->getSut()) && $options->getSut()
-        ->getPackageName() === 'drupal/acquia_perz') {
+      ->getPackageName() === 'drupal/acquia_perz') {
       $this->output->writeln('No customizations required for drupal/acquia_perz as it is the SUT.');
       return;
     }
@@ -113,7 +113,7 @@ class FixtureCustomizer {
     $this->output->writeln("\nPerforming drupal/acquia_dam related customisations.\n");
 
     if (!is_null($options->getSut()) && $options->getSut()
-        ->getPackageName() === 'drupal/acquia_dam') {
+      ->getPackageName() === 'drupal/acquia_dam') {
       $this->output->writeln("\nNo customizations required for drupal/acquia_dam as it is the SUT.\n");
       return;
     }
@@ -186,20 +186,8 @@ class FixtureCustomizer {
 
     $change = 'error_reporting(E_ALL & ~E_DEPRECATED)';
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-    $str = file_get_contents($path);
-
-    $str = str_replace($target, $change, $str);
-
-    file_put_contents($path, $str);
-=======
-    $this->swapStringInFile($target, $change, $path);
-=======
     $this->replaceStringInFile($target, $change, $path);
->>>>>>> 41e7b0a (Final Fixes)
 
->>>>>>> 66cce29 (save tests)
   }
 
   /**

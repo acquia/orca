@@ -146,7 +146,7 @@ class FixtureCustomizerTest extends TestCase {
     $options = $this->fixtureOptions->reveal();
     $customizer->removePerzParagraphsTests($options);
   }
-  
+
   public function testCkeditorRemovalWhenSutIsNotAcquiaDam(): void {
     $this->package = $this->prophesize(Package::class);
     $this->package
