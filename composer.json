@@ -74,6 +74,9 @@
         "sort-packages": true
     },
     "extra": {
+        "branch-alias": {
+            "dev-support/3": "v3.x-dev"
+        },
         "hooks": {
             "post-install-cmd": "vendor/bin/cghooks add --ignore-lock",
             "post-update-cmd": "vendor/bin/cghooks update",
@@ -89,10 +92,7 @@
                 "https://patch-diff.githubusercontent.com/raw/sebastianbergmann/phploc/pull/227.patch"
             ]
         },
-        "phpcodesniffer-search-depth": 4,
-        "branch-alias": {
-            "dev-branch": "dev-support/3"
-        }
+        "phpcodesniffer-search-depth": 4
     },
     "autoload": {
         "psr-4": {
