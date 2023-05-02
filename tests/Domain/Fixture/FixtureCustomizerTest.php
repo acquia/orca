@@ -44,6 +44,8 @@ class FixtureCustomizerTest extends TestCase {
 
   private const SUT_IS_PERZ = 'drupal/acquia_perz';
   private const SUT_IS_NOT_PERZ = 'drupal/example';
+  private const SUT_IS_ACQUIA_DAM = 'drupal/acquia_dam';
+  private const SUT_IS_NOT_ACQUIA_DAM = 'drupal/example';
 
   /**
    * @var \Acquia\Orca\Domain\Package\Package|\Prophecy\Prophecy\ObjectProphecy
@@ -106,7 +108,7 @@ class FixtureCustomizerTest extends TestCase {
 
     $customizer = $this->createCustomizer();
     $options = $this->fixtureOptions->reveal();
-    $customizer->runCustomizations($options);
+    $customizer->removePerzParagraphsTests($options);
   }
 
   public function testParagraphsRemovalWhenSutIsPerz(): void {
@@ -124,7 +126,7 @@ class FixtureCustomizerTest extends TestCase {
       ->shouldNotBeCalled();
     $customizer = $this->createCustomizer();
     $options = $this->fixtureOptions->reveal();
-    $customizer->runCustomizations($options);
+    $customizer->removePerzParagraphsTests($options);
   }
 
   public function testPerzParagraphsRemovalWhenSutIsNull(): void {
@@ -138,7 +140,59 @@ class FixtureCustomizerTest extends TestCase {
       ->shouldBeCalled();
     $customizer = $this->createCustomizer();
     $options = $this->fixtureOptions->reveal();
-    $customizer->runCustomizations($options);
+    $customizer->removePerzParagraphsTests($options);
+  }
+
+  public function testCkeditorRemovalWhenSutIsNotAcquiaDam(): void {
+    $this->package = $this->prophesize(Package::class);
+    $this->package
+      ->getPackageName()
+      ->willReturn(self::SUT_IS_NOT_ACQUIA_DAM);
+    $this->fixtureOptions = $this->prophesize(FixtureOptions::class);
+    $this->fixtureOptions
+      ->getSut()
+      ->willReturn($this->package);
+
+    $this->filesystem = $this->prophesize(Filesystem::class);
+    $this->filesystem
+      ->remove(Argument::any())
+      ->shouldBeCalled();
+
+    $customizer = $this->createCustomizer();
+    $options = $this->fixtureOptions->reveal();
+    $customizer->removeAcquiaDamCkeditorTests($options);
+  }
+
+  public function testCkeditorRemovalWhenSutIsAcquiaDam(): void {
+    $this->package = $this->prophesize(Package::class);
+    $this->package
+      ->getPackageName()
+      ->willReturn(self::SUT_IS_ACQUIA_DAM);
+    $this->fixtureOptions = $this->prophesize(FixtureOptions::class);
+    $this->fixtureOptions
+      ->getSut()
+      ->willReturn($this->package);
+    $this->filesystem = $this->prophesize(Filesystem::class);
+    $this->filesystem
+      ->remove(Argument::any())
+      ->shouldNotBeCalled();
+    $customizer = $this->createCustomizer();
+    $options = $this->fixtureOptions->reveal();
+    $customizer->removeAcquiaDamCkeditorTests($options);
+  }
+
+  public function testCkeditorRemovalWhenSutIsNull(): void {
+    $this->fixtureOptions = $this->prophesize(FixtureOptions::class);
+    $this->fixtureOptions
+      ->getSut()
+      ->willReturn(NULL);
+    $this->filesystem = $this->prophesize(Filesystem::class);
+    $this->filesystem
+      ->remove(Argument::any())
+      ->shouldBeCalled();
+    $customizer = $this->createCustomizer();
+    $options = $this->fixtureOptions->reveal();
+    $customizer->removeAcquiaDamCkeditorTests($options);
   }
 
 }
