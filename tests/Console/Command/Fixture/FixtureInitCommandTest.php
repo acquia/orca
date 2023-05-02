@@ -14,6 +14,7 @@ use Acquia\Orca\Options\FixtureOptions;
 use Acquia\Orca\Options\FixtureOptionsFactory;
 use Acquia\Orca\Tests\Console\Command\CommandTestBase;
 use Prophecy\Argument;
+use Prophecy\Prophecy\ObjectProphecy;
 use Symfony\Component\Console\Command\Command;
 
 /**
@@ -27,6 +28,13 @@ use Symfony\Component\Console\Command\Command;
  * @coversDefaultClass \Acquia\Orca\Console\Command\Fixture\FixtureInitCommand
  */
 class FixtureInitCommandTest extends CommandTestBase {
+
+  protected FixtureCreator|ObjectProphecy $fixtureCreator;
+  protected FixtureOptionsFactory|ObjectProphecy $fixtureOptionsFactory;
+  protected FixtureOptions|ObjectProphecy $fixtureOptions;
+  protected FixtureRemover|ObjectProphecy $fixtureRemover;
+  protected SutPreconditionsTester|ObjectProphecy $sutPreconditionsTester;
+  protected FixturePathHandler|ObjectProphecy $fixture;
 
   protected function setUp(): void {
     $this->fixtureCreator = $this->prophesize(FixtureCreator::class);

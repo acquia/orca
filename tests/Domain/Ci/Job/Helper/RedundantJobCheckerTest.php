@@ -7,12 +7,15 @@ use Acquia\Orca\Domain\Composer\Version\DrupalCoreVersionResolver;
 use Acquia\Orca\Enum\CiJobEnum;
 use Acquia\Orca\Enum\DrupalCoreVersionEnum;
 use Acquia\Orca\Tests\TestCase;
+use Prophecy\Prophecy\ObjectProphecy;
 
 /**
  * @property \Acquia\Orca\Domain\Composer\Version\DrupalCoreVersionResolver|\Prophecy\Prophecy\ObjectProphecy $drupalCoreVersionResolver
  * @coversDefaultClass \Acquia\Orca\Domain\Ci\Job\Helper\RedundantJobChecker
  */
 class RedundantJobCheckerTest extends TestCase {
+
+  protected DrupalCoreVersionResolver|ObjectProphecy $drupalCoreVersionResolver;
 
   protected function setUp(): void {
     $this->drupalCoreVersionResolver = $this->prophesize(DrupalCoreVersionResolver::class);

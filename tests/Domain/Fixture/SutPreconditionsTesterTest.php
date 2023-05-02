@@ -14,6 +14,7 @@ use Acquia\Orca\Tests\TestCase;
 use Noodlehaus\Config;
 use Noodlehaus\Parser\Json;
 use Prophecy\Argument;
+use Prophecy\Prophecy\ObjectProphecy;
 
 /**
  * @property \Acquia\Orca\Domain\Package\Package $package
@@ -46,6 +47,12 @@ class SutPreconditionsTesterTest extends TestCase {
   private const SUT_PATH_RAW = '../example';
 
   private const SUT_PATH_ABSOLUTE = '/var/www/example';
+
+  protected Package $package;
+  protected PackageManager|ObjectProphecy $packageManager;
+  protected ConfigLoader|ObjectProphecy $configLoader;
+  protected FixturePathHandler|ObjectProphecy $fixture;
+  protected OrcaPathHandler|ObjectProphecy $orca;
 
   protected function setUp(): void {
     $config = $this->createConfig(self::COMPOSER_JSON_DATA);

@@ -54,10 +54,10 @@ class FixtureCustomizer {
    *   The output variable.
    */
   public function __construct(
-      FinderFactory $finderFactory,
-      Filesystem $filesystem,
-      FixturePathHandler $fixturePathHandler,
-      OutputInterface $output
+    FinderFactory $finderFactory,
+    Filesystem $filesystem,
+    FixturePathHandler $fixturePathHandler,
+    OutputInterface $output
   ) {
     $this->finderFactory = $finderFactory;
     $this->filesystem = $filesystem;
@@ -71,6 +71,8 @@ class FixtureCustomizer {
   public function runCustomizations(FixtureOptions $options): void {
     $this->removePerzParagraphsTests($options);
     $this->removeAcquiaDamCkeditorTests($options);
+    $this->modifyDrupalKernel($options);
+    $this->modifyPhpunitConfig($options);
   }
 
   /**
@@ -87,7 +89,8 @@ class FixtureCustomizer {
   public function removePerzParagraphsTests(FixtureOptions $options): void {
     $this->output->writeln("\nPerforming drupal/acquia_perz related customisations.\n");
 
-    if (!is_null($options->getSut()) && $options->getSut()->getPackageName() === 'drupal/acquia_perz') {
+    if (!is_null($options->getSut()) && $options->getSut()
+      ->getPackageName() === 'drupal/acquia_perz') {
       $this->output->writeln('No customizations required for drupal/acquia_perz as it is the SUT.');
       return;
     }
@@ -109,7 +112,8 @@ class FixtureCustomizer {
   public function removeAcquiaDamCkeditorTests(FixtureOptions $options): void {
     $this->output->writeln("\nPerforming drupal/acquia_dam related customisations.\n");
 
-    if (!is_null($options->getSut()) && $options->getSut()->getPackageName() === 'drupal/acquia_dam') {
+    if (!is_null($options->getSut()) && $options->getSut()
+      ->getPackageName() === 'drupal/acquia_dam') {
       $this->output->writeln("\nNo customizations required for drupal/acquia_dam as it is the SUT.\n");
       return;
     }
@@ -132,7 +136,6 @@ class FixtureCustomizer {
     string $module_name,
     string $search_string
   ): void {
-
     $finder = $this->finderFactory->create();
     // Converting drupal/acquia_dam to acquia_dam.
     $module_name = explode("/", $module_name)[1];
@@ -158,6 +161,82 @@ class FixtureCustomizer {
     catch (\Exception $e) {
       $this->output->writeln("Customisation unsuccessful. \n" . $e->getMessage());
     }
+  }
+
+  /**
+   * Modifies DrupalKernel.php to fix Drupal 9 warnings in PHP 8.2 and above.
+   */
+  public function modifyDrupalKernel(FixtureOptions $options): void {
+    if (version_compare(PHP_VERSION, '8.2') < 0 || !$options->coreVersionParsedMatches('^9')) {
+      return;
+    }
+
+    $drupal_kernel_path = 'docroot/core/lib/Drupal/Core/DrupalKernel.php';
+
+    if (!$this->fixturePathHandler->exists($drupal_kernel_path)) {
+      return;
+    }
+
+    $this->output->writeln('Suppressing Drupal 9 deprecation notices for functional tests.');
+
+    $path = $this->fixturePathHandler
+      ->getPath($drupal_kernel_path);
+
+    $target = 'error_reporting(E_STRICT | E_ALL)';
+
+    $change = 'error_reporting(E_ALL & ~E_DEPRECATED)';
+
+    $this->replaceStringInFile($target, $change, $path);
+
+  }
+
+  /**
+   * Modify phpunit.xml.dist to fix D9 phpunit warnings in PHP 8.2 and above.
+   *
+   * @param \Acquia\Orca\Options\FixtureOptions $options
+   *   The fixture options.
+   */
+  public function modifyPhpunitConfig(FixtureOptions $options): void {
+    if (version_compare(PHP_VERSION, '8.2') < 0 || !$options->coreVersionParsedMatches('^9')) {
+      return;
+    }
+
+    $phpunit_xml_path = 'docroot/core/phpunit.xml.dist';
+
+    if (!$this->fixturePathHandler->exists($phpunit_xml_path)) {
+      return;
+    }
+
+    $this->output->writeln('Suppressing Drupal 9 deprecation notices for phpunit tests.');
+
+    $path = $this->fixturePathHandler
+      ->getPath($phpunit_xml_path);
+
+    // Change error_reporting value to E_ALL & ~E_DEPRECATED.
+    $target = '<ini name="error_reporting" value="32767"/>';
+
+    $change = '<ini name="error_reporting" value="24575"/>';
+
+    $this->replaceStringInFile($target, $change, $path);
+
+  }
+
+  /**
+   * Replaces one string with another in a file whose path is provided.
+   *
+   * @param string $old
+   *   The string to be replaced.
+   * @param string $new
+   *   The new string.
+   * @param string $path
+   *   The file path.
+   */
+  public function replaceStringInFile(string $old, string $new, string $path): void {
+    $str = file_get_contents($path);
+
+    $str = str_replace($old, $new, $str);
+
+    file_put_contents($path, $str);
   }
 
 }

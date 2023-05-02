@@ -6,6 +6,7 @@ use Acquia\Orca\Console\Command\Debug\Helper\EnvVarsTableBuilder;
 use Acquia\Orca\Helper\EnvFacade;
 use Acquia\Orca\Tests\Enum\_Helper\EnvVarTestEnum;
 use Acquia\Orca\Tests\TestCase;
+use Prophecy\Prophecy\ObjectProphecy;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Output\NullOutput;
 
@@ -13,6 +14,8 @@ use Symfony\Component\Console\Output\NullOutput;
  * @property \Acquia\Orca\Helper\EnvFacade|\Prophecy\Prophecy\ObjectProphecy $envFacade
  */
 class EnvVarsTableBuilderTest extends TestCase {
+
+  protected EnvFacade|ObjectProphecy $envFacade;
 
   protected function setUp(): void {
     $this->envFacade = $this->prophesize(EnvFacade::class);

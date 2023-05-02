@@ -43,8 +43,11 @@ class FixtureCustomizerTest extends TestCase {
   private ObjectProphecy|FixtureOptions $fixtureOptions;
 
   private const SUT_IS_PERZ = 'drupal/acquia_perz';
+
   private const SUT_IS_NOT_PERZ = 'drupal/example';
+
   private const SUT_IS_ACQUIA_DAM = 'drupal/acquia_dam';
+
   private const SUT_IS_NOT_ACQUIA_DAM = 'drupal/example';
 
   /**
@@ -81,6 +84,7 @@ class FixtureCustomizerTest extends TestCase {
       ->willReturn(Argument::type('string'));
 
     $this->output = $this->prophesize(OutputInterface::class);
+    $this->filesystem = $this->prophesize(Filesystem::class);
   }
 
   public function createCustomizer(): FixtureCustomizer {

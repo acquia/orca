@@ -8,6 +8,7 @@ use Acquia\Orca\Exception\OrcaVersionNotFoundException;
 use Acquia\Orca\Tests\Enum\_Helper\DrupalCoreVersionTestEnum;
 use Acquia\Orca\Tests\TestCase;
 use Prophecy\Argument;
+use Prophecy\Prophecy\ObjectProphecy;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Output\NullOutput;
 
@@ -15,6 +16,8 @@ use Symfony\Component\Console\Output\NullOutput;
  * @property \Acquia\Orca\Domain\Composer\Version\DrupalCoreVersionResolver|\Prophecy\Prophecy\ObjectProphecy $drupalCoreVersionResolver
  */
 class CoreVersionsTableBuilderTest extends TestCase {
+
+  protected DrupalCoreVersionResolver|ObjectProphecy $drupalCoreVersionResolver;
 
   protected function setUp(): void {
     $this->drupalCoreVersionResolver = $this->prophesize(DrupalCoreVersionResolver::class);

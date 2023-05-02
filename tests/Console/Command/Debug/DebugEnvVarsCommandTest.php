@@ -7,6 +7,7 @@ use Acquia\Orca\Console\Command\Debug\Helper\EnvVarsTableBuilder;
 use Acquia\Orca\Enum\StatusCodeEnum;
 use Acquia\Orca\Tests\Console\Command\CommandTestBase;
 use Prophecy\Argument;
+use Prophecy\Prophecy\ObjectProphecy;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Output\BufferedOutput;
@@ -16,6 +17,8 @@ use Symfony\Component\Console\Output\BufferedOutput;
  * @coversDefaultClass \Acquia\Orca\Console\Command\Debug\DebugEnvVarsCommand
  */
 class DebugEnvVarsCommandTest extends CommandTestBase {
+
+  protected EnvVarsTableBuilder|ObjectProphecy $tableBuilder;
 
   protected function setUp(): void {
     $this->tableBuilder = $this->prophesize(EnvVarsTableBuilder::class);

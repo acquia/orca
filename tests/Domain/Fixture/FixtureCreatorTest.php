@@ -19,6 +19,7 @@ use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
 use Acquia\Orca\Helper\Filesystem\OrcaPathHandler;
 use Acquia\Orca\Helper\Process\ProcessRunner;
 use Acquia\Orca\Tests\TestCase;
+use Prophecy\Prophecy\ObjectProphecy;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
@@ -40,6 +41,23 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  * @property \Acquia\Orca\Domain\Fixture\FixtureCustomizer|\Prophecy\Prophecy\ObjectProphecy $customizer
  */
 class FixtureCreatorTest extends TestCase {
+
+  protected ComposerFacade|ObjectProphecy $composer;
+  protected VersionFinder|ObjectProphecy $versionFinder;
+  protected CloudHooksInstaller|ObjectProphecy $cloudHooksInstaller;
+  protected CodebaseCreator|ObjectProphecy $codebaseCreator;
+  protected FixtureInspector|ObjectProphecy $fixtureInspector;
+  protected ComposerJsonHelper|ObjectProphecy $composerJsonHelper;
+  protected DrupalSettingsHelper|ObjectProphecy $drupalSettingsHelper;
+  protected SiteInstaller|ObjectProphecy $siteInstaller;
+  protected SubextensionManager|ObjectProphecy $subextensionManager;
+  protected GitFacade|ObjectProphecy $git;
+  protected PackageManager|ObjectProphecy $packageManager;
+  protected FixturePathHandler|ObjectProphecy $fixture;
+  protected OrcaPathHandler|ObjectProphecy $orca;
+  protected ProcessRunner|ObjectProphecy $processRunner;
+  protected SymfonyStyle|ObjectProphecy $output;
+  protected FixtureCustomizer|ObjectProphecy $customizer;
 
   protected function setUp(): void {
     $this->cloudHooksInstaller = $this->prophesize(CloudHooksInstaller::class);

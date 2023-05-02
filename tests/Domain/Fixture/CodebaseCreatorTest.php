@@ -16,6 +16,7 @@ use Acquia\Orca\Helper\Filesystem\OrcaPathHandler;
 use Acquia\Orca\Options\FixtureOptions;
 use Acquia\Orca\Tests\TestCase;
 use Prophecy\Argument;
+use Prophecy\Prophecy\ObjectProphecy;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
@@ -36,6 +37,15 @@ class CodebaseCreatorTest extends TestCase {
 
   private const COMPOSER_JSON_PATH = 'var/www/orca-build/composer.json';
   private const COMPOSER_LOCK_PATH = 'var/www/orca-build/composer.lock';
+
+  protected ComposerFacade|ObjectProphecy $composer;
+  protected DrupalCoreVersionResolver|ObjectProphecy $drupalCoreVersionFinder;
+  protected ComposerJsonHelper|ObjectProphecy $composerJsonHelper;
+  protected GitFacade|ObjectProphecy $git;
+  protected PackageManager|ObjectProphecy $packageManager;
+  protected FixturePathHandler|ObjectProphecy $fixture;
+  protected OrcaPathHandler|ObjectProphecy $orca;
+  protected Filesystem|ObjectProphecy $filesystem;
 
   protected function setUp(): void {
     $this->composer = $this->prophesize(ComposerFacade::class);

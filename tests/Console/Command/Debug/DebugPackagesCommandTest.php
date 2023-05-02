@@ -12,6 +12,7 @@ use Acquia\Orca\Tests\Console\Command\CommandTestBase;
 use Acquia\Orca\Tests\Enum\DrupalCoreVersionEnumsTestTrait;
 use Composer\Semver\VersionParser;
 use Prophecy\Argument;
+use Prophecy\Prophecy\ObjectProphecy;
 use Symfony\Component\Console\Command\Command;
 
 /**
@@ -22,6 +23,9 @@ use Symfony\Component\Console\Command\Command;
 class DebugPackagesCommandTest extends CommandTestBase {
 
   use DrupalCoreVersionEnumsTestTrait;
+  protected ObjectProphecy|DrupalCoreVersionResolver $drupalCoreVersionFinder;
+  protected ObjectProphecy|PackageManager $packageManager;
+  protected ObjectProphecy|VersionParser $versionParser;
 
   protected function setUp(): void {
     $this->drupalCoreVersionFinder = $this->prophesize(DrupalCoreVersionResolver::class);

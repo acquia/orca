@@ -7,12 +7,15 @@ use Acquia\Orca\Domain\Ci\Job\IsolatedUpgradeTestToNextMajorDevCiJob;
 use Acquia\Orca\Enum\DrupalCoreVersionEnum;
 use Acquia\Orca\Tests\Domain\Ci\Job\_Helper\CiJobTestBase;
 use Prophecy\Argument;
+use Prophecy\Prophecy\ObjectProphecy;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * @property \Prophecy\Prophecy\ObjectProphecy|\Symfony\Component\Console\Output\OutputInterface $symfonyOutput
  */
 class IsolatedUpgradeToNextMajorDevCiJobTest extends CiJobTestBase {
+
+  protected ObjectProphecy|OutputInterface $symfonyOutput;
 
   public function setUp(): void {
     $this->symfonyOutput = $this->prophesize(OutputInterface::class);

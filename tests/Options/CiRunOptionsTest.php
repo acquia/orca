@@ -11,6 +11,7 @@ use Acquia\Orca\Options\CiRunOptions;
 use Acquia\Orca\Tests\Enum\CiEnumsTestTrait;
 use Acquia\Orca\Tests\TestCase;
 use Prophecy\Argument;
+use Prophecy\Prophecy\ObjectProphecy;
 use Symfony\Component\OptionsResolver\Exception\MissingOptionsException;
 
 /**
@@ -20,6 +21,8 @@ use Symfony\Component\OptionsResolver\Exception\MissingOptionsException;
 class CiRunOptionsTest extends TestCase {
 
   use CiEnumsTestTrait;
+
+  protected PackageManager|ObjectProphecy $packageManager;
 
   protected function setUp(): void {
     $this->packageManager = $this->prophesize(PackageManager::class);
