@@ -12,6 +12,7 @@ use Noodlehaus\Config;
 use Noodlehaus\Exception\FileNotFoundException as NoodlehausFileNotFoundException;
 use Noodlehaus\Exception\ParseException as NoodlehausParseException;
 use Prophecy\Argument;
+use Prophecy\Prophecy\ObjectProphecy;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
@@ -23,6 +24,8 @@ class ConfigLoaderTest extends TestCase {
   private const CONFIG_DIR_PATH = 'var/www/example';
 
   private const CONFIG_FILE_PATH = 'var/www/example/composer.json';
+
+  protected ObjectProphecy|Filesystem $filesystem;
 
   protected function setUp(): void {
     $this->filesystem = $this->prophesize(Filesystem::class);

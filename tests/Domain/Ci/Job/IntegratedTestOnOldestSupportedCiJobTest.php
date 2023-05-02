@@ -12,6 +12,7 @@ use Acquia\Orca\Helper\EnvFacade;
 use Acquia\Orca\Helper\Process\ProcessRunner;
 use Acquia\Orca\Tests\Domain\Ci\Job\_Helper\CiJobTestBase;
 use Prophecy\Argument;
+use Prophecy\Prophecy\ObjectProphecy;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
@@ -20,6 +21,10 @@ use Symfony\Component\Console\Output\OutputInterface;
  * @property \Acquia\Orca\Helper\Process\ProcessRunner|\Prophecy\Prophecy\ObjectProphecy $processRunner
  */
 class IntegratedTestOnOldestSupportedCiJobTest extends CiJobTestBase {
+
+  protected RedundantJobChecker|ObjectProphecy $redundantJobChecker;
+  protected PackageManager|ObjectProphecy $packageManager;
+  protected ProcessRunner|ObjectProphecy $processRunner;
 
   public function setUp(): void {
     $this->envFacade = $this->prophesize(EnvFacade::class);

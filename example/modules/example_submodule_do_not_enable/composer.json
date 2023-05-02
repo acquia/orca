@@ -1,13 +1,13 @@
 {
     "name": "drupal/example_submodule_do_not_enable",
-    "type": "drupal-module",
     "description": "An example submodule that is not enabled by ORCA.",
     "license": "GPL-2.0-or-later",
+    "type": "drupal-module",
     "require": {},
+    "minimum-stability": "dev",
     "extra": {
         "orca": {
             "enable": false
         }
-    },
-    "minimum-stability": "dev"
+    }
 }

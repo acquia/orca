@@ -5,6 +5,7 @@ namespace Acquia\Orca\Tests\Domain\Composer\Version;
 use Acquia\Orca\Domain\Composer\Version\DrupalDotOrgApiClient;
 use Acquia\Orca\Exception\OrcaHttpException;
 use Acquia\Orca\Tests\TestCase;
+use Prophecy\Prophecy\ObjectProphecy;
 use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
@@ -29,6 +30,8 @@ class DrupalDotOrgApiClientTest extends TestCase {
     <terms><term><name>Projects</name><value>Drupal core</value></term><term><name>Maintenance status</name><value>Actively maintained</value></term><term><name>Development status</name><value>Under active development</value></term></terms>
     <releases></releases>
     </project>';
+
+  protected ObjectProphecy|HttpClientInterface $httpClient;
 
   public function setUp(): void {
     $this->httpClient = $this->prophesize(HttpClientInterface::class);

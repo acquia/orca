@@ -16,6 +16,7 @@ use Acquia\Orca\Tests\TestCase;
 use Noodlehaus\Config;
 use Noodlehaus\Parser\Json;
 use Prophecy\Argument;
+use Prophecy\Prophecy\ObjectProphecy;
 
 /**
  * @property \Acquia\Orca\Domain\Composer\Version\DrupalCoreVersionResolver|\Prophecy\Prophecy\ObjectProphecy $drupalCoreVersionFinder
@@ -34,6 +35,12 @@ class ComposerJsonHelperTest extends TestCase {
   private $rawFixtureOptions = [
     'bare' => TRUE,
   ];
+
+  protected DrupalCoreVersionResolver|ObjectProphecy $drupalCoreVersionFinder;
+  protected PackageManager|ObjectProphecy $packageManager;
+  protected ConfigLoader|ObjectProphecy $configLoader;
+  protected FixturePathHandler|ObjectProphecy $fixture;
+  protected FixtureOptionsFactory|ObjectProphecy $fixtureOptionsFactory;
 
   protected function setUp(): void {
     $config = new Config($this->getTestComposerJsonWithFixtureOptionsRaw(), new Json(), TRUE);

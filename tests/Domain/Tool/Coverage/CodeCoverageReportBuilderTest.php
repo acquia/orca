@@ -15,6 +15,7 @@ use Noodlehaus\Config;
 use Noodlehaus\Exception\FileNotFoundException as NoodlehausFileNotFoundException;
 use Noodlehaus\Exception\ParseException;
 use Prophecy\Argument;
+use Prophecy\Prophecy\ObjectProphecy;
 use Symfony\Component\Finder\Exception\DirectoryNotFoundException as FinderDirectoryNotFoundException;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
@@ -37,6 +38,19 @@ use Symfony\Component\Finder\SplFileInfo;
 class CodeCoverageReportBuilderTest extends TestCase {
 
   private const DEFAULT_PATH = 'test/example';
+  protected Finder|ObjectProphecy $configFinder;
+  protected Finder|ObjectProphecy $extensionFinder;
+  protected Finder|ObjectProphecy $phpFinder;
+  protected Finder|ObjectProphecy $testFinder;
+  protected ConfigLoader|ObjectProphecy $configLoader;
+  protected FinderFactory|ObjectProphecy $finderFactory;
+  protected OrcaPathHandler|ObjectProphecy $orca;
+  protected Config|ObjectProphecy $config;
+  protected \ArrayIterator $configIterator;
+  protected \ArrayIterator $extensionIterator;
+  protected \ArrayIterator $phpIterator;
+  protected \ArrayIterator $testIterator;
+
 
   private $phplocData = [
     'directories' => 23,

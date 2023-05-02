@@ -1,6 +1,7 @@
 {
     "name": "acquia/orca",
     "description": "A tool for testing a company's software packages together in the context of a realistic, functioning, best practices Drupal build",
+    "license": "GPL-2.0-or-later",
     "keywords": [
         "ci",
         "cli",
@@ -8,7 +9,6 @@
         "drupal",
         "testing"
     ],
-    "license": "GPL-2.0-or-later",
     "authors": [
         {
             "name": "Acquia Engineering",
@@ -20,46 +20,62 @@
             "role": "Creator & Maintainer"
         }
     ],
+    "support": {
+        "issues": "https://github.com/acquia/orca/issues",
+        "source": "https://github.com/acquia/orca"
+    },
     "require": {
         "php": ">=7.2",
         "ext-dom": "*",
         "ext-json": "*",
         "ext-sqlite3": "*",
-        "acquia/coding-standards": "^1.0.1",
-        "composer/composer": "~2.3.5",
-        "cweagans/composer-patches": "^1.7",
-        "dealerdirect/phpcodesniffer-composer-installer": "^0.7.2",
-        "ergebnis/composer-normalize": "~2.15.0",
-        "hassankhan/config": "^3.0",
-        "mglaman/drupal-check": "^1.3",
-        "myclabs/php-enum": "^1.8",
+        "acquia/coding-standards": "^1.1.0",
+        "composer/composer": "^2.5.5",
+        "cweagans/composer-patches": "^1.7.3",
+        "dealerdirect/phpcodesniffer-composer-installer": "^1.0.0",
+        "ergebnis/composer-normalize": "^2.30.2",
+        "hassankhan/config": "^3.1",
+        "mglaman/drupal-check": "^1.4",
+        "myclabs/php-enum": "^1.8.4",
         "oscarotero/env": "^1.2",
         "php-parallel-lint/php-console-highlighter": "^1.0",
-        "php-parallel-lint/php-parallel-lint": "^1.3",
-        "phploc/phploc": "^7.0",
-        "phpmd/phpmd": "^2.12",
-        "symfony/config": "^5.4",
-        "symfony/console": "^5.4",
-        "symfony/dependency-injection": "^5.4",
-        "symfony/expression-language": "^5.4",
-        "symfony/filesystem": "^5.4",
-        "symfony/finder": "^5.4",
-        "symfony/http-client": "^5.4",
-        "symfony/options-resolver": "^5.4",
-        "symfony/phpunit-bridge": "^6.0",
-        "symfony/process": "^5.4",
-        "symfony/yaml": "^5.4",
-        "weitzman/drupal-test-traits": "^1.3"
+        "php-parallel-lint/php-parallel-lint": "^1.3.2",
+        "phploc/phploc": "^7.0.2",
+        "phpmd/phpmd": "^2.13",
+        "symfony/config": "^5.4.21",
+        "symfony/console": "^5.4.22",
+        "symfony/dependency-injection": "^6.0.20",
+        "symfony/expression-language": "^5.4.21",
+        "symfony/filesystem": "^5.4.21",
+        "symfony/finder": "^5.4.21",
+        "symfony/http-client": "^5.4.22",
+        "symfony/options-resolver": "^5.4.21",
+        "symfony/phpunit-bridge": "^6.2.7",
+        "symfony/process": "^5.4.22",
+        "symfony/yaml": "^5.4.21",
+        "weitzman/drupal-test-traits": "^2.1"
+    },
+    "require-dev": {
+        "brainmaestro/composer-git-hooks": "^2.8.5",
+        "phan/phan": "^5.4.2",
+        "phpspec/prophecy-phpunit": "^2.0.2",
+        "phpstan/phpstan": "^1.10.14",
+        "phpunit/phpunit": "^9.6.7"
     },
     "conflict": {
         "symfony/symfony": "*"
     },
-    "require-dev": {
-        "brainmaestro/composer-git-hooks": "^2.8",
-        "phan/phan": "^5.3",
-        "phpspec/prophecy-phpunit": "^2.0",
-        "phpstan/phpstan": "^1.10",
-        "phpunit/phpunit": "^9.5"
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "autoload": {
+        "psr-4": {
+            "Acquia\\Orca\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Acquia\\Orca\\Tests\\": "tests/"
+        }
     },
     "config": {
         "allow-plugins": {
@@ -74,6 +90,9 @@
         "sort-packages": true
     },
     "extra": {
+        "branch-alias": {
+            "dev-develop": "4.x-dev"
+        },
         "hooks": {
             "post-install-cmd": "vendor/bin/cghooks add --ignore-lock",
             "post-update-cmd": "vendor/bin/cghooks update",
@@ -91,18 +110,6 @@
         },
         "phpcodesniffer-search-depth": 4
     },
-    "autoload": {
-        "psr-4": {
-            "Acquia\\Orca\\": "src/"
-        }
-    },
-    "autoload-dev": {
-        "psr-4": {
-            "Acquia\\Orca\\Tests\\": "tests/"
-        }
-    },
-    "minimum-stability": "dev",
-    "prefer-stable": true,
     "scripts": {
         "post-update-cmd": [
             "@composer normalize"
@@ -130,9 +137,5 @@
         ],
         "test": "phpunit",
         "update-docs": "./bin/orca --format=md > docs/commands.md"
-    },
-    "support": {
-        "issues": "https://github.com/acquia/orca/issues",
-        "source": "https://github.com/acquia/orca"
     }
 }

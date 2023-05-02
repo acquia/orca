@@ -12,6 +12,7 @@ use Acquia\Orca\Tests\TestCase;
 use Composer\Package\PackageInterface;
 use Composer\Package\Version\VersionSelector;
 use Prophecy\Argument;
+use Prophecy\Prophecy\ObjectProphecy;
 
 /**
  * @property \Acquia\Orca\Domain\Composer\Version\DrupalDotOrgApiClient|\Prophecy\Prophecy\ObjectProphecy $drupalDotOrgApiClient
@@ -22,6 +23,11 @@ use Prophecy\Argument;
 class DrupalCoreVersionResolverTest extends TestCase {
 
   use DrupalCoreVersionEnumsTestTrait;
+  protected DrupalDotOrgApiClient|ObjectProphecy $drupalDotOrgApiClient;
+  protected VersionSelectorFactory|ObjectProphecy $selectorFactory;
+  protected PackageInterface|ObjectProphecy $package;
+  protected VersionSelector|ObjectProphecy $selector;
+
 
   private const CURRENT = '9.1.0';
 

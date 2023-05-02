@@ -7,6 +7,7 @@ use Acquia\Orca\Exception\OrcaTaskFailureException;
 use Acquia\Orca\Helper\Process\ProcessRunner;
 use Acquia\Orca\Tests\TestCase;
 use Prophecy\Argument;
+use Prophecy\Prophecy\ObjectProphecy;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process;
 
@@ -17,6 +18,8 @@ use Symfony\Component\Process\Process;
 class PhpLintToolTest extends TestCase {
 
   private const PATH = '/var/www/sut';
+
+  protected ProcessRunner|ObjectProphecy $processRunner;
 
   protected function setUp(): void {
     $this->processRunner = $this->prophesize(ProcessRunner::class);
