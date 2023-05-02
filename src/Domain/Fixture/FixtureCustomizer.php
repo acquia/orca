@@ -138,20 +138,20 @@ class FixtureCustomizer {
     $module_name = explode("/", $module_name)[1];
 
     try {
-      $ckeditor_files = $finder->in($this->fixturePathHandler
+      $files = $finder->in($this->fixturePathHandler
         ->getPath('docroot/modules/contrib/' . $module_name))
         ->contains($search_string);
 
-      if (iterator_count($ckeditor_files) === 0) {
+      if (iterator_count($files) === 0) {
         $this->output->writeln("\nNo customizations required since no files found for removal.\n");
         return;
       }
 
-      foreach ($ckeditor_files as $file) {
+      foreach ($files as $file) {
         $this->output->writeln("Removing $file");
       }
 
-      $this->filesystem->remove($ckeditor_files);
+      $this->filesystem->remove($files);
 
       $this->output->writeln("\nFiles removed successfully.\n\n");
     }
