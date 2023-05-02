@@ -44,7 +44,7 @@
         "phpmd/phpmd": "^2.13",
         "symfony/config": "^5.4.21",
         "symfony/console": "^5.4.22",
-        "symfony/dependency-injection": "^5.4.22",
+        "symfony/dependency-injection": "^6.0.20",
         "symfony/expression-language": "^5.4.21",
         "symfony/filesystem": "^5.4.21",
         "symfony/finder": "^5.4.21",
