@@ -90,6 +90,9 @@
         "sort-packages": true
     },
     "extra": {
+        "branch-alias": {
+            "dev-develop": "4.x-dev"
+        },
         "hooks": {
             "post-install-cmd": "vendor/bin/cghooks add --ignore-lock",
             "post-update-cmd": "vendor/bin/cghooks update",
