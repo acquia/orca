@@ -89,7 +89,10 @@
                 "https://patch-diff.githubusercontent.com/raw/sebastianbergmann/phploc/pull/227.patch"
             ]
         },
-        "phpcodesniffer-search-depth": 4
+        "phpcodesniffer-search-depth": 4,
+        "branch-alias": {
+            "dev-branch": "dev-support/3"
+        }
     },
     "autoload": {
         "psr-4": {
