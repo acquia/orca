@@ -187,6 +187,7 @@ class FixtureCustomizer {
     $change = 'error_reporting(E_ALL & ~E_DEPRECATED)';
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     $str = file_get_contents($path);
 
     $str = str_replace($target, $change, $str);
@@ -194,6 +195,9 @@ class FixtureCustomizer {
     file_put_contents($path, $str);
 =======
     $this->swapStringInFile($target, $change, $path);
+=======
+    $this->replaceStringInFile($target, $change, $path);
+>>>>>>> 41e7b0a (Final Fixes)
 
 >>>>>>> 66cce29 (save tests)
   }
@@ -201,9 +205,10 @@ class FixtureCustomizer {
   /**
    * Modify phpunit.xml.dist to suppress any D9 phpunit deprecation warnings.
    *
-   * @param $options
+   * @param \Acquia\Orca\Options\FixtureOptions $options
+   *   The fixture options.
    */
-  public function modifyPhpunitConfig($options): void {
+  public function modifyPhpunitConfig(FixtureOptions $options): void {
     if (!$options->coreVersionParsedMatches('^9')) {
       return;
     }
@@ -223,11 +228,21 @@ class FixtureCustomizer {
 
     $change = '<ini name="error_reporting" value="24575"/>';
 
-    $this->swapStringInFile($target, $change, $path);
+    $this->replaceStringInFile($target, $change, $path);
 
   }
 
-  public function swapStringInFile($old, $new, $path): void {
+  /**
+   * Replaces one string with another in a file whose path is provided.
+   *
+   * @param string $old
+   *   The string to be replaced.
+   * @param string $new
+   *   The new string.
+   * @param string $path
+   *   The file path.
+   */
+  public function replaceStringInFile(string $old, string $new, string $path): void {
     $str = file_get_contents($path);
 
     $str = str_replace($old, $new, $str);
