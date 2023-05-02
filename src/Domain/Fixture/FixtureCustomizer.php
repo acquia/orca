@@ -164,10 +164,10 @@ class FixtureCustomizer {
   }
 
   /**
-   * Modifies DrupalKernel.php to suppress Drupal 9 deprecation warnings.
+   * Modifies DrupalKernel.php to fix Drupal 9 warnings in PHP 8.2 and above.
    */
   public function modifyDrupalKernel(FixtureOptions $options): void {
-    if (!$options->coreVersionParsedMatches('^9')) {
+    if (version_compare(PHP_VERSION, '8.2') < 0 || !$options->coreVersionParsedMatches('^9')) {
       return;
     }
 
@@ -203,13 +203,13 @@ class FixtureCustomizer {
   }
 
   /**
-   * Modify phpunit.xml.dist to suppress any D9 phpunit deprecation warnings.
+   * Modify phpunit.xml.dist to fix D9 phpunit warnings in PHP 8.2 and above.
    *
    * @param \Acquia\Orca\Options\FixtureOptions $options
    *   The fixture options.
    */
   public function modifyPhpunitConfig(FixtureOptions $options): void {
-    if (!$options->coreVersionParsedMatches('^9')) {
+    if (version_compare(PHP_VERSION, '8.2') < 0 || !$options->coreVersionParsedMatches('^9')) {
       return;
     }
 
@@ -224,6 +224,7 @@ class FixtureCustomizer {
     $path = $this->fixturePathHandler
       ->getPath($phpunit_xml_path);
 
+    // Change error_reporting value to E_ALL & ~E_DEPRECATED.
     $target = '<ini name="error_reporting" value="32767"/>';
 
     $change = '<ini name="error_reporting" value="24575"/>';

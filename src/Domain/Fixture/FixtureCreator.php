@@ -238,12 +238,12 @@ class FixtureCreator {
   }
 
   /**
-   * Replace drupal/core-recommended with drupal/core for Drupal 9 fixtures.
+   * Replace drupal/core-recommended with drupal/core for D9 in PHP 8.2 and up.
    *
    * Please refer to ORCA-516 for motivation and details.
    */
   private function replaceCoreRecommendedWithCore(): void {
-    if (!$this->options->coreVersionParsedMatches('^9')) {
+    if (version_compare(PHP_VERSION, '8.2') < 0 || !$this->options->coreVersionParsedMatches('^9')) {
       return;
     }
     $this->output->section("Replacing core-recommended with core.");
