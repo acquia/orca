@@ -1,13 +1,13 @@
 {
     "name": "drupal/example",
-    "type": "drupal-module",
     "description": "Provides an example module for testing and illustration purposes.",
     "license": "GPL-2.0-or-later",
+    "type": "drupal-module",
     "require": {},
+    "minimum-stability": "dev",
     "extra": {
         "branch-alias": {
             "dev-main": "1.x-dev"
         }
-    },
-    "minimum-stability": "dev"
+    }
 }
