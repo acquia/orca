@@ -30,6 +30,16 @@ ORCA is for anyone who has an interest in one or more Drupal extensions or platf
 
 See [Continuous integration](understanding-orca.md#Continuous-integration) for exact details.
 
+
+**Compatibility Matrix**
+
+| PHP Version | ORCA Version |
+| --- | --- |
+| 7.4 | 3.x |
+| 8.0 | 3.x |
+| 8.1 | 3.x, 4.x|
+| 8.2 and above | 4.x |
+
 ## Documentation
 
 * [Understanding ORCA](understanding-orca.md)
