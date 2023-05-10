@@ -15,19 +15,26 @@ use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
 
 /**
- * @property \Acquia\Orca\Domain\Composer\Version\DrupalDotOrgApiClient|\Prophecy\Prophecy\ObjectProphecy $drupalDotOrgApiClient
- * @property \Acquia\Orca\Domain\Composer\Version\VersionSelectorFactory|\Prophecy\Prophecy\ObjectProphecy $selectorFactory
- * @property \Composer\Package\PackageInterface|\Prophecy\Prophecy\ObjectProphecy $package
- * @property \Composer\Package\Version\VersionSelector|\Prophecy\Prophecy\ObjectProphecy $selector
+ * @property \Acquia\Orca\Domain\Composer\Version\DrupalDotOrgApiClient|\Prophecy\Prophecy\ObjectProphecy
+ *   $drupalDotOrgApiClient
+ * @property \Acquia\Orca\Domain\Composer\Version\VersionSelectorFactory|\Prophecy\Prophecy\ObjectProphecy
+ *   $selectorFactory
+ * @property \Composer\Package\PackageInterface|\Prophecy\Prophecy\ObjectProphecy
+ *   $package
+ * @property \Composer\Package\Version\VersionSelector|\Prophecy\Prophecy\ObjectProphecy
+ *   $selector
  */
 class DrupalCoreVersionResolverTest extends TestCase {
 
   use DrupalCoreVersionEnumsTestTrait;
-  protected DrupalDotOrgApiClient|ObjectProphecy $drupalDotOrgApiClient;
-  protected VersionSelectorFactory|ObjectProphecy $selectorFactory;
-  protected PackageInterface|ObjectProphecy $package;
-  protected VersionSelector|ObjectProphecy $selector;
 
+  protected DrupalDotOrgApiClient|ObjectProphecy $drupalDotOrgApiClient;
+
+  protected VersionSelectorFactory|ObjectProphecy $selectorFactory;
+
+  protected PackageInterface|ObjectProphecy $package;
+
+  protected VersionSelector|ObjectProphecy $selector;
 
   private const CURRENT = '9.1.0';
 
@@ -204,6 +211,17 @@ class DrupalCoreVersionResolverTest extends TestCase {
     $resolver->resolvePredefined(DrupalCoreVersionEnum::PREVIOUS_MINOR());
 
     self::assertSame('10.0.9', $actual);
+  }
+
+  public function testResolvePredefinedPreviousMinorNotFound(): void {
+    $this->expectException(OrcaVersionNotFoundException::class);
+    $this->package
+      ->getPrettyVersion()
+      ->willReturn('10.0.9')
+      ->shouldBeCalled();
+    $resolver = $this->createDrupalCoreVersionResolver();
+
+    $resolver->resolvePredefined(DrupalCoreVersionEnum::PREVIOUS_MINOR());
   }
 
   public function testResolvePredefinedCurrent(): void {
