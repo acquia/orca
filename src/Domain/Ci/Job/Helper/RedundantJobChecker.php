@@ -102,7 +102,6 @@ class RedundantJobChecker {
     ];
     foreach ($ci_jobs as $key => $ci_job) {
       try {
-        /* @phan-suppress-next-line PhanTypeMismatchArgumentNullable */
         $job = $this->drupalCoreVersionResolver->resolvePredefined($ci_job);
       }
       catch (OrcaVersionNotFoundException $e) {
