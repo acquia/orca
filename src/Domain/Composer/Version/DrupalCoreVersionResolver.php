@@ -225,7 +225,12 @@ class DrupalCoreVersionResolver {
     $oldestSupported = $this->findOldestSupported();
     // If oldest supported Drupal Core version is less than current major.
     if ((int) $oldestSupported < (int) $current_major) {
-      $this->latestLts = $oldestSupported;
+      // Find the previous major version from the Oldest Supported version.
+      $oldest_parts = explode('.', $oldestSupported);
+      $prev_major = array_shift($oldest_parts);
+
+      // Get the latest version of previous major.
+      $this->latestLts = $this->resolveArbitrary("^$prev_major", 'stable');
       return $this->latestLts;
     }
 
@@ -247,6 +252,14 @@ class DrupalCoreVersionResolver {
     }
 
     $parts = explode('.', $this->findCurrent());
+
+    // If current minor version has '0' then
+    // previous minor version does not exist.
+    if ($parts[1] === '0') {
+      $message = "previous minor version not available";
+      throw new OrcaVersionNotFoundException($message);
+    }
+
     array_pop($parts);
     $current_minor = implode('.', $parts);
     $this->previousMinor = $this
