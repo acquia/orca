@@ -93,7 +93,6 @@ class CiRunOptions {
   private function isValidJobValue(): \Closure {
     return static function ($value): bool {
       try {
-        /* @phan-suppress-next-line PhanNoopNew */
         new CiJobEnum($value);
       }
       catch (\UnexpectedValueException $e) {
@@ -112,7 +111,6 @@ class CiRunOptions {
   private function isValidPhaseValue(): \Closure {
     return static function ($value): bool {
       try {
-        /* @phan-suppress-next-line PhanNoopNew */
         new CiJobPhaseEnum($value);
       }
       catch (\UnexpectedValueException $e) {

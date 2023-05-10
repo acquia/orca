@@ -28,12 +28,6 @@ class CiRunCommandTest extends CommandTestBase {
 
   use CiEnumsTestTrait;
 
-  protected CiJobFactory|ObjectProphecy $ciJobFactory;
-  protected AbstractCiJob|ObjectProphecy $ciJob;
-  protected CiRunOptionsFactory|ObjectProphecy $ciRunOptionsFactory;
-  protected CiRunOptions|ObjectProphecy $ciRunOptions;
-  protected EventDispatcher|ObjectProphecy $eventDispatcher;
-
   protected function setUp(): void {
     $this->ciRunOptions = $this->prophesize(CiRunOptions::class);
     $this->ciRunOptionsFactory = $this->prophesize(CiRunOptionsFactory::class);

@@ -174,7 +174,6 @@ class DrupalCoreVersionResolver {
    */
   public function resolveArbitrary(string $version, string $preferred_stability = 'stable', bool $dev = TRUE): string {
     $selector = $this->versionSelectorFactory->create(TRUE, $dev);
-    /* @phan-suppress-next-line PhanTypeMismatchArgumentProbablyReal */
     $package = $selector->findBestCandidate('drupal/core', $version, $preferred_stability);
     if ($package instanceof PackageInterface) {
       return $package->getPrettyVersion();

@@ -114,7 +114,6 @@ class CodebaseCreator {
       return;
     }
 
-    /* @phan-suppress-next-line PhanTypeMismatchArgumentNullable */
     $this->composer->createProjectFromPackage($sut);
   }
 

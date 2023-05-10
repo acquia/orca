@@ -49,7 +49,6 @@ class VersionFinder {
       $stability = 'dev';
     }
 
-    /* @phan-suppress-next-line PhanTypeMismatchArgumentProbablyReal */
     $candidate = $version_selector->findBestCandidate($package_name, $constraint, $stability);
 
     if (!$candidate) {
