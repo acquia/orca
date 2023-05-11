@@ -253,10 +253,12 @@ class DrupalCoreVersionResolver {
 
     $parts = explode('.', $this->findCurrent());
 
-    // If current minor version has '0' then
-    // previous minor version does not exist.
+    // The "previous minor" version must be in the same major version. For
+    // example, v10.1.0 has a previous minor version of v10.0.0. v10.0.0 has
+    // no previous minor version. Therefore, if the current minor version is
+    // zero (0), there is no previous minor.
     if ($parts[1] === '0') {
-      $message = "previous minor version not available";
+      $message = "There is no previous minor version available within the current major.";
       throw new OrcaVersionNotFoundException($message);
     }
 
