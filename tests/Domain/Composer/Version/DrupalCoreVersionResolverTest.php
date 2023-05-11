@@ -23,11 +23,14 @@ use Prophecy\Prophecy\ObjectProphecy;
 class DrupalCoreVersionResolverTest extends TestCase {
 
   use DrupalCoreVersionEnumsTestTrait;
-  protected DrupalDotOrgApiClient|ObjectProphecy $drupalDotOrgApiClient;
-  protected VersionSelectorFactory|ObjectProphecy $selectorFactory;
-  protected PackageInterface|ObjectProphecy $package;
-  protected VersionSelector|ObjectProphecy $selector;
 
+  protected DrupalDotOrgApiClient|ObjectProphecy $drupalDotOrgApiClient;
+
+  protected VersionSelectorFactory|ObjectProphecy $selectorFactory;
+
+  protected PackageInterface|ObjectProphecy $package;
+
+  protected VersionSelector|ObjectProphecy $selector;
 
   private const CURRENT = '9.1.0';
 
@@ -164,8 +167,8 @@ class DrupalCoreVersionResolverTest extends TestCase {
   public function testResolvePredefinedLatestLts(): void {
     $this->package
       ->getPrettyVersion()
-      ->willReturn('10.1.0', '9.9.7')
-      ->shouldBeCalledTimes(2);
+      ->willReturn('10.0.9', '9.4.15', '9.5.9')
+      ->shouldBeCalledTimes(3);
     $this->expectGetCurrentToBeCalledOnce();
     $resolver = $this->createDrupalCoreVersionResolver();
 
@@ -173,14 +176,14 @@ class DrupalCoreVersionResolverTest extends TestCase {
     // Call again to test value caching.
     $resolver->resolvePredefined(DrupalCoreVersionEnum::LATEST_LTS());
 
-    self::assertSame('9.9.7', $actual);
+    self::assertSame('9.5.9', $actual);
   }
 
   public function testResolvePredefinedLatestLtsNotFound(): void {
     $this->expectException(OrcaVersionNotFoundException::class);
     $this->package
       ->getPrettyVersion()
-      ->willReturn('9.3.3', '9.2.11')
+      ->willReturn('10.1.0', '10.0.9')
       ->shouldBeCalled();
     $resolver = $this->createDrupalCoreVersionResolver();
 
@@ -190,10 +193,10 @@ class DrupalCoreVersionResolverTest extends TestCase {
   public function testResolvePredefinedPreviousMinor(): void {
     $this->package
       ->getPrettyVersion()
-      ->willReturn('9.1.0', '9.0.0')
+      ->willReturn('10.1.0', '10.0.9')
       ->shouldBeCalledTimes(2);
     $this->selector
-      ->findBestCandidate('drupal/core', '<9.1', 'stable')
+      ->findBestCandidate('drupal/core', '<10.1', 'stable')
       ->willReturn($this->package->reveal())
       ->shouldBeCalledOnce();
     $this->expectGetCurrentToBeCalledOnce();
@@ -203,7 +206,18 @@ class DrupalCoreVersionResolverTest extends TestCase {
     // Call again to test value caching.
     $resolver->resolvePredefined(DrupalCoreVersionEnum::PREVIOUS_MINOR());
 
-    self::assertSame('9.0.0', $actual);
+    self::assertSame('10.0.9', $actual);
+  }
+
+  public function testResolvePredefinedPreviousMinorNotFound(): void {
+    $this->expectException(OrcaVersionNotFoundException::class);
+    $this->package
+      ->getPrettyVersion()
+      ->willReturn('10.0.9')
+      ->shouldBeCalled();
+    $resolver = $this->createDrupalCoreVersionResolver();
+
+    $resolver->resolvePredefined(DrupalCoreVersionEnum::PREVIOUS_MINOR());
   }
 
   public function testResolvePredefinedCurrent(): void {
