@@ -174,7 +174,6 @@ class DrupalCoreVersionResolver {
    */
   public function resolveArbitrary(string $version, string $preferred_stability = 'stable', bool $dev = TRUE): string {
     $selector = $this->versionSelectorFactory->create(TRUE, $dev);
-    /* @phan-suppress-next-line PhanTypeMismatchArgumentProbablyReal */
     $package = $selector->findBestCandidate('drupal/core', $version, $preferred_stability);
     if ($package instanceof PackageInterface) {
       return $package->getPrettyVersion();
@@ -226,7 +225,12 @@ class DrupalCoreVersionResolver {
     $oldestSupported = $this->findOldestSupported();
     // If oldest supported Drupal Core version is less than current major.
     if ((int) $oldestSupported < (int) $current_major) {
-      $this->latestLts = $oldestSupported;
+      // Find the previous major version from the Oldest Supported version.
+      $oldest_parts = explode('.', $oldestSupported);
+      $prev_major = array_shift($oldest_parts);
+
+      // Get the latest version of previous major.
+      $this->latestLts = $this->resolveArbitrary("^$prev_major", 'stable');
       return $this->latestLts;
     }
 
@@ -248,6 +252,16 @@ class DrupalCoreVersionResolver {
     }
 
     $parts = explode('.', $this->findCurrent());
+
+    // The "previous minor" version must be in the same major version. For
+    // example, v10.1.0 has a previous minor version of v10.0.0. v10.0.0 has
+    // no previous minor version. Therefore, if the current minor version is
+    // zero (0), there is no previous minor.
+    if ($parts[1] === '0') {
+      $message = "There is no previous minor version available within the current major.";
+      throw new OrcaVersionNotFoundException($message);
+    }
+
     array_pop($parts);
     $current_minor = implode('.', $parts);
     $this->previousMinor = $this

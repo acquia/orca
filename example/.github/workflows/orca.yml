@@ -53,7 +53,7 @@ jobs:
       # @see https://semver.org/
       # It is also recommended to watch ORCA releases.
       # @see https://help.github.com/en/enterprise/2.20/user/github/receiving-notifications-about-activity-on-github/watching-and-unwatching-releases-for-a-repository
-      ORCA_VERSION: ^3
+      ORCA_VERSION: ${{ matrix.orca-version }}
       # If you want to completely replace the list of packages ORCA installs in
       # fixtures and runs tests on, you can specify your own packages file at
       # runtime by uncommenting the following line. Acceptable values are any
@@ -132,6 +132,7 @@ jobs:
         # @see https://docs.acquia.com/acquia-cloud/arch/tech-platform/
         php-version: [ "8.1" ]
         orca-enable-nightwatch: [ "FALSE" ]
+        orca-version: [ "^3" ]
         # When manually specifying a job to include, empty parameter values (such as for orca-job and php-version) may
         # result in undefined behavior. Make sure to set each parameter explicitly.
         include:
@@ -154,6 +155,10 @@ jobs:
           - orca-job: ISOLATED_TEST_ON_CURRENT
             php-version: "8.1"
             orca-enable-nightwatch: "TRUE"
+
+          - orca-job: ISOLATED_TEST_ON_CURRENT
+            php-version: "8.2"
+            orca-version: "^4"
 
           # ORCA only executes when ORCA_JOB is set. Leave ORCA_JOB unset to execute custom jobs.
           # See ./bin/ci/example.sh for details.
