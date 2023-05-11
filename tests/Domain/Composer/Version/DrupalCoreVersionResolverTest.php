@@ -15,14 +15,10 @@ use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
 
 /**
- * @property \Acquia\Orca\Domain\Composer\Version\DrupalDotOrgApiClient|\Prophecy\Prophecy\ObjectProphecy
- *   $drupalDotOrgApiClient
- * @property \Acquia\Orca\Domain\Composer\Version\VersionSelectorFactory|\Prophecy\Prophecy\ObjectProphecy
- *   $selectorFactory
- * @property \Composer\Package\PackageInterface|\Prophecy\Prophecy\ObjectProphecy
- *   $package
- * @property \Composer\Package\Version\VersionSelector|\Prophecy\Prophecy\ObjectProphecy
- *   $selector
+ * @property \Acquia\Orca\Domain\Composer\Version\DrupalDotOrgApiClient|\Prophecy\Prophecy\ObjectProphecy $drupalDotOrgApiClient
+ * @property \Acquia\Orca\Domain\Composer\Version\VersionSelectorFactory|\Prophecy\Prophecy\ObjectProphecy $selectorFactory
+ * @property \Composer\Package\PackageInterface|\Prophecy\Prophecy\ObjectProphecy $package
+ * @property \Composer\Package\Version\VersionSelector|\Prophecy\Prophecy\ObjectProphecy $selector
  */
 class DrupalCoreVersionResolverTest extends TestCase {
 

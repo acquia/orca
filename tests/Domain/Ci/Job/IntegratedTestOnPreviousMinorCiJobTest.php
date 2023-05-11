@@ -14,8 +14,7 @@ use Prophecy\Prophecy\ObjectProphecy;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * @property \Acquia\Orca\Domain\Ci\Job\Helper\RedundantJobChecker|\Prophecy\Prophecy\ObjectProphecy
- *   $redundantJobChecker
+ * @property \Acquia\Orca\Domain\Ci\Job\Helper\RedundantJobChecker|\Prophecy\Prophecy\ObjectProphecy $redundantJobChecker
  */
 class IntegratedTestOnPreviousMinorCiJobTest extends CiJobTestBase {
 
