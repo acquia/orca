@@ -273,7 +273,10 @@ class FixtureCreator {
 
     $additions = [];
 
-    if ($this->options->isDev()) {
+    if ($this->options->coreVersionParsedMatches('^9')) {
+      $additions[] = 'drush/drush:11.x';
+    }
+    elseif ($this->options->isDev()) {
       // Install the dev version of Drush.
       $additions[] = 'drush/drush:12.x-dev';
     }
