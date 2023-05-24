@@ -108,6 +108,7 @@ jobs:
           - STATIC_CODE_ANALYSIS
           - INTEGRATED_TEST_ON_OLDEST_SUPPORTED
           - INTEGRATED_TEST_ON_PREVIOUS_MINOR
+          - INTEGRATED_TEST_ON_LATEST_LTS
           # - INTEGRATED_UPGRADE_TEST_FROM_PREVIOUS_MINOR
           - INTEGRATED_TEST_ON_CURRENT
           # - INTEGRATED_UPGRADE_TEST_TO_NEXT_MINOR
@@ -132,24 +133,32 @@ jobs:
         # @see https://docs.acquia.com/acquia-cloud/arch/tech-platform/
         php-version: [ "8.1" ]
         orca-enable-nightwatch: [ "FALSE" ]
-        orca-version: [ "^3" ]
+        orca-version: [ "^4" ]
         # When manually specifying a job to include, empty parameter values (such as for orca-job and php-version) may
         # result in undefined behavior. Make sure to set each parameter explicitly.
         include:
-          - orca-job: STATIC_CODE_ANALYSIS
-            php-version: "8.1"
-            orca-enable-nightwatch: "FALSE"
-
           - orca-job: INTEGRATED_TEST_ON_OLDEST_SUPPORTED
             php-version: "7.4"
             orca-enable-nightwatch: "FALSE"
+            orca-version: "^3"
 
           - orca-job: INTEGRATED_TEST_ON_OLDEST_SUPPORTED
             php-version: "8.0"
             orca-enable-nightwatch: "FALSE"
+            orca-version: "^3"
 
           - orca-job: INTEGRATED_TEST_ON_LATEST_LTS
             php-version: "7.4"
+            orca-enable-nightwatch: "FALSE"
+            orca-version: "^3"
+
+          - orca-job: INTEGRATED_TEST_ON_LATEST_LTS
+            php-version: "8.0"
+            orca-enable-nightwatch: "FALSE"
+            orca-version: "^3"
+
+          - orca-job: INTEGRATED_TEST_ON_LATEST_LTS
+            php-version: "8.2"
             orca-enable-nightwatch: "FALSE"
 
           - orca-job: ISOLATED_TEST_ON_CURRENT
@@ -158,7 +167,6 @@ jobs:
 
           - orca-job: ISOLATED_TEST_ON_CURRENT
             php-version: "8.2"
-            orca-version: "^4"
 
           # ORCA only executes when ORCA_JOB is set. Leave ORCA_JOB unset to execute custom jobs.
           # See ./bin/ci/example.sh for details.
