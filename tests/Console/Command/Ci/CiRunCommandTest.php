@@ -17,6 +17,7 @@ use Acquia\Orca\Tests\Enum\CiEnumsTestTrait;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 
 /**
  * @property \Acquia\Orca\Domain\Ci\CiJobFactory|\Prophecy\Prophecy\ObjectProphecy $ciJobFactory
@@ -33,6 +34,7 @@ class CiRunCommandTest extends CommandTestBase {
   protected AbstractCiJob|ObjectProphecy $ciJob;
   protected CiRunOptionsFactory|ObjectProphecy $ciRunOptionsFactory;
   protected CiRunOptions|ObjectProphecy $ciRunOptions;
+  protected EventDispatcher|ObjectProphecy $eventDispatcher;
 
   protected function setUp(): void {
     $this->ciRunOptions = $this->prophesize(CiRunOptions::class);
@@ -41,16 +43,24 @@ class CiRunCommandTest extends CommandTestBase {
       ->create(Argument::any())
       ->willReturn($this->ciRunOptions->reveal());
     $this->ciJob = $this->prophesize(CiTestJob::class);
+    $this->ciJob
+      ->jobName()
+      ->willReturn(new CiJobEnum(CiJobEnum::STATIC_CODE_ANALYSIS));
     $this->ciJobFactory = $this->prophesize(CiJobFactory::class);
     $this->ciJobFactory
       ->create($this->validJob())
       ->willReturn($this->ciJob->reveal());
+    $this->eventDispatcher = $this->prophesize(EventDispatcher::class);
+    $this->eventDispatcher
+      ->dispatch(Argument::cetera())
+      ->willReturn(new \stdClass());
   }
 
   protected function createCommand(): Command {
     $ci_run_options_factory = $this->ciRunOptionsFactory->reveal();
     $ci_job_factory = $this->ciJobFactory->reveal();
-    return new CiRunCommand($ci_job_factory, $ci_run_options_factory);
+    $event_dispatcher = $this->eventDispatcher->reveal();
+    return new CiRunCommand($ci_job_factory, $ci_run_options_factory, $event_dispatcher);
   }
 
   private function validSutName(): string {

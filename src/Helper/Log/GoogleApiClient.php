@@ -94,11 +94,10 @@ class GoogleApiClient {
    */
   public function postData(array $data): void {
 
-    // @todo skip tests that have versions defined but are not running.
+    // Skip tests that have versions defined but are not running.
     // If version is null for ex: STATIC_CODE_ANALYSIS jobs then send data
     // as it is.
     if (is_null($data['version'])) {
-      // @todo specify something appropriate here.
       $data['version'] = 'NA';
     }
     elseif (!$this->version->existsPredefined($data['version'])) {
@@ -114,6 +113,9 @@ class GoogleApiClient {
     $spread_sheet_id = "1CllNKp9W1x0t_B3kKJhsJa5lMAevpxTSgIid4aOz2cE";
     $sheet_id = "Sheet1";
     $access_token = $this->getToken();
+    if (is_null($access_token)) {
+      return;
+    }
     $options = [
       'auth_bearer' => $access_token,
       'headers' => [
@@ -163,10 +165,13 @@ class GoogleApiClient {
 
   /**
    * Gets the access token.
-   *
-   * @throws \Acquia\Orca\Exception\OrcaHttpException
    */
-  private function getToken(): string {
+  public function getToken(): ?string {
+
+    if (is_null($this->googleApiClientId) || is_null($this->googleApiClientSecret) || is_null($this->googleApiRefreshToken)) {
+      $this->output->comment("Operation unsuccessful!! API keys not found... ");
+      return NULL;
+    }
 
     $options = [
       'headers' => [

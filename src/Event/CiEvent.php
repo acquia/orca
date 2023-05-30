@@ -5,7 +5,7 @@ namespace Acquia\Orca\Event;
 use Symfony\Contracts\EventDispatcher\Event;
 
 /**
- * CiFailureEvent is called when an ORCA job fails.
+ * This event is called when an ORCA job completes.
  */
 class CiEvent extends Event {
 
