@@ -5,6 +5,8 @@ namespace Acquia\Orca\Domain\Fixture;
 use Acquia\Orca\Console\Helper\StatusTable;
 use Acquia\Orca\Domain\Composer\ComposerFacade;
 use Acquia\Orca\Domain\Composer\Version\VersionFinder;
+use Acquia\Orca\Domain\Dependency\Dependency;
+use Acquia\Orca\Domain\Dependency\DependencyManager;
 use Acquia\Orca\Domain\Fixture\Helper\ComposerJsonHelper;
 use Acquia\Orca\Domain\Fixture\Helper\DrupalSettingsHelper;
 use Acquia\Orca\Domain\Git\GitFacade;
@@ -137,6 +139,8 @@ class FixtureCreator {
    */
   private $fixtureCustomizer;
 
+  private $dependencyManager;
+
   /**
    * Constructs an instance.
    *
@@ -171,7 +175,7 @@ class FixtureCreator {
    * @param \Acquia\Orca\Domain\Fixture\FixtureCustomizer $fixtureCustomizer
    *   The fixture customizer.
    */
-  public function __construct(CloudHooksInstaller $cloud_hooks_installer, CodebaseCreator $codebase_creator, ComposerFacade $composer, ComposerJsonHelper $composer_json_helper, DrupalSettingsHelper $drupal_settings_helper, FixturePathHandler $fixture_path_handler, FixtureInspector $fixture_inspector, GitFacade $git, SiteInstaller $site_installer, SymfonyStyle $output, ProcessRunner $process_runner, PackageManager $package_manager, SubextensionManager $subextension_manager, VersionFinder $version_finder, FixtureCustomizer $fixtureCustomizer) {
+  public function __construct(CloudHooksInstaller $cloud_hooks_installer, CodebaseCreator $codebase_creator, ComposerFacade $composer, ComposerJsonHelper $composer_json_helper, DependencyManager $dependency_manager, DrupalSettingsHelper $drupal_settings_helper, FixturePathHandler $fixture_path_handler, FixtureInspector $fixture_inspector, GitFacade $git, SiteInstaller $site_installer, SymfonyStyle $output, ProcessRunner $process_runner, PackageManager $package_manager, SubextensionManager $subextension_manager, VersionFinder $version_finder, FixtureCustomizer $fixtureCustomizer) {
     $this->cloudHooksInstaller = $cloud_hooks_installer;
     $this->codebaseCreator = $codebase_creator;
     $this->composer = $composer;
@@ -183,6 +187,7 @@ class FixtureCreator {
     $this->output = $output;
     $this->processRunner = $process_runner;
     $this->packageManager = $package_manager;
+    $this->dependencyManager = $dependency_manager;
     $this->siteInstaller = $site_installer;
     $this->subextensionManager = $subextension_manager;
     $this->versionFinder = $version_finder;
@@ -271,18 +276,7 @@ class FixtureCreator {
       $this->composer->removePackages($packages_to_remove);
     }
 
-    $additions = [];
-
-    if ($this->options->coreVersionParsedMatches('^9')) {
-      $additions[] = 'drush/drush:11.x';
-    }
-    elseif ($this->options->isDev()) {
-      // Install the dev version of Drush.
-      $additions[] = 'drush/drush:12.x-dev';
-    }
-    else {
-      $additions[] = 'drush/drush';
-    }
+    $additions = $this->addDependencies();
 
     // Install a specific version of Drupal core.
     if ($this->options->getCore()) {
@@ -291,17 +285,10 @@ class FixtureCreator {
 
     $additions[] = "drupal/core-dev:{$this->options->getCore()}";
 
-    if ($this->shouldRequireProphecyPhpunit()) {
-      $additions[] = 'phpspec/prophecy-phpunit:^2';
-    }
 
-    if ($this->shouldDowngradePhpunit()) {
-      $additions[] = 'phpunit/phpunit:9.4.3';
-    }
-
-    // Acquia CMS uses drupal-test-traits as a dev dependency.
-    // @todo remove this via ORCA-298
-    $additions[] = 'weitzman/drupal-test-traits';
+//    // Acquia CMS uses drupal-test-traits as a dev dependency.
+//    // @todo remove this via ORCA-298
+//    $additions[] = 'weitzman/drupal-test-traits';
 
     // Require additional packages.
     $prefer_source = $this->options->preferSource();
@@ -321,36 +308,17 @@ class FixtureCreator {
   }
 
   /**
-   * Determines whether or not to require phpspec/prophecy-phpunit.
-   *
-   * @see https://www.drupal.org/node/3176567
-   *
-   * @return bool
-   *   Returns TRUE if it should be required, or FALSE if not.
+   * @throws \Acquia\Orca\Exception\OrcaException
    */
-  private function shouldRequireProphecyPhpunit(): bool {
-    $parser = new VersionParser();
-    $core = $this->options->getCoreResolved();
-
-    $required = $parser->parseConstraints('^9.1.0');
-    $actual = $parser->parseConstraints($core);
-
-    return $required->matches($actual);
-  }
-
-  /**
-   * Determines whether or not to downgrade PHPUnit.
-   *
-   * Workaround for "Call to undefined method ::getAnnotations()" error."
-   *
-   * @see https://www.drupal.org/project/drupal/issues/3186443
-   *
-   * @return bool
-   *   Returns TRUE if it should be downgraded, or FALSE if not.
-   */
-  private function shouldDowngradePhpunit(): bool {
-    $version = $this->options->getCoreResolved();
-    return Comparator::equalTo($version, '9.1.0.0');
+  private function addDependencies(): array{
+    $dependencies = $this->dependencyManager->getAll();
+    //$dependencies = array_keys($dependencies);
+    $dependency_list= [];
+    foreach($dependencies as $dependency){
+      $version = $this->findLatestVersion($dependency);
+      $dependency_list[] = "{$dependency->getPackageName()}:{$version}";
+    }
+    return $dependency_list;
   }
 
   /**
@@ -576,7 +544,7 @@ class FixtureCreator {
    * @throws \Acquia\Orca\Exception\OrcaException
    *   In case no version can be found.
    */
-  private function findLatestVersion(Package $package): string {
+  private function findLatestVersion(Package|Dependency $package): string {
     $constraint = $this->getTargetVersion($package);
     if ($constraint === '*') {
       $constraint = NULL;
@@ -594,7 +562,7 @@ class FixtureCreator {
    * @return string|null
    *   The target version if available or NULL if not.
    */
-  private function getTargetVersion(Package $package): ?string {
+  private function getTargetVersion(Package|Dependency $package): ?string {
     return ($this->options->isDev())
       ? $package->getVersionDev($this->options->getCore())
       : $package->getVersionRecommended($this->options->getCore());
