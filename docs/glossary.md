@@ -2,7 +2,6 @@
 
 * [Acquia CMS](#acquia-cms)
 * [Bare fixture](#bare-fixture)
-* [BLT](#blt)
 * [Fixture](#test-fixture)
 * [Ignored tests](#ignored-tests)
 * [Integrated test](#integrated-test)
@@ -32,10 +31,6 @@
 ## Bare fixture
 
 A [test fixture](#test-fixture) that neither includes nor installs any [SUT](#sut) or other company packages.
-
-## BLT
-
-Build and Launch Tool: Acquia's toolset for automating Drupal 9 development, testing, and deployment. [[Website]](https://github.com/acquia/blt)
 
 ## Ignored tests
 
