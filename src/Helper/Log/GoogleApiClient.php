@@ -150,7 +150,7 @@ class GoogleApiClient {
         );
 
       if ($response->getStatusCode() === 200) {
-        $this->output->comment("Data successfully posted in google sheet : " .
+        $this->output->comment("Data successfully posted to Google sheet : " .
           implode(',', $response->toArray()['updates']['updatedData']['values'][0]));
       }
       else {
