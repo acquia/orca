@@ -108,7 +108,7 @@ abstract class AbstractCiJob {
   /**
    * Determines whether or not to exit the job early.
    */
-  protected function exitEarly(): bool {
+  public function exitEarly(): bool {
     return FALSE;
   }
 

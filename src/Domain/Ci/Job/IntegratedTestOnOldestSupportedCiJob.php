@@ -73,7 +73,7 @@ class IntegratedTestOnOldestSupportedCiJob extends AbstractCiJob {
    *
    * @throws \Acquia\Orca\Exception\OrcaVersionNotFoundException
    */
-  protected function exitEarly(): bool {
+  public function exitEarly(): bool {
     return $this->isRedundant($this->redundantJobChecker, $this->output);
   }
 

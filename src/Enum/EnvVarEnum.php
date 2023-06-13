@@ -46,6 +46,12 @@ class EnvVarEnum extends Enum {
 
   public const ORCA_FIXTURE_PROFILE = 'ORCA_FIXTURE_PROFILE';
 
+  public const ORCA_GOOGLE_API_CLIENT_ID = 'ORCA_GOOGLE_API_CLIENT_ID';
+
+  public const ORCA_GOOGLE_API_CLIENT_SECRET = 'ORCA_GOOGLE_API_CLIENT_SECRET';
+
+  public const ORCA_GOOGLE_API_REFRESH_TOKEN = 'ORCA_GOOGLE_API_REFRESH_TOKEN';
+
   public const ORCA_JOB = 'ORCA_JOB';
 
   public const ORCA_PACKAGES_CONFIG = 'ORCA_PACKAGES_CONFIG';
@@ -101,6 +107,9 @@ class EnvVarEnum extends Enum {
       self::ORCA_ENABLE_NIGHTWATCH => 'Whether or not to run Nightwatch.js tests',
       self::ORCA_FIXTURE_DIR => 'The directory ORCA uses for test fixtures',
       self::ORCA_FIXTURE_PROFILE => 'The Drupal installation profile ORCA installs in fixtures',
+      self::ORCA_GOOGLE_API_CLIENT_ID => 'The Google API Client ID',
+      self::ORCA_GOOGLE_API_CLIENT_SECRET => 'The Google API Client Secret',
+      self::ORCA_GOOGLE_API_REFRESH_TOKEN => 'The Google API Refresh Token',
       self::ORCA_JOB => 'The name of the ORCA CI job',
       self::ORCA_PACKAGES_CONFIG => 'The path to a config file to completely replace the list of packages ORCA installs in fixtures and runs tests on',
       self::ORCA_PACKAGES_CONFIG_ALTER => 'The path to a config file to alter the main list of packages ORCA installs in fixtures and runs tests on',
