@@ -40,13 +40,6 @@ class CiRunCommand extends Command {
   private $ciRunOptionsFactory;
 
   /**
-   * The Google API client.
-   *
-   * @var \Acquia\Orca\Helper\Log\GoogleApiClient
-   */
-  private $googleApiClient;
-
-  /**
    * The event dispatcher service.
    *
    * @var \Symfony\Component\EventDispatcher\EventDispatcher
