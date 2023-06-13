@@ -69,7 +69,6 @@ class GoogleApiClientTest extends TestCase {
   }
 
   /**
-   * @throws \Acquia\Orca\Exception\OrcaHttpException
    * @throws \Acquia\Orca\Exception\OrcaVersionNotFoundException
    */
   public function testPostDataWithNullVersion(): void {
@@ -90,7 +89,6 @@ class GoogleApiClientTest extends TestCase {
   }
 
   /**
-   * @throws \Acquia\Orca\Exception\OrcaHttpException
    * @throws \Acquia\Orca\Exception\OrcaVersionNotFoundException
    */
   public function testPostDataWithLatestDrupalVersion(): void {

@@ -57,6 +57,16 @@ class GoogleApiClient {
   private $googleApiRefreshToken;
 
   /**
+   * Spreadsheet id of the Google Sheet.
+   */
+  private CONST SPREAD_SHEET_ID = "1CllNKp9W1x0t_B3kKJhsJa5lMAevpxTSgIid4aOz2cE";
+
+  /**
+   * The sheet id of the spreadsheet.
+   */
+  private CONST SHEET_ID = "Sheet1";
+
+  /**
    * Constructs an instance.
    *
    * @param \Symfony\Contracts\HttpClient\HttpClientInterface $http_client
@@ -75,9 +85,9 @@ class GoogleApiClient {
   public function __construct(HttpClientInterface $http_client,
   SymfonyStyle $output,
     DrupalCoreVersionResolver $coreVersionResolver,
-  $google_api_client_id,
-  $google_api_client_secret,
-    $google_refresh_token) {
+    string|null $google_api_client_id,
+    string|null $google_api_client_secret,
+    string|null  $google_refresh_token) {
     $this->httpClient = $http_client;
     $this->output = $output;
     $this->version = $coreVersionResolver;
@@ -89,12 +99,11 @@ class GoogleApiClient {
   /**
    * Gets the oldest supported branch of Drupal core.
    *
-   * @throws \Acquia\Orca\Exception\OrcaHttpException
    * @throws \Acquia\Orca\Exception\OrcaVersionNotFoundException
    */
   public function postData(array $data): void {
 
-    // Skip tests that have versions defined but are not running.
+    // Skip tests that have versions defined but are redundant and exits early.
     // If version is null--e.g., for STATIC_CODE_ANALYSIS jobs--then send data
     // as it is.
     if (is_null($data['version'])) {
@@ -110,8 +119,6 @@ class GoogleApiClient {
 
     $this->output->section("Sending data to Google sheet");
 
-    $spread_sheet_id = "1CllNKp9W1x0t_B3kKJhsJa5lMAevpxTSgIid4aOz2cE";
-    $sheet_id = "Sheet1";
     $access_token = $this->getToken();
     if (is_null($access_token)) {
       return;
@@ -145,7 +152,7 @@ class GoogleApiClient {
       $response = $this->httpClient
         ->request(
           'POST',
-          'https://sheets.googleapis.com/v4/spreadsheets/' . $spread_sheet_id . '/values/' . $sheet_id . ':append',
+          'https://sheets.googleapis.com/v4/spreadsheets/' . self::SPREAD_SHEET_ID . '/values/' . self::SHEET_ID . ':append',
           $options
         );
 
