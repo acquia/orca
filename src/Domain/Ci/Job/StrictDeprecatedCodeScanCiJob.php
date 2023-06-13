@@ -73,7 +73,7 @@ class StrictDeprecatedCodeScanCiJob extends AbstractCiJob {
   /**
    * {@inheritdoc}
    */
-  protected function exitEarly(): bool {
+  public function exitEarly(): bool {
     try {
       $version = DrupalCoreVersionEnum::NEXT_MAJOR_LATEST_MINOR_BETA_OR_LATER();
       $this->drupalCoreVersionResolver->resolvePredefined($version);

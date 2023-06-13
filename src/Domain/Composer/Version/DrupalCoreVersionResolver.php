@@ -426,6 +426,9 @@ class DrupalCoreVersionResolver {
     $is_alpha = strpos($stability, "alpha");
     $is_dev = strpos($stability, "dev");
     if ($is_alpha || $is_dev) {
+      // Assigning to null as beta or later version does not exist.
+      $this->nextMajorLatestMinorBetaOrLater = NULL;
+
       $message = "No next major, latest minor beta-or-later Drupal core version exists.";
       throw new OrcaVersionNotFoundException($message);
     }
