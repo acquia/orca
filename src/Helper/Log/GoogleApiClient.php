@@ -59,12 +59,12 @@ class GoogleApiClient {
   /**
    * Spreadsheet id of the Google Sheet.
    */
-  private CONST SPREAD_SHEET_ID = "1CllNKp9W1x0t_B3kKJhsJa5lMAevpxTSgIid4aOz2cE";
+  private const SPREAD_SHEET_ID = "1CllNKp9W1x0t_B3kKJhsJa5lMAevpxTSgIid4aOz2cE";
 
   /**
    * The sheet id of the spreadsheet.
    */
-  private CONST SHEET_ID = "Sheet1";
+  private const SHEET_ID = "Sheet1";
 
   /**
    * Constructs an instance.
@@ -87,7 +87,7 @@ class GoogleApiClient {
     DrupalCoreVersionResolver $coreVersionResolver,
     string|null $google_api_client_id,
     string|null $google_api_client_secret,
-    string|null  $google_refresh_token) {
+    string|null $google_refresh_token) {
     $this->httpClient = $http_client;
     $this->output = $output;
     $this->version = $coreVersionResolver;

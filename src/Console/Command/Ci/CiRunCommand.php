@@ -145,9 +145,15 @@ class CiRunCommand extends Command {
     }
 
     if ($options->getPhase()->getValue() === 'script') {
-      $data['status'] = 'PASS';
-      $event = new CiEvent($data);
-      $this->eventDispatcher->dispatch($event, CiEvent::NAME);
+      if ($job->exitEarly() === TRUE) {
+        print("No data to Google sheet as test is skipped.");
+      }
+      else {
+        $data['status'] = 'PASS';
+        $event = new CiEvent($data);
+        $this->eventDispatcher->dispatch($event, CiEvent::NAME);
+      }
+
     }
 
     return StatusCodeEnum::OK;

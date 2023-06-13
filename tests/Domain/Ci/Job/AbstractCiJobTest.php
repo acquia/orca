@@ -69,7 +69,7 @@ class AbstractCiJobTest extends CiJobTestBase {
       ->shouldNotBeCalled();
     $job = new class($spy->reveal()) extends CiTestJob {
 
-      protected function exitEarly(): bool {
+      public function exitEarly(): bool {
         return TRUE;
       }
 

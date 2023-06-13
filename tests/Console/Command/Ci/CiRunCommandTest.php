@@ -104,6 +104,9 @@ class CiRunCommandTest extends CommandTestBase {
     $this->ciJob
       ->script($this->ciRunOptions->reveal())
       ->shouldBeCalledOnce();
+    $this->ciJob
+      ->exitEarly()
+      ->shouldBeCalled();
 
     $this->executeCommand([
       'job' => $this->validJobName(),

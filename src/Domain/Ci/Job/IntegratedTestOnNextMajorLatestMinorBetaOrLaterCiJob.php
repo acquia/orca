@@ -71,7 +71,7 @@ class IntegratedTestOnNextMajorLatestMinorBetaOrLaterCiJob extends AbstractCiJob
   /**
    * {@inheritdoc}
    */
-  protected function exitEarly(): bool {
+  public function exitEarly(): bool {
     return !$this->matchingCoreVersionExists($this->drupalCoreVersionResolver, $this->output);
   }
 
