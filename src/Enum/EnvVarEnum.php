@@ -108,7 +108,7 @@ class EnvVarEnum extends Enum {
       self::ORCA_FIXTURE_DIR => 'The directory ORCA uses for test fixtures',
       self::ORCA_FIXTURE_PROFILE => 'The Drupal installation profile ORCA installs in fixtures',
       self::ORCA_GOOGLE_API_CLIENT_ID => 'The Google API Client ID',
-      self::ORCA_GOOGLE_API_CLIENT_SECRET => 'The Google API CLIENT SECRET',
+      self::ORCA_GOOGLE_API_CLIENT_SECRET => 'The Google API Client Secret',
       self::ORCA_GOOGLE_API_REFRESH_TOKEN => 'The Google API Refresh Token',
       self::ORCA_JOB => 'The name of the ORCA CI job',
       self::ORCA_PACKAGES_CONFIG => 'The path to a config file to completely replace the list of packages ORCA installs in fixtures and runs tests on',
