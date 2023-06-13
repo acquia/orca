@@ -95,7 +95,7 @@ class GoogleApiClient {
   public function postData(array $data): void {
 
     // Skip tests that have versions defined but are not running.
-    // If version is null for ex: STATIC_CODE_ANALYSIS jobs then send data
+    // If version is null--e.g., for STATIC_CODE_ANALYSIS jobs--then send data
     // as it is.
     if (is_null($data['version'])) {
       $data['version'] = 'NA';
