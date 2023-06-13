@@ -101,7 +101,7 @@ class GoogleApiClient {
       $data['version'] = 'NA';
     }
     elseif (!$this->version->existsPredefined($data['version'])) {
-      $this->output->comment("No data to Google sheet as test is skipped.");
+      $this->output->comment("Not sending any data to Google sheet as test is skipped.");
       return;
     }
     else {
