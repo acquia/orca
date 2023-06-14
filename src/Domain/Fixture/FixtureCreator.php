@@ -5,8 +5,6 @@ namespace Acquia\Orca\Domain\Fixture;
 use Acquia\Orca\Console\Helper\StatusTable;
 use Acquia\Orca\Domain\Composer\ComposerFacade;
 use Acquia\Orca\Domain\Composer\Version\VersionFinder;
-use Acquia\Orca\Domain\Dependency\Dependency;
-use Acquia\Orca\Domain\Dependency\DependencyManager;
 use Acquia\Orca\Domain\Fixture\Helper\ComposerJsonHelper;
 use Acquia\Orca\Domain\Fixture\Helper\DrupalSettingsHelper;
 use Acquia\Orca\Domain\Git\GitFacade;
@@ -16,8 +14,6 @@ use Acquia\Orca\Exception\OrcaException;
 use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
 use Acquia\Orca\Helper\Process\ProcessRunner;
 use Acquia\Orca\Options\FixtureOptions;
-use Composer\Semver\Comparator;
-use Composer\Semver\VersionParser;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
@@ -139,8 +135,6 @@ class FixtureCreator {
    */
   private $fixtureCustomizer;
 
-  private $dependencyManager;
-
   /**
    * Constructs an instance.
    *
@@ -175,7 +169,7 @@ class FixtureCreator {
    * @param \Acquia\Orca\Domain\Fixture\FixtureCustomizer $fixtureCustomizer
    *   The fixture customizer.
    */
-  public function __construct(CloudHooksInstaller $cloud_hooks_installer, CodebaseCreator $codebase_creator, ComposerFacade $composer, ComposerJsonHelper $composer_json_helper, DependencyManager $dependency_manager, DrupalSettingsHelper $drupal_settings_helper, FixturePathHandler $fixture_path_handler, FixtureInspector $fixture_inspector, GitFacade $git, SiteInstaller $site_installer, SymfonyStyle $output, ProcessRunner $process_runner, PackageManager $package_manager, SubextensionManager $subextension_manager, VersionFinder $version_finder, FixtureCustomizer $fixtureCustomizer) {
+  public function __construct(CloudHooksInstaller $cloud_hooks_installer, CodebaseCreator $codebase_creator, ComposerFacade $composer, ComposerJsonHelper $composer_json_helper, DrupalSettingsHelper $drupal_settings_helper, FixturePathHandler $fixture_path_handler, FixtureInspector $fixture_inspector, GitFacade $git, SiteInstaller $site_installer, SymfonyStyle $output, ProcessRunner $process_runner, PackageManager $package_manager, SubextensionManager $subextension_manager, VersionFinder $version_finder, FixtureCustomizer $fixtureCustomizer) {
     $this->cloudHooksInstaller = $cloud_hooks_installer;
     $this->codebaseCreator = $codebase_creator;
     $this->composer = $composer;
@@ -187,7 +181,6 @@ class FixtureCreator {
     $this->output = $output;
     $this->processRunner = $process_runner;
     $this->packageManager = $package_manager;
-    $this->dependencyManager = $dependency_manager;
     $this->siteInstaller = $site_installer;
     $this->subextensionManager = $subextension_manager;
     $this->versionFinder = $version_finder;
@@ -285,11 +278,6 @@ class FixtureCreator {
 
     $additions[] = "drupal/core-dev:{$this->options->getCore()}";
 
-
-//    // Acquia CMS uses drupal-test-traits as a dev dependency.
-//    // @todo remove this via ORCA-298
-//    $additions[] = 'weitzman/drupal-test-traits';
-
     // Require additional packages.
     $prefer_source = $this->options->preferSource();
     $no_update = !$this->options->isBare();
@@ -308,13 +296,14 @@ class FixtureCreator {
   }
 
   /**
+   * Add the dependencies required for this fixture.
+   *
    * @throws \Acquia\Orca\Exception\OrcaException
    */
-  private function addDependencies(): array{
-    $dependencies = $this->dependencyManager->getAll();
-    //$dependencies = array_keys($dependencies);
-    $dependency_list= [];
-    foreach($dependencies as $dependency){
+  private function addDependencies(): array {
+    $dependencies = $this->packageManager->getDependencies();
+    $dependency_list = [];
+    foreach ($dependencies as $dependency) {
       $version = $this->findLatestVersion($dependency);
       $dependency_list[] = "{$dependency->getPackageName()}:{$version}";
     }
@@ -544,7 +533,7 @@ class FixtureCreator {
    * @throws \Acquia\Orca\Exception\OrcaException
    *   In case no version can be found.
    */
-  private function findLatestVersion(Package|Dependency $package): string {
+  private function findLatestVersion(Package $package): string {
     $constraint = $this->getTargetVersion($package);
     if ($constraint === '*') {
       $constraint = NULL;
@@ -562,7 +551,7 @@ class FixtureCreator {
    * @return string|null
    *   The target version if available or NULL if not.
    */
-  private function getTargetVersion(Package|Dependency $package): ?string {
+  private function getTargetVersion(Package $package): ?string {
     return ($this->options->isDev())
       ? $package->getVersionDev($this->options->getCore())
       : $package->getVersionRecommended($this->options->getCore());

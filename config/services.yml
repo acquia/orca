@@ -13,9 +13,6 @@ parameters:
   env(ORCA_PACKAGES_CONFIG_ALTER): ~
   env(ORCA_PHPCS_STANDARD): "AcquiaDrupalTransitional"
   env(ORCA_TELEMETRY_ENABLE): "false"
-  env(ORCA_DEPENDENCIES_CONFIG): config/dependencies.yml
-  ORCA_DEPENDENCIES_CONFIG: "%env(ORCA_DEPENDENCIES_CONFIG)%"
-  env(ORCA_DEPENDENCIES_CONFIG_ALTER): ~
 
 services:
 
@@ -32,8 +29,6 @@ services:
       $junit_log: "%env(ORCA_JUNIT_LOG)%"
       $packages_config: "@=container.getParameter('ORCA_PACKAGES_CONFIG') === '' ? 'config/packages.yml' : parameter('ORCA_PACKAGES_CONFIG')"
       $packages_config_alter: "%env(ORCA_PACKAGES_CONFIG_ALTER)%"
-      $dependencies_config: "@=container.getParameter('ORCA_DEPENDENCIES_CONFIG') === '' ? 'config/dependencies.yml' : parameter('ORCA_DEPENDENCIES_CONFIG')"
-      $dependencies_config_alter: "%env(ORCA_DEPENDENCIES_CONFIG_ALTER)%"
       $telemetry_is_enabled: "%env(bool:ORCA_TELEMETRY_ENABLE)%"
     public: true
 
@@ -42,7 +37,6 @@ services:
     resource: ../src
     exclude:
       - ../src/Domain/Package/Package.php
-      - ../src/Domain/Dependency/Dependency.php
       - ../src/Enum
       - ../src/Options/FixtureOptions.php
       - ../src/Options/CiRunOptions.php
