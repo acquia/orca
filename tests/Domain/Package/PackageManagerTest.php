@@ -133,7 +133,7 @@ class PackageManagerTest extends TestCase {
 
   public function testConstructionAndGetters(): void {
     $manager = $this->createPackageManager();
-    $all_packages = $manager->getAll();
+    $all_packages = $manager->getCompanyPackages();
     $package = $manager->get('drupal/module2');
 
     // Normalize expected package list for clearer comparison.

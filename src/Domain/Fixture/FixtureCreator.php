@@ -291,7 +291,7 @@ class FixtureCreator {
    *   The list of unwanted packages.
    */
   private function getUnwantedPackageList(): array {
-    $packages = $this->packageManager->getAll();
+    $packages = $this->packageManager->getCompanyPackages();
     return array_keys($packages);
   }
 
@@ -315,7 +315,7 @@ class FixtureCreator {
    */
   private function addAllowedComposerPlugins(): void {
     $allowedComposerPlugins = [];
-    foreach ($this->packageManager->getAll() as $package) {
+    foreach ($this->packageManager->getCompanyPackages() as $package) {
       if ($package->getType() === "composer-plugin") {
         $allowedComposerPlugins[] = $package->getPackageName();
       }
@@ -389,7 +389,7 @@ class FixtureCreator {
    */
   private function getLocalPackages(): array {
     $packages = [];
-    foreach ($this->packageManager->getAll() as $package_name => $package) {
+    foreach ($this->packageManager->getCompanyPackages() as $package_name => $package) {
       $is_sut = $package === $this->options->getSut();
       if (!$is_sut && !$this->options->symlinkAll()) {
         continue;
@@ -438,7 +438,7 @@ class FixtureCreator {
    * Configures Composer to install company packages from source.
    */
   private function configureComposerForTopLevelCompanyPackages(): void {
-    $packages = $this->packageManager->getAll();
+    $packages = $this->packageManager->getCompanyPackages();
     $this->composerJsonHelper->setPreferInstallFromSource(array_keys($packages));
   }
 
@@ -518,7 +518,7 @@ class FixtureCreator {
     if ($this->options->symlinkAll()) {
       return $this->getLocalPackages();
     }
-    return $this->packageManager->getAll();
+    return $this->packageManager->getCompanyPackages();
   }
 
   /**
@@ -795,7 +795,7 @@ class FixtureCreator {
    */
   private function composerRequireSubextensions(): void {
     $subextensions = [];
-    foreach ($this->packageManager->getAll() as $package) {
+    foreach ($this->packageManager->getCompanyPackages() as $package) {
       // The Drupal.org Composer Facade only supports subextensions in modules
       // and themes.
       if (!in_array($package->getType(), ['drupal-module', 'drupal-theme'])) {
