@@ -331,7 +331,7 @@ class FixtureInspector {
    */
   private function getInstalledPackages(): array {
     $packages = [new TableSeparator()];
-    foreach ($this->packageManager->getCompanyPackages() as $package_name => $package) {
+    foreach ($this->packageManager->getAll() as $package_name => $package) {
       $label = $package_name;
       if ($package_name === $this->getSutName()) {
         $label = "{$package_name} *";

@@ -151,7 +151,7 @@ class PackageManagerTest extends TestCase {
   public function testConstructionAndGetters(): void {
     $manager = $this->createPackageManager();
     $all_packages = $manager->getCompanyPackages();
-    $all_dependencies = $manager->getDependencies();
+    $all_dependencies = $manager->getThirdPartyDependencies();
     $package = $manager->get('drupal/module2');
 
     // Normalize expected package list for clearer comparison.
@@ -170,6 +170,8 @@ class PackageManagerTest extends TestCase {
     self::assertInstanceOf(Package::class, reset($all_packages), 'Got packages as Package objects.');
     self::assertEquals('drupal/module2', $package->getPackageName(), 'Got package by name.');
     self::assertEquals(self::EXPECTED_DEPENDENCY_LIST, $actual_dependency_list, 'Set/got all dependencies.');
+    self::assertEquals(TRUE, $package->isCompanyPackage(), 'Got a company package.');
+    self::assertEquals(FALSE, $manager->get('drupal/dependency1')->isCompanyPackage(), 'Got a third party dependency.');
   }
 
   public function testRequestingNonExistentPackage(): void {

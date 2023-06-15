@@ -152,7 +152,7 @@ class PackageManager {
    * @return \Acquia\Orca\Domain\Package\Package[]
    *   An array of packages keyed by package name.
    */
-  public function getDependencies(): array {
+  public function getThirdPartyDependencies(): array {
     $dependencies = [];
     foreach ($this->packages as $package) {
       if (!$package->isCompanyPackage()) {

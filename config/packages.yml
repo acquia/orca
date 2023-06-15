@@ -36,7 +36,7 @@
 #   core version constraint is satisfied. Mappings are processed in order, and
 #   the first match wins.
 #   @see \Acquia\Orca\Tests\Fixture\PackageTest::testConditionalVersions
-# - "enable": Whether to enable the extension in Drupal. Defaults to true for
+# - "enable": (optional) Whether to enable the extension in Drupal. Defaults to true for
 #   modules but can be overridden. Anything else is always false and cannot be
 #   overridden.
 # - "is_company_package": (optional) Whether package is a company package
@@ -149,7 +149,14 @@ drush/drush:
       version: 12.x
       version_dev: 12.x-dev
 
+# Acquia CMS uses drupal-test-traits as a dev dependency.
+# @todo remove this via ORCA-298
 weitzman/drupal-test-traits:
   is_company_package: false
   version: '*'
   version_dev: '*'
+
+phpspec/prophecy-phpunit:
+  is_company_package: false
+  version: 2.x
+  version_dev: 2.x

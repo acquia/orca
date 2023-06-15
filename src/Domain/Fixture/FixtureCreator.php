@@ -256,6 +256,8 @@ class FixtureCreator {
 
   /**
    * Fixes the default dependencies.
+   *
+   * @throws \Acquia\Orca\Exception\OrcaException
    */
   private function fixDefaultDependencies(): void {
     $this->output->section('Fixing default dependencies');
@@ -269,7 +271,7 @@ class FixtureCreator {
       $this->composer->removePackages($packages_to_remove);
     }
 
-    $additions = $this->addDependencies();
+    $additions = $this->getDependencies();
 
     // Install a specific version of Drupal core.
     if ($this->options->getCore()) {
@@ -300,8 +302,8 @@ class FixtureCreator {
    *
    * @throws \Acquia\Orca\Exception\OrcaException
    */
-  private function addDependencies(): array {
-    $dependencies = $this->packageManager->getDependencies();
+  private function getDependencies(): array {
+    $dependencies = $this->packageManager->getThirdPartyDependencies();
     $dependency_list = [];
     foreach ($dependencies as $dependency) {
       $version = $this->findLatestVersion($dependency);
