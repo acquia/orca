@@ -51,29 +51,7 @@ class Package {
    * Constructs an instance.
    *
    * @param array $data
-   *   An array of package data that may contain the following key-value pairs:
-   *   - "type": (optional) The package type, corresponding to the "type"
-   *     property in its composer.json file. Defaults to "drupal-module".
-   *   - "install_path": (optional) The path the package gets installed at
-   *     relative to the fixture root, e.g., docroot/modules/contrib/example.
-   *     Used for Drupal subextensions. Defaults by "type" to match the
-   *     "installer-paths" patterns specified by the root Composer project.
-   *   - "url": (optional) The path, absolute or relative to the fixture root,
-   *     of a local clone of the package. Used for the "url" property of the
-   *     Composer path repository used to symlink the system under test (SUT)
-   *     into place. Defaults to a directory adjacent to the fixture root named
-   *     the Composer project name, e.g., "../example" for a "drupal/example"
-   *     project.
-   *   - "version": (optional) The recommended package version to require via
-   *     Composer. Defaults to "*".
-   *   - "version_dev": (optional) The dev package version to require via
-   *     Composer. Defaults to "*@dev".
-   *   - "core_matrix": (optional) An array of package version mappings. Each
-   *     mapping is keyed by a Drupal core version constraint, e.g., "8.7.x",
-   *     with a value of an associative array optionally containing either or
-   *     both of the "version" and "version_dev" key-value pairs to be used when
-   *     the corresponding Drupal core version constraint is satisfied. Mappings
-   *     are processed in order, and the first match wins.
+   *   For details, @see https://github.com/acquia/orca/config/packages.yml.
    * @param \Acquia\Orca\Helper\Filesystem\FixturePathHandler $fixture_path_handler
    *   The fixture path handler.
    * @param \Acquia\Orca\Helper\Filesystem\OrcaPathHandler $orca_path_handler
@@ -81,11 +59,6 @@ class Package {
    * @param string $package_name
    *   The package name, corresponding to the "name" property in its
    *   composer.json file, e.g., "drupal/example".
-   *
-   * @see \Acquia\Orca\Tests\Fixture\PackageTest::testConditionalVersions
-   *   - "enable": (internal) TRUE if the package is a Drupal module that should
-   *     be automatically enabled or FALSE if not. Defaults to TRUE for modules.
-   *     Always FALSE for anything else.
    */
   public function __construct(array $data, FixturePathHandler $fixture_path_handler, OrcaPathHandler $orca_path_handler, string $package_name) {
     $this->fixture = $fixture_path_handler;
