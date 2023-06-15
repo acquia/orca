@@ -115,6 +115,7 @@ class Package {
         'version_dev',
         'core_matrix',
         'enable',
+        'is_company_package',
       ])
       ->setDefaults([
         'type' => 'drupal-module',
@@ -122,6 +123,7 @@ class Package {
         'version_dev' => '*@dev',
         'core_matrix' => [],
         'enable' => TRUE,
+        'is_company_package' => TRUE,
       ])
       ->setAllowedTypes('type', 'string')
       ->setAllowedTypes('install_path', 'string')
@@ -129,7 +131,8 @@ class Package {
       ->setAllowedTypes('version', ['string', 'null'])
       ->setAllowedTypes('version_dev', ['string', 'null'])
       ->setAllowedTypes('core_matrix', 'array')
-      ->setAllowedTypes('enable', 'boolean');
+      ->setAllowedTypes('enable', 'boolean')
+      ->setAllowedTypes('is_company_package', 'boolean');
     return $resolver->resolve($data);
   }
 
@@ -379,6 +382,16 @@ class Package {
     }
 
     return $this->data['enable'];
+  }
+
+  /**
+   * Determines whether the package is a company package.
+   *
+   * @return bool
+   *   TRUE if the package is a company package or FALSE if not.
+   */
+  public function isCompanyPackage(): bool {
+    return $this->data['is_company_package'];
   }
 
   /**

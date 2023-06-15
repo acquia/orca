@@ -95,7 +95,7 @@ class SubextensionManager {
    *   The package manager.
    */
   public function initializeTopLevelExtensions(PackageManager $package_manager): void {
-    foreach ($package_manager->getAll() as $package_name => $package) {
+    foreach ($package_manager->getCompanyPackages() as $package_name => $package) {
       if (!$package->isDrupalExtension()) {
         continue;
       }

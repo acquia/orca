@@ -27,7 +27,7 @@ class DebugPackagesCommandTest extends CommandTestBase {
     $this->drupalCoreVersionFinder = $this->prophesize(DrupalCoreVersionResolver::class);
     $this->packageManager = $this->prophesize(PackageManager::class);
     $this->packageManager
-      ->getAll()
+      ->getCompanyPackages()
       ->willReturn([]);
     $this->versionParser = new VersionParser();
   }
@@ -48,7 +48,7 @@ class DebugPackagesCommandTest extends CommandTestBase {
     $package->getVersionDev('*')->willReturn('1.x-dev');
     $package->shouldGetEnabled()->willReturn(TRUE);
     $this->packageManager
-      ->getAll()
+      ->getCompanyPackages()
       ->shouldBeCalledOnce()
       ->willReturn([$package, $package]);
 

@@ -36,7 +36,7 @@ class SubextensionManagerTest extends TestCase {
       ->getAlterData()
       ->willReturn([]);
     $this->packageManager
-      ->getAll()
+      ->getCompanyPackages()
       ->willReturn([]);
     $package_manager = $this->packageManager->reveal();
     $object = new SubextensionManager($config_loader, $filesystem, $fixture, $orca_path_handler, $package_manager);
