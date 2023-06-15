@@ -36,9 +36,12 @@
 #   core version constraint is satisfied. Mappings are processed in order, and
 #   the first match wins.
 #   @see \Acquia\Orca\Tests\Fixture\PackageTest::testConditionalVersions
-# - "enable": Whether to enable the extension in Drupal. Defaults to true for
+# - "enable": (optional) Whether to enable the extension in Drupal. Defaults to true for
 #   modules but can be overridden. Anything else is always false and cannot be
 #   overridden.
+# - "is_company_package": (optional) Whether package is a company package
+#   or not. Defaults to "true" but can be overridden. Anything else is
+#   always false and cannot be overridden.
 #
 # These are converted to \Acquia\Orca\Fixture\Package objects by
 # \Acquia\Orca\Fixture\PackageManager. A different specification can be
@@ -135,3 +138,25 @@ drupal/mysql56:
     '*':
       version: ~
       version_dev: ~
+
+drush/drush:
+  is_company_package: false
+  core_matrix:
+    9.x:
+      version: 11.x
+      version_dev: 11.x
+    '*':
+      version: 12.x
+      version_dev: 12.x-dev
+
+# Acquia CMS uses drupal-test-traits as a dev dependency.
+# @todo remove this via ORCA-298
+weitzman/drupal-test-traits:
+  is_company_package: false
+  version: '*'
+  version_dev: '*'
+
+phpspec/prophecy-phpunit:
+  is_company_package: false
+  version: 2.x
+  version_dev: 2.x

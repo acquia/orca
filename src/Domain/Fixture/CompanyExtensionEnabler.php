@@ -162,7 +162,7 @@ class CompanyExtensionEnabler {
   private function getCompanyExtensionList(string $extension_type): array {
     $extension_list = [];
 
-    $top_level_packages = $this->packageManager->getAll();
+    $top_level_packages = $this->packageManager->getCompanyPackages();
     if ($this->options->isSutOnly()) {
       $top_level_packages = [$this->options->getSut()];
     }

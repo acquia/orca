@@ -14,8 +14,6 @@ use Acquia\Orca\Exception\OrcaException;
 use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
 use Acquia\Orca\Helper\Process\ProcessRunner;
 use Acquia\Orca\Options\FixtureOptions;
-use Composer\Semver\Comparator;
-use Composer\Semver\VersionParser;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
@@ -258,6 +256,8 @@ class FixtureCreator {
 
   /**
    * Fixes the default dependencies.
+   *
+   * @throws \Acquia\Orca\Exception\OrcaException
    */
   private function fixDefaultDependencies(): void {
     $this->output->section('Fixing default dependencies');
@@ -271,18 +271,7 @@ class FixtureCreator {
       $this->composer->removePackages($packages_to_remove);
     }
 
-    $additions = [];
-
-    if ($this->options->coreVersionParsedMatches('^9')) {
-      $additions[] = 'drush/drush:11.x';
-    }
-    elseif ($this->options->isDev()) {
-      // Install the dev version of Drush.
-      $additions[] = 'drush/drush:12.x-dev';
-    }
-    else {
-      $additions[] = 'drush/drush';
-    }
+    $additions = $this->getDependencies();
 
     // Install a specific version of Drupal core.
     if ($this->options->getCore()) {
@@ -290,18 +279,6 @@ class FixtureCreator {
     }
 
     $additions[] = "drupal/core-dev:{$this->options->getCore()}";
-
-    if ($this->shouldRequireProphecyPhpunit()) {
-      $additions[] = 'phpspec/prophecy-phpunit:^2';
-    }
-
-    if ($this->shouldDowngradePhpunit()) {
-      $additions[] = 'phpunit/phpunit:9.4.3';
-    }
-
-    // Acquia CMS uses drupal-test-traits as a dev dependency.
-    // @todo remove this via ORCA-298
-    $additions[] = 'weitzman/drupal-test-traits';
 
     // Require additional packages.
     $prefer_source = $this->options->preferSource();
@@ -316,41 +293,23 @@ class FixtureCreator {
    *   The list of unwanted packages.
    */
   private function getUnwantedPackageList(): array {
-    $packages = $this->packageManager->getAll();
+    $packages = $this->packageManager->getCompanyPackages();
     return array_keys($packages);
   }
 
   /**
-   * Determines whether or not to require phpspec/prophecy-phpunit.
+   * Add the dependencies required for this fixture.
    *
-   * @see https://www.drupal.org/node/3176567
-   *
-   * @return bool
-   *   Returns TRUE if it should be required, or FALSE if not.
+   * @throws \Acquia\Orca\Exception\OrcaException
    */
-  private function shouldRequireProphecyPhpunit(): bool {
-    $parser = new VersionParser();
-    $core = $this->options->getCoreResolved();
-
-    $required = $parser->parseConstraints('^9.1.0');
-    $actual = $parser->parseConstraints($core);
-
-    return $required->matches($actual);
-  }
-
-  /**
-   * Determines whether or not to downgrade PHPUnit.
-   *
-   * Workaround for "Call to undefined method ::getAnnotations()" error."
-   *
-   * @see https://www.drupal.org/project/drupal/issues/3186443
-   *
-   * @return bool
-   *   Returns TRUE if it should be downgraded, or FALSE if not.
-   */
-  private function shouldDowngradePhpunit(): bool {
-    $version = $this->options->getCoreResolved();
-    return Comparator::equalTo($version, '9.1.0.0');
+  private function getDependencies(): array {
+    $dependencies = $this->packageManager->getThirdPartyDependencies();
+    $dependency_list = [];
+    foreach ($dependencies as $dependency) {
+      $version = $this->findLatestVersion($dependency);
+      $dependency_list[] = "{$dependency->getPackageName()}:{$version}";
+    }
+    return $dependency_list;
   }
 
   /**
@@ -358,7 +317,7 @@ class FixtureCreator {
    */
   private function addAllowedComposerPlugins(): void {
     $allowedComposerPlugins = [];
-    foreach ($this->packageManager->getAll() as $package) {
+    foreach ($this->packageManager->getCompanyPackages() as $package) {
       if ($package->getType() === "composer-plugin") {
         $allowedComposerPlugins[] = $package->getPackageName();
       }
@@ -432,7 +391,7 @@ class FixtureCreator {
    */
   private function getLocalPackages(): array {
     $packages = [];
-    foreach ($this->packageManager->getAll() as $package_name => $package) {
+    foreach ($this->packageManager->getCompanyPackages() as $package_name => $package) {
       $is_sut = $package === $this->options->getSut();
       if (!$is_sut && !$this->options->symlinkAll()) {
         continue;
@@ -481,7 +440,7 @@ class FixtureCreator {
    * Configures Composer to install company packages from source.
    */
   private function configureComposerForTopLevelCompanyPackages(): void {
-    $packages = $this->packageManager->getAll();
+    $packages = $this->packageManager->getCompanyPackages();
     $this->composerJsonHelper->setPreferInstallFromSource(array_keys($packages));
   }
 
@@ -561,7 +520,7 @@ class FixtureCreator {
     if ($this->options->symlinkAll()) {
       return $this->getLocalPackages();
     }
-    return $this->packageManager->getAll();
+    return $this->packageManager->getCompanyPackages();
   }
 
   /**
@@ -838,7 +797,7 @@ class FixtureCreator {
    */
   private function composerRequireSubextensions(): void {
     $subextensions = [];
-    foreach ($this->packageManager->getAll() as $package) {
+    foreach ($this->packageManager->getCompanyPackages() as $package) {
       // The Drupal.org Composer Facade only supports subextensions in modules
       // and themes.
       if (!in_array($package->getType(), ['drupal-module', 'drupal-theme'])) {
