@@ -212,6 +212,7 @@ class FixtureCreator {
     $this->customizeFixture();
     $this->createAndCheckoutBackupTag();
     $this->displayStatus();
+    $this->auditPackages();
   }
 
   /**
@@ -913,6 +914,19 @@ class FixtureCreator {
     (new StatusTable($this->output))
       ->setRows($this->fixtureInspector->getOverview())
       ->render();
+  }
+
+  /**
+   * Check for security vulnerability advisories for installed packages.
+   */
+  private function auditPackages(): void {
+    $this->output->section('Running Composer Audit');
+    try{
+      $this->processRunner->runExecutable('composer', ['audit']);
+    } catch(\Exception $e){
+      
+    }
+
   }
 
 }
