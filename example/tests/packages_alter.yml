@@ -11,3 +11,19 @@ drupal/example:
 
 # Remove the Example Submodule: Remove module.
 drupal/example_submodule_remove: ~
+
+# Dependencies required to run ORCA's self tests.
+drush/drush:
+  is_company_package: false
+  core_matrix:
+    9.x:
+      version: 11.x
+      version_dev: 11.x
+    '*':
+      version: 12.x
+      version_dev: 12.x-dev
+
+phpspec/prophecy-phpunit:
+  is_company_package: false
+  version: 2.x
+  version_dev: 2.x

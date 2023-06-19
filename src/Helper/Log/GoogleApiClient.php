@@ -212,7 +212,7 @@ class GoogleApiClient {
     }
     catch (ExceptionInterface $e) {
       $this->output->comment('An error occurred accessing the auth token from Google API endpoint.\n' . $e->getMessage());
-      exit;
+      return NULL;
     }
   }
 
