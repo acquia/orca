@@ -13,6 +13,7 @@ parameters:
   env(ORCA_PACKAGES_CONFIG_ALTER): ~
   env(ORCA_PHPCS_STANDARD): "AcquiaDrupalTransitional"
   env(ORCA_TELEMETRY_ENABLE): "false"
+  env(ORCA_IS_ALLOWED_FAILURE): "%env(ORCA_IS_ALLOWED_FAILURE)%"
 
 services:
 
@@ -30,6 +31,7 @@ services:
       $packages_config: "@=container.getParameter('ORCA_PACKAGES_CONFIG') === '' ? 'config/packages.yml' : parameter('ORCA_PACKAGES_CONFIG')"
       $packages_config_alter: "%env(ORCA_PACKAGES_CONFIG_ALTER)%"
       $telemetry_is_enabled: "%env(bool:ORCA_TELEMETRY_ENABLE)%"
+      $is_allowed_failure: "%env(ORCA_IS_ALLOWED_FAILURE)%"
     public: true
 
   Acquia\Orca\:
