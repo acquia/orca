@@ -921,12 +921,12 @@ class FixtureCreator {
    */
   private function auditPackages(): void {
     $this->output->section('Running Composer Audit');
-    try{
+    try {
       $this->processRunner->runExecutable('composer', ['audit']);
-    } catch(\Exception $e){
-      
     }
-
+    catch (\Exception $e) {
+      $this->output->writeln($e->getMessage());
+    }
   }
 
 }
