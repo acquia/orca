@@ -920,7 +920,7 @@ class FixtureCreator {
    * Check for security vulnerability advisories for installed packages.
    */
   private function auditPackages(): void {
-    $this->output->section('Running Composer Audit');
+    $this->output->section('Showing security vulnerability advisories');
     try {
       $this->processRunner->runExecutable('composer', ['audit']);
     }
