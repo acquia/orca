@@ -211,8 +211,8 @@ class FixtureCreator {
     $this->setUpFilesDirectories();
     $this->customizeFixture();
     $this->createAndCheckoutBackupTag();
+    $this->displaySecurityVulnerabilityAdvisories();
     $this->displayStatus();
-    $this->auditPackages();
   }
 
   /**
