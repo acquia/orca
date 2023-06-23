@@ -211,6 +211,7 @@ class FixtureCreator {
     $this->setUpFilesDirectories();
     $this->customizeFixture();
     $this->createAndCheckoutBackupTag();
+    $this->displaySecurityVulnerabilityAdvisories();
     $this->displayStatus();
   }
 
@@ -913,6 +914,19 @@ class FixtureCreator {
     (new StatusTable($this->output))
       ->setRows($this->fixtureInspector->getOverview())
       ->render();
+  }
+
+  /**
+   * Check for security vulnerability advisories for installed packages.
+   */
+  private function displaySecurityVulnerabilityAdvisories(): void {
+    $this->output->section('Showing security vulnerability advisories');
+    try {
+      $this->processRunner->runExecutable('composer', ['audit']);
+    }
+    catch (\Exception $e) {
+      $this->output->writeln($e->getMessage());
+    }
   }
 
 }
