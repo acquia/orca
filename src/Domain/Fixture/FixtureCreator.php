@@ -137,6 +137,8 @@ class FixtureCreator {
   private $fixtureCustomizer;
 
   /**
+   * The environment facade.
+   *
    * @var \Acquia\Orca\Helper\EnvFacade
    */
   private EnvFacade $env;
@@ -174,23 +176,26 @@ class FixtureCreator {
    *   The version finder.
    * @param \Acquia\Orca\Domain\Fixture\FixtureCustomizer $fixtureCustomizer
    *   The fixture customizer.
+   * @param \Acquia\Orca\Helper\EnvFacade $env
+   *   The environment facade.
    */
   public function __construct(CloudHooksInstaller $cloud_hooks_installer,
-  CodebaseCreator $codebase_creator,
+    CodebaseCreator $codebase_creator,
     ComposerFacade $composer,
-  ComposerJsonHelper $composer_json_helper,
-  DrupalSettingsHelper $drupal_settings_helper,
+    ComposerJsonHelper $composer_json_helper,
+    DrupalSettingsHelper $drupal_settings_helper,
     FixturePathHandler $fixture_path_handler,
-  FixtureInspector $fixture_inspector,
-  GitFacade $git,
+    FixtureInspector $fixture_inspector,
+    GitFacade $git,
     SiteInstaller $site_installer,
-  SymfonyStyle $output,
-  ProcessRunner $process_runner,
+    SymfonyStyle $output,
+    ProcessRunner $process_runner,
     PackageManager $package_manager,
-  SubextensionManager $subextension_manager,
-  VersionFinder $version_finder,
+    SubextensionManager $subextension_manager,
+    VersionFinder $version_finder,
     FixtureCustomizer $fixtureCustomizer,
-  EnvFacade $env) {
+    EnvFacade $env
+  ) {
     $this->cloudHooksInstaller = $cloud_hooks_installer;
     $this->codebaseCreator = $codebase_creator;
     $this->composer = $composer;
@@ -250,8 +255,7 @@ class FixtureCreator {
    * Configures composer "composer-exit-on-patch-failure" parameter.
    */
   private function configureComposerExitOnPatchFailure(): void {
-
-    if ($this->env->get('ORCA_IS_ALLOWED_FAILURE')) {
+    if (!$this->env->get('ORCA_IS_ALLOWED_FAILURE')) {
       return;
     }
 
