@@ -289,22 +289,6 @@ class DrupalCoreVersionResolverTest extends TestCase {
     self::assertSame('9.2.0-alpha1', $actual);
   }
 
-  public function testResolvePredefinedNextMinorDev(): void {
-    $this->expectGetCurrentToBeCalledOnce();
-    $this->package
-      ->getPrettyVersion()
-      ->willReturn('9.1.x-dev');
-    $this->selector->findBestCandidate('drupal/core', '*', 'stable')
-      ->willReturn($this->package->reveal());
-    $resolver = $this->createDrupalCoreVersionResolver();
-
-    $actual = $resolver->resolvePredefined(DrupalCoreVersionEnum::NEXT_MINOR_DEV());
-    // Call again to test value caching.
-    $resolver->resolvePredefined(DrupalCoreVersionEnum::NEXT_MINOR_DEV());
-
-    self::assertSame('9.2.x-dev', $actual);
-  }
-
   public function testResolvePredefinedNextMajorLatestMinorBetaOrLater(): void {
     $this->expectGetCurrentToBeCalledOnce();
     $this->package

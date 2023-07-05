@@ -157,10 +157,15 @@ class DrupalCoreVersionResolver {
   }
 
   /**
-   * Determines if a given version keyword resolves to a version that exists.
+   * Determines if a given arbitrary version resolves to a version that exists.
    *
-   * @param \Acquia\Orca\Enum\DrupalCoreVersionEnum $version
-   *   The Drupal core version constant.
+   * @param string $version
+   *   The core version constraint.
+   * @param string $preferred_stability
+   *   The stability, both minimum and preferred. Available options (in order of
+   *   stability) are dev, alpha, beta, RC, and stable.
+   * @param bool $dev
+   *   TRUE to allow dev stability results or FALSE not to.
    *
    * @return bool
    *   TRUE if the version exists or FALSE if not.
@@ -174,6 +179,7 @@ class DrupalCoreVersionResolver {
     }
     return TRUE;
   }
+
   /**
    * Finds the Drupal core version matching the given arbitrary criteria.
    *
@@ -366,9 +372,10 @@ class DrupalCoreVersionResolver {
     $next_minor = $this->findNextMinorUnresolved();
     $next_minor_dev = $this->convertToDev($next_minor);
 
-    if($this->existsArbitrary($next_minor_dev)){
+    if ($this->existsArbitrary($next_minor_dev)) {
       $this->nextMinorDev = $this->resolveArbitrary($next_minor_dev);
-    } else{
+    }
+    else {
       $this->nextMinorDev = $this->findNextMajorLatestMinorDev();
     }
 
