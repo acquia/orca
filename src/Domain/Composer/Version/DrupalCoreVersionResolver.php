@@ -157,6 +157,24 @@ class DrupalCoreVersionResolver {
   }
 
   /**
+   * Determines if a given version keyword resolves to a version that exists.
+   *
+   * @param \Acquia\Orca\Enum\DrupalCoreVersionEnum $version
+   *   The Drupal core version constant.
+   *
+   * @return bool
+   *   TRUE if the version exists or FALSE if not.
+   */
+  public function existsArbitrary(string $version, string $preferred_stability = 'stable', bool $dev = TRUE): bool {
+    try {
+      $this->resolveArbitrary($version, $preferred_stability, $dev);
+    }
+    catch (OrcaVersionNotFoundException $e) {
+      return FALSE;
+    }
+    return TRUE;
+  }
+  /**
    * Finds the Drupal core version matching the given arbitrary criteria.
    *
    * @param string $version
@@ -346,7 +364,13 @@ class DrupalCoreVersionResolver {
     }
 
     $next_minor = $this->findNextMinorUnresolved();
-    $this->nextMinorDev = $this->convertToDev($next_minor);
+    $next_minor_dev = $this->convertToDev($next_minor);
+
+    if($this->existsArbitrary($next_minor_dev)){
+      $this->nextMinorDev = $this->resolveArbitrary($next_minor_dev);
+    } else{
+      $this->nextMinorDev = $this->findNextMajorLatestMinorDev();
+    }
 
     return $this->nextMinorDev;
   }
