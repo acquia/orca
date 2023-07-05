@@ -416,13 +416,6 @@ class DrupalCoreVersionResolver {
    * @throws \Acquia\Orca\Exception\OrcaVersionNotFoundException
    */
   private function findNextMajorLatestMinorDev(): string {
-    // If NEXT_MINOR_DEV is present and is same as
-    // NEXT_MAJOR_LATEST_MINOR_DEV, then resolve this to NULL.
-    if ($this->nextMinorDev && $this->nextMinorDev === $this->nextMajorLatestMinorDev) {
-      $message = "Resolved version same as NEXT_MINOR_DEV, hence exiting";
-      throw new OrcaVersionNotFoundException($message);
-    }
-
     if ($this->nextMajorLatestMinorDev) {
       return $this->nextMajorLatestMinorDev;
     }
