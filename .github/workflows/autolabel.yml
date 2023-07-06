@@ -1,0 +1,14 @@
+# This workflow attempts to automatically label pull requests by examining labels on linked issues.
+# For instance, if a PR says it "Fixes #123", and issue #123 is labeled as a Bug, this workflow will
+# automatically label the PR as a bug as well.
+name: Auto-label pull requests
+on:
+  pull_request_target:
+    types: [opened, synchronize, reopened, labeled, unlabeled]
+permissions:
+  pull-requests: write
+jobs:
+  autolabel:
+    uses: acquia/.github/.github/workflows/autolabel.yml@main
+    secrets:
+      github-token: ${{ secrets.GITHUB_TOKEN }}
