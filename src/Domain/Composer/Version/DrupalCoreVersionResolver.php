@@ -376,7 +376,7 @@ class DrupalCoreVersionResolver {
       $this->nextMinorDev = $this->resolveArbitrary($next_minor_dev);
     }
     else {
-      $this->nextMinorDev = $this->findNextMajorLatestMinorDev();
+      $this->nextMinorDev = $this->findCurrent();
     }
 
     return $this->nextMinorDev;
