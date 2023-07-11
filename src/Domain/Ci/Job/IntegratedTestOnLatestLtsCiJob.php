@@ -90,7 +90,7 @@ class IntegratedTestOnLatestLtsCiJob extends AbstractCiJob {
    *
    * @throws \Acquia\Orca\Exception\OrcaVersionNotFoundException
    */
-  protected function exitEarly(): bool {
+  public function exitEarly(): bool {
     // An LTS does not always exist.
     return !$this->matchingCoreVersionExists($this->drupalCoreVersionResolver, $this->output)
       || $this->isRedundant($this->redundantJobChecker, $this->output);

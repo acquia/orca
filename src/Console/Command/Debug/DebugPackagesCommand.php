@@ -160,7 +160,7 @@ class DebugPackagesCommand extends Command {
    */
   private function getRows(): array {
     $rows = [];
-    foreach ($this->packageManager->getAll() as $package) {
+    foreach ($this->packageManager->getCompanyPackages() as $package) {
       $rows[] = [
         $package->getPackageName(),
         $package->getType(),

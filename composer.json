@@ -45,6 +45,7 @@
         "symfony/config": "^6.2.7",
         "symfony/console": "^5.4.22",
         "symfony/dependency-injection": "^6.0.20",
+        "symfony/event-dispatcher": "^6.3",
         "symfony/expression-language": "^5.4.21",
         "symfony/filesystem": "^5.4.21",
         "symfony/finder": "^6.2.7",
@@ -52,7 +53,7 @@
         "symfony/options-resolver": "^5.4.21",
         "symfony/phpunit-bridge": "^6.2.7",
         "symfony/process": "^5.4.22",
-        "symfony/yaml": "^5.4.21",
+        "symfony/yaml": "^6.3.0",
         "weitzman/drupal-test-traits": "^2.1"
     },
     "require-dev": {

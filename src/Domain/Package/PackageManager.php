@@ -131,6 +131,38 @@ class PackageManager {
   }
 
   /**
+   * Gets an array of all company packages.
+   *
+   * @return \Acquia\Orca\Domain\Package\Package[]
+   *   An array of packages keyed by package name.
+   */
+  public function getCompanyPackages(): array {
+    $companyPackages = [];
+    foreach ($this->packages as $package) {
+      if ($package->isCompanyPackage()) {
+        $companyPackages[$package->getPackageName()] = $package;
+      }
+    }
+    return $companyPackages;
+  }
+
+  /**
+   * Gets an array of all dependencies.
+   *
+   * @return \Acquia\Orca\Domain\Package\Package[]
+   *   An array of packages keyed by package name.
+   */
+  public function getThirdPartyDependencies(): array {
+    $dependencies = [];
+    foreach ($this->packages as $package) {
+      if (!$package->isCompanyPackage()) {
+        $dependencies[$package->getPackageName()] = $package;
+      }
+    }
+    return $dependencies;
+  }
+
+  /**
    * Gets the BLT package.
    *
    * BLT is a special case due to its foundational relationship to the fixture.

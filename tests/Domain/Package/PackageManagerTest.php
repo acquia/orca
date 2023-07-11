@@ -52,6 +52,11 @@ class PackageManagerTest extends TestCase {
         '*' => ['version' => '~1.0', 'version_dev' => '1.x-dev'],
       ],
     ],
+    'drupal/dependency1' => [
+      'is_company_package' => FALSE,
+      'version' => '*',
+      'version_dev' => '*',
+    ],
   ];
 
   private const PACKAGES_DATA_ALTER = [
@@ -68,6 +73,13 @@ class PackageManagerTest extends TestCase {
       ],
     ],
     'drupal/no_match' => NULL,
+    'drupal/add_dependency2' => [
+      'is_company_package' => FALSE,
+      'core_matrix' => [
+        '9.x' => ['version' => '11.x', 'version_dev' => '11.x'],
+        '*' => ['version' => '12.x', 'version_dev' => '12.x-dev'],
+      ],
+    ],
   ];
 
   private const EXPECTED_PACKAGE_LIST = [
@@ -85,6 +97,11 @@ class PackageManagerTest extends TestCase {
     'drupal/package' => 0,
     'drupal/theme1' => 0,
     'drupal/theme2' => 0,
+  ];
+
+  private const EXPECTED_DEPENDENCY_LIST = [
+    'drupal/dependency1' => 0,
+    'drupal/add_dependency2' => 0,
   ];
 
   private const ORCA_PATH = '/var/www/orca';
@@ -133,7 +150,8 @@ class PackageManagerTest extends TestCase {
 
   public function testConstructionAndGetters(): void {
     $manager = $this->createPackageManager();
-    $all_packages = $manager->getAll();
+    $all_packages = $manager->getCompanyPackages();
+    $all_dependencies = $manager->getThirdPartyDependencies();
     $package = $manager->get('drupal/module2');
 
     // Normalize expected package list for clearer comparison.
@@ -142,9 +160,18 @@ class PackageManagerTest extends TestCase {
       $actual_package_list[$name] = 0;
     }
 
+    // Normalize expected dependency list for clearer comparison.
+    $actual_dependency_list = [];
+    foreach (array_keys($all_dependencies) as $name) {
+      $actual_dependency_list[$name] = 0;
+    }
+
     self::assertEquals(self::EXPECTED_PACKAGE_LIST, $actual_package_list, 'Set/got all packages.');
     self::assertInstanceOf(Package::class, reset($all_packages), 'Got packages as Package objects.');
     self::assertEquals('drupal/module2', $package->getPackageName(), 'Got package by name.');
+    self::assertEquals(self::EXPECTED_DEPENDENCY_LIST, $actual_dependency_list, 'Set/got all dependencies.');
+    self::assertEquals(TRUE, $package->isCompanyPackage(), 'Got a company package.');
+    self::assertEquals(FALSE, $manager->get('drupal/dependency1')->isCompanyPackage(), 'Got a third party dependency.');
   }
 
   public function testRequestingNonExistentPackage(): void {

@@ -31,6 +31,10 @@ jobs:
       ORCA_JOB: ${{ matrix.orca-job }}
       ORCA_ENABLE_NIGHTWATCH: ${{ matrix.orca-enable-nightwatch }}
       ORCA_COVERAGE_ENABLE: ${{ matrix.orca-coverage-enable }}
+      # Google env variables.
+      ORCA_GOOGLE_API_CLIENT_ID: ${{ secrets.ORCA_GOOGLE_API_CLIENT_ID }}
+      ORCA_GOOGLE_API_CLIENT_SECRET: ${{ secrets.ORCA_GOOGLE_API_CLIENT_SECRET }}
+      ORCA_GOOGLE_API_REFRESH_TOKEN: ${{ secrets.ORCA_GOOGLE_API_REFRESH_TOKEN }}
 
     strategy:
       matrix:
@@ -81,7 +85,7 @@ jobs:
 
       - uses: actions/setup-node@v3
         with:
-          node-version: 16.x
+          node-version: 20.x
 
       - uses: shivammathur/setup-php@v2
         with:
