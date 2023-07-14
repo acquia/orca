@@ -30,6 +30,8 @@ class DrupalCoreVersionResolverTest extends TestCase {
 
   protected PackageInterface|ObjectProphecy $package;
 
+  protected PackageInterface|ObjectProphecy $package2;
+
   protected VersionSelector|ObjectProphecy $selector;
 
   private const CURRENT = '9.1.0';
@@ -44,6 +46,13 @@ class DrupalCoreVersionResolverTest extends TestCase {
       ->getPrettyVersion()
       ->willReturn(self::CURRENT);
     $package = $this->package->reveal();
+
+    $this->package2 = $this->prophesize(PackageInterface::class);
+    $this->package2
+      ->getPrettyVersion()
+      ->willReturn(self::CURRENT);
+    $package2 = $this->package2->reveal();
+
     $this->selector = $this->prophesize(VersionSelector::class);
     $this->selector
       ->findBestCandidate('drupal/core', Argument::any(), Argument::any())
@@ -291,34 +300,25 @@ class DrupalCoreVersionResolverTest extends TestCase {
 
   public function testResolvePredefinedNextMinorDev(): void {
     $this->expectGetCurrentToBeCalledOnce();
-//    $this->package
-//      ->getPrettyVersion()
-//      ->willReturn('10.1.1');
-//    $this->selector->findBestCandidate('drupal/core', '*', 'stable')
-//      ->willReturn($this->package->reveal());
-//    $resolver = $this->createDrupalCoreVersionResolver();
-//
-//    $this->package
-//      ->getPrettyVersion()
-//      ->willReturn(NULL);
-//    $this->selector->findBestCandidate('drupal/core', Argument::any(), 'stable')
-//      ->willReturn($this->package->reveal());
-//    $resolver = $this->createDrupalCoreVersionResolver();
-
     $this->package
       ->getPrettyVersion()
-      ->willThrow(OrcaVersionNotFoundException::class);
-    $this->selector->findBestCandidate('drupal/core', Argument::any(), 'stable')
-      ->willReturn($this->package->reveal())
-      ->shouldBeCalledTimes(3);
-    $resolver = $this->createDrupalCoreVersionResolver();
+      ->willReturn('9.1');
+    $this->selector->findBestCandidate('drupal/core', '*', 'stable')
+      ->willReturn($this->package->reveal());
 
+    $this->package2
+      ->getPrettyVersion()
+      ->willReturn('9.1.x-dev');
+    $this->selector->findBestCandidate('drupal/core', '9.1.x-dev', 'stable')
+      ->willReturn($this->package2->reveal());
+
+    $resolver = $this->createDrupalCoreVersionResolver();
 
     $actual = $resolver->resolvePredefined(DrupalCoreVersionEnum::NEXT_MINOR_DEV());
     // Call again to test value caching.
     $resolver->resolvePredefined(DrupalCoreVersionEnum::NEXT_MINOR_DEV());
 
-    self::assertSame('11.x-dev', $actual);
+    self::assertSame('9.2.x-dev', $actual);
   }
 
   public function testResolvePredefinedNextMajorLatestMinorBetaOrLater(): void {
