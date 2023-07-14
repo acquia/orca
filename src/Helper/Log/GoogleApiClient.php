@@ -75,19 +75,14 @@ class GoogleApiClient {
    *   The output object.
    * @param \Acquia\Orca\Domain\Composer\Version\DrupalCoreVersionResolver $coreVersionResolver
    *   The version resolver.
-   * @param string $google_api_client_id
+   * @param string|null $google_api_client_id
    *   The Google client id.
-   * @param string $google_api_client_secret
+   * @param string|null $google_api_client_secret
    *   The Google client secret.
-   * @param string $google_refresh_token
+   * @param string|null $google_refresh_token
    *   The Google refresh token.
    */
-  public function __construct(HttpClientInterface $http_client,
-  SymfonyStyle $output,
-    DrupalCoreVersionResolver $coreVersionResolver,
-    string|null $google_api_client_id,
-    string|null $google_api_client_secret,
-    string|null $google_refresh_token) {
+  public function __construct(HttpClientInterface $http_client, SymfonyStyle $output, DrupalCoreVersionResolver $coreVersionResolver, ?string $google_api_client_id, ?string $google_api_client_secret, ?string $google_refresh_token) {
     $this->httpClient = $http_client;
     $this->output = $output;
     $this->version = $coreVersionResolver;
@@ -149,16 +144,11 @@ class GoogleApiClient {
     ];
 
     try {
-      $response = $this->httpClient
-        ->request(
-          'POST',
-          'https://sheets.googleapis.com/v4/spreadsheets/' . self::SPREAD_SHEET_ID . '/values/' . self::SHEET_ID . ':append',
-          $options
-        );
+      $response =
+        $this->httpClient->request('POST', 'https://sheets.googleapis.com/v4/spreadsheets/' . self::SPREAD_SHEET_ID . '/values/' . self::SHEET_ID . ':append', $options);
 
       if ($response->getStatusCode() === 200) {
-        $this->output->comment("Data successfully posted to Google sheet : " .
-          implode(',', $response->toArray()['updates']['updatedData']['values'][0]));
+        $this->output->comment("Data successfully posted to Google sheet : " . implode(',', $response->toArray()['updates']['updatedData']['values'][0]));
       }
       else {
         $this->output->comment("Operation unsuccessful!! Error Code: " . $response->getStatusCode());
@@ -194,12 +184,8 @@ class GoogleApiClient {
     ];
 
     try {
-      $response = $this->httpClient
-        ->request(
-          'POST',
-          'https://www.googleapis.com/oauth2/v4/token',
-          $options
-        );
+      $response =
+        $this->httpClient->request('POST', 'https://www.googleapis.com/oauth2/v4/token', $options);
 
       if ($response->getStatusCode() === 200) {
         $this->output->comment("Access token successfully obtained");
