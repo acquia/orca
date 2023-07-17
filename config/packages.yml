@@ -163,8 +163,8 @@ drush/drush:
 # @todo remove this via ORCA-298
 weitzman/drupal-test-traits:
   is_company_package: false
-  version: '*'
-  version_dev: '*'
+  version: 2.0.x
+  version_dev: 2.0.x
 
 phpspec/prophecy-phpunit:
   is_company_package: false
