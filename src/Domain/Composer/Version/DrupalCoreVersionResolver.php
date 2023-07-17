@@ -357,6 +357,15 @@ class DrupalCoreVersionResolver {
   }
 
   /**
+   * Gets a possible next minor dev value.
+   *
+   * @return string
+   */
+  public function getNextMinorDevCandidate(): string{
+    $next_minor = $this->findNextMinorUnresolved();
+    return $this->convertToDev($next_minor);
+  }
+  /**
    * Finds the next minor dev version of Drupal core.
    *
    * @return string
@@ -369,8 +378,7 @@ class DrupalCoreVersionResolver {
       return $this->nextMinorDev;
     }
 
-    $next_minor = $this->findNextMinorUnresolved();
-    $next_minor_dev = $this->convertToDev($next_minor);
+    $next_minor_dev = $this->getNextMinorDevCandidate();
 
     if ($this->existsArbitrary($next_minor_dev)) {
       $this->nextMinorDev = $this->resolveArbitrary($next_minor_dev);
