@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "2009f82f44676bc30e5dccfca014b1cf",
+    "content-hash": "2178461fc3adc9e0adf3b4a9a5afd00f",
     "packages": [
         {
             "name": "acquia/coding-standards",
@@ -7497,7 +7497,7 @@
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
-        "php": ">=7.2",
+        "php": "^8.1",
         "ext-dom": "*",
         "ext-json": "*",
         "ext-sqlite3": "*"
