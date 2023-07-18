@@ -360,11 +360,13 @@ class DrupalCoreVersionResolver {
    * Gets a possible next minor dev value.
    *
    * @return string
+   *   The next minor dev candidate string.
    */
-  public function getNextMinorDevCandidate(): string{
+  public function getNextMinorDevCandidate(): string {
     $next_minor = $this->findNextMinorUnresolved();
     return $this->convertToDev($next_minor);
   }
+
   /**
    * Finds the next minor dev version of Drupal core.
    *
