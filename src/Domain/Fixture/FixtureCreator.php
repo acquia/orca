@@ -268,7 +268,7 @@ class FixtureCreator {
       ]);
     }
     catch (\Exception $e) {
-      $this->output->writeln("Failed to remove Composer platform requirements.");
+      $this->output->writeln("Failed to set composer-exit-on-patch-failure.");
     }
   }
 
