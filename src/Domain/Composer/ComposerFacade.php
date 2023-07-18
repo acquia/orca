@@ -262,6 +262,22 @@ class ComposerFacade {
   }
 
   /**
+   * Set config to root composer.json.
+   *
+   * @param array $config
+   *   A list of config elements to be removed, e.g., "platform".
+   */
+  public function setConfig(array $config): void {
+    if (empty($config)) {
+      throw new \InvalidArgumentException('No config provided to remove.');
+    }
+
+    $this->runComposer([
+      'config',
+    ], $config);
+  }
+
+  /**
    * Validates a composer.json.
    *
    * @param string $path

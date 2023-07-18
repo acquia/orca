@@ -123,6 +123,7 @@ allowed_failures=(
 )
 if [[ " ${allowed_failures[*]} " =~ " ${ORCA_JOB} " ]]; then
   set +e
+  export ORCA_IS_ALLOWED_FAILURE="TRUE"
   notice "This job is allowed to fail and will report as passing regardless of outcome."
 fi
 

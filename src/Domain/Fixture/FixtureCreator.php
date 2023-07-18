@@ -11,6 +11,7 @@ use Acquia\Orca\Domain\Git\GitFacade;
 use Acquia\Orca\Domain\Package\Package;
 use Acquia\Orca\Domain\Package\PackageManager;
 use Acquia\Orca\Exception\OrcaException;
+use Acquia\Orca\Helper\EnvFacade;
 use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
 use Acquia\Orca\Helper\Process\ProcessRunner;
 use Acquia\Orca\Options\FixtureOptions;
@@ -136,6 +137,13 @@ class FixtureCreator {
   private $fixtureCustomizer;
 
   /**
+   * The environment facade.
+   *
+   * @var \Acquia\Orca\Helper\EnvFacade
+   */
+  private EnvFacade $env;
+
+  /**
    * Constructs an instance.
    *
    * @param \Acquia\Orca\Domain\Fixture\CloudHooksInstaller $cloud_hooks_installer
@@ -168,8 +176,26 @@ class FixtureCreator {
    *   The version finder.
    * @param \Acquia\Orca\Domain\Fixture\FixtureCustomizer $fixtureCustomizer
    *   The fixture customizer.
+   * @param \Acquia\Orca\Helper\EnvFacade $env
+   *   The environment facade.
    */
-  public function __construct(CloudHooksInstaller $cloud_hooks_installer, CodebaseCreator $codebase_creator, ComposerFacade $composer, ComposerJsonHelper $composer_json_helper, DrupalSettingsHelper $drupal_settings_helper, FixturePathHandler $fixture_path_handler, FixtureInspector $fixture_inspector, GitFacade $git, SiteInstaller $site_installer, SymfonyStyle $output, ProcessRunner $process_runner, PackageManager $package_manager, SubextensionManager $subextension_manager, VersionFinder $version_finder, FixtureCustomizer $fixtureCustomizer) {
+  public function __construct(CloudHooksInstaller $cloud_hooks_installer,
+    CodebaseCreator $codebase_creator,
+    ComposerFacade $composer,
+    ComposerJsonHelper $composer_json_helper,
+    DrupalSettingsHelper $drupal_settings_helper,
+    FixturePathHandler $fixture_path_handler,
+    FixtureInspector $fixture_inspector,
+    GitFacade $git,
+    SiteInstaller $site_installer,
+    SymfonyStyle $output,
+    ProcessRunner $process_runner,
+    PackageManager $package_manager,
+    SubextensionManager $subextension_manager,
+    VersionFinder $version_finder,
+    FixtureCustomizer $fixtureCustomizer,
+    EnvFacade $env
+  ) {
     $this->cloudHooksInstaller = $cloud_hooks_installer;
     $this->codebaseCreator = $codebase_creator;
     $this->composer = $composer;
@@ -185,6 +211,7 @@ class FixtureCreator {
     $this->subextensionManager = $subextension_manager;
     $this->versionFinder = $version_finder;
     $this->fixtureCustomizer = $fixtureCustomizer;
+    $this->env = $env;
   }
 
   /**
@@ -199,6 +226,7 @@ class FixtureCreator {
   public function create(FixtureOptions $options): void {
     $this->options = $options;
     $this->createComposerProject();
+    $this->configureComposerExitOnPatchFailure();
     $this->removeComposerConfigPlatform();
     $this->fixDefaultDependencies();
     $this->addAllowedComposerPlugins();
@@ -220,6 +248,27 @@ class FixtureCreator {
   private function createComposerProject(): void {
     $this->output->section('Creating Composer project');
     $this->codebaseCreator->create($this->options);
+  }
+
+  /**
+   * Configures composer "composer-exit-on-patch-failure" parameter.
+   */
+  private function configureComposerExitOnPatchFailure(): void {
+    if (!$this->env->get('ORCA_IS_ALLOWED_FAILURE')) {
+      return;
+    }
+
+    $this->output->section("Setting composer-exit-on-patch-failure to false.");
+    try {
+      $this->composer->setConfig([
+        'extra.composer-exit-on-patch-failure',
+        'false',
+        '--json',
+      ]);
+    }
+    catch (\Exception $e) {
+      $this->output->writeln("Failed to set composer-exit-on-patch-failure.");
+    }
   }
 
   /**
@@ -411,7 +460,7 @@ class FixtureCreator {
    */
   private function addAssetPackagistPathRepositories(): void {
     $this->composerJsonHelper->addRepository(
-     'asset-packagist',
+      'asset-packagist',
       'composer',
       'https://asset-packagist.org'
     );
@@ -571,7 +620,6 @@ class FixtureCreator {
    * Add packages defined in "allow-plugins" config of SUT to root composer.
    */
   private function addSutAllowedPluginsToRootComposer(): void {
-
     $this->output->section("Adding Allowed Plugins from SUT");
 
     $package = $this->options->getSut();

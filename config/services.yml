@@ -13,6 +13,7 @@ parameters:
   env(ORCA_PACKAGES_CONFIG_ALTER): ~
   env(ORCA_PHPCS_STANDARD): "AcquiaDrupalTransitional"
   env(ORCA_TELEMETRY_ENABLE): "false"
+  env(ORCA_IS_ALLOWED_FAILURE): "%env(ORCA_IS_ALLOWED_FAILURE)%"
 
 services:
 
