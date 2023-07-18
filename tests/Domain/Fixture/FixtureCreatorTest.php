@@ -15,6 +15,7 @@ use Acquia\Orca\Domain\Fixture\SiteInstaller;
 use Acquia\Orca\Domain\Fixture\SubextensionManager;
 use Acquia\Orca\Domain\Git\GitFacade;
 use Acquia\Orca\Domain\Package\PackageManager;
+use Acquia\Orca\Helper\EnvFacade;
 use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
 use Acquia\Orca\Helper\Filesystem\OrcaPathHandler;
 use Acquia\Orca\Helper\Process\ProcessRunner;
@@ -58,6 +59,7 @@ class FixtureCreatorTest extends TestCase {
   protected ProcessRunner|ObjectProphecy $processRunner;
   protected SymfonyStyle|ObjectProphecy $output;
   protected FixtureCustomizer|ObjectProphecy $customizer;
+  protected EnvFacade|ObjectProphecy $envFacade;
 
   protected function setUp(): void {
     $this->cloudHooksInstaller = $this->prophesize(CloudHooksInstaller::class);
@@ -76,6 +78,7 @@ class FixtureCreatorTest extends TestCase {
     $this->versionFinder = $this->prophesize(VersionFinder::class);
     $this->output = $this->prophesize(SymfonyStyle::class);
     $this->customizer = $this->prophesize(FixtureCustomizer::class);
+    $this->envFacade = $this->prophesize(EnvFacade::class);
   }
 
   private function createFixtureCreator(): FixtureCreator {
@@ -94,6 +97,7 @@ class FixtureCreatorTest extends TestCase {
     $subextension_manager = $this->subextensionManager->reveal();
     $version_finder = $this->versionFinder->reveal();
     $customizer = $this->customizer->reveal();
+    $env = $this->envFacade->reveal();
     return new FixtureCreator(
         $cloud_hooks_installer,
         $codebase_creator,
@@ -109,7 +113,8 @@ class FixtureCreatorTest extends TestCase {
         $package_manager,
         $subextension_manager,
         $version_finder,
-        $customizer
+        $customizer,
+        $env
     );
   }
 
