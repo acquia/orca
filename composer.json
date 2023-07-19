@@ -25,7 +25,7 @@
         "source": "https://github.com/acquia/orca"
     },
     "require": {
-        "php": ">=7.2",
+        "php": "^8.1",
         "ext-dom": "*",
         "ext-json": "*",
         "ext-sqlite3": "*",

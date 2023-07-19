@@ -1,35 +1,24 @@
+# When someone opens a public GitHub issue, this workflow will create a corresponding
+# Jira ticket and update the issue title to reference the Jira ticket number.
+# When someone closes a public GitHub issue, this workflow will comment on the linked
+# Jira ticket indicating that the issue was closed.
+# Your Jira project key must match the repository name.
+name: Sync GitHub issues to Jira
 on:
   issues:
     types:
       - opened
-
-name: Create new tickets in Jira
-
+      - closed
+permissions:
+  issues: write
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    name: Create new tickets in Jira
-    permissions:
-      issues: write
-    steps:
-    - name: Login
-      uses: acquia/gajira-login@bearer
-      env:
-        JIRA_BASE_URL: ${{ secrets.JIRA_BASE_URL }}
-        JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
-    - name: Create
-      id: create
-      uses: acquia/gajira-create@bearer
-      with:
-        project: ORCA
-        issuetype: Task
-        summary: ${{ github.event.issue.title }}
-        description: ${{ github.event.issue.html_url }}
-        fields: '{"labels": ["grooming"]}'
-    - name: Update Github issue with Jira ticket prefix
-      run: 'gh issue edit $GH_ISSUE --title "$JIRA_ISSUE: $ISSUE_TITLE"'
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        GH_ISSUE: ${{ github.event.issue.html_url }}
-        JIRA_ISSUE: ${{ steps.create.outputs.issue }}
-        ISSUE_TITLE: ${{ github.event.issue.title }}
+  jira:
+    uses: acquia/.github/.github/workflows/jira.yml@main
+    # Set the JIRA* secrets in your repository settings. You will need to create an API
+    # token from your Jira user profile.
+    secrets:
+      jira-base-url: ${{ secrets.JIRA_BASE_URL }}
+      jira-api-token: ${{ secrets.JIRA_API_TOKEN }}
+      github-token: ${{ secrets.GITHUB_TOKEN }}
+    with:
+      issue_label: grooming
