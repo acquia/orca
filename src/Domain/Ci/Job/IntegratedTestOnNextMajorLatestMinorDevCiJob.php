@@ -72,7 +72,8 @@ class IntegratedTestOnNextMajorLatestMinorDevCiJob extends AbstractCiJob {
    * {@inheritdoc}
    */
   public function exitEarly(): bool {
-    return !$this->matchingCoreVersionExists($this->drupalCoreVersionResolver, $this->output);
+    $next_minor_dev = $this->drupalCoreVersionResolver->getNextMinorDevCandidate();
+    return !$this->drupalCoreVersionResolver->existsArbitrary($next_minor_dev) || !$this->matchingCoreVersionExists($this->drupalCoreVersionResolver, $this->output);
   }
 
   /**
