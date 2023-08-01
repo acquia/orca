@@ -92,14 +92,14 @@ class DrushFacadeTest extends TestCase {
     $drush->enableThemes($themes);
   }
 
-  public function providerEnableExtensions(): array {
+  public static function providerEnableExtensions(): array {
     return [
       [['test', 'example'], ['test', 'example']],
       [['example', 'test'], ['example', 'test']],
     ];
   }
 
-  public function providerEnableThemes(): array {
+  public static function providerEnableThemes(): array {
     return [
       [['test', 'example'], 'test,example'],
       [['example', 'test'], 'example,test'],
@@ -181,7 +181,7 @@ class DrushFacadeTest extends TestCase {
     $drush->installDrupal($profile);
   }
 
-  public function providerInstallDrupal(): array {
+  public static function providerInstallDrupal(): array {
     return [
       ['test'],
       ['example'],

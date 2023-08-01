@@ -128,7 +128,7 @@ abstract class CiJobTestBase extends TestCase {
     return 'drupal/example';
   }
 
-  public function providerJobs(): array {
+  public static function providerJobs(): array {
     $jobs = CiJobEnum::values();
     array_walk($jobs, static function (&$value) {
       $value = [$value];
@@ -136,7 +136,7 @@ abstract class CiJobTestBase extends TestCase {
     return $jobs;
   }
 
-  public function providerPhases(): array {
+  public static function providerPhases(): array {
     $phases = CiJobPhaseEnum::values();
     array_walk($phases, static function (&$value) {
       $value = [$value];

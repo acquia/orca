@@ -209,7 +209,7 @@ class PackageManagerTest extends TestCase {
     self::assertEquals($expected, $actual, 'Correctly tested for package existence.');
   }
 
-  public function providerCheckingPackageExistence(): array {
+  public static function providerCheckingPackageExistence(): array {
     return [
       ['drupal/module1', TRUE],
       ['nonexistent/package', FALSE],

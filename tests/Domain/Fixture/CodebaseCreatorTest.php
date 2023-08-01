@@ -125,7 +125,7 @@ class CodebaseCreatorTest extends TestCase {
     $creator->create($fixture_options);
   }
 
-  public function providerCreate(): array {
+  public static function providerCreate(): array {
     return [
       [['dev' => TRUE, 'ignore-patch-failure' => FALSE], TRUE],
       [['dev' => FALSE, 'ignore-patch-failure' => TRUE], FALSE],
@@ -199,7 +199,7 @@ class CodebaseCreatorTest extends TestCase {
     $creator->create($fixture_options);
   }
 
-  public function providerLoadComposerJsonWithException(): array {
+  public static function providerLoadComposerJsonWithException(): array {
     return [
       [new OrcaFileNotFoundException(''), new OrcaFileNotFoundException('No such file: ' . self::COMPOSER_JSON_PATH)],
       [new OrcaParseError(''), new OrcaParseError('Cannot parse ' . self::COMPOSER_JSON_PATH)],

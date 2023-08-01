@@ -41,7 +41,7 @@ class PhplocTaskTest extends TestCase {
     self::assertTrue($provides_status_message, 'Provides a status message.');
   }
 
-  public function providerTask(): array {
+  public static function providerTask(): array {
     return [
       ['/var/www'],
       ['/test/example'],

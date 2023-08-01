@@ -24,7 +24,7 @@ class CiJobPhaseEnumTest extends TestCase {
     self::assertEquals(strtolower($key), $value, 'Key and value correspond.');
   }
 
-  public function providerKeyValuePairs(): array {
+  public static function providerKeyValuePairs(): array {
     $pairs = [];
     foreach (CiJobPhaseEnum::toArray() as $key => $value) {
       $pairs[] = [$key, $value];
@@ -40,7 +40,7 @@ class CiJobPhaseEnumTest extends TestCase {
     self::assertNotEmpty($description, 'Description is non-empty.');
   }
 
-  public function providerDescriptions(): array {
+  public static function providerDescriptions(): array {
     $descriptions = [];
     foreach (CiJobPhaseEnum::descriptions() as $value) {
       $descriptions[] = [$value];

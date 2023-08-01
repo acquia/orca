@@ -106,7 +106,7 @@ class CiRunOptionsTest extends TestCase {
     $this->createCiRunOptions($options);
   }
 
-  public function providerMissingRequiredOptions(): array {
+  public static function providerMissingRequiredOptions(): array {
     return [
       'No options' => [[]],
       'Missing job' => [
@@ -156,7 +156,7 @@ class CiRunOptionsTest extends TestCase {
     $this->createCiRunOptions($options);
   }
 
-  public function providerInvalidOptions(): array {
+  public static function providerInvalidOptions(): array {
     return [
       'Non-existent phase' => [
         [

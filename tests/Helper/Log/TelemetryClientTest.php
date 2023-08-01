@@ -32,7 +32,7 @@ class TelemetryClientTest extends TestCase {
     self::assertEquals($is_ready, FALSE, 'Correctly set enabled/state state.');
   }
 
-  public function providerTelemetryClient(): array {
+  public static function providerTelemetryClient(): array {
     return [
       [1, TRUE],
       [0, FALSE],

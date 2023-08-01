@@ -99,7 +99,7 @@ class ConfigLoaderTest extends TestCase {
     $loader->load(self::CONFIG_FILE_PATH);
   }
 
-  public function providerLoadExceptions(): array {
+  public static function providerLoadExceptions(): array {
     return [
       'File not found' => [new NoodlehausFileNotFoundException(), OrcaFileNotFoundException::class],
       'Parse error' => [new NoodlehausParseException(['message' => '']), OrcaParseError::class],
