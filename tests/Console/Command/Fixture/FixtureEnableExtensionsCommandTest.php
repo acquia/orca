@@ -58,7 +58,7 @@ class FixtureEnableExtensionsCommandTest extends CommandTestBase {
     self::assertEquals($status_code, $this->getStatusCode(), 'Returned correct status code.');
   }
 
-  public function providerCommand(): array {
+  public static function providerCommand(): array {
     return [
       [FALSE, 0, FALSE, StatusCodeEnum::ERROR, sprintf("Error: No fixture exists at %s.\n", self::FIXTURE_ROOT)],
       [TRUE, 1, new OrcaException('Oops.'), StatusCodeEnum::ERROR, "\n [ERROR] Oops.                                                                  \n\n"],

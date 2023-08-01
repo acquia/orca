@@ -42,7 +42,7 @@ class QaFixerCommandTest extends CommandTestBase {
     $filesystem = $this->filesystem->reveal();
     $php_code_beautifier_and_fixer = $this->phpCodeBeautifierAndFixer->reveal();
     $task_runner = $this->taskRunner->reveal();
-    return new QaFixerCommand($composer_normalize, $this->defaultPhpcsStandard, $filesystem, $php_code_beautifier_and_fixer, $task_runner);
+    return new QaFixerCommand($composer_normalize, PhpcsStandardEnum::DEFAULT, $filesystem, $php_code_beautifier_and_fixer, $task_runner);
   }
 
   /**
@@ -76,7 +76,7 @@ class QaFixerCommandTest extends CommandTestBase {
     self::assertEquals($status_code, $this->getStatusCode(), 'Returned correct status code.');
   }
 
-  public function providerCommand(): array {
+  public static function providerCommand(): array {
     return [
       [TRUE, 1, StatusCodeEnum::OK, ''],
       [TRUE, 1, StatusCodeEnum::ERROR, ''],
@@ -112,7 +112,7 @@ class QaFixerCommandTest extends CommandTestBase {
     self::assertEquals(StatusCodeEnum::OK, $this->getStatusCode(), 'Returned correct status code.');
   }
 
-  public function providerTaskFiltering(): array {
+  public static function providerTaskFiltering(): array {
     return [
       [['--composer' => 1], 'composerNormalize'],
       [['--phpcbf' => 1], 'phpCodeBeautifierAndFixer'],
@@ -150,9 +150,9 @@ class QaFixerCommandTest extends CommandTestBase {
     self::assertEquals(StatusCodeEnum::OK, $this->getStatusCode(), 'Returned correct status code.');
   }
 
-  public function providerPhpcsStandardOption(): array {
+  public static function providerPhpcsStandardOption(): array {
     return [
-      [[], $this->defaultPhpcsStandard],
+      [[], PhpcsStandardEnum::DEFAULT],
       [['--phpcs-standard' => PhpcsStandardEnum::ACQUIA_PHP], PhpcsStandardEnum::ACQUIA_PHP],
       [['--phpcs-standard' => PhpcsStandardEnum::ACQUIA_DRUPAL_TRANSITIONAL], PhpcsStandardEnum::ACQUIA_DRUPAL_TRANSITIONAL],
       [['--phpcs-standard' => PhpcsStandardEnum::ACQUIA_DRUPAL_STRICT], PhpcsStandardEnum::ACQUIA_DRUPAL_STRICT],
@@ -169,7 +169,7 @@ class QaFixerCommandTest extends CommandTestBase {
       ->shouldBeCalledTimes(1)
       ->willReturn(TRUE);
     $this->phpCodeBeautifierAndFixer
-      ->setStandard(new PhpcsStandardEnum($this->defaultPhpcsStandard))
+      ->setStandard(new PhpcsStandardEnum(PhpcsStandardEnum::DEFAULT))
       ->shouldBeCalledOnce();
     $this->taskRunner
       ->addTask($this->phpCodeBeautifierAndFixer->reveal())
@@ -193,7 +193,7 @@ class QaFixerCommandTest extends CommandTestBase {
     self::assertEquals(StatusCodeEnum::OK, $this->getStatusCode(), 'Returned correct status code.');
   }
 
-  public function providerPhpcsStandardEnvVar(): array {
+  public static function providerPhpcsStandardEnvVar(): array {
     return [
       [PhpcsStandardEnum::ACQUIA_PHP],
       [PhpcsStandardEnum::ACQUIA_DRUPAL_TRANSITIONAL],
@@ -222,9 +222,9 @@ class QaFixerCommandTest extends CommandTestBase {
     self::assertEquals(StatusCodeEnum::ERROR, $this->getStatusCode(), 'Returned correct status code.');
   }
 
-  public function providerInvalidPhpcsStandard(): array {
+  public static function providerInvalidPhpcsStandard(): array {
     return [
-      [['--phpcs-standard' => 'invalid'], $this->defaultPhpcsStandard, 'Error: Invalid value for "--phpcs-standard" option: "invalid".' . PHP_EOL],
+      [['--phpcs-standard' => 'invalid'], PhpcsStandardEnum::DEFAULT, 'Error: Invalid value for "--phpcs-standard" option: "invalid".' . PHP_EOL],
       [[], 'invalid', 'Error: Invalid value for $ORCA_PHPCS_STANDARD environment variable: "invalid".' . PHP_EOL],
     ];
   }

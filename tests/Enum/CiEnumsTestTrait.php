@@ -7,7 +7,7 @@ use Acquia\Orca\Enum\CiJobPhaseEnum;
 
 trait CiEnumsTestTrait {
 
-  public function providerJobs(): array {
+  public static function providerJobs(): array {
     $jobs = CiJobEnum::values();
     array_walk($jobs, static function (&$value) {
       $value = [$value];
@@ -15,7 +15,7 @@ trait CiEnumsTestTrait {
     return $jobs;
   }
 
-  public function providerPhases(): array {
+  public static function providerPhases(): array {
     $phases = CiJobPhaseEnum::values();
     array_walk($phases, static function (&$value) {
       $value = [$value];

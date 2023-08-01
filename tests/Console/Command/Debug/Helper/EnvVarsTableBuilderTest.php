@@ -46,7 +46,7 @@ class EnvVarsTableBuilderTest extends TestCase {
     self::assertEquals($expected, $actual, 'Built expected table.');
   }
 
-  public function providerBuild(): array {
+  public static function providerBuild(): array {
     return [
       [
         'rows' => [

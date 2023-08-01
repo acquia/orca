@@ -52,7 +52,7 @@ class RedundantJobCheckerTest extends TestCase {
     self::assertSame($is_redundant, $actual_second, 'Correctly cached return value.');
   }
 
-  public function providerIsRedundant(): array {
+  public static function providerIsRedundant(): array {
     return [
       'No duplicates' => [
         'ci_job' => CiJobEnum::INTEGRATED_TEST_ON_OLDEST_SUPPORTED(),

@@ -47,7 +47,7 @@ class TasksTest extends TestCase {
     self::assertInstanceOf($class, $object, sprintf('Successfully instantiated class: %s.', $class));
   }
 
-  public function providerConstruction(): array {
+  public static function providerConstruction(): array {
     return [
       [ComposerValidateTask::class],
       [PhpcsTask::class],

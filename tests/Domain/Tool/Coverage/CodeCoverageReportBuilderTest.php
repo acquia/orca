@@ -299,7 +299,7 @@ class CodeCoverageReportBuilderTest extends TestCase {
     ], $report, 'Returned correct report data.');
   }
 
-  public function providerHappyPath(): array {
+  public static function providerHappyPath(): array {
     return [
       [
         'path' => 'test/example',

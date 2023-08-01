@@ -45,7 +45,7 @@ class GitFacadeTest extends TestCase {
     self::assertSame($status, $return, 'Returned correct status code.');
   }
 
-  public function providerExecute(): array {
+  public static function providerExecute(): array {
     return [
       ['args' => [], 'cwd' => NULL, 'status' => 0],
       ['args' => ['commit'], 'cwd' => '/var/www', 'status' => 1],
@@ -107,7 +107,7 @@ class GitFacadeTest extends TestCase {
     $git->commitCodeChanges($message);
   }
 
-  public function providerCommitCodeChanges(): array {
+  public static function providerCommitCodeChanges(): array {
     return [
       ['Lorem'],
       ['Ipsum'],

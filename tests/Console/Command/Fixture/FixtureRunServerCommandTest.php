@@ -60,7 +60,7 @@ class FixtureRunServerCommandTest extends CommandTestBase {
     self::assertEquals($status_code, $this->getStatusCode(), 'Returned correct status code.');
   }
 
-  public function providerCommand(): array {
+  public static function providerCommand(): array {
     return [
       [FALSE, ['exists'], StatusCodeEnum::ERROR, sprintf("Error: No fixture exists at %s.\nHint: Use the \"fixture:init\" command to create one.\n", self::FIXTURE_ROOT)],
       [TRUE, ['exists', 'start', 'wait'], StatusCodeEnum::OK, sprintf("Starting web server...\nListening on http://%s.\nDocument root is %s.\nPress Ctrl-C to quit.\n", WebServer::WEB_ADDRESS, self::FIXTURE_DOCROOT)],
