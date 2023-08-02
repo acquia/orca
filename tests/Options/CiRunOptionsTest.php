@@ -107,24 +107,25 @@ class CiRunOptionsTest extends TestCase {
   }
 
   public static function providerMissingRequiredOptions(): array {
+    $obj = new CiRunOptionsTest("testMissingRequiredOptions");
     return [
       'No options' => [[]],
       'Missing job' => [
         [
-          'phase' => $this->validPhaseName(),
-          'sut' => $this->validSutName(),
+          'phase' => $obj->validPhaseName(),
+          'sut' => $obj->validSutName(),
         ],
       ],
       'Missing phase' => [
         [
-          'job' => $this->validJobName(),
-          'sut' => $this->validSutName(),
+          'job' => $obj->validJobName(),
+          'sut' => $obj->validSutName(),
         ],
       ],
       'Missing sut' => [
         [
-          'phase' => $this->validPhaseName(),
-          'job' => $this->validJobName(),
+          'phase' => $obj->validPhaseName(),
+          'job' => $obj->validJobName(),
         ],
       ],
     ];
@@ -157,46 +158,47 @@ class CiRunOptionsTest extends TestCase {
   }
 
   public static function providerInvalidOptions(): array {
+    $obj = new CiRunOptionsTest("testInvalidOptions");
     return [
       'Non-existent phase' => [
         [
-          'job' => $this->validJobName(),
+          'job' => $obj->validJobName(),
           'phase' => 'invalid',
-          'sut' => $this->validSutName(),
+          'sut' => $obj->validSutName(),
         ],
       ],
       'Non-existent job' => [
         [
           'job' => 'invalid',
-          'phase' => $this->validPhaseName(),
-          'sut' => $this->validSutName(),
+          'phase' => $obj->validPhaseName(),
+          'sut' => $obj->validSutName(),
         ],
       ],
       'Non-string phase' => [
         [
-          'job' => $this->validJobName(),
+          'job' => $obj->validJobName(),
           'phase' => 12345,
-          'sut' => $this->validSutName(),
+          'sut' => $obj->validSutName(),
         ],
       ],
       'Non-string job' => [
         [
           'job' => 12345,
-          'phase' => $this->validPhaseName(),
-          'sut' => $this->validSutName(),
+          'phase' => $obj->validPhaseName(),
+          'sut' => $obj->validSutName(),
         ],
       ],
       'Non-string sut' => [
         [
-          'job' => $this->validJobName(),
-          'phase' => $this->validPhaseName(),
+          'job' => $obj->validJobName(),
+          'phase' => $obj->validPhaseName(),
           'sut' => 12345,
         ],
       ],
       'Invalid sut' => [
         [
-          'job' => $this->validJobName(),
-          'phase' => $this->validPhaseName(),
+          'job' => $obj->validJobName(),
+          'phase' => $obj->validPhaseName(),
           'sut' => 'invalid',
         ],
       ],

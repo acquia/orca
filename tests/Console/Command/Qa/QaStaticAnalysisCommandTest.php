@@ -306,7 +306,7 @@ class QaStaticAnalysisCommandTest extends CommandTestBase {
 
   public static function providerPhpcsStandardOption(): array {
     return [
-      [[], $this->defaultPhpcsStandard],
+      [[], PhpcsStandardEnum::DEFAULT],
       [['--phpcs-standard' => PhpcsStandardEnum::ACQUIA_PHP], PhpcsStandardEnum::ACQUIA_PHP],
       [['--phpcs-standard' => PhpcsStandardEnum::ACQUIA_DRUPAL_TRANSITIONAL], PhpcsStandardEnum::ACQUIA_DRUPAL_TRANSITIONAL],
       [['--phpcs-standard' => PhpcsStandardEnum::ACQUIA_DRUPAL_STRICT], PhpcsStandardEnum::ACQUIA_DRUPAL_STRICT],
@@ -373,7 +373,7 @@ class QaStaticAnalysisCommandTest extends CommandTestBase {
 
   public static function providerInvalidPhpcsStandard(): array {
     return [
-      [['--phpcs-standard' => 'invalid'], $this->defaultPhpcsStandard, 'Error: Invalid value for "--phpcs-standard" option: "invalid".' . PHP_EOL],
+      [['--phpcs-standard' => 'invalid'], PhpcsStandardEnum::DEFAULT, 'Error: Invalid value for "--phpcs-standard" option: "invalid".' . PHP_EOL],
       [[], 'invalid', 'Error: Invalid value for $ORCA_PHPCS_STANDARD environment variable: "invalid".' . PHP_EOL],
     ];
   }
