@@ -135,7 +135,6 @@ class QaFixerCommand extends Command {
       $this->taskRunner->addTask($this->composerNormalize);
     }
     if ($all || $phpcbf) {
-      print "Hereeree" . " hii " . $this->getStandard($input) . " \n";
       $this->phpCodeBeautifierAndFixer->setStandard($this->getStandard($input));
       $this->taskRunner->addTask($this->phpCodeBeautifierAndFixer);
     }
@@ -151,10 +150,7 @@ class QaFixerCommand extends Command {
    *   The PHPCS standard.
    */
   private function getStandard(InputInterface $input): PhpcsStandardEnum {
-    print_r($input->getArguments());
-    print_r($input->getOptions());
     $standard = $input->getOption('phpcs-standard') ?? $this->defaultPhpcsStandard;
-    print "standard" . $standard;
     try {
       $standard = new PhpcsStandardEnum($standard);
     }

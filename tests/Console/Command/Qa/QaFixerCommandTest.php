@@ -42,7 +42,7 @@ class QaFixerCommandTest extends CommandTestBase {
     $filesystem = $this->filesystem->reveal();
     $php_code_beautifier_and_fixer = $this->phpCodeBeautifierAndFixer->reveal();
     $task_runner = $this->taskRunner->reveal();
-    return new QaFixerCommand($composer_normalize, PhpcsStandardEnum::DEFAULT, $filesystem, $php_code_beautifier_and_fixer, $task_runner);
+    return new QaFixerCommand($composer_normalize, $this->defaultPhpcsStandard, $filesystem, $php_code_beautifier_and_fixer, $task_runner);
   }
 
   /**
@@ -169,7 +169,7 @@ class QaFixerCommandTest extends CommandTestBase {
       ->shouldBeCalledTimes(1)
       ->willReturn(TRUE);
     $this->phpCodeBeautifierAndFixer
-      ->setStandard(new PhpcsStandardEnum(PhpcsStandardEnum::DEFAULT))
+      ->setStandard(new PhpcsStandardEnum($this->defaultPhpcsStandard))
       ->shouldBeCalledOnce();
     $this->taskRunner
       ->addTask($this->phpCodeBeautifierAndFixer->reveal())
