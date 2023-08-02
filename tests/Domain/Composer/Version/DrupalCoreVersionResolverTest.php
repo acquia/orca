@@ -447,7 +447,8 @@ class DrupalCoreVersionResolverTest extends TestCase {
   }
 
   public static function providerResolvePredefinedVersionNotFound(): array {
-    $data = $this->providerVersions();
+    $obj = new DrupalCoreVersionResolverTest('testResolvePredefinedVersionNotFound');
+    $data = $obj->providerVersions();
     unset(
       $data[DrupalCoreVersionEnum::CURRENT],
       $data[DrupalCoreVersionEnum::CURRENT_DEV],
