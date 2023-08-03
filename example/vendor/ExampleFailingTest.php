@@ -9,13 +9,15 @@ use PHPUnit\Framework\TestCase;
  * run by ORCA. This failing test is used to verify that ORCA excludes the
  * vendor directory as expected.
  */
-class ExampleFailingTest extends TestCase {
+class ExampleFailingTest extends TestCase
+{
 
-  /**
-   * ORCA should never run this test.
-   */
-  public function testExcludeVendorDirectory(): void {
-    self::assertTrue(FALSE);
-  }
+    /**
+     * ORCA should never run this test.
+     */
+    public function testExcludeVendorDirectory(): void
+    {
+        self::assertTrue(false);
+    }
 
 }
