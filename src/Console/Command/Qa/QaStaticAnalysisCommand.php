@@ -206,7 +206,7 @@ class QaStaticAnalysisCommand extends Command {
       $this->taskRunner->addTask($this->phpCodeSniffer);
     }
     if ($all || $phploc || $coverage) {
-      $this->taskRunner->addTask($this->phploc);
+      //$this->taskRunner->addTask($this->phploc);
     }
     if ($all || $coverage) {
       $this->taskRunner->addTask($this->coverage);
