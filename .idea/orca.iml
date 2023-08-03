@@ -108,9 +108,6 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/event-dispatcher-contracts" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/event-dispatcher" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/psr/event-dispatcher" />
-      <excludeFolder url="file://$MODULE_DIR$/vendor/sebastian/git" />
-      <excludeFolder url="file://$MODULE_DIR$/vendor/sebastian/finder-facade" />
-      <excludeFolder url="file://$MODULE_DIR$/vendor/theseer/fdomdocument" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

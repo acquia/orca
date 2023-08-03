@@ -7,7 +7,6 @@ use Acquia\Orca\Domain\Tool\ComposerValidate\ComposerValidateTask;
 use Acquia\Orca\Domain\Tool\Coverage\CoverageTask;
 use Acquia\Orca\Domain\Tool\Phpcs\PhpcsTask;
 use Acquia\Orca\Domain\Tool\PhpLint\PhpLintTask;
-use Acquia\Orca\Domain\Tool\Phploc\PhplocTask;
 use Acquia\Orca\Domain\Tool\Phpmd\PhpmdTask;
 use Acquia\Orca\Domain\Tool\YamlLint\YamlLintTask;
 use Acquia\Orca\Enum\PhpcsStandardEnum;
@@ -25,7 +24,6 @@ use Symfony\Component\Filesystem\Filesystem;
  * @property \Acquia\Orca\Domain\Tool\Coverage\CoverageTask|\Prophecy\Prophecy\ObjectProphecy $coverage
  * @property \Acquia\Orca\Domain\Tool\Phpcs\PhpcsTask|\Prophecy\Prophecy\ObjectProphecy $phpCodeSniffer
  * @property \Acquia\Orca\Domain\Tool\PhpLint\PhpLintTask|\Prophecy\Prophecy\ObjectProphecy $phpLint
- * @property \Acquia\Orca\Domain\Tool\Phploc\PhplocTask|\Prophecy\Prophecy\ObjectProphecy $phploc
  * @property \Acquia\Orca\Domain\Tool\Phpmd\PhpmdTask|\Prophecy\Prophecy\ObjectProphecy $phpMessDetector
  * @property \Acquia\Orca\Domain\Tool\YamlLint\YamlLintTask|\Prophecy\Prophecy\ObjectProphecy $yamlLint
  * @property \Acquia\Orca\Helper\Task\TaskRunner|\Prophecy\Prophecy\ObjectProphecy $taskRunner
@@ -40,7 +38,6 @@ class QaStaticAnalysisCommandTest extends CommandTestBase {
     'phpcs',
     'phpcs-standard',
     'phplint',
-    'phploc',
     'phpmd',
     'yamllint',
   ];
@@ -52,7 +49,6 @@ class QaStaticAnalysisCommandTest extends CommandTestBase {
   protected CoverageTask|ObjectProphecy $coverage;
   protected PhpcsTask|ObjectProphecy $phpCodeSniffer;
   protected PhpLintTask|ObjectProphecy $phpLint;
-  protected PhplocTask|ObjectProphecy $phploc;
   protected PhpmdTask|ObjectProphecy $phpMessDetector;
   protected YamlLintTask|ObjectProphecy $yamlLint;
   protected TaskRunner|ObjectProphecy $taskRunner;
@@ -67,7 +63,6 @@ class QaStaticAnalysisCommandTest extends CommandTestBase {
       ->willReturn(TRUE);
     $this->phpCodeSniffer = $this->prophesize(PhpcsTask::class);
     $this->phpLint = $this->prophesize(PhpLintTask::class);
-    $this->phploc = $this->prophesize(PhplocTask::class);
     $this->phpMessDetector = $this->prophesize(PhpmdTask::class);
     $this->taskRunner = $this->prophesize(TaskRunner::class);
     $this->taskRunner
@@ -88,11 +83,10 @@ class QaStaticAnalysisCommandTest extends CommandTestBase {
     $filesystem = $this->filesystem->reveal();
     $php_code_sniffer = $this->phpCodeSniffer->reveal();
     $phplint = $this->phpLint->reveal();
-    $phploc = $this->phploc->reveal();
     $php_mess_detector = $this->phpMessDetector->reveal();
     $task_runner = $this->taskRunner->reveal();
     $yaml_lint = $this->yamlLint->reveal();
-    return new QaStaticAnalysisCommand($coverage, $composer_validate, $this->defaultPhpcsStandard, $filesystem, $php_code_sniffer, $phplint, $phploc, $php_mess_detector, $task_runner, $yaml_lint);
+    return new QaStaticAnalysisCommand($coverage, $composer_validate, $this->defaultPhpcsStandard, $filesystem, $php_code_sniffer, $phplint, $php_mess_detector, $task_runner, $yaml_lint);
   }
 
   /**
@@ -138,7 +132,6 @@ class QaStaticAnalysisCommandTest extends CommandTestBase {
       ['phpcs', FALSE],
       ['phpcs-standard', 'AcquiaDrupalTransitional'],
       ['phplint', FALSE],
-      ['phploc', FALSE],
       ['phpmd', FALSE],
       ['yamllint', FALSE],
     ];
@@ -175,10 +168,6 @@ class QaStaticAnalysisCommandTest extends CommandTestBase {
       ->addTask($this->phpLint->reveal())
       ->shouldBeCalledTimes($run_called)
       ->willReturn($this->taskRunner);
-    // $this->taskRunner
-    // ->addTask($this->phploc->reveal())
-    // ->shouldBeCalledTimes($run_called)
-    // ->willReturn($this->taskRunner);
     $this->taskRunner
       ->addTask($this->phpMessDetector->reveal())
       ->shouldBeCalledTimes($run_called)
@@ -259,10 +248,6 @@ class QaStaticAnalysisCommandTest extends CommandTestBase {
       ->addTask($this->coverage->reveal())
       ->shouldBeCalledOnce()
       ->willReturn($this->taskRunner);
-    // $this->taskRunner
-    // ->addTask($this->phploc->reveal())
-    // ->shouldBeCalledOnce()
-    // ->willReturn($this->taskRunner);
     $args['path'] = self::SUT_PATH;
 
     $this->executeCommand($args);
@@ -273,7 +258,6 @@ class QaStaticAnalysisCommandTest extends CommandTestBase {
   public static function providerCoverageOptionSpecialCaseTaskFiltering(): array {
     return [
       [['--coverage' => 1]],
-      [['--coverage' => 1, '--phploc' => 1]],
     ];
   }
 
