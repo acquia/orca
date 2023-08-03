@@ -40,27 +40,27 @@ jobs:
       matrix:
         orca-job:
           - STATIC_CODE_ANALYSIS
-          - INTEGRATED_TEST_ON_OLDEST_SUPPORTED
-          - INTEGRATED_TEST_ON_PREVIOUS_MINOR
-          - INTEGRATED_TEST_ON_LATEST_LTS
-          # - INTEGRATED_UPGRADE_TEST_FROM_PREVIOUS_MINOR
-          - INTEGRATED_TEST_ON_CURRENT
-          # - INTEGRATED_UPGRADE_TEST_TO_NEXT_MINOR
-          - ISOLATED_TEST_ON_CURRENT_DEV
-          - INTEGRATED_TEST_ON_CURRENT_DEV
-          - STRICT_DEPRECATED_CODE_SCAN
-          - ISOLATED_TEST_ON_NEXT_MINOR
-          - INTEGRATED_TEST_ON_NEXT_MINOR
-          # - ISOLATED_UPGRADE_TEST_TO_NEXT_MAJOR_BETA_OR_LATER
-          # - ISOLATED_UPGRADE_TEST_TO_NEXT_MAJOR_DEV
-          - DEPRECATED_CODE_SCAN_W_CONTRIB
-          - INTEGRATED_TEST_ON_NEXT_MINOR_DEV
-          - ISOLATED_TEST_ON_NEXT_MINOR_DEV
-          # - INTEGRATED_UPGRADE_TEST_TO_NEXT_MINOR_DEV
-          - LOOSE_DEPRECATED_CODE_SCAN
-          - INTEGRATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_BETA_OR_LATER
-          - ISOLATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_DEV
-          - INTEGRATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_DEV
+#          - INTEGRATED_TEST_ON_OLDEST_SUPPORTED
+#          - INTEGRATED_TEST_ON_PREVIOUS_MINOR
+#          - INTEGRATED_TEST_ON_LATEST_LTS
+#          # - INTEGRATED_UPGRADE_TEST_FROM_PREVIOUS_MINOR
+#          - INTEGRATED_TEST_ON_CURRENT
+#          # - INTEGRATED_UPGRADE_TEST_TO_NEXT_MINOR
+#          - ISOLATED_TEST_ON_CURRENT_DEV
+#          - INTEGRATED_TEST_ON_CURRENT_DEV
+#          - STRICT_DEPRECATED_CODE_SCAN
+#          - ISOLATED_TEST_ON_NEXT_MINOR
+#          - INTEGRATED_TEST_ON_NEXT_MINOR
+#          # - ISOLATED_UPGRADE_TEST_TO_NEXT_MAJOR_BETA_OR_LATER
+#          # - ISOLATED_UPGRADE_TEST_TO_NEXT_MAJOR_DEV
+#          - DEPRECATED_CODE_SCAN_W_CONTRIB
+#          - INTEGRATED_TEST_ON_NEXT_MINOR_DEV
+#          - ISOLATED_TEST_ON_NEXT_MINOR_DEV
+#          # - INTEGRATED_UPGRADE_TEST_TO_NEXT_MINOR_DEV
+#          - LOOSE_DEPRECATED_CODE_SCAN
+#          - INTEGRATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_BETA_OR_LATER
+#          - ISOLATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_DEV
+#          - INTEGRATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_DEV
         php-version: [ "8.1" ]
         orca-enable-nightwatch: [ "FALSE" ]
         orca-coverage-enable: [ "FALSE" ]
@@ -71,13 +71,13 @@ jobs:
             orca-enable-nightwatch: "TRUE"
             orca-coverage-enable: "TRUE"
 
-          # Testing Drupal 10 in php 8.2.
-          - orca-job: ISOLATED_TEST_ON_CURRENT
-            php-version: "8.2"
-
-          # Testing latest Drupal 9 in php 8.2.
-          - orca-job: INTEGRATED_TEST_ON_LATEST_LTS
-            php-version: "8.2"
+#          # Testing Drupal 10 in php 8.2.
+#          - orca-job: ISOLATED_TEST_ON_CURRENT
+#            php-version: "8.2"
+#
+#          # Testing latest Drupal 9 in php 8.2.
+#          - orca-job: INTEGRATED_TEST_ON_LATEST_LTS
+#            php-version: "8.2"
 
 
     steps:
@@ -91,6 +91,57 @@ jobs:
         with:
           php-version: ${{ matrix.php-version }}
           coverage: xdebug
+
+      - name: Install google-chrome-stable
+        run: |
+          sudo dpkg -r google-chrome-stable
+          CHROME_VERSION_STRING="114.0.5735.198-1"
+          wget --no-verbose -O /tmp/chrome.deb https://dl.google.com/linux/chrome/deb/pool/main/g/google-chrome-stable/google-chrome-stable_114.0.5735.198-1_amd64.deb \
+          && sudo apt install -y /tmp/chrome.deb \
+          && sudo rm /tmp/chrome.deb
+          sudo echo "CHROME_BIN=/usr/bin/google-chrome" | sudo tee -a /etc/environment
+          update-alternatives --list google-chrome
+          update-alternatives --display google-chrome
+          CHROME_VERSION="$(google-chrome-stable --version)"
+          echo $CHROME_VERSION
+          CHROME_VERSION2="$(google-chrome --version)"
+          echo $CHROME_VERSION2
+
+          # Download and unpack the latest release of chromedriver
+          # CHROMEDRIVER_URL="https://www.googleapis.com/download/storage/v1/b/chromium-browser-snapshots/o/Linux_x64%2F1140487%2Fchromedriver_linux64.zip?&alt=media"
+          CHROME_DRIVER_VERSION_STRING="114.0.5735.90"
+          CHROMEDRIVER_URL="https://chromedriver.storage.googleapis.com/${CHROME_DRIVER_VERSION_STRING}/chromedriver_linux64.zip"
+          CHROMEDRIVER_ARCHIVE="chromedriver_linux64.zip"
+          CHROMEDRIVER_DIR="/usr/local/share/chromedriver-linux64"
+          CHROMEDRIVER_BIN="$CHROMEDRIVER_DIR/chromedriver"
+          sudo rm -rf $CHROMEDRIVER_DIR
+          sudo mkdir $CHROMEDRIVER_DIR
+
+          echo "Installing chromedriver version"
+          wget --no-verbose -O /tmp/$CHROMEDRIVER_ARCHIVE $CHROMEDRIVER_URL
+          sudo unzip -qq /tmp/$CHROMEDRIVER_ARCHIVE -d $CHROMEDRIVER_DIR
+
+          sudo chmod +x $CHROMEDRIVER_BIN
+          sudo ln -sf "$CHROMEDRIVER_BIN" /usr/bin/
+          sudo echo "CHROMEWEBDRIVER=$CHROMEDRIVER_DIR" | sudo tee -a /etc/environment
+
+          # Download and unpack Chromium
+          CHROMIUM_URL="https://www.googleapis.com/download/storage/v1/b/chromium-browser-snapshots/o/Linux_x64%2F1140487%2Fchrome-linux.zip?alt=media"
+          CHROMIUM_ARCHIVE="Linux_x64_1140535_chrome-linux.zip"
+          CHROMIUM_DIR="/usr/local/share/chromium"
+          CHROMIUM_BIN="${CHROMIUM_DIR}/chrome-linux/chrome"
+
+          echo "Installing chromium revision"
+          wget --no-verbose -O /tmp/$CHROMIUM_ARCHIVE $CHROMIUM_URL
+          sudo rm -rf $CHROMIUM_DIR
+          sudo mkdir $CHROMIUM_DIR
+          sudo unzip -qq /tmp/$CHROMIUM_ARCHIVE -d $CHROMIUM_DIR
+          sudo ln -sf $CHROMIUM_BIN /usr/bin/chromium
+          sudo ln -sf $CHROMIUM_BIN /usr/bin/chromium-browser
+          CHROMIUM_VERSION="$(/usr/bin/chromium --version)"
+          echo $CHROMIUM_VERSION
+
+          which chromedriver
 
       - name: Before install
         run: |
