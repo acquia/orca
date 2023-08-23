@@ -120,6 +120,7 @@ jobs:
           echo "Installing chromedriver version"
           wget --no-verbose -O /tmp/$CHROMEDRIVER_ARCHIVE $CHROMEDRIVER_URL
           sudo unzip -qq /tmp/$CHROMEDRIVER_ARCHIVE -d $CHROMEDRIVER_DIR
+          ls -la $CHROMEDRIVER_DIR
 
           sudo chmod +x $CHROMEDRIVER_BIN
           sudo ln -sf "$CHROMEDRIVER_BIN" /usr/bin/
