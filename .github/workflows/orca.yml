@@ -126,24 +126,6 @@ jobs:
           sudo ln -sf "$CHROMEDRIVER_BIN" /usr/bin/
           sudo echo "CHROMEWEBDRIVER=$CHROMEDRIVER_DIR" | sudo tee -a /etc/environment
 
-          # Download and unpack Chromium
-          CHROMIUM_URL="https://www.googleapis.com/download/storage/v1/b/chromium-browser-snapshots/o/Linux_x64%2F1140487%2Fchrome-linux.zip?alt=media"
-          CHROMIUM_ARCHIVE="Linux_x64_1140535_chrome-linux.zip"
-          CHROMIUM_DIR="/usr/local/share/chromium"
-          CHROMIUM_BIN="${CHROMIUM_DIR}/chrome-linux/chrome"
-
-          echo "Installing chromium revision"
-          wget --no-verbose -O /tmp/$CHROMIUM_ARCHIVE $CHROMIUM_URL
-          sudo rm -rf $CHROMIUM_DIR
-          sudo mkdir $CHROMIUM_DIR
-          sudo unzip -qq /tmp/$CHROMIUM_ARCHIVE -d $CHROMIUM_DIR
-          sudo ln -sf $CHROMIUM_BIN /usr/bin/chromium
-          sudo ln -sf $CHROMIUM_BIN /usr/bin/chromium-browser
-          CHROMIUM_VERSION="$(/usr/bin/chromium --version)"
-          echo $CHROMIUM_VERSION
-
-          which chromedriver
-
       - name: Before install
         run: |
           ../orca/bin/ci/self-test/before_install.sh
