@@ -97,7 +97,7 @@ jobs:
           # Remove existing google chrome and install required version.
           sudo dpkg -r google-chrome-stable
           CHROME_VERSION_STRING="114.0.5735.198-1"
-          wget --no-verbose -O /tmp/chrome.deb https://dl.google.com/linux/chrome/deb/pool/main/g/google-chrome-stable/google-chrome-stable_114.0.5735.198-1_amd64.deb \
+          wget --no-verbose -O /tmp/chrome.deb "https://dl.google.com/linux/chrome/deb/pool/main/g/google-chrome-stable/google-chrome-stable_${CHROME_VERSION_STRING}_amd64.deb" \
           && sudo apt install -y /tmp/chrome.deb \
           && sudo rm /tmp/chrome.deb
           sudo echo "CHROME_BIN=/usr/bin/google-chrome" | sudo tee -a /etc/environment
