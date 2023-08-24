@@ -92,6 +92,31 @@ jobs:
           php-version: ${{ matrix.php-version }}
           coverage: xdebug
 
+      - name: Install google-chrome-stable
+        run: |
+          # Remove existing google chrome and install required version.
+          sudo dpkg -r google-chrome-stable
+          CHROME_VERSION_STRING="114.0.5735.198-1"
+          wget --no-verbose -O /tmp/chrome.deb "https://dl.google.com/linux/chrome/deb/pool/main/g/google-chrome-stable/google-chrome-stable_${CHROME_VERSION_STRING}_amd64.deb" \
+          && sudo apt install -y /tmp/chrome.deb \
+          && sudo rm /tmp/chrome.deb
+          sudo echo "CHROME_BIN=/usr/bin/google-chrome" | sudo tee -a /etc/environment
+
+          # Download and unpack chromedriver.
+          CHROME_DRIVER_VERSION_STRING="114.0.5735.90"
+          CHROMEDRIVER_ARCHIVE="chromedriver_linux64.zip"
+          CHROMEDRIVER_URL="https://chromedriver.storage.googleapis.com/${CHROME_DRIVER_VERSION_STRING}/${CHROMEDRIVER_ARCHIVE}"
+          CHROMEDRIVER_DIR="/usr/local/share/chromedriver-linux64"
+          CHROMEDRIVER_BIN="$CHROMEDRIVER_DIR/chromedriver"
+          sudo rm -rf $CHROMEDRIVER_DIR
+          sudo mkdir $CHROMEDRIVER_DIR
+          echo "Installing chromedriver version"
+          wget --no-verbose -O /tmp/$CHROMEDRIVER_ARCHIVE $CHROMEDRIVER_URL
+          sudo unzip -qq /tmp/$CHROMEDRIVER_ARCHIVE -d $CHROMEDRIVER_DIR
+          sudo chmod +x $CHROMEDRIVER_BIN
+          sudo ln -sf "$CHROMEDRIVER_BIN" /usr/bin/
+          sudo echo "CHROMEWEBDRIVER=$CHROMEDRIVER_DIR" | sudo tee -a /etc/environment
+
       - name: Before install
         run: |
           ../orca/bin/ci/self-test/before_install.sh
