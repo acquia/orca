@@ -104,8 +104,8 @@ jobs:
 
           # Download and unpack chromedriver.
           CHROME_DRIVER_VERSION_STRING="114.0.5735.90"
-          CHROMEDRIVER_URL="https://chromedriver.storage.googleapis.com/${CHROME_DRIVER_VERSION_STRING}/chromedriver_linux64.zip"
           CHROMEDRIVER_ARCHIVE="chromedriver_linux64.zip"
+          CHROMEDRIVER_URL="https://chromedriver.storage.googleapis.com/${CHROME_DRIVER_VERSION_STRING}/${CHROMEDRIVER_ARCHIVE}.zip"
           CHROMEDRIVER_DIR="/usr/local/share/chromedriver-linux64"
           CHROMEDRIVER_BIN="$CHROMEDRIVER_DIR/chromedriver"
           sudo rm -rf $CHROMEDRIVER_DIR
