@@ -18,6 +18,7 @@ jobs:
     # token from your Jira user profile.
     secrets:
       jira-api-token: ${{ secrets.JIRA_API_TOKEN }}
+      jira-user-email: ${{ secrets.JIRA_USER_EMAIL }}
       github-token: ${{ secrets.GITHUB_TOKEN }}
     with:
       issue_label: grooming
