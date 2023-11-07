@@ -47,7 +47,7 @@
         "symfony/dependency-injection": "^6.0.20",
         "symfony/event-dispatcher": "^6.3",
         "symfony/expression-language": "^5.4.21",
-        "symfony/filesystem": "^5.4.21",
+        "symfony/filesystem": "^6.3.1",
         "symfony/finder": "^6.2.7",
         "symfony/http-client": "^6.2.10",
         "symfony/options-resolver": "^5.4.21",
