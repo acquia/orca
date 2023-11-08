@@ -144,6 +144,7 @@ class GoogleApiClient {
             PHP_VERSION,
             $data['status'],
             $data['allowedToFail'],
+            $data['branch'],
           ],
         ],
       ],
