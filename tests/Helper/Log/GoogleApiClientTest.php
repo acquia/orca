@@ -79,6 +79,7 @@ class GoogleApiClientTest extends TestCase {
       'sut' => 'drupal/example',
       'status' => 'PASS',
       'version' => NULL,
+      'allowedToFail' => TRUE,
     ];
     $this->version
       ->resolvePredefined(Argument::any())
@@ -99,6 +100,7 @@ class GoogleApiClientTest extends TestCase {
       'sut' => 'drupal/example',
       'status' => 'PASS',
       'version' => DrupalCoreVersionEnum::CURRENT(),
+      'allowedToFail' => TRUE,
     ];
     $this->version
       ->existsPredefined(Argument::any())

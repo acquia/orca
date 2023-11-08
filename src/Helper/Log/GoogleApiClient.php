@@ -143,6 +143,7 @@ class GoogleApiClient {
             $data['version'],
             PHP_VERSION,
             $data['status'],
+            $data['allowedToFail'],
           ],
         ],
       ],
