@@ -8,6 +8,7 @@ use Acquia\Orca\Enum\CiJobPhaseEnum;
 use Acquia\Orca\Enum\StatusCodeEnum;
 use Acquia\Orca\Event\CiEvent;
 use Acquia\Orca\Exception\OrcaInvalidArgumentException;
+use Acquia\Orca\Helper\EnvFacade;
 use Acquia\Orca\Options\CiRunOptionsFactory;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -47,6 +48,13 @@ class CiRunCommand extends Command {
   private $eventDispatcher;
 
   /**
+   * The environment facade.
+   *
+   * @var \Acquia\Orca\Helper\EnvFacade
+   */
+  private EnvFacade $env;
+
+  /**
    * Constructs an instance.
    *
    * @param \Acquia\Orca\Domain\Ci\CiJobFactory $job_factory
@@ -55,11 +63,14 @@ class CiRunCommand extends Command {
    *   The CI run options factory.
    * @param \Symfony\Component\EventDispatcher\EventDispatcher $eventDispatcher
    *   The event dispatcher service.
+   * @param \Acquia\Orca\Helper\EnvFacade $env
+   *   The environment facade.
    */
-  public function __construct(CiJobFactory $job_factory, CiRunOptionsFactory $ci_run_options_factory, EventDispatcher $eventDispatcher) {
+  public function __construct(CiJobFactory $job_factory, CiRunOptionsFactory $ci_run_options_factory, EventDispatcher $eventDispatcher, EnvFacade $env) {
     $this->ciJobFactory = $job_factory;
     $this->ciRunOptionsFactory = $ci_run_options_factory;
     $this->eventDispatcher = $eventDispatcher;
+    $this->env = $env;
     parent::__construct(self::$defaultName);
   }
 
@@ -131,6 +142,7 @@ class CiRunCommand extends Command {
       $data['status'] = 'FAIL';
       $job = $this->ciJobFactory->create($options->getJob());
       $data['version'] = $job->getDrupalCoreVersion();
+      $data['allowedToFail'] = $this->env->get("ORCA_IS_ALLOWED_FAILURE") ?? FALSE;
       $job->run($options);
 
     }
