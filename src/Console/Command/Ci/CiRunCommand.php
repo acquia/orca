@@ -142,8 +142,8 @@ class CiRunCommand extends Command {
       $data['status'] = 'FAIL';
       $job = $this->ciJobFactory->create($options->getJob());
       $data['version'] = $job->getDrupalCoreVersion();
-      $data['allowedToFail'] = $this->env->get("ORCA_IS_ALLOWED_FAILURE") ?? FALSE;
-      $data['branch'] = $this->env->get("ORCA_SUT_BRANCH") ?? FALSE;
+      $data['allowedToFail'] = $this->env->get("ORCA_IS_ALLOWED_FAILURE", FALSE);
+      $data['branch'] = $this->env->get("ORCA_SUT_BRANCH", FALSE);
       $job->run($options);
 
     }
