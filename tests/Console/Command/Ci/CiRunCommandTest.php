@@ -61,7 +61,7 @@ class CiRunCommandTest extends CommandTestBase {
     $this->env = $this->prophesize(EnvFacade::class);
     $this->env
       ->get(Argument::any())
-      ->willReturn();
+      ->willReturn(NULL);
   }
 
   protected function createCommand(): Command {
