@@ -60,7 +60,7 @@ class CiRunCommandTest extends CommandTestBase {
       ->willReturn(new \stdClass());
     $this->env = $this->prophesize(EnvFacade::class);
     $this->env
-      ->get(Argument::any())
+      ->get(Argument::any(), FALSE)
       ->willReturn(NULL);
   }
 
