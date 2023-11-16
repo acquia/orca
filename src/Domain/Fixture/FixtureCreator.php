@@ -237,6 +237,7 @@ class FixtureCreator {
     $this->ensureDrupalSettings();
     $this->installSite();
     $this->setUpFilesDirectories();
+    $this->runACMSCommands();
     $this->customizeFixture();
     $this->createAndCheckoutBackupTag();
     $this->displaySecurityVulnerabilityAdvisories();
@@ -936,6 +937,16 @@ class FixtureCreator {
       '-R',
       '0770',
     ], $directories));
+  }
+
+  /**
+   * @return void
+   */
+  public function runACMSCommands(): void {
+    $this->output->section('Run ACMS Site Build');
+    $this->processRunner->runFixtureVendorBin(['acms','acms:build']);
+    $this->output->section('Run ACMS Site Install');
+    $this->processRunner->runFixtureVendorBin(['acms','acms:install']);
   }
 
   /**
