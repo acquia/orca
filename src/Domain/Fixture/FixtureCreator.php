@@ -944,9 +944,9 @@ class FixtureCreator {
    */
   public function runAcmsCommands(): void {
     $this->output->section('Run ACMS Site Build');
-    $this->processRunner->runFixtureVendorBin(['acms', 'acms:build']);
+    $this->processRunner->runFixtureVendorBin(['acms', 'acms:build', '--no-interaction']);
     $this->output->section('Run ACMS Site Install');
-    $this->processRunner->runFixtureVendorBin(['acms', 'acms:install']);
+    $this->processRunner->runFixtureVendorBin(['acms', 'acms:install', '--no-interaction']);
   }
 
   /**
