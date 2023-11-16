@@ -14,8 +14,6 @@ parameters:
   env(ORCA_PHPCS_STANDARD): "AcquiaDrupalTransitional"
   env(ORCA_TELEMETRY_ENABLE): "false"
   env(ORCA_IS_ALLOWED_FAILURE): "%env(ORCA_IS_ALLOWED_FAILURE)%"
-  env(SITESTUDIO_API_KEY): "key-cohesion-baseline"
-  env(SITESTUDIO_ORG_KEY): "test-cohesion-baseline"
 
 services:
 

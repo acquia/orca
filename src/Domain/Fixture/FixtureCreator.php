@@ -943,7 +943,7 @@ class FixtureCreator {
    * Runs ACMS commands.
    */
   public function runAcmsCommands(): void {
-    if($this->fixtureInspector->getInstalledPackageVersionPretty('acquia/acquia_cms') === '~'){
+    if ($this->fixtureInspector->getInstalledPackageVersionPretty('acquia/acquia_cms') === '~') {
       return;
     }
     $this->output->section('Run ACMS Site Build');
