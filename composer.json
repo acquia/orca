@@ -50,7 +50,7 @@
         "symfony/filesystem": "^5.4.21",
         "symfony/finder": "^6.2.7",
         "symfony/http-client": "^6.2.10",
-        "symfony/options-resolver": "^5.4.21",
+        "symfony/options-resolver": "^6.3.0",
         "symfony/phpunit-bridge": "^6.2.7",
         "symfony/process": "^5.4.22",
         "symfony/yaml": "^6.3.0",
