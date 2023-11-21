@@ -43,3 +43,7 @@ if [[ "$ORCA_JOB" ]]; then
   eval "orca ci:run $ORCA_JOB script $ORCA_SUT_NAME"
 fi
 echo "Debug 4: "$?
+
+echo "completed"
+
+echo "Debug 5: "$?
