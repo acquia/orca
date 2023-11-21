@@ -11,7 +11,12 @@
 
 cd "$(dirname "$0")" || exit; source _includes.sh
 
+echo "Debug 1: "$?
+if [[ "$ORCA_JOB" ]]; then
+  eval "orca ci:run $ORCA_JOB script $ORCA_SUT_NAME"
 
+fi
+echo "Debug 2: "$?
 
 if [[ "$ORCA_ENABLE_NIGHTWATCH" == "TRUE" && "$ORCA_SUT_HAS_NIGHTWATCH_TESTS" && -d "$ORCA_YARN_DIR" ]]; then
   (
@@ -32,9 +37,9 @@ if [[ "$ORCA_ENABLE_NIGHTWATCH" == "TRUE" && "$ORCA_SUT_HAS_NIGHTWATCH_TESTS" &&
     kill -0 $CHROMEDRIVER_PID
   )
 fi
-echo $?
+
+echo "Debug 3: "$?
 if [[ "$ORCA_JOB" ]]; then
   eval "orca ci:run $ORCA_JOB script $ORCA_SUT_NAME"
-  echo $?
 fi
-
+echo "Debug 4: "$?
