@@ -16,7 +16,7 @@ function shutdown() {
       return 0
     fi
 }
-trap shutdown EXIT
+trap shutdown 1 2 3 6
 
 echo "Debug 1: "$?
 if [[ "$ORCA_JOB" ]]; then
