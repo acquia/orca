@@ -32,8 +32,9 @@ if [[ "$ORCA_ENABLE_NIGHTWATCH" == "TRUE" && "$ORCA_SUT_HAS_NIGHTWATCH_TESTS" &&
     kill -0 $CHROMEDRIVER_PID
   )
 fi
-
+echo $?
 if [[ "$ORCA_JOB" ]]; then
   eval "orca ci:run $ORCA_JOB script $ORCA_SUT_NAME"
+  echo $?
 fi
 
