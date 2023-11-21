@@ -12,8 +12,8 @@
 cd "$(dirname "$0")" || exit; source _includes.sh
 
 function shutdown() {
-    if ($ORCA_IS_ALLOWED_FAILURE === TRUE); then
-      return 0;
+    if [[ "$ORCA_IS_ALLOWED_FAILURE" == "TRUE" ]]; then
+      return 0
     fi
 }
 trap shutdown EXIT
