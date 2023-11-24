@@ -11,20 +11,6 @@
 
 cd "$(dirname "$0")" || exit; source _includes.sh
 
-function shutdown() {
-    if [[ "$ORCA_IS_ALLOWED_FAILURE" == "TRUE" ]]; then
-      return 0
-    fi
-}
-trap shutdown 1 2 3 6
-
-echo "Debug 1: "$?
-if [[ "$ORCA_JOB" ]]; then
-  eval "orca ci:run $ORCA_JOB script $ORCA_SUT_NAME"
-
-fi
-echo "Debug 2: "$?
-
 if [[ "$ORCA_ENABLE_NIGHTWATCH" == "TRUE" && "$ORCA_SUT_HAS_NIGHTWATCH_TESTS" && -d "$ORCA_YARN_DIR" ]]; then
   (
     cd "$ORCA_YARN_DIR" || exit
@@ -48,3 +34,4 @@ fi
 if [[ "$ORCA_JOB" ]]; then
   eval "orca ci:run $ORCA_JOB script $ORCA_SUT_NAME"
 fi
+

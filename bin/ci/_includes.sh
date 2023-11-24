@@ -122,10 +122,18 @@ allowed_failures=(
   "INTEGRATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_BETA_OR_LATER"
 )
 if [[ " ${allowed_failures[*]} " =~ " ${ORCA_JOB} " ]]; then
-  set +e
+#  set +e
   export ORCA_IS_ALLOWED_FAILURE="TRUE"
   notice "This job is allowed to fail and will report as passing regardless of outcome."
 fi
+
+function shutdown() {
+    if [[ "$ORCA_IS_ALLOWED_FAILURE" == "TRUE" ]]; then
+        exit 0
+    fi
+}
+
+trap shutdown ERR
 
 # Make the shell print all lines in the script before executing them.
 set -v
