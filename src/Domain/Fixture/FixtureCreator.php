@@ -230,6 +230,7 @@ class FixtureCreator {
     $this->removeComposerConfigPlatform();
     $this->replaceCoreRecommendedWithCore();
     $this->fixDefaultDependencies();
+    $this->runAcmsCommands();
     $this->addAllowedComposerPlugins();
     $this->addCompanyPackages();
     $this->composer->updateLockFile();
@@ -237,7 +238,6 @@ class FixtureCreator {
     $this->ensureDrupalSettings();
     $this->installSite();
     $this->setUpFilesDirectories();
-    $this->runAcmsCommands();
     $this->customizeFixture();
     $this->createAndCheckoutBackupTag();
     $this->displaySecurityVulnerabilityAdvisories();
