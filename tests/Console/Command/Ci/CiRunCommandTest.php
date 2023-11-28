@@ -8,6 +8,7 @@ use Acquia\Orca\Enum\CiJobEnum;
 use Acquia\Orca\Enum\CiJobPhaseEnum;
 use Acquia\Orca\Enum\StatusCodeEnum;
 use Acquia\Orca\Exception\OrcaInvalidArgumentException;
+use Acquia\Orca\Helper\EnvFacade;
 use Acquia\Orca\Options\CiRunOptions;
 use Acquia\Orca\Options\CiRunOptionsFactory;
 use Acquia\Orca\Tests\Console\Command\CommandTestBase;
@@ -22,11 +23,20 @@ use Symfony\Component\EventDispatcher\EventDispatcher;
  * @property \Acquia\Orca\Domain\Ci\Job\AbstractCiJob|\Prophecy\Prophecy\ObjectProphecy $ciJob
  * @property \Acquia\Orca\Options\CiRunOptionsFactory|\Prophecy\Prophecy\ObjectProphecy $ciRunOptionsFactory
  * @property \Acquia\Orca\Options\CiRunOptions|\Prophecy\Prophecy\ObjectProphecy $ciRunOptions
+ * @property \Symfony\Component\EventDispatcher\EventDispatcher|\Prophecy\Prophecy\ObjectProphecy $eventDispatcher
+ * @property \Acquia\Orca\Helper\EnvFacade|\Prophecy\Prophecy\ObjectProphecy $env
  * @coversDefaultClass \Acquia\Orca\Console\Command\Ci\CiRunCommand
  */
 class CiRunCommandTest extends CommandTestBase {
 
   use CiEnumsTestTrait;
+
+  protected CiJobFactory|ObjectProphecy $ciJobFactory;
+  protected AbstractCiJob|ObjectProphecy $ciJob;
+  protected CiRunOptionsFactory|ObjectProphecy $ciRunOptionsFactory;
+  protected CiRunOptions|ObjectProphecy $ciRunOptions;
+  protected EventDispatcher|ObjectProphecy $eventDispatcher;
+  protected EnvFacade|ObjectProphecy $env;
 
   protected function setUp(): void {
     $this->ciRunOptions = $this->prophesize(CiRunOptions::class);
@@ -46,13 +56,18 @@ class CiRunCommandTest extends CommandTestBase {
     $this->eventDispatcher
       ->dispatch(Argument::cetera())
       ->willReturn(new \stdClass());
+    $this->env = $this->prophesize(EnvFacade::class);
+    $this->env
+      ->get(Argument::any(), FALSE)
+      ->willReturn(NULL);
   }
 
   protected function createCommand(): Command {
     $ci_run_options_factory = $this->ciRunOptionsFactory->reveal();
     $ci_job_factory = $this->ciJobFactory->reveal();
     $event_dispatcher = $this->eventDispatcher->reveal();
-    return new CiRunCommand($ci_job_factory, $ci_run_options_factory, $event_dispatcher);
+    $env = $this->env->reveal();
+    return new CiRunCommand($ci_job_factory, $ci_run_options_factory, $event_dispatcher, $env);
   }
 
   private function validSutName(): string {
