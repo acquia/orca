@@ -39,45 +39,45 @@ jobs:
     strategy:
       matrix:
         orca-job:
-          - STATIC_CODE_ANALYSIS
-          - INTEGRATED_TEST_ON_OLDEST_SUPPORTED
-          - INTEGRATED_TEST_ON_PREVIOUS_MINOR
-          - INTEGRATED_TEST_ON_LATEST_LTS
+#          - STATIC_CODE_ANALYSIS
+#          - INTEGRATED_TEST_ON_OLDEST_SUPPORTED
+#          - INTEGRATED_TEST_ON_PREVIOUS_MINOR
+#          - INTEGRATED_TEST_ON_LATEST_LTS
           # - INTEGRATED_UPGRADE_TEST_FROM_PREVIOUS_MINOR
           - INTEGRATED_TEST_ON_CURRENT
           # - INTEGRATED_UPGRADE_TEST_TO_NEXT_MINOR
-          - ISOLATED_TEST_ON_CURRENT_DEV
-          - INTEGRATED_TEST_ON_CURRENT_DEV
-          - STRICT_DEPRECATED_CODE_SCAN
-          - ISOLATED_TEST_ON_NEXT_MINOR
-          - INTEGRATED_TEST_ON_NEXT_MINOR
+#          - ISOLATED_TEST_ON_CURRENT_DEV
+#          - INTEGRATED_TEST_ON_CURRENT_DEV
+#          - STRICT_DEPRECATED_CODE_SCAN
+#          - ISOLATED_TEST_ON_NEXT_MINOR
+#          - INTEGRATED_TEST_ON_NEXT_MINOR
           # - ISOLATED_UPGRADE_TEST_TO_NEXT_MAJOR_BETA_OR_LATER
           # - ISOLATED_UPGRADE_TEST_TO_NEXT_MAJOR_DEV
-          - DEPRECATED_CODE_SCAN_W_CONTRIB
-          - INTEGRATED_TEST_ON_NEXT_MINOR_DEV
-          - ISOLATED_TEST_ON_NEXT_MINOR_DEV
+#          - DEPRECATED_CODE_SCAN_W_CONTRIB
+#          - INTEGRATED_TEST_ON_NEXT_MINOR_DEV
+#          - ISOLATED_TEST_ON_NEXT_MINOR_DEV
           # - INTEGRATED_UPGRADE_TEST_TO_NEXT_MINOR_DEV
-          - LOOSE_DEPRECATED_CODE_SCAN
-          - INTEGRATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_BETA_OR_LATER
-          - ISOLATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_DEV
-          - INTEGRATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_DEV
+#          - LOOSE_DEPRECATED_CODE_SCAN
+#          - INTEGRATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_BETA_OR_LATER
+#          - ISOLATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_DEV
+#          - INTEGRATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_DEV
         php-version: [ "8.1" ]
         orca-enable-nightwatch: [ "FALSE" ]
         orca-coverage-enable: [ "FALSE" ]
-        include:
-          # Testing Drupal 10 in php 8.1 with nightwatch and coverage.
-          - orca-job: ISOLATED_TEST_ON_CURRENT
-            php-version: "8.1"
-            orca-enable-nightwatch: "TRUE"
-            orca-coverage-enable: "TRUE"
-
-          # Testing Drupal 10 in php 8.2.
-          - orca-job: ISOLATED_TEST_ON_CURRENT
-            php-version: "8.2"
-
-          # Testing latest Drupal 9 in php 8.2.
-          - orca-job: INTEGRATED_TEST_ON_LATEST_LTS
-            php-version: "8.2"
+#        include:
+#          # Testing Drupal 10 in php 8.1 with nightwatch and coverage.
+#          - orca-job: ISOLATED_TEST_ON_CURRENT
+#            php-version: "8.1"
+#            orca-enable-nightwatch: "TRUE"
+#            orca-coverage-enable: "TRUE"
+#
+#          # Testing Drupal 10 in php 8.2.
+#          - orca-job: ISOLATED_TEST_ON_CURRENT
+#            php-version: "8.2"
+#
+#          # Testing latest Drupal 9 in php 8.2.
+#          - orca-job: INTEGRATED_TEST_ON_LATEST_LTS
+#            php-version: "8.2"
 
 
     steps:

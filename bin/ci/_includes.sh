@@ -73,6 +73,8 @@ export DRUPAL_TEST_DB_URL="sqlite://localhost/sites/default/files/db.sqlite"
 export DRUPAL_TEST_WEBDRIVER_CHROME_ARGS="--disable-gpu --headless --no-sandbox"
 export DRUPAL_TEST_WEBDRIVER_HOSTNAME="localhost"
 export DRUPAL_TEST_WEBDRIVER_PORT="4444"
+export SITESTUDIO_API_KEY="key-cohesion-baseline"
+export SITESTUDIO_ORG_KEY="test-cohesion-baseline"
 
 if [[ ! "$ORCA_TEMP_DIR" ]]; then
   # GitHub Actions.

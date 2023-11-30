@@ -230,6 +230,7 @@ class FixtureCreator {
     $this->removeComposerConfigPlatform();
     $this->replaceCoreRecommendedWithCore();
     $this->fixDefaultDependencies();
+    $this->runAcmsCommands();
     $this->addAllowedComposerPlugins();
     $this->addCompanyPackages();
     $this->composer->updateLockFile();
@@ -936,6 +937,19 @@ class FixtureCreator {
       '-R',
       '0770',
     ], $directories));
+  }
+
+  /**
+   * Runs ACMS commands.
+   */
+  public function runAcmsCommands(): void {
+    if ($this->fixtureInspector->getInstalledPackageVersionPretty('acquia/acquia_cms') === '~') {
+      return;
+    }
+    $this->output->section('Run ACMS Site Build');
+    $this->processRunner->runFixtureVendorBin(['acms', 'acms:build', '--no-interaction']);
+    $this->output->section('Run ACMS Site Install');
+    $this->processRunner->runFixtureVendorBin(['acms', 'acms:install', '--no-interaction']);
   }
 
   /**
