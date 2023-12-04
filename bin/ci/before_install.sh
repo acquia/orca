@@ -38,7 +38,7 @@ fi
 
 LINUX_VERSION_NAME=$( cat /etc/os-release )
 echo "${LINUX_VERSION_NAME}"
-if  grep -q "Alpine Linux" ${LINUX_VERSION_NAME}
+if  grep -Fxq "Alpine" /etc/os-release
 then
    echo "OK";
 else
