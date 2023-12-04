@@ -35,6 +35,19 @@ if [[ ! "$ORCA_COVERAGE_ENABLE" == TRUE ]]; then
 fi
 
 #if [[ "$JENKINS_HOME" ]]; then
+
+LINUX_VERSION_NAME=$( cat /etc/os-release | grep ID )
+echo "${LINUX_VERSION_NAME}"
+
+
+# Distribution specific installation
+if [[ ${LINUX_VERSION_NAME} == "alpine" ]]
+then
+    echo "It is: ${LINUX_VERSION_NAME}"
+
+else
+    echo "It is not ${LINUX_VERSION_NAME}"
+fi
 #    # Install ChromeDriver.
 #    # @see https://chromedriver.chromium.org/downloads/version-selection
 #    # @see https://groups.google.com/g/chromedriver-users/c/clpipqvOGjE/m/5NxzS_SRAgAJ
