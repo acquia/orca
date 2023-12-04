@@ -36,18 +36,26 @@ fi
 
 #if [[ "$JENKINS_HOME" ]]; then
 
-LINUX_VERSION_NAME=$( cat /etc/os-release | grep "Alpine Linux" )
+LINUX_VERSION_NAME=$( cat /etc/os-release )
 echo "${LINUX_VERSION_NAME}"
+if  grep -q "Alpine Linux" ${LINUX_VERSION_NAME}
+then
+   echo "OK";
+else
+   echo "NOT OK";
+fi
 
 
 # Distribution specific installation
-if [[ ${LINUX_VERSION_NAME} == "Alpine Linux" ]]
-then
-    echo "It is: ${LINUX_VERSION_NAME}"
+#if [[ ${LINUX_VERSION_NAME} == "Alpine Linux" ]]
+#then
+#    echo "It is: ${LINUX_VERSION_NAME}"
+#
+#else
+#    echo "It is not ${LINUX_VERSION_NAME}"
+#fi
 
-else
-    echo "It is not ${LINUX_VERSION_NAME}"
-fi
+
 #    # Install ChromeDriver.
 #    # @see https://chromedriver.chromium.org/downloads/version-selection
 #    # @see https://groups.google.com/g/chromedriver-users/c/clpipqvOGjE/m/5NxzS_SRAgAJ
