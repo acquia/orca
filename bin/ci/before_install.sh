@@ -36,12 +36,12 @@ fi
 
 #if [[ "$JENKINS_HOME" ]]; then
 
-LINUX_VERSION_NAME=$( cat /etc/os-release | grep "ID=" )
+LINUX_VERSION_NAME=$( cat /etc/os-release | grep 'NAME="Alpine Linux"' )
 echo "${LINUX_VERSION_NAME}"
 
 
 # Distribution specific installation
-if [[ ${LINUX_VERSION_NAME} == "ID=alpine" ]]
+if [[ ${LINUX_VERSION_NAME} == 'NAME="Alpine Linux"' ]]
 then
     echo "It is: ${LINUX_VERSION_NAME}"
 
