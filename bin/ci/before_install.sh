@@ -35,9 +35,8 @@ if [[ ! "$ORCA_COVERAGE_ENABLE" == TRUE ]]; then
 fi
 
 if [[ "$JENKINS_HOME" ]]; then
-  if  grep -Fxq "Alpine" /etc/os-release
-  then
-     echo "Alpine Linux";
+  if  grep -Fxq "Alpine" /etc/os-release; then
+     echo "Alpine";
   else
      # Install ChromeDriver.
      # @see https://chromedriver.chromium.org/downloads/version-selection
