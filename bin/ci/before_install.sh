@@ -35,11 +35,11 @@ if [[ ! "$ORCA_COVERAGE_ENABLE" == TRUE ]]; then
 fi
 
 if [[ "$JENKINS_HOME" ]]; then
-  LINUX_VERSION_STRING="$( cat touch1.txt )"
+  LINUX_VERSION_STRING="$( cat /etc/os-release )"
   echo "$LINUX_VERSION_STRING"
   if echo "$LINUX_VERSION_STRING" | grep -q "alpine"
   then
-    echo "This is Alpine Linux ChromeDriver already installed."
+    echo "This is Alpine Linux, ChromeDriver installation not required."
   else
     echo "Installing chromedriver."
      # Install ChromeDriver.
