@@ -35,39 +35,47 @@ if [[ ! "$ORCA_COVERAGE_ENABLE" == TRUE ]]; then
 fi
 
 if [[ "$JENKINS_HOME" ]]; then
-    # Install ChromeDriver.
-    # @see https://chromedriver.chromium.org/downloads/version-selection
-    # @see https://groups.google.com/g/chromedriver-users/c/clpipqvOGjE/m/5NxzS_SRAgAJ
-    # Get Google Chrome version.
-    CHROMEDRIVER="$( google-chrome-stable --version)"
-    echo "$CHROMEDRIVER"
-    CHROMEDRIVER_VERSION="$(echo "$CHROMEDRIVER" | awk '{print $3}')"
-    echo "CHROMEDRIVER_VERSION=$CHROMEDRIVER_VERSION"
-    # Cut off last part from google chrome version.
-    CHROMEDRIVER_VERSION_FAMILY="$(echo "$CHROMEDRIVER_VERSION" | awk -F'.' '{print $1,$2,$3}' OFS='.' )"
-    MAJOR="$(echo "$CHROMEDRIVER_VERSION_FAMILY" | awk -F'.' '{print $1}' )"
-    if (( $MAJOR < 115 ))
-    then
-      echo "VERSION_FAMILY=$CHROMEDRIVER_VERSION_FAMILY"
-      # check latest_release
-      VERSION=$(curl -f --silent https://chromedriver.storage.googleapis.com/LATEST_RELEASE_${CHROMEDRIVER_VERSION_FAMILY})
-      echo "FINAL_VERSION=$VERSION"
-      # Download driver
-      wget -N https://chromedriver.storage.googleapis.com/${VERSION}/chromedriver_linux64.zip -P ~/
-      unzip ~/chromedriver_linux64.zip -d ~/
-      rm ~/chromedriver_linux64.zip
-      mv -f ~/chromedriver /usr/local/share/
-      chmod +x /usr/local/share/chromedriver
-      ln -s /usr/local/share/chromedriver /usr/local/bin/chromedriver
-    else
-      # Download driver
-      wget -N https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/${CHROMEDRIVER_VERSION}/linux64/chromedriver-linux64.zip -P ~/
-      unzip ~/chromedriver-linux64.zip -d ~/
-      rm ~/chromedriver-linux64.zip
-      mv -f ~/chromedriver-linux64/chromedriver /usr/local/share/
-      chmod +x /usr/local/share/chromedriver
-      ln -s /usr/local/share/chromedriver /usr/local/bin/chromedriver
-    fi
+  LINUX_VERSION_STRING="$( cat /etc/os-release )"
+  echo "$LINUX_VERSION_STRING"
+  if echo "$LINUX_VERSION_STRING" | grep -q "alpine"
+  then
+    echo "This is Alpine Linux, ChromeDriver installation not required."
+  else
+    echo "Installing chromedriver."
+     # Install ChromeDriver.
+     # @see https://chromedriver.chromium.org/downloads/version-selection
+     # @see https://groups.google.com/g/chromedriver-users/c/clpipqvOGjE/m/5NxzS_SRAgAJ
+     # Get Google Chrome version.
+     CHROMEDRIVER="$( google-chrome-stable --version)"
+     echo "$CHROMEDRIVER"
+     CHROMEDRIVER_VERSION="$(echo "$CHROMEDRIVER" | awk '{print $3}')"
+     echo "CHROMEDRIVER_VERSION=$CHROMEDRIVER_VERSION"
+     # Cut off last part from google chrome version.
+     CHROMEDRIVER_VERSION_FAMILY="$(echo "$CHROMEDRIVER_VERSION" | awk -F'.' '{print $1,$2,$3}' OFS='.' )"
+     MAJOR="$(echo "$CHROMEDRIVER_VERSION_FAMILY" | awk -F'.' '{print $1}' )"
+     if (( $MAJOR < 115 ))
+     then
+       echo "VERSION_FAMILY=$CHROMEDRIVER_VERSION_FAMILY"
+       # check latest_release
+       VERSION=$(curl -f --silent https://chromedriver.storage.googleapis.com/LATEST_RELEASE_${CHROMEDRIVER_VERSION_FAMILY})
+       echo "FINAL_VERSION=$VERSION"
+       # Download driver
+       wget -N https://chromedriver.storage.googleapis.com/${VERSION}/chromedriver_linux64.zip -P ~/
+       unzip ~/chromedriver_linux64.zip -d ~/
+       rm ~/chromedriver_linux64.zip
+       mv -f ~/chromedriver /usr/local/share/
+       chmod +x /usr/local/share/chromedriver
+       ln -s /usr/local/share/chromedriver /usr/local/bin/chromedriver
+     else
+       # Download driver
+       wget -N https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/${CHROMEDRIVER_VERSION}/linux64/chromedriver-linux64.zip -P ~/
+       unzip ~/chromedriver-linux64.zip -d ~/
+       rm ~/chromedriver-linux64.zip
+       mv -f ~/chromedriver-linux64/chromedriver /usr/local/share/
+       chmod +x /usr/local/share/chromedriver
+       ln -s /usr/local/share/chromedriver /usr/local/bin/chromedriver
+     fi
+  fi
 fi
 
 
