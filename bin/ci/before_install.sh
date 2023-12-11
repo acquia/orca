@@ -14,8 +14,6 @@ cd "$(dirname "$0")" || exit; source _includes.sh
 # The remaining before_install commands should only be run on CI.
 [[ "$CI" ]] || exit 0
 
-# Display the Google Chrome version.
-google-chrome-stable --version
 
 # Display the Yarn version.
 yarn --version
