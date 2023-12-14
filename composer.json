@@ -52,7 +52,7 @@
         "symfony/http-client": "^6.2.10",
         "symfony/options-resolver": "^6.3.0",
         "symfony/phpunit-bridge": "^7.0.1",
-        "symfony/process": "^5.4.22",
+        "symfony/process": "^6.4.0",
         "symfony/yaml": "^6.3.0",
         "weitzman/drupal-test-traits": "^2.1"
     },
