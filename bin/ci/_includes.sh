@@ -73,6 +73,7 @@ export DRUPAL_TEST_DB_URL="sqlite://localhost/sites/default/files/db.sqlite"
 export DRUPAL_TEST_WEBDRIVER_CHROME_ARGS="--disable-gpu --headless --no-sandbox"
 export DRUPAL_TEST_WEBDRIVER_HOSTNAME="localhost"
 export DRUPAL_TEST_WEBDRIVER_PORT="4444"
+export DRUPAL_NIGHTWATCH_SEARCH_DIRECTORY=../../
 
 if [[ ! "$ORCA_TEMP_DIR" ]]; then
   # GitHub Actions.
