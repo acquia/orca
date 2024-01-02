@@ -64,9 +64,9 @@ export ORCA_SUT_MACHINE_NAME=${ORCA_SUT_NAME##*\/}
 export ORCA_TELEMETRY_ENABLE=${ORCA_TELEMETRY_ENABLE:="FALSE"}
 export ORCA_ENABLE_NIGHTWATCH=${ORCA_ENABLE_NIGHTWATCH:="FALSE"}
 export ORCA_YARN_DIR="${ORCA_FIXTURE_DIR}/docroot/core"
-export DRUPAL_NIGHTWATCH_IGNORE_DIRECTORIES="node_modules,vendor,.*,sites/*/files,sites/*/private,sites/simpletest,../../example,../../orca"
+export DRUPAL_NIGHTWATCH_IGNORE_DIRECTORIES="node_modules,vendor,.*,sites/*/files,sites/*/private,sites/simpletest"
 export DRUPAL_NIGHTWATCH_OUTPUT="sites/default/reports/nightwatch"
-export DRUPAL_NIGHTWATCH_SEARCH_DIRECTORY="$ORCA_FIXTURE_DIR"
+export DRUPAL_NIGHTWATCH_SEARCH_DIRECTORY="../modules/contrib/example"
 export DRUPAL_TEST_BASE_URL="http://localhost:8080"
 export DRUPAL_TEST_CHROMEDRIVER_AUTOSTART="false"
 export DRUPAL_TEST_DB_URL="sqlite://localhost/sites/default/files/db.sqlite"
