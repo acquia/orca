@@ -59,10 +59,12 @@ if [[ "$ORCA_ENABLE_NIGHTWATCH" == "TRUE" && "$ORCA_SUT_HAS_NIGHTWATCH_TESTS" &&
     eval "yarn test:nightwatch \\
       --headless \\
       --passWithNoTests \\
+      --verbose \\
       --tag=$ORCA_SUT_MACHINE_NAME"
 
     eval "yarn test:nightwatch \\
       --headless \\
+      --verbose \\
       --passWithNoTests \\
       --tag=core"
 
