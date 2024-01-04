@@ -54,6 +54,8 @@ if [[ "$ORCA_ENABLE_NIGHTWATCH" == "TRUE" && "$ORCA_SUT_HAS_NIGHTWATCH_TESTS" &&
     chromedriver --disable-dev-shm-usage --disable-extensions --disable-gpu --headless --no-sandbox --port=4444 &
     CHROMEDRIVER_PID=$!
 
+     eval "yarn test:nightwatch --help"
+
     eval "yarn test:nightwatch \\
       --headless \\
       --passWithNoTests \\
