@@ -79,6 +79,11 @@ if [[ "$JENKINS_HOME" ]]; then
 fi
 
 
+if [[ "$GITLAB_CI" ]]; then
+  export DRUPAL_TEST_WEBDRIVER_PORT="9515"
+  export DRUPAL_TEST_WEBDRIVER_CHROME_ARGS="--disable-dev-shm-usage --disable-gpu --headless --no-sandbox"
+  export DRUPAL_NIGHTWATCH_IGNORE_DIRECTORIES="node_modules,vendor,.*,sites/*/files,sites/*/private,sites/simpletest,/builds/project/orca-build/docroot/core/modules/toolbar/tests/src/Nightwatch/Tests/*"
+fi
 
 
 
