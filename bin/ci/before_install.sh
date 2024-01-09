@@ -81,6 +81,8 @@ fi
 
 
 
+
+
 # Display PHP information.
 which php
 php -i
