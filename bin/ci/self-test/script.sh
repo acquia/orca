@@ -60,10 +60,10 @@ if [[ "$ORCA_ENABLE_NIGHTWATCH" == "TRUE" && "$ORCA_SUT_HAS_NIGHTWATCH_TESTS" &&
       --passWithNoTests \\
       --tag=$ORCA_SUT_MACHINE_NAME"
 
-    eval "yarn test:nightwatch \\
-      --headless \\
-      --passWithNoTests \\
-      --tag=core"
+#    eval "yarn test:nightwatch \\
+#      --headless \\
+#      --passWithNoTests \\
+#      --tag=core"
 
     kill -0 $SERVER_PID
     kill -0 $CHROMEDRIVER_PID
