@@ -52,7 +52,6 @@ if [[ "$ORCA_ENABLE_NIGHTWATCH" == "TRUE" && "$ORCA_SUT_HAS_NIGHTWATCH_TESTS" &&
 
     if [[ "$GITLAB_CI" ]]; then
       export DRUPAL_TEST_WEBDRIVER_PORT="9515"
-    fi
     else
       # @todo could we set DRUPAL_TEST_CHROMEDRIVER_AUTOSTART instead of launching Chromedriver manually?
       chromedriver --disable-dev-shm-usage --disable-extensions --disable-gpu --headless --no-sandbox --port=4444 &
