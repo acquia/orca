@@ -325,7 +325,7 @@ class PhpUnitTask extends TestFrameworkBase {
       ];
       if ($this->shouldGenerateCodeCoverage()) {
         $command[] = "--coverage-clover={$this->cloverCoverage}";
-        $command[] = "--log-junit={$this->junitLog}";
+        // $command[] = "--log-junit={$this->junitLog}";
         $this->processRunner->addEnvVar("XDEBUG_MODE", "coverage");
       }
       $command = array_merge($command, [
@@ -334,6 +334,7 @@ class PhpUnitTask extends TestFrameworkBase {
         "--configuration={$this->fixture->getPath('docroot/core/phpunit.xml')}",
         '--exclude-group=orca_ignore',
         '--testsuite=orca',
+        "--log-junit={$this->junitLog}",
       ]);
       if ($this->isPublicTestsOnly()) {
         $command[] = '--group=orca_public';
