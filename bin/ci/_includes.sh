@@ -82,6 +82,8 @@ if [[ "$GITLAB_CI" ]]; then
   export DRUPAL_TEST_WEBDRIVER_CHROME_ARGS="--disable-dev-shm-usage --disable-gpu --headless --no-sandbox"
   # We are facing intermittent failures for Nightwatch tests of toolbar module, hence ignoring.
   export DRUPAL_NIGHTWATCH_IGNORE_DIRECTORIES="node_modules,vendor,.*,sites/*/files,sites/*/private,sites/simpletest,/builds/project/orca-build/docroot/core/modules/toolbar/tests/src/Nightwatch/Tests/*"
+  # Set DRUPAL_NIGHTWATCH_OUTPUT to a path inside project dir.
+  export DRUPAL_NIGHTWATCH_OUTPUT="$CI_PROJECT_DIR/reports/nightwatch"
 fi
 
 if [[ ! "$ORCA_TEMP_DIR" ]]; then
