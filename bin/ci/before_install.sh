@@ -34,7 +34,7 @@ if [[ ! "$ORCA_COVERAGE_ENABLE" == TRUE ]]; then
   fi
 fi
 
-if [[ "$JENKINS_HOME" || "$GITLAB_CI" ]]; then
+if [[ "$JENKINS_HOME" ]]; then
   LINUX_VERSION_STRING="$( cat /etc/os-release )"
   echo "$LINUX_VERSION_STRING"
   if echo "$LINUX_VERSION_STRING" | grep -q "alpine"
