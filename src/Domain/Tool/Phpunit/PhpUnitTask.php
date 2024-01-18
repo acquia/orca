@@ -308,7 +308,7 @@ class PhpUnitTask extends TestFrameworkBase {
           ],
         ],
       ],
-      'http://localhost:4444',
+      'http://chrome:9515',
     ], JSON_UNESCAPED_SLASHES);
   }
 
