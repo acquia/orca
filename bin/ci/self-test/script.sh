@@ -51,9 +51,9 @@ if [[ "$ORCA_ENABLE_NIGHTWATCH" == "TRUE" && "$ORCA_SUT_HAS_NIGHTWATCH_TESTS" &&
     SERVER_PID=$!
 
     if [[ "$GITLAB_CI" ]]; then
-      echo "Chromedriver initialised via separate container..."
+      echo "ChromeDriver initialized via separate container..."
     else
-      # @todo could we set DRUPAL_TEST_CHROMEDRIVER_AUTOSTART instead of launching Chromedriver manually?
+      # @todo Could we set DRUPAL_TEST_CHROMEDRIVER_AUTOSTART instead of launching ChromeDriver manually?
       chromedriver --disable-dev-shm-usage --disable-extensions --disable-gpu --headless --no-sandbox --port=4444 &
       CHROMEDRIVER_PID=$!
     fi
