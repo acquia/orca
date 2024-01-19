@@ -34,7 +34,7 @@ if [[ "$ORCA_JOB" == "STATIC_CODE_ANALYSIS" ]]; then
   echo
 
   if [[ "$ORCA_COVERAGE_ENABLE" == TRUE ]]; then
-    eval './vendor/bin/phpunit --coverage-clover="$ORCA_SELF_TEST_COVERAGE_CLOVER"'
+    eval './vendor/bin/phpunit --coverage-cobertura="$ORCA_SELF_TEST_COVERAGE_CLOVER"'
   else
     eval './vendor/bin/phpunit'
   fi
