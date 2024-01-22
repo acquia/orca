@@ -366,7 +366,7 @@ class PhpUnitTask extends TestFrameworkBase {
           ],
         ],
       ],
-      'http://localhost:4444',
+      'http://localhost:9515',
     ], JSON_UNESCAPED_SLASHES);
   }
 
@@ -398,6 +398,7 @@ class PhpUnitTask extends TestFrameworkBase {
         "--configuration={$this->fixture->getPath('docroot/core/phpunit.xml')}",
         '--exclude-group=orca_ignore',
         '--testsuite=orca',
+        "--log-junit={$this->junitLog}",
       ]);
       if ($this->isPublicTestsOnly()) {
         $command[] = '--group=orca_public';
