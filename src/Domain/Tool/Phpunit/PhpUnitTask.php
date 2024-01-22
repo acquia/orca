@@ -308,7 +308,7 @@ class PhpUnitTask extends TestFrameworkBase {
           ],
         ],
       ],
-      'http://localhost:4444',
+      'http://localhost:9515',
     ], JSON_UNESCAPED_SLASHES);
   }
 
@@ -324,8 +324,7 @@ class PhpUnitTask extends TestFrameworkBase {
         '--verbose',
       ];
       if ($this->shouldGenerateCodeCoverage()) {
-        $command[] = "--coverage-clover={$this->cloverCoverage}";
-        $command[] = "--log-junit={$this->junitLog}";
+        $command[] = "--coverage-cobertura={$this->cloverCoverage}";
         $this->processRunner->addEnvVar("XDEBUG_MODE", "coverage");
       }
       $command = array_merge($command, [
@@ -334,6 +333,7 @@ class PhpUnitTask extends TestFrameworkBase {
         "--configuration={$this->fixture->getPath('docroot/core/phpunit.xml')}",
         '--exclude-group=orca_ignore',
         '--testsuite=orca',
+        "--log-junit={$this->junitLog}",
       ]);
       if ($this->isPublicTestsOnly()) {
         $command[] = '--group=orca_public';

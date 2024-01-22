@@ -17,9 +17,13 @@ if [[ "$ORCA_ENABLE_NIGHTWATCH" == "TRUE" && "$ORCA_SUT_HAS_NIGHTWATCH_TESTS" &&
     orca fixture:run-server &
     SERVER_PID=$!
 
-    # @todo could we set DRUPAL_TEST_CHROMEDRIVER_AUTOSTART instead of launching Chromedriver manually?
-    chromedriver --disable-dev-shm-usage --disable-extensions --disable-gpu --headless --no-sandbox --port=4444 &
-    CHROMEDRIVER_PID=$!
+    if [[ "$GITLAB_CI" ]]; then
+      echo "ChromeDriver initialized via separate container..."
+    else
+      # @todo could we set DRUPAL_TEST_CHROMEDRIVER_AUTOSTART instead of launching Chromedriver manually?
+      chromedriver --disable-dev-shm-usage --disable-extensions --disable-gpu --headless --no-sandbox --port=4444 &
+      CHROMEDRIVER_PID=$!
+    fi
 
     eval "yarn test:nightwatch \\
       --headless \\
