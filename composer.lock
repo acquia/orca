@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a9b2ba95322cc8adbcfdd4404c9531f1",
+    "content-hash": "43e9b044517d81af41e9c89dd6a621d3",
     "packages": [
         {
             "name": "acquia/coding-standards",
@@ -1849,26 +1849,33 @@
         },
         {
             "name": "oscarotero/env",
-            "version": "v1.2.0",
+            "version": "v2.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/oscarotero/env.git",
-                "reference": "4ab45ce5c1f2c62549208426bfa20a3d5fa008c6"
+                "reference": "0da22cadc6924155fa9bbea2cdda2e84ab7cbdd3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/oscarotero/env/zipball/4ab45ce5c1f2c62549208426bfa20a3d5fa008c6",
-                "reference": "4ab45ce5c1f2c62549208426bfa20a3d5fa008c6",
+                "url": "https://api.github.com/repos/oscarotero/env/zipball/0da22cadc6924155fa9bbea2cdda2e84ab7cbdd3",
+                "reference": "0da22cadc6924155fa9bbea2cdda2e84ab7cbdd3",
                 "shasum": ""
             },
             "require": {
                 "ext-ctype": "*",
-                "php": ">=5.2"
+                "php": ">=7.1"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "^2.16",
+                "phpunit/phpunit": "^7.0"
             },
             "type": "library",
             "autoload": {
-                "psr-0": {
-                    "Env": "src/"
+                "files": [
+                    "src/env_function.php"
+                ],
+                "psr-4": {
+                    "Env\\": "src/"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -1891,9 +1898,9 @@
             "support": {
                 "email": "oom@oscarotero.com",
                 "issues": "https://github.com/oscarotero/env/issues",
-                "source": "https://github.com/oscarotero/env/tree/v1.2.0"
+                "source": "https://github.com/oscarotero/env/tree/v2.1.0"
             },
-            "time": "2019-04-03T18:28:43+00:00"
+            "time": "2020-06-11T10:59:27+00:00"
         },
         {
             "name": "pdepend/pdepend",
