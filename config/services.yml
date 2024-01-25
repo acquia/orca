@@ -55,8 +55,8 @@ services:
 
   Composer\Semver\VersionParser: ~
 
-  Env:
-    class: Env
+  Env\Env:
+    class: Env\Env
 
   Symfony\Component\Console\Application: ~
 
