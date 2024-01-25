@@ -324,7 +324,7 @@ class PhpUnitTask extends TestFrameworkBase {
         '--verbose',
       ];
       if ($this->shouldGenerateCodeCoverage()) {
-        $command[] = "--coverage-cobertura={$this->cloverCoverage}";
+        $command[] = "--coverage-cobertura={$this->coberturaCoverage}";
         $this->processRunner->addEnvVar("XDEBUG_MODE", "coverage");
       }
       $command = array_merge($command, [

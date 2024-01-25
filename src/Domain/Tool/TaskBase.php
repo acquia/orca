@@ -21,7 +21,7 @@ abstract class TaskBase implements TaskInterface {
    *
    * @var string
    */
-  protected $cloverCoverage;
+  protected $coberturaCoverage;
 
   /**
    * The config file overrider.
@@ -117,7 +117,7 @@ abstract class TaskBase implements TaskInterface {
   /**
    * Constructs an instance.
    *
-   * @param string $clover_coverage
+   * @param string $cobertura_coverage
    *   The Clover coverage XML path.
    * @param \Acquia\Orca\Helper\Config\ConfigFileOverrider $config_file_overrider
    *   The config file overrider.
@@ -144,7 +144,7 @@ abstract class TaskBase implements TaskInterface {
    * @param \Acquia\Orca\Helper\Process\ProcessRunner $process_runner
    *   The process runner.
    */
-  public function __construct(string $clover_coverage, ConfigFileOverrider $config_file_overrider, ComposerFacade $composer_facade, Filesystem $filesystem, FixturePathHandler $fixture_path_handler, string $junit_log, OrcaPathHandler $orca_path_handler, SymfonyStyle $output, PhpcbfTool $phpcbf_tool, PhpcsConfigurator $phpcs_configurator, PhpLintTool $php_lint_tool, PhpmdTool $phpmd_tool, ProcessRunner $process_runner) {
+  public function __construct(string $cobertura_coverage, ConfigFileOverrider $config_file_overrider, ComposerFacade $composer_facade, Filesystem $filesystem, FixturePathHandler $fixture_path_handler, string $junit_log, OrcaPathHandler $orca_path_handler, SymfonyStyle $output, PhpcbfTool $phpcbf_tool, PhpcsConfigurator $phpcs_configurator, PhpLintTool $php_lint_tool, PhpmdTool $phpmd_tool, ProcessRunner $process_runner) {
     $this->configFileOverrider = $config_file_overrider;
     $this->filesystem = $filesystem;
     $this->fixture = $fixture_path_handler;
@@ -155,7 +155,7 @@ abstract class TaskBase implements TaskInterface {
     //   constitutes a violation of the interface segregation principle because
     //   not all of its its children use them. This is an indication for
     //   refactoring to use some form of composition instead of inheritance.
-    $this->cloverCoverage = $clover_coverage;
+    $this->coberturaCoverage = $cobertura_coverage;
     $this->composerFacade = $composer_facade;
     $this->junitLog = $junit_log;
     $this->phpcsConfigurator = $phpcs_configurator;

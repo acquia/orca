@@ -8,9 +8,9 @@ Various aspects of ORCA's behavior can be altered at runtime through the use of 
 
 These affect ORCA in all contexts.
 
-* <a name="ORCA_COVERAGE_CLOVER"></a>**`ORCA_COVERAGE_CLOVER`**: Change the path where ORCA saves the PHPUnit test coverage Clover XML file.
+* <a name="ORCA_COVERAGE_COBERTURA"></a>**`ORCA_COVERAGE_COBERTURA`**: Change the path where ORCA saves the PHPUnit test coverage Clover XML file.
 
-* <a name="ORCA_COVERAGE_ENABLE"></a>**`ORCA_COVERAGE_ENABLE`**: Set to `TRUE` to generate test coverage data . The resulting Clover file will be saved at the location set in [`ORCA_COVERAGE_CLOVER`](#ORCA_COVERAGE_CLOVER). Test coverage generation greatly increases build times, so only enable it on one job--all that makes sense anyway.
+* <a name="ORCA_COVERAGE_ENABLE"></a>**`ORCA_COVERAGE_ENABLE`**: Set to `TRUE` to generate test coverage data . The resulting Clover file will be saved at the location set in [`ORCA_COVERAGE_COBERTURA`](#ORCA_COVERAGE_COBERTURA). Test coverage generation greatly increases build times, so only enable it on one job--all that makes sense anyway.
 
 * <a name="ORCA_FIXTURE_DIR"></a>**`ORCA_FIXTURE_DIR`**: Change the directory ORCA uses for test fixtures. Acceptable values are any valid, local directory reference, e.g., `/var/www/example`, or `../example`.
 

@@ -5,7 +5,7 @@ parameters:
   env(ORCA_GOOGLE_API_CLIENT_ID) : ~
   env(ORCA_GOOGLE_API_CLIENT_SECRET): ~
   env(ORCA_GOOGLE_API_REFRESH_TOKEN): ~
-  env(ORCA_COVERAGE_CLOVER): "%app.project_dir%/var/coverage/clover.xml"
+  env(ORCA_COVERAGE_COBERTURA): "%app.project_dir%/var/coverage/cobertura.xml"
   env(ORCA_FIXTURE_DIR): "%app.fixture_dir%"
   env(ORCA_JUNIT_LOG): "%app.project_dir%/var/junit/junitLog.xml"
   env(ORCA_PACKAGES_CONFIG): config/packages.yml
@@ -24,7 +24,7 @@ services:
       $google_api_client_id: "%env(ORCA_GOOGLE_API_CLIENT_ID)%"
       $google_api_client_secret: "%env(ORCA_GOOGLE_API_CLIENT_SECRET)%"
       $google_refresh_token: "%env(ORCA_GOOGLE_API_REFRESH_TOKEN)%"
-      $clover_coverage: "%env(ORCA_COVERAGE_CLOVER)%"
+      $cobertura_coverage: "%env(ORCA_COVERAGE_COBERTURA)%"
       $default_phpcs_standard: "%env(ORCA_PHPCS_STANDARD)%"
       $fixture_dir: "%env(ORCA_FIXTURE_DIR)%"
       $junit_log: "%env(ORCA_JUNIT_LOG)%"
