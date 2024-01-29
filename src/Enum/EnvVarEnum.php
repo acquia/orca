@@ -7,6 +7,7 @@ use MyCLabs\Enum\Enum;
 /**
  * Provides environment variables.
  *
+ * @method static EnvVarEnum ORCA_COVERAGE_CLOVER()
  * @method static EnvVarEnum ORCA_COVERAGE_COBERTURA()
  * @method static EnvVarEnum ORCA_COVERAGE_ENABLE()
  * @method static EnvVarEnum ORCA_ENABLE_NIGHTWATCH()
@@ -35,6 +36,8 @@ use MyCLabs\Enum\Enum;
  * @method static EnvVarEnum DRUPAL_TEST_WEBDRIVER_PORT()
  */
 class EnvVarEnum extends Enum {
+
+  public const ORCA_COVERAGE_CLOVER = 'ORCA_COVERAGE_CLOVER';
 
   public const ORCA_COVERAGE_COBERTURA = 'ORCA_COVERAGE_COBERTURA';
 
@@ -102,6 +105,7 @@ class EnvVarEnum extends Enum {
    */
   public static function descriptions(): array {
     return [
+      self::ORCA_COVERAGE_CLOVER => 'The path where ORCA saves the PHPUnit test coverage Clover XML file',
       self::ORCA_COVERAGE_COBERTURA => 'The path where ORCA saves the PHPUnit test coverage Clover XML file',
       self::ORCA_COVERAGE_ENABLE => 'Whether or not to generate test coverage data',
       self::ORCA_ENABLE_NIGHTWATCH => 'Whether or not to run Nightwatch.js tests',
