@@ -7,6 +7,7 @@ use Acquia\Orca\Domain\Tool\Phpcs\PhpcsTask;
 use Acquia\Orca\Domain\Tool\Phploc\PhplocTask;
 use Acquia\Orca\Enum\TelemetryEventNameEnum;
 use Acquia\Orca\Helper\Filesystem\OrcaPathHandler;
+use Env\Env;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
@@ -17,7 +18,7 @@ class TelemetryEventPropertiesBuilder {
   /**
    * The environment variables service.
    *
-   * @var \Env
+   * @var \Env\Env
    */
   private $env;
 
@@ -45,14 +46,14 @@ class TelemetryEventPropertiesBuilder {
   /**
    * Constructs an instance.
    *
-   * @param \Env $env
+   * @param \Env\Env $env
    *   The environment variables service.
    * @param \Symfony\Component\Filesystem\Filesystem $filesystem
    *   The filesystem.
    * @param \Acquia\Orca\Helper\Filesystem\OrcaPathHandler $orca_path_handler
    *   The ORCA path handler.
    */
-  public function __construct(\Env $env, Filesystem $filesystem, OrcaPathHandler $orca_path_handler) {
+  public function __construct(Env $env, Filesystem $filesystem, OrcaPathHandler $orca_path_handler) {
     $this->env = $env;
     $this->filesystem = $filesystem;
     $this->orca = $orca_path_handler;

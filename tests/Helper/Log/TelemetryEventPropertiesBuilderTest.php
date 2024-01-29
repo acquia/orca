@@ -6,22 +6,23 @@ use Acquia\Orca\Enum\TelemetryEventNameEnum;
 use Acquia\Orca\Helper\Filesystem\OrcaPathHandler;
 use Acquia\Orca\Helper\Log\TelemetryEventPropertiesBuilder;
 use Acquia\Orca\Tests\TestCase;
+use Env\Env;
 use Prophecy\Prophecy\ObjectProphecy;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
- * @property \Prophecy\Prophecy\ObjectProphecy|\Env $env
+ * @property \Prophecy\Prophecy\ObjectProphecy|Env $env
  * @property \Prophecy\Prophecy\ObjectProphecy|\Symfony\Component\Filesystem\Filesystem $filesystem
  * @property \Acquia\Orca\Helper\Filesystem\OrcaPathHandler|\Prophecy\Prophecy\ObjectProphecy $orca
  */
 class TelemetryEventPropertiesBuilderTest extends TestCase {
 
-  protected ObjectProphecy|\Env $env;
+  protected ObjectProphecy|Env $env;
   protected ObjectProphecy|Filesystem $filesystem;
   protected OrcaPathHandler|ObjectProphecy $orca;
 
   protected function setUp(): void {
-    $this->env = $this->prophesize(\Env::class);
+    $this->env = $this->prophesize(Env::class);
     $this->filesystem = $this->prophesize(Filesystem::class);
     $this->orca = $this->prophesize(OrcaPathHandler::class);
   }
