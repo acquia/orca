@@ -31,6 +31,7 @@ jobs:
       ORCA_JOB: ${{ matrix.orca-job }}
       ORCA_ENABLE_NIGHTWATCH: ${{ matrix.orca-enable-nightwatch }}
       ORCA_COVERAGE_ENABLE: ${{ matrix.orca-coverage-enable }}
+      ORCA_COVERAGE_COBERTURA_ENABLE: ${{ matrix.orca-coverage-cobertura-enable }}
       # Google env variables.
       ORCA_GOOGLE_API_CLIENT_ID: ${{ secrets.ORCA_GOOGLE_API_CLIENT_ID }}
       ORCA_GOOGLE_API_CLIENT_SECRET: ${{ secrets.ORCA_GOOGLE_API_CLIENT_SECRET }}
@@ -77,6 +78,7 @@ jobs:
             php-version: "8.2"
             orca-enable-nightwatch: "TRUE"
             orca-coverage-enable: "TRUE"
+            orca-coverage-cobertura-enable: "TRUE"
 
           # Testing latest Drupal 9 in php 8.2.
           - orca-job: INTEGRATED_TEST_ON_LATEST_LTS
