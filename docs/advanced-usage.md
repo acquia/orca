@@ -7,6 +7,7 @@ Various aspects of ORCA's behavior can be altered at runtime through the use of 
 ### Command-line application
 
 These affect ORCA in all contexts.
+
 * <a name="ORCA_COVERAGE_CLOVER"></a>**`ORCA_COVERAGE_CLOVER`**: Change the path where ORCA saves the PHPUnit test coverage Clover XML file.
 * <a name="ORCA_COVERAGE_COBERTURA"></a>**`ORCA_COVERAGE_COBERTURA`**: Change the path where ORCA saves the PHPUnit test coverage Clover XML file.
 
