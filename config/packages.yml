@@ -63,10 +63,9 @@ drupal/acquia_contenthub:
  version: 3.3.x
  version_dev: 3.3.x
 
-# ORCA-642: Acquia Perz was temporarily removed due to an outage.
-#drupal/acquia_perz:
-#  version: 4.x
-#  version_dev: 4.x-dev
+drupal/acquia_perz:
+  version: 4.x
+  version_dev: 4.x-dev
 
 drupal/acquia_purge:
   version: 1.x
