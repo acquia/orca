@@ -50,10 +50,9 @@
 # config/services.yml for the relevant code or bin/self-test for a usage
 # example.
 
-# ORCA-567 : ACMS was temporarily removed due to an outage.
-#acquia/acquia_cms:
-#  version: 2.x
-#  version_dev: 2.x-dev
+acquia/acquia_cms:
+  version: 2.x
+  version_dev: 2.x-dev
 
 drupal/acquia_connector:
   version: 4.x
