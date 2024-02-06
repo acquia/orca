@@ -381,16 +381,16 @@ class PhpUnitTask extends TestFrameworkBase {
         'phpunit',
         '--verbose',
       ];
-      if ($this->shouldGenerateCodeCoverage()) {
-        if ($this->shouldGenerateCodeCoverageInCobertura()) {
-          $command[] = "--coverage-cobertura={$this->coberturaCoverage}";
-        }
-        else {
-          $command[] = "--coverage-clover={$this->cloverCoverage}";
-        }
 
-        $this->processRunner->addEnvVar("XDEBUG_MODE", "coverage");
+      if ($this->shouldGenerateCodeCoverageInCobertura()) {
+        $command[] = "--coverage-cobertura={$this->coberturaCoverage}";
       }
+      if ($this->shouldGenerateCodeCoverageInClover()) {
+        $command[] = "--coverage-clover={$this->cloverCoverage}";
+      }
+
+      $this->processRunner->addEnvVar("XDEBUG_MODE", "coverage");
+
       $command = array_merge($command, [
         '--colors=always',
         '--debug',
@@ -435,6 +435,10 @@ class PhpUnitTask extends TestFrameworkBase {
    */
   private function shouldGenerateCodeCoverageInCobertura(): bool {
     return $this->envFacade->get('ORCA_COVERAGE_COBERTURA_ENABLE', FALSE);
+  }
+
+  private function shouldGenerateCodeCoverageInClover(): bool {
+    return $this->envFacade->get('ORCA_COVERAGE_CLOVER_ENABLE', FALSE) || $this->envFacade->get('ORCA_COVERAGE_ENABLE', FALSE) ;
   }
 
 }
