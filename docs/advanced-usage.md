@@ -10,7 +10,7 @@ These affect ORCA in all contexts.
 
 * <a name="ORCA_COVERAGE_CLOVER"></a>**`ORCA_COVERAGE_CLOVER`**: Change the path where ORCA saves the PHPUnit test coverage Clover XML file.
 * <a name="ORCA_COVERAGE_COBERTURA"></a>**`ORCA_COVERAGE_COBERTURA`**: Change the path where ORCA saves the PHPUnit test coverage Cobertura XML file.
-* <a name="ORCA_COVERAGE_COBERTURA_ENABLE"></a>**`ORCA_COVERAGE_COBERTURA_ENABLE`**: Set to `TRUE` to generate test coverage data in Cobertura format instead of the default Clover format.
+* <a name="ORCA_COVERAGE_COBERTURA_ENABLE"></a>**`ORCA_COVERAGE_COBERTURA_ENABLE`**: Set to `TRUE` to generate test coverage data in Cobertura format instead of the default Clover format. Please note, this requires  <a name="ORCA_COVERAGE_ENABLE"></a>**`ORCA_COVERAGE_ENABLE`** set to `TRUE` to work.
 
 * <a name="ORCA_COVERAGE_ENABLE"></a>**`ORCA_COVERAGE_ENABLE`**: Set to `TRUE` to generate test coverage data . By default, the coverage will be generated in Clover format and resulting Clover file will be saved at the location
 set in [`ORCA_COVERAGE_CLOVER`](#ORCA_COVERAGE_CLOVER) . But when **`ORCA_COVERAGE_COBERTURA_ENABLE`** is set to `TRUE` then the coverage will be generated in Cobertura format and will be saved at the location set in [`ORCA_COVERAGE_COBERTURA`](#ORCA_COVERAGE_COBERTURA) . Test coverage generation greatly increases build times, so only enable it on one job--all that makes sense anyway.
