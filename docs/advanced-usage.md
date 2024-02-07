@@ -9,11 +9,14 @@ Various aspects of ORCA's behavior can be altered at runtime through the use of 
 These affect ORCA in all contexts.
 
 * <a name="ORCA_COVERAGE_CLOVER"></a>**`ORCA_COVERAGE_CLOVER`**: Change the path where ORCA saves the PHPUnit test coverage Clover XML file.
-* <a name="ORCA_COVERAGE_COBERTURA"></a>**`ORCA_COVERAGE_COBERTURA`**: Change the path where ORCA saves the PHPUnit test coverage Cobertura XML file.
-* <a name="ORCA_COVERAGE_COBERTURA_ENABLE"></a>**`ORCA_COVERAGE_COBERTURA_ENABLE`**: Set to `TRUE` to generate test coverage data in Cobertura format instead of the default Clover format.
+
 * <a name="ORCA_COVERAGE_CLOVER_ENABLE"></a>**`ORCA_COVERAGE_CLOVER_ENABLE`**: Set to `TRUE` to generate test coverage data in Clover format.
 
-* <a name="ORCA_COVERAGE_ENABLE"></a>**`ORCA_COVERAGE_ENABLE`**: Set to `TRUE` to generate test coverage data, alias of <a name="ORCA_COVERAGE_CLOVER_ENABLE"></a>**`ORCA_COVERAGE_CLOVER_ENABLE`**.
+* <a name="ORCA_COVERAGE_COBERTURA"></a>**`ORCA_COVERAGE_COBERTURA`**: Change the path where ORCA saves the PHPUnit test coverage Cobertura XML file.
+
+* <a name="ORCA_COVERAGE_COBERTURA_ENABLE"></a>**`ORCA_COVERAGE_COBERTURA_ENABLE`**: Set to `TRUE` to generate test coverage data in Cobertura format instead of the default Clover format.
+
+* <a name="ORCA_COVERAGE_ENABLE"></a>**`ORCA_COVERAGE_ENABLE`**: Deprecated. Alias of <a name="ORCA_COVERAGE_CLOVER_ENABLE"></a>**`ORCA_COVERAGE_CLOVER_ENABLE`**.
 
 * <a name="ORCA_FIXTURE_DIR"></a>**`ORCA_FIXTURE_DIR`**: Change the directory ORCA uses for test fixtures. Acceptable values are any valid, local directory reference, e.g., `/var/www/example`, or `../example`.
 
