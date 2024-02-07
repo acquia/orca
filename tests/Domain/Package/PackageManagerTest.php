@@ -121,6 +121,9 @@ class PackageManagerTest extends TestCase {
     $this->env = $this->prophesize(EnvFacade::class);
     $this->filesystem = $this->prophesize(Filesystem::class);
     $this->filesystem
+      ->isAbsolutePath(Argument::any())
+      ->willReturn(TRUE);
+    $this->filesystem
       ->exists(Argument::any())
       ->willReturn(TRUE);
     $this->fixture = $this->prophesize(FixturePathHandler::class);
