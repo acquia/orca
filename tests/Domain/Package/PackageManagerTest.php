@@ -4,6 +4,7 @@ namespace Acquia\Orca\Tests\Domain\Package;
 
 use Acquia\Orca\Domain\Package\Package;
 use Acquia\Orca\Domain\Package\PackageManager;
+use Acquia\Orca\Helper\EnvFacade;
 use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
 use Acquia\Orca\Helper\Filesystem\OrcaPathHandler;
 use Acquia\Orca\Tests\TestCase;
@@ -114,8 +115,10 @@ class PackageManagerTest extends TestCase {
   protected ObjectProphecy|Filesystem $filesystem;
   protected ObjectProphecy|FixturePathHandler $fixture;
   protected ObjectProphecy|Parser $parser;
+  protected ObjectProphecy|EnvFacade $env;
 
   protected function setUp(): void {
+    $this->env = $this->prophesize(EnvFacade::class);
     $this->filesystem = $this->prophesize(Filesystem::class);
     $this->filesystem
       ->exists(Argument::any())
@@ -141,11 +144,12 @@ class PackageManagerTest extends TestCase {
   }
 
   private function createPackageManager(): PackageManager {
+    $env = $this->env->reveal();
     $filesystem = $this->filesystem->reveal();
     $fixture_path_handler = $this->fixture->reveal();
     $orca_path_handler = $this->orca->reveal();
     $parser = $this->parser->reveal();
-    return new PackageManager($filesystem, $fixture_path_handler, $orca_path_handler, $parser, self::PACKAGES_CONFIG_FILE, self::PACKAGES_CONFIG_ALTER_FILE);
+    return new PackageManager($env, $filesystem, $fixture_path_handler, $orca_path_handler, $parser, self::PACKAGES_CONFIG_FILE, self::PACKAGES_CONFIG_ALTER_FILE);
   }
 
   public function testConstructionAndGetters(): void {

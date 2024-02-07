@@ -63,6 +63,8 @@ class PackageManager {
   private $parser;
 
   /**
+   * The environment facade.
+   *
    * @var \Acquia\Orca\Helper\EnvFacade
    */
   private EnvFacade $env;
@@ -71,7 +73,7 @@ class PackageManager {
    * Constructs an instance.
    *
    * @param \Acquia\Orca\Helper\EnvFacade $envFacade
-   *    The environment facade.
+   *   The environment facade.
    * @param \Symfony\Component\Filesystem\Filesystem $filesystem
    *   The filesystem.
    * @param \Acquia\Orca\Helper\Filesystem\FixturePathHandler $fixture_path_handler
@@ -293,10 +295,11 @@ class PackageManager {
    * Adds a package to the list of packages.
    */
   private function addPackage(array $datum, FixturePathHandler $fixture_path_handler, string $package_name): void {
-    if(empty($datum['url'])){
-      $orca_sut_dir = $this->env->get('ORCA_SUT_DIR', FALSE);
+    $orca_sut_dir = $this->env->get('ORCA_SUT_DIR');
+    if (empty($datum['url']) && !is_null($orca_sut_dir)) {
+      $orca_sut_dir = $this->env->get('ORCA_SUT_DIR');
       $package_name_parts = explode('/', $orca_sut_dir);
-      $datum['url'] = "../". end($package_name_parts);
+      $datum['url'] = $package_name_parts;
     }
     $package = new Package($datum, $fixture_path_handler, $this->orca, $package_name);
     $this->packages[$package_name] = $package;
