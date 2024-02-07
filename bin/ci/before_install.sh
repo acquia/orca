@@ -21,7 +21,7 @@ cd "$(dirname "$0")" || exit; source _includes.sh
 yarn --version
 
 # Disable Xdebug except on code coverage jobs.
-if [[ ! "$ORCA_COVERAGE_ENABLE" == TRUE ]]; then
+if [[ ! "$ORCA_COVERAGE_ENABLE" == TRUE && ! "$ORCA_COVERAGE_CLOVER_ENABLE" == TRUE &&  ! "$ORCA_COVERAGE_COBERTURA_ENABLE" == TRUE ]]; then
   if [[ "$GITHUB_ACTIONS" ]]; then
     # phpdismod would be simpler but flaky
     # @see https://github.com/shivammathur/setup-php/issues/350#issuecomment-735370872

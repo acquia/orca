@@ -382,11 +382,12 @@ class PhpUnitTask extends TestFrameworkBase {
         '--verbose',
       ];
 
-      if ($this->shouldGenerateCodeCoverageInCobertura()) {
-        $command[] = "--coverage-cobertura={$this->coberturaCoverage}";
-      }
       if ($this->shouldGenerateCodeCoverageInClover()) {
         $command[] = "--coverage-clover={$this->cloverCoverage}";
+      }
+
+      if ($this->shouldGenerateCodeCoverageInCobertura()) {
+        $command[] = "--coverage-cobertura={$this->coberturaCoverage}";
       }
 
       $this->processRunner->addEnvVar("XDEBUG_MODE", "coverage");
@@ -437,8 +438,14 @@ class PhpUnitTask extends TestFrameworkBase {
     return $this->envFacade->get('ORCA_COVERAGE_COBERTURA_ENABLE', FALSE);
   }
 
+  /**
+   * Determines whether the test should generate code coverage in Clover format.
+   *
+   * @return bool
+   *   TRUE to generate code coverage or FALSE not to.
+   */
   private function shouldGenerateCodeCoverageInClover(): bool {
-    return $this->envFacade->get('ORCA_COVERAGE_CLOVER_ENABLE', FALSE) || $this->envFacade->get('ORCA_COVERAGE_ENABLE', FALSE) ;
+    return $this->envFacade->get('ORCA_COVERAGE_CLOVER_ENABLE', FALSE) || $this->envFacade->get('ORCA_COVERAGE_ENABLE', FALSE);
   }
 
 }
