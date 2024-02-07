@@ -2,6 +2,7 @@
 
 namespace Acquia\Orca\Domain\Package;
 
+use Acquia\Orca\Helper\EnvFacade;
 use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
 use Acquia\Orca\Helper\Filesystem\OrcaPathHandler;
 use Symfony\Component\Filesystem\Filesystem;
@@ -62,8 +63,15 @@ class PackageManager {
   private $parser;
 
   /**
+   * @var \Acquia\Orca\Helper\EnvFacade
+   */
+  private EnvFacade $env;
+
+  /**
    * Constructs an instance.
    *
+   * @param \Acquia\Orca\Helper\EnvFacade $envFacade
+   *    The environment facade.
    * @param \Symfony\Component\Filesystem\Filesystem $filesystem
    *   The filesystem.
    * @param \Acquia\Orca\Helper\Filesystem\FixturePathHandler $fixture_path_handler
@@ -80,7 +88,8 @@ class PackageManager {
    *   project directory whose contents will be merged into the main packages
    *   configuration.
    */
-  public function __construct(Filesystem $filesystem, FixturePathHandler $fixture_path_handler, OrcaPathHandler $orca_path_handler, Parser $parser, string $packages_config, ?string $packages_config_alter) {
+  public function __construct(EnvFacade $envFacade, Filesystem $filesystem, FixturePathHandler $fixture_path_handler, OrcaPathHandler $orca_path_handler, Parser $parser, string $packages_config, ?string $packages_config_alter) {
+    $this->env = $envFacade;
     $this->filesystem = $filesystem;
     $this->fixture = $fixture_path_handler;
     $this->orca = $orca_path_handler;
@@ -284,6 +293,9 @@ class PackageManager {
    * Adds a package to the list of packages.
    */
   private function addPackage(array $datum, FixturePathHandler $fixture_path_handler, string $package_name): void {
+//    if(empty($datum['url'])){
+//      $datum['url'] = $this->env->get('ORCA_SUT_DIR', FALSE);
+//    }
     $package = new Package($datum, $fixture_path_handler, $this->orca, $package_name);
     $this->packages[$package_name] = $package;
   }

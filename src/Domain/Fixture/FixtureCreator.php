@@ -401,9 +401,12 @@ class FixtureCreator {
    *   If the SUT isn't properly installed.
    */
   private function addTopLevelAcquiaPackages(): void {
+    $this->output->section('Adding top level packages');
     $this->addPathRepositories();
+
     $this->addAssetPackagistPathRepositories();
     $this->configureComposerForTopLevelCompanyPackages();
+    $this->output->section('Adding composer require top level packages');
     $this->composerRequireTopLevelCompanyPackages();
     $this->verifySut();
     $this->addSutAllowedPluginsToRootComposer();
@@ -500,8 +503,11 @@ class FixtureCreator {
    * @throws \Acquia\Orca\Exception\OrcaException
    */
   private function composerRequireTopLevelCompanyPackages(): void {
+    $this->output->section('require top level packages 1');
     $packages = $this->getCompanyPackageDependencies();
+    $this->output->section('require top level packages 2');
     $prefer_source = $this->options->preferSource();
+    $this->output->section('require top level packages 3');
     $this->composer->requirePackages($packages, $prefer_source);
   }
 
