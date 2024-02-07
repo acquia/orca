@@ -299,7 +299,7 @@ class PackageManager {
     if (empty($datum['url']) && !is_null($orca_sut_dir)) {
       $orca_sut_dir = $this->env->get('ORCA_SUT_DIR');
       $package_name_parts = explode('/', $orca_sut_dir);
-      $datum['url'] = $package_name_parts;
+      $datum['url'] = "../" . end($package_name_parts);
     }
     $package = new Package($datum, $fixture_path_handler, $this->orca, $package_name);
     $this->packages[$package_name] = $package;
