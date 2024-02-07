@@ -293,9 +293,11 @@ class PackageManager {
    * Adds a package to the list of packages.
    */
   private function addPackage(array $datum, FixturePathHandler $fixture_path_handler, string $package_name): void {
-//    if(empty($datum['url'])){
-//      $datum['url'] = $this->env->get('ORCA_SUT_DIR', FALSE);
-//    }
+    if(empty($datum['url'])){
+      $orca_sut_dir = $this->env->get('ORCA_SUT_DIR', FALSE);
+      $package_name_parts = explode('/', $orca_sut_dir);
+      $datum['url'] = "../". end($package_name_parts);
+    }
     $package = new Package($datum, $fixture_path_handler, $this->orca, $package_name);
     $this->packages[$package_name] = $package;
   }
