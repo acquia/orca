@@ -47,7 +47,6 @@ class EnvVarEnum extends Enum {
 
   public const ORCA_COVERAGE_ENABLE = 'ORCA_COVERAGE_ENABLE';
 
-
   public const ORCA_ENABLE_NIGHTWATCH = 'ORCA_ENABLE_NIGHTWATCH';
 
   public const ORCA_FIXTURE_DIR = 'ORCA_FIXTURE_DIR';
