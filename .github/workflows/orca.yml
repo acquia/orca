@@ -73,12 +73,14 @@ jobs:
           - orca-job: ISOLATED_TEST_ON_CURRENT
             php-version: "8.1"
             orca-enable-nightwatch: "TRUE"
+            # Testing coverage generation in Clover format when ORCA_COVERAGE_ENABLE is TRUE.
             orca-coverage-enable: "TRUE"
 
           # Testing Drupal 10 in php 8.2.
           - orca-job: ISOLATED_TEST_ON_CURRENT
             php-version: "8.2"
             orca-enable-nightwatch: "TRUE"
+            # Testing coverage generation in COBERTURA format.
             orca-coverage-cobertura-enable: "TRUE"
 
           # Testing latest Drupal 9 in php 8.2.
@@ -89,6 +91,7 @@ jobs:
           - orca-job: ISOLATED_TEST_ON_CURRENT
             php-version: "8.3"
             orca-enable-nightwatch: "TRUE"
+            # Testing coverage generation in CLOVER format.
             orca-coverage-clover-enable: "TRUE"
 
     steps:
@@ -152,6 +155,8 @@ jobs:
         run: |
           ../orca/bin/ci/self-test/after_success.sh
           unset ORCA_COVERAGE_COBERTURA_ENABLE
+          unset ORCA_COVERAGE_CLOVER_ENABLE
+          unset ORCA_COVERAGE_ENABLE
           ../orca/bin/ci/after_success.sh
           ../orca/bin/ci/after_failure.sh
           ../orca/bin/ci/after_script.sh
