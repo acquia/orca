@@ -180,6 +180,7 @@ class PhpUnitTask extends TestFrameworkBase {
       $include = $this->doc->createElement('include');
 
       foreach ($suffixes as $suffix) {
+        echo $suffix;
         $directory = $this->doc->createElement('directory', $this->getPath());
         $directory->setAttribute('suffix', $suffix);
         $include->appendChild($directory);
