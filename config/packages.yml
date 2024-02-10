@@ -54,6 +54,13 @@ acquia/acquia_cms:
   version: 2.x
   version_dev: 2.x-dev
 
+drupal/acquia_cms_common:
+  core_matrix:
+    10.1.x:
+      version: 3.2.x
+      version_dev: 1.x-dev
+    '*': []
+
 drupal/acquia_connector:
   version: 4.x
   version_dev: 4.x-dev
