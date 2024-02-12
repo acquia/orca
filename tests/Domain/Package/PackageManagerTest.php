@@ -81,6 +81,7 @@ class PackageManagerTest extends TestCase {
         '*' => ['version' => '12.x', 'version_dev' => '12.x-dev'],
       ],
     ],
+    'drupal/example_sut' => [],
   ];
 
   private const EXPECTED_PACKAGE_LIST = [
@@ -98,6 +99,7 @@ class PackageManagerTest extends TestCase {
     'drupal/package' => 0,
     'drupal/theme1' => 0,
     'drupal/theme2' => 0,
+    'drupal/example_sut' => 0,
   ];
 
   private const EXPECTED_DEPENDENCY_LIST = [
@@ -107,14 +109,22 @@ class PackageManagerTest extends TestCase {
 
   private const ORCA_PATH = '/var/www/orca';
 
+  private const ORCA_SUT_DIR = '/var/www/example-123';
+
+  private const ORCA_SUT_NAME = 'drupal/example_sut';
+
   private const PACKAGES_CONFIG_FILE = 'config/packages.yml';
 
   private const PACKAGES_CONFIG_ALTER_FILE = '../example/packages.yml';
 
   protected OrcaPathHandler|ObjectProphecy $orca;
+
   protected ObjectProphecy|Filesystem $filesystem;
+
   protected ObjectProphecy|FixturePathHandler $fixture;
+
   protected ObjectProphecy|Parser $parser;
+
   protected ObjectProphecy|EnvFacade $env;
 
   protected function setUp(): void {
@@ -178,7 +188,8 @@ class PackageManagerTest extends TestCase {
     self::assertEquals('drupal/module2', $package->getPackageName(), 'Got package by name.');
     self::assertEquals(self::EXPECTED_DEPENDENCY_LIST, $actual_dependency_list, 'Set/got all dependencies.');
     self::assertEquals(TRUE, $package->isCompanyPackage(), 'Got a company package.');
-    self::assertEquals(FALSE, $manager->get('drupal/dependency1')->isCompanyPackage(), 'Got a third party dependency.');
+    self::assertEquals(FALSE, $manager->get('drupal/dependency1')
+      ->isCompanyPackage(), 'Got a third party dependency.');
   }
 
   public function testRequestingNonExistentPackage(): void {
@@ -230,6 +241,27 @@ class PackageManagerTest extends TestCase {
 
     $manager = $this->createPackageManager();
     $manager->getAlterData();
+  }
+
+  public function testSetSutUrl(): void {
+    $this->env
+      ->get('ORCA_SUT_NAME')
+      ->willReturn(self::ORCA_SUT_NAME);
+    $this->env
+      ->get('ORCA_SUT_DIR')
+      ->willReturn(self::ORCA_SUT_DIR);
+    $manager = $this->createPackageManager();
+    $example_sut = $manager->get('drupal/example_sut');
+    $non_sut = $manager->get('drupal/module2');
+
+    $package_name_parts = explode('/', self::ORCA_SUT_DIR);
+    $expected_sut_url = "../" . end($package_name_parts);
+
+    $sut_url = $example_sut->getRepositoryUrlRaw();
+    $non_sut_url = $non_sut->getRepositoryUrlRaw();
+
+    self::assertEquals($expected_sut_url, $sut_url, 'Url correctly set.');
+    self::assertNotEquals($non_sut_url, $sut_url, "Non sut packages don't contain sut url.");
   }
 
 }

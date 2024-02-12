@@ -283,8 +283,7 @@ class PackageManager {
   /**
    * Checks if a package is null.
    */
-  private function containsValidVersion($data) : bool {
-
+  private function containsValidVersion($data): bool {
     if (!is_array($data)) {
       return FALSE;
     }
@@ -300,11 +299,8 @@ class PackageManager {
    * Adds a package to the list of packages.
    */
   private function addPackage(array $datum, FixturePathHandler $fixture_path_handler, string $package_name): void {
-    $orca_sut_dir = $this->env->get('ORCA_SUT_DIR');
-    if (empty($datum['url']) && !is_null($orca_sut_dir)) {
-      $orca_sut_dir = $this->env->get('ORCA_SUT_DIR');
-      $package_name_parts = explode('/', $orca_sut_dir);
-      $datum['url'] = "../" . end($package_name_parts);
+    if ($this->env->get('ORCA_SUT_NAME') === $package_name) {
+      $datum = $this->setSutUrl($datum);
     }
     $package = new Package($datum, $fixture_path_handler, $this->orca, $package_name);
     $this->packages[$package_name] = $package;
@@ -326,6 +322,21 @@ class PackageManager {
     $default_packages_yaml = $this->orca->getPath('config/packages.yml');
     $data = $this->parser->parseFile($default_packages_yaml);
     $this->blt = new Package($data[$package_name], $this->fixture, $this->orca, $package_name);
+  }
+
+  /**
+   * Sets the URL for the SUT.
+   */
+  private function setSutUrl($datum): array {
+    $orca_sut_dir = $this->env->get('ORCA_SUT_DIR');
+    if (!empty($datum['url']) || is_null($orca_sut_dir)) {
+      return $datum;
+    }
+
+    $package_name_parts = explode('/', $orca_sut_dir);
+    $datum['url'] = "../" . end($package_name_parts);
+
+    return $datum;
   }
 
 }
