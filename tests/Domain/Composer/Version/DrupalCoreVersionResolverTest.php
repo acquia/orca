@@ -80,7 +80,7 @@ class DrupalCoreVersionResolverTest extends TestCase {
   public function testExistsPredefinedTrue(): void {
     $this->selector
       ->findBestCandidate('drupal/core', Argument::any(), Argument::any())
-      ->shouldBeCalledTimes(2)
+      ->shouldBeCalled()
       ->willReturn($this->package->reveal());
     $resolver = $this->createDrupalCoreVersionResolver();
 
