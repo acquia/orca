@@ -12,7 +12,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 /**
  * The integrated test on next minor CI job.
  */
-class IntegratedTestOnLatestEOLMajorCiJob extends AbstractCiJob {
+class IntegratedTestOnLatestEolMajorCiJob extends AbstractCiJob {
 
   /**
    * The Drupal core version resolver.

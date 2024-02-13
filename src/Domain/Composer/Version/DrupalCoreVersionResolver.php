@@ -30,7 +30,7 @@ class DrupalCoreVersionResolver {
    *
    * @var string|null
    */
-  private $latestEOLMajor;
+  private $latestEolMajor;
 
   /**
    * The latest LTS Drupal core version.
@@ -134,7 +134,7 @@ class DrupalCoreVersionResolver {
   public function resolvePredefined(DrupalCoreVersionEnum $version): string {
     switch ($version->getValue()) {
       case DrupalCoreVersionEnum::LATEST_EOL_MAJOR():
-        return $this->findLatestEOLMajor();
+        return $this->findLatestEolMajor();
 
       case DrupalCoreVersionEnum::OLDEST_SUPPORTED():
         return $this->findOldestSupported();
@@ -273,19 +273,24 @@ class DrupalCoreVersionResolver {
   }
 
   /**
+   * Finds the latest EOL Major version of Drupal core.
    *
+   * @return string
+   *    The semver version string, e.g., 9.5.11.
+   *
+   * @throws \Acquia\Orca\Exception\OrcaVersionNotFoundException
    */
-  private function findLatestEOLMajor(): string {
-    if ($this->latestEOLMajor) {
-      return $this->latestEOLMajor;
+  private function findLatestEolMajor(): string {
+    if ($this->latestEolMajor) {
+      return $this->latestEolMajor;
     }
 
     $parts = explode('.', $this->findOldestSupported());
     $oldest_supported_major = $parts[0];
 
-    $this->latestEOLMajor = $this
+    $this->latestEolMajor = $this
       ->resolveArbitrary("<{$oldest_supported_major}", 'stable');
-    return $this->latestEOLMajor;
+    return $this->latestEolMajor;
 
   }
 
