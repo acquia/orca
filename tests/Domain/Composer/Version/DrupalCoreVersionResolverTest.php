@@ -156,7 +156,7 @@ class DrupalCoreVersionResolverTest extends TestCase {
       ->shouldBeCalledOnce();
     $this->package
       ->getPrettyVersion()
-      ->willReturn('10.1.8','9.5.11')
+      ->willReturn('10.1.8', '9.5.11')
       ->shouldBeCalledTimes(2);
     $this->selector
       ->findBestCandidate('drupal/core', '10.1.x', 'stable')
