@@ -2,6 +2,7 @@
 
 namespace Acquia\Orca\Domain\Package;
 
+use Acquia\Orca\Helper\EnvFacade;
 use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
 use Acquia\Orca\Helper\Filesystem\OrcaPathHandler;
 use Symfony\Component\Filesystem\Filesystem;
@@ -62,8 +63,17 @@ class PackageManager {
   private $parser;
 
   /**
+   * The environment facade.
+   *
+   * @var \Acquia\Orca\Helper\EnvFacade
+   */
+  private EnvFacade $env;
+
+  /**
    * Constructs an instance.
    *
+   * @param \Acquia\Orca\Helper\EnvFacade $envFacade
+   *   The environment facade.
    * @param \Symfony\Component\Filesystem\Filesystem $filesystem
    *   The filesystem.
    * @param \Acquia\Orca\Helper\Filesystem\FixturePathHandler $fixture_path_handler
@@ -80,7 +90,8 @@ class PackageManager {
    *   project directory whose contents will be merged into the main packages
    *   configuration.
    */
-  public function __construct(Filesystem $filesystem, FixturePathHandler $fixture_path_handler, OrcaPathHandler $orca_path_handler, Parser $parser, string $packages_config, ?string $packages_config_alter) {
+  public function __construct(EnvFacade $envFacade, Filesystem $filesystem, FixturePathHandler $fixture_path_handler, OrcaPathHandler $orca_path_handler, Parser $parser, string $packages_config, ?string $packages_config_alter) {
+    $this->env = $envFacade;
     $this->filesystem = $filesystem;
     $this->fixture = $fixture_path_handler;
     $this->orca = $orca_path_handler;
@@ -205,7 +216,12 @@ class PackageManager {
   private function initializePackages(FixturePathHandler $fixture_path_handler, string $packages_config, ?string $packages_config_alter): void {
     $data = $this->parseYamlFile($this->orca->getPath($packages_config));
     if ($packages_config_alter) {
-      $alter_path = $this->orca->getPath($packages_config_alter);
+      if ($this->filesystem->isAbsolutePath($packages_config_alter)) {
+        $alter_path = $packages_config_alter;
+      }
+      else {
+        $alter_path = $this->orca->getPath($packages_config_alter);
+      }
       $this->alterData = $this->parseYamlFile($alter_path);
       $data = array_merge($data, $this->alterData);
     }
@@ -267,8 +283,7 @@ class PackageManager {
   /**
    * Checks if a package is null.
    */
-  private function containsValidVersion($data) : bool {
-
+  private function containsValidVersion($data): bool {
     if (!is_array($data)) {
       return FALSE;
     }
@@ -284,6 +299,9 @@ class PackageManager {
    * Adds a package to the list of packages.
    */
   private function addPackage(array $datum, FixturePathHandler $fixture_path_handler, string $package_name): void {
+    if ($this->env->get('ORCA_SUT_NAME') === $package_name) {
+      $datum = $this->setSutUrl($datum);
+    }
     $package = new Package($datum, $fixture_path_handler, $this->orca, $package_name);
     $this->packages[$package_name] = $package;
   }
@@ -304,6 +322,21 @@ class PackageManager {
     $default_packages_yaml = $this->orca->getPath('config/packages.yml');
     $data = $this->parser->parseFile($default_packages_yaml);
     $this->blt = new Package($data[$package_name], $this->fixture, $this->orca, $package_name);
+  }
+
+  /**
+   * Sets the URL for the SUT.
+   */
+  private function setSutUrl($datum): array {
+    $orca_sut_dir = $this->env->get('ORCA_SUT_DIR');
+    if (!empty($datum['url']) || is_null($orca_sut_dir)) {
+      return $datum;
+    }
+
+    $package_name_parts = explode('/', $orca_sut_dir);
+    $datum['url'] = "../" . end($package_name_parts);
+
+    return $datum;
   }
 
 }
