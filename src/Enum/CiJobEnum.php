@@ -8,6 +8,7 @@ use MyCLabs\Enum\Enum;
  * Provides CI job special values.
  *
  * @method static CiJobEnum STATIC_CODE_ANALYSIS()
+ * @method static CiJobEnum INTEGRATED_TEST_ON_LATEST_EOL_MAJOR()
  * @method static CiJobEnum INTEGRATED_TEST_ON_OLDEST_SUPPORTED()
  * @method static CiJobEnum INTEGRATED_TEST_ON_LATEST_LTS()
  * @method static CiJobEnum INTEGRATED_TEST_ON_PREVIOUS_MINOR()
@@ -35,6 +36,8 @@ use MyCLabs\Enum\Enum;
 final class CiJobEnum extends Enum {
 
   public const STATIC_CODE_ANALYSIS = 'STATIC_CODE_ANALYSIS';
+
+  public const INTEGRATED_TEST_ON_LATEST_EOL_MAJOR = 'INTEGRATED_TEST_ON_LATEST_EOL_MAJOR';
 
   public const INTEGRATED_TEST_ON_OLDEST_SUPPORTED = 'INTEGRATED_TEST_ON_OLDEST_SUPPORTED';
 
@@ -91,6 +94,7 @@ final class CiJobEnum extends Enum {
   public static function descriptions(): array {
     return [
       self::STATIC_CODE_ANALYSIS => 'Static code analysis',
+      self::INTEGRATED_TEST_ON_LATEST_EOL_MAJOR => 'Integrated test on latest EOL major Drupal core version',
       self::INTEGRATED_TEST_ON_OLDEST_SUPPORTED => 'Integrated test on oldest supported Drupal core version',
       self::INTEGRATED_TEST_ON_LATEST_LTS => 'Integrated test on latest LTS Drupal core version',
       self::INTEGRATED_TEST_ON_PREVIOUS_MINOR => 'Integrated test on previous minor Drupal core version',
@@ -136,6 +140,9 @@ final class CiJobEnum extends Enum {
    */
   public function getDrupalCoreVersion(): ?DrupalCoreVersionEnum {
     switch ($this->getKey()) {
+      case self::INTEGRATED_TEST_ON_LATEST_EOL_MAJOR():
+        return DrupalCoreVersionEnum::LATEST_EOL_MAJOR();
+
       case self::INTEGRATED_TEST_ON_OLDEST_SUPPORTED:
         return DrupalCoreVersionEnum::OLDEST_SUPPORTED();
 

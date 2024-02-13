@@ -26,6 +26,13 @@ class DrupalCoreVersionResolver {
   private $drupalDotOrgApiClient;
 
   /**
+   * The latest EOL Major Drupal core version.
+   *
+   * @var string|null
+   */
+  private $latestEOLMajor;
+
+  /**
    * The latest LTS Drupal core version.
    *
    * @var string|null
@@ -126,6 +133,9 @@ class DrupalCoreVersionResolver {
    */
   public function resolvePredefined(DrupalCoreVersionEnum $version): string {
     switch ($version->getValue()) {
+      case DrupalCoreVersionEnum::LATEST_EOL_MAJOR():
+        return $this->findLatestEOLMajor();
+
       case DrupalCoreVersionEnum::OLDEST_SUPPORTED():
         return $this->findOldestSupported();
 
@@ -260,6 +270,23 @@ class DrupalCoreVersionResolver {
 
     $message = "No Drupal core version satisfies the given constraints: oldest supported ($oldestSupported) less than current major ($current_major)";
     throw new OrcaVersionNotFoundException($message);
+  }
+
+  /**
+   *
+   */
+  private function findLatestEOLMajor(): string {
+    if ($this->latestEOLMajor) {
+      return $this->latestEOLMajor;
+    }
+
+    $parts = explode('.', $this->findOldestSupported());
+    $oldest_supported_major = $parts[0];
+
+    $this->latestEOLMajor = $this
+      ->resolveArbitrary("<{$oldest_supported_major}", 'stable');
+    return $this->latestEOLMajor;
+
   }
 
   /**
