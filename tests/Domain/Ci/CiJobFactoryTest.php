@@ -6,6 +6,7 @@ use Acquia\Orca\Domain\Ci\CiJobFactory;
 use Acquia\Orca\Domain\Ci\Job\DeprecatedCodeScanWContribCiJob;
 use Acquia\Orca\Domain\Ci\Job\IntegratedTestOnCurrentCiJob;
 use Acquia\Orca\Domain\Ci\Job\IntegratedTestOnCurrentDevCiJob;
+use Acquia\Orca\Domain\Ci\Job\IntegratedTestOnLatestEolMajorCiJob;
 use Acquia\Orca\Domain\Ci\Job\IntegratedTestOnLatestLtsCiJob;
 use Acquia\Orca\Domain\Ci\Job\IntegratedTestOnNextMajorLatestMinorBetaOrLaterCiJob;
 use Acquia\Orca\Domain\Ci\Job\IntegratedTestOnNextMajorLatestMinorDevCiJob;
@@ -35,6 +36,7 @@ use Acquia\Orca\Tests\TestCase;
  * @property \Acquia\Orca\Domain\Ci\Job\DeprecatedCodeScanWContribCiJob|\Prophecy\Prophecy\ObjectProphecy $deprecatedCodeScanWContribCiJob
  * @property \Acquia\Orca\Domain\Ci\Job\IntegratedTestOnCurrentCiJob|\Prophecy\Prophecy\ObjectProphecy $integratedTestOnCurrentCiJob
  * @property \Acquia\Orca\Domain\Ci\Job\IntegratedTestOnCurrentDevCiJob|\Prophecy\Prophecy\ObjectProphecy $integratedTestOnCurrentDevCiJob
+ * @property \Acquia\Orca\Domain\Ci\Job\IntegratedTestOnLatestEolMajorCiJob|\Prophecy\Prophecy\ObjectProphecy $integratedTestOnLatestEolMajorCiJob
  * @property \Acquia\Orca\Domain\Ci\Job\IntegratedTestOnLatestLtsCiJob|\Prophecy\Prophecy\ObjectProphecy $integratedTestOnLatestLtsCiJob
  * @property \Acquia\Orca\Domain\Ci\Job\IntegratedTestOnNextMajorLatestMinorBetaOrLaterCiJob|\Prophecy\Prophecy\ObjectProphecy $integratedTestOnNextMajorLatestMinorBetaOrLaterCiJob
  * @property \Acquia\Orca\Domain\Ci\Job\IntegratedTestOnNextMajorLatestMinorDevCiJob|\Prophecy\Prophecy\ObjectProphecy $integratedTestOnNextMajorLatestMinorDevCiJob
@@ -60,11 +62,37 @@ use Acquia\Orca\Tests\TestCase;
 class CiJobFactoryTest extends TestCase {
 
   use CiEnumsTestTrait;
+  protected DeprecatedCodeScanWContribCiJob|ObjectProphecy $deprecatedCodeScanWContribCiJob;
+  protected IntegratedTestOnCurrentCiJob|ObjectProphecy $integratedTestOnCurrentCiJob;
+  protected IntegratedTestOnCurrentDevCiJob|ObjectProphecy $integratedTestOnCurrentDevCiJob;
+  protected IntegratedTestOnLatestLtsCiJob|ObjectProphecy $integratedTestOnLatestEolMajorCiJob;
+  protected IntegratedTestOnLatestLtsCiJob|ObjectProphecy $integratedTestOnLatestLtsCiJob;
+  protected IntegratedTestOnNextMajorLatestMinorBetaOrLaterCiJob|ObjectProphecy $integratedTestOnNextMajorLatestMinorBetaOrLaterCiJob;
+  protected IntegratedTestOnNextMajorLatestMinorDevCiJob|ObjectProphecy $integratedTestOnNextMajorLatestMinorDevCiJob;
+  protected IntegratedTestOnNextMinorCiJob|ObjectProphecy $integratedTestOnNextMinorCiJob;
+  protected IntegratedTestOnOldestSupportedCiJob|ObjectProphecy $integratedTestOnOldestSupportedCiJob;
+  protected IntegratedTestOnPreviousMinorCiJob|ObjectProphecy $integratedTestOnPreviousMinorCiJob;
+  protected IntegratedUpgradeTestFromPreviousMinorCiJob|ObjectProphecy $integratedUpgradeTestFromPreviousMinorCiJob;
+  protected IntegratedUpgradeTestToNextMinorCiJob|ObjectProphecy $integratedUpgradeTestToNextMinorCiJob;
+  protected IntegratedUpgradeTestToNextMinorDevCiJob|ObjectProphecy $integratedUpgradeTestToNextMinorDevCiJob;
+  protected IsolatedTestOnCurrentCiJob|ObjectProphecy $isolatedTestOnCurrentCiJob;
+  protected IsolatedTestOnCurrentDevCiJob|ObjectProphecy $isolatedTestOnCurrentDevCiJob;
+  protected IsolatedTestOnNextMajorLatestMinorBetaOrLaterCiJob|ObjectProphecy $isolatedTestOnNextMajorLatestMinorBetaOrLaterCiJob;
+  protected IsolatedTestOnNextMajorLatestMinorDevCiJob|ObjectProphecy $isolatedTestOnNextMajorLatestMinorDevCiJob;
+  protected IsolatedTestOnNextMinorCiJob|ObjectProphecy $isolatedTestOnNextMinorCiJob;
+  protected IsolatedTestOnNextMinorDevCiJob|ObjectProphecy $isolatedTestOnNextMinorDevCiJob;
+  protected IsolatedUpgradeTestToNextMajorBetaOrLaterCiJob|ObjectProphecy $isolatedUpgradeToNextMajorBetaOrLaterCiJob;
+  protected IsolatedUpgradeTestToNextMajorDevCiJob|ObjectProphecy $isolatedUpgradeToNextMajorDevCiJob;
+  protected LooseDeprecatedCodeScanCiJob|ObjectProphecy $looseDeprecatedCodeScanCiJob;
+  protected StaticCodeAnalysisCiJob|ObjectProphecy $staticCodeAnalysisCiJob;
+  protected StrictDeprecatedCodeScanCiJob|ObjectProphecy $strictDeprecatedCodeScanCiJob;
+  protected IntegratedTestOnNextMinorDevCiJob|ObjectProphecy $integratedTestOnNextMinorDevCiJob;
 
   protected function setUp(): void {
     $this->deprecatedCodeScanWContribCiJob = $this->prophesize(DeprecatedCodeScanWContribCiJob::class);
     $this->integratedTestOnCurrentCiJob = $this->prophesize(IntegratedTestOnCurrentCiJob::class);
     $this->integratedTestOnCurrentDevCiJob = $this->prophesize(IntegratedTestOnCurrentDevCiJob::class);
+    $this->integratedTestOnLatestEolMajorCiJob = $this->prophesize(IntegratedTestOnLatestEolMajorCiJob::class);
     $this->integratedTestOnLatestLtsCiJob = $this->prophesize(IntegratedTestOnLatestLtsCiJob::class);
     $this->integratedTestOnNextMajorLatestMinorBetaOrLaterCiJob = $this->prophesize(IntegratedTestOnNextMajorLatestMinorBetaOrLaterCiJob::class);
     $this->integratedTestOnNextMajorLatestMinorDevCiJob = $this->prophesize(IntegratedTestOnNextMajorLatestMinorDevCiJob::class);
@@ -92,6 +120,7 @@ class CiJobFactoryTest extends TestCase {
     $deprecated_code_scan_w_contrib_ci_job = $this->deprecatedCodeScanWContribCiJob->reveal();
     $integrated_test_on_current_ci_job = $this->integratedTestOnCurrentCiJob->reveal();
     $integrated_test_on_current_dev_ci_job = $this->integratedTestOnCurrentDevCiJob->reveal();
+    $integrated_test_on_latest_eol_major_ci_job = $this->integratedTestOnLatestEolMajorCiJob->reveal();
     $integrated_test_on_latest_lts = $this->integratedTestOnLatestLtsCiJob->reveal();
     $integrated_test_on_next_major_latest_minor_beta_or_later_ci_job = $this->integratedTestOnNextMajorLatestMinorBetaOrLaterCiJob->reveal();
     $integrated_test_on_next_major_latest_minor_dev_ci_job = $this->integratedTestOnNextMajorLatestMinorDevCiJob->reveal();
@@ -117,6 +146,7 @@ class CiJobFactoryTest extends TestCase {
       $deprecated_code_scan_w_contrib_ci_job,
       $integrated_test_on_current_ci_job,
       $integrated_test_on_current_dev_ci_job,
+      $integrated_test_on_latest_eol_major_ci_job,
       $integrated_test_on_latest_lts,
       $integrated_test_on_next_major_latest_minor_beta_or_later_ci_job,
       $integrated_test_on_next_major_latest_minor_dev_ci_job,
