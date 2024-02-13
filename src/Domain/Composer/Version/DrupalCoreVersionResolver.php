@@ -221,6 +221,28 @@ class DrupalCoreVersionResolver {
   }
 
   /**
+   * Finds the latest EOL Major version of Drupal core.
+   *
+   * @return string
+   *   The semver version string, e.g., 9.5.11.
+   *
+   * @throws \Acquia\Orca\Exception\OrcaVersionNotFoundException
+   */
+  private function findLatestEolMajor(): string {
+    if ($this->latestEolMajor) {
+      return $this->latestEolMajor;
+    }
+
+    $parts = explode('.', $this->findOldestSupported());
+    $oldest_supported_major = $parts[0];
+
+    $this->latestEolMajor = $this
+      ->resolveArbitrary("<{$oldest_supported_major}", 'stable');
+    return $this->latestEolMajor;
+
+  }
+
+  /**
    * Finds the oldest supported version of Drupal core.
    *
    * @return string
@@ -270,28 +292,6 @@ class DrupalCoreVersionResolver {
 
     $message = "No Drupal core version satisfies the given constraints: oldest supported ($oldestSupported) less than current major ($current_major)";
     throw new OrcaVersionNotFoundException($message);
-  }
-
-  /**
-   * Finds the latest EOL Major version of Drupal core.
-   *
-   * @return string
-   *    The semver version string, e.g., 9.5.11.
-   *
-   * @throws \Acquia\Orca\Exception\OrcaVersionNotFoundException
-   */
-  private function findLatestEolMajor(): string {
-    if ($this->latestEolMajor) {
-      return $this->latestEolMajor;
-    }
-
-    $parts = explode('.', $this->findOldestSupported());
-    $oldest_supported_major = $parts[0];
-
-    $this->latestEolMajor = $this
-      ->resolveArbitrary("<{$oldest_supported_major}", 'stable');
-    return $this->latestEolMajor;
-
   }
 
   /**

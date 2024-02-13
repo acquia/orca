@@ -6,6 +6,7 @@ use Acquia\Orca\Domain\Ci\CiJobFactory;
 use Acquia\Orca\Domain\Ci\Job\DeprecatedCodeScanWContribCiJob;
 use Acquia\Orca\Domain\Ci\Job\IntegratedTestOnCurrentCiJob;
 use Acquia\Orca\Domain\Ci\Job\IntegratedTestOnCurrentDevCiJob;
+use Acquia\Orca\Domain\Ci\Job\IntegratedTestOnLatestEolMajorCiJob;
 use Acquia\Orca\Domain\Ci\Job\IntegratedTestOnLatestLtsCiJob;
 use Acquia\Orca\Domain\Ci\Job\IntegratedTestOnNextMajorLatestMinorBetaOrLaterCiJob;
 use Acquia\Orca\Domain\Ci\Job\IntegratedTestOnNextMajorLatestMinorDevCiJob;
@@ -36,6 +37,7 @@ use Prophecy\Prophecy\ObjectProphecy;
  * @property \Acquia\Orca\Domain\Ci\Job\DeprecatedCodeScanWContribCiJob|\Prophecy\Prophecy\ObjectProphecy $deprecatedCodeScanWContribCiJob
  * @property \Acquia\Orca\Domain\Ci\Job\IntegratedTestOnCurrentCiJob|\Prophecy\Prophecy\ObjectProphecy $integratedTestOnCurrentCiJob
  * @property \Acquia\Orca\Domain\Ci\Job\IntegratedTestOnCurrentDevCiJob|\Prophecy\Prophecy\ObjectProphecy $integratedTestOnCurrentDevCiJob
+ * @property \Acquia\Orca\Domain\Ci\Job\IntegratedTestOnLatestEolMajorCiJob|\Prophecy\Prophecy\ObjectProphecy $integratedTestOnLatestEolMajorCiJob
  * @property \Acquia\Orca\Domain\Ci\Job\IntegratedTestOnLatestLtsCiJob|\Prophecy\Prophecy\ObjectProphecy $integratedTestOnLatestLtsCiJob
  * @property \Acquia\Orca\Domain\Ci\Job\IntegratedTestOnNextMajorLatestMinorBetaOrLaterCiJob|\Prophecy\Prophecy\ObjectProphecy $integratedTestOnNextMajorLatestMinorBetaOrLaterCiJob
  * @property \Acquia\Orca\Domain\Ci\Job\IntegratedTestOnNextMajorLatestMinorDevCiJob|\Prophecy\Prophecy\ObjectProphecy $integratedTestOnNextMajorLatestMinorDevCiJob
@@ -64,6 +66,7 @@ class CiJobFactoryTest extends TestCase {
   protected DeprecatedCodeScanWContribCiJob|ObjectProphecy $deprecatedCodeScanWContribCiJob;
   protected IntegratedTestOnCurrentCiJob|ObjectProphecy $integratedTestOnCurrentCiJob;
   protected IntegratedTestOnCurrentDevCiJob|ObjectProphecy $integratedTestOnCurrentDevCiJob;
+  protected IntegratedTestOnLatestLtsCiJob|ObjectProphecy $integratedTestOnLatestEolMajorCiJob;
   protected IntegratedTestOnLatestLtsCiJob|ObjectProphecy $integratedTestOnLatestLtsCiJob;
   protected IntegratedTestOnNextMajorLatestMinorBetaOrLaterCiJob|ObjectProphecy $integratedTestOnNextMajorLatestMinorBetaOrLaterCiJob;
   protected IntegratedTestOnNextMajorLatestMinorDevCiJob|ObjectProphecy $integratedTestOnNextMajorLatestMinorDevCiJob;
@@ -90,6 +93,7 @@ class CiJobFactoryTest extends TestCase {
     $this->deprecatedCodeScanWContribCiJob = $this->prophesize(DeprecatedCodeScanWContribCiJob::class);
     $this->integratedTestOnCurrentCiJob = $this->prophesize(IntegratedTestOnCurrentCiJob::class);
     $this->integratedTestOnCurrentDevCiJob = $this->prophesize(IntegratedTestOnCurrentDevCiJob::class);
+    $this->integratedTestOnLatestEolMajorCiJob = $this->prophesize(IntegratedTestOnLatestEolMajorCiJob::class);
     $this->integratedTestOnLatestLtsCiJob = $this->prophesize(IntegratedTestOnLatestLtsCiJob::class);
     $this->integratedTestOnNextMajorLatestMinorBetaOrLaterCiJob = $this->prophesize(IntegratedTestOnNextMajorLatestMinorBetaOrLaterCiJob::class);
     $this->integratedTestOnNextMajorLatestMinorDevCiJob = $this->prophesize(IntegratedTestOnNextMajorLatestMinorDevCiJob::class);
@@ -117,6 +121,7 @@ class CiJobFactoryTest extends TestCase {
     $deprecated_code_scan_w_contrib_ci_job = $this->deprecatedCodeScanWContribCiJob->reveal();
     $integrated_test_on_current_ci_job = $this->integratedTestOnCurrentCiJob->reveal();
     $integrated_test_on_current_dev_ci_job = $this->integratedTestOnCurrentDevCiJob->reveal();
+    $integrated_test_on_latest_eol_major_ci_job = $this->integratedTestOnLatestEolMajorCiJob->reveal();
     $integrated_test_on_latest_lts = $this->integratedTestOnLatestLtsCiJob->reveal();
     $integrated_test_on_next_major_latest_minor_beta_or_later_ci_job = $this->integratedTestOnNextMajorLatestMinorBetaOrLaterCiJob->reveal();
     $integrated_test_on_next_major_latest_minor_dev_ci_job = $this->integratedTestOnNextMajorLatestMinorDevCiJob->reveal();
@@ -142,6 +147,7 @@ class CiJobFactoryTest extends TestCase {
       $deprecated_code_scan_w_contrib_ci_job,
       $integrated_test_on_current_ci_job,
       $integrated_test_on_current_dev_ci_job,
+      $integrated_test_on_latest_eol_major_ci_job,
       $integrated_test_on_latest_lts,
       $integrated_test_on_next_major_latest_minor_beta_or_later_ci_job,
       $integrated_test_on_next_major_latest_minor_dev_ci_job,

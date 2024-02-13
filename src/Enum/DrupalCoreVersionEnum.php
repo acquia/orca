@@ -69,16 +69,16 @@ class DrupalCoreVersionEnum extends Enum {
    */
   public static function examples(): array {
     return [
-      self::LATEST_EOL_MAJOR => '9.5.3',
-      self::OLDEST_SUPPORTED => '10.1.8',
-      self::LATEST_LTS => '~',
-      self::PREVIOUS_MINOR => '10.1.8',
-      self::CURRENT => '10.2.3',
-      self::CURRENT_DEV => '10.2.x-dev',
-      self::NEXT_MINOR => '~',
-      self::NEXT_MINOR_DEV => '11.x-dev',
-      self::NEXT_MAJOR_LATEST_MINOR_BETA_OR_LATER => '~',
-      self::NEXT_MAJOR_LATEST_MINOR_DEV => '11.x-dev',
+      self::LATEST_EOL_MAJOR => '7.99',
+      self::OLDEST_SUPPORTED => '8.8.1',
+      self::LATEST_LTS => '8.9.1',
+      self::PREVIOUS_MINOR => '9.1.1',
+      self::CURRENT => '9.2.1',
+      self::CURRENT_DEV => '9.2.x-dev',
+      self::NEXT_MINOR => '9.3.0-alpha1',
+      self::NEXT_MINOR_DEV => '9.3.x-dev',
+      self::NEXT_MAJOR_LATEST_MINOR_BETA_OR_LATER => '10.0.0-beta1',
+      self::NEXT_MAJOR_LATEST_MINOR_DEV => '10.0.x-dev',
     ];
   }
 
