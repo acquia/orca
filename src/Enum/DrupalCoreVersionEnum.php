@@ -7,6 +7,7 @@ use MyCLabs\Enum\Enum;
 /**
  * Provides Drupal core version special values.
  *
+ * @method static DrupalCoreVersionEnum LATEST_EOL_MAJOR()
  * @method static DrupalCoreVersionEnum OLDEST_SUPPORTED()
  * @method static DrupalCoreVersionEnum LATEST_LTS()
  * @method static DrupalCoreVersionEnum PREVIOUS_MINOR()
@@ -18,6 +19,8 @@ use MyCLabs\Enum\Enum;
  * @method static DrupalCoreVersionEnum NEXT_MAJOR_LATEST_MINOR_DEV()
  */
 class DrupalCoreVersionEnum extends Enum {
+
+  public const LATEST_EOL_MAJOR = 'LATEST_EOL_MAJOR';
 
   public const OLDEST_SUPPORTED = 'OLDEST_SUPPORTED';
 
@@ -45,6 +48,7 @@ class DrupalCoreVersionEnum extends Enum {
    */
   public static function descriptions(): array {
     return [
+      self::LATEST_EOL_MAJOR => 'Latest EOL Major Drupal core version',
       self::OLDEST_SUPPORTED => 'Oldest supported Drupal core version',
       self::LATEST_LTS => 'Latest LTS Drupal core version',
       self::PREVIOUS_MINOR => 'Previous minor Drupal core version',
@@ -65,6 +69,7 @@ class DrupalCoreVersionEnum extends Enum {
    */
   public static function examples(): array {
     return [
+      self::LATEST_EOL_MAJOR => '7.99',
       self::OLDEST_SUPPORTED => '8.8.1',
       self::LATEST_LTS => '8.9.1',
       self::PREVIOUS_MINOR => '9.1.1',

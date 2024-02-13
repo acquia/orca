@@ -80,7 +80,7 @@ class DrupalCoreVersionResolverTest extends TestCase {
   public function testExistsPredefinedTrue(): void {
     $this->selector
       ->findBestCandidate('drupal/core', Argument::any(), Argument::any())
-      ->shouldBeCalledOnce()
+      ->shouldBeCalled()
       ->willReturn($this->package->reveal());
     $resolver = $this->createDrupalCoreVersionResolver();
 
@@ -147,6 +147,32 @@ class DrupalCoreVersionResolverTest extends TestCase {
 
     /* @noinspection PhpUnitTestsInspection */
     self::assertTrue(is_string($resolution), 'Accepted version and returned string.');
+  }
+
+  public function testResolvePredefinedLatestEolMajor(): void {
+    $this->drupalDotOrgApiClient
+      ->getOldestSupportedDrupalCoreBranch()
+      ->willReturn('10.1.x')
+      ->shouldBeCalledOnce();
+    $this->package
+      ->getPrettyVersion()
+      ->willReturn('10.1.8', '9.5.11')
+      ->shouldBeCalledTimes(2);
+    $this->selector
+      ->findBestCandidate('drupal/core', '10.1.x', 'stable')
+      ->willReturn($this->package->reveal())
+      ->shouldBeCalledTimes(1);
+    $this->selector
+      ->findBestCandidate('drupal/core', '<10', 'stable')
+      ->willReturn($this->package->reveal())
+      ->shouldBeCalledTimes(1);
+    $resolver = $this->createDrupalCoreVersionResolver();
+
+    $actual = $resolver->resolvePredefined(DrupalCoreVersionEnum::LATEST_EOL_MAJOR());
+    // Call again to test value caching.
+    $resolver->resolvePredefined(DrupalCoreVersionEnum::LATEST_EOL_MAJOR());
+
+    self::assertSame('9.5.11', $actual);
   }
 
   public function testResolvePredefinedOldestSupported(): void {
