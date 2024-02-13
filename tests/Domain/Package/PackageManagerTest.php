@@ -188,8 +188,7 @@ class PackageManagerTest extends TestCase {
     self::assertEquals('drupal/module2', $package->getPackageName(), 'Got package by name.');
     self::assertEquals(self::EXPECTED_DEPENDENCY_LIST, $actual_dependency_list, 'Set/got all dependencies.');
     self::assertEquals(TRUE, $package->isCompanyPackage(), 'Got a company package.');
-    self::assertEquals(FALSE, $manager->get('drupal/dependency1')
-      ->isCompanyPackage(), 'Got a third party dependency.');
+    self::assertEquals(FALSE, $manager->get('drupal/dependency1')->isCompanyPackage(), 'Got a third party dependency.');
   }
 
   public function testRequestingNonExistentPackage(): void {
