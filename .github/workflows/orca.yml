@@ -27,9 +27,17 @@ jobs:
       # Hardcode path since GITHUB_WORKSPACE can't be used here.
       # @see https://github.community/t/how-to-use-env-context/16975/9
       ORCA_SUT_DIR: /home/runner/work/orca/example
+      ORCA_SELF_TEST_COVERAGE_COBERTURA: /home/runner/build/logs/cobertura.xml
       ORCA_SELF_TEST_COVERAGE_CLOVER: /home/runner/build/logs/clover.xml
       ORCA_JOB: ${{ matrix.orca-job }}
       ORCA_ENABLE_NIGHTWATCH: ${{ matrix.orca-enable-nightwatch }}
+      ORCA_COVERAGE_COBERTURA_ENABLE: ${{ matrix.orca-coverage-cobertura-enable }}
+      ORCA_COVERAGE_CLOVER_ENABLE: ${{ matrix.orca-coverage-clover-enable }}
+      ORCA_COVERAGE_ENABLE: ${{ matrix.orca-coverage-enable }}
+      # Google env variables.
+      ORCA_GOOGLE_API_CLIENT_ID: ${{ secrets.ORCA_GOOGLE_API_CLIENT_ID }}
+      ORCA_GOOGLE_API_CLIENT_SECRET: ${{ secrets.ORCA_GOOGLE_API_CLIENT_SECRET }}
+      ORCA_GOOGLE_API_REFRESH_TOKEN: ${{ secrets.ORCA_GOOGLE_API_REFRESH_TOKEN }}
 
     strategy:
       matrix:
@@ -118,6 +126,8 @@ jobs:
       - name: After script
         run: |
           ../orca/bin/ci/self-test/after_success.sh
+          unset ORCA_COVERAGE_COBERTURA_ENABLE
+          unset ORCA_COVERAGE_CLOVER_ENABLE
           unset ORCA_COVERAGE_ENABLE
           ../orca/bin/ci/after_success.sh
           ../orca/bin/ci/after_failure.sh
