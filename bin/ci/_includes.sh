@@ -52,7 +52,6 @@ fi
 # Set environment variables.
 ORCA_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 export ORCA_ROOT
-export ORCA_ANY_COVERAGE_IS_ENABLED=${ORCA_ANY_COVERAGE_IS_ENABLED:="FALSE"}
 export ORCA_COVERAGE_CLOVER=${ORCA_COVERAGE_CLOVER:="$HOME/build/logs/clover.xml"}
 export ORCA_COVERAGE_COBERTURA=${ORCA_COVERAGE_COBERTURA:="$HOME/build/logs/cobertura.xml"}
 export ORCA_COVERAGE_ENABLE=${ORCA_COVERAGE_ENABLE:="FALSE"}

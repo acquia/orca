@@ -9,6 +9,7 @@ use MyCLabs\Enum\Enum;
  *
  * @method static EnvVarEnum ORCA_COVERAGE_CLOVER()
  * @method static EnvVarEnum ORCA_COVERAGE_COBERTURA()
+ * @method static EnvVarEnum ORCA_COVERAGE_COBERTURA_ENABLE()
  * @method static EnvVarEnum ORCA_COVERAGE_ENABLE()
  * @method static EnvVarEnum ORCA_ENABLE_NIGHTWATCH()
  * @method static EnvVarEnum ORCA_FIXTURE_DIR()
