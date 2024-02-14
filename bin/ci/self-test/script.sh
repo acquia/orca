@@ -15,12 +15,12 @@ cd ../../../ || exit 1
 
 XDEBUG_IS_ENABLED=$(php -r 'echo function_exists("xdebug_get_code_coverage") ? "TRUE" : "FALSE";')
 
-if [[ "$ORCA_COVERAGE_ENABLE" == TRUE  || "$ORCA_COVERAGE_COBERTURA_ENABLE" == TRUE  || "$ORCA_COVERAGE_CLOVER_ENABLE" == TRUE ]] && [ "$XDEBUG_IS_ENABLED" == FALSE ]; then
+if [[ "$ORCA_ANY_COVERAGE_IS_ENABLED" == TRUE && "$XDEBUG_IS_ENABLED" == "FALSE" ]]; then
   echo "Coverage generation is on but Xdebug is disabled"
   exit 1
 fi
 
-if [[ "$ORCA_COVERAGE_ENABLE" == FALSE  && "$ORCA_COVERAGE_COBERTURA_ENABLE" == FALSE  && "$ORCA_COVERAGE_CLOVER_ENABLE" == FALSE ]] && [ "$XDEBUG_IS_ENABLED" == TRUE ]; then
+if [[ "$ORCA_ANY_COVERAGE_IS_ENABLED" == FALSE && "$XDEBUG_IS_ENABLED" == "TRUE" ]]; then
   echo "Coverage generation is off but Xdebug is enabled"
   exit 1
 fi
