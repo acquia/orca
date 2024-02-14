@@ -8,6 +8,8 @@ use MyCLabs\Enum\Enum;
  * Provides environment variables.
  *
  * @method static EnvVarEnum ORCA_COVERAGE_CLOVER()
+ * @method static EnvVarEnum ORCA_COVERAGE_COBERTURA()
+ * @method static EnvVarEnum ORCA_COVERAGE_COBERTURA_ENABLE()
  * @method static EnvVarEnum ORCA_COVERAGE_ENABLE()
  * @method static EnvVarEnum ORCA_ENABLE_NIGHTWATCH()
  * @method static EnvVarEnum ORCA_FIXTURE_DIR()
@@ -37,6 +39,12 @@ use MyCLabs\Enum\Enum;
 class EnvVarEnum extends Enum {
 
   public const ORCA_COVERAGE_CLOVER = 'ORCA_COVERAGE_CLOVER';
+
+  public const ORCA_COVERAGE_COBERTURA = 'ORCA_COVERAGE_COBERTURA';
+
+  public const ORCA_COVERAGE_COBERTURA_ENABLE = 'ORCA_COVERAGE_COBERTURA_ENABLE';
+
+  public const ORCA_COVERAGE_CLOVER_ENABLE = 'ORCA_COVERAGE_CLOVER_ENABLE';
 
   public const ORCA_COVERAGE_ENABLE = 'ORCA_COVERAGE_ENABLE';
 
@@ -103,7 +111,10 @@ class EnvVarEnum extends Enum {
   public static function descriptions(): array {
     return [
       self::ORCA_COVERAGE_CLOVER => 'The path where ORCA saves the PHPUnit test coverage Clover XML file',
-      self::ORCA_COVERAGE_ENABLE => 'Whether or not to generate test coverage data',
+      self::ORCA_COVERAGE_COBERTURA => 'The path where ORCA saves the PHPUnit test coverage Cobertura XML file',
+      self::ORCA_COVERAGE_COBERTURA_ENABLE => 'Whether or not to generate test coverage data in Cobertura format',
+      self::ORCA_COVERAGE_CLOVER_ENABLE => 'Whether or not to generate test coverage data in Clover format',
+      self::ORCA_COVERAGE_ENABLE => 'Whether or not to generate test coverage data in Clover format',
       self::ORCA_ENABLE_NIGHTWATCH => 'Whether or not to run Nightwatch.js tests',
       self::ORCA_FIXTURE_DIR => 'The directory ORCA uses for test fixtures',
       self::ORCA_FIXTURE_PROFILE => 'The Drupal installation profile ORCA installs in fixtures',

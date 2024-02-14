@@ -26,7 +26,7 @@ jobs:
       # Hardcode path since GITHUB_WORKSPACE can't be used here.
       # @see https://github.community/t/how-to-use-env-context/16975/9
       ORCA_SUT_DIR: /home/runner/work/orca/example
-      ORCA_SELF_TEST_COVERAGE_CLOVER: $HOME/build/logs/clover-self.xml
+      ORCA_SELF_TEST_COVERAGE_COBERTURA: $HOME/build/logs/cobertura-self.xml
       ORCA_LIVE_TEST: TRUE
 
     strategy:

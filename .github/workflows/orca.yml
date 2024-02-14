@@ -27,9 +27,12 @@ jobs:
       # Hardcode path since GITHUB_WORKSPACE can't be used here.
       # @see https://github.community/t/how-to-use-env-context/16975/9
       ORCA_SUT_DIR: /home/runner/work/orca/example
+      ORCA_SELF_TEST_COVERAGE_COBERTURA: /home/runner/build/logs/cobertura.xml
       ORCA_SELF_TEST_COVERAGE_CLOVER: /home/runner/build/logs/clover.xml
       ORCA_JOB: ${{ matrix.orca-job }}
       ORCA_ENABLE_NIGHTWATCH: ${{ matrix.orca-enable-nightwatch }}
+      ORCA_COVERAGE_COBERTURA_ENABLE: ${{ matrix.orca-coverage-cobertura-enable }}
+      ORCA_COVERAGE_CLOVER_ENABLE: ${{ matrix.orca-coverage-clover-enable }}
       ORCA_COVERAGE_ENABLE: ${{ matrix.orca-coverage-enable }}
       # Google env variables.
       ORCA_GOOGLE_API_CLIENT_ID: ${{ secrets.ORCA_GOOGLE_API_CLIENT_ID }}
@@ -70,13 +73,15 @@ jobs:
           - orca-job: ISOLATED_TEST_ON_CURRENT
             php-version: "8.1"
             orca-enable-nightwatch: "TRUE"
+            # Testing coverage generation in Clover format when ORCA_COVERAGE_ENABLE is TRUE.
             orca-coverage-enable: "TRUE"
 
           # Testing Drupal 10 in php 8.2.
           - orca-job: ISOLATED_TEST_ON_CURRENT
             php-version: "8.2"
             orca-enable-nightwatch: "TRUE"
-            orca-coverage-enable: "TRUE"
+            # Testing coverage generation in COBERTURA format.
+            orca-coverage-cobertura-enable: "TRUE"
 
           # Testing latest Drupal 9 in php 8.2.
           - orca-job: INTEGRATED_TEST_ON_LATEST_LTS
@@ -86,7 +91,8 @@ jobs:
           - orca-job: ISOLATED_TEST_ON_CURRENT
             php-version: "8.3"
             orca-enable-nightwatch: "TRUE"
-            orca-coverage-enable: "TRUE"
+            # Testing coverage generation in CLOVER format.
+            orca-coverage-clover-enable: "TRUE"
 
     steps:
       - uses: actions/checkout@v3
@@ -148,6 +154,8 @@ jobs:
       - name: After script
         run: |
           ../orca/bin/ci/self-test/after_success.sh
+          unset ORCA_COVERAGE_COBERTURA_ENABLE
+          unset ORCA_COVERAGE_CLOVER_ENABLE
           unset ORCA_COVERAGE_ENABLE
           ../orca/bin/ci/after_success.sh
           ../orca/bin/ci/after_failure.sh

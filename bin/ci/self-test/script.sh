@@ -15,13 +15,13 @@ cd ../../../ || exit 1
 
 XDEBUG_IS_ENABLED=$(php -r 'echo function_exists("xdebug_get_code_coverage") ? "TRUE" : "FALSE";')
 
-if [[ "$ORCA_COVERAGE_ENABLE" == TRUE && "$XDEBUG_IS_ENABLED" == "FALSE" ]]; then
-  echo "ORCA_COVERAGE_ENABLE is on but Xdebug is disabled"
+if [[ "$ORCA_ANY_COVERAGE_IS_ENABLED" == TRUE && "$XDEBUG_IS_ENABLED" == "FALSE" ]]; then
+  echo "Coverage generation is on but Xdebug is disabled"
   exit 1
 fi
 
-if [[ "$ORCA_COVERAGE_ENABLE" == FALSE && "$XDEBUG_IS_ENABLED" == "TRUE" ]]; then
-  echo "ORCA_COVERAGE_ENABLE is off but Xdebug is enabled"
+if [[ "$ORCA_ANY_COVERAGE_IS_ENABLED" == FALSE && "$XDEBUG_IS_ENABLED" == "TRUE" ]]; then
+  echo "Coverage generation is off but Xdebug is enabled"
   exit 1
 fi
 
@@ -33,8 +33,10 @@ if [[ "$ORCA_JOB" == "STATIC_CODE_ANALYSIS" ]]; then
 
   echo
 
-  if [[ "$ORCA_COVERAGE_ENABLE" == TRUE ]]; then
-    eval './vendor/bin/phpunit --coverage-cobertura="$ORCA_SELF_TEST_COVERAGE_CLOVER"'
+  if [[ "$ORCA_COVERAGE_ENABLE" == TRUE ||  "$ORCA_COVERAGE_CLOVER_ENABLE" == TRUE ]]; then
+    eval './vendor/bin/phpunit --coverage-clover="$ORCA_SELF_TEST_COVERAGE_CLOVER"'
+  elif [[ "$ORCA_COVERAGE_COBERTURA_ENABLE" == TRUE ]]; then
+    eval './vendor/bin/phpunit --coverage-cobertura="$ORCA_SELF_TEST_COVERAGE_COBERTURA"'
   else
     eval './vendor/bin/phpunit'
   fi

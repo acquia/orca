@@ -2,10 +2,22 @@
 
 namespace Acquia\Orca\Domain\Tool\Phpunit;
 
+use Acquia\Orca\Domain\Composer\ComposerFacade;
 use Acquia\Orca\Domain\Server\WebServer;
+use Acquia\Orca\Domain\Tool\PhpcbfTool;
+use Acquia\Orca\Domain\Tool\Phpcs\PhpcsConfigurator;
+use Acquia\Orca\Domain\Tool\PhpLintTool;
+use Acquia\Orca\Domain\Tool\PhpmdTool;
 use Acquia\Orca\Domain\Tool\TestFrameworkBase;
 use Acquia\Orca\Exception\OrcaTaskFailureException;
+use Acquia\Orca\Helper\Config\ConfigFileOverrider;
+use Acquia\Orca\Helper\EnvFacade;
+use Acquia\Orca\Helper\Filesystem\FixturePathHandler;
+use Acquia\Orca\Helper\Filesystem\OrcaPathHandler;
+use Acquia\Orca\Helper\Process\ProcessRunner;
 use Acquia\Orca\Helper\SutSettingsTrait;
+use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 
 /**
@@ -28,6 +40,52 @@ class PhpUnitTask extends TestFrameworkBase {
    * @var \DOMXPath
    */
   private $xpath;
+
+  /**
+   * The environment facade.
+   *
+   * @var \Acquia\Orca\Helper\EnvFacade
+   */
+  private $envFacade;
+
+  /**
+   * Constructs an instance.
+   *
+   * @param string $clover_coverage
+   *   The Clover coverage XML path.
+   * @param string $cobertura_coverage
+   *   The Cobertura coverage XML path.
+   * @param \Acquia\Orca\Helper\Config\ConfigFileOverrider $config_file_overrider
+   *   The config file overrider.
+   * @param \Acquia\Orca\Domain\Composer\ComposerFacade $composer_facade
+   *   The composer facade.
+   * @param \Symfony\Component\Filesystem\Filesystem $filesystem
+   *   The filesystem.
+   * @param \Acquia\Orca\Helper\Filesystem\FixturePathHandler $fixture_path_handler
+   *   The fixture path handler.
+   * @param string $junit_log
+   *   The Junit XML path.
+   * @param \Acquia\Orca\Helper\Filesystem\OrcaPathHandler $orca_path_handler
+   *   The ORCA path handler.
+   * @param \Symfony\Component\Console\Style\SymfonyStyle $output
+   *   The output decorator.
+   * @param \Acquia\Orca\Domain\Tool\PhpcbfTool $phpcbf_tool
+   *   The PHPCBF tool.
+   * @param \Acquia\Orca\Domain\Tool\Phpcs\PhpcsConfigurator $phpcs_configurator
+   *   The PHPCS configurator.
+   * @param \Acquia\Orca\Domain\Tool\PhpLintTool $php_lint_tool
+   *   The PHP lint tool.
+   * @param \Acquia\Orca\Domain\Tool\PhpmdTool $phpmd_tool
+   *   The PHPMD tool.
+   * @param \Acquia\Orca\Helper\Process\ProcessRunner $process_runner
+   *   The process runner.
+   * @param \Acquia\Orca\Helper\EnvFacade $envFacade
+   *   The Environment Facade.
+   */
+  public function __construct(string $clover_coverage, string $cobertura_coverage, ConfigFileOverrider $config_file_overrider, ComposerFacade $composer_facade, Filesystem $filesystem, FixturePathHandler $fixture_path_handler, string $junit_log, OrcaPathHandler $orca_path_handler, SymfonyStyle $output, PhpcbfTool $phpcbf_tool, PhpcsConfigurator $phpcs_configurator, PhpLintTool $php_lint_tool, PhpmdTool $phpmd_tool, ProcessRunner $process_runner, EnvFacade $envFacade) {
+    parent::__construct($clover_coverage, $cobertura_coverage, $config_file_overrider, $composer_facade, $filesystem, $fixture_path_handler, $junit_log, $orca_path_handler, $output, $phpcbf_tool, $phpcs_configurator, $php_lint_tool, $phpmd_tool, $process_runner);
+    $this->envFacade = $envFacade;
+  }
 
   /**
    * {@inheritdoc}
@@ -323,10 +381,17 @@ class PhpUnitTask extends TestFrameworkBase {
         'phpunit',
         '--verbose',
       ];
-      if ($this->shouldGenerateCodeCoverage()) {
-        $command[] = "--coverage-cobertura={$this->cloverCoverage}";
+
+      if ($this->shouldGenerateCodeCoverageInClover()) {
+        $command[] = "--coverage-clover={$this->cloverCoverage}";
         $this->processRunner->addEnvVar("XDEBUG_MODE", "coverage");
       }
+
+      if ($this->shouldGenerateCodeCoverageInCobertura()) {
+        $command[] = "--coverage-cobertura={$this->coberturaCoverage}";
+        $this->processRunner->addEnvVar("XDEBUG_MODE", "coverage");
+      }
+
       $command = array_merge($command, [
         '--colors=always',
         '--debug',
@@ -361,6 +426,26 @@ class PhpUnitTask extends TestFrameworkBase {
    */
   public function restoreConfig(): void {
     $this->configFileOverrider->restore();
+  }
+
+  /**
+   * Determines whether the test should generate code coverage in Cobertura format.
+   *
+   * @return bool
+   *   TRUE to generate code coverage or FALSE not to.
+   */
+  private function shouldGenerateCodeCoverageInCobertura(): bool {
+    return $this->envFacade->get('ORCA_COVERAGE_COBERTURA_ENABLE', FALSE);
+  }
+
+  /**
+   * Determines whether the test should generate code coverage in Clover format.
+   *
+   * @return bool
+   *   TRUE to generate code coverage or FALSE not to.
+   */
+  private function shouldGenerateCodeCoverageInClover(): bool {
+    return $this->envFacade->get('ORCA_COVERAGE_CLOVER_ENABLE', FALSE) || $this->envFacade->get('ORCA_COVERAGE_ENABLE', FALSE);
   }
 
 }
