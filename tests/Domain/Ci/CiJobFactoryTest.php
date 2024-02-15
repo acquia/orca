@@ -31,6 +31,7 @@ use Acquia\Orca\Domain\Ci\Job\StrictDeprecatedCodeScanCiJob;
 use Acquia\Orca\Enum\CiJobEnum;
 use Acquia\Orca\Tests\Enum\CiEnumsTestTrait;
 use Acquia\Orca\Tests\TestCase;
+use Prophecy\Prophecy\ObjectProphecy;
 
 /**
  * @property \Acquia\Orca\Domain\Ci\Job\DeprecatedCodeScanWContribCiJob|\Prophecy\Prophecy\ObjectProphecy $deprecatedCodeScanWContribCiJob

@@ -4,6 +4,7 @@ namespace Acquia\Orca\Tests\Console\Command\Ci;
 
 use Acquia\Orca\Console\Command\Ci\CiRunCommand;
 use Acquia\Orca\Domain\Ci\CiJobFactory;
+use Acquia\Orca\Domain\Ci\Job\AbstractCiJob;
 use Acquia\Orca\Enum\CiJobEnum;
 use Acquia\Orca\Enum\CiJobPhaseEnum;
 use Acquia\Orca\Enum\StatusCodeEnum;
@@ -15,6 +16,7 @@ use Acquia\Orca\Tests\Console\Command\CommandTestBase;
 use Acquia\Orca\Tests\Domain\Ci\Job\_Helper\CiTestJob;
 use Acquia\Orca\Tests\Enum\CiEnumsTestTrait;
 use Prophecy\Argument;
+use Prophecy\Prophecy\ObjectProphecy;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
