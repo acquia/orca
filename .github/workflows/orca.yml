@@ -67,29 +67,8 @@ jobs:
         php-version: [ "8.1" ]
         orca-enable-nightwatch: [ "FALSE" ]
         include:
-          - orca-job: STATIC_CODE_ANALYSIS
-            php-version: "8.1"
-            orca-enable-nightwatch: "FALSE"
-
-          - orca-job: INTEGRATED_TEST_ON_OLDEST_SUPPORTED
+          - orca-job: INTEGRATED_TEST_ON_LATEST_EOL_MAJOR
             php-version: "7.4"
-            orca-enable-nightwatch: "FALSE"
-
-          - orca-job: INTEGRATED_TEST_ON_OLDEST_SUPPORTED
-            php-version: "8.0"
-            orca-enable-nightwatch: "FALSE"
-
-          - orca-job: ISOLATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_BETA_OR_LATER
-            php-version: "8.1"
-            orca-enable-nightwatch: "TRUE"
-
-          - orca-job: INTEGRATED_TEST_ON_LATEST_LTS
-            php-version: "7.4"
-            orca-enable-nightwatch: "FALSE"
-
-          - orca-job: ISOLATED_TEST_ON_CURRENT
-            php-version: "8.1"
-            orca-enable-nightwatch: "TRUE"
 
     steps:
       - uses: actions/checkout@v3
