@@ -10,6 +10,7 @@ use Acquia\Orca\Enum\DrupalCoreVersionEnum;
 use Acquia\Orca\Helper\EnvFacade;
 use Acquia\Orca\Helper\Process\ProcessRunner;
 use Acquia\Orca\Tests\Domain\Ci\Job\_Helper\CiJobTestBase;
+use Prophecy\Argument;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
@@ -53,12 +54,29 @@ class IntegratedTestOnNextMajorLatestMinorDevCiJobTest extends CiJobTestBase {
         '--dev',
       ])
       ->shouldBeCalledOnce();
+    $this->drupalCoreVersionResolver
+      ->getNextMinorDevCandidate()
+      ->shouldBeCalledOnce()
+      ->willReturn(Argument::type('string'));
+    $this->drupalCoreVersionResolver
+      ->existsArbitrary(Argument::any())
+      ->shouldBeCalledOnce()
+      ->willReturn(TRUE);
+
     $job = $this->createJob();
 
     $this->runInstallPhase($job);
   }
 
   public function testNoDrupalCoreVersionFound(): void {
+    $this->drupalCoreVersionResolver
+      ->getNextMinorDevCandidate()
+      ->shouldBeCalled()
+      ->willReturn(Argument::type('string'));
+    $this->drupalCoreVersionResolver
+      ->existsArbitrary(Argument::any())
+      ->shouldBeCalled()
+      ->willReturn(TRUE);
     $this->assertExitsEarlyIfNoDrupalCoreVersionFound();
   }
 
@@ -77,6 +95,14 @@ class IntegratedTestOnNextMajorLatestMinorDevCiJobTest extends CiJobTestBase {
         "--profile={$profile}",
       ])
       ->shouldBeCalledOnce();
+    $this->drupalCoreVersionResolver
+      ->getNextMinorDevCandidate()
+      ->shouldBeCalled()
+      ->willReturn(Argument::type('string'));
+    $this->drupalCoreVersionResolver
+      ->existsArbitrary(Argument::any())
+      ->shouldBeCalled()
+      ->willReturn(TRUE);
     $job = $this->createJob();
 
     $this->runInstallPhase($job);
@@ -97,6 +123,14 @@ class IntegratedTestOnNextMajorLatestMinorDevCiJobTest extends CiJobTestBase {
         "--project-template={$project_template}",
       ])
       ->shouldBeCalledOnce();
+    $this->drupalCoreVersionResolver
+      ->getNextMinorDevCandidate()
+      ->shouldBeCalled()
+      ->willReturn(Argument::type('string'));
+    $this->drupalCoreVersionResolver
+      ->existsArbitrary(Argument::any())
+      ->shouldBeCalled()
+      ->willReturn(TRUE);
     $job = $this->createJob();
 
     $this->runInstallPhase($job);
@@ -112,6 +146,14 @@ class IntegratedTestOnNextMajorLatestMinorDevCiJobTest extends CiJobTestBase {
         "--sut={$this->validSutName()}",
       ])
       ->shouldBeCalledOnce();
+    $this->drupalCoreVersionResolver
+      ->getNextMinorDevCandidate()
+      ->shouldBeCalled()
+      ->willReturn(Argument::type('string'));
+    $this->drupalCoreVersionResolver
+      ->existsArbitrary(Argument::any())
+      ->shouldBeCalled()
+      ->willReturn(TRUE);
     $job = $this->createJob();
 
     $this->runScriptPhase($job);
@@ -128,6 +170,14 @@ class IntegratedTestOnNextMajorLatestMinorDevCiJobTest extends CiJobTestBase {
         '--sut-only',
       ])
       ->shouldBeCalledOnce();
+    $this->drupalCoreVersionResolver
+      ->getNextMinorDevCandidate()
+      ->shouldBeCalled()
+      ->willReturn(Argument::type('string'));
+    $this->drupalCoreVersionResolver
+      ->existsArbitrary(Argument::any())
+      ->shouldBeCalled()
+      ->willReturn(TRUE);
     $job = $this->createJob();
 
     $this->runScriptPhase($job);

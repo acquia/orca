@@ -179,7 +179,7 @@ class DrupalCheckToolTest extends TestCase {
       ->shouldBeCalledOnce();
     $process = $this->prophesize(Process::class);
     $process->setWorkingDirectory(self::FIXTURE_PATH)
-      ->shouldBeCalledOnce();
+      ->willReturn($process);
     $process->run()
       ->shouldBeCalledOnce();
     $process

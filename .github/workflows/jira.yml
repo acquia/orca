@@ -17,8 +17,8 @@ jobs:
     # Set the JIRA* secrets in your repository settings. You will need to create an API
     # token from your Jira user profile.
     secrets:
-      jira-base-url: ${{ secrets.JIRA_BASE_URL }}
       jira-api-token: ${{ secrets.JIRA_API_TOKEN }}
+      jira-user-email: ${{ secrets.JIRA_USER_EMAIL }}
       github-token: ${{ secrets.GITHUB_TOKEN }}
     with:
       issue_label: grooming

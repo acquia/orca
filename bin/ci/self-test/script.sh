@@ -15,13 +15,13 @@ cd ../../../ || exit 1
 
 XDEBUG_IS_ENABLED=$(php -r 'echo function_exists("xdebug_get_code_coverage") ? "TRUE" : "FALSE";')
 
-if [[ "$ORCA_COVERAGE_ENABLE" == TRUE && "$XDEBUG_IS_ENABLED" == "FALSE" ]]; then
-  echo "ORCA_COVERAGE_ENABLE is on but Xdebug is disabled"
+if [[ "$ORCA_ANY_COVERAGE_IS_ENABLED" == TRUE && "$XDEBUG_IS_ENABLED" == "FALSE" ]]; then
+  echo "Coverage generation is on but Xdebug is disabled"
   exit 1
 fi
 
-if [[ "$ORCA_COVERAGE_ENABLE" == FALSE && "$XDEBUG_IS_ENABLED" == "TRUE" ]]; then
-  echo "ORCA_COVERAGE_ENABLE is off but Xdebug is enabled"
+if [[ "$ORCA_ANY_COVERAGE_IS_ENABLED" == FALSE && "$XDEBUG_IS_ENABLED" == "TRUE" ]]; then
+  echo "Coverage generation is off but Xdebug is enabled"
   exit 1
 fi
 
@@ -33,8 +33,10 @@ if [[ "$ORCA_JOB" == "STATIC_CODE_ANALYSIS" ]]; then
 
   echo
 
-  if [[ "$ORCA_COVERAGE_ENABLE" == TRUE ]]; then
+  if [[ "$ORCA_COVERAGE_ENABLE" == TRUE ||  "$ORCA_COVERAGE_CLOVER_ENABLE" == TRUE ]]; then
     eval './vendor/bin/phpunit --coverage-clover="$ORCA_SELF_TEST_COVERAGE_CLOVER"'
+  elif [[ "$ORCA_COVERAGE_COBERTURA_ENABLE" == TRUE ]]; then
+    eval './vendor/bin/phpunit --coverage-cobertura="$ORCA_SELF_TEST_COVERAGE_COBERTURA"'
   else
     eval './vendor/bin/phpunit'
   fi
@@ -50,9 +52,14 @@ if [[ "$ORCA_ENABLE_NIGHTWATCH" == "TRUE" && "$ORCA_SUT_HAS_NIGHTWATCH_TESTS" &&
     orca fixture:run-server &
     SERVER_PID=$!
 
-    # @todo could we set DRUPAL_TEST_CHROMEDRIVER_AUTOSTART instead of launching Chromedriver manually?
-    chromedriver --disable-dev-shm-usage --disable-extensions --disable-gpu --headless --no-sandbox --port=4444 &
-    CHROMEDRIVER_PID=$!
+    if [[ "$GITLAB_CI" ]]; then
+      echo "ChromeDriver initialized via separate container..."
+    else
+      # @todo Could we set DRUPAL_TEST_CHROMEDRIVER_AUTOSTART instead of launching ChromeDriver manually?
+      chromedriver --disable-dev-shm-usage --disable-extensions --disable-gpu --headless --no-sandbox --port=4444 &
+      CHROMEDRIVER_PID=$!
+    fi
+
 
     eval "yarn test:nightwatch \\
       --headless \\
@@ -65,6 +72,8 @@ if [[ "$ORCA_ENABLE_NIGHTWATCH" == "TRUE" && "$ORCA_SUT_HAS_NIGHTWATCH_TESTS" &&
       --tag=core"
 
     kill -0 $SERVER_PID
-    kill -0 $CHROMEDRIVER_PID
+    if [ $CHROMEDRIVER_PID ]; then
+      kill -0 $CHROMEDRIVER_PID
+    fi
   )
 fi

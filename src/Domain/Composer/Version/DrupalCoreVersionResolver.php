@@ -26,6 +26,13 @@ class DrupalCoreVersionResolver {
   private $drupalDotOrgApiClient;
 
   /**
+   * The latest EOL Major Drupal core version.
+   *
+   * @var string|null
+   */
+  private $latestEolMajor;
+
+  /**
    * The latest LTS Drupal core version.
    *
    * @var string|null
@@ -126,6 +133,9 @@ class DrupalCoreVersionResolver {
    */
   public function resolvePredefined(DrupalCoreVersionEnum $version): string {
     switch ($version->getValue()) {
+      case DrupalCoreVersionEnum::LATEST_EOL_MAJOR():
+        return $this->findLatestEolMajor();
+
       case DrupalCoreVersionEnum::OLDEST_SUPPORTED():
         return $this->findOldestSupported();
 
@@ -157,6 +167,30 @@ class DrupalCoreVersionResolver {
   }
 
   /**
+   * Determines if a given arbitrary version resolves to a version that exists.
+   *
+   * @param string $version
+   *   The core version constraint.
+   * @param string $preferred_stability
+   *   The stability, both minimum and preferred. Available options (in order of
+   *   stability) are dev, alpha, beta, RC, and stable.
+   * @param bool $dev
+   *   TRUE to allow dev stability results or FALSE not to.
+   *
+   * @return bool
+   *   TRUE if the version exists or FALSE if not.
+   */
+  public function existsArbitrary(string $version, string $preferred_stability = 'stable', bool $dev = TRUE): bool {
+    try {
+      $this->resolveArbitrary($version, $preferred_stability, $dev);
+    }
+    catch (OrcaVersionNotFoundException $e) {
+      return FALSE;
+    }
+    return TRUE;
+  }
+
+  /**
    * Finds the Drupal core version matching the given arbitrary criteria.
    *
    * @param string $version
@@ -184,6 +218,28 @@ class DrupalCoreVersionResolver {
       $preferred_stability
     );
     throw new OrcaVersionNotFoundException($message);
+  }
+
+  /**
+   * Finds the latest EOL Major version of Drupal core.
+   *
+   * @return string
+   *   The semver version string, e.g., 9.5.11.
+   *
+   * @throws \Acquia\Orca\Exception\OrcaVersionNotFoundException
+   */
+  private function findLatestEolMajor(): string {
+    if ($this->latestEolMajor) {
+      return $this->latestEolMajor;
+    }
+
+    $parts = explode('.', $this->findOldestSupported());
+    $oldest_supported_major = $parts[0];
+
+    $this->latestEolMajor = $this
+      ->resolveArbitrary("<{$oldest_supported_major}", 'stable');
+    return $this->latestEolMajor;
+
   }
 
   /**
@@ -333,6 +389,17 @@ class DrupalCoreVersionResolver {
   }
 
   /**
+   * Gets a possible next minor dev value.
+   *
+   * @return string
+   *   The next minor dev candidate string.
+   */
+  public function getNextMinorDevCandidate(): string {
+    $next_minor = $this->findNextMinorUnresolved();
+    return $this->convertToDev($next_minor);
+  }
+
+  /**
    * Finds the next minor dev version of Drupal core.
    *
    * @return string
@@ -345,8 +412,14 @@ class DrupalCoreVersionResolver {
       return $this->nextMinorDev;
     }
 
-    $next_minor = $this->findNextMinorUnresolved();
-    $this->nextMinorDev = $this->convertToDev($next_minor);
+    $next_minor_dev = $this->getNextMinorDevCandidate();
+
+    if ($this->existsArbitrary($next_minor_dev)) {
+      $this->nextMinorDev = $this->resolveArbitrary($next_minor_dev);
+    }
+    else {
+      $this->nextMinorDev = $this->findNextMajorLatestMinorDev();
+    }
 
     return $this->nextMinorDev;
   }

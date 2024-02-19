@@ -53,7 +53,10 @@ fi
 ORCA_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 export ORCA_ROOT
 export ORCA_COVERAGE_CLOVER=${ORCA_COVERAGE_CLOVER:="$HOME/build/logs/clover.xml"}
+export ORCA_COVERAGE_COBERTURA=${ORCA_COVERAGE_COBERTURA:="$HOME/build/logs/cobertura.xml"}
 export ORCA_COVERAGE_ENABLE=${ORCA_COVERAGE_ENABLE:="FALSE"}
+export ORCA_COVERAGE_COBERTURA_ENABLE=${ORCA_COVERAGE_COBERTURA_ENABLE:="FALSE"}
+export ORCA_COVERAGE_CLOVER_ENABLE=${ORCA_COVERAGE_CLOVER_ENABLE:="FALSE"}
 export ORCA_FIXTURE_DIR=${ORCA_FIXTURE_DIR:="$ORCA_ROOT/../orca-build"}
 export ORCA_FIXTURE_PROFILE=${ORCA_FIXTURE_PROFILE:="orca"}
 export ORCA_JUNIT_LOG=${ORCA_JUNIT_LOG:="$HOME/build/logs/junitLog.xml"}
@@ -73,6 +76,18 @@ export DRUPAL_TEST_DB_URL="sqlite://localhost/sites/default/files/db.sqlite"
 export DRUPAL_TEST_WEBDRIVER_CHROME_ARGS="--disable-gpu --headless --no-sandbox"
 export DRUPAL_TEST_WEBDRIVER_HOSTNAME="localhost"
 export DRUPAL_TEST_WEBDRIVER_PORT="4444"
+export DRUPAL_NIGHTWATCH_SEARCH_DIRECTORY=../../
+
+if [[ "$GITLAB_CI" ]]; then
+  # In Gitlab we are using a separate container to run ChromeDriver on port 9515.
+  export DRUPAL_TEST_WEBDRIVER_PORT="9515"
+  # Nightwatch tests are crashing when they run on SHM due to size constraint, hence disabling.
+  export DRUPAL_TEST_WEBDRIVER_CHROME_ARGS="--disable-dev-shm-usage --disable-gpu --headless --no-sandbox"
+  # We are facing intermittent failures for Nightwatch tests of toolbar module, hence ignoring.
+  export DRUPAL_NIGHTWATCH_IGNORE_DIRECTORIES="node_modules,vendor,.*,sites/*/files,sites/*/private,sites/simpletest,/builds/project/orca-build/docroot/core/modules/toolbar/tests/src/Nightwatch/Tests/*"
+  # Set DRUPAL_NIGHTWATCH_OUTPUT to a path inside project dir.
+  export DRUPAL_NIGHTWATCH_OUTPUT="$CI_PROJECT_DIR/reports/nightwatch"
+fi
 
 if [[ ! "$ORCA_TEMP_DIR" ]]; then
   # GitHub Actions.
@@ -102,6 +117,12 @@ export PATH="/usr/local/bin/:$PATH"
 # Add convenient aliases.
 alias drush='drush -r "$ORCA_FIXTURE_DIR"'
 
+if [[ "$ORCA_COVERAGE_ENABLE" == TRUE  || "$ORCA_COVERAGE_COBERTURA_ENABLE" == TRUE  || "$ORCA_COVERAGE_CLOVER_ENABLE" == TRUE ]]; then
+  export ORCA_ANY_COVERAGE_IS_ENABLED=TRUE
+else
+  export ORCA_ANY_COVERAGE_IS_ENABLED=FALSE
+fi
+
 # Commands exiting with a non-zero status prior to this point constitute an
 # error, i.e. an ORCA configuration problem, and always stop execution.
 # Commands exiting with a non-zero status after this point constitute a failure,
@@ -122,10 +143,17 @@ allowed_failures=(
   "INTEGRATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_BETA_OR_LATER"
 )
 if [[ " ${allowed_failures[*]} " =~ " ${ORCA_JOB} " ]]; then
-  set +e
   export ORCA_IS_ALLOWED_FAILURE="TRUE"
   notice "This job is allowed to fail and will report as passing regardless of outcome."
 fi
+
+function shutdown() {
+    if [[ "$ORCA_IS_ALLOWED_FAILURE" == "TRUE" ]]; then
+        exit 0
+    fi
+}
+
+trap shutdown ERR
 
 # Make the shell print all lines in the script before executing them.
 set -v

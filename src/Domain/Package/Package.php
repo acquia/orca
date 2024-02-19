@@ -226,7 +226,7 @@ class Package {
    * Gets the absolute URL for the Composer "path" repository.
    *
    * @return string
-   *   The absolute URL the Composer package is cloned at at, e.g.,
+   *   The absolute URL the Composer package is cloned at, e.g.,
    *   "/var/www/example".
    */
   public function getRepositoryUrlAbsolute(): string {

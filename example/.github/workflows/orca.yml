@@ -24,7 +24,10 @@
 ---
 name: ORCA CI
 on:
-  push: ~
+  push:
+    # Prevent duplicate jobs on Dependabot PRs that interfere with automerge.
+    branches-ignore:
+      - 'dependabot/**'
   pull_request: ~
   schedule:
     # Daily at 00:00:00 UTC.
@@ -94,6 +97,10 @@ jobs:
       # Do not modify the following lines. They are critical for managing the build matrix.
       ORCA_JOB: ${{ matrix.orca-job }}
       ORCA_ENABLE_NIGHTWATCH: ${{ matrix.orca-enable-nightwatch }}
+      # Google env variables required for Domo Integration.
+      ORCA_GOOGLE_API_CLIENT_ID: ${{ secrets.ORCA_GOOGLE_API_CLIENT_ID }}
+      ORCA_GOOGLE_API_CLIENT_SECRET: ${{ secrets.ORCA_GOOGLE_API_CLIENT_SECRET }}
+      ORCA_GOOGLE_API_REFRESH_TOKEN: ${{ secrets.ORCA_GOOGLE_API_REFRESH_TOKEN }}
 
     # Execution time is drastically reduced by splitting the build into multiple
     # concurrent jobs.

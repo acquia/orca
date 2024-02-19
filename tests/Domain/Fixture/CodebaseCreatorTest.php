@@ -61,6 +61,12 @@ class CodebaseCreatorTest extends TestCase {
     $this->git = $this->prophesize(GitFacade::class);
     $this->orca = $this->prophesize(OrcaPathHandler::class);
     $this->filesystem = $this->prophesize(Filesystem::class);
+    $this->filesystem
+      ->exists(self::COMPOSER_LOCK_PATH)
+      ->willReturn(FALSE);
+    $this->filesystem
+      ->remove(self::COMPOSER_LOCK_PATH)
+      ->shouldNotBeCalled();
     $this->packageManager = $this->prophesize(PackageManager::class);
     $this->packageManager
       ->exists(Argument::any())
