@@ -59,9 +59,9 @@
     },
     "require-dev": {
         "brainmaestro/composer-git-hooks": "^2.8.5",
-        "phpspec/prophecy-phpunit": "^2.0.2",
+        "phpspec/prophecy-phpunit": "dev-master",
         "phpstan/phpstan": "^1.10.14",
-        "phpunit/phpunit": "^10.5"
+        "phpunit/phpunit": "^10"
     },
     "conflict": {
         "symfony/symfony": "*"
