@@ -131,57 +131,44 @@ jobs:
           - ISOLATED_TEST_ON_NEXT_MINOR_DEV
           # - INTEGRATED_UPGRADE_TEST_TO_NEXT_MINOR_DEV
           - LOOSE_DEPRECATED_CODE_SCAN
-          # - ISOLATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_BETA_OR_LATER
-          # - INTEGRATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_BETA_OR_LATER
-          # - ISOLATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_DEV
-          # - INTEGRATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_DEV
+          - INTEGRATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_BETA_OR_LATER
+          - ISOLATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_DEV
+          - INTEGRATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_DEV
         # The lowest version of PHP supported by all of Drupal, Acquia, and ORCA itself.
         # @see https://www.drupal.org/docs/8/system-requirements/php-requirements
         # @see https://docs.acquia.com/acquia-cloud/arch/tech-platform/
-        php-version: [ "8.1" ]
+        php-version: [ "8.1" , "8.3" ]
         orca-enable-nightwatch: [ "FALSE" ]
+        orca-coverage-enable: [ "FALSE" ]
         orca-version: [ "^4" ]
         # When manually specifying a job to include, empty parameter values (such as for orca-job and php-version) may
         # result in undefined behavior. Make sure to set each parameter explicitly.
         include:
-          - orca-job: INTEGRATED_TEST_ON_OLDEST_SUPPORTED
-            php-version: "7.4"
-            orca-enable-nightwatch: "FALSE"
-            orca-version: "^3"
-
-          - orca-job: INTEGRATED_TEST_ON_OLDEST_SUPPORTED
-            php-version: "8.0"
-            orca-enable-nightwatch: "FALSE"
-            orca-version: "^3"
-
-          - orca-job: INTEGRATED_TEST_ON_LATEST_LTS
-            php-version: "7.4"
-            orca-enable-nightwatch: "FALSE"
-            orca-version: "^3"
-
-          - orca-job: INTEGRATED_TEST_ON_LATEST_LTS
-            php-version: "8.0"
-            orca-enable-nightwatch: "FALSE"
-            orca-version: "^3"
-
-          - orca-job: INTEGRATED_TEST_ON_LATEST_LTS
-            php-version: "8.2"
-            orca-enable-nightwatch: "FALSE"
-
+          # Testing Drupal 10 in php 8.1 with nightwatch and coverage.
           - orca-job: ISOLATED_TEST_ON_CURRENT
             php-version: "8.1"
             orca-enable-nightwatch: "TRUE"
+            # Testing coverage generation in Clover format when ORCA_COVERAGE_ENABLE is TRUE.
+            orca-coverage-enable: "TRUE"
 
+          # Testing Drupal 10 in php 8.3.
           - orca-job: ISOLATED_TEST_ON_CURRENT
-            php-version: "8.2"
+            php-version: "8.3"
+            orca-enable-nightwatch: "TRUE"
+            # Testing coverage generation in CLOVER format.
+            orca-coverage-clover-enable: "TRUE"
+
+          # Testing Drupal 9 in php 8.1.
+          - orca-job: INTEGRATED_TEST_ON_LATEST_EOL_MAJOR
+            php-version: "8.1"
 
           # ORCA only executes when ORCA_JOB is set. Leave ORCA_JOB unset to execute custom jobs.
           # See ./bin/ci/example.sh for details.
           # - php-version: "7.4"
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
-      - uses: actions/setup-node@v2
+      - uses: actions/setup-node@v3
         with:
           node-version: 20.x
 
