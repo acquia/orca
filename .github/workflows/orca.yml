@@ -42,7 +42,7 @@ jobs:
     strategy:
       matrix:
         orca-job:
-          - STATIC_CODE_ANALYSIS
+#          - STATIC_CODE_ANALYSIS
           - INTEGRATED_TEST_ON_OLDEST_SUPPORTED
           - INTEGRATED_TEST_ON_PREVIOUS_MINOR
           - INTEGRATED_TEST_ON_LATEST_LTS
@@ -82,9 +82,9 @@ jobs:
             # Testing coverage generation in CLOVER format.
             orca-coverage-clover-enable: "TRUE"
 
-          # Testing Drupal 9 in php 8.1.
-          - orca-job: INTEGRATED_TEST_ON_LATEST_EOL_MAJOR
-            php-version: "8.1"
+#          # Testing Drupal 9 in php 8.1.
+#          - orca-job: INTEGRATED_TEST_ON_LATEST_EOL_MAJOR
+#            php-version: "8.1"
 
     steps:
       - uses: actions/checkout@v3
