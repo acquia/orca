@@ -301,13 +301,13 @@ class FixtureOptions {
     }
 
     if ($this->coreVersionParsedMatches('^9')) {
-      $this->options['project-template'] = 'acquia/drupal-recommended-project:^1';
+      $this->options['project-template'] = 'acquia/drupal-recommended-project:dev-ACMS-1866';
     }
     elseif ($this->coreVersionParsedMatches('^10') && $this->isDev()) {
-      $this->options['project-template'] = 'acquia/drupal-recommended-project:dev-master';
+      $this->options['project-template'] = 'acquia/drupal-recommended-project:dev-ACMS-1866';
     }
     else {
-      $this->options['project-template'] = 'acquia/drupal-recommended-project';
+      $this->options['project-template'] = 'acquia/drupal-recommended-project:dev-ACMS-1866';
     }
 
     return $this->options['project-template'];
