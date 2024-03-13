@@ -72,7 +72,8 @@ class DrushFacade {
       '--format=json',
     ]);
     $process->run();
-    $json = $this->extractJson($process->getOutput());
+    $output = $process->getOutput();
+    $json = $this->extractJson($output);
     $data = json_decode($json, TRUE);
 
     if (json_last_error()) {
@@ -92,12 +93,8 @@ class DrushFacade {
    *
    * @return string
    */
-  public function extractJson($json): string {
-    // Check if "</details>" tag is present in the output. If present start offset after
-    // the position of the tag and return the substring.
-    $pos = strpos($json, "</details>");
-    $pos = ($pos === FALSE)?0:$pos+10;
-    return substr($json, $pos);
+  public function extractJson(string $json): string {
+    return substr($json, strpos($json, "{"));
   }
 
   /**
