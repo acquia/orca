@@ -88,15 +88,18 @@ class DrushFacade {
 
   /**
    * Sometimes drush returns a HTML response, this method extracts the JSON.
-   * @param $json
+   *
+   * @param string $json
+   *   The JSON string.
    *
    * @return string
+   *   The extracted JSON.
    */
-  public function extractJson($json): string {
-    // Check if "</details>" tag is present in the output. If present start offset after
-    // the position of the tag and return the substring.
+  public function extractJson(string $json): string {
+    // Check if "</details>" tag is present in the output. If present start
+    // substring offset after the position of the tag and return the substring.
     $pos = strpos($json, "</details>");
-    $pos = ($pos === FALSE)?0:$pos+10;
+    $pos = ($pos === FALSE) ? 0 : $pos + 10;
     return substr($json, $pos);
   }
 
