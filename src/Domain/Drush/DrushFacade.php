@@ -89,9 +89,12 @@ class DrushFacade {
 
   /**
    * Sometimes drush returns a HTML response, this method extracts the JSON.
-   * @param $json
+   *
+   * @param string $json
+   *   The response from drush.
    *
    * @return string
+   *   The JSON response extracted.
    */
   public function extractJson(string $json): string {
     return substr($json, strpos($json, "{"));
