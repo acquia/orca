@@ -179,9 +179,7 @@ PHP;
     $data = '# ORCA settings.' . PHP_EOL;
 
     $data .= <<<'PHP'
-if (file_exists($app_root . '/' . $site_path . '/settings/local.settings.php')) {
-  include $app_root . '/' . $site_path . '/settings/local.settings.php';
-}
+
 PHP;
     return $data;
   }
