@@ -28,7 +28,7 @@ class CiJobEnumTest extends TestCase {
     self::assertNotEmpty($description, 'Description is non-empty.');
   }
 
-  public function providerDescriptions(): array {
+  public static function providerDescriptions(): array {
     $descriptions = [];
     foreach (CiJobEnum::descriptions() as $key => $value) {
       $descriptions[$key] = [new CiJobEnum($key), $value];
@@ -52,7 +52,7 @@ class CiJobEnumTest extends TestCase {
     self::assertInstanceOf(DrupalCoreVersionEnum::class, $version, 'Returned a version enum.');
   }
 
-  public function providerDrupalCoreVersions(): array {
+  public static function providerDrupalCoreVersions(): array {
     $jobs = CiJobEnum::values();
     unset($jobs[CiJobEnum::STATIC_CODE_ANALYSIS]);
     foreach ($jobs as $key => $value) {

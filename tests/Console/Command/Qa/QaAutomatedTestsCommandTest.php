@@ -92,7 +92,7 @@ class QaAutomatedTestsCommandTest extends CommandTestBase {
     self::assertEquals($status_code, $this->getStatusCode(), 'Returned correct status code.');
   }
 
-  public function providerCommand(): array {
+  public static function providerCommand(): array {
     return [
       [FALSE, [], ['Fixture::exists'], 0, StatusCodeEnum::ERROR, sprintf("Error: No fixture exists at %s.\nHint: Use the \"fixture:init\" command to create one.\n", self::FIXTURE_ROOT)],
       [TRUE, [], ['Fixture::exists', 'run'], 0, StatusCodeEnum::OK, ''],
@@ -119,7 +119,7 @@ class QaAutomatedTestsCommandTest extends CommandTestBase {
     $this->executeCommand($args);
   }
 
-  public function providerFrameworkFlags(): array {
+  public static function providerFrameworkFlags(): array {
     return [
       [[], 0],
       [['--phpunit' => 1], 0],
@@ -137,7 +137,7 @@ class QaAutomatedTestsCommandTest extends CommandTestBase {
     $this->executeCommand($args);
   }
 
-  public function providerAllOption(): array {
+  public static function providerAllOption(): array {
     return [
       [
         'args' => [],

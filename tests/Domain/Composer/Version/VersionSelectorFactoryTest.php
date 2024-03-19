@@ -54,7 +54,7 @@ class VersionSelectorFactoryTest extends TestCase {
 
   }
 
-  public function providerCreate(): array {
+  public static function providerCreate(): array {
     return [
       [
         'include_drupal_dot_org' => TRUE,

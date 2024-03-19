@@ -53,7 +53,7 @@ class EnvFacadeTest extends TestCase {
     self::assertSame($expected_return, $actual_return);
   }
 
-  public function providerGetNoDefault(): array {
+  public static function providerGetNoDefault(): array {
     return [
       [
         'variable' => 'test',
@@ -81,7 +81,7 @@ class EnvFacadeTest extends TestCase {
     self::assertSame($expected_return, $actual_return);
   }
 
-  public function providerGetWithDefault(): array {
+  public static function providerGetWithDefault(): array {
     return [
       [
         'variable' => 'lorem',

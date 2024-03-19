@@ -75,7 +75,7 @@ class DrupalDotOrgApiClientTest extends TestCase {
     $client->getOldestSupportedDrupalCoreBranch();
   }
 
-  public function providerGetOldestSupportedDrupalCoreBranchException(): array {
+  public static function providerGetOldestSupportedDrupalCoreBranchException(): array {
     return [
       [ClientExceptionInterface::class],
       [RedirectionExceptionInterface::class],

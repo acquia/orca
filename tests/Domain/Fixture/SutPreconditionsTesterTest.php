@@ -119,7 +119,7 @@ class SutPreconditionsTesterTest extends TestCase {
     $tester->test(self::SUT_NAME);
   }
 
-  public function providerTestExceptions(): array {
+  public static function providerTestExceptions(): array {
     return [
       [OrcaFileNotFoundException::class, OrcaFileNotFoundException::class],
       [OrcaException::class, OrcaException::class],

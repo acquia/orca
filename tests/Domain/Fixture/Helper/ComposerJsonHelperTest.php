@@ -349,7 +349,7 @@ class ComposerJsonHelperTest extends TestCase {
     $composer_json->set($key, $value);
   }
 
-  public function providerSet(): array {
+  public static function providerSet(): array {
     return [
       ['lorem.ipsum', TRUE],
       ['dolor.sit.amet', 12345],

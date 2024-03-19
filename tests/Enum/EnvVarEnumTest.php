@@ -24,7 +24,7 @@ class EnvVarEnumTest extends TestCase {
     self::assertEquals($key, $value, 'Key and value correspond.');
   }
 
-  public function providerKeyValuePairs(): array {
+  public static function providerKeyValuePairs(): array {
     $pairs = [];
     foreach (EnvVarEnum::toArray() as $key => $value) {
       $pairs[$key] = [$key, $value];
@@ -49,7 +49,7 @@ class EnvVarEnumTest extends TestCase {
     self::assertNotEmpty($description, 'Description is non-empty.');
   }
 
-  public function providerDescriptions(): array {
+  public static function providerDescriptions(): array {
     $descriptions = [];
     foreach (EnvVarEnum::descriptions() as $key => $value) {
       $descriptions[$key] = [$value];

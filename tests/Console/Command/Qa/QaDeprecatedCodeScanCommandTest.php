@@ -77,7 +77,7 @@ class QaDeprecatedCodeScanCommandTest extends CommandTestBase {
     self::assertEquals(StatusCodeEnum::OK, $this->getStatusCode(), 'Returned correct status code.');
   }
 
-  public function providerCommand(): array {
+  public static function providerCommand(): array {
     return [
       [
         'args' => ['--sut' => self::VALID_PACKAGE],

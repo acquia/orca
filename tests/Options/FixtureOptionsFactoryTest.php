@@ -42,7 +42,7 @@ class FixtureOptionsFactoryTest extends TestCase {
     self::assertEquals($is_dev, $options->isDev());
   }
 
-  public function providerFactory(): array {
+  public static function providerFactory(): array {
     return [
       [['bare' => TRUE], TRUE, FALSE],
       [['dev' => TRUE], FALSE, TRUE],

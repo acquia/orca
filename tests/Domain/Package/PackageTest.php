@@ -75,7 +75,7 @@ class PackageTest extends TestCase {
     self::assertEquals($enable, $package->shouldGetEnabled(), 'Determined whether or not should get enabled.');
   }
 
-  public function providerConstructionAndGetters(): array {
+  public static function providerConstructionAndGetters(): array {
     return [
       'Full specification' => [
         'drupal/example_library' => [
@@ -223,7 +223,7 @@ class PackageTest extends TestCase {
     $this->createPackage($package_name, $data);
   }
 
-  public function providerConstructionError(): array {
+  public static function providerConstructionError(): array {
     return [
       'Invalid package name: missing forward slash' => [\InvalidArgumentException::class, 'incomplete', []],
       'Invalid "core_matrix" value: non-array' => [InvalidOptionsException::class, 'drupal/example', ['core_matrix' => 'invalid']],
@@ -247,7 +247,7 @@ class PackageTest extends TestCase {
     self::assertEquals($version_dev, $package->getVersionDev($core_version), 'Got correct dev version.');
   }
 
-  public function providerConditionalVersions(): array {
+  public static function providerConditionalVersions(): array {
     return [
       'Empty (defaults), no core version' => [
         [],
@@ -446,7 +446,7 @@ class PackageTest extends TestCase {
     self::assertEquals($expected_to_match, $is_match);
   }
 
-  public function providerCoreVersionMatching(): array {
+  public static function providerCoreVersionMatching(): array {
     return [
       // Matches.
       [TRUE, '8.7.0', '8.7.0'],
@@ -487,7 +487,7 @@ class PackageTest extends TestCase {
     self::assertEquals($expected, $actual);
   }
 
-  public function providerExists(): array {
+  public static function providerExists(): array {
     return [
       ['lorem', TRUE],
       ['ipsum', FALSE],
@@ -516,7 +516,7 @@ class PackageTest extends TestCase {
     self::assertEquals($absolute_install_path, $package->getInstallPathAbsolute());
   }
 
-  public function providerInstallPathCalculation(): array {
+  public static function providerInstallPathCalculation(): array {
     return [
       ['bower-asset', 'docroot/libraries/example'],
       ['drupal-core', 'docroot/core'],
