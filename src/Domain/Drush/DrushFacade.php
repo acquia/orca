@@ -88,7 +88,7 @@ class DrushFacade {
   }
 
   /**
-   * Sometimes drush returns a HTML response, this method extracts the JSON.
+   * Extracts the JSON from the response received.
    *
    * @param string $json
    *   The response from drush.
