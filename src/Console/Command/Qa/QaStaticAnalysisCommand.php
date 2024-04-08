@@ -154,7 +154,7 @@ class QaStaticAnalysisCommand extends Command {
         PhpcsStandardEnum::commandHelp()
       )), $this->defaultPhpcsStandard)
       ->addOption('phplint', NULL, InputOption::VALUE_NONE, 'Run the PHP Lint tool')
-      ->addOption('phploc', NULL, InputOption::VALUE_NONE, 'Run the PHPLOC tool')
+      ->addOption('phploc', NULL, InputOption::VALUE_NONE, 'Deprecated: This option is deprecated and will be removed in version 5.0.0')
       ->addOption('phpmd', NULL, InputOption::VALUE_NONE, 'Run the PHP Mess Detector tool')
       ->addOption('yamllint', NULL, InputOption::VALUE_NONE, 'Run the YAML Lint tool');
   }
@@ -195,6 +195,15 @@ class QaStaticAnalysisCommand extends Command {
     $phploc = $input->getOption('phploc');
     $phpmd = $input->getOption('phpmd');
     $yamllint = $input->getOption('yamllint');
+
+    if ($phploc) {
+      // phpcs:disable
+      trigger_error(
+        "--phploc" . " is deprecated in orca:4.8.0 and will be removed in orca:5.0.0.",
+        E_USER_DEPRECATED
+      );
+      // phpcs:enable
+    }
     // If NO tasks are specified, they are ALL implied.
     $all = !$composer && !$coverage && !$phpcs && !$phplint && !$phploc && !$phpmd && !$yamllint;
 
@@ -204,9 +213,6 @@ class QaStaticAnalysisCommand extends Command {
     if ($all || $phpcs) {
       $this->phpCodeSniffer->setStandard($this->getStandard($input));
       $this->taskRunner->addTask($this->phpCodeSniffer);
-    }
-    if ($all || $phploc || $coverage) {
-      $this->taskRunner->addTask($this->phploc);
     }
     if ($all || $coverage) {
       $this->taskRunner->addTask($this->coverage);
