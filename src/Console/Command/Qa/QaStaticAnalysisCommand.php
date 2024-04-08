@@ -154,7 +154,7 @@ class QaStaticAnalysisCommand extends Command {
         PhpcsStandardEnum::commandHelp()
       )), $this->defaultPhpcsStandard)
       ->addOption('phplint', NULL, InputOption::VALUE_NONE, 'Run the PHP Lint tool')
-      ->addOption('phploc', NULL, InputOption::VALUE_NONE, 'Deprecated: This option is deprecated and will be removed in version 5.0.0')
+      ->addOption('phploc', NULL, InputOption::VALUE_NONE, 'Deprecated: This option is deprecated and will be removed in version 5.x')
       ->addOption('phpmd', NULL, InputOption::VALUE_NONE, 'Run the PHP Mess Detector tool')
       ->addOption('yamllint', NULL, InputOption::VALUE_NONE, 'Run the YAML Lint tool');
   }
@@ -169,7 +169,7 @@ class QaStaticAnalysisCommand extends Command {
       return StatusCodeEnum::ERROR;
     }
     try {
-      $this->configureTaskRunner($input);
+      $this->configureTaskRunner($input, $output);
     }
     // Catch an invalid command option value.
     catch (\UnexpectedValueException $e) {
@@ -186,8 +186,10 @@ class QaStaticAnalysisCommand extends Command {
    *
    * @param \Symfony\Component\Console\Input\InputInterface $input
    *   The command input.
+   * @param \Symfony\Component\Console\Output\OutputInterface $output
+   *   The command output.
    */
-  private function configureTaskRunner(InputInterface $input): void {
+  private function configureTaskRunner(InputInterface $input, OutputInterface $output): void {
     $composer = $input->getOption('composer');
     $coverage = $input->getOption('coverage');
     $phpcs = $input->getOption('phpcs');
@@ -197,12 +199,8 @@ class QaStaticAnalysisCommand extends Command {
     $yamllint = $input->getOption('yamllint');
 
     if ($phploc) {
-      // phpcs:disable
-      trigger_error(
-        "--phploc" . " is deprecated in orca:4.8.0 and will be removed in orca:5.0.0.",
-        E_USER_DEPRECATED
-      );
-      // phpcs:enable
+      $output->writeln("The 'phploc' functionality has been removed
+       and the command option will not be available from ORCA 5.x.");
     }
     // If NO tasks are specified, they are ALL implied.
     $all = !$composer && !$coverage && !$phpcs && !$phplint && !$phploc && !$phpmd && !$yamllint;
