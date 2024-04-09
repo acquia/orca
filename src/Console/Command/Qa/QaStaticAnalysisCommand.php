@@ -17,6 +17,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
@@ -154,7 +155,7 @@ class QaStaticAnalysisCommand extends Command {
         PhpcsStandardEnum::commandHelp()
       )), $this->defaultPhpcsStandard)
       ->addOption('phplint', NULL, InputOption::VALUE_NONE, 'Run the PHP Lint tool')
-      ->addOption('phploc', NULL, InputOption::VALUE_NONE, 'Deprecated: This option is deprecated and will be removed in version 5.x')
+      ->addOption('phploc', NULL, InputOption::VALUE_NONE, 'DEPRECATED: This option has no effect (only present for BC)')
       ->addOption('phpmd', NULL, InputOption::VALUE_NONE, 'Run the PHP Mess Detector tool')
       ->addOption('yamllint', NULL, InputOption::VALUE_NONE, 'Run the YAML Lint tool');
   }
@@ -198,10 +199,12 @@ class QaStaticAnalysisCommand extends Command {
     $phpmd = $input->getOption('phpmd');
     $yamllint = $input->getOption('yamllint');
 
+    $output = new SymfonyStyle($input, $output);
+
     if ($phploc) {
-      $output->writeln("The 'phploc' functionality has been removed
-       and the command option will not be available from ORCA 5.x.");
+      $output->warning('You are using the deprecated option "--phploc". It has no effect and will break in ORCA 5.');
     }
+
     // If NO tasks are specified, they are ALL implied.
     $all = !$composer && !$coverage && !$phpcs && !$phplint && !$phploc && !$phpmd && !$yamllint;
 
