@@ -147,7 +147,7 @@ class QaStaticAnalysisCommand extends Command {
       ->setHelp('Tools can be specified individually or in combination. If none are specified, all will be run.')
       ->addArgument('path', InputArgument::REQUIRED, 'The path to analyze')
       ->addOption('composer', NULL, InputOption::VALUE_NONE, 'Run the Composer validation tool')
-      ->addOption('coverage', NULL, InputOption::VALUE_NONE, 'Run the code coverage estimator. Implies "--phploc"')
+      ->addOption('coverage', NULL, InputOption::VALUE_NONE, 'Run the code coverage estimator.')
       ->addOption('phpcs', NULL, InputOption::VALUE_NONE, 'Run the PHP Code Sniffer tool')
       ->addOption('phpcs-standard', NULL, InputOption::VALUE_REQUIRED, implode(PHP_EOL, array_merge(
         ['Change the PHPCS standard used:'],
