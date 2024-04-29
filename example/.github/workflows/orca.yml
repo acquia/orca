@@ -131,10 +131,6 @@ jobs:
           - ISOLATED_TEST_ON_NEXT_MINOR_DEV
           # - INTEGRATED_UPGRADE_TEST_TO_NEXT_MINOR_DEV
           - LOOSE_DEPRECATED_CODE_SCAN
-          - ISOLATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_BETA_OR_LATER
-          - INTEGRATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_BETA_OR_LATER
-          - ISOLATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_DEV
-          - INTEGRATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_DEV
         # The lowest version of PHP supported by all of Drupal, Acquia, and ORCA itself.
         # @see https://www.drupal.org/docs/8/system-requirements/php-requirements
         # @see https://docs.acquia.com/acquia-cloud/arch/tech-platform/
@@ -162,6 +158,22 @@ jobs:
           # Testing Drupal 9 in php 8.1.
           - orca-job: INTEGRATED_TEST_ON_LATEST_EOL_MAJOR
             php-version: "8.1"
+
+          # Testing Drupal 11 in php 8.3.
+          - orca-job: ISOLATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_BETA_OR_LATER
+            php-version: "8.3"
+
+          # Testing Drupal 11 in php 8.3.
+          - orca-job: INTEGRATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_BETA_OR_LATER
+            php-version: "8.3"
+
+          # Testing Drupal 11 in php 8.3.
+          - orca-job: ISOLATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_DEV
+            php-version: "8.3"
+
+          # Testing Drupal 11 in php 8.3.
+          - orca-job: INTEGRATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_DEV
+            php-version: "8.3"
 
           # ORCA only executes when ORCA_JOB is set. Leave ORCA_JOB unset to execute custom jobs.
           # See ./bin/ci/example.sh for details.
