@@ -177,7 +177,8 @@ class QaStaticAnalysisCommandTest extends CommandTestBase {
       ->willReturn($this->taskRunner);
     $this->taskRunner
       ->addTask($this->phploc->reveal())
-      ->shouldNotBeCalled();
+      ->shouldBeCalledTimes($run_called)
+      ->willReturn($this->taskRunner);
     $this->taskRunner
       ->addTask($this->phpMessDetector->reveal())
       ->shouldBeCalledTimes($run_called)
@@ -241,6 +242,7 @@ class QaStaticAnalysisCommandTest extends CommandTestBase {
       [['--composer' => 1], 'composerValidate'],
       [['--phpcs' => 1], 'phpCodeSniffer'],
       [['--phplint' => 1], 'phpLint'],
+      [['--phploc' => 1], 'phploc'],
       [['--phpmd' => 1], 'phpMessDetector'],
       [['--yamllint' => 1], 'yamlLint'],
     ];
@@ -252,7 +254,7 @@ class QaStaticAnalysisCommandTest extends CommandTestBase {
   public function testCoverageOptionSpecialCaseTaskFiltering(array $args): void {
     $this->taskRunner
       ->addTask(Argument::any())
-      ->shouldBeCalledTimes(1)
+      ->shouldBeCalledTimes(2)
       ->willReturn($this->taskRunner);
     $this->taskRunner
       ->addTask($this->coverage->reveal())
@@ -260,7 +262,8 @@ class QaStaticAnalysisCommandTest extends CommandTestBase {
       ->willReturn($this->taskRunner);
     $this->taskRunner
       ->addTask($this->phploc->reveal())
-      ->shouldNotBeCalled();
+      ->shouldBeCalledOnce()
+      ->willReturn($this->taskRunner);
     $args['path'] = self::SUT_PATH;
 
     $this->executeCommand($args);
