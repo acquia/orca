@@ -17,7 +17,6 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
@@ -155,7 +154,7 @@ class QaStaticAnalysisCommand extends Command {
         PhpcsStandardEnum::commandHelp()
       )), $this->defaultPhpcsStandard)
       ->addOption('phplint', NULL, InputOption::VALUE_NONE, 'Run the PHP Lint tool')
-      ->addOption('phploc', NULL, InputOption::VALUE_NONE, 'DEPRECATED: This option has no effect (only present for BC)')
+      ->addOption('phploc', NULL, InputOption::VALUE_NONE, 'Run the PHPLOC tool')
       ->addOption('phpmd', NULL, InputOption::VALUE_NONE, 'Run the PHP Mess Detector tool')
       ->addOption('yamllint', NULL, InputOption::VALUE_NONE, 'Run the YAML Lint tool');
   }
@@ -170,7 +169,7 @@ class QaStaticAnalysisCommand extends Command {
       return StatusCodeEnum::ERROR;
     }
     try {
-      $this->configureTaskRunner($input, $output);
+      $this->configureTaskRunner($input);
     }
     // Catch an invalid command option value.
     catch (\UnexpectedValueException $e) {
@@ -187,10 +186,8 @@ class QaStaticAnalysisCommand extends Command {
    *
    * @param \Symfony\Component\Console\Input\InputInterface $input
    *   The command input.
-   * @param \Symfony\Component\Console\Output\OutputInterface $output
-   *   The command output.
    */
-  private function configureTaskRunner(InputInterface $input, OutputInterface $output): void {
+  private function configureTaskRunner(InputInterface $input): void {
     $composer = $input->getOption('composer');
     $coverage = $input->getOption('coverage');
     $phpcs = $input->getOption('phpcs');
@@ -198,13 +195,6 @@ class QaStaticAnalysisCommand extends Command {
     $phploc = $input->getOption('phploc');
     $phpmd = $input->getOption('phpmd');
     $yamllint = $input->getOption('yamllint');
-
-    $output = new SymfonyStyle($input, $output);
-
-    if ($phploc) {
-      $output->warning('You are using the deprecated option "--phploc". It has no effect and will break in ORCA 5.');
-    }
-
     // If NO tasks are specified, they are ALL implied.
     $all = !$composer && !$coverage && !$phpcs && !$phplint && !$phploc && !$phpmd && !$yamllint;
 
@@ -214,6 +204,9 @@ class QaStaticAnalysisCommand extends Command {
     if ($all || $phpcs) {
       $this->phpCodeSniffer->setStandard($this->getStandard($input));
       $this->taskRunner->addTask($this->phpCodeSniffer);
+    }
+    if ($all || $phploc || $coverage) {
+      $this->taskRunner->addTask($this->phploc);
     }
     if ($all || $coverage) {
       $this->taskRunner->addTask($this->coverage);
