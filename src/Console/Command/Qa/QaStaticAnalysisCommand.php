@@ -154,6 +154,7 @@ class QaStaticAnalysisCommand extends Command {
         PhpcsStandardEnum::commandHelp()
       )), $this->defaultPhpcsStandard)
       ->addOption('phplint', NULL, InputOption::VALUE_NONE, 'Run the PHP Lint tool')
+      ->addOption('phploc', NULL, InputOption::VALUE_NONE, 'Run the PHPLOC tool')
       ->addOption('phpmd', NULL, InputOption::VALUE_NONE, 'Run the PHP Mess Detector tool')
       ->addOption('yamllint', NULL, InputOption::VALUE_NONE, 'Run the YAML Lint tool');
   }
