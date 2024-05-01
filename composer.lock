@@ -3629,16 +3629,16 @@
         },
         {
             "name": "symfony/dependency-injection",
-            "version": "v6.4.6",
+            "version": "v6.4.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/dependency-injection.git",
-                "reference": "31417777509923b22de5c6fb6b3ffcdebde37cb5"
+                "reference": "d8c5f9781b71c2a868ae9d0e5c9b283684740b6d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/dependency-injection/zipball/31417777509923b22de5c6fb6b3ffcdebde37cb5",
-                "reference": "31417777509923b22de5c6fb6b3ffcdebde37cb5",
+                "url": "https://api.github.com/repos/symfony/dependency-injection/zipball/d8c5f9781b71c2a868ae9d0e5c9b283684740b6d",
+                "reference": "d8c5f9781b71c2a868ae9d0e5c9b283684740b6d",
                 "shasum": ""
             },
             "require": {
@@ -3690,7 +3690,7 @@
             "description": "Allows you to standardize and centralize the way objects are constructed in your application",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/dependency-injection/tree/v6.4.6"
+                "source": "https://github.com/symfony/dependency-injection/tree/v6.4.7"
             },
             "funding": [
                 {
@@ -3706,7 +3706,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-03-27T22:00:14+00:00"
+            "time": "2024-04-18T09:22:46+00:00"
         },
         {
             "name": "symfony/deprecation-contracts",
@@ -5222,16 +5222,16 @@
         },
         {
             "name": "symfony/var-exporter",
-            "version": "v6.4.6",
+            "version": "v6.4.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/var-exporter.git",
-                "reference": "20888cf4d11de203613515cf0587828bf5af0fe7"
+                "reference": "825f9b00c37bbe1c1691cc1aff9b5451fc9b4405"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/var-exporter/zipball/20888cf4d11de203613515cf0587828bf5af0fe7",
-                "reference": "20888cf4d11de203613515cf0587828bf5af0fe7",
+                "url": "https://api.github.com/repos/symfony/var-exporter/zipball/825f9b00c37bbe1c1691cc1aff9b5451fc9b4405",
+                "reference": "825f9b00c37bbe1c1691cc1aff9b5451fc9b4405",
                 "shasum": ""
             },
             "require": {
@@ -5279,7 +5279,7 @@
                 "serialize"
             ],
             "support": {
-                "source": "https://github.com/symfony/var-exporter/tree/v6.4.6"
+                "source": "https://github.com/symfony/var-exporter/tree/v6.4.7"
             },
             "funding": [
                 {
@@ -5295,7 +5295,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-03-20T21:07:14+00:00"
+            "time": "2024-04-18T09:22:46+00:00"
         },
         {
             "name": "symfony/yaml",
