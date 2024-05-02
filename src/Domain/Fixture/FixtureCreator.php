@@ -179,7 +179,8 @@ class FixtureCreator {
    * @param \Acquia\Orca\Helper\EnvFacade $env
    *   The environment facade.
    */
-  public function __construct(CloudHooksInstaller $cloud_hooks_installer,
+  public function __construct(
+    CloudHooksInstaller $cloud_hooks_installer,
     CodebaseCreator $codebase_creator,
     ComposerFacade $composer,
     ComposerJsonHelper $composer_json_helper,
@@ -194,7 +195,7 @@ class FixtureCreator {
     SubextensionManager $subextension_manager,
     VersionFinder $version_finder,
     FixtureCustomizer $fixtureCustomizer,
-    EnvFacade $env
+    EnvFacade $env,
   ) {
     $this->cloudHooksInstaller = $cloud_hooks_installer;
     $this->codebaseCreator = $codebase_creator;

@@ -123,7 +123,7 @@ class CiJobFactory {
     IsolatedUpgradeTestToNextMajorDevCiJob $isolated_upgrade_test_to_next_major_dev_ci_job,
     LooseDeprecatedCodeScanCiJob $loose_deprecated_code_scan_ci_job,
     StaticCodeAnalysisCiJob $static_code_analysis_ci_job,
-    StrictDeprecatedCodeScanCiJob $strict_deprecated_code_scan_ci_job
+    StrictDeprecatedCodeScanCiJob $strict_deprecated_code_scan_ci_job,
   ) {
     foreach (func_get_args() as $job) {
       $job_name = $job->getJobName();
