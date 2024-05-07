@@ -143,23 +143,23 @@ PHP;
 // already installed and causing the import to fail.
 // @see \Drupal\Core\DrupalKernel::$defaultBootstrapContainerDefinition
 // @see https://www.drupal.org/project/drupal/issues/3006038
-$settings['bootstrap_container_definition'] = [
-  'parameters' => [],
-  'services' => [
-    'database' => [
-      'class' => 'Drupal\Core\Database\Connection',
-      'factory' => 'Drupal\Core\Database\Database::getConnection',
-      'arguments' => ['default'],
-    ],
-    'cache.container' => [
-      'class' => 'Drupal\Core\Cache\MemoryBackend',
-    ],
-    'cache_tags_provider.container' => [
-      'class' => 'Drupal\Core\Cache\DatabaseCacheTagsChecksum',
-      'arguments' => ['@database'],
-    ],
-  ],
-];
+//$settings['bootstrap_container_definition'] = [
+//  'parameters' => [],
+//  'services' => [
+//    'database' => [
+//      'class' => 'Drupal\Core\Database\Connection',
+//      'factory' => 'Drupal\Core\Database\Database::getConnection',
+//      'arguments' => ['default'],
+//    ],
+//    'cache.container' => [
+//      'class' => 'Drupal\Core\Cache\MemoryBackend',
+//    ],
+//    'cache_tags_provider.container' => [
+//      'class' => 'Drupal\Core\Cache\DatabaseCacheTagsChecksum',
+//      'arguments' => ['@database'],
+//    ],
+//  ],
+//];
 
 // Change the config cache to use a memory backend to prevent SQLite "too many
 // SQL variables" errors.
