@@ -112,7 +112,7 @@
     "scripts": {
       "post-install-cmd": [
             "php -r \"copy('https://phar.phpunit.de/phploc.phar', 'vendor/bin/phploc');\"",
-            "chmod +x vendor/bin/phploc"
+            "chmod u+x vendor/bin/phploc"
         ],
         "post-update-cmd": [
             "@composer normalize"
