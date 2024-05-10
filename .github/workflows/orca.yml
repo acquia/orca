@@ -61,20 +61,43 @@ jobs:
           - ISOLATED_TEST_ON_NEXT_MINOR_DEV
           # - INTEGRATED_UPGRADE_TEST_TO_NEXT_MINOR_DEV
           - LOOSE_DEPRECATED_CODE_SCAN
-          - ISOLATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_BETA_OR_LATER
-          - INTEGRATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_BETA_OR_LATER
-          - ISOLATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_DEV
-          - INTEGRATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_DEV
-        php-version: [ "8.3" ]
+        php-version: [ "8.1", "8.3" ]
         orca-enable-nightwatch: [ "FALSE" ]
         orca-coverage-enable: [ "TRUE" ]
         include:
+          # Testing Drupal 10 in php 8.1 with nightwatch and coverage.
+          - orca-job: ISOLATED_TEST_ON_CURRENT
+            php-version: "8.1"
+            orca-enable-nightwatch: "TRUE"
+            # Testing coverage generation in Clover format when ORCA_COVERAGE_ENABLE is TRUE.
+            orca-coverage-enable: "TRUE"
+
           # Testing Drupal 10 in php 8.3.
           - orca-job: ISOLATED_TEST_ON_CURRENT
             php-version: "8.3"
             orca-enable-nightwatch: "TRUE"
             # Testing coverage generation in CLOVER format.
             orca-coverage-clover-enable: "TRUE"
+
+          # Testing Drupal 9 in php 8.1.
+          - orca-job: INTEGRATED_TEST_ON_LATEST_EOL_MAJOR
+            php-version: "8.1"
+
+          # Testing Drupal 11 in php 8.3.
+          - orca-job: ISOLATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_BETA_OR_LATER
+            php-version: "8.3"
+
+          # Testing Drupal 11 in php 8.3.
+          - orca-job: INTEGRATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_BETA_OR_LATER
+            php-version: "8.3"
+
+          # Testing Drupal 11 in php 8.3.
+          - orca-job: ISOLATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_DEV
+            php-version: "8.3"
+
+          # Testing Drupal 11 in php 8.3.
+          - orca-job: INTEGRATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_DEV
+            php-version: "8.3"
 
     steps:
       - uses: actions/checkout@v3
