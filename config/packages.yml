@@ -165,9 +165,12 @@ drush/drush:
     9.x:
       version: 11.x
       version_dev: 11.x
-    '*':
+    10.x:
       version: 12.x
       version_dev: 12.x-dev
+    '*':
+      version: 13.x
+      version_dev: 13.x-dev
 
 # Acquia CMS uses drupal-test-traits as a dev dependency.
 # @todo remove this via ORCA-298
