@@ -6,7 +6,7 @@ use Acquia\Orca\Enum\DrupalCoreVersionEnum;
 
 trait DrupalCoreVersionEnumsTestTrait {
 
-  public function providerVersions(): array {
+  public static function providerVersions(): array {
     $versions = DrupalCoreVersionEnum::values();
     array_walk($versions, static function (&$value) {
       $value = [$value];

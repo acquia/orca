@@ -42,7 +42,7 @@ class PathHandlerTest extends TestCase {
     self::assertEquals($exists, $return, 'Returned correct value.');
   }
 
-  public function providerExists(): array {
+  public static function providerExists(): array {
     return [
       ['/path-exists', TRUE],
       ['/no-path-there', FALSE],
@@ -67,7 +67,7 @@ class PathHandlerTest extends TestCase {
     self::assertEquals($exists, $return, 'Returned correct value.');
   }
 
-  public function providerExistsWithSubpath(): array {
+  public static function providerExistsWithSubpath(): array {
     return [
       ['path-exists', TRUE],
       ['no-path-there', FALSE],
@@ -86,7 +86,7 @@ class PathHandlerTest extends TestCase {
     self::assertEquals($expected, $path_handler->getPath($sub_path), 'Resolved path.');
   }
 
-  public function providerGetPath(): array {
+  public static function providerGetPath(): array {
     return [
       ['/var/www/orca-build', NULL, '/var/www/orca-build'],
       ['/var/www/orca-build', 'lorem/ipsum/dolor/sit/amet', '/var/www/orca-build/lorem/ipsum/dolor/sit/amet'],

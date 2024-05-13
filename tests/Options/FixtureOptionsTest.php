@@ -176,7 +176,7 @@ class FixtureOptionsTest extends TestCase {
     $this->createFixtureOptions([$option => 12345]);
   }
 
-  public function providerInvalidOptions(): array {
+  public static function providerInvalidOptions(): array {
     return [
       ['bare'],
       ['core'],
@@ -210,7 +210,7 @@ class FixtureOptionsTest extends TestCase {
     $this->createFixtureOptions($options);
   }
 
-  public function providerInvalidCombinations(): array {
+  public static function providerInvalidCombinations(): array {
     return [
       [['bare' => TRUE, 'sut' => 'test/example'], 'Cannot create a bare fixture with a SUT.'],
       [['bare' => TRUE, 'symlink-all' => TRUE], 'Cannot symlink all in a bare fixture.'],
@@ -232,7 +232,7 @@ class FixtureOptionsTest extends TestCase {
     self::assertEquals($version, $options->getCore(), 'Accepted valid "core" option.');
   }
 
-  public function providerCoreRawConstraintsValid(): array {
+  public static function providerCoreRawConstraintsValid(): array {
     return [
       ['9.0.0'],
       ['1.2.3'],
@@ -297,7 +297,7 @@ class FixtureOptionsTest extends TestCase {
     $options->getCoreResolved();
   }
 
-  public function providerCoreResolvedRange(): array {
+  public static function providerCoreResolvedRange(): array {
     return [
       ['~8', FALSE, 'stable'],
       ['8.0.x-dev', FALSE, 'stable'],
@@ -337,7 +337,7 @@ class FixtureOptionsTest extends TestCase {
     self::assertEquals($name, $options->getProfile(), 'Accepted valid "profile" option.');
   }
 
-  public function providerProfileValid(): array {
+  public static function providerProfileValid(): array {
     return [
       ['abc'],
       ['test_example'],
@@ -360,7 +360,7 @@ class FixtureOptionsTest extends TestCase {
     self::assertEquals($name, $options->getProfile(), 'Accepted valid "profile" option.');
   }
 
-  public function providerProfileInvalid(): array {
+  public static function providerProfileInvalid(): array {
     return [
       [''],
       ['ab'],

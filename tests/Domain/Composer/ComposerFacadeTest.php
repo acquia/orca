@@ -119,7 +119,7 @@ class ComposerFacadeTest extends TestCase {
     $composer->createProject($options);
   }
 
-  public function providerCreateProjectWithoutSut(): array {
+  public static function providerCreateProjectWithoutSut(): array {
     return [
       'Arbitrary project template/recommended stability' => [
         'options' => [
@@ -213,7 +213,7 @@ class ComposerFacadeTest extends TestCase {
     $composer->createProjectFromPackage($package->reveal());
   }
 
-  public function providerCreateProjectFromPackage(): array {
+  public static function providerCreateProjectFromPackage(): array {
     return [
       [
         'package_name' => 'example/drupal-recommended-project',
@@ -237,7 +237,7 @@ class ComposerFacadeTest extends TestCase {
     self::assertEquals($expected, ComposerFacade::isValidPackageName($name));
   }
 
-  public function providerIsValidPackageName(): array {
+  public static function providerIsValidPackageName(): array {
     return [
       [TRUE, 'test/example'],
       [TRUE, 'lorem_ipsum/dolor_sit'],
@@ -260,7 +260,7 @@ class ComposerFacadeTest extends TestCase {
     self::assertEquals($expected, $actual, 'Correctly determined validity of version constraint.');
   }
 
-  public function providerIsValidVersionConstraint(): array {
+  public static function providerIsValidVersionConstraint(): array {
     return [
       [TRUE, '^1.0'],
       [TRUE, '~1.0'],
@@ -293,7 +293,7 @@ class ComposerFacadeTest extends TestCase {
     $composer->removeConfig([]);
   }
 
-  public function providerRemoveConfig(): array {
+  public static function providerRemoveConfig(): array {
     return [
       [['platform']],
     ];
@@ -356,7 +356,7 @@ class ComposerFacadeTest extends TestCase {
     $composer->requirePackages($packages, $prefer_source, $no_update);
   }
 
-  public function providerRequirePackagesOptions(): array {
+  public static function providerRequirePackagesOptions(): array {
     return [
       [
         'prefer_source' => FALSE,
@@ -441,7 +441,7 @@ class ComposerFacadeTest extends TestCase {
     $composer->updateLockFile();
   }
 
-  public function providerPackageList(): array {
+  public static function providerPackageList(): array {
     return [
       [['test/example']],
       [['test1/example1'], ['test2/example2']],

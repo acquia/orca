@@ -132,7 +132,7 @@ class AbstractCiJobTest extends CiJobTestBase {
     $job->runOrcaQaAutomatedTests([], $env_facade, $process_runner);
   }
 
-  public function providerRunOrcaQaAutomatedTestsWithInstallProfile(): array {
+  public static function providerRunOrcaQaAutomatedTestsWithInstallProfile(): array {
     return [
       [
         'profile' => NULL,

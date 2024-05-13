@@ -53,7 +53,7 @@ class FixtureSiteInstallCommandTest extends CommandTestBase {
     self::assertEquals($status_code, $this->getStatusCode(), 'Returned correct status code.');
   }
 
-  public function providerCommand(): array {
+  public static function providerCommand(): array {
     return [
       [FALSE, [], [], 0, FixtureCreator::DEFAULT_PROFILE, StatusCodeEnum::ERROR, sprintf("Error: No fixture exists at %s.\n", self::FIXTURE_ROOT)],
       [TRUE, [], ['n'], 0, FixtureCreator::DEFAULT_PROFILE, StatusCodeEnum::USER_CANCEL, 'Are you sure you want to drop all tables in the database and install a fresh site at /var/www/orca-build? '],

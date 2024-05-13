@@ -56,7 +56,7 @@ class FixtureStatusCommandTest extends CommandTestBase {
     self::assertEquals($status_code, $this->getStatusCode(), 'Returned correct status code.');
   }
 
-  public function providerCommand(): array {
+  public static function providerCommand(): array {
     return [
       [FALSE, 0, StatusCodeEnum::ERROR, sprintf("Error: No fixture exists at %s.\n", self::FIXTURE_ROOT)],
       [TRUE, 1, StatusCodeEnum::OK, "\n Key one : Value one \n Key two : Value two \n\n"],
