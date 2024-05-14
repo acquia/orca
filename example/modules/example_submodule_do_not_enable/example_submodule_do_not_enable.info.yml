@@ -2,4 +2,4 @@ name: "Example Submodule: Do Not Enable"
 type: module
 description: "An example submodule that is not enabled by ORCA."
 package: Other
-core_version_requirement: '^8 || ^9 || ^10'
+core_version_requirement: '^8 || ^9 || ^10 || ^11'
