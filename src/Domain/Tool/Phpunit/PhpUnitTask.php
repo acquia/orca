@@ -259,8 +259,7 @@ class PhpUnitTask extends TestFrameworkBase {
 
       // Creating new "source" element.
       $source = $this->doc->createElement('source');
-//      $source->setAttribute('ignoreSuppressionOfDeprecations', 'true');
-      
+      $source->setAttribute('ignoreSuppressionOfDeprecations', 'true');
       // Create new include element.
       $include = $this->doc->createElement('include');
 
