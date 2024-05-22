@@ -35,7 +35,7 @@ on:
     - cron: "0 0 * * *"
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     # Change the following values for your implementation.
     env:
       # Boolean values must be quoted, otherwise they will be converted to lower case and break ORCA scripts.
