@@ -199,7 +199,13 @@ class PhpUnitTask extends TestFrameworkBase {
    */
   private function setCoverageFilter(): void {
 
+    $new_element = NULL;
+    // D9 style "phpunit.xml" structure.
     $whitelist = $this->xpath->query('//phpunit/filter/whitelist')->item(0);
+    // D10 style "phpunit.xml" structure.
+    $coverage = $this->xpath->query('//phpunit/coverage')->item(0);
+    // D11 style "phpunit.xml" structure.
+    $source = $this->xpath->query('//phpunit/source')->item(0);
     // Adding suffixes to "whitelist" element.
     $suffixes = [
       '.php',
@@ -223,16 +229,16 @@ class PhpUnitTask extends TestFrameworkBase {
         $directory->setAttribute('suffix', $suffix);
         $whitelist->appendChild($directory);
       }
+      $new_element = $whitelist;
     }
-    else {
+    elseif ($coverage instanceof \DOMElement) {
       // Checking for Drupal 10 style "phpunit.xml" structure.
-      $whitelist = $this->xpath->query('//phpunit/coverage')->item(0);
-      assert($whitelist instanceof \DOMElement);
-      $whitelist->parentNode->removeChild($whitelist);
+      assert($coverage instanceof \DOMElement);
+      $coverage->parentNode->removeChild($coverage);
       $appendTo = "//phpunit";
 
       // Creating new "coverage" element.
-      $whitelist = $this->doc->createElement('coverage');
+      $coverage = $this->doc->createElement('coverage');
 
       // Create new include element.
       $include = $this->doc->createElement('include');
@@ -242,7 +248,29 @@ class PhpUnitTask extends TestFrameworkBase {
         $directory->setAttribute('suffix', $suffix);
         $include->appendChild($directory);
       }
-      $whitelist->appendChild($include);
+      $coverage->appendChild($include);
+      $new_element = $coverage;
+    }
+    else {
+      // Checking for Drupal 11 style "phpunit.xml" structure.
+      assert($source instanceof \DOMElement);
+      $source->parentNode->removeChild($source);
+      $appendTo = "//phpunit";
+
+      // Creating new "source" element.
+      $source = $this->doc->createElement('source');
+      $source->setAttribute('ignoreSuppressionOfDeprecations', 'true');
+      // Create new include element.
+      $include = $this->doc->createElement('include');
+
+      foreach ($suffixes as $suffix) {
+        $directory = $this->doc->createElement('directory', $this->getPath());
+        $directory->setAttribute('suffix', $suffix);
+        $include->appendChild($directory);
+      }
+      $source->appendChild($include);
+      $new_element = $source;
+
     }
 
     // Excluding tests directories.
@@ -261,10 +289,10 @@ class PhpUnitTask extends TestFrameworkBase {
     $exclude->appendChild($exclude_directory);
 
     // Appending the excluded directories to "whitelist/coverage" element.
-    $whitelist->appendChild($exclude);
+    $new_element->appendChild($exclude);
 
     // Writing "whitelist/coverage" element to file.
-    $this->xpath->query($appendTo)->item(0)->appendChild($whitelist);
+    $this->xpath->query($appendTo)->item(0)->appendChild($new_element);
   }
 
   /**
@@ -379,7 +407,6 @@ class PhpUnitTask extends TestFrameworkBase {
     try {
       $command = [
         'phpunit',
-        '--verbose',
       ];
 
       if ($this->shouldGenerateCodeCoverageInClover()) {
