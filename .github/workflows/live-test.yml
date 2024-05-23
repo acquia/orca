@@ -17,7 +17,7 @@ on:
         -   cron: "0 0 * * *"
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     env:
       # Boolean values must be quoted, otherwise they will be converted to lower case and break ORCA scripts.
       ORCA_SUT_NAME: drupal/example
@@ -33,7 +33,7 @@ jobs:
       matrix:
         orca-job:
           - " "
-        php-version: [ "8.1" ]
+        php-version: [ "8.1", "8.3" ]
     steps:
       - uses: actions/checkout@v2
 

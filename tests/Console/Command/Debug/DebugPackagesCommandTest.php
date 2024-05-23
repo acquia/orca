@@ -97,7 +97,7 @@ class DebugPackagesCommandTest extends CommandTestBase {
     self::assertEquals(StatusCodeEnum::ERROR, $this->getStatusCode(), 'Returned correct status code.');
   }
 
-  public function providerInvalidArguments(): array {
+  public static function providerInvalidArguments(): array {
     return [
       ['invalid'],
       [FALSE],

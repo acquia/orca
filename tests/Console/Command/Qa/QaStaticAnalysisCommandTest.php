@@ -131,7 +131,7 @@ class QaStaticAnalysisCommandTest extends CommandTestBase {
     self::assertEquals($default, $option->getDefault(), 'Set correct default.');
   }
 
-  public function providerOptions(): array {
+  public static function providerOptions(): array {
     return [
       ['composer', FALSE],
       ['coverage', FALSE],
@@ -202,7 +202,7 @@ class QaStaticAnalysisCommandTest extends CommandTestBase {
     self::assertEquals($status_code, $this->getStatusCode(), 'Returned correct status code.');
   }
 
-  public function providerExecution(): array {
+  public static function providerExecution(): array {
     return [
       [TRUE, 1, StatusCodeEnum::OK, ''],
       [TRUE, 1, StatusCodeEnum::ERROR, ''],
@@ -237,7 +237,7 @@ class QaStaticAnalysisCommandTest extends CommandTestBase {
   /**
    * @see testCoverageOptionSpecialCaseTaskFiltering
    */
-  public function providerTaskFiltering(): array {
+  public static function providerTaskFiltering(): array {
     return [
       [['--composer' => 1], 'composerValidate'],
       [['--phpcs' => 1], 'phpCodeSniffer'],
@@ -271,7 +271,7 @@ class QaStaticAnalysisCommandTest extends CommandTestBase {
     self::assertTrue(TRUE);
   }
 
-  public function providerCoverageOptionSpecialCaseTaskFiltering(): array {
+  public static function providerCoverageOptionSpecialCaseTaskFiltering(): array {
     return [
       [['--coverage' => 1]],
       [['--coverage' => 1, '--phploc' => 1]],
@@ -304,9 +304,9 @@ class QaStaticAnalysisCommandTest extends CommandTestBase {
     self::assertEquals(StatusCodeEnum::OK, $this->getStatusCode(), 'Returned correct status code.');
   }
 
-  public function providerPhpcsStandardOption(): array {
+  public static function providerPhpcsStandardOption(): array {
     return [
-      [[], $this->defaultPhpcsStandard],
+      [[], PhpcsStandardEnum::DEFAULT],
       [['--phpcs-standard' => PhpcsStandardEnum::ACQUIA_PHP], PhpcsStandardEnum::ACQUIA_PHP],
       [['--phpcs-standard' => PhpcsStandardEnum::ACQUIA_DRUPAL_TRANSITIONAL], PhpcsStandardEnum::ACQUIA_DRUPAL_TRANSITIONAL],
       [['--phpcs-standard' => PhpcsStandardEnum::ACQUIA_DRUPAL_STRICT], PhpcsStandardEnum::ACQUIA_DRUPAL_STRICT],
@@ -342,7 +342,7 @@ class QaStaticAnalysisCommandTest extends CommandTestBase {
     self::assertEquals(StatusCodeEnum::OK, $this->getStatusCode(), 'Returned correct status code.');
   }
 
-  public function providerPhpcsStandardEnvVar(): array {
+  public static function providerPhpcsStandardEnvVar(): array {
     return [
       [PhpcsStandardEnum::ACQUIA_PHP],
       [PhpcsStandardEnum::ACQUIA_DRUPAL_TRANSITIONAL],
@@ -371,9 +371,9 @@ class QaStaticAnalysisCommandTest extends CommandTestBase {
     self::assertEquals(StatusCodeEnum::ERROR, $this->getStatusCode(), 'Returned correct status code.');
   }
 
-  public function providerInvalidPhpcsStandard(): array {
+  public static function providerInvalidPhpcsStandard(): array {
     return [
-      [['--phpcs-standard' => 'invalid'], $this->defaultPhpcsStandard, 'Error: Invalid value for "--phpcs-standard" option: "invalid".' . PHP_EOL],
+      [['--phpcs-standard' => 'invalid'], PhpcsStandardEnum::DEFAULT, 'Error: Invalid value for "--phpcs-standard" option: "invalid".' . PHP_EOL],
       [[], 'invalid', 'Error: Invalid value for $ORCA_PHPCS_STANDARD environment variable: "invalid".' . PHP_EOL],
     ];
   }

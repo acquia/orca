@@ -120,7 +120,7 @@ class DrupalCoreVersionResolverTest extends TestCase {
     self::assertSame($constraint, $version, 'Resolved arbitrary version string.');
   }
 
-  public function providerResolveArbitrary(): array {
+  public static function providerResolveArbitrary(): array {
     return [
       [
         'constraint' => 'v9.0.0',
@@ -282,7 +282,7 @@ class DrupalCoreVersionResolverTest extends TestCase {
     $resolver->resolvePredefined($version);
   }
 
-  public function providerResolvePredefinedCurrentNoneFound() {
+  public static function providerResolvePredefinedCurrentNoneFound() {
     return [
       [DrupalCoreVersionEnum::CURRENT()],
       [DrupalCoreVersionEnum::CURRENT_DEV()],
@@ -446,8 +446,8 @@ class DrupalCoreVersionResolverTest extends TestCase {
     $resolver->resolvePredefined($version);
   }
 
-  public function providerResolvePredefinedVersionNotFound(): array {
-    $data = $this->providerVersions();
+  public static function providerResolvePredefinedVersionNotFound(): array {
+    $data = self::providerVersions();
     unset(
       $data[DrupalCoreVersionEnum::CURRENT],
       $data[DrupalCoreVersionEnum::CURRENT_DEV],

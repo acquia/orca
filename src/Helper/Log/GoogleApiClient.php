@@ -82,12 +82,14 @@ class GoogleApiClient {
    * @param string $google_refresh_token
    *   The Google refresh token.
    */
-  public function __construct(HttpClientInterface $http_client,
-  SymfonyStyle $output,
+  public function __construct(
+    HttpClientInterface $http_client,
+    SymfonyStyle $output,
     DrupalCoreVersionResolver $coreVersionResolver,
     string|null $google_api_client_id,
     string|null $google_api_client_secret,
-    string|null $google_refresh_token) {
+    string|null $google_refresh_token,
+  ) {
     $this->httpClient = $http_client;
     $this->output = $output;
     $this->version = $coreVersionResolver;

@@ -69,7 +69,7 @@ class IntegratedTestOnLatestLtsCiJob extends AbstractCiJob {
     EnvFacade $env_facade,
     OutputInterface $output,
     ProcessRunner $process_runner,
-    RedundantJobChecker $redundant_job_checker
+    RedundantJobChecker $redundant_job_checker,
   ) {
     $this->drupalCoreVersionResolver = $drupal_core_version_resolver;
     $this->envFacade = $env_facade;

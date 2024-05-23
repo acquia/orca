@@ -57,7 +57,7 @@ class FixtureCustomizer {
     FinderFactory $finderFactory,
     Filesystem $filesystem,
     FixturePathHandler $fixturePathHandler,
-    OutputInterface $output
+    OutputInterface $output,
   ) {
     $this->finderFactory = $finderFactory;
     $this->filesystem = $filesystem;
@@ -134,7 +134,7 @@ class FixtureCustomizer {
   protected function removeModuleDevDependencyTests(
     FixtureOptions $options,
     string $module_name,
-    string $search_string
+    string $search_string,
   ): void {
     $finder = $this->finderFactory->create();
     // Converting drupal/acquia_dam to acquia_dam.

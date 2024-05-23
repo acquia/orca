@@ -50,7 +50,7 @@ abstract class CiJobTestBase extends TestCase {
     // SUT (package).
     $sut = $this->prophesize(Package::class);
     $sut->getPackageName()
-      ->willReturn($this->validSutName());
+      ->willReturn(self::validSutName());
     $sut->getRepositoryUrlAbsolute()
       ->willReturn(self::SUT_REPOSITORY_URL_ABSOLUTE);
 
@@ -63,10 +63,10 @@ abstract class CiJobTestBase extends TestCase {
     // Package manager.
     $this->packageManager = $this->prophesize(PackageManager::class);
     $this->packageManager
-      ->exists($this->validSutName())
+      ->exists(self::validSutName())
       ->willReturn(TRUE);
     $this->packageManager
-      ->get($this->validSutName())
+      ->get(self::validSutName())
       ->willReturn($sut);
 
     // Process runner.
@@ -77,7 +77,7 @@ abstract class CiJobTestBase extends TestCase {
   }
 
   protected function createJob(): AbstractCiJob {
-    return new class($this->validJobName()) extends AbstractCiJob {
+    return new class(self::validJobName()) extends AbstractCiJob {
 
       public function __construct(CiJobEnum $job_name) {
         $this->jobName = $job_name;
@@ -113,22 +113,22 @@ abstract class CiJobTestBase extends TestCase {
   }
 
   protected function createValidRunOptions(): CiRunOptions {
-    return $this->createCiRunOptions($this->validRawOptions());
+    return $this->createCiRunOptions(self::validRawOptions());
   }
 
-  protected function validRawOptions(): array {
+  protected static function validRawOptions(): array {
     return [
-      'job' => $this->validJobName(),
-      'phase' => $this->validPhaseName(),
-      'sut' => $this->validSutName(),
+      'job' => self::validJobName(),
+      'phase' => self::validPhaseName(),
+      'sut' => self::validSutName(),
     ];
   }
 
-  protected function validSutName(): string {
+  protected static function validSutName(): string {
     return 'drupal/example';
   }
 
-  public function providerJobs(): array {
+  public static function providerJobs(): array {
     $jobs = CiJobEnum::values();
     array_walk($jobs, static function (&$value) {
       $value = [$value];
@@ -136,7 +136,7 @@ abstract class CiJobTestBase extends TestCase {
     return $jobs;
   }
 
-  public function providerPhases(): array {
+  public static function providerPhases(): array {
     $phases = CiJobPhaseEnum::values();
     array_walk($phases, static function (&$value) {
       $value = [$value];
@@ -148,7 +148,7 @@ abstract class CiJobTestBase extends TestCase {
     $job->run($this->createCiRunOptions([
       'job' => $job->getJobName()->getKey(),
       'phase' => CiJobPhaseEnum::INSTALL,
-      'sut' => $this->validSutName(),
+      'sut' => self::validSutName(),
     ]));
   }
 
@@ -156,25 +156,25 @@ abstract class CiJobTestBase extends TestCase {
     $job->run($this->createCiRunOptions([
       'job' => $job->getJobName()->getKey(),
       'phase' => CiJobPhaseEnum::SCRIPT,
-      'sut' => $this->validSutName(),
+      'sut' => self::validSutName(),
     ]));
   }
 
-  protected function validJob(): CiJobEnum {
+  protected static function validJob(): CiJobEnum {
     $jobs = CiJobEnum::values();
     return reset($jobs);
   }
 
-  protected function validJobName(): string {
-    return $this->validJob()->getKey();
+  protected static function validJobName(): string {
+    return self::validJob()->getKey();
   }
 
-  protected function validPhase(): CiJobPhaseEnum {
+  protected static function validPhase(): CiJobPhaseEnum {
     return CiJobPhaseEnum::SCRIPT();
   }
 
-  protected function validPhaseName(): string {
-    return strtolower($this->validPhase()->getValue());
+  protected static function validPhaseName(): string {
+    return strtolower(self::validPhase()->getValue());
   }
 
 }

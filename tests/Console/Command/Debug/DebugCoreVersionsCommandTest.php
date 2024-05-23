@@ -72,7 +72,7 @@ class DebugCoreVersionsCommandTest extends CommandTestBase {
     self::assertEquals(StatusCodeEnum::OK, $this->getStatusCode(), 'Returned correct status code.');
   }
 
-  public function providerOutput(): array {
+  public static function providerOutput(): array {
     $notice = 'Getting version data via Composer. This can take a while.' . PHP_EOL;
     return [
       [

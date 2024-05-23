@@ -30,17 +30,13 @@ class CiRunOptionsTest extends TestCase {
       ->exists(Argument::any())
       ->willReturn(FALSE);
     $this->packageManager
-      ->exists($this->validSutName())
+      ->exists(self::validSutName())
       ->willReturn(TRUE);
   }
 
   private function createCiRunOptions($options): CiRunOptions {
     $package_manager = $this->packageManager->reveal();
     return new CiRunOptions($package_manager, $options);
-  }
-
-  private function validSutName(): string {
-    return 'drupal/example';
   }
 
   private function validSut(): Package {
@@ -59,8 +55,8 @@ class CiRunOptionsTest extends TestCase {
   public function testValidJobs(CiJobEnum $job): void {
     $options = $this->createCiRunOptions([
       'job' => $job->getKey(),
-      'phase' => $this->validPhaseName(),
-      'sut' => $this->validSutName(),
+      'phase' => self::validPhaseName(),
+      'sut' => self::validSutName(),
     ]);
 
     self::assertEquals($job, $options->getJob(), 'Set/got "job" option.');
@@ -76,9 +72,9 @@ class CiRunOptionsTest extends TestCase {
    */
   public function testValidPhases(CiJobPhaseEnum $phase): void {
     $options = $this->createCiRunOptions([
-      'job' => $this->validJobName(),
+      'job' => self::validJobName(),
       'phase' => strtolower($phase->getKey()),
-      'sut' => $this->validSutName(),
+      'sut' => self::validSutName(),
     ]);
 
     self::assertEquals($phase, $options->getPhase(), 'Set/got "phase" option.');
@@ -86,12 +82,12 @@ class CiRunOptionsTest extends TestCase {
 
   public function testValidSut(): void {
     $options = $this->createCiRunOptions([
-      'job' => $this->validJobName(),
-      'phase' => $this->validPhaseName(),
-      'sut' => $this->validSutName(),
+      'job' => self::validJobName(),
+      'phase' => self::validPhaseName(),
+      'sut' => self::validSutName(),
     ]);
     $this->packageManager
-      ->get($this->validSutName())
+      ->get(self::validSutName())
       ->willReturn($this->validSut());
 
     self::assertEquals($this->validSut(), $options->getSut(), 'Set/got "sut" option.');
@@ -106,25 +102,25 @@ class CiRunOptionsTest extends TestCase {
     $this->createCiRunOptions($options);
   }
 
-  public function providerMissingRequiredOptions(): array {
+  public static function providerMissingRequiredOptions(): array {
     return [
       'No options' => [[]],
       'Missing job' => [
         [
-          'phase' => $this->validPhaseName(),
-          'sut' => $this->validSutName(),
+          'phase' => self::validPhaseName(),
+          'sut' => self::validSutName(),
         ],
       ],
       'Missing phase' => [
         [
-          'job' => $this->validJobName(),
-          'sut' => $this->validSutName(),
+          'job' => self::validJobName(),
+          'sut' => self::validSutName(),
         ],
       ],
       'Missing sut' => [
         [
-          'phase' => $this->validPhaseName(),
-          'job' => $this->validJobName(),
+          'phase' => self::validPhaseName(),
+          'job' => self::validJobName(),
         ],
       ],
     ];
@@ -137,8 +133,8 @@ class CiRunOptionsTest extends TestCase {
     $this->expectException(OrcaInvalidArgumentException::class);
 
     $this->createCiRunOptions([
-      'job' => $this->validJobName(),
-      'phase' => $this->validPhaseName(),
+      'job' => self::validJobName(),
+      'phase' => self::validPhaseName(),
       'undefined' => 'option',
     ]);
   }
@@ -156,47 +152,47 @@ class CiRunOptionsTest extends TestCase {
     $this->createCiRunOptions($options);
   }
 
-  public function providerInvalidOptions(): array {
+  public static function providerInvalidOptions(): array {
     return [
       'Non-existent phase' => [
         [
-          'job' => $this->validJobName(),
+          'job' => self::validJobName(),
           'phase' => 'invalid',
-          'sut' => $this->validSutName(),
+          'sut' => self::validSutName(),
         ],
       ],
       'Non-existent job' => [
         [
           'job' => 'invalid',
-          'phase' => $this->validPhaseName(),
-          'sut' => $this->validSutName(),
+          'phase' => self::validPhaseName(),
+          'sut' => self::validSutName(),
         ],
       ],
       'Non-string phase' => [
         [
-          'job' => $this->validJobName(),
+          'job' => self::validJobName(),
           'phase' => 12345,
-          'sut' => $this->validSutName(),
+          'sut' => self::validSutName(),
         ],
       ],
       'Non-string job' => [
         [
           'job' => 12345,
-          'phase' => $this->validPhaseName(),
-          'sut' => $this->validSutName(),
+          'phase' => self::validPhaseName(),
+          'sut' => self::validSutName(),
         ],
       ],
       'Non-string sut' => [
         [
-          'job' => $this->validJobName(),
-          'phase' => $this->validPhaseName(),
+          'job' => self::validJobName(),
+          'phase' => self::validPhaseName(),
           'sut' => 12345,
         ],
       ],
       'Invalid sut' => [
         [
-          'job' => $this->validJobName(),
-          'phase' => $this->validPhaseName(),
+          'job' => self::validJobName(),
+          'phase' => self::validPhaseName(),
           'sut' => 'invalid',
         ],
       ],

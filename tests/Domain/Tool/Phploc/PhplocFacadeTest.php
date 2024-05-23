@@ -37,7 +37,7 @@ class PhplocFacadeTest extends TestCase {
   }
 
   /**
-   * @dataProvider dataProviderCommand
+   * @dataProvider providerCommand
    */
   public function testCommand($path): void {
     $phploc = $this->createPhploc();
@@ -63,7 +63,7 @@ class PhplocFacadeTest extends TestCase {
     $phploc->execute($path);
   }
 
-  public function dataProviderCommand(): array {
+  public static function providerCommand(): array {
     return [
       ['/var/www'],
       ['/test/example'],

@@ -69,7 +69,7 @@ class DebugEnvVarsCommandTest extends CommandTestBase {
     self::assertEquals(StatusCodeEnum::OK, $this->getStatusCode(), 'Returned correct status code.');
   }
 
-  public function providerOutput(): array {
+  public static function providerOutput(): array {
     return [
       ['table_rows' => [['Lorem', '~', 'Ipsum']]],
       ['table_rows' => [['Dolor', '~', 'Sit']]],

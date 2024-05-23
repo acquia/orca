@@ -72,7 +72,8 @@ class DrushFacade {
       '--format=json',
     ]);
     $process->run();
-    $json = $process->getOutput();
+    $output = $process->getOutput();
+    $json = $this->extractJson($output);
     $data = json_decode($json, TRUE);
 
     if (json_last_error()) {
@@ -84,6 +85,19 @@ class DrushFacade {
     }
 
     return $data;
+  }
+
+  /**
+   * Extracts the JSON from the response received.
+   *
+   * @param string $json
+   *   The response from drush.
+   *
+   * @return string
+   *   The JSON response extracted.
+   */
+  public function extractJson(string $json): string {
+    return substr($json, strpos($json, "{"));
   }
 
   /**
