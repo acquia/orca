@@ -78,7 +78,7 @@ class PackageTest extends TestCase {
   public static function providerConstructionAndGetters(): array {
     return [
       'Full specification' => [
-        'drupal/example_library' => [
+        'data' => [
           'type' => 'library',
           'install_path' => 'custom/path/to/example_library',
           'url' => '/var/www/example_library',
@@ -107,7 +107,7 @@ class PackageTest extends TestCase {
         TRUE,
       ],
       'Minimum specification/default values' => [
-        'drupal/example_module' => [],
+        'data' => [],
         'drupal/example_module',
         'example_module',
         'example_module',
@@ -124,7 +124,7 @@ class PackageTest extends TestCase {
         TRUE,
       ],
       'Module that should be enabled' => [
-        'drupal/example_module' => [
+        'data' => [
           'version' => NULL,
           'version_dev' => NULL,
         ],
@@ -144,7 +144,7 @@ class PackageTest extends TestCase {
         TRUE,
       ],
       'Module that should not be enabled' => [
-        'drupal/example_module' => [
+        'data' => [
           'enable' => FALSE,
         ],
         'drupal/example_module',
@@ -163,7 +163,7 @@ class PackageTest extends TestCase {
         TRUE,
       ],
       'Theme' => [
-        'drupal/example_theme' => [
+        'data' => [
           'type' => 'drupal-theme',
         ],
         'drupal/example_theme',
