@@ -51,33 +51,46 @@
 # example.
 
 # Removed due to outage caused by ACMS on 27/05/2024.
-#acquia/acquia_cms:
-#  version: 2.x
-#  version_dev: 2.x-dev
-#
-#drupal/acquia_cms_common:
-#  core_matrix:
-#    '>=10.2.2':
-#      version: 3.3.x
-#      version_dev: 3.3.x-dev
-#    10.1.x:
-#      version: 3.2.x
-#      version_dev: 3.2.x-dev
-#    '>=10.0.9 <10.1':
-#      version: 3.1.x
-#      version_dev: 3.1.x-dev
-#    '>=9.5.10 <10.0.9':
-#      version: 2.x
-#      version_dev: 2.x-dev
+acquia/acquia_cms:
+  core_matrix:
+    10.3.x:
+      version: ~
+      version_dev: ~
+    '*':
+      version: 2.x
+      version_dev: 2.x-dev
+
+drupal/acquia_cms_common:
+  core_matrix:
+    10.3.x:
+      version: ~
+      version_dev: ~
+    '>=10.2.2':
+      version: 3.3.x
+      version_dev: 3.3.x-dev
+    10.1.x:
+      version: 3.2.x
+      version_dev: 3.2.x-dev
+    '>=10.0.9 <10.1':
+      version: 3.1.x
+      version_dev: 3.1.x-dev
+    '>=9.5.10 <10.0.9':
+      version: 2.x
+      version_dev: 2.x-dev
 
 drupal/acquia_connector:
   version: 4.x
   version_dev: 4.x-dev
 
 # Removed due to outage caused by drupal/s3fs on 27/05/2024.
-#drupal/acquia_contenthub:
-# version: 3.4.x
-# version_dev: 3.4.x
+drupal/acquia_contenthub:
+  core_matrix:
+    10.3.x:
+      version: ~
+      version_dev: ~
+    '*':
+     version: 3.4.x
+     version_dev: 3.4.x
 
 drupal/acquia_perz:
   version: 4.x
@@ -97,8 +110,13 @@ drupal/acsf_sso:
   version_dev: ~
 
 drupal/acquia_search:
-  version: 3.1.x
-  version_dev: 3.1.x-dev
+  core_matrix:
+    10.3.x:
+      version: ~
+      version_dev: ~
+    '*':
+      version: 3.1.x
+      version_dev: 3.1.x-dev
 
 acquia/coding-standards:
   type: phpcodesniffer-standard
