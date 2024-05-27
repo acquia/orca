@@ -73,9 +73,10 @@ drupal/acquia_connector:
   version: 4.x
   version_dev: 4.x-dev
 
-drupal/acquia_contenthub:
- version: 3.4.x
- version_dev: 3.4.x
+# Removed due to outage caused by drupal/s3fs on 27/05/2024.
+#drupal/acquia_contenthub:
+# version: 3.4.x
+# version_dev: 3.4.x
 
 drupal/acquia_perz:
   version: 4.x
