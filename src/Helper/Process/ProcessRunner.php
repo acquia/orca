@@ -67,6 +67,8 @@ class ProcessRunner {
    * @param string|null $cwd
    *   The working directory, or NULL to use the working dir of the current PHP
    *   process.
+   * @param bool $allow_failure
+   *   Allow the process to fail.
    *
    * @return int
    *   The exit status code.
@@ -74,7 +76,7 @@ class ProcessRunner {
    * @throws \Symfony\Component\Process\Exception\ProcessFailedException
    *   If the process is unsuccessful.
    */
-  public function run(Process $process, ?string $cwd = NULL): int {
+  public function run(Process $process, ?string $cwd = NULL, bool $allow_failure = FALSE): int {
     $this->output->writeln(sprintf('> %s', $process->getCommandLine()));
 
     if ($cwd) {
@@ -90,7 +92,7 @@ class ProcessRunner {
         $this->output->write($buffer);
       });
 
-    if (!$process->isSuccessful()) {
+    if (!$allow_failure && !$process->isSuccessful()) {
       $process->disableOutput();
       throw new ProcessFailedException($process);
     }
@@ -194,13 +196,15 @@ class ProcessRunner {
    *   name.
    * @param string|null $cwd
    *   The working directory, or NULL to use the fixture directory.
+   * @param bool $allow_failure
+   *   Allow the process to fail.
    *
    * @return int
    *   The exit status code.
    */
-  public function runOrcaVendorBin(array $command, ?string $cwd = NULL): int {
+  public function runOrcaVendorBin(array $command, ?string $cwd = NULL, bool $allow_failure = FALSE): int {
     $process = $this->createOrcaVendorBinProcess($command);
-    return $this->run($process, $cwd);
+    return $this->run($process, $cwd, $allow_failure);
   }
 
   /**
