@@ -73,7 +73,7 @@ class PhplocFacade {
       $args[] = '--suffix=' . $extension;
     }
     $args[] = '.';
-    $this->processRunner->runOrcaVendorBin($args, $path);
+    $this->processRunner->runOrcaVendorBin($args, $path, TRUE);
   }
 
 }

@@ -26,7 +26,7 @@ class PhplocFacadeTest extends TestCase {
       ->willReturnArgument();
     $this->processRunner = $this->prophesize(ProcessRunner::class);
     $this->processRunner
-      ->runOrcaVendorBin(Argument::any(), Argument::any())
+      ->runOrcaVendorBin(Argument::cetera())
       ->willReturn(0);
   }
 
@@ -57,7 +57,7 @@ class PhplocFacadeTest extends TestCase {
         '--suffix=.profile',
         '--suffix=.engine',
         '.',
-      ], $path)
+      ], $path, TRUE)
       ->shouldBeCalledOnce();
 
     $phploc->execute($path);
