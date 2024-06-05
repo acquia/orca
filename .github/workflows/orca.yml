@@ -110,7 +110,7 @@ jobs:
         with:
           php-version: ${{ matrix.php-version }}
           coverage: xdebug
-
+# Commenting out to use the latest chrome and chromedriver versions.
 #      - name: Install google-chrome-stable
 #        run: |
 #          # Remove existing google chrome and install required version.
