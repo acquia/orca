@@ -56,7 +56,7 @@
         "weitzman/drupal-test-traits": "^2.1"
     },
     "require-dev": {
-        "brainmaestro/composer-git-hooks": "^2.8.5",
+        "brainmaestro/composer-git-hooks": "^3.0.0",
         "phpspec/prophecy-phpunit": "^2.0.2",
         "phpstan/phpstan": "^1.10.14",
         "phpunit/php-code-coverage": "^10",
