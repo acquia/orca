@@ -131,10 +131,10 @@ acquia/drupal-recommended-project:
 acquia/drupal-spec-tool:
   type: behat-extension
   core_matrix:
-    10.x:
+    '>=10.x':
       version: 6.x
       version_dev: 6.x-dev
-    '*':
+    '9.x':
       version: 5.x
       version_dev: 5.x-dev
 
