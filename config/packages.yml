@@ -138,7 +138,7 @@ acquia/memcache-settings:
 
 drupal/mautic:
   core_matrix:
-    10.x:
+    11.x:
       version: ~
       version_dev: ~
     '*': []
