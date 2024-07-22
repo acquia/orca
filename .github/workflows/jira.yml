@@ -11,6 +11,7 @@ on:
       - closed
 permissions:
   issues: write
+  pull-requests: read
 jobs:
   jira:
     uses: acquia/.github/.github/workflows/jira.yml@main
@@ -22,3 +23,4 @@ jobs:
       github-token: ${{ secrets.GITHUB_TOKEN }}
     with:
       issue_label: grooming
+      project_key: RCAT

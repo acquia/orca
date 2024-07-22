@@ -85,13 +85,8 @@ drupal/acquia_connector:
 
 # Removed due to outage caused by drupal/s3fs on 27/05/2024 from Drupal 10.3.x
 drupal/acquia_contenthub:
-  core_matrix:
-    10.3.x:
-      version: ~
-      version_dev: ~
-    '*':
-     version: 3.4.x
-     version_dev: 3.4.x
+   version: 3.5.x
+   version_dev: 3.5.x
 
 # ORCA-642: Acquia Perz was temporarily removed due to an outage.
 #drupal/acquia_perz:
@@ -131,19 +126,19 @@ acquia/drupal-recommended-project:
 acquia/drupal-spec-tool:
   type: behat-extension
   core_matrix:
-    10.x:
-      version: 6.x
-      version_dev: 6.x-dev
-    '*':
+    9.x:
       version: 5.x
       version_dev: 5.x-dev
+    '*':
+      version: 6.x
+      version_dev: 6.x-dev
 
 acquia/memcache-settings:
   type: library
 
 drupal/mautic:
   core_matrix:
-    10.x:
+    '10.* || 11.*':
       version: ~
       version_dev: ~
     '*': []
