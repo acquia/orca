@@ -85,7 +85,7 @@ drupal/acquia_connector:
 
 drupal/acquia_contenthub:
    version: 3.5.x
-   version_dev: dev-3.5.x
+   version_dev: 3.5.x
 
 # ORCA-642: Acquia Perz was temporarily removed due to an outage.
 #drupal/acquia_perz:
