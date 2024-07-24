@@ -86,7 +86,7 @@ drupal/acquia_connector:
 # Removed due to outage caused by drupal/s3fs on 27/05/2024 from Drupal 10.3.x
 drupal/acquia_contenthub:
    version: 3.5.x
-   version_dev: 3.5.x-dev
+   version_dev: 3.5.x
 
 # ORCA-642: Acquia Perz was temporarily removed due to an outage.
 #drupal/acquia_perz:
