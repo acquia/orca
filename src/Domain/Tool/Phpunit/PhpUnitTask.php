@@ -419,7 +419,7 @@ class PhpUnitTask extends TestFrameworkBase {
         $this->processRunner->addEnvVar("XDEBUG_MODE", "coverage");
       }
 
-      if ($this->envFacade->get('ORCA_PHPUNIT_DEBUG_MODE') === 'true') {
+      if ($this->envFacade->get('ORCA_PHPUNIT_DEBUG_MODE_ENABLE') === 'true') {
         $command[] = '--debug';
       }
 
