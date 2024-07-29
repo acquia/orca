@@ -129,7 +129,7 @@ class EnvVarEnum extends Enum {
       self::ORCA_PACKAGES_CONFIG => 'The path to a config file to completely replace the list of packages ORCA installs in fixtures and runs tests on',
       self::ORCA_PACKAGES_CONFIG_ALTER => 'The path to a config file to alter the main list of packages ORCA installs in fixtures and runs tests on',
       self::ORCA_PHPCS_STANDARD => 'The PHP Code Sniffer standard to use',
-      self::ORCA_PHPUNIT_DEBUG_MODE => 'Run PHPUnit in debug mode',
+      self::ORCA_PHPUNIT_DEBUG_MODE => 'Whether or not to run PHPUnit in debug mode',
       self::ORCA_ROOT => 'The path to the root of ORCA itself (Read-only)',
       self::ORCA_SUT_BRANCH => 'The name of the nearest Git version branch of the SUT',
       self::ORCA_SUT_DIR => 'The path to the SUT',
