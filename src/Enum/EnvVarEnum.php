@@ -69,7 +69,6 @@ class EnvVarEnum extends Enum {
 
   public const ORCA_PHPCS_STANDARD = 'ORCA_PHPCS_STANDARD';
 
-
   public const ORCA_PHPUNIT_DEBUG_MODE = 'ORCA_PHPUNIT_DEBUG_MODE';
 
   public const ORCA_ROOT = 'ORCA_ROOT';
