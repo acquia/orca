@@ -154,7 +154,7 @@ drupal/media_acquiadam:
 
 drupal/acquia_dam:
   core_matrix:
-    '10.2.0-beta1':
+    '10.2.0-beta1 || 11.*':
       version: ~
       version_dev: ~
     '*':
