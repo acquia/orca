@@ -143,11 +143,15 @@ drupal/mautic:
       version_dev: ~
     '*': []
 
+# RCAT-710: Removed due to D11 failures.
 drupal/media_acquiadam:
   core_matrix:
     8.9.x:
       version: 1.x
       version_dev: 1.x-dev
+    11.x:
+      version: ~
+      version_dev: ~
     '*':
       version: 2.x
       version_dev: 2.x-dev
