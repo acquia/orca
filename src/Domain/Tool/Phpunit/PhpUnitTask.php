@@ -419,9 +419,12 @@ class PhpUnitTask extends TestFrameworkBase {
         $this->processRunner->addEnvVar("XDEBUG_MODE", "coverage");
       }
 
+      if ($this->envFacade->get('ORCA_PHPUNIT_DEBUG_MODE_ENABLE') === 'true') {
+        $command[] = '--debug';
+      }
+
       $command = array_merge($command, [
         '--colors=always',
-        '--debug',
         "--configuration={$this->fixture->getPath('docroot/core/phpunit.xml')}",
         '--exclude-group=orca_ignore',
         '--testsuite=orca',
