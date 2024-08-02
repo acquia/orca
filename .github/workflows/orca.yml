@@ -141,6 +141,15 @@ jobs:
         run: |
           ../orca/bin/ci/self-test/before_install.sh
           ../orca/bin/ci/before_install.sh
+          # D11 requires yarn>=4.1.1
+          npm cache clean --force
+          # Remove the previous yarn installed in the container.
+          npm uninstall -g yarn
+          npm install -g corepack
+          corepack enable
+          yarn set version 4.1.1
+          yarn -v
+
 
       - name: Install
         run: |
