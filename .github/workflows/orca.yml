@@ -113,9 +113,6 @@ jobs:
       - name: Activate latest Yarn
         run: yarn set version 4.1.1
 
-      - name: Install dependencies
-        run: yarn install
-
       - uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php-version }}
