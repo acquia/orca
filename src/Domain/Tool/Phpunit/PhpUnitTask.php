@@ -425,7 +425,7 @@ class PhpUnitTask extends TestFrameworkBase {
       }
 
       $command = array_merge($command, [
-        '--colors=never',
+        '--colors=always',
         "--configuration={$this->fixture->getPath('docroot/core/phpunit.xml')}",
         '--exclude-group=orca_ignore',
         '--testsuite=orca',
