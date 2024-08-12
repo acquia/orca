@@ -415,6 +415,7 @@ class PhpUnitTask extends TestFrameworkBase {
       }
 
       if ($this->shouldGenerateCodeCoverageInCobertura()) {
+        $command[] = "--coverage-text";
         $command[] = "--coverage-cobertura={$this->coberturaCoverage}";
         $this->processRunner->addEnvVar("XDEBUG_MODE", "coverage");
       }
@@ -424,7 +425,7 @@ class PhpUnitTask extends TestFrameworkBase {
       }
 
       $command = array_merge($command, [
-        '--colors=always',
+        '--colors=never',
         "--configuration={$this->fixture->getPath('docroot/core/phpunit.xml')}",
         '--exclude-group=orca_ignore',
         '--testsuite=orca',
