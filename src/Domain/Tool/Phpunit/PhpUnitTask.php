@@ -415,13 +415,17 @@ class PhpUnitTask extends TestFrameworkBase {
       }
 
       if ($this->shouldGenerateCodeCoverageInCobertura()) {
+        $command[] = "--coverage-text";
         $command[] = "--coverage-cobertura={$this->coberturaCoverage}";
         $this->processRunner->addEnvVar("XDEBUG_MODE", "coverage");
       }
 
+      if ($this->envFacade->get('ORCA_PHPUNIT_DEBUG_MODE_ENABLE') === 'true') {
+        $command[] = '--debug';
+      }
+
       $command = array_merge($command, [
-        '--colors=always',
-        '--debug',
+        '--colors=never',
         "--configuration={$this->fixture->getPath('docroot/core/phpunit.xml')}",
         '--exclude-group=orca_ignore',
         '--testsuite=orca',
