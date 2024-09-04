@@ -157,13 +157,8 @@ drupal/media_acquiadam:
       version_dev: 2.x-dev
 
 drupal/acquia_dam:
-  core_matrix:
-    '10.2.0-beta1':
-      version: ~
-      version_dev: ~
-    '*':
-      version: 1.x
-      version_dev: 1.0.x-dev
+  version: 1.x
+  version_dev: 1.0.x-dev
 
 drupal/mysql56:
   type: library
