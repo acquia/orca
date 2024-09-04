@@ -101,7 +101,7 @@ class PackageTest extends TestCase {
         'dev_version' => '2.x-dev',
         'is_extension' => FALSE,
         'is_module' => FALSE,
-        'is_theme' =>FALSE,
+        'is_theme' => FALSE,
         'is_project_template' => FALSE,
         'enable' => FALSE,
         'require' => TRUE,
