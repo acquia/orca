@@ -12,7 +12,7 @@ parameters:
   env(ORCA_PACKAGES_CONFIG): config/packages.yml
   ORCA_PACKAGES_CONFIG: "%env(ORCA_PACKAGES_CONFIG)%"
   env(ORCA_PACKAGES_CONFIG_ALTER): ~
-  env(ORCA_PHPCS_STANDARD): "AcquiaDrupalTransitional"
+  env(ORCA_PHPCS_STANDARD): "AcquiaDrupalMinimal"
   env(ORCA_PHPUNIT_DEBUG_MODE_ENABLE): "false"
   env(ORCA_TELEMETRY_ENABLE): "false"
   env(ORCA_IS_ALLOWED_FAILURE): "%env(ORCA_IS_ALLOWED_FAILURE)%"
