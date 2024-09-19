@@ -133,9 +133,6 @@ acquia/drupal-spec-tool:
       version: 6.x
       version_dev: 6.x-dev
 
-acquia/memcache-settings:
-  type: library
-
 drupal/mautic:
   core_matrix:
     '10.* || 11.*':
