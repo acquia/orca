@@ -84,21 +84,21 @@ jobs:
           - orca-job: INTEGRATED_TEST_ON_LATEST_LTS
             php-version: "8.1"
 
-#          # Testing Drupal 11 in php 8.3.
-#          - orca-job: ISOLATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_BETA_OR_LATER
-#            php-version: "8.3"
-#
-#          # Testing Drupal 11 in php 8.3.
-#          - orca-job: INTEGRATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_BETA_OR_LATER
-#            php-version: "8.3"
-#
-#          # Testing Drupal 11 in php 8.3.
-#          - orca-job: ISOLATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_DEV
-#            php-version: "8.3"
-#
-#          # Testing Drupal 11 in php 8.3.
-#          - orca-job: INTEGRATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_DEV
-#            php-version: "8.3"
+    #          # Testing Drupal 11 in php 8.3.
+    #          - orca-job: ISOLATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_BETA_OR_LATER
+    #            php-version: "8.3"
+    #
+    #          # Testing Drupal 11 in php 8.3.
+    #          - orca-job: INTEGRATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_BETA_OR_LATER
+    #            php-version: "8.3"
+    #
+    #          # Testing Drupal 11 in php 8.3.
+    #          - orca-job: ISOLATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_DEV
+    #            php-version: "8.3"
+    #
+    #          # Testing Drupal 11 in php 8.3.
+    #          - orca-job: INTEGRATED_TEST_ON_NEXT_MAJOR_LATEST_MINOR_DEV
+    #            php-version: "8.3"
 
     steps:
       - uses: actions/checkout@v3
@@ -114,31 +114,45 @@ jobs:
         with:
           php-version: ${{ matrix.php-version }}
           coverage: xdebug
-# Commenting out to use the latest chrome and chromedriver versions.
-#      - name: Install google-chrome-stable
-#        run: |
-#          # Remove existing google chrome and install required version.
-#          sudo dpkg -r google-chrome-stable
-#          CHROME_VERSION_STRING="114.0.5735.198-1"
-#          wget --no-verbose -O /tmp/chrome.deb "https://dl.google.com/linux/chrome/deb/pool/main/g/google-chrome-stable/google-chrome-stable_${CHROME_VERSION_STRING}_amd64.deb" \
-#          && sudo apt install -y /tmp/chrome.deb \
-#          && sudo rm /tmp/chrome.deb
-#          sudo echo "CHROME_BIN=/usr/bin/google-chrome" | sudo tee -a /etc/environment
-#
-#          # Download and unpack chromedriver.
-#          CHROME_DRIVER_VERSION_STRING="114.0.5735.90"
-#          CHROMEDRIVER_ARCHIVE="chromedriver_linux64.zip"
-#          CHROMEDRIVER_URL="https://chromedriver.storage.googleapis.com/${CHROME_DRIVER_VERSION_STRING}/${CHROMEDRIVER_ARCHIVE}"
-#          CHROMEDRIVER_DIR="/usr/local/share/chromedriver-linux64"
-#          CHROMEDRIVER_BIN="$CHROMEDRIVER_DIR/chromedriver"
-#          sudo rm -rf $CHROMEDRIVER_DIR
-#          sudo mkdir $CHROMEDRIVER_DIR
-#          echo "Installing chromedriver version"
-#          wget --no-verbose -O /tmp/$CHROMEDRIVER_ARCHIVE $CHROMEDRIVER_URL
-#          sudo unzip -qq /tmp/$CHROMEDRIVER_ARCHIVE -d $CHROMEDRIVER_DIR
-#          sudo chmod +x $CHROMEDRIVER_BIN
-#          sudo ln -sf "$CHROMEDRIVER_BIN" /usr/bin/
-#          sudo echo "CHROMEWEBDRIVER=$CHROMEDRIVER_DIR" | sudo tee -a /etc/environment
+
+      - name: Setup Chrome
+        uses: browser-actions/setup-chrome@v1.7.2
+        id: setup-chrome
+        with:
+          chrome-version: 119
+          install-chromedriver: true
+
+      - run: |
+          CHROME_BIN="${{ steps.setup-chrome.outputs.chrome-path }}"
+          sudo ln -sf "$CHROME_BIN" /usr/bin/
+          CHROMEDRIVER_BIN="${{ steps.setup-chrome.outputs.chromedriver-path }}"
+          sudo ln -sf "$CHROMEDRIVER_BIN" /usr/bin/
+
+      # Commenting out to use the latest chrome and chromedriver versions.
+      #      - name: Install google-chrome-stable
+      #        run: |
+      #          # Remove existing google chrome and install required version.
+      #          sudo dpkg -r google-chrome-stable
+      #          CHROME_VERSION_STRING="114.0.5735.198-1"
+      #          wget --no-verbose -O /tmp/chrome.deb "https://dl.google.com/linux/chrome/deb/pool/main/g/google-chrome-stable/google-chrome-stable_${CHROME_VERSION_STRING}_amd64.deb" \
+      #          && sudo apt install -y /tmp/chrome.deb \
+      #          && sudo rm /tmp/chrome.deb
+      #          sudo echo "CHROME_BIN=/usr/bin/google-chrome" | sudo tee -a /etc/environment
+      #
+      #          # Download and unpack chromedriver.
+      #          CHROME_DRIVER_VERSION_STRING="114.0.5735.90"
+      #          CHROMEDRIVER_ARCHIVE="chromedriver_linux64.zip"
+      #          CHROMEDRIVER_URL="https://chromedriver.storage.googleapis.com/${CHROME_DRIVER_VERSION_STRING}/${CHROMEDRIVER_ARCHIVE}"
+      #          CHROMEDRIVER_DIR="/usr/local/share/chromedriver-linux64"
+      #          CHROMEDRIVER_BIN="$CHROMEDRIVER_DIR/chromedriver"
+      #          sudo rm -rf $CHROMEDRIVER_DIR
+      #          sudo mkdir $CHROMEDRIVER_DIR
+      #          echo "Installing chromedriver version"
+      #          wget --no-verbose -O /tmp/$CHROMEDRIVER_ARCHIVE $CHROMEDRIVER_URL
+      #          sudo unzip -qq /tmp/$CHROMEDRIVER_ARCHIVE -d $CHROMEDRIVER_DIR
+      #          sudo chmod +x $CHROMEDRIVER_BIN
+      #          sudo ln -sf "$CHROMEDRIVER_BIN" /usr/bin/
+      #          sudo echo "CHROMEWEBDRIVER=$CHROMEDRIVER_DIR" | sudo tee -a /etc/environment
 
       - name: Before install
         run: |
