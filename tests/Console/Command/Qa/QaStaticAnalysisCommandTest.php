@@ -136,7 +136,7 @@ class QaStaticAnalysisCommandTest extends CommandTestBase {
       ['composer', FALSE],
       ['coverage', FALSE],
       ['phpcs', FALSE],
-      ['phpcs-standard', 'AcquiaDrupalTransitional'],
+      ['phpcs-standard', 'AcquiaDrupalMinimal'],
       ['phplint', FALSE],
       ['phploc', FALSE],
       ['phpmd', FALSE],
@@ -307,8 +307,9 @@ class QaStaticAnalysisCommandTest extends CommandTestBase {
   public static function providerPhpcsStandardOption(): array {
     return [
       [[], PhpcsStandardEnum::DEFAULT],
-      [['--phpcs-standard' => PhpcsStandardEnum::ACQUIA_PHP], PhpcsStandardEnum::ACQUIA_PHP],
-      [['--phpcs-standard' => PhpcsStandardEnum::ACQUIA_DRUPAL_TRANSITIONAL], PhpcsStandardEnum::ACQUIA_DRUPAL_TRANSITIONAL],
+      [['--phpcs-standard' => PhpcsStandardEnum::ACQUIA_PHP_STRICT], PhpcsStandardEnum::ACQUIA_PHP_STRICT],
+      [['--phpcs-standard' => PhpcsStandardEnum::ACQUIA_PHP_MINIMAL], PhpcsStandardEnum::ACQUIA_PHP_MINIMAL],
+      [['--phpcs-standard' => PhpcsStandardEnum::ACQUIA_DRUPAL_MINIMAL], PhpcsStandardEnum::ACQUIA_DRUPAL_MINIMAL],
       [['--phpcs-standard' => PhpcsStandardEnum::ACQUIA_DRUPAL_STRICT], PhpcsStandardEnum::ACQUIA_DRUPAL_STRICT],
     ];
   }
@@ -344,8 +345,9 @@ class QaStaticAnalysisCommandTest extends CommandTestBase {
 
   public static function providerPhpcsStandardEnvVar(): array {
     return [
-      [PhpcsStandardEnum::ACQUIA_PHP],
-      [PhpcsStandardEnum::ACQUIA_DRUPAL_TRANSITIONAL],
+      [PhpcsStandardEnum::ACQUIA_PHP_STRICT],
+      [PhpcsStandardEnum::ACQUIA_PHP_MINIMAL],
+      [PhpcsStandardEnum::ACQUIA_DRUPAL_MINIMAL],
       [PhpcsStandardEnum::ACQUIA_DRUPAL_STRICT],
     ];
   }
