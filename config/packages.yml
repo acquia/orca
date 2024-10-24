@@ -153,8 +153,8 @@ drupal/media_acquiadam:
       version_dev: 2.x-dev
 
 drupal/acquia_dam:
-  version: 1.x
-  version_dev: 1.0.x-dev
+  version: 1.0.14
+  version_dev: 1.0.14
 
 drupal/mysql56:
   type: library
