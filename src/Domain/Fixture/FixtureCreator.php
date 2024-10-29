@@ -236,7 +236,7 @@ class FixtureCreator {
     $this->composer->updateLockFile();
     $this->installCloudHooks();
     $this->ensureDrupalSettings();
-    $this->installSite();
+    $this->runAcmsCommands();
     $this->setUpFilesDirectories();
     $this->customizeFixture();
     $this->createAndCheckoutBackupTag();
@@ -978,4 +978,18 @@ class FixtureCreator {
     }
   }
 
+    /**
+     * Runs ACMS commands.
+     */
+    public function runAcmsCommands(): void {
+        if ($this->fixtureInspector->getInstalledPackageVersionPretty('acquia/acquia_cms') === '~') {
+            return;
+        }
+        $this->output->comment("ACMS commands started... ");
+        $this->output->section('Run ACMS Site Build');
+        $this->processRunner->runFixtureVendorBin(['acms', 'acms:build', 'acquia_cms_community', '--no-interaction']);
+        $this->output->section('Run ACMS Site Install');
+        $this->processRunner->runFixtureVendorBin(['acms', 'site:install', 'acquia_cms_community', '--no-interaction']);
+        $this->output->comment("ACMS commands executed... ");
+    }
 }
