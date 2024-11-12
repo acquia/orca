@@ -36,6 +36,8 @@ use MyCLabs\Enum\Enum;
  * @method static EnvVarEnum DRUPAL_TEST_WEBDRIVER_CHROME_ARGS()
  * @method static EnvVarEnum DRUPAL_TEST_WEBDRIVER_HOSTNAME()
  * @method static EnvVarEnum DRUPAL_TEST_WEBDRIVER_PORT()
+ * @method static EnvVarEnum SITESTUDIO_API_KEY()
+ * @method static EnvVarEnum SITESTUDIO_ORG_KEY()
  */
 class EnvVarEnum extends Enum {
 
@@ -106,6 +108,10 @@ class EnvVarEnum extends Enum {
 
   public const DRUPAL_TEST_WEBDRIVER_PORT = 'DRUPAL_TEST_WEBDRIVER_PORT';
 
+  public const SITESTUDIO_API_KEY = 'SITESTUDIO_API_KEY';
+
+  public const SITESTUDIO_ORG_KEY = 'SITESTUDIO_ORG_KEY';
+
   /**
    * Descriptions for the environment variables.
    *
@@ -147,6 +153,8 @@ class EnvVarEnum extends Enum {
       self::DRUPAL_TEST_WEBDRIVER_CHROME_ARGS => 'The Chrome WebDriver arguments (Read-only)',
       self::DRUPAL_TEST_WEBDRIVER_HOSTNAME => 'The WebDriver hostname (Read-only)',
       self::DRUPAL_TEST_WEBDRIVER_PORT => 'The WebDriver port (Read-only)',
+      self::SITESTUDIO_API_KEY => 'The Site Studio API Key',
+      self::SITESTUDIO_ORG_KEY => 'The Site Studio ORG Key',
     ];
   }
 

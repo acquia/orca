@@ -239,6 +239,7 @@ class FixtureCreator {
     $this->installSite();
     $this->setUpFilesDirectories();
     $this->customizeFixture();
+    $this->runAcmsCommands();
     $this->createAndCheckoutBackupTag();
     $this->displaySecurityVulnerabilityAdvisories();
     $this->displayStatus();
@@ -978,4 +979,16 @@ class FixtureCreator {
     }
   }
 
+  /**
+   * Runs ACMS commands.
+   */
+  public function runAcmsCommands(): void {
+    // if ($this->fixtureInspector->getInstalledPackageVersionPretty('acquia/acquia_cms') === '~') {
+    //   return;
+    // }
+    $this->output->section('Run ACMS Site Build');
+    $this->processRunner->runFixtureVendorBin(['acms', 'acms:build', 'acquia_cms_community', '--no-interaction']);
+    $this->output->section('Run ACMS Site Install');
+    $this->processRunner->runFixtureVendorBin(['acms', 'site:install', 'acquia_cms_community', '--no-interaction']);
+  }
 }
