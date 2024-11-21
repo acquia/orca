@@ -14,13 +14,14 @@ use MyCLabs\Enum\Enum;
  */
 final class PhpcsStandardEnum extends Enum {
 
-  public const ACQUIA_PHP = 'AcquiaPHP';
+  public const ACQUIA_PHP_MINIMAL = 'AcquiaPHPMinimal ';
+  public const ACQUIA_PHP_STRICT = 'AcquiaPHPStrict ';
 
   public const ACQUIA_DRUPAL_STRICT = 'AcquiaDrupalStrict';
 
-  public const ACQUIA_DRUPAL_TRANSITIONAL = 'AcquiaDrupalTransitional';
+  public const ACQUIA_DRUPAL_MINIMAL = 'AcquiaDrupalMinimal';
 
-  public const DEFAULT = self::ACQUIA_DRUPAL_TRANSITIONAL;
+  public const DEFAULT = self::ACQUIA_DRUPAL_MINIMAL;
 
   /**
    * Provides help text for commands that accept PHPCS standard input.
@@ -30,9 +31,10 @@ final class PhpcsStandardEnum extends Enum {
    */
   public static function commandHelp(): array {
     return [
-      sprintf('- %s: Contains sniffs applicable to all PHP projects', self::ACQUIA_PHP),
-      sprintf('- %s: Recommended for new Drupal projects and teams familiar with Drupal coding standards', self::ACQUIA_DRUPAL_STRICT),
-      sprintf('- %s: A relaxed standard for legacy Drupal codebases or teams new to Drupal coding standards', self::ACQUIA_DRUPAL_TRANSITIONAL),
+      sprintf('- %s: Based on PSR-12 and is intended for use on all public non-Drupal projects', self::ACQUIA_PHP_MINIMAL),
+      sprintf('- %s: Based on AcquiaDrupal and adds the more opinionated DrupalPractice standard. It is intended for use on all internal Drupal projects', self::ACQUIA_DRUPAL_STRICT),
+      sprintf('- %s: Based on AcquiaPHP and adds additional, more opinionated standards. It is intended for use on all internal, non-Drupal projects', self::ACQUIA_PHP_STRICT),
+      sprintf('- %s: Based on the Drupal coding standard and is intended for use on all public Drupal projects', self::ACQUIA_DRUPAL_MINIMAL),
     ];
   }
 

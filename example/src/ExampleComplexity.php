@@ -7,9 +7,6 @@ class ExampleComplexity {
 
   /**
    * Creates some cyclomatic complexity.
-   *
-   * @return int
-   *   An arbitrary number.
    */
   public function createComplexity(): int {
     $x = 0;

@@ -1,0 +1,33 @@
+name: Create JIRA Issue from Dependabot PR
+
+on:
+  pull_request:
+    types: [ opened ]
+
+jobs:
+  create_jira_issue:
+    if: github.actor == 'dependabot[bot]'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Login
+        uses: atlassian/gajira-login@v3
+        env:
+          JIRA_BASE_URL: ${{ secrets.JIRA_BASE_URL }}
+          JIRA_USER_EMAIL: ${{ secrets.JIRA_USER_EMAIL }}
+          JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
+
+      - name: Create JIRA Issue
+        uses: atlassian/gajira-create@v3
+        with:
+          project: "RCAT"
+          issuetype: "Task"
+          summary: "Dependabot PR: ${{ github.event.pull_request.title }}"
+          description: |
+              A new dependabot pull request has been created.
+              - **Branch**: ${{ github.event.pull_request.head.ref }}
+              - **PR Link**: ${{ github.event.pull_request.html_url }}
+              - **Author**: ${{ github.actor }}
