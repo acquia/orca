@@ -1,9 +1,8 @@
 name: Create JIRA Issue from Dependabot PR
 
 on:
-  push:
-    branches:
-      - test1
+  pull_request:
+    types: [ opened ]
 
 jobs:
   create_jira_issue:
