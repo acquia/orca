@@ -21,3 +21,27 @@ jobs:
           JIRA_USER_EMAIL: ${{ secrets.JIRA_USER_EMAIL }}
           JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
 
+      - name: Create JIRA Issue
+        uses: atlassian/gajira-create@v3
+        with:
+          project: "RCAT"
+          issuetype: "Task"
+          summary: "Dependabot PR: ${{ github.event.pull_request.title }}"
+          description: |
+              A new dependabot pull request has been created.
+              - **Branch**: ${{ github.event.pull_request.head.ref }}
+              - **PR Link**: ${{ github.event.pull_request.html_url }}
+              - **Author**: ${{ github.actor }}
+
+      - name: Add Comment to PR with JIRA Issue
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const issueKey = context.payload.pull_request.title.match(/([A-Z]+-\d+)/);
+            const jiraIssueUrl = `https://${process.env.JIRA_BASE_URL}/browse/${issueKey}`;
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `JIRA Issue created: [${issueKey}](${jiraIssueUrl})`,
+            });
