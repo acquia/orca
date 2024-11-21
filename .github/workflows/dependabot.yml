@@ -1,8 +1,9 @@
 name: Create JIRA Issue from Dependabot PR
 
 on:
-  pull_request:
-    types: [ opened, reopened ]
+  push:
+    branches:
+      - test1
 
 jobs:
   create_jira_issue:
@@ -13,16 +14,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Create JIRA Issue
-        uses: atlassian/gajira-create@v3
-        with:
-          jira-base-url: ${{ secrets.JIRA_BASE_URL }}
-          jira-user-email: ${{ secrets.JIRA_USER_EMAIL }}
-          jira-api-token: ${{ secrets.JIRA_API_TOKEN }}
-          project: ${{ secrets.JIRA_PROJECT_KEY }}
-          issuetype: "Task"
-          summary: "Dependabot PR: ${{ github.event.pull_request.title }}"
-          description: |
-            A new dependabot pull request has been created.
-            - **Branch**: ${{ github.event.pull_request.head.ref }}
-            - **PR Link**: ${{ github.event.pull_request.html_url }}
+      - name: Login
+        uses: atlassian/gajira-login@v3
+        env:
+          JIRA_BASE_URL: ${{ secrets.JIRA_BASE_URL }}
+          JIRA_USER_EMAIL: ${{ secrets.jira-user-email }}
+          JIRA_API_TOKEN: ${{ secrets.jira-api-token }}
+
