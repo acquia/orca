@@ -6,7 +6,7 @@ on:
 
 jobs:
   create_jira_issue:
-#    if: github.actor == 'dependabot[bot]'
+    if: github.actor == 'dependabot[bot]'
     runs-on: ubuntu-latest
 
     steps:
@@ -31,16 +31,3 @@ jobs:
               - **Branch**: ${{ github.event.pull_request.head.ref }}
               - **PR Link**: ${{ github.event.pull_request.html_url }}
               - **Author**: ${{ github.actor }}
-
-      - name: Add Comment to PR with JIRA Issue
-        uses: actions/github-script@v6
-        with:
-          script: |
-            const issueKey = context.payload.pull_request.title.match(/([A-Z]+-\d+)/);
-            const jiraIssueUrl = `https://${process.env.JIRA_BASE_URL}/browse/${issueKey}`;
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: `JIRA Issue created: [${issueKey}](${jiraIssueUrl})`,
-            });
