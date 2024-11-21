@@ -2,7 +2,7 @@ name: Create JIRA Issue from Dependabot PR
 
 on:
   pull_request:
-    types: [ opened, reopened ]
+    types: [ opened ]
 
 jobs:
   create_jira_issue:
@@ -13,29 +13,21 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      - name: Login
+        uses: atlassian/gajira-login@v3
+        env:
+          JIRA_BASE_URL: ${{ secrets.JIRA_BASE_URL }}
+          JIRA_USER_EMAIL: ${{ secrets.JIRA_USER_EMAIL }}
+          JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
+
       - name: Create JIRA Issue
         uses: atlassian/gajira-create@v3
         with:
-          jira-base-url: ${{ secrets.JIRA_BASE_URL }}
-          jira-user-email: ${{ secrets.JIRA_USER_EMAIL }}
-          jira-api-token: ${{ secrets.JIRA_API_TOKEN }}
-          project: ${{ secrets.JIRA_PROJECT_KEY }}
+          project: "RCAT"
           issuetype: "Task"
           summary: "Dependabot PR: ${{ github.event.pull_request.title }}"
           description: |
-            A new dependabot pull request has been created.
-            - **Branch**: ${{ github.event.pull_request.head.ref }}
-            - **PR Link**: ${{ github.event.pull_request.html_url }}
-
-      - name: Add Comment to PR with JIRA Issue
-        uses: actions/github-script@v6
-        with:
-          script: |
-            const issueKey = context.payload.pull_request.title.match(/([A-Z]+-\d+)/);
-            const jiraIssueUrl = `https://${process.env.JIRA_BASE_URL}/browse/${issueKey}`;
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: `JIRA Issue created: [${issueKey}](${jiraIssueUrl})`,
-            });
+              A new dependabot pull request has been created.
+              - **Branch**: ${{ github.event.pull_request.head.ref }}
+              - **PR Link**: ${{ github.event.pull_request.html_url }}
+              - **Author**: ${{ github.actor }}
