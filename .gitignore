@@ -11,4 +11,5 @@
 /cghooks.lock
 /phpcs.xml
 /phpunit.xml
+/.phpunit.cache
 .idea/codeStyles/codeStyleConfig.xml

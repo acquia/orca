@@ -113,7 +113,7 @@
     },
     "scripts": {
         "post-install-cmd": [
-            "php -r \"copy('https://phar.phpunit.de/phploc.phar', 'vendor/bin/phploc');\"",
+            "php -r \"file_put_contents('vendor/bin/phploc', file_get_contents('https://phar.phpunit.de/phploc.phar'));\"",
             "chmod u+x vendor/bin/phploc"
         ],
         "post-update-cmd": [
