@@ -24,7 +24,7 @@ jobs:
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git add packages.yml
           git commit -m "Update packages.yml with latest versions"
-          git push origin HEAD || echo "No changes to commit"
+          git push origin wip || echo "No changes to commit"
 
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v4
