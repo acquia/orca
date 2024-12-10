@@ -6,7 +6,8 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use Symfony\Component\Yaml\Yaml;
 
-function getLatestVersion($packageName) {
+function getLatestVersion($packageName)
+{
     $client = new Client();
     $url = "https://repo.packagist.org/p/{$packageName}.json";
 
@@ -32,7 +33,8 @@ function getLatestVersion($packageName) {
     }
 }
 
-function getLatestVersionFromDrupalOrg($packageName) {
+function getLatestVersionFromDrupalOrg($packageName)
+{
     $client = new Client();
     $packageName = str_replace('drupal/', '', $packageName); // Remove "drupal/" prefix
     $drupalApiUrl = "https://www.drupal.org/api-d7/node.json?field_project_machine_name={$packageName}";
@@ -41,7 +43,6 @@ function getLatestVersionFromDrupalOrg($packageName) {
         $response = $client->get($drupalApiUrl);
         $data = json_decode($response->getBody(), true);
 
-        // Check if the response contains releases
         if (!empty($data['list']) && isset($data['list'][0]['field_release_version'])) {
             $latestVersion = $data['list'][0]['field_release_version'];
             return $latestVersion;
@@ -55,7 +56,8 @@ function getLatestVersionFromDrupalOrg($packageName) {
     }
 }
 
-function isMajorUpdate($currentVersion, $latestVersion) {
+function isMajorUpdate($currentVersion, $latestVersion)
+{
     if (!$currentVersion || !$latestVersion) {
         return false;
     }
@@ -66,8 +68,8 @@ function isMajorUpdate($currentVersion, $latestVersion) {
     return $currentMajor !== $latestMajor;
 }
 
-function updatePackagesYaml($filePath) {
-
+function updatePackagesYaml($filePath)
+{
     $fileLines = file($filePath);
     $comments = [];
 
@@ -80,28 +82,33 @@ function updatePackagesYaml($filePath) {
 
     $packages = Yaml::parseFile($filePath);
 
-    foreach ($packages as $package => &$details) { // Use reference to modify $packages directly
+    foreach ($packages as $package => &$details) {
         if (isset($details['core_matrix'])) {
-            foreach ($details['core_matrix'] as $coreVersion => &$coreDetails) { // Use reference here as well
-                $currentVersion = $coreDetails['version'] ?? null;
+            // Update only '*' entry
+            if (isset($details['core_matrix']['*'])) {
+                $currentVersion = $details['core_matrix']['*']['version'] ?? null;
                 $latestVersion = getLatestVersion($package);
-    
+
                 if ($latestVersion && isMajorUpdate($currentVersion, $latestVersion)) {
-                    $coreDetails['version'] = $latestVersion;
-                    echo "Updated $package for Drupal $coreVersion to version $latestVersion.\n";
+                    $details['core_matrix']['*']['version'] = $latestVersion;
+                    echo "Updated $package for '*' to version $latestVersion.\n";
                 }
+            } else {
+                echo "Skipping $package as '*' is not defined in core_matrix.\n";
             }
         } else {
+            // Update non-core_matrix packages
             $currentVersion = $details['version'] ?? null;
             $latestVersion = getLatestVersion($package);
-    
+
             if ($latestVersion && isMajorUpdate($currentVersion, $latestVersion)) {
-                $details['version'] = $latestVersion; // This directly updates $packages
+                $details['version'] = $latestVersion;
                 echo "Updated $package to version $latestVersion.\n";
             }
         }
     }
 
+    // Write back the YAML, appending the comments
     file_put_contents($filePath, implode('', $comments) . "\n" . Yaml::dump($packages, 2));
 }
 
