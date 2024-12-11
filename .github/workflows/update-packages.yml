@@ -1,0 +1,45 @@
+name: Update Packages.yml
+
+on:
+  schedule:
+    - cron: '0 0 * * 1' # Runs weekly on Mondays
+  workflow_dispatch: # Allows manual trigger of the workflow
+  push:
+        branches: [ wip ]
+        paths-ignore:
+            - .idea/**
+            - docs/**
+
+jobs:
+  update-packages:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Run Update Script
+        run: php update_packages.php
+
+      - name: Commit Changes
+        run: |
+          git config --local user.name "github-actions[bot]"
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git add packages.yml
+          git commit -m "Update packages.yml with latest versions"
+          git push origin wip || echo "No changes to commit"
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v4
+        with:
+          branch: update-packages
+          title: Update packages.yml with latest versions
+          body: |
+            This pull request updates the `packages.yml` file with the latest stable versions of dependencies.
+          labels: dependencies
+
+  run-cron:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+
+      - name: Run script or cron job
+        run: php update_packages.php
