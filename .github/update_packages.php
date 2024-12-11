@@ -17,17 +17,16 @@ use Symfony\Component\Yaml\Yaml;
  * @param string $packageName
  *   The name of the package.
  *
- * @return string|null
+ * @return string|NULL
  *   The latest version string, or NULL if not found.
  */
-function get_latest_version($packageName)
-{
+function get_latest_version($packageName) {
     $client = new Client();
     $url = "https://repo.packagist.org/p/{$packageName}.json";
 
     try {
         $response = $client->get($url);
-        $data = json_decode($response->getBody(), true);
+        $data = json_decode($response->getBody(), TRUE);
 
         $versions = array_keys($data['packages'][$packageName]);
         usort($versions, 'version_compare');
@@ -40,7 +39,7 @@ function get_latest_version($packageName)
             return $versionParts[0] . '.x';
         }
 
-        return null;
+        return NULL;
     } catch (RequestException $e) {
         // echo "Package {$packageName} not found on Packagist. Trying Drupal.org...\n";
         return get_latest_version_from_drupal_org($packageName);
@@ -53,46 +52,44 @@ function get_latest_version($packageName)
  * @param string $packageName
  *   The name of the package.
  *
- * @return string|null
+ * @return string|NULL
  *   The latest version string, or NULL if not found.
  */
-function get_latest_version_from_drupal_org($packageName)
-{
+function get_latest_version_from_drupal_org($packageName) {
     $client = new Client();
     $packageName = str_replace('drupal/', '', $packageName); // Remove "drupal/" prefix
     $drupalApiUrl = "https://www.drupal.org/api-d7/node.json?field_project_machine_name={$packageName}";
 
     try {
         $response = $client->get($drupalApiUrl);
-        $data = json_decode($response->getBody(), true);
+        $data = json_decode($response->getBody(), TRUE);
 
         if (!empty($data['list']) && isset($data['list'][0]['field_release_version'])) {
             return $data['list'][0]['field_release_version'];
         }
 
         echo "No releases found for {$packageName} on Drupal.org.\n";
-        return null;
+        return NULL;
     } catch (RequestException $e) {
         echo "Error fetching data for {$packageName} on Drupal.org: " . $e->getMessage() . PHP_EOL;
-        return null;
+        return NULL;
     }
 }
 
 /**
  * Determines if the latest version is a major update compared to the current version.
  *
- * @param string|null $currentVersion
+ * @param string|NULL $currentVersion
  *   The current version.
- * @param string|null $latestVersion
+ * @param string|NULL $latestVersion
  *   The latest version.
  *
  * @return bool
  *   TRUE if it is a major update, FALSE otherwise.
  */
-function is_major_update($currentVersion, $latestVersion)
-{
+function is_major_update($currentVersion, $latestVersion) {
     if (!$currentVersion || !$latestVersion) {
-        return false;
+        return FALSE;
     }
 
     $currentMajor = explode('.', $currentVersion)[0];
@@ -107,8 +104,7 @@ function is_major_update($currentVersion, $latestVersion)
  * @param string $filePath
  *   The path to the YAML file.
  */
-function update_packages_yaml($filePath)
-{
+function update_packages_yaml($filePath) {
     $fileLines = file($filePath);
     $comments = [];
 
@@ -125,7 +121,7 @@ function update_packages_yaml($filePath)
         if (isset($details['core_matrix'])) {
             // Update only '*' entry
             if (isset($details['core_matrix']['*'])) {
-                $currentVersion = $details['core_matrix']['*']['version'] ?? null;
+                $currentVersion = $details['core_matrix']['*']['version'] ?? NULL;
                 $latestVersion = get_latest_version($package);
 
                 if ($latestVersion && is_major_update($currentVersion, $latestVersion)) {
@@ -137,7 +133,7 @@ function update_packages_yaml($filePath)
             }
         } else {
             // Update non-core_matrix packages
-            $currentVersion = $details['version'] ?? null;
+            $currentVersion = $details['version'] ?? NULL;
             $latestVersion = get_latest_version($package);
 
             if ($latestVersion && is_major_update($currentVersion, $latestVersion)) {
@@ -152,6 +148,6 @@ function update_packages_yaml($filePath)
 }
 
 // File path to the YAML configuration
-$filePath = '../config/packages.yml';
+$filePath = 'packages.yml';
 
 update_packages_yaml($filePath);
