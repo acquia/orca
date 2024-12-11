@@ -42,7 +42,6 @@ function get_latest_version($packageName) {
     return NULL;
   }
   catch (RequestException $e) {
-    // echo "Package {$packageName} not found on Packagist. Trying Drupal.org...\n";
     return get_latest_version_from_drupal_org($packageName);
   }
 }
@@ -58,7 +57,7 @@ function get_latest_version($packageName) {
  */
 function get_latest_version_from_drupal_org($packageName) {
   $client = new Client();
-  // Remove "drupal/" prefix
+  // Remove "drupal/" prefix.
   $packageName = str_replace('drupal/', '', $packageName);
   $drupalApiUrl = "https://www.drupal.org/api-d7/node.json?field_project_machine_name={$packageName}";
 
@@ -122,7 +121,7 @@ function update_packages_yaml($filePath) {
 
   foreach ($packages as $package => &$details) {
     if (isset($details['core_matrix'])) {
-      // Update only '*' entry
+      // Update only '*' entry.
       if (isset($details['core_matrix']['*'])) {
         $currentVersion = $details['core_matrix']['*']['version'] ?? NULL;
         $latestVersion = get_latest_version($package);
