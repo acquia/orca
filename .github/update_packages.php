@@ -40,8 +40,9 @@ function get_latest_version($packageName) {
     }
 
     return NULL;
-  } catch (RequestException $e) {
-    echo "Package {$packageName} not found on Packagist. Trying Drupal.org...\n";
+  }
+  catch (RequestException $e) {
+    // echo "Package {$packageName} not found on Packagist. Trying Drupal.org...\n";
     return get_latest_version_from_drupal_org($packageName);
   }
 }
@@ -57,7 +58,8 @@ function get_latest_version($packageName) {
  */
 function get_latest_version_from_drupal_org($packageName) {
   $client = new Client();
-  $packageName = str_replace('drupal/', '', $packageName); // Remove "drupal/" prefix
+  // Remove "drupal/" prefix
+  $packageName = str_replace('drupal/', '', $packageName);
   $drupalApiUrl = "https://www.drupal.org/api-d7/node.json?field_project_machine_name={$packageName}";
 
   try {
@@ -70,14 +72,15 @@ function get_latest_version_from_drupal_org($packageName) {
 
     echo "No releases found for {$packageName} on Drupal.org.\n";
     return NULL;
-  } catch (RequestException $e) {
+  }
+  catch (RequestException $e) {
     echo "Error fetching data for {$packageName} on Drupal.org: " . $e->getMessage() . PHP_EOL;
     return NULL;
   }
 }
 
 /**
- * Determines if the latest version is a major update compared to the current version.
+ * Determines if latest version is a major update compared to current version.
  *
  * @param string|null $currentVersion
  *   The current version.
@@ -108,7 +111,7 @@ function update_packages_yaml($filePath) {
   $fileLines = file($filePath);
   $comments = [];
 
-  // Extract comments
+  // Extract comments.
   foreach ($fileLines as $line) {
     if (preg_match('/^\s*#/', $line)) {
       $comments[] = $line;
@@ -128,11 +131,13 @@ function update_packages_yaml($filePath) {
           $details['core_matrix']['*']['version'] = $latestVersion;
           echo "Updated $package for '*' to version $latestVersion.\n";
         }
-      } else {
+      }
+      else {
         echo "Skipping $package as '*' is not defined in core_matrix.\n";
       }
-    } else {
-      // Update non-core_matrix packages
+    }
+    else {
+      // Update non-core_matrix packages.
       $currentVersion = $details['version'] ?? NULL;
       $latestVersion = get_latest_version($package);
 
@@ -143,11 +148,11 @@ function update_packages_yaml($filePath) {
     }
   }
 
-  // Write back the YAML, appending the comments
+  // Write back the YAML, appending the comments.
   file_put_contents($filePath, implode('', $comments) . "\n" . Yaml::dump($packages, 2));
 }
 
-// File path to the YAML configuration
+// File path to the YAML configuration.
 $filePath = '../config/packages.yml';
 
 update_packages_yaml($filePath);
