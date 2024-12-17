@@ -25,6 +25,15 @@ function get_latest_version(string $packageName) {
       ?? get_latest_version_from_drupal_org($packageName);
 }
 
+/**
+ * Fetches the latest version of a package from Packagist.
+ *
+ * @param string $packageName
+ *   The name of the package.
+ *
+ * @return string|null
+ *   The latest version string, or NULL if not found.
+ */
 function get_latest_version_from_packagist(string $packageName) {
   $client = new Client();
   $url = "https://repo.packagist.org/p/{$packageName}.json";
@@ -41,7 +50,7 @@ function get_latest_version_from_packagist(string $packageName) {
     // Extract major.minor version (e.g., "13.3.3" becomes "13.x")
     $versionParts = explode('.', $latestVersion);
     if (count($versionParts) > 1) {
-        return $versionParts[0] . '.x';
+      return $versionParts[0] . '.x';
     }
 
     return NULL;
