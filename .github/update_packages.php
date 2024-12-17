@@ -20,7 +20,12 @@ use Symfony\Component\Yaml\Yaml;
  * @return string|null
  *   The latest version string, or NULL if not found.
  */
-function get_latest_version($packageName) {
+function get_latest_version(string $packageName) {
+  return get_latest_version_from_packagist($packageName)
+      ?? get_latest_version_from_drupal_org($packageName);
+}
+
+function get_latest_version_from_packagist(string $packageName) {
   $client = new Client();
   $url = "https://repo.packagist.org/p/{$packageName}.json";
 
@@ -36,13 +41,13 @@ function get_latest_version($packageName) {
     // Extract major.minor version (e.g., "13.3.3" becomes "13.x")
     $versionParts = explode('.', $latestVersion);
     if (count($versionParts) > 1) {
-      return $versionParts[0] . '.x';
+        return $versionParts[0] . '.x';
     }
 
     return NULL;
   }
   catch (RequestException $e) {
-    return get_latest_version_from_drupal_org($packageName);
+    return NULL;
   }
 }
 
@@ -55,7 +60,7 @@ function get_latest_version($packageName) {
  * @return string|null
  *   The latest version string, or NULL if not found.
  */
-function get_latest_version_from_drupal_org($packageName) {
+function get_latest_version_from_drupal_org(string $packageName) {
   $client = new Client();
   // Remove "drupal/" prefix.
   $packageName = str_replace('drupal/', '', $packageName);
@@ -89,7 +94,7 @@ function get_latest_version_from_drupal_org($packageName) {
  * @return bool
  *   TRUE if it is a major update, FALSE otherwise.
  */
-function is_major_update($currentVersion, $latestVersion) {
+function is_major_update(?string $currentVersion, ?string $latestVersion) {
   if (!$currentVersion || !$latestVersion) {
     return FALSE;
   }
@@ -106,7 +111,7 @@ function is_major_update($currentVersion, $latestVersion) {
  * @param string $filePath
  *   The path to the YAML file.
  */
-function update_packages_yaml($filePath) {
+function update_packages_yaml(string $filePath) {
   $fileLines = file($filePath);
   $comments = [];
 
