@@ -115,23 +115,22 @@ jobs:
           php-version: ${{ matrix.php-version }}
           coverage: xdebug
 
-      # - name: Setup Chrome
-      #   uses: browser-actions/setup-chrome@v1.7.2
-      #   id: setup-chrome
-      #   with:
-      #     chrome-version: 120
-      #     install-chromedriver: true
-      #     install-dependencies: true
+      - name: Setup Chrome
+        uses: browser-actions/setup-chrome@v1.7.2
+        id: setup-chrome
+        with:
+          chrome-version: 131
+          install-chromedriver: true
 
 
-      - uses: browser-actions/setup-chrome@v1
-      - run: chrome --version
+      # - uses: browser-actions/setup-chrome@v1
+      # - run: chrome --version
 
-      # - run: |
-      #     CHROME_BIN="${{ steps.setup-chrome.outputs.chrome-path }}"
-      #     sudo ln -sf "$CHROME_BIN" /usr/bin/
-      #     CHROMEDRIVER_BIN="${{ steps.setup-chrome.outputs.chromedriver-path }}"
-      #     sudo ln -sf "$CHROMEDRIVER_BIN" /usr/bin/
+      - run: |
+          CHROME_BIN="${{ steps.setup-chrome.outputs.chrome-path }}"
+          sudo ln -sf "$CHROME_BIN" /usr/bin/
+          CHROMEDRIVER_BIN="${{ steps.setup-chrome.outputs.chromedriver-path }}"
+          sudo ln -sf "$CHROMEDRIVER_BIN" /usr/bin/
 
       # Commenting out to use the latest chrome and chromedriver versions.
       #      - name: Install google-chrome-stable
