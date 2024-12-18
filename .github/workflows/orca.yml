@@ -123,6 +123,7 @@ jobs:
       #     install-chromedriver: true
       #     install-dependencies: true
 
+
       - uses: browser-actions/setup-chrome@v1
       - run: chrome --version
 
