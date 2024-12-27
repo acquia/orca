@@ -132,7 +132,7 @@ jobs:
         uses: browser-actions/setup-chrome@v1.7.2
         id: setup-chrome
         with:
-          chrome-version: 119
+          chrome-version: stable
           install-chromedriver: true
 
       - run: |
