@@ -116,10 +116,10 @@ jobs:
           coverage: xdebug
 
       - name: Setup Chrome
-        uses: browser-actions/setup-chrome@v1.7.2
+        uses: browser-actions/setup-chrome@v1
         id: setup-chrome
         with:
-          chrome-version: stable
+          chrome-version: 120
           install-chromedriver: true
 
       - run: |
