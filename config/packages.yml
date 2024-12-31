@@ -181,20 +181,15 @@ drush/drush:
 
 # Acquia CMS uses drupal-test-traits as a dev dependency.
 # @todo remove this via ORCA-298
-# weitzman/drupal-test-traits:
-#   is_company_package: false
-#   core_matrix:
-#     '<=10.2':
-#       version: 2.4.0
-#       version_dev: ~
-#     '*':
-#       version: '*'
-#       version_dev: '*'
-
 weitzman/drupal-test-traits:
   is_company_package: false
-  version: '*'
-  version_dev: '*'
+  core_matrix:
+    '<=10.2':
+      version: 2.4.0
+      version_dev: ~
+    '*':
+      version: '*'
+      version_dev: '*'
 
 phpspec/prophecy-phpunit:
   is_company_package: false
