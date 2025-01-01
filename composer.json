@@ -48,7 +48,7 @@
         "symfony/expression-language": "^6.3.0",
         "symfony/filesystem": "^6.4.0",
         "symfony/finder": "^6.2.7",
-        "symfony/http-client": "^6.2.10",
+        "symfony/http-client": "^7.2.2",
         "symfony/options-resolver": "^6.3.0",
         "symfony/phpunit-bridge": "^7.0.1",
         "symfony/process": "^6.4.2",
