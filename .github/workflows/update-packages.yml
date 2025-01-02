@@ -1,12 +1,11 @@
-name: Update Packages.yml
+name: Update Packages and Create Pull Request
 
 on:
   schedule:
     - cron: '0 0 * * 1' # Runs weekly on Mondays
-  workflow_dispatch: # Allows manual trigger of the workflow
   push:
     branches:
-      - wip # Runs on pushes to the wip branch
+      - wip # Trigger on pushes to the wip branch
     paths-ignore:
       - .idea/**
       - docs/**
@@ -16,17 +15,35 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Run Update Script
-        run: php update_packages.php
+      # Step 1: Checkout Code
+      - name: Checkout Code
+        uses: actions/checkout@v3
 
+      # Step 2: Set up PHP
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.1' # Adjust the PHP version as needed
+          tools: composer
+
+      # Step 3: Install Dependencies
+      - name: Install Dependencies
+        run: composer install
+
+      # Step 4: Run the Update Script
+      - name: Run Update Script
+        run: php .github/update_packages.php
+
+      # Step 5: Commit Changes
       - name: Commit Changes
         run: |
           git config --local user.name "github-actions[bot]"
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git add packages.yml
-          git commit -m "Update packages.yml with latest versions"
-          git push origin wip || echo "No changes to commit"
+          git diff --quiet && echo "No changes to commit" || git commit -m "Update packages.yml with latest versions"
+          git push origin wip || echo "No changes to push"
 
+      # Step 6: Create Pull Request
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v4
         with:
@@ -35,12 +52,3 @@ jobs:
           body: |
             This pull request updates the `packages.yml` file with the latest stable versions of dependencies.
           labels: dependencies
-
-  run-cron:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check out code
-        uses: actions/checkout@v3
-
-      - name: Run script or cron job
-        run: php .github/update_packages.php
