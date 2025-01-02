@@ -166,6 +166,6 @@ function update_packages_yaml(string $filePath) {
 }
 
 // File path to the YAML configuration.
-$filePath = '../config/packages.yml';
+$filePath = __DIR__ . '/../config/packages.yml';
 
 update_packages_yaml($filePath);
