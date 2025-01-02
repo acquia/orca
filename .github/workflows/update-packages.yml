@@ -5,10 +5,11 @@ on:
     - cron: '0 0 * * 1' # Runs weekly on Mondays
   workflow_dispatch: # Allows manual trigger of the workflow
   push:
-        branches: [ wip ]
-        paths-ignore:
-            - .idea/**
-            - docs/**
+    branches:
+      - wip # Runs on pushes to the wip branch
+    paths-ignore:
+      - .idea/**
+      - docs/**
 
 jobs:
   update-packages:
