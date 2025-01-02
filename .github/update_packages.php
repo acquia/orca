@@ -5,7 +5,7 @@
  * Script to update package versions in a YAML configuration file.
  */
 
-require 'vendor/autoload.php';
+require __DIR__ . '/../vendor/autoload.php';
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
