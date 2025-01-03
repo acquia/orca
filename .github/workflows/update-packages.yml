@@ -15,26 +15,24 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Checkout Code
       - name: Checkout Code
         uses: actions/checkout@v3
 
-      # Step 2: Set up PHP
       - name: Set up PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.1' # Adjust the PHP version as needed
+          php-version: '8.1'
           tools: composer
 
-      # Step 3: Install Dependencies
+      - name: Add Guzzle Dependency
+        run: composer require guzzlehttp/guzzle:^7.4 --no-update
+
       - name: Install Dependencies
         run: composer install
 
-      # Step 4: Run the Update Script
       - name: Run Update Script
         run: php .github/update_packages.php
 
-      # Step 5: Commit Changes
       - name: Commit Changes
         run: |
           git config --local user.name "github-actions[bot]"
@@ -43,7 +41,6 @@ jobs:
           git diff --quiet && echo "No changes to commit" || git commit -m "Update packages.yml with latest versions"
           git push origin wip || echo "No changes to push"
 
-      # Step 6: Create Pull Request
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v4
         with:
