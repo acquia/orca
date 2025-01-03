@@ -53,7 +53,8 @@
         "symfony/phpunit-bridge": "^7.0.1",
         "symfony/process": "^6.4.2",
         "symfony/yaml": "^6.3.0",
-        "weitzman/drupal-test-traits": "^2.1"
+        "weitzman/drupal-test-traits": "^2.1",
+        "guzzlehttp/guzzle": "^7.4"
     },
     "require-dev": {
         "brainmaestro/composer-git-hooks": "^2.8.5",
