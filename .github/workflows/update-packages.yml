@@ -43,11 +43,8 @@ jobs:
 
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v4
-        secrets:
-          jira-api-token: ${{ secrets.JIRA_API_TOKEN }}
-          jira-user-email: ${{ secrets.JIRA_USER_EMAIL }}
-          github-token: ${{ secrets.GITHUB_TOKEN }}
         with:
+          token: ${{ secrets.GITHUB_TOKEN }}
           branch: update-packages
           title: Update packages.yml with latest versions
           body: |
