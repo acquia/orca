@@ -60,8 +60,8 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           branch: update-packages
-          base: wip
-          title: "Update dependencies in packages.yml"
+          title: Update packages.yml with latest versions
           body: |
             This pull request updates the `packages.yml` file with the latest stable versions of dependencies.
           labels: dependencies
+          overwrite: true
