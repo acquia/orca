@@ -40,15 +40,12 @@ jobs:
           git config --local user.name "github-actions[bot]"
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git checkout -b update-packages-temp
-          git add config/packages.yml
+          git add composer.json composer.lock config/packages.yml
           git diff --quiet && echo "No changes to commit" || git commit -m "Update packages.yml with latest versions"
-          git push origin update-packages-temp || echo "No changes to push"
+          git push origin update-packages-temp || echo "Branch already exists"
 
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v4
-        env:
-          JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
-          JIRA_USER_EMAIL: ${{ secrets.JIRA_USER_EMAIL }}
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           branch: update-packages-temp
