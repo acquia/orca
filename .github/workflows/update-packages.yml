@@ -47,10 +47,12 @@ jobs:
         run: |
           git config --local user.name "github-actions[bot]"
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
-          git checkout -b update-packages || git checkout update-packages
+          git checkout -B update-packages
           git add config/packages.yml
-          git diff --quiet && echo "No changes to commit" || git commit -m "Update dependencies in packages.yml - $(date +'%Y-%m-%d')"
-          git push --set-upstream origin update-packages || echo "No changes to push"
+          git diff --quiet && echo "No changes to commit" || git commit -m "Update dependencies in packages.yml"
+          # Ensure the branch is pushed to remote, even if it doesn't exist
+          git push origin update-packages --force
+
 
       # Step 7: Create Pull Request
       - name: Create Pull Request
