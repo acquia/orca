@@ -9,7 +9,8 @@ on:
     paths-ignore:
       - .idea/**
       - docs/**
-
+permissions:
+  pull-requests: write
 jobs:
   update-packages:
     runs-on: ubuntu-latest
@@ -37,9 +38,10 @@ jobs:
         run: |
           git config --local user.name "github-actions[bot]"
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git checkout update-packages
           git add config/packages.yml
           git diff --quiet && echo "No changes to commit" || git commit -m "Update packages.yml with latest versions"
-          git push origin wip || echo "No changes to push"
+          git push origin update-packages || echo "No changes to push"
 
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v4
