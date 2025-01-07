@@ -59,7 +59,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           branch: update-packages
           base: wip
-          title: "Update dependencies in packages.yml - $(date +'%Y-%m-%d')"
+          title: "Update dependencies in packages.yml"
           body: |
             This pull request updates the `packages.yml` file with the latest stable versions of dependencies.
           labels: dependencies
