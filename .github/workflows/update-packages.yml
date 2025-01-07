@@ -32,7 +32,7 @@ jobs:
 
       # Step 3: Add/Update Dependencies
       - name: Add Guzzle Dependency
-        run: composer require guzzlehttp/guzzle:^7.4 --no-update
+        run: composer require guzzlehttp/guzzle:^7.4
 
       # Step 4: Install Dependencies
       - name: Install Dependencies
