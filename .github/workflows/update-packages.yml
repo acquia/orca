@@ -9,7 +9,9 @@ on:
     paths-ignore:
       - .idea/**
       - docs/**
+
 permissions:
+  contents: write
   pull-requests: write
 
 jobs:
@@ -17,40 +19,47 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # Step 1: Checkout Code
       - name: Checkout Code
         uses: actions/checkout@v3
 
+      # Step 2: Set Up PHP
       - name: Set up PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.1'
           tools: composer
 
+      # Step 3: Add/Update Dependencies
       - name: Add Guzzle Dependency
-        run: composer require guzzlehttp/guzzle:^7.4
+        run: composer require guzzlehttp/guzzle:^7.4 --no-update
 
+      # Step 4: Install Dependencies
       - name: Install Dependencies
         run: composer install
 
+      # Step 5: Run Update Script
       - name: Run Update Script
         run: php .github/update_packages.php
 
+      # Step 6: Commit Changes
       - name: Commit Changes
         run: |
           git config --local user.name "github-actions[bot]"
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
-          git checkout -b update-packages-temp
+          git checkout -b update-packages || git checkout update-packages
           git add config/packages.yml
-          git diff --quiet && echo "No changes to commit" || git commit -m "Update packages.yml with latest versions"
-          git push --set-upstream origin update-packages-temp
+          git diff --quiet && echo "No changes to commit" || git commit -m "Update dependencies in packages.yml - $(date +'%Y-%m-%d')"
+          git push --set-upstream origin update-packages || echo "No changes to push"
 
+      # Step 7: Create Pull Request
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          branch: update-packages-temp
+          branch: update-packages
           base: wip
-          title: Update packages.yml with latest versions
+          title: "Update dependencies in packages.yml - $(date +'%Y-%m-%d')"
           body: |
             This pull request updates the `packages.yml` file with the latest stable versions of dependencies.
           labels: dependencies
