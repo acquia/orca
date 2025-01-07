@@ -11,6 +11,7 @@ on:
       - docs/**
 permissions:
   pull-requests: write
+
 jobs:
   update-packages:
     runs-on: ubuntu-latest
@@ -38,10 +39,10 @@ jobs:
         run: |
           git config --local user.name "github-actions[bot]"
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
-          git checkout -b update-packages
+          git checkout -b update-packages-temp
           git add config/packages.yml
           git diff --quiet && echo "No changes to commit" || git commit -m "Update packages.yml with latest versions"
-          git push origin update-packages || echo "No changes to push"
+          git push origin update-packages-temp || echo "No changes to push"
 
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v4
@@ -50,7 +51,8 @@ jobs:
           JIRA_USER_EMAIL: ${{ secrets.JIRA_USER_EMAIL }}
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          branch: update-packages
+          branch: update-packages-temp
+          base: wip
           title: Update packages.yml with latest versions
           body: |
             This pull request updates the `packages.yml` file with the latest stable versions of dependencies.
