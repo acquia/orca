@@ -40,7 +40,7 @@ jobs:
           git config --local user.name "github-actions[bot]"
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git checkout -b update-packages-temp
-          git add composer.json composer.lock config/packages.yml
+          git add config/packages.yml
           git diff --quiet && echo "No changes to commit" || git commit -m "Update packages.yml with latest versions"
           git push --set-upstream origin update-packages-temp
 
