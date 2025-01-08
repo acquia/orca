@@ -39,8 +39,8 @@ jobs:
         run: composer install
 
       # Step 5: Run Update Script
-      - name: Run Update Script
-        run: php .github/update_packages.php
+      # - name: Run Update Script
+      #   run: php .github/update_packages.php
 
       # Step 6: Reset or Recreate Branch
       - name: Reset or Recreate Branch
@@ -50,6 +50,7 @@ jobs:
           git checkout wip
           git branch -D update-packages || true
           git checkout -b update-packages
+          php .github/update_packages.php
           git add config/packages.yml
           git diff --quiet && echo "No changes to commit" || git commit -m "Update dependencies in packages.yml"
           git push origin update-packages --force
