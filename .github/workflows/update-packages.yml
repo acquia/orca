@@ -2,10 +2,10 @@ name: Update Packages and Create Pull Request
 
 on:
   schedule:
-    - cron: '0 0 * * 1' # Runs weekly on Mondays
+    - cron: '0 0 * * 1' # Weekly on Mondays
   push:
     branches:
-      - wip # Trigger on pushes to the wip branch
+      - wip # Trigger on pushes to wip branch
     paths-ignore:
       - .idea/**
       - docs/**
@@ -42,18 +42,19 @@ jobs:
       - name: Run Update Script
         run: php .github/update_packages.php
 
-      # Step 6: Commit Changes
-      - name: Commit Changes
+      # Step 6: Reset or Recreate Branch
+      - name: Reset or Recreate Branch
         run: |
           git config --local user.name "github-actions[bot]"
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
-          git checkout -B update-packages
+          git checkout wip
+          git branch -D update-packages || true
+          git checkout -b update-packages
           git add config/packages.yml
           git diff --quiet && echo "No changes to commit" || git commit -m "Update dependencies in packages.yml"
-          # Ensure the branch is pushed to remote, even if it doesn't exist
           git push origin update-packages --force
 
-      # Step 7: Create Pull Request
+      # Step 7: Create or Update Pull Request
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v4
         with:
