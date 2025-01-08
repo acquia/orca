@@ -2,7 +2,7 @@ name: Update Packages and Create Pull Request
 
 on:
   schedule:
-    - cron: '0 0 * * 1' # Run weekly on Mondays
+    - cron: '0 0 * * 1' # Weekly on Mondays
   push:
     branches:
       - wip # Trigger on pushes to wip branch
