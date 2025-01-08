@@ -53,15 +53,15 @@ jobs:
           # Ensure the branch is pushed to remote, even if it doesn't exist
           git push origin update-packages --force
 
-
       # Step 7: Create Pull Request
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           branch: update-packages
+          base: wip
           title: Update packages.yml with latest versions
           body: |
             This pull request updates the `packages.yml` file with the latest stable versions of dependencies.
           labels: dependencies
-          overwrite: true
+          delete-branch: true
