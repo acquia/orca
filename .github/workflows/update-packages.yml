@@ -30,7 +30,7 @@ jobs:
           php-version: '8.1'
           tools: composer
 
-      # Step 3: Add/Update Dependencies
+      # Step 3: Add Guzzle Dependency
       - name: Add Guzzle Dependency
         run: composer require guzzlehttp/guzzle:^7.4
 
@@ -38,11 +38,16 @@ jobs:
       - name: Install Dependencies
         run: composer install
 
-      # Step 5: Run Update Script
-      # - name: Run Update Script
-      #   run: php .github/update_packages.php
+      # Step 5: Reset Composer Changes
+      - name: Reset Composer Changes
+        run: |
+          git checkout -- composer.json composer.lock
 
-      # Step 6: Reset or Recreate Branch
+      # Step 6: Run Update Script
+      - name: Run Update Script
+        run: php .github/update_packages.php
+
+      # Step 7: Reset or Recreate Branch
       - name: Reset or Recreate Branch
         run: |
           git config --local user.name "github-actions[bot]"
@@ -50,12 +55,11 @@ jobs:
           git checkout wip
           git branch -D update-packages || true
           git checkout -b update-packages
-          php .github/update_packages.php
           git add config/packages.yml
-          git diff --quiet && echo "No changes to commit" || git commit -m "Update dependencies in packages.yml"
+          git diff --staged --quiet && echo "No changes to commit" || git commit -m "Update dependencies in packages.yml"
           git push origin update-packages --force
 
-      # Step 7: Create or Update Pull Request
+      # Step 8: Create or Update Pull Request
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v4
         with:
@@ -67,3 +71,8 @@ jobs:
             This pull request updates the `packages.yml` file with the latest stable versions of dependencies.
           labels: dependencies
           delete-branch: true
+
+      # Step 9: Debug Changed Files (Optional)
+      - name: Debug Changed Files
+        if: always()
+        run: git status --short
