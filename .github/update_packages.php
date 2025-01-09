@@ -5,7 +5,7 @@
  * Script to update package versions in a YAML configuration file.
  */
 
-require 'vendor/autoload.php';
+require __DIR__ . '/../vendor/autoload.php';
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
@@ -166,6 +166,6 @@ function update_packages_yaml(string $filePath) {
 }
 
 // File path to the YAML configuration.
-$filePath = '../config/packages.yml';
+$filePath = __DIR__ . '/../config/packages.yml';
 
 update_packages_yaml($filePath);
