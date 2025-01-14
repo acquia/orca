@@ -34,6 +34,7 @@
         "cweagans/composer-patches": "^1.7.3",
         "dealerdirect/phpcodesniffer-composer-installer": "^1.0.0",
         "ergebnis/composer-normalize": "^2.30.2",
+        "guzzlehttp/guzzle": "^7.4",
         "hassankhan/config": "^3.1",
         "mglaman/drupal-check": "^1.4",
         "myclabs/php-enum": "^1.8.4",
