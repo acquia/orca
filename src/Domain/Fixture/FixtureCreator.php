@@ -991,5 +991,4 @@ class FixtureCreator {
     $this->output->section('Run ACMS Site Install');
     $this->processRunner->runFixtureVendorBin(['acms', 'site:install', 'acquia_cms_community', '--no-interaction']);
   }
-
 }
