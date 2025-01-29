@@ -52,9 +52,8 @@
 
 # Removed due to outage caused by ACMS on 06/26/2024.
 acquia/acquia_cms:
-  core_matrix:
-      version: 2.x
-      version_dev: 2.x-dev
+  version: 2.x
+  version_dev: 2.x-dev
 
 # Removed due to outage caused by ACMS on 06/26/2024.
 drupal/acquia_cms_common:
