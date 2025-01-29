@@ -3,6 +3,12 @@ name: Update Packages and Create Pull Request
 on:
   schedule:
     - cron: '0 0 * * 1' # Weekly on Mondays
+  push:
+    branches:
+      - wip
+    paths-ignore:
+      - .idea/**
+      - docs/**
 
 permissions:
   contents: write
@@ -24,7 +30,7 @@ jobs:
           php-version: '8.1'
           tools: composer
 
-      # Step 3: Add/Update Dependencies
+      # Step 3: Add Guzzle Dependency
       - name: Add Guzzle Dependency
         run: composer require guzzlehttp/guzzle:^7.4
 
@@ -32,39 +38,34 @@ jobs:
       - name: Install Dependencies
         run: composer install
 
-      # Step 5: Run Update Script
-      - name: Run Update Script
-        run: php .github/update_packages.php
+      # Step 5: Reset Composer Changes
+      - name: Reset Composer Changes
+        run: git checkout -- composer.json composer.lock
 
-      # Step 6: Reset or Recreate Branch
-      - name: Reset or Recreate Branch
+      # Step 6: Run Update Script and Commit Changes
+      - name: Run Update Script
         run: |
+          set -o xtrace
+          TIMESTAMP=$(date +'%Y%m%d%H%M%S')
+          BRANCH_NAME="update-packages-${TIMESTAMP}"
+          echo "branch_name=${BRANCH_NAME}" >> $GITHUB_ENV
           git config --local user.name "github-actions[bot]"
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
-          git checkout develop
-          git branch -D update-packages || true
-          git checkout -b update-packages
-          git add config/packages.yml
-          if git diff --staged --quiet; then
-            echo "No changes detected; adding dummy commit."
-            echo "# Dummy commit to trigger PR" >> config/packages.yml
-            git add config/packages.yml
-            git commit -m "Dummy commit to trigger PR"
-          else
-            git commit -m "Update dependencies in packages.yml"
-          fi
-          git push origin update-packages --force
+          php .github/update_packages.php
+          git checkout -b $BRANCH_NAME origin/develop
+          git add -A
+          git commit -m "Update dependencies in packages.yml"
+          git push -u origin HEAD
+          git show-branch HEAD origin/develop origin/$BRANCH_NAME
 
-      # Step 7: Create or Update Pull Request
+      # Step 7: Create Pull Request
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          branch: update-packages
+          branch: ${{ env.branch_name }}
           base: develop
-          title: Update packages.yml with latest versions
+          title: "Update packages.yml with latest versions"
           body: |
             This pull request updates the `packages.yml` file with the latest stable versions of dependencies.
-            If no changes are detected, this is a placeholder PR for consistency.
           labels: dependencies
-          delete-branch: true
