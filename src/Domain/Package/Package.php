@@ -284,7 +284,7 @@ class Package {
    *   The dev version constraint, e.g., "*@dev" or "1.x-dev", if available or
    *   NULL if not.
    */
-  public function getVersionDev(string $core_version = NULL): ?string {
+  public function getVersionDev(string|null $core_version = NULL): ?string {
     return $this->getVersion('version_dev', $core_version);
   }
 
@@ -298,7 +298,7 @@ class Package {
    *   The recommended version constraint, e.g., "*" or "~1.0", if available or
    *   NULL if not.
    */
-  public function getVersionRecommended(string $core_version = NULL): ?string {
+  public function getVersionRecommended(string|null $core_version = NULL): ?string {
     return $this->getVersion('version', $core_version);
   }
 
@@ -410,7 +410,7 @@ class Package {
    * @return string|null
    *   The package version if available or NULL if not.
    */
-  private function getVersion(string $which, string $core_version = NULL): ?string {
+  private function getVersion(string $which, string|null $core_version = NULL): ?string {
     $match = $this->data[$which];
 
     if (!$core_version) {
