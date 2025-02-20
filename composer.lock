@@ -1283,16 +1283,16 @@
         },
         {
             "name": "hassankhan/config",
-            "version": "3.1.0",
+            "version": "3.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/hassankhan/config.git",
-                "reference": "8e1c07f4fdc2b986b8a781f0dcba155af2a579b6"
+                "reference": "cf63da451c4d226df983017932b9cef1b6d49db5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/hassankhan/config/zipball/8e1c07f4fdc2b986b8a781f0dcba155af2a579b6",
-                "reference": "8e1c07f4fdc2b986b8a781f0dcba155af2a579b6",
+                "url": "https://api.github.com/repos/hassankhan/config/zipball/cf63da451c4d226df983017932b9cef1b6d49db5",
+                "reference": "cf63da451c4d226df983017932b9cef1b6d49db5",
                 "shasum": ""
             },
             "require": {
@@ -1339,9 +1339,9 @@
             ],
             "support": {
                 "issues": "https://github.com/hassankhan/config/issues",
-                "source": "https://github.com/hassankhan/config/tree/3.1.0"
+                "source": "https://github.com/hassankhan/config/tree/3.2.0"
             },
-            "time": "2022-12-20T19:48:37+00:00"
+            "time": "2024-12-09T16:20:44+00:00"
         },
         {
             "name": "jean85/pretty-package-versions",
@@ -7440,5 +7440,5 @@
         "ext-sqlite3": "*"
     },
     "platform-dev": [],
-    "plugin-api-version": "2.6.0"
+    "plugin-api-version": "2.3.0"
 }
