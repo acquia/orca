@@ -37,8 +37,8 @@ See [Continuous integration](understanding-orca.md#Continuous-integration) for e
 | --- | --- |
 | 7.4 | 3.x |
 | 8.0 | 3.x |
-| 8.1 | 3.x, 4.x|
-| 8.2 and above | 4.x |
+| 8.1 | 3.x, 4.x, 5.x |
+| 8.2 and above | 4.x, 5.x |
 
 ## Documentation
 
