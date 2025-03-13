@@ -253,7 +253,7 @@ class ComposerFacade {
    * @param string|null $cwd
    *   Current working directory for the composer process.
    */
-  private function runComposer(array $command, array $args = [], string $cwd = NULL): void {
+  private function runComposer(array $command, array $args = [], string|null $cwd = NULL): void {
     $command = array_merge($command, $args);
     if ($cwd === NULL) {
       $cwd = $this->fixture->getPath();
