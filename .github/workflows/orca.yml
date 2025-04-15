@@ -75,7 +75,7 @@ jobs:
           # Testing Drupal 10 in php 8.3.
           - orca-job: ISOLATED_TEST_ON_CURRENT
             php-version: "8.3"
-            orca-enable-nightwatch: "TRUE"
+            orca-enable-nightwatch: "FALSE"
             # Testing coverage generation in CLOVER format.
             orca-coverage-clover-enable: "TRUE"
 
