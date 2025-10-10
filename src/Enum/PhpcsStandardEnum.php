@@ -14,8 +14,8 @@ use MyCLabs\Enum\Enum;
  */
 final class PhpcsStandardEnum extends Enum {
 
-  public const ACQUIA_PHP_MINIMAL = 'AcquiaPHPMinimal ';
-  public const ACQUIA_PHP_STRICT = 'AcquiaPHPStrict ';
+  public const ACQUIA_PHP_MINIMAL = 'AcquiaPHPMinimal';
+  public const ACQUIA_PHP_STRICT = 'AcquiaPHPStrict';
 
   public const ACQUIA_DRUPAL_STRICT = 'AcquiaDrupalStrict';
 
