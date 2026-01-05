@@ -141,12 +141,24 @@ class FixtureCustomizer {
     $module_name = explode("/", $module_name)[1];
 
     try {
-      $files = $finder->in($this->fixturePathHandler
-        ->getPath('docroot/modules/contrib/' . $module_name))
-        ->contains($search_string);
+      $path = $this->fixturePathHandler->getPath('docroot/modules/contrib/' . $module_name);
+
+      $files = $finder->in($path)->filter(function (\SplFileInfo $file) use ($search_string) {
+        $content = $file->getContents();
+
+        // This Regex looks for the search string ($search_string)
+        // BUT ensures it is NOT preceded by comment markers on the same line.
+        // It skips lines starting with *, //, or inside a docblock.
+        $quotedSearch = preg_quote($search_string, '/');
+
+        // Logic: Match the string only if the line doesn't start with common comment patterns
+        $pattern = '/^(?!\s*(\*|\/\/|\/\*)).*' . $quotedSearch . '/m';
+
+        return (bool) preg_match($pattern, $content);
+      });
 
       if (iterator_count($files) === 0) {
-        $this->output->writeln("\nNo customizations required since no files found for removal.\n");
+        $this->output->writeln("\nNo customizations required (matches were only found in comments).\n");
         return;
       }
 
