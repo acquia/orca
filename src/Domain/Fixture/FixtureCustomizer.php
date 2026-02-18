@@ -137,7 +137,6 @@ class FixtureCustomizer {
     string $search_string,
   ): void {
     $finder = $this->finderFactory->create();
-    // Converting drupal/acquia_dam to acquia_dam.
     $module_name = explode("/", $module_name)[1];
 
     try {
@@ -145,20 +144,28 @@ class FixtureCustomizer {
 
       $files = $finder->in($path)->filter(function (\SplFileInfo $file) use ($search_string) {
         $content = $file->getContents();
-
-        // This Regex looks for the search string ($search_string)
-        // BUT ensures it is NOT preceded by comment markers on the same line.
-        // It skips lines starting with *, //, or inside a docblock.
         $quotedSearch = preg_quote($search_string, '/');
 
-        // Logic: Match the string only if the line doesn't start with common comment patterns
-        $pattern = '/^(?!\s*(\*|\/\/|\/\*)).*' . $quotedSearch . '/m';
+        // CONDITION 1: Match the search string ONLY when it follows 'extends' or 'implements'
+        // This prevents deletion for 'use' statements (imports) or optional traits.
+        $dependencyPattern = '/(extends|implements)\s+.*?(' . $quotedSearch . ')/s';
 
-        return (bool) preg_match($pattern, $content);
+        // Check if it's a hard dependency
+        $isHardDependency = (bool) preg_match($dependencyPattern, $content);
+
+        if (!$isHardDependency) {
+          return false;
+        }
+
+        // CONDITION 2: Ensure the specific line containing that dependency is NOT a comment.
+        // We look for the line that actually contains the search string.
+        $commentPattern = '/^(?!\s*(\*|\/\/|\/\*)).*' . $quotedSearch . '/m';
+
+        return (bool) preg_match($commentPattern, $content);
       });
 
       if (iterator_count($files) === 0) {
-        $this->output->writeln("\nNo customizations required (matches were only found in comments).\n");
+        $this->output->writeln("\nNo customizations required (matches were only found in non-critical code or comments).\n");
         return;
       }
 
@@ -167,7 +174,6 @@ class FixtureCustomizer {
       }
 
       $this->filesystem->remove($files);
-
       $this->output->writeln("\nFiles removed successfully.\n\n");
     }
     catch (\Exception $e) {
