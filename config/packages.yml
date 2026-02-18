@@ -160,6 +160,14 @@ drupal/acquia_dam:
   version: 1.x
   version_dev: 1.0.x-dev
 
+drupal/canvas:
+  version: '*'
+  version_dev: 1.x-dev
+
+drupal/simple_oauth:
+  version: 6.1.0
+  version_dev: 6.1.x-dev
+
 drupal/mysql56:
   type: library
   core_matrix:
