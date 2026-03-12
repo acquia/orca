@@ -111,6 +111,7 @@ class FixtureCustomizer {
    */
   public function removeAcquiaDamCkeditorTests(FixtureOptions $options): void {
     $this->output->writeln("\nPerforming drupal/acquia_dam related customisations.\n");
+    $this->output->writeln("\nSut name - " . $options->getSut()->getPackageName() . "\n");
 
     if (!is_null($options->getSut()) && $options->getSut()
       ->getPackageName() === 'drupal/acquia_dam') {

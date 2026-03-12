@@ -161,6 +161,7 @@ drupal/acquia_dam:
   version_dev: 1.0.x-dev
 
 drupal/canvas:
+  is_company_package: false
   version: '*'
   version_dev: 1.x-dev
 
