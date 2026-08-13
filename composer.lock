@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "942df6ed37cf683457f80347484e0d7c",
+    "content-hash": "de2711c9778c5563bcafa76f43484b76",
     "packages": [
         {
             "name": "acquia/coding-standards",
@@ -5311,16 +5311,16 @@
         },
         {
             "name": "weitzman/drupal-test-traits",
-            "version": "2.5.0",
+            "version": "2.7.1",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/dtt.git",
-                "reference": "664201b00140f9b935fcb9f3eef012c6638ec0c5"
+                "reference": "1bec1eaf7a9a61f830290b93db31783efbcaaeca"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://git.drupalcode.org/api/v4/projects/project%2Fdtt/repository/archive.zip?sha=664201b00140f9b935fcb9f3eef012c6638ec0c5",
-                "reference": "664201b00140f9b935fcb9f3eef012c6638ec0c5",
+                "url": "https://git.drupalcode.org/api/v4/projects/project%2Fdtt/repository/archive.zip?sha=1bec1eaf7a9a61f830290b93db31783efbcaaeca",
+                "reference": "1bec1eaf7a9a61f830290b93db31783efbcaaeca",
                 "shasum": ""
             },
             "require": {
@@ -5344,7 +5344,8 @@
                     "file-mapping": {
                         "[project-root]/.gitignore": false,
                         "[project-root]/.editorconfig": false,
-                        "[project-root]/.gitattributes": false
+                        "[project-root]/.gitattributes": false,
+                        "[project-root]/recipes/README.txt": false
                     }
                 },
                 "installer-paths": {
@@ -5370,9 +5371,9 @@
             ],
             "description": "Traits for testing Drupal sites that have user content (versus unpopulated sites).",
             "support": {
-                "source": "https://git.drupalcode.org/project/dtt/-/tree/2.5.0"
+                "source": "https://git.drupalcode.org/project/dtt/-/tree/2.7.1"
             },
-            "time": "2024-10-30T23:28:39+00:00"
+            "time": "2026-08-09T15:59:30+00:00"
         }
     ],
     "packages-dev": [
@@ -7559,5 +7560,5 @@
         "ext-sqlite3": "*"
     },
     "platform-dev": {},
-    "plugin-api-version": "2.6.0"
+    "plugin-api-version": "2.9.0"
 }
